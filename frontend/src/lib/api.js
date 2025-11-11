@@ -1,17 +1,20 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5000";
+const LOCAL_DEFAULT_URL = "http://localhost:5000";
+const REMOTE_FALLBACK_URL = "https://astrolog-ai.onrender.com";
 
-if (!import.meta.env.VITE_API_URL) {
-  console.warn(
-    "⚠️ VITE_API_URL is missing. Falling back to http://localhost:5000. Configure .env or vite.config.js for production deployments."
-  );
-}
+const initialBase =
+  (import.meta.env?.VITE_API_URL && import.meta.env.VITE_API_URL.trim()) ||
+  LOCAL_DEFAULT_URL;
 
-function makeUrl(path) {
-  if (!path) return BASE_URL;
+let activeBaseUrl = initialBase.replace(/\/$/, "");
+
+function makeUrl(base, path) {
+  if (!path) return base;
   if (path.startsWith("http://") || path.startsWith("https://")) return path;
-  return `${BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+  const normalizedBase = base.endsWith("/") ? base.slice(0, -1) : base;
+  const normalizedPath = path.startsWith("/") ? path : `/${path}`;
+  return `${normalizedBase}${normalizedPath}`;
 }
 
 function extractMessage(error) {
@@ -25,46 +28,67 @@ function extractMessage(error) {
   return error.message || fallback;
 }
 
-async function post(path, payload) {
+async function request(method, path, payload, attempt = 0) {
+  const url = makeUrl(activeBaseUrl, path);
   try {
-    const response = await axios.post(makeUrl(path), payload, {
+    const response = await axios({
+      method,
+      url,
+      data: payload,
       headers: { "Content-Type": "application/json" },
       timeout: 15000,
     });
     return response.data;
   } catch (error) {
-    console.error(`❌ API Error on ${path}:`, error.response?.data || error.message);
-    throw new Error(extractMessage(error));
-  }
-}
+    const isNetworkError =
+      !error.response &&
+      (error.code === "ERR_NETWORK" ||
+        error.message === "Network Error" ||
+        /Network Error/i.test(error.message || ""));
 
-async function put(path, payload) {
-  try {
-    const response = await axios.put(makeUrl(path), payload, {
-      headers: { "Content-Type": "application/json" },
-      timeout: 15000,
-    });
-    return response.data;
-  } catch (error) {
-    console.error(`❌ API Error on ${path}:`, error.response?.data || error.message);
-    throw new Error(extractMessage(error));
-  }
-}
+    const canRetry =
+      attempt === 0 &&
+      isNetworkError &&
+      activeBaseUrl === LOCAL_DEFAULT_URL;
 
-async function get(path) {
-  try {
-    const response = await axios.get(makeUrl(path), { timeout: 15000 });
-    return response.data;
-  } catch (error) {
+    if (canRetry) {
+      console.warn(
+        "⚠️ Local API unreachable, falling back to hosted API:",
+        REMOTE_FALLBACK_URL
+      );
+      activeBaseUrl = REMOTE_FALLBACK_URL;
+      return request(method, path, payload, attempt + 1);
+    }
+
     console.error(`❌ API Error on ${path}:`, error.response?.data || error.message);
-    if (error.response?.status === 404) {
+
+    if (method === "get" && error.response?.status === 404) {
       return null;
     }
     throw new Error(extractMessage(error));
   }
 }
 
+const post = (path, payload) => request("post", path, payload);
+const put = (path, payload) => request("put", path, payload);
+const get = (path) => request("get", path);
+
 export const calculateNatalChart = (payload) => post("/natal-chart", payload);
+
+const buildLifeBundle = (data, strategy = "primary") => {
+  const story = data?.life_narrative || null;
+  const meta = data?.meta || null;
+  const legacy =
+    data?.life_legacy ||
+    data?.archetype?.life_narrative ||
+    null;
+  return {
+    story,
+    meta,
+    legacy,
+    strategy,
+  };
+};
 
 export const getInterpretation = async (chartData) => {
   let preparedChart = chartData;
@@ -86,9 +110,14 @@ export const getInterpretation = async (chartData) => {
     chart_data: preparedChart,
   });
 
-  const legacyText = data?.life_narrative?.text || data?.text || "";
+  const bundle = buildLifeBundle(data);
+  const legacyText = bundle?.legacy?.text || data?.text || "";
+  const prepared = {
+    ...data,
+    life_bundle: bundle,
+  };
 
-  if (!data?.life_narrative?.card) {
+  if (!data?.cards?.life) {
     const fallbackCard = {
       title: "Hayat Anlatısı",
       narrative: { main: legacyText },
@@ -97,21 +126,13 @@ export const getInterpretation = async (chartData) => {
       tags: [],
       confidence_label: "Dengeli",
     };
-    return {
-      ...data,
-      life_narrative: {
-        ...(data?.life_narrative || {}),
-        version: data?.life_narrative?.version || "v1",
-        axis: data?.life_narrative?.axis || null,
-        confidence_label: data?.life_narrative?.confidence_label || "Dengeli",
-        text: legacyText,
-        card: fallbackCard,
-      },
-      cards: data?.cards || { life: fallbackCard },
+    prepared.cards = {
+      ...(data?.cards || {}),
+      life: fallbackCard,
     };
   }
 
-  return data;
+  return prepared;
 };
 
 export const getAlternateNarrative = async (chartData, strategy = "secondary") => {
@@ -133,16 +154,7 @@ export const getAlternateNarrative = async (chartData, strategy = "secondary") =
     alt_strategy: strategy,
   });
 
-  return data?.life_narrative || {
-    version: "v1",
-    axis: null,
-    themes: [],
-    focus: null,
-    derived_from: [],
-    confidence: null,
-    strategy,
-    text: data?.text || "",
-  };
+  return buildLifeBundle(data, strategy);
 };
 
 export const calculateSynastry = (payload) =>

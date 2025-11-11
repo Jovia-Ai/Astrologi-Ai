@@ -174,8 +174,14 @@ const Profile = () => {
         setCategories(response?.categories || null);
         setArchetype(response?.archetype || null);
         setInsightCards(response?.cards || null);
-        const narrative = response?.life_narrative || response?.archetype?.life_narrative;
-        setLifeNarrative(narrative || null);
+        const bundle =
+          response?.life_bundle || {
+            story: response?.life_narrative || null,
+            meta: response?.meta || null,
+            legacy: response?.life_legacy || response?.archetype?.life_narrative || null,
+          };
+        const hasNarrativeData = bundle.story || bundle.meta;
+        setLifeNarrative(hasNarrativeData ? bundle : null);
         setAlternateNarrative(null);
       } catch (error) {
         setInterpretationError(error.message);
@@ -364,7 +370,8 @@ const Profile = () => {
     setLoadingAltNarrative(true);
     try {
       const alt = await getAlternateNarrative(chart, "secondary");
-      setAlternateNarrative(alt || null);
+      const hasAlt = alt?.story || alt?.meta;
+      setAlternateNarrative(hasAlt ? alt : null);
     } catch (error) {
       toast({
         title: "Alternatif yorum üretilemedi",
@@ -492,13 +499,18 @@ const Profile = () => {
             <InsightCard card={insightCards.life} fallbackTitle="Hayat Hikayesi" />
           </MotionBox>
         ) : (
-          lifeNarrative && <LifeNarrativeCard narrative={lifeNarrative} />
+          lifeNarrative && (
+            <LifeNarrativeCard
+              story={lifeNarrative?.story}
+              meta={lifeNarrative?.meta}
+            />
+          )
         )}
 
         <HStack spacing={4} align="center">
           <Tooltip
             label="Önce profil temelleri hesaplanıyor."
-            isDisabled={Boolean(lifeNarrative?.axis)}
+            isDisabled={Boolean(lifeNarrative?.meta?.axis)}
             placement="top"
           >
             <Button
@@ -507,7 +519,7 @@ const Profile = () => {
               onClick={handleAlternateNarrative}
               isLoading={loadingAltNarrative}
               loadingText="Üretiliyor"
-              isDisabled={!lifeNarrative || !lifeNarrative?.axis}
+              isDisabled={!lifeNarrative || !lifeNarrative?.meta?.axis}
               leftIcon={
                 <Text as="span" role="img" aria-label="alternatif" fontSize="lg">
                   🌀
@@ -521,7 +533,8 @@ const Profile = () => {
 
         {alternateNarrative && (
           <LifeNarrativeCard
-            narrative={alternateNarrative}
+            story={alternateNarrative?.story}
+            meta={alternateNarrative?.meta}
             title="🌀 Alternatif bakış"
           />
         )}

@@ -2,8 +2,9 @@
 
 from __future__ import annotations
 
+import json
 import re
-from typing import Any, Dict, Iterable, List, Sequence, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Mapping, Sequence, Tuple
 
 __all__ = [
     "extract_archetype_data",
@@ -14,9 +15,186 @@ __all__ = [
     "limit_sentences",
     "map_confidence_label",
     "pick_axis",
+    "translate_keyword",
+    "enforce_style_or_rewrite",
 ]
 
 TILDE = "–"
+
+BANNED_EN = r"\b(growth|challenge|structure|action|natural\s+expansion|focus)\b"
+BANNED_TECH = (
+    r"\b(eks(en|eni)|odak|burç|merkür|mars|g(ü|u)ne(s|ş)|sat(ü|u)rn|j(ü|u)piter|"
+    r"nept(ü|u)n|pl(ü|u)ton|ay|ev|a(c|ç)ı|kare|(t|ç)r?ine|kar(s|ş)ıt|kav(u|ü)şum|"
+    r"node|mc|asc|sun|moon)\b"
+)
+BANNED_UI = r"(Neden böyle söylüyoruz|Eksen:|Odak:|Sun–|Node|orb|\bpanel\b)"
+ONLY_TR = r"[A-Za-z]{2,}"
+
+KEYWORD_TRANSLATIONS = {
+    "growth": "büyüme",
+    "challenge": "zorlanma",
+    "action": "eylem",
+    "structure": "yapı",
+    "love": "sevgi",
+    "depth": "derinlik",
+    "intuition": "sezgi",
+    "compassion": "şefkat",
+    "service": "hizmet",
+    "value": "değer",
+    "transformation": "dönüşüm",
+    "security": "güven",
+    "balance": "denge",
+    "flow": "akış",
+    "integration": "bütünleşme",
+    "emotion": "duygu",
+    "healing": "şifa",
+    "responsibility": "sorumluluk",
+    "expression": "ifade",
+    "vision": "vizyon",
+    "grounding": "topraklanma",
+}
+
+
+def _is_turkish_text(value: str) -> bool:
+    """Detect whether free text drifts into English beyond small noise."""
+    tokens = re.findall(ONLY_TR, value or "")
+    leaks = [token for token in tokens if token.lower() not in {"ve", "ya", "ok"}]
+    return len(leaks) < 3
+
+
+def _strip_all(text: str) -> str:
+    """Remove banned terms and tidy whitespace in-place."""
+    cleaned = re.sub(BANNED_EN, "", text or "", flags=re.IGNORECASE)
+    cleaned = re.sub(BANNED_TECH, "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(BANNED_UI, "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s{2,}", " ", cleaned).strip(" .·–•:,")
+    return cleaned
+
+
+def _violations(payload: dict) -> list[str]:
+    """Collect validation errors for the generated life narrative payload."""
+    combined = " ".join(
+        [
+            payload.get("headline", ""),
+            payload.get("summary", ""),
+            " ".join(payload.get("reasons", []) or []),
+            " ".join(payload.get("actions", []) or []),
+            " ".join(payload.get("themes", []) or []),
+        ]
+    ).lower()
+
+    violations: list[str] = []
+    if re.search(BANNED_EN, combined):
+        violations.append("EN_WORD")
+    if re.search(BANNED_TECH, combined):
+        violations.append("TECH_WORD")
+    if re.search(BANNED_UI, combined):
+        violations.append("UI_LEAK")
+    if not _is_turkish_text(combined):
+        violations.append("NOT_TR")
+
+    summary = payload.get("summary") or ""
+    summary_sentences = [
+        sentence.strip()
+        for sentence in re.split(r"(?<=[.!?])\s+", summary)
+        if isinstance(sentence, str) and sentence.strip()
+    ]
+    if not 3 <= len(summary_sentences) <= 6:
+        violations.append("SUMMARY_LEN")
+
+    reasons = [
+        item.strip()
+        for item in (payload.get("reasons") or [])
+        if isinstance(item, str) and item.strip()
+    ]
+    if not 2 <= len(reasons) <= 4:
+        violations.append("REASON_COUNT")
+
+    actions = [
+        item.strip()
+        for item in (payload.get("actions") or [])
+        if isinstance(item, str) and item.strip()
+    ]
+    if not 1 <= len(actions) <= 2:
+        violations.append("ACTION_COUNT")
+    else:
+        action_pattern = re.compile(r"^[A-ZÇĞİÖŞÜ][a-zçğıöşü]+")
+        if any(not action_pattern.match(item) for item in actions):
+            violations.append("ACTION_VERB")
+
+    themes = [
+        item.strip()
+        for item in (payload.get("themes") or [])
+        if isinstance(item, str) and item.strip()
+    ]
+    if not 3 <= len(themes) <= 4:
+        violations.append("THEME_COUNT")
+
+    return violations
+
+
+def enforce_style_or_rewrite(
+    ai_fn: Callable[[str], str],
+    base_prompt: str,
+    context: str,
+    *,
+    tries: int = 2,
+) -> dict:
+    """
+    Ensure generated JSON stays within stylistic constraints via retry loop.
+    """
+
+    prompt = f"{base_prompt}\n\nBağlam:\n{context}\n\nLütfen yalnızca geçerli JSON üret."
+    attempts = tries + 1
+    last_data: dict = {}
+
+    for _ in range(attempts):
+        raw = ai_fn(prompt).strip()
+        try:
+            data = json.loads(raw)
+        except Exception:
+            raw = re.sub(r"^```(?:json)?|```$", "", raw, flags=re.MULTILINE).strip()
+            data = json.loads(raw)
+        last_data = data
+        issues = _violations(data)
+        if not issues:
+            return data
+        prompt = (
+            f"{base_prompt}\n\nBağlam:\n{context}\n\n"
+            f"Yeniden yaz: şu ihlaller var: {', '.join(issues)}. "
+            "İngilizce ve teknik terimleri kaldır; panel kelimelerini çıkar; somut ve kişisel yaz. "
+            "Sadece geçerli JSON üret."
+        )
+
+    last_data["headline"] = _strip_all(last_data.get("headline", ""))
+    last_data["summary"] = _strip_all(last_data.get("summary", ""))
+    last_data["reasons"] = [_strip_all(item) for item in last_data.get("reasons", []) or []]
+    last_data["actions"] = [_strip_all(item) for item in last_data.get("actions", []) or []]
+    last_data["themes"] = [
+        item for item in last_data.get("themes", []) or [] if not re.search(BANNED_EN, item.lower())
+    ]
+    return last_data
+
+TONE_TRANSLATIONS = {
+    "natural expansion": "doğal genişleme",
+    "balanced growth": "dengeli büyüme",
+    "rebirth and evolution": "yeniden doğuş ve evrim",
+    "healing through hardship": "zorlukla şifa",
+    "gentle transformation": "yumuşak dönüşüm",
+}
+
+PLANET_TRANSLATIONS = {
+    "Sun": "Güneş",
+    "Moon": "Ay",
+    "Mercury": "Merkür",
+    "Venus": "Venüs",
+    "Mars": "Mars",
+    "Jupiter": "Jüpiter",
+    "Saturn": "Satürn",
+    "Uranus": "Uranüs",
+    "Neptune": "Neptün",
+    "Pluto": "Plüton",
+}
 
 
 def clean_text(value: str | None) -> str:
@@ -58,6 +236,173 @@ def limit_sentences(value: str | None, min_sentences: int = 3, max_sentences: in
         clipped = sentences[: max(len(sentences), min_sentences)]
     joined = " ".join(clipped).rstrip(".!?")
     return f"{joined}."
+
+
+def translate_keyword(keyword: str | None) -> str:
+    if not keyword:
+        return ""
+    token = keyword.strip().strip("\"' ").lower()
+    return KEYWORD_TRANSLATIONS.get(token, token)
+
+
+def translate_tone(value: str | None) -> str:
+    if not value:
+        return "yumuşak dönüşüm"
+    token = value.strip().lower()
+    return TONE_TRANSLATIONS.get(token, value.strip())
+
+
+def translate_theme_line(value: str | None) -> str:
+    if not value:
+        return "ruhsal motifler"
+    cleaned = re.sub(r"[\[\]\"]", "", value)
+    tokens = [translate_keyword(part) for part in cleaned.split(",") if part.strip()]
+    tokens = [token for token in tokens if token]
+    return ", ".join(tokens) if tokens else "ruhsal motifler"
+
+
+def _extract_planet_sign(info: Mapping[str, Any]) -> str | None:
+    sign = info.get("sign")
+    if isinstance(sign, str) and sign.strip():
+        return sign.strip()
+    return None
+
+
+def _normalise_sign_to_element(sign: str | None) -> str | None:
+    if not sign:
+        return None
+    sign_clean = sign.strip()
+    element_map = {
+        "Koç": "Ateş", "Aries": "Ateş",
+        "Aslan": "Ateş", "Leo": "Ateş",
+        "Yay": "Ateş", "Sagittarius": "Ateş",
+        "Boğa": "Toprak", "Taurus": "Toprak",
+        "Başak": "Toprak", "Virgo": "Toprak",
+        "Oğlak": "Toprak", "Capricorn": "Toprak",
+        "İkizler": "Hava", "Gemini": "Hava",
+        "Terazi": "Hava", "Libra": "Hava",
+        "Kova": "Hava", "Aquarius": "Hava",
+        "Yengeç": "Su", "Cancer": "Su",
+        "Akrep": "Su", "Scorpio": "Su",
+        "Balık": "Su", "Pisces": "Su",
+    }
+    return element_map.get(sign_clean)
+
+
+def _normalise_sign_to_modality(sign: str | None) -> str | None:
+    if not sign:
+        return None
+    sign_clean = sign.strip()
+    modality_map = {
+        "Koç": "Kardinal", "Aries": "Kardinal",
+        "Yengeç": "Kardinal", "Cancer": "Kardinal",
+        "Terazi": "Kardinal", "Libra": "Kardinal",
+        "Oğlak": "Kardinal", "Capricorn": "Kardinal",
+        "Boğa": "Sabit", "Taurus": "Sabit",
+        "Aslan": "Sabit", "Leo": "Sabit",
+        "Akrep": "Sabit", "Scorpio": "Sabit",
+        "Kova": "Sabit", "Aquarius": "Sabit",
+        "İkizler": "Değişken", "Gemini": "Değişken",
+        "Başak": "Değişken", "Virgo": "Değişken",
+        "Yay": "Değişken", "Sagittarius": "Değişken",
+        "Balık": "Değişken", "Pisces": "Değişken",
+    }
+    return modality_map.get(sign_clean)
+
+
+def _infer_polar_axis(houses: Any) -> str:
+    axis_map = {
+        (1, 7): "benlik–ilişki",
+        (4, 10): "iç dünya–toplum",
+        (2, 8): "madde–ruh",
+        (3, 9): "zihin–anlam",
+        (5, 11): "yaratıcılık–paylaşım",
+        (6, 12): "hizmet–teslimiyet",
+    }
+    available: set[int] = set()
+    if isinstance(houses, dict):
+        for key in houses.keys():
+            try:
+                available.add(int(key))
+            except (TypeError, ValueError):
+                continue
+    elif isinstance(houses, list):
+        available = {idx + 1 for idx, _ in enumerate(houses)}
+
+    for pair, label in axis_map.items():
+        if pair[0] in available and pair[1] in available:
+            return label
+    return "benlik–ilişki"
+
+
+def analyze_contextual_correlations(chart_data: Dict[str, Any]) -> Dict[str, Any]:
+    planets = chart_data.get("planets") or {}
+    aspects = chart_data.get("aspects") or []
+    houses = chart_data.get("houses")
+
+    element_counts = {"Ateş": 0, "Toprak": 0, "Hava": 0, "Su": 0}
+    modality_counts = {"Kardinal": 0, "Sabit": 0, "Değişken": 0}
+
+    if isinstance(planets, dict):
+        iterable = planets.items()
+    elif isinstance(planets, Sequence):
+        iterable = [
+            (entry.get("name") or entry.get("planet"), entry)
+            for entry in planets
+            if isinstance(entry, Mapping)
+        ]
+    else:
+        iterable = []
+
+    for _, info in iterable:
+        if not isinstance(info, Mapping):
+            continue
+        sign = _extract_planet_sign(info)
+        elem = _normalise_sign_to_element(sign)
+        mod = _normalise_sign_to_modality(sign)
+        if elem:
+            element_counts[elem] += 1
+        if mod:
+            modality_counts[mod] += 1
+
+    total_elem = sum(element_counts.values()) or 1
+    total_mod = sum(modality_counts.values()) or 1
+    element_balance = {k: round(v / total_elem, 2) for k, v in element_counts.items()}
+    modality_balance = {k: round(v / total_mod, 2) for k, v in modality_counts.items()}
+
+    aspect_count: Dict[str, int] = {}
+    cluster_patterns: list[str] = []
+    for aspect in aspects:
+        if not isinstance(aspect, Mapping):
+            continue
+        p1 = aspect.get("planet1") or aspect.get("planet_1") or aspect.get("p1")
+        p2 = aspect.get("planet2") or aspect.get("planet_2") or aspect.get("p2")
+        for planet in (p1, p2):
+            if isinstance(planet, str):
+                aspect_count[planet] = aspect_count.get(planet, 0) + 1
+
+        aspect_name = aspect.get("aspect") or aspect.get("type") or ""
+        name_lower = aspect_name.lower()
+        if "square" in name_lower or "kare" in name_lower:
+            cluster_patterns.append("gerilim")
+        elif "trine" in name_lower or "üçgen" in name_lower:
+            cluster_patterns.append("akış")
+        elif "opposition" in name_lower or "opposition" in name_lower or "karşıt" in name_lower:
+            cluster_patterns.append("denge")
+
+    dominant_planet = max(aspect_count, key=aspect_count.get) if aspect_count else None
+    dominant_cluster = (
+        max(set(cluster_patterns), key=cluster_patterns.count) if cluster_patterns else None
+    )
+    polar_axis = _infer_polar_axis(houses)
+
+    return {
+        "element_balance": element_balance,
+        "modality_balance": modality_balance,
+        "dominant_planet": dominant_planet,
+        "dominant_cluster": dominant_cluster,
+        "polar_axis": polar_axis,
+    }
 
 
 def map_confidence_label(score: float | None) -> str:
@@ -335,12 +680,14 @@ def extract_archetype_data(chart_data: Dict[str, Any]) -> Dict[str, Any]:
 
     story_tone = _derive_story_tone(seen_themes)
     behavior_patterns = derive_behavior_patterns(chart_data)
+    correlations = analyze_contextual_correlations(chart_data)
 
     archetype_base = {
         "core_themes": core_themes,
         "story_tone": story_tone,
         "notable_aspects": notable_aspects,
         "behavior_patterns": behavior_patterns,
+        "correlations": correlations,
     }
 
     life_layer = integrate_life_expression(chart_data, archetype_data=archetype_base)
@@ -563,14 +910,14 @@ def call_ai_model(prompt: str) -> str:
         elif line.lower().startswith("focus:"):
             focus = line.split(":", 1)[1].strip()
 
-    themes_text = themes_line or "ruhsal motifler"
-    tone_text = tone or "yumuşak dönüşüm"
+    themes_text = translate_theme_line(themes_line)
+    tone_text = translate_tone(tone)
     axis_text = axis or "Kova–Aslan"
     focus_text = focus or "öz farkındalık"
 
     return (
-        f"{tone_text.capitalize()} bir anlatı seni çağırıyor. {axis_text} hattından yükselen enerji, "
-        f"{themes_text} temaları etrafında örülerek {focus_text} yönünde akıyor. "
+        f"{tone_text.capitalize()} hissi seni çağırıyor. {axis_text} hattından yükselen enerji, "
+        f"{themes_text} hikâyelerini örerek {focus_text} yönünde akıyor. "
         "Her gün yeni bir sembol, yeni bir içgörü getiriyor; nefes alırken bu hikâyeyi bedeninde taşıyorsun."
     )
 
@@ -612,6 +959,10 @@ def integrate_life_expression(
 
     focus = infer_life_focus(themes_sorted or core_themes, axis)
 
+    correlations = archetype_data.get("correlations")
+    if not correlations and chart_data:
+        correlations = analyze_contextual_correlations(chart_data)
+
     prompt = ["Create a poetic Turkish life narrative."]
     if strategy == "secondary":
         prompt.append("Offer a complementary perspective that highlights the secondary themes.")
@@ -619,6 +970,12 @@ def integrate_life_expression(
     prompt.append(f"Tone: {tone}")
     prompt.append(f"Axis: {axis}")
     prompt.append(f"Focus: {focus}")
+    if correlations:
+        prompt.append(f"Element balance: {correlations.get('element_balance')}")
+        prompt.append(f"Modalities: {correlations.get('modality_balance')}")
+        prompt.append(f"Dominant planet: {correlations.get('dominant_planet')}")
+        prompt.append(f"Polar axis: {correlations.get('polar_axis')}")
+        prompt.append(f"Energy pattern: {correlations.get('dominant_cluster')}")
     prompt_text = "\n".join(prompt)
 
     try:
@@ -638,6 +995,8 @@ def integrate_life_expression(
         life_expression,
         strategy=strategy,
     )
+    if correlations:
+        payload["correlations"] = correlations
 
     return {
         "life_expression": payload.get("text", ""),

@@ -40,12 +40,14 @@ load_dotenv(dotenv_path=BASE_DIR / ".env")
 
 from backend.archetype_engine import (
     clean_text,
+    enforce_style_or_rewrite,
     extract_archetype_data,
     generate_full_archetype_report,
     integrate_life_expression,
     limit_sentences,
     map_confidence_label,
     pick_axis,
+    translate_keyword,
 )
 from backend.db import MongoUnavailable, ensure_mongo_connection, mongo_healthcheck
 
@@ -88,7 +90,7 @@ if MONGO_URI:
 else:
     logger.info("MONGO_URI tanımlı değil; MongoDB bağlantısı devre dışı bırakıldı.")
 
-AI_PROMPT = """
+INTERPRETATION_PROMPT = """
 Sen bir psikolojik astrolog, sezgisel yazar ve içgörü rehberisin.  
 Görevin, kullanıcıya doğum haritasındaki temayı sade, derin ve insani biçimde aktarmaktır.  
 Her yorum kişiye özel bir içsel farkındalık alanı açmalı; öğretici değil, hissedilir olmalıdır.
@@ -125,6 +127,27 @@ Ek kurallar:
 - Eğer veri yetersizse, kullanıcıya genel bir farkındalık teması üret (“Kendini tanıma sürecin derinleşiyor” gibi).  
 - Asla JSON dışında açıklama veya İngilizce cümle ekleme.  
 - Her alan dolu olmalı (headline, summary, reasons, actions, themes).  
+""".strip()
+
+AI_PROMPT = """
+Sen deneyimli bir psikolojik astrologsun.
+Görevin, kullanıcıya iç dünyasını sade, derin ve insani bir dille anlatmaktır.
+
+Yazım kuralları (kesin):
+- Sadece Türkçe yaz. İngilizce kelime asla kullanma (ör. growth, challenge, structure, action, natural expansion vb. YASAK).
+- Teknik terimleri metinde kullanma: burç isimleri, gezegen adları, açı/ev/eksen kelimeleri YASAK.
+- “Eksen”, “Odak”, “Neden böyle söylüyoruz?”, “Sun–Saturn” gibi panel bilgilerini metne yazma.
+- Soyut, boş metaforlardan kaçın (“bir anlatı seni çağırıyor” vb. YASAK).
+- Kullanıcıya doğrudan “sen” diye hitap et; kısa, anlamlı, psikolojik cümleler kur.
+
+Yapı:
+1) "headline": Kısa, sade başlık.
+2) "summary": 3–6 cümlelik ana yorum; kişisel ve somut his.
+3) "reasons": 2–4 cümle; psikolojik gerekçeler (teknik terim YOK).
+4) "actions": 1–2 cümle; fiille başlayan uygulanabilir öneri (Türkçe).
+5) "themes": 3–4 kısa Türkçe tema (örn: denge, ifade, farkındalık, istikrar).
+
+JSON dışında hiçbir şey yazma. Boş/generik içerik üretme.
 """.strip()
 
 
@@ -303,7 +326,15 @@ class AIError(Exception):
     """Raised when AI interpretation fails."""
 
 
-def call_groq(messages: Sequence[Dict[str, str]], *, temperature: float = 0.6, max_tokens: int = 600) -> str:
+def call_groq(
+    messages: Sequence[Dict[str, str]],
+    *,
+    temperature: float = 0.6,
+    max_tokens: int = 600,
+    top_p: float | None = None,
+    presence_penalty: float | None = None,
+    frequency_penalty: float | None = None,
+) -> str:
     """Send a chat completion request to Groq and return the model response."""
 
     if not GROQ_API_KEY:
@@ -315,6 +346,12 @@ def call_groq(messages: Sequence[Dict[str, str]], *, temperature: float = 0.6, m
         "temperature": temperature,
         "max_tokens": max_tokens,
     }
+    if top_p is not None:
+        payload["top_p"] = top_p
+    if presence_penalty is not None:
+        payload["presence_penalty"] = presence_penalty
+    if frequency_penalty is not None:
+        payload["frequency_penalty"] = frequency_penalty
 
     headers = {
         "Authorization": f"Bearer {GROQ_API_KEY}",
@@ -339,6 +376,30 @@ def call_groq(messages: Sequence[Dict[str, str]], *, temperature: float = 0.6, m
     if not content:
         raise AIError("Groq yanıtı boş döndü.")
     return content
+
+
+def call_groq_ai(
+    prompt: str,
+    *,
+    temperature: float = 0.4,
+    top_p: float = 0.85,
+    presence_penalty: float = 0.1,
+    frequency_penalty: float = 0.3,
+    max_tokens: int = 400,
+) -> str:
+    """Helper dedicated to life narrative generations with strict settings."""
+
+    messages = [
+        {"role": "user", "content": prompt},
+    ]
+    return call_groq(
+        messages,
+        temperature=temperature,
+        max_tokens=max_tokens,
+        top_p=top_p,
+        presence_penalty=presence_penalty,
+        frequency_penalty=frequency_penalty,
+    )
 
 
 
@@ -436,14 +497,20 @@ def get_ai_interpretation(chart_data: Mapping[str, Any]) -> Dict[str, Any]:
             "tone": tone_value,
         }
 
+    correlations = archetype.get("correlations") or {}
     prompt = (
-        f"{AI_PROMPT}\n\n"
+        f"{INTERPRETATION_PROMPT}\n\n"
         "Verilen astrolojik veriyi aşağıdaki bağlamla yorumla ve belirtilen şemaya uygun JSON üret:\n"
         f"- Temalar: {themes}\n"
         f"- Ton: {tone_value}\n"
         f"- Ana eksen: {archetype.get('dominant_axis') or 'belirtilmedi'}\n"
         f"- Dikkate değer açılar: {aspects}\n"
         f"- Davranış kalıpları: {archetype.get('behavior_patterns')}\n"
+        f"- Element dengesi: {correlations.get('element_balance')}\n"
+        f"- Modalite dengesi: {correlations.get('modality_balance')}\n"
+        f"- Baskın gezegen: {correlations.get('dominant_planet')}\n"
+        f"- Polar eksen: {correlations.get('polar_axis')}\n"
+        f"- Enerji deseni: {correlations.get('dominant_cluster')}\n"
         "Her alanı Türkçe doldur; temaları doğal dile çevir.\n"
     )
 
@@ -555,10 +622,11 @@ def _request_refined_interpretation(archetype: Mapping[str, Any], chart_data: Ma
         "dominant_axis": archetype.get("dominant_axis"),
         "notable_aspects": archetype.get("notable_aspects", []),
         "behavior_patterns": archetype.get("behavior_patterns", []),
+        "correlations": archetype.get("correlations", {}),
         "chart_data": chart_data,
     }
     user_prompt = (
-        f"{AI_PROMPT}\n\n"
+        f"{INTERPRETATION_PROMPT}\n\n"
         "Verilen bağlamı kullanarak şemaya sadık kal:\n"
         f"{json.dumps(context_payload, ensure_ascii=False)}"
     )
@@ -1082,6 +1150,128 @@ DEFAULT_ACTION_FALLBACKS = [
     "Akşamları günü üç maddede yeniden çerçevele.",
 ]
 
+ELEMENT_STORIES = {
+    "Ateş": "Ateş vurgusu içindeki cesur kıvılcımı diri tutuyor; hızlanmadan önce kalbinin ritmini dinlemek sana iyi geliyor.",
+    "Toprak": "Toprak baskınlığı güveni yavaş ve somut adımlarla kurduğunu, sabrın seni ayakta tuttuğunu fısıldıyor.",
+    "Hava": "Hava elementinin yoğunluğu zihnini sürekli harekette tutuyor; ilişkileri anlamak için sözcüklerden nefes alıyorsun.",
+    "Su": "Su enerjisi duygularını derinleştiriyor; sezgilerini saklamak yerine paylaşmak seni rahatlatıyor.",
+}
+
+ELEMENT_ACTIONS = {
+    "Ateş": "Yeni bir karar öncesi üç nefeslik duraklama yaratıp motivasyonunu bilinçli yönlendir.",
+    "Toprak": "Gün sonlarında bedenini esnetip yapılanları kutlayarak ağırlığı yumuşat.",
+    "Hava": "Zihnin hızlandığında düşüncelerini kısa notlara döküp hafiflet.",
+    "Su": "Yoğun hissettiğinde güvendiğin biriyle duygu cümleleri paylaş.",
+}
+
+MODALITY_STORIES = {
+    "Kardinal": "Kardinal modalite sürekli başlatma arzunu körüklüyor; süreçleri tamamlamak için ritim kurman gerekiyor.",
+    "Sabit": "Sabit ton, sadakatini ve direncini güçlendiriyor; bırakmayı öğrenmek içini ferahlatacak.",
+    "Değişken": "Değişken vurgu esnekliğini artırıyor; dağılmamak için merkezini sık sık hatırlamalısın.",
+}
+
+POLAR_AXIS_STORIES = {
+    "benlik–ilişki": "Benlik–ilişki ekseni, yakınlık kurarken kendini kaybetmeme dengesini büyütüyor.",
+    "iç dünya–toplum": "İç dünya–toplum ekseni, görünür olmak kadar köklenmeye de alan açmanı istiyor.",
+    "madde–ruh": "Madde–ruh ekseni, somut ihtiyaçlarla ruhsal beslenme arasında köprü kurmaya çağırıyor.",
+    "zihin–anlam": "Zihin–anlam ekseni, öğrendiklerini hikâyeleştirip paylaşman için seni destekliyor.",
+    "yaratıcılık–paylaşım": "Yaratıcılık–paylaşım ekseni, içindeki oyun alanını toplulukla paylaşma cesaretini uyandırıyor.",
+    "hizmet–teslimiyet": "Hizmet–teslimiyet ekseni, üretkenlik ile teslim olma arasında yumuşak geçişler istiyor.",
+}
+
+ENERGY_PATTERN_STORIES = {
+    "gerilim": "Enerji örüntüsü gerilimli karelerden beslendiği için iç baskı seni büyümeye zorluyor; duygularını sahnede tutmak önem kazanıyor.",
+    "akış": "Enerji örüntüsü akışkan üçgenlere yaslandığı için doğru anda ortaya çıkan fırsatlar seni ileri taşıyor.",
+    "denge": "Enerji örüntüsü karşıtlıklarda denge kurmanı istiyor; iki uç arasında köprü kurduğunda rahatlıyorsun.",
+}
+
+ENERGY_PATTERN_ACTIONS = {
+    "gerilim": "Gün içinde omuzlarını gevşetip derin nefesle iç baskıyı yumuşat.",
+    "akış": "İlham geldiği anda kısa notlar alıp harekete geç; geciktirdiğinde enerji dağılabilir.",
+    "denge": "Karar anlarında iki ucun ortak ihtiyacını sorup ona göre adım at.",
+}
+
+PLANET_STORIES = {
+    "Sun": "Güneş tonunun baskınlığı görünür olma isteğini canlı tutuyor; parlamak için iznin var.",
+    "Moon": "Ay vurgusu duygusal ritimlerinin yaşamını şekillendirdiğini hatırlatıyor.",
+    "Mercury": "Merkür etkisi zihinsel yoğunluğu artırıyor; düşünmek kadar paylaşmak da sana iyi geliyor.",
+    "Venus": "Venüs tonu ilişkilerde estetik ve zarafet aradığını gösteriyor.",
+    "Mars": "Mars etkisi içindeki mücadele gücünü uyandırıyor; yönünü seçtiğinde ateşin seni taşıyor.",
+    "Jupiter": "Jüpiter vurgusu büyüme ve anlam arayışını güçlendiriyor.",
+    "Saturn": "Satürn tonu sorumluluk ve sınır koyma becerini olgunlaştırıyor.",
+    "Uranus": "Uranüs etkisi içindeki özgürlük kıvılcımını ateşliyor; sıradışı yollar seni çağırıyor.",
+    "Neptune": "Neptün vurgusu sezgisel hayal gücünü büyütüyor; sınırlar bulanıklaştığında kendine dön.",
+    "Pluto": "Plüton etkisi dönüşümü derinlerden başlatıyor; yüzleştiğinde güçleniyorsun.",
+}
+
+
+def _dominant_from_balance(balance: Mapping[str, Any] | None) -> tuple[str, float] | None:
+    if not isinstance(balance, Mapping):
+        return None
+    scores: Dict[str, float] = {}
+    for key, value in balance.items():
+        try:
+            scores[key] = float(value)
+        except (TypeError, ValueError):
+            continue
+    if not scores:
+        return None
+    dominant = max(scores, key=scores.get)
+    return dominant, scores[dominant]
+
+
+def _summarise_element_balance(balance: Mapping[str, Any] | None) -> str:
+    dominant = _dominant_from_balance(balance)
+    if not dominant:
+        return ""
+    element, ratio = dominant
+    if ratio < 0.35:
+        return "Element dengesi birbirine yakın; farklı ruh hallerini esnekçe taşıyorsun."
+    return ELEMENT_STORIES.get(element, "")
+
+
+def _summarise_modality_balance(balance: Mapping[str, Any] | None) -> str:
+    dominant = _dominant_from_balance(balance)
+    if not dominant:
+        return ""
+    modality, ratio = dominant
+    if ratio < 0.35:
+        return "Modaliteler dengeli; değişen koşullara uyumlanırken merkezini koruyorsun."
+    return MODALITY_STORIES.get(modality, "")
+
+
+def _summarise_dominant_planet(name: str | None) -> str:
+    if not isinstance(name, str) or not name.strip():
+        return ""
+    planet = name.strip()
+    return PLANET_STORIES.get(planet, f"Baskın enerji {planet} tonundan akıyor; bu ses seni yönlendiriyor.")
+
+
+def _summarise_polar_axis(axis_label: str | None) -> str:
+    if not axis_label:
+        return ""
+    return POLAR_AXIS_STORIES.get(axis_label, "")
+
+
+def _summarise_energy_pattern(pattern: str | None) -> str:
+    if not pattern:
+        return ""
+    return ENERGY_PATTERN_STORIES.get(pattern, "")
+
+
+def _action_from_energy(pattern: str | None) -> str:
+    if not pattern:
+        return ""
+    return ENERGY_PATTERN_ACTIONS.get(pattern, "")
+
+
+def _action_from_element(balance: Mapping[str, Any] | None) -> str:
+    dominant = _dominant_from_balance(balance)
+    if not dominant:
+        return ""
+    element = dominant[0]
+    return ELEMENT_ACTIONS.get(element, "")
+
 
 def _format_title(title: str | None) -> str:
     cleaned = clean_text(title)
@@ -1114,9 +1304,10 @@ def _prepare_reasons(
         if len(prepared) >= 4:
             break
         tag_text = clean_text(tag)
-        if not tag_text:
+        translated = translate_keyword(tag_text)
+        if not translated:
             continue
-        template = f"Tema: {tag_text.lower()} enerjisini bilinçli yönettiğinde dengede kalırsın."
+        template = f"Tema: {translated} enerjisini bilinçli yönettiğinde dengede kalırsın."
         _append(template)
 
     idx = 0
@@ -1168,7 +1359,7 @@ def _prepare_tags(tags: Iterable[str] | None) -> list[str]:
     cleaned_tags: list[str] = []
     seen: set[str] = set()
     for tag in tags or []:
-        text = clean_text(tag)
+        text = translate_keyword(clean_text(tag))
         if not text:
             continue
         if text not in seen:
@@ -1234,6 +1425,12 @@ def build_life_card(
     archetype = archetype or {}
 
     title = ai_payload.get("headline") or "Hayat Anlatısı"
+    correlations = (
+        life_narrative.get("correlations")
+        or archetype.get("correlations")
+        or {}
+    )
+
     primary_texts = [
         life_narrative.get("text"),
         ai_payload.get("summary"),
@@ -1251,6 +1448,19 @@ def build_life_card(
     if len(sentences) < 3:
         sentences.extend(DEFAULT_REASON_FALLBACKS)
     main_text = " ".join(sentences[:6])
+
+    enrichment_sentences: list[str] = []
+    if correlations:
+        elem_sentence = _summarise_element_balance(correlations.get("element_balance"))
+        mod_sentence = _summarise_modality_balance(correlations.get("modality_balance"))
+        planet_sentence = _summarise_dominant_planet(correlations.get("dominant_planet"))
+        polar_sentence = _summarise_polar_axis(correlations.get("polar_axis"))
+        energy_sentence = _summarise_energy_pattern(correlations.get("dominant_cluster"))
+        for sentence in (elem_sentence, mod_sentence, planet_sentence, polar_sentence, energy_sentence):
+            if sentence:
+                enrichment_sentences.append(sentence)
+        if enrichment_sentences:
+            main_text = f"{main_text.strip()} {' '.join(enrichment_sentences)}".strip()
 
     reasons: list[str] = []
     axis = life_narrative.get("axis")
@@ -1272,6 +1482,15 @@ def build_life_card(
                         text += f" • orb {orb}°"
                     reasons.append(text)
     themes = life_narrative.get("themes")
+    if correlations:
+        correlation_reasons = [
+            _summarise_element_balance(correlations.get("element_balance")),
+            _summarise_modality_balance(correlations.get("modality_balance")),
+            _summarise_dominant_planet(correlations.get("dominant_planet")),
+            _summarise_polar_axis(correlations.get("polar_axis")),
+            _summarise_energy_pattern(correlations.get("dominant_cluster")),
+        ]
+        reasons.extend(sentence for sentence in correlation_reasons if sentence)
     if not reasons and isinstance(themes, Sequence):
         reasons.extend(f"Tema: {theme}" for theme in themes[:3] if isinstance(theme, str))
 
@@ -1282,6 +1501,12 @@ def build_life_card(
     life_focus = archetype.get("life_focus")
     if isinstance(life_focus, str) and life_focus.strip():
         actions.append(f"Odaklan: {life_focus.strip()}")
+    if correlations:
+        elem_action = _action_from_element(correlations.get("element_balance"))
+        energy_action = _action_from_energy(correlations.get("dominant_cluster"))
+        for act in (elem_action, energy_action):
+            if act:
+                actions.append(act)
 
     tags = []
     if isinstance(themes, Sequence):
@@ -1390,6 +1615,53 @@ def normalize_ai_payload(value: Any) -> Dict[str, str]:
         "headline": fallback["headline"],
         "summary": fallback["summary"],
         "advice": fallback["advice"],
+    }
+
+
+def _fallback_life_story(meta: Mapping[str, Any]) -> Dict[str, Any]:
+    """Produce a deterministic, style-compliant payload if Groq fails."""
+
+    summary = (
+        "İç sesin zaman zaman dalgalansa da kalbinde taşıdığın sıcaklık seni koruyor. "
+        "Kendini anlatmak istediğinde kelimelerin çoğalsa da asıl ihtiyacın anlaşılmak oluyor. "
+        "Nefesini yavaşlattığında zihnin berraklaşıyor ve duyguların sadeleşiyor."
+    )
+
+    focus_value = meta.get("focus")
+    reasons = [
+        "Anlaşılmak senin için güven hissi yaratıyor; paylaştıkça omuzların gevşiyor.",
+        "Yoğun duygularını saklamak yerine onları isimlendirdiğinde iç baskı azalıyor.",
+    ]
+    if isinstance(focus_value, str) and focus_value.strip():
+        reasons.append("İlginin yöneldiği alan seni daha dürüst ve sıcak ifadeye çağırıyor.")
+    reasons = reasons[:4]
+
+    actions = [
+        "Dinle ve gün içinde tek bir duygunu kısa bir cümleyle yaz.",
+        "Yaz ve akşam kendine sakinleştirici bir not bırak.",
+    ]
+
+    defaults = ["denge", "ifade", "farkındalık", "istikrar"]
+    raw_themes = []
+    if isinstance(meta, Mapping):
+        for item in meta.get("themes") or []:
+            if isinstance(item, str):
+                candidate = clean_text(item).lower()
+                candidate = re.sub(r"[^a-zçğıöşüİĞÜŞÖÇ\s]", "", candidate).strip()
+                if candidate and candidate not in raw_themes:
+                    raw_themes.append(candidate)
+    for word in defaults:
+        if len(raw_themes) >= 4:
+            break
+        if word not in raw_themes:
+            raw_themes.append(word)
+
+    return {
+        "headline": "İç Sesinin İzinde",
+        "summary": summary,
+        "reasons": reasons,
+        "actions": actions,
+        "themes": raw_themes[:4],
     }
 
 
@@ -1926,6 +2198,8 @@ def interpretation():
             archetype.update(alt_layer)
             life_narrative = alternate_narrative
 
+    legacy_life_block: Dict[str, Any] = dict(life_narrative or {})
+
     try:
         ai_result = _request_refined_interpretation(archetype, chart_dict)
     except AIError as exc:
@@ -1985,26 +2259,27 @@ def interpretation():
         cards["shadow"] = shadow_card
 
     response_body: Dict[str, Any] = {
+        "status": "success",
         "themes": archetype.get("core_themes", []),
         "ai_interpretation": ai_payload,
         "tone": archetype.get("story_tone"),
         "categories": categories,
         "archetype": archetype,
-        "life_narrative": life_narrative,
     }
 
     if life_card:
-        life_block = response_body.setdefault("life_narrative", {})
         primary_text = life_card.get("narrative", {}).get("main") if isinstance(life_card.get("narrative"), Mapping) else ""
-        life_text = limit_sentences(primary_text or life_block.get("text") or "", min_sentences=3, max_sentences=6)
+        life_text = limit_sentences(primary_text or legacy_life_block.get("text") or "", min_sentences=3, max_sentences=6)
         if life_text:
-            life_block["text"] = life_text
-        axis_candidate = clean_text(life_block.get("axis") or archetype.get("dominant_axis") or "")
+            legacy_life_block["text"] = life_text
+        axis_candidate = clean_text(legacy_life_block.get("axis") or archetype.get("dominant_axis") or "")
         axis_scores = payload.get("axis_scores") if isinstance(payload.get("axis_scores"), Mapping) else {}
         dominant_axis = pick_axis(axis_scores, axis_candidate or "Yay–İkizler")
-        life_block["axis"] = dominant_axis
-        life_block["confidence_label"] = life_card.get("confidence_label") or map_confidence_label(life_block.get("confidence"))
-        life_block["card"] = life_card
+        legacy_life_block["axis"] = dominant_axis
+        legacy_life_block["confidence_label"] = life_card.get("confidence_label") or map_confidence_label(legacy_life_block.get("confidence"))
+        if "correlations" not in legacy_life_block and archetype.get("correlations"):
+            legacy_life_block["correlations"] = archetype.get("correlations")
+        legacy_life_block["card"] = life_card
     if cards:
         expanded_cards = dict(cards)
         if "life" in cards:
@@ -2016,6 +2291,66 @@ def interpretation():
         if "spiritual" in cards:
             expanded_cards.setdefault("mind", cards["spiritual"])
         response_body["cards"] = expanded_cards
+
+    correlations = legacy_life_block.get("correlations") or archetype.get("correlations") or {}
+    if not isinstance(correlations, Mapping):
+        correlations = {}
+    focus_value = legacy_life_block.get("focus") or archetype.get("life_focus")
+    themes_value = legacy_life_block.get("themes") or archetype.get("core_themes") or []
+    if isinstance(themes_value, Sequence) and not isinstance(themes_value, str):
+        themes_list = [clean_text(str(item)) for item in themes_value if isinstance(item, str)]
+    elif isinstance(themes_value, str):
+        themes_list = [clean_text(themes_value)]
+    else:
+        themes_list = []
+    themes_list = [theme for theme in themes_list if theme]
+
+    derived_from = legacy_life_block.get("derived_from")
+    if not isinstance(derived_from, list):
+        derived_from = []
+
+    meta_payload = {
+        "axis": legacy_life_block.get("axis") or archetype.get("dominant_axis"),
+        "themes": themes_list,
+        "focus": focus_value,
+        "derived_from": derived_from,
+        "confidence": legacy_life_block.get("confidence"),
+        "correlations": correlations,
+    }
+    if not meta_payload["themes"]:
+        meta_payload["themes"] = ["denge", "ifade", "farkındalık"]
+    if not meta_payload["axis"]:
+        meta_payload["axis"] = "Yay–İkizler"
+    if not meta_payload["focus"]:
+        meta_payload["focus"] = "içsel dengeyi hatırlamak"
+
+    theme_line = ", ".join(meta_payload["themes"]) if meta_payload["themes"] else "Belirsiz"
+    context_lines = [
+        f"Eksen: {meta_payload.get('axis') or 'Belirtilmedi'}",
+        f"Temalar: {theme_line}",
+        f"Odak: {meta_payload.get('focus') or 'Belirtilmedi'}",
+        f"Element dengesi: {correlations.get('element_balance') or 'Belirsiz'}",
+        f"Modalite dengesi: {correlations.get('modality_balance') or 'Belirsiz'}",
+        f"Baskın gezegen: {correlations.get('dominant_planet') or 'Belirsiz'}",
+        f"Enerji deseni: {correlations.get('dominant_cluster') or 'Belirsiz'}",
+        f"Polar eksen: {correlations.get('polar_axis') or 'Belirsiz'}",
+    ]
+    context_str = "\n".join(context_lines)
+
+    try:
+        life_story = enforce_style_or_rewrite(
+            call_groq_ai,
+            AI_PROMPT,
+            context_str,
+            tries=2,
+        )
+    except Exception as exc:  # pylint: disable=broad-except
+        logger.exception("Life narrative generation failed: %s", exc)
+        life_story = _fallback_life_story(meta_payload)
+
+    response_body["meta"] = meta_payload
+    response_body["life_narrative"] = life_story
+    response_body["life_legacy"] = legacy_life_block
 
     return jsonify(response_body), 200
 
