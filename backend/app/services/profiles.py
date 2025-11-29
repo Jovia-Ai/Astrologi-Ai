@@ -4,29 +4,16 @@ from __future__ import annotations
 from datetime import datetime
 from typing import Any, Dict, List, Mapping
 
-from backend.db import MongoUnavailable, ensure_mongo_connection
-
-from app.core.config import settings
-
-
-def get_profile_collection():
-    if not settings.mongo_uri:
-        raise MongoUnavailable("MongoDB yapılandırılmadı.")
-    client = ensure_mongo_connection(retries=3, delay=1.0, revalidate=False)
-    return client[settings.mongo_db_name][settings.profile_collection]
+from app.services.supabase import supabase
 
 
 def serialise_profile(document: Mapping[str, Any]) -> Dict[str, Any]:
+    """Ensure Supabase payloads use ISO strings for datetimes."""
     result = dict(document)
-    identifier = result.pop("_id", None)
-    if identifier is not None:
-        result["id"] = str(identifier)
-    created_at = result.get("created_at")
-    if isinstance(created_at, datetime):
-        result["created_at"] = created_at.isoformat()
-    updated_at = result.get("updated_at")
-    if isinstance(updated_at, datetime):
-        result["updated_at"] = updated_at.isoformat()
+    for key in ("created_at", "updated_at"):
+        value = result.get(key)
+        if isinstance(value, datetime):
+            result[key] = value.isoformat()
     return result
 
 
@@ -63,3 +50,36 @@ def validate_profile_payload(profile_payload: Mapping[str, Any]) -> List[str]:
         if not profile_payload.get(key):
             errors.append(f"{key} alanı gereklidir.")
     return errors
+
+
+def fetch_profile_by_email(email: str) -> Dict[str, Any] | None:
+    response = supabase.table("profiles").select("*").eq("email", email).limit(1).execute()
+    data = response.data or []
+    return data[0] if data else None
+
+
+def upsert_profile_record(profile_payload: Mapping[str, Any]) -> Dict[str, Any]:
+    response = (
+        supabase.table("profiles")
+        .upsert(profile_payload, on_conflict="email")
+        .execute()
+    )
+    data = response.data or []
+    if data:
+        return data[0]
+    return dict(profile_payload)
+
+
+def save_birth_data(user_id: str, birth_date: str, birth_time: str, timezone: str, place: str, lat: float, lon: float):
+    response = supabase.table("birth_data").insert(
+        {
+            "user_id": user_id,
+            "birth_date": birth_date,
+            "birth_time": birth_time,
+            "timezone": timezone,
+            "place": place,
+            "latitude": lat,
+            "longitude": lon,
+        }
+    ).execute()
+    return response.data

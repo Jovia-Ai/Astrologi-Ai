@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     cors_supports_credentials: bool = Field(default=True, env="CORS_SUPPORTS_CREDENTIALS")
     environment: str = Field(default="development", env="APP_ENV")
     log_level: str = Field(default="INFO", env="LOG_LEVEL")
+    supabase_url: str | None = Field(default=None, env="SUPABASE_URL")
+    supabase_anon_key: str | None = Field(default=None, env="SUPABASE_ANON_KEY")
 
     class Config:
         env_file = BASE_DIR / ".env"

@@ -6,17 +6,11 @@ from datetime import datetime
 
 from flask import Blueprint, jsonify, request
 
-try:
-    from pymongo import ReturnDocument
-except ImportError:  # pragma: no cover - optional dependency
-    class ReturnDocument:
-        AFTER = True
-
-from backend.db import MongoUnavailable
 from app.services.profiles import (
     extract_profile_payload,
-    get_profile_collection,
+    fetch_profile_by_email,
     serialise_profile,
+    upsert_profile_record,
     validate_profile_payload,
 )
 
@@ -34,14 +28,10 @@ def get_profile():
         return jsonify({"error": "email parametresi gereklidir."}), 400
 
     try:
-        collection = get_profile_collection()
-        document = collection.find_one({"email": email})
+        document = fetch_profile_by_email(email)
         if not document:
             return jsonify({"error": "Profil bulunamadı."}), 404
         return jsonify(serialise_profile(document))
-    except MongoUnavailable as exc:
-        logger.warning("Profile lookup skipped - Mongo unavailable: %s", exc)
-        return jsonify({"error": str(exc)}), 503
     except Exception as exc:  # pylint: disable=broad-except
         logger.exception("Profile lookup failed: %s", exc)
         return jsonify({"error": "Profil alınamadı."}), 500
@@ -62,18 +52,7 @@ def upsert_profile():
         profile_payload["created_at"] = datetime.utcnow()
 
     try:
-        collection = get_profile_collection()
-        updated_document = collection.find_one_and_update(
-            {"email": profile_payload["email"]},
-            {"$set": profile_payload},
-            upsert=True,
-            return_document=ReturnDocument.AFTER,
-        )
-        if updated_document is None:
-            updated_document = collection.find_one({"email": profile_payload["email"]})
-    except MongoUnavailable as exc:
-        logger.warning("Profile save skipped - Mongo unavailable: %s", exc)
-        return jsonify({"error": str(exc)}), 503
+        updated_document = upsert_profile_record(profile_payload)
     except Exception as exc:  # pylint: disable=broad-except
         logger.exception("Profile save failed: %s", exc)
         return jsonify({"error": "Profil kaydedilemedi."}), 500

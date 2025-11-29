@@ -16,3 +16,13 @@ class UserProfile(BaseModel):
     city: str
     chart: Optional[dict]
     updated_at: datetime = Field(default_factory=datetime.utcnow)
+
+
+class BirthDataSchema(BaseModel):
+    user_id: str
+    birth_date: str
+    birth_time: str
+    timezone: str
+    place: str
+    latitude: float
+    longitude: float

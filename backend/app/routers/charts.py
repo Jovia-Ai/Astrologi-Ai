@@ -18,8 +18,10 @@ from app.ai.narrative.groq_client import (
 )
 from app.astro.chart_engine.builder import build_natal_chart
 from app.astro.synastry.cross_aspects import calculate_synastry_aspects
+from app.models.user import BirthDataSchema
 from app.core.config import settings
 from app.core.errors import AIError, ApiError
+from app.services.profiles import save_birth_data
 
 charts_bp = Blueprint("charts", __name__)
 logger = logging.getLogger(__name__)
@@ -83,3 +85,18 @@ def calculate_synastry():
         logger.exception("Failed to calculate synastry")
         return jsonify({"error": str(exc)}), 400
     return jsonify(response)
+
+
+@charts_bp.route("/save-birth-data", methods=["POST"])
+def save_birth_data_route():
+    payload = BirthDataSchema(**(request.get_json(force=True) or {}))
+    result = save_birth_data(
+        user_id=payload.user_id,
+        birth_date=payload.birth_date,
+        birth_time=payload.birth_time,
+        timezone=payload.timezone,
+        place=payload.place,
+        lat=payload.latitude,
+        lon=payload.longitude,
+    )
+    return jsonify({"status": "ok", "saved": result})
