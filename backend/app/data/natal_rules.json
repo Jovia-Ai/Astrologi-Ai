@@ -1,0 +1,60 @@
+{
+  "identity": {
+    "rules": [
+      {
+        "if": ["Sun.sign = Capricorn", "ASC.sign = Capricorn"],
+        "then": "Hayata stratejik, ciddi ve kontrollü bir çerçeveden yaklaşırsın. Güvende hissetmek için yapı, plan ve netlik ararsın."
+      },
+      {
+        "if": ["Moon.sign = Leo"],
+        "then": "İç dünyanda görünür olmak ve yaratıcı biçimde kendini ifade etmek istersin. Duygusal olarak takdir edildiğinde açılırsın."
+      },
+      {
+        "if": ["Moon.sign = Leo", "Sun.sign = Capricorn"],
+        "then": "Bir yanın sahneye çıkmak isterken diğer yanın ciddiyetle ayakta durmayı seçer. Bu, karizmatik ama mesafeli bir duruş verir."
+      }
+    ]
+  },
+
+  "psychology": {
+    "rules": [
+      {
+        "if": ["Moon.square.Saturn"],
+        "then": "Duygularını açmakta zaman zaman zorlanırsın. Güven hissetmediğin ortamda içe kapanabilir, güçlü görünmeyi seçebilirsin."
+      },
+      {
+        "if": ["Venus.sign = Sagittarius"],
+        "then": "Aşkta özgürlüğe, keşfetmeye ve zihinsel uyuma önem verirsin. Seni kısıtlayan ilişkilerde hızla uzaklaşırsın."
+      },
+      {
+        "if": ["Venus.sign = Sagittarius", "Mars.sign = Virgo"],
+        "then": "Hem maceracı bir kalbin hem de seçici bir tensel enerjin var. Bu ikilik, ilişkilerde hem tutkuyu hem kaliteyi aramana sebep olur."
+      },
+      {
+        "if": ["Mercury.sign = Capricorn"],
+        "then": "Zihnin sistematik çalışır. Gerçekçi düşünürsün, sözcükleri dikkatle seçersin."
+      },
+      {
+        "if": ["Mercury.retrograde = true"],
+        "then": "İç dialoğun güçlüdür; düşüncelerini dışa vururken süzgeçten geçirirsin."
+      }
+    ]
+  },
+
+  "karma": {
+    "rules": [
+      {
+        "if": ["Saturn.house = 3"],
+        "then": "Hayat derslerin iletişim, ifade ve fikirlerini savunmak üzerine kurulu. Gençlikte yanlış anlaşılmalar seni güçlendirir."
+      },
+      {
+        "if": ["Pluto.house = 11"],
+        "then": "Sosyal çevren kaderini değiştirir. Eski dostluklar biter, yerine güçlü bağlar kurulur."
+      },
+      {
+        "if": ["Node.sign = Libra"],
+        "then": "Bu hayatta ilişki kurmayı, iş birliği yapmayı ve adaletli olmayı öğrenmeye gelmişsin."
+      }
+    ]
+  }
+}

@@ -1,35 +1,29 @@
-"""Flask application factory with modular routers."""
+"""FastAPI application factory with modular routers."""
 from __future__ import annotations
 
 import logging
 
 import swisseph as swe
-from flask import Flask
-from flask_cors import CORS
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.core.logging import configure_logging
-from app.routers.charts import charts_bp
-from app.routers.chat import chat_bp
-from app.routers.health import health_bp
-from app.routers.interpretation import interpretation_bp
-from app.routers.profile import profile_bp
-from app.routers.user import user_bp
+from app.routers import charts, chat, health, interpretation, profile, story, synastry, user
 
 logger = logging.getLogger(__name__)
 
 
-def create_app() -> Flask:
+def create_app() -> FastAPI:
     configure_logging(settings.log_level)
-    app = Flask(__name__)
-    app.config["JSON_SORT_KEYS"] = False
+    app = FastAPI(title="Astrologi-AI API", debug=settings.debug)
 
-    CORS(
-        app,
-        origins=settings.allowed_origins,
-        supports_credentials=settings.cors_supports_credentials,
-        allow_headers=["Content-Type", "Authorization"],
-        methods=["GET", "POST", "PUT", "OPTIONS"],
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.allowed_origins,
+        allow_credentials=settings.cors_supports_credentials,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     try:
@@ -38,12 +32,14 @@ def create_app() -> Flask:
     except Exception as exc:  # pragma: no cover - environment specific
         logger.error("Failed to set Swiss Ephemeris path: %s", exc)
 
-    app.register_blueprint(health_bp)
-    app.register_blueprint(user_bp)
-    app.register_blueprint(charts_bp)
-    app.register_blueprint(interpretation_bp)
-    app.register_blueprint(chat_bp)
-    app.register_blueprint(profile_bp)
+    app.include_router(health.router)
+    app.include_router(user.router)
+    app.include_router(charts.router)
+    app.include_router(interpretation.router)
+    app.include_router(chat.router)
+    app.include_router(profile.router)
+    app.include_router(story.router)
+    app.include_router(synastry.router)
 
     return app
 
