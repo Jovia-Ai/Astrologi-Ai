@@ -1,0 +1,583 @@
+{
+  "planet_sign_rules": [
+    {
+      "id": "uranus_in_aries",
+      "conditions": [{ "planet": "Uranus", "sign": "Aries" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin çekirdeğinde özgür iradeyi radikal biçimde ortaya koyma ihtiyacı vardır."],
+          "mechanism": ["Ani sezgiler seni hızlı ve sıradışı başlangıçlara iter."],
+          "effect": ["Dışarıdan cesur, başlatıcı ve bağımsız biri olarak görünürsün."],
+          "shadow": ["Dürtüsellik kimlikte kırılmalar yaratabilir."],
+          "potential": ["Bilinçli risk yönetimi geliştirdiğinde gerçek öncü etkiler yaratabilirsin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde aniden yön değiştirme ve özgürleşme isteği vardır."],
+          "mechanism": ["Zorluklar seni eski kalıpları bir anda kırmaya iter."],
+          "effect": ["Hızlı dönüşüm ve farkındalık geliştirebilirsin."],
+          "shadow": ["İstikrarsızlık psikolojik dalgalanmalar yaratabilir."],
+          "potential": ["Özgürlük ihtiyacın öz farkındalıkla birleştiğinde güçlü bir iç devrim başlatırsın."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde alan, özgürlük ve hareket beklersin."],
+          "mechanism": ["Bağlarda bireyselliğini korumak senin için kritiktir."],
+          "effect": ["Bağlarında yenilik ve heyecan enerjisi taşırsın."],
+          "shadow": ["Aşırı bağımsızlık mesafe yaratabilir."],
+          "potential": ["Dengeyi koruduğunda ilişkilerin hem özgür hem canlı olabilir."]
+        },
+        "mind": {
+          "cause": ["Zihnin hızlı, sezgisel ve yenilikçi çalışır."],
+          "mechanism": ["Sorunlara radikal çözümler üretme eğilimindesin."],
+          "effect": ["Teknoloji, girişim ve hız gerektiren alanlarda parlak fikirler üretebilirsin."],
+          "shadow": ["Ani fikir değişimleri odaklanmayı zorlaştırabilir."],
+          "potential": ["Yaratıcı sezgin disipline kavuştuğunda çığır açıcı fikirler doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında özgür hareket alanı ve yenilik beklersin."],
+          "mechanism": ["Projelere hızlı giriş yapar, dönüşüm alanlarında parlayabilirsin."],
+          "effect": ["Girişimcilik ve bağımsız projeler için güçlü potansiyel taşırsın."],
+          "shadow": ["Sürekli yenilik isteği uzun vadeli projelerde zorluk yaratabilir."],
+          "potential": ["Cesaret ve vizyon birleştiğinde iş yaşamında öncü etkiler yaratırsın."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda bireyselliğini özgün biçimde ifade etmeyi öğrenirsin."],
+          "mechanism": ["Deneyimler seni ani uyanışlara ve hızlı büyümeye zorlar."],
+          "effect": ["Ruhsal yolunda özgürleşme temaları hakimdir."],
+          "shadow": ["Dürtüsel kopuşlar karmasal döngüler yaratabilir."],
+          "potential": ["Bilinçli eylem özgürleşmeyi ruhsal başarıya dönüştürür."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_taurus",
+      "conditions": [{ "planet": "Uranus", "sign": "Taurus" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde değer sistemlerini özgürce yeniden tanımlama ihtiyacı vardır."],
+          "mechanism": ["Ani farkındalıklarla düzeni altüst edip yeniden kurabilirsin."],
+          "effect": ["Dışarıdan sabit görünen ama kökten değişimler yapabilen biri olarak algılanırsın."],
+          "shadow": ["Ani kırılmalar güven duygusunu zorlayabilir."],
+          "potential": ["Değerlerini özgün biçimde belirlediğinde güçlü bir iç istikrar kurarsın."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde güven arayışı ve bunun sürekli yenilenmesi vardır."],
+          "mechanism": ["Zorluklar seni eski bağlılıklardan özgürleşmeye çağırır."],
+          "effect": ["Duygusal dayanıklılığın zamanla güçlenir."],
+          "shadow": ["Değişime direnç psikolojik karmaşa yaratabilir."],
+          "potential": ["İçsel esneklik geliştirdiğinde psikolojik huzur ve güç birlikte oluşur."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde sadakat ve özgürlük dengesini ararsın."],
+          "mechanism": ["Bağlarını kendi değer sistemine göre kurmak istersin."],
+          "effect": ["İlişkilerde güvenli ama yenilikçi bir alan yaratırsın."],
+          "shadow": ["Ani uzaklaşmalar bağları zorlayabilir."],
+          "potential": ["Esneklik kazandığında ilişkilerin güçlü ve dayanıklı olabilir."]
+        },
+        "mind": {
+          "cause": ["Zihnin pratik ama yenilikçi bir yapıya sahiptir."],
+          "mechanism": ["Somut konularda radikal çözümler üretirsin."],
+          "effect": ["Finans, tasarım, üretim ve teknoloji kesişiminde yaratıcı fikirler geliştirirsin."],
+          "shadow": ["Sabit fikirler zihinsel kırılmalara yol açabilir."],
+          "potential": ["Değer ve özgünlük birleştiğinde zihinsel üretkenlik doruğa çıkar."]
+        },
+        "career": {
+          "cause": ["İş hayatında kalıcı yapılar kurmak ve bunları yenilikle harmanlamak istersin."],
+          "mechanism": ["Somut projeleri özgün yöntemlerle yeniden tasarlayabilirsin."],
+          "effect": ["Finans, sanat, tarım, teknoloji gibi alanlarda sıra dışı çözümler üretebilirsin."],
+          "shadow": ["Aşırı tutuculuk profesyonel gelişimi yavaşlatabilir."],
+          "potential": ["Yenilik ile istikrarı birleştirdiğinde iş yaşamında büyük etki yaratırsın."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda değerlerini özgürce belirlemeyi öğrenirsin."],
+          "mechanism": ["Deneyimler seni eski güven kalıplarını kırmaya iter."],
+          "effect": ["Ruhsal yolunda sadelik ve özgünlük baskın temalar olur."],
+          "shadow": ["Sabitlik karmasal tekrar yaratabilir."],
+          "potential": ["Esneklik geliştirdiğinde ruhsal bolluk ortaya çıkar."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_gemini",
+      "conditions": [{ "planet": "Uranus", "sign": "Gemini" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin çekirdeğinde zihinsel özgürlük ve sınırsız merak teması vardır."],
+          "mechanism": ["Ani sezgisel sıçrayışlarla yeni kimlik yolları açarsın."],
+          "effect": ["Dışarıdan hızlı düşünen, esprili ve yenilikçi biri olarak görünürsün."],
+          "shadow": ["Dağılma ve aşırı adaptasyon kimlik karmaşası yaratabilir."],
+          "potential": ["Zihinsel özgürlüğü yapılandırdığında etkileyici bir kimlik gücü doğar."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik altyapında sürekli öğrenme ve yenilenme isteği vardır."],
+          "mechanism": ["Zorluklar seni düşünce kalıplarını radikal biçimde kırmaya iter."],
+          "effect": ["Yüksek algı ve hızlı anlamlandırma kapasitesi gelişir."],
+          "shadow": ["Aşırı uyarılma psikolojik huzuru bozabilir."],
+          "potential": ["Zihinsel esneklik seni ruhsal uyanışa götürebilir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde zihinsel uyum ve iletişim özgürlüğü beklersin."],
+          "mechanism": ["Yakınlıkta bile bağımsız düşünce alanına ihtiyaç duyarsın."],
+          "effect": ["Bağlarında canlı, yenilikçi ve esnek bir enerji taşırsın."],
+          "shadow": ["Tutarsızlık ilişkisel güveni zedeleyebilir."],
+          "potential": ["Zihinsel netlik kazandığında ilişkiler çok yönlü gelişebilir."]
+        },
+        "mind": {
+          "cause": ["Zihnin futuristik, sezgisel ve hızlı bağlantılar kuran bir yapıdadır."],
+          "mechanism": ["Bilgiyi ani aydınlanmalarla sentezlersin."],
+          "effect": ["Yazı, öğretim, iletişim ve teknoloji alanlarında yüksek yaratıcılık gösterirsin."],
+          "shadow": ["Odak eksikliği üretkenliği düşürebilir."],
+          "potential": ["Zihinsel sezgi disiplinle birleştiğinde devrim niteliğinde fikirler ortaya çıkar."]
+        },
+        "career": {
+          "cause": ["İş hayatında çeşitlilik, öğrenme ve hareket beklersin."],
+          "mechanism": ["Yeni bilgileri hızlıca adapte eder, çok yönlü çalışırsın."],
+          "effect": ["İletişim, medya, teknoloji ve eğitim alanlarında büyük başarı potansiyelin vardır."],
+          "shadow": ["Sürekli değişim isteği uzun vadeli projeleri zorlayabilir."],
+          "potential": ["Çok yönlülüğün bir sisteme oturduğunda kariyer patlaması gerçekleşir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda özgür düşünce ve bilinç genişlemesi temalarını dönüştürürsün."],
+          "mechanism": ["Deneyimler seni eski zihin kalıplarından koparmaya zorlar."],
+          "effect": ["Ruhsal yolun iletişim, bilgi ve ifade üzerinden gelişir."],
+          "shadow": ["Yüzeysellik karmasal tekrar yaratabilir."],
+          "potential": ["Derin iletişim ruhsal büyümeyi hızlandırır."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_cancer",
+      "conditions": [{ "planet": "Uranus", "sign": "Cancer" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde duygusal özgürlük ve alışılmış bağlardan kopma isteği vardır."],
+          "mechanism": ["Krizler seni aile ve köklerle ilgili radikal farkındalıklara iter."],
+          "effect": ["Dışarıdan sezgisel, duyarlı ama beklenmedik çıkışları olan biri olarak görünürsün."],
+          "shadow": ["Duygusal istikrarsızlık kimlikte çatlaklar yaratabilir."],
+          "potential": ["Duygusal özgürlüğü dengelediğinde güçlü bir içsel güven gelişir."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik yapında duygusal bağımsızlık ve içsel yenilenme isteği vardır."],
+          "mechanism": ["Duygusal krizler seni hızlı farkındalıklarla büyütür."],
+          "effect": ["Sezgisel uyanışlar ve derin empati kapasitesi oluşur."],
+          "shadow": ["Aşırı hassasiyet savunmaya çekilme yaratabilir."],
+          "potential": ["Duygusal zekâyla birleşen bağımsızlık güçlü bir ruhsal dayanıklılık sağlar."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde duygusal özgürlük ve güven beklersin."],
+          "mechanism": ["Bağlarda ani yakınlaşma veya uzaklaşmalar yaşanabilir."],
+          "effect": ["İlişkilerine yenilik, duygu ve sezgi karışımı bir dinamizm katarsın."],
+          "shadow": ["Dengesiz duygusal tepkiler ilişkiyi zorlayabilir."],
+          "potential": ["Duygusal sınır ve özgürlüğü dengelediğinde derin bağlar kurarsın."]
+        },
+        "mind": {
+          "cause": ["Zihnin sezgisel, duygusal ve vizyoner bir yapıya sahiptir."],
+          "mechanism": ["Bilinçaltı temalarını hızlı farkındalıklarla çözersin."],
+          "effect": ["Psikoloji, sanat, şifa ve sezgisel alanlarda güçlü bir zihin gelişir."],
+          "shadow": ["Zihinsel dağınıklık duygusal yükle artabilir."],
+          "potential": ["Zihinsel sezgi disiplinle birleştiğinde derin içgörü doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında anlam, güvenlik ve yenilik dengesi ararsın."],
+          "mechanism": ["Duygusal sezgiyi profesyonel alanlara taşımaya eğilimlisin."],
+          "effect": ["Şifa, bakım, sanat ve ruhsal alanlarda başarılı olabilirsin."],
+          "shadow": ["Duygusal dalgalanmalar motivasyonu zorlayabilir."],
+          "potential": ["Duygusal farkındalığını yapılandırdığında iş yaşamında büyük katkılar sağlarsın."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda duygusal bağımsızlık temasıyla dönüşürsün."],
+          "mechanism": ["Deneyimler seni kendi duygularının sorumluluğunu almaya zorlar."],
+          "effect": ["Ruhsal yolun şifa ve duygusal özgürlük üzerinden büyür."],
+          "shadow": ["Bağımlılık kalıpları karmasal tekrar yaratabilir."],
+          "potential": ["Duygusal özgürleşme ruhsal aydınlanma getirir."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_leo",
+      "conditions": [{ "planet": "Uranus", "sign": "Leo" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde özgün ifade ve yaratıcı özgürlük vardır."],
+          "mechanism": ["Krizler seni kendini radikal şekilde yeniden tanımlamaya iter."],
+          "effect": ["Dışarıdan parlak, farklı ve etkileyici biri olarak görünürsün."],
+          "shadow": ["Aşırı bireysellik kimlikte yalnızlık yaratabilir."],
+          "potential": ["Yaratıcı özgürlüğün kolektife katkı sağladığında büyük bir etki alanı doğar."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde özgün olma ve görünme isteği baskındır."],
+          "mechanism": ["Zorluklar seni kendi ışığını yeniden bulmaya iter."],
+          "effect": ["Güçlü öz farkındalık ve yaratıcı psikolojik güç gelişir."],
+          "shadow": ["Ego temelli kopuşlar içsel çatışma yaratabilir."],
+          "potential": ["Otantik ifade psikolojik derinlik ve olgunluk kazandırır."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde özgün ifade, tutku ve alan beklersin."],
+          "mechanism": ["Bağlarda bireyselliğini korumak senin için kritiktir."],
+          "effect": ["Partnerine ilham veren, yaratıcı bir ilişki enerjisi sunarsın."],
+          "shadow": ["Aşırı gurur bağlantıyı zorlayabilir."],
+          "potential": ["Gerçek açıklık ilişkilerde büyük yaratıcılık ve derinlik sağlar."]
+        },
+        "mind": {
+          "cause": ["Zihnin yaratıcı, dramatik ve özgün düşünür."],
+          "mechanism": ["Fikirleri ani içsel kıvılcımlarla üretirsin."],
+          "effect": ["Sanat, tasarım, sahne ve liderlik alanlarında parlak fikirler geliştirirsin."],
+          "shadow": ["Dramatik düşünce tarzı objektifliği azaltabilir."],
+          "potential": ["Yaratıcı zekân bilgelikle birleştiğinde yenilikçi projeler doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında görünürlük, yaratıcılık ve özgünlük beklersin."],
+          "mechanism": ["Projelerde kendi yolunu çizer, risk almaktan çekinmezsin."],
+          "effect": ["Sanat, girişimcilik ve liderlik alanlarında güçlü başarı potansiyelin vardır."],
+          "shadow": ["Aşırı bireysellik ekip çalışmasını zorlayabilir."],
+          "potential": ["Özgün liderlik kolektife ilham verebilir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda özgün ifade ve kalpten eylem temalarını dönüştürürsün."],
+          "mechanism": ["Deneyimler seni gerçek içsel ışığını bulmaya iter."],
+          "effect": ["Ruhsal yolun yaratıcılık ve özgünlükle genişler."],
+          "shadow": ["Ego karmasal sınav yaratabilir."],
+          "potential": ["Otantik ifade ruhsal liderlik getirir."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_virgo",
+      "conditions": [{ "planet": "Uranus", "sign": "Virgo" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde sistemi yeniden kurma ve işlevselliği özgürleştirme isteği vardır."],
+          "mechanism": ["Krizler seni yaşam düzenini radikal biçimde değiştirmeye iter."],
+          "effect": ["Dışarıdan titiz ama yenilikçi biri olarak görünürsün."],
+          "shadow": ["Aşırı analiz kimlikte parçalanma hissi yaratabilir."],
+          "potential": ["Düzen ve özgünlük birleştiğinde güçlü bir kimlik ustalığı doğar."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik altyapında kusursuzluk isteği ve özgürleşme arzusu bir aradadır."],
+          "mechanism": ["Zorluklar seni eski çalışma düzenlerini bırakmaya zorlar."],
+          "effect": ["Üretken bir iç disiplin ve yenilikçi psikология geliştirebilirsin."],
+          "shadow": ["Takıntı ve aşırı analiz psikolojik yorgunluk yaratabilir."],
+          "potential": ["Sadelik kazandığında zihnin ve duyguların özgürleşir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde netlik, düzen ve alan beklersin."],
+          "mechanism": ["Yakınlıkta bile bağımsız üretkenlik alanına ihtiyaç duyarsın."],
+          "effect": ["İlişkilerine yapıcı, pratik ve yenilikçi bir enerji katarsın."],
+          "shadow": ["Eleştirel yaklaşımlar bağı koparabilir."],
+          "potential": ["Şefkatle birleşen netlik ilişkilerde büyük iyileşme sağlar."]
+        },
+        "mind": {
+          "cause": ["Zihnin analitik ama yenilikçi bir yapıya sahiptir."],
+          "mechanism": ["Sistemleri parçalar, yeniden düzenler ve özgün çözümler üretirsin."],
+          "effect": ["Sağlık, teknoloji, analiz ve organizasyon alanlarında güçlü fikirler üretebilirsin."],
+          "shadow": ["Aşırı detay odaklılık yaratıcılığı kısıtlayabilir."],
+          "potential": ["Analitik zekâ yaratıcılıkla birleştiğinde büyük sistemler geliştirirsin."]
+        },
+        "career": {
+          "cause": ["İş hayatında verimlilik ve yenilik beklersin."],
+          "mechanism": ["Sistemleri geliştirme ve iyileştirme konusunda hızlı farkındalıklar yaşarsın."],
+          "effect": ["Hizmet, sağlık, analiz ve teknoloji alanlarında yüksek başarı potansiyelin vardır."],
+          "shadow": ["Mükemmeliyetçilik ilerlemeyi yavaşlatabilir."],
+          "potential": ["Fonksiyonelliği özgünlükle birleştirdiğinde iş yaşamında reform yaratırsın."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda düzenin içinde özgürlüğü bulmayı öğrenirsin."],
+          "mechanism": ["Deneyimler seni kontrol ile teslimiyet arasında denge kurmaya iter."],
+          "effect": ["Ruhsal yolunda arınma ve sadeleşme temaları baskındır."],
+          "shadow": ["Aşırı detay karmasal döngü yaratabilir."],
+          "potential": ["Sadelik ruhsal özgürleşmeyi hızlandırır."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_libra",
+      "conditions": [{ "planet": "Uranus", "sign": "Libra" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde ilişki modellerini özgürleştirme isteği vardır."],
+          "mechanism": ["Krizler seni bağ kurma biçimlerini radikal şekilde dönüştürmeye iter."],
+          "effect": ["Dışarıdan zarif ama beklenmedik çıkışları olan biri olarak algılanırsın."],
+          "shadow": ["Aşırı uyum isteği ile özgürlük çatışabilir."],
+          "potential": ["Hem bağ hem bireysellik dengelendiğinde kimliğin tam anlamıyla güçlenir."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik altyapında uyum arayışı ve özgürleşme isteği birlikte çalışır."],
+          "mechanism": ["Zorluklar seni kendi sınırlarını yeniden kurmaya zorlar."],
+          "effect": ["Derin empati ve sosyal sezgi geliştirebilirsin."],
+          "shadow": ["Kararsızlık psikolojik dağınıklık yaratabilir."],
+          "potential": ["Net sınırlar psikolojik olgunluk getirir."]
+        },
+        "relationships": {
+          "cause": ["İlişkiler senin için en büyük özgürleşme alanıdır."],
+          "mechanism": ["Bağlarda aniden uzaklaşabilir veya derinleşebilirsin."],
+          "effect": ["İlişkilerin yenilikçi, öğretici ve dönüştürücü olabilir."],
+          "shadow": ["Denge kaybı ilişkisel kırılmalar yaratabilir."],
+          "potential": ["Gerçek dengeyi bulduğunda ilişkilerin güçlü bir ruhsal ortaklığa dönüşür."]
+        },
+        "mind": {
+          "cause": ["Zihnin estetik, simetri ve adalet üzerine çalışır ama özgün biçimde yorumlar."],
+          "mechanism": ["Çelişkiler seni yeni düşünce modelleri yaratmaya iter."],
+          "effect": ["Sanat, hukuk, iletişim ve ilişki yönetiminde yaratıcı fikirler geliştirirsin."],
+          "shadow": ["Kararsızlık zihinsel belirsizlik yaratabilir."],
+          "potential": ["Netlik ve özgünlük birleştiğinde zihinsel parlaklık oluşur."]
+        },
+        "career": {
+          "cause": ["İş hayatında uyum, estetik ve özgünlük temaları baskındır."],
+          "mechanism": ["Ortak projelerde yenilikçi yöntemler üretirsin."],
+          "effect": ["Sanat, tasarım, hukuk ve diplomasi alanlarında yüksek başarı potansiyelin vardır."],
+          "shadow": ["Denge kaybı profesyonel ilerlemeyi zorlayabilir."],
+          "potential": ["Özgün diplomasi becerilerin iş yaşamında büyük kapılar açabilir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda ilişkilerde özgürlük ve denge öğrenirsin."],
+          "mechanism": ["Deneyimler seni kendi sınırlarını yeniden kurmaya iter."],
+          "effect": ["Ruhsal yolunda uyum, adalet ve bireysellik birlikte gelişir."],
+          "shadow": ["Aşırı uyum karmasal kayıplar yaratabilir."],
+          "potential": ["Gerçek denge ruhsal yükseliş getirir."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_scorpio",
+      "conditions": [{ "planet": "Uranus", "sign": "Scorpio" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin çekirdeğinde derin dönüşüm, güç ve radikal özgürleşme ihtiyacı vardır."],
+          "mechanism": ["Krizler seni bir anda tamamen yeni bir kimliğe geçirebilir."],
+          "effect": ["Dışarıdan yoğun, elektriksel ve sezgisel biri olarak algılanırsın."],
+          "shadow": ["Aşırı radikal değişimler kimlik parçalanması yaratabilir."],
+          "potential": ["Dönüşümü bilinçle yönettiğinde olağanüstü bir içsel güç kazanırsın."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik altyapında kriz, derinlik ve sezgisel uyanış temaları vardır."],
+          "mechanism": ["Zorluklar seni bilinçaltını hızla açmaya zorlar."],
+          "effect": ["Gücünü kabullendikçe psikolojik dayanıklılık gelişir."],
+          "shadow": ["Aşırı şüphe veya takıntı içsel huzuru bozabilir."],
+          "potential": ["Sezgisel cesaret psikolojik bilgelik getirir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde yoğunluk, derinlik ve özgün bağ beklersin."],
+          "mechanism": ["Bağlarda krizler bir anda kopuş veya yeniden doğuş yaratabilir."],
+          "effect": ["İlişkilerin dönüştürücü ve manyetik olabilir."],
+          "shadow": ["Güç savaşları ilişkiyi zorlayabilir."],
+          "potential": ["Güvene dayalı derin bağlar güçlü ruhsal ortaklık oluşturur."]
+        },
+        "mind": {
+          "cause": ["Zihnin sezgisel, derin ve gizli bağlantıları görebilen bir yapıya sahiptir."],
+          "mechanism": ["Tabu konulara, bilinçaltına ve karanlık alanlara çekilirsin."],
+          "effect": ["Araştırma, psikoloji, kriz yönetimi ve sezgisel analizde yüksek kapasite geliştirirsin."],
+          "shadow": ["Aşırı radikallik zihinsel istikrarı zorlayabilir."],
+          "potential": ["Zihinsel sezgi disiplinle birleştiğinde büyük keşifler doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında dönüşüm, güç ve yenilik temaları baskındır."],
+          "mechanism": ["Sistemin görünmeyen taraflarını çözerek reform yaparsın."],
+          "effect": ["Finans, araştırma, terapi ve strateji alanlarında güçlü başarı potansiyelin vardır."],
+          "shadow": ["Ani radikal kararlar profesyonel kırılmalar yaratabilir."],
+          "potential": ["Derin stratejik sezgiyle güçlü bir kariyer dönüşümü yaratabilirsin."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda güç, kriz ve özgürleşme temalarıyla dönüşürsün."],
+          "mechanism": ["Deneyimler seni karanlığı dönüştürmeye zorlar."],
+          "effect": ["Ruhsal yolunda derin uyanışlar ve dönüşümler baskındır."],
+          "shadow": ["Takıntı karmasal ağırlık yaratabilir."],
+          "potential": ["Karanlığı ışığa dönüştürdüğünde ruhsal atılım başlar."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_sagittarius",
+      "conditions": [{ "planet": "Uranus", "sign": "Sagittarius" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin çekirdeğinde özgürlük, keşif ve geniş perspektif temaları vardır."],
+          "mechanism": ["Krizler seni inançlarını ve kimlik anlayışını radikal şekilde dönüştürmeye iter."],
+          "effect": ["Dışarıdan vizyoner, özgür ruhlu ve idealist biri olarak görünürsün."],
+          "shadow": ["Aşırı bağımsızlık kimlikte köksüzlük yaratabilir."],
+          "potential": ["Özgürlüğü bilgelikle birleştirdiğinde kimliğin ilham verici bir hale gelir."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik altyapında anlam arayışı ve geniş düşünme isteği vardır."],
+          "mechanism": ["Zorluklar seni eski inanç kalıplarını bir anda kırmaya iter."],
+          "effect": ["Felsefi farkındalık ve zihinsel genişlik gelişir."],
+          "shadow": ["Fanatik düşünce veya dağılma psikolojik huzuru bozabilir."],
+          "potential": ["Esneklik bilgelikle birleştiğinde ruhsal büyüme hızlanır."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde zihinsel uyum, özgürlük ve dürüstlük beklersin."],
+          "mechanism": ["Bağlarda ani uzaklaşma veya ani yakınlaşma görülebilir."],
+          "effect": ["İlişkilerin öğretici, dinamik ve özgürleştirici olabilir."],
+          "shadow": ["Bağlanma korkusu ilişkiyi yüzeyselleştirebilir."],
+          "potential": ["Gerçek açıklık sağlandığında ilişkiler ruhsal genişleme kaynağı olur."]
+        },
+        "mind": {
+          "cause": ["Zihnin vizyoner, geniş düşünceli ve sezgisel çalışır."],
+          "mechanism": ["Bilgiyi ani anlam sıçramalarıyla bütünleştirirsin."],
+          "effect": ["Eğitim, yayıncılık, felsefe ve keşif alanlarında yüksek zihinsel başarı gösterirsin."],
+          "shadow": ["Detay eksikliği zihinsel kopukluk yaratabilir."],
+          "potential": ["Zihinsel vizyonun gerçekçilikle birleştiğinde büyük projeler doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında özgürlük, gelişim ve ilham verme temaları baskındır."],
+          "mechanism": ["Yeni deneyimlere hızla adapte olur, farklı alanlara ilgi duyarsın."],
+          "effect": ["Danışmanlık, eğitim, seyahat, hukuk ve medya alanlarında güçlü potansiyel taşırsın."],
+          "shadow": ["Aşırı özgürlük isteği uzun vadeli hedefleri dağıtabilir."],
+          "potential": ["Vizyonunu somutlaştırdığında kariyerinde sıçramalar yaşayabilirsin."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda özgürlük, inanç ve bilgelik temasında dönüşüm yaşarsın."],
+          "mechanism": ["Deneyimler seni dogmalardan uzaklaştırır."],
+          "effect": ["Ruhsal yolun keşif ve genişleme üzerine kuruludur."],
+          "shadow": ["Aşırı bağımsızlık karmasal boşluk yaratabilir."],
+          "potential": ["Gerçek bilgelik ruhsal yükseliş getirir."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_capricorn",
+      "conditions": [{ "planet": "Uranus", "sign": "Capricorn" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliği oluşturan temel tema, yapıları özgün biçimde yeniden kurma ihtiyacıdır."],
+          "mechanism": ["Krizler seni statü, hedef ve disiplin konularını radikal biçimde dönüştürmeye iter."],
+          "effect": ["Dışarıdan ciddi ama yenilikçi ve stratejik biri olarak görülürsün."],
+          "shadow": ["Aşırı kontrol kimlik kırılmalarına yol açabilir."],
+          "potential": ["Disiplin ile özgünlüğü birleştirdiğinde etkileyici bir kimlik gücü oluşur."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik altyapında düzen ve özgürlük çatışması bulunur."],
+          "mechanism": ["Zorluklar seni eski otorite figürlerini sorgulamaya iter."],
+          "effect": ["Güçlü bir iç disiplin ve stratejik farkındalık geliştirirsin."],
+          "shadow": ["Katı düşünceler psikolojik kopukluk yaratabilir."],
+          "potential": ["Esneklik kazandığında psikolojik bütünlük güçlenir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde sorumluluk ve özgürlük dengesi beklersin."],
+          "mechanism": ["Bağlarda sınırlarını koruyarak ilerlemek istersin."],
+          "effect": ["Güvenilir ama özgün ilişki dinamikleri oluşturursun."],
+          "shadow": ["Aşırı mesafe duygusal soğukluk yaratabilir."],
+          "potential": ["Sınırlarını bilinçle paylaştığında güçlü, olgun bağlar kurarsın."]
+        },
+        "mind": {
+          "cause": ["Zihnin planlı ama reformist bir yapıya sahiptir."],
+          "mechanism": ["Sistemsel sorunlara radikal çözümler getirebilirsin."],
+          "effect": ["Finans, yönetim, mühendislik ve strateji alanlarında güçlü fikirler geliştirirsin."],
+          "shadow": ["Aşırı ciddi düşünce yaratıcı spontane akışı engelleyebilir."],
+          "potential": ["Yapı kuran zihnin özgürleştiğinde büyük projeler üretirsin."]
+        },
+        "career": {
+          "cause": ["İş hayatında statü, yapı ve yenilik temaları birlikte çalışır."],
+          "mechanism": ["Kurumsal kalıpları kırar, yeni sistemler yaratabilirsin."],
+          "effect": ["Yönetim, organizasyon ve teknoloji alanlarında yüksek başarı potansiyelin vardır."],
+          "shadow": ["Aşırı kontrol profesyonel çatışma yaratabilir."],
+          "potential": ["Yenilikçi otorite geliştirdiğinde kariyerinde güçlü bir yükseliş başlar."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda otorite ve özgürlük arasındaki dengeyi öğrenirsin."],
+          "mechanism": ["Deneyimler seni kendi iç otoriteni kurmaya iter."],
+          "effect": ["Ruhsal yolunda disiplin ve özgürleşme birlikte gelişir."],
+          "shadow": ["Katılık karmasal kırılmalar yaratabilir."],
+          "potential": ["Bilge otorite ruhsal yükseliş getirir."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_aquarius",
+      "conditions": [{ "planet": "Uranus", "sign": "Aquarius" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde bağımsızlık, yenilik ve kolektifi dönüştürme isteği vardır."],
+          "mechanism": ["Krizler seni eski kimlik kalıplarını bir anda yıkmaya iter."],
+          "effect": ["Dışarıdan özgün, vizyoner ve toplumsal bilinç taşıyan biri olarak algılanırsın."],
+          "shadow": ["Aşırı mesafe kimlik yalnızlığı yaratabilir."],
+          "potential": ["Özgünlüğünü kolektif faydaya yönlendirdiğinde güçlü bir etki yaratabilirsin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik altyapında özgür düşünme ve sistem dışına çıkma eğilimi baskındır."],
+          "mechanism": ["Zorluklar seni yeni bilinç düzeylerine hızla geçirir."],
+          "effect": ["Yüksek sezgisel zeka ve soyut düşünme kapasitesi gelişir."],
+          "shadow": ["Duygusal kopukluk psikolojik yalnızlık yaratabilir."],
+          "potential": ["Zihnin kalple birleştiğinde psikolojik bütünlük oluşur."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde özgürlük ve zihinsel uyum beklersin."],
+          "mechanism": ["Bağlarda alan, netlik ve karşılıklı özgünlük ararsın."],
+          "effect": ["İlişkilerin öğretici, eşitlikçi ve yenilikçi olur."],
+          "shadow": ["Mesafe ilişkisel sıcaklığı azaltabilir."],
+          "potential": ["Alan + bağ dengesi kurulduğunda büyük ruhsal ortaklıklar doğar."]
+        },
+        "mind": {
+          "cause": ["Zihnin futuristik, özgün ve sistem çözücü niteliktedir."],
+          "mechanism": ["Kolektif problemleri yenilikçi modellerle çözmeye yönelirsin."],
+          "effect": ["Bilim, teknoloji, sosyal reform ve yenilik alanlarında güçlü fikirler geliştirirsin."],
+          "shadow": ["Soyut düşünce pratik uygulamayı zorlaştırabilir."],
+          "potential": ["Zihinsel yenilik disiplinle birleştiğinde büyük buluşlar doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında özgünlük ve toplumsal etki temaları baskındır."],
+          "mechanism": ["Yeni sistemler, projeler ve perspektifler üretirsin."],
+          "effect": ["Teknoloji, inovasyon, sosyal girişim, bilim ve yönetim alanlarında yüksek başarı potansiyelin vardır."],
+          "shadow": ["Kurallara direnç profesyonel çatışma yaratabilir."],
+          "potential": ["Özgün liderlik geliştirdiğinde kariyerinde devrim yaratabilirsin."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda özgünlük ve kolektifle bağ temalarını dönüştürürsün."],
+          "mechanism": ["Deneyimler seni toplumsal farkındalık geliştirmeye iter."],
+          "effect": ["Ruhsal yolun yenilik, özgürlük ve toplumsal hizmet üzerine kuruludur."],
+          "shadow": ["Ayrışma karmasal yalnızlık yaratabilir."],
+          "potential": ["Kolektif bilinçle uyumlanan özgünlük ruhsal yükseliş sağlar."]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_pisces",
+      "conditions": [{ "planet": "Uranus", "sign": "Pisces" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde sezgisel özgürlük, ruhsal akış ve sınırların çözülmesi temaları vardır."],
+          "mechanism": ["Krizler seni ilahi bir farkındalığa veya radikal içsel uyanışlara iter."],
+          "effect": ["Dışarıdan mistik, duyarlı ve bağımsız ruhlu biri olarak algılanırsın."],
+          "shadow": ["Kimlik belirsizliği veya dağılma ortaya çıkabilir."],
+          "potential": ["Sezgiyi yapılandırdığında güçlü bir ruhsal kimlik ortaya çıkar."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik altyapında empati, sezgi ve ruhsal özgürlük temaları baskındır."],
+          "mechanism": ["Zorluklar seni bilinçaltını özgürleştirmeye iter."],
+          "effect": ["Derin sezgi, güçlü empati ve ruhsal farkındalık gelişir."],
+          "shadow": ["Kaçış eğilimleri psikolojik karmaşa yaratabilir."],
+          "potential": ["Duygusallığı bilgelikle birleştirdiğinde güçlü bir ruhsal dayanıklılık oluşur."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde ruhsal bağ, şefkat ve özgürlük beklersin."],
+          "mechanism": ["Bağlarda sınır ve yakınlık arasında dalgalanma olabilir."],
+          "effect": ["İlişkilerin şifalı, sezgisel ve derin olabilir."],
+          "shadow": ["Belirsizlik ve idealizasyon hayal kırıklığı yaratabilir."],
+          "potential": ["Hem sınır hem şefkat geliştiğinde ilişkiler ruhsal yoldaştır."]
+        },
+        "mind": {
+          "cause": ["Zihnin semboller, sezgiler ve imgelerle çalışır."],
+          "mechanism": ["Karmaşık duygusal-simgesel verileri ani sezgisel sıçrayışlarla çözersin."],
+          "effect": ["Sanat, şifa, psikoloji ve ruhsal alanlarda yüksek yaratıcılık geliştirirsin."],
+          "shadow": ["Odak eksikliği zihinsel dağılma yaratabilir."],
+          "potential": ["Sezgisel zekân disiplinle birleştiğinde olağanüstü yaratıcı üretim doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında anlam, şifa ve ruhsal hizmet temaları baskındır."],
+          "mechanism": ["Akışla çalışır, sezgiyle yön bulursun."],
+          "effect": ["Sanat, şifa, psikoloji ve ruhsal gelişim alanlarında güçlü başarı potansiyelin vardır."],
+          "shadow": ["Belirsizlik profesyonel istikrarı zorlayabilir."],
+          "potential": ["İlhamı yapılandırdığında kariyerin ruhsal bir misyon haline gelir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda şefkat, sezgi ve teslimiyet temalarında dönüşüm yaşarsın."],
+          "mechanism": ["Deneyimler seni ruhsal akışla uyumlanmaya iter."],
+          "effect": ["Ruhsal yolun şifa, birlik ve sezgi üzerine kuruludur."],
+          "shadow": ["Kurban bilinci karmasal döngü yaratabilir."],
+          "potential": ["Sezgini güçle birleştirdiğinde ruhsal yükseliş gerçekleşir."]
+        }
+      }
+    }
+  ],
+  "planet_house_rules": [],
+  "aspect_rules": [],
+  "meta_rules": []
+}

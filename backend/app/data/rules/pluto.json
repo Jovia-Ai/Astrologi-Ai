@@ -1,0 +1,1363 @@
+{
+  "planet_sign_rules": [
+    {
+      "id": "pluto_in_aries",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Aries"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin derininde sürekli kendini yeniden başlatma ihtiyacı vardır."
+          ],
+          "mechanism": [
+            "Kriz anlarında içsel bir savaşçı ortaya çıkar ve seni dönüştürür."
+          ],
+          "effect": [
+            "Dışarıdan güçlü, radikal ve öncü bir enerji olarak algılanırsın."
+          ],
+          "shadow": [
+            "Dürtüsellik güç mücadelelerine sürükleyebilir."
+          ],
+          "potential": [
+            "Bilinçli cesaret geliştirdiğinde büyük dönüşümlerin öncüsü olursun."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapında kontrol, güç ve hayatta kalma temaları ağırdır."
+          ],
+          "mechanism": [
+            "Zorluklar seni daha da keskinleştirir ve güçlendirir."
+          ],
+          "effect": [
+            "Yenilmezlik hissi veren bir iç direnç geliştirebilirsin."
+          ],
+          "shadow": [
+            "Öfke ve sabırsızlık içsel fırtınalar yaratabilir."
+          ],
+          "potential": [
+            "İçsel ateşi bilinçle dönüştürdüğünde olağanüstü bir irade oluşur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde tutkuyu ve mutlak bağlılığı ararsın."
+          ],
+          "mechanism": [
+            "Yakınlıkta güç, kriz ve dönüşüm temaları kaçınılmazdır."
+          ],
+          "effect": [
+            "Bağlarında yoğun ve dönüştürücü bir enerji taşırsın."
+          ],
+          "shadow": [
+            "Kıskançlık ve kontrol eğilimi kriz yaratabilir."
+          ],
+          "potential": [
+            "Ortak güç yaratmayı öğrendiğinde ilişkelerin büyük iyileşme potansiyeli taşır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin sezgisel, radikal ve kriz çözmeye yatkındır."
+          ],
+          "mechanism": [
+            "Her durumun özüne inmek ve görünmeyeni görmek istersin."
+          ],
+          "effect": [
+            "Keskin analiz ve dönüşüm odaklı bir zihinsel yapı gelişir."
+          ],
+          "shadow": [
+            "Takıntılar zihinsel dengeyi bozabilir."
+          ],
+          "potential": [
+            "Zihinsel gücün, derin sezgiyle birleştiğinde olağanüstü keşifler doğar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında güç, başlangıç ve dönüşüm temaları öne çıkar."
+          ],
+          "mechanism": [
+            "Kriz dönemlerinde liderlik etmeye eğilimlisin."
+          ],
+          "effect": [
+            "Yıkılanı yeniden kurma kapasiten yüksektir."
+          ],
+          "shadow": [
+            "Çatışmalar gereksiz agresyon yaratabilir."
+          ],
+          "potential": [
+            "Dönüştürücü liderlik geliştirdiğinde büyük projelere yön verebilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda güçle bilinçli ilişki kurmayı öğrenirsin."
+          ],
+          "mechanism": [
+            "Deneyimler seni cesaret ve bilgelik arasında denge kurmaya zorlar."
+          ],
+          "effect": [
+            "Ruhsal yolunda krizler hızlı gelişim kapısı olur."
+          ],
+          "shadow": [
+            "Dürtüsellik karmasal tekrarlar yaratabilir."
+          ],
+          "potential": [
+            "Gücünü bilinçle yönlendirdiğinde ruhsal atılım hızlanır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_taurus",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Taurus"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin derininde güven ve maddi temeller üzerine kurulu dönüşüm ihtiyacı vardır."
+          ],
+          "mechanism": [
+            "Krizler seni kaynaklarını yeniden tanımlamaya zorlar."
+          ],
+          "effect": [
+            "Dışarıdan dayanıklı, sabırlı ve sağlam görünen biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aşırı tutunma değişimi zorlaştırabilir."
+          ],
+          "potential": [
+            "Gerçek değeri içsel kaynaklara taşıdığında güçlü bir kimlik inşa edersin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapında sahip olma, güven ve dayanıklılık temaları belirgindir."
+          ],
+          "mechanism": [
+            "Kaybetme korkusu seni gizli bir kontrol mekanizmasına itebilir."
+          ],
+          "effect": [
+            "Zamanla büyük bir psikolojik güç ve sabır geliştirebilirsin."
+          ],
+          "shadow": [
+            "Maddi veya duygusal bağımlılıklar içsel ağırlık yaratabilir."
+          ],
+          "potential": [
+            "Bırakmayı öğrendiğinde içsel huzur ve güç aynı anda açılır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde sahiplenme, sadakat ve süreklilik beklersin."
+          ],
+          "mechanism": [
+            "Bağlarını derin ve uzun vadeli kurmayı tercih edersin."
+          ],
+          "effect": [
+            "İlişkilerde sağlam ve güven veren bir enerji taşırsın."
+          ],
+          "shadow": [
+            "Aşırı kıskançlık veya katılık kriz yaratabilir."
+          ],
+          "potential": [
+            "Esneklik ve güven birleştiğinde derin, kalıcı bağlar doğar."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin sabit, kararlı ve pratik çözümlere yönelir."
+          ],
+          "mechanism": [
+            "Bir fikre bağlandığında onu derinlemesine işlersin."
+          ],
+          "effect": [
+            "Uzun vadeli projelerde güçlü bir zihinsel dayanıklılık gösterirsin."
+          ],
+          "shadow": [
+            "Düşünce sabitliği değişimi engelleyebilir."
+          ],
+          "potential": [
+            "Zihinsel esneklik kazandığında üretkenliğin katlanır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında istikrar ve somut başarı beklersin."
+          ],
+          "mechanism": [
+            "Yavaş ama kalıcı yapılar oluşturursun."
+          ],
+          "effect": [
+            "Finans, toprak, güvenlik ve üretim alanlarında güçlü başarı potansiyelin vardır."
+          ],
+          "shadow": [
+            "Değişime direnç dönüşümü geciktirebilir."
+          ],
+          "potential": [
+            "Kaynakları yeniden tanımladığında çok güçlü bir kariyer temeli kurarsın."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda sahip olduklarınla olan bağını dönüştürmeye çağrılırsın."
+          ],
+          "mechanism": [
+            "Deneyimler tutunmanın bedelini ve bırakmanın gücünü gösterir."
+          ],
+          "effect": [
+            "Ruhsal yolunda güven yeniden tanımlanır."
+          ],
+          "shadow": [
+            "Aşırı kontrol karmasal ağırlaşma yaratabilir."
+          ],
+          "potential": [
+            "Gerçek değeri içsel güce taşıdığında ruhsal zenginlik oluşur."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_gemini",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Gemini"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin derininde anlamı çözme, bilgi toplama ve sürekli yenilenme ihtiyacı vardır."
+          ],
+          "mechanism": [
+            "Krizler seni düşünce biçimlerini kökten değiştirmeye iter."
+          ],
+          "effect": [
+            "Dışarıdan keskin, meraklı ve çok yönlü biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aşırı analiz zihinsel dağınıklık yaratabilir."
+          ],
+          "potential": [
+            "Zihinsel gücün derin sezgiyle birleştiğinde etkileyici bir anlatıcı olursun."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik altyapında bilgi, iletişim ve kavrayış temaları baskındır."
+          ],
+          "mechanism": [
+            "Yoğun durumlarda düşüncelerin keskinleşir ve gerçeğin özünü bulmaya odaklanırsın."
+          ],
+          "effect": [
+            "Derin algı ve güçlü analiz kapasitesi geliştirirsin."
+          ],
+          "shadow": [
+            "Takıntılı düşünceler içsel huzuru bozabilir."
+          ],
+          "potential": [
+            "Zihni sakinleştirdiğinde bilgelik ve sezgi birlikte çalışır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde zihinsel derinlik ve güçlü iletişim beklersin."
+          ],
+          "mechanism": [
+            "Bağlarında içsel süreçleri kelimelerle çözmeye çalışırsın."
+          ],
+          "effect": [
+            "İlişkilerin dönüştürücü, öğretici ve yoğun olabilir."
+          ],
+          "shadow": [
+            "Aşırı şüphe veya sorgulama yakınlığı zorlayabilir."
+          ],
+          "potential": [
+            "Gerçek iletişimi öğrendiğinde bağların hem derin hem aydınlatıcı olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin keskin, sezgisel ve doğrudan özüne inmeye yatkındır."
+          ],
+          "mechanism": [
+            "Bilgiyi parçalarına ayırır, derinlemesine analiz edersin."
+          ],
+          "effect": [
+            "Araştırma, terapi, iletişim ve bilgi alanlarında güçlü potansiyel taşır."
+          ],
+          "shadow": [
+            "Paranoya ve aşırı analiz zihinsel huzuru bozabilir."
+          ],
+          "potential": [
+            "Zihinsel gücün farkındalıkla birleştiğinde öğretici bir vizyon doğar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında bilgi, analiz ve iletişim odaklı alanlar öne çıkar."
+          ],
+          "mechanism": [
+            "Krizlerde hızlı düşünür, karmaşıklığı çözersin."
+          ],
+          "effect": [
+            "Yazarlık, araştırma, gazetecilik, danışmanlık gibi alanlarda etkili olursun."
+          ],
+          "shadow": [
+            "Aşırı entelektüel yoğunluk pratik adımları engelleyebilir."
+          ],
+          "potential": [
+            "Bilgiyi dönüştürüp paylaşmayı öğrendiğinde güçlü bir kariyer yolu açılır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda düşünce ve iletişim gücünü dönüştürmeye çağrılırsın."
+          ],
+          "mechanism": [
+            "Deneyimler zihinsel kalıplarını kırmaya zorlar."
+          ],
+          "effect": [
+            "Ruhsal yolunda hakikati ifade etmek önemli bir tema olur."
+          ],
+          "shadow": [
+            "Düşünceyi manipüle etmek karmasal geri dönüş yaratabilir."
+          ],
+          "potential": [
+            "Gerçeği dürüstçe ifade ettiğinde ruhsal olarak hızla büyürsün."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_cancer",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Cancer"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin çekirdeğinde duygusal güven, köklenme ve aidiyet temaları vardır."
+          ],
+          "mechanism": [
+            "Krizler seni duygusal dayanıklılığını geliştirmeye zorlar."
+          ],
+          "effect": [
+            "Dışarıdan duyarlı, derin ve koruyucu biri olarak algılanabilirsin."
+          ],
+          "shadow": [
+            "Geçmişe tutunmak dönüşümü zorlaştırabilir."
+          ],
+          "potential": [
+            "Duygularını güç kaynağına dönüştürdüğünde etkileyici bir içsel sağlamlık oluşur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik altyapında kırılganlık, güven ve bellek temaları öne çıkar."
+          ],
+          "mechanism": [
+            "Zorluklar seni iç dünyana dönmeye ve duyguları yeniden yapılandırmaya iter."
+          ],
+          "effect": [
+            "Sezgisel, derin ve empatik bir psikolojik yapı geliştirirsin."
+          ],
+          "shadow": [
+            "Duygusal kapanma içsel ağırlık yaratabilir."
+          ],
+          "potential": [
+            "Duygusal sınır kurmayı öğrendiğinde ruhsal şifa derinleşir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde güven, bağlanma ve duygusal derinlik beklersin."
+          ],
+          "mechanism": [
+            "Bağlarda koruma, bakım ve sahiplenme temaları belirir."
+          ],
+          "effect": [
+            "Yakın ilişkilerin dönüştürücü ve besleyici olabilir."
+          ],
+          "shadow": [
+            "Duygusal manipülasyon veya aşırı tutunma gerginlik yaratabilir."
+          ],
+          "potential": [
+            "Duygusal açıklık, ilişkilerinde derin bir şifa alanı oluşturur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin sezgisel ve duygusal temelli çalışır."
+          ],
+          "mechanism": [
+            "Bilgiyi duygusal hafıza ve sezgisel okumalarla birleştirirsin."
+          ],
+          "effect": [
+            "Derin içgörüler ve empatik analiz kapasitesi gelişebilir."
+          ],
+          "shadow": [
+            "Objektif kalmak zor olabilir."
+          ],
+          "potential": [
+            "Zihinsel sezgin bilgelikle birleştiğinde güçlü bir iç rehber oluşur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında güvenli ortam ve anlamlı bağlar beklersin."
+          ],
+          "mechanism": [
+            "İş ilişkilerine duyarlılık ve empati ile yaklaşırsın."
+          ],
+          "effect": [
+            "Bakım, yardım, öğretme ve destek alanlarında başarılı olabilirsin."
+          ],
+          "shadow": [
+            "Aşırı hassasiyet iş ortamında zorlanma yaratabilir."
+          ],
+          "potential": [
+            "Duygusal zekân profesyonel sezgiye dönüştüğünde güçlü bir kariyer inşa edersin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda duygusal köklenme ve güven temalarını dönüştürmeye çağrılırsın."
+          ],
+          "mechanism": [
+            "Deneyimler seni duygularınla yüzleşmeye zorlar."
+          ],
+          "effect": [
+            "Ruhsal yolun şifa, bağlanma ve bırakma temalarıyla genişler."
+          ],
+          "shadow": [
+            "Aşırı duygusal tutunma karmasal döngüler yaratabilir."
+          ],
+          "potential": [
+            "Duygusal özgürleşme ruhsal atılım sağlar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_leo",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Leo"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde kendini ifade etme, yaratıcılık ve güç temaları vardır."
+          ],
+          "mechanism": [
+            "Krizler seni öz değerini yeniden tanımlamaya iter."
+          ],
+          "effect": [
+            "Dışarıdan karizmatik, etkileyici ve güçlü görünen bir enerji taşırsın."
+          ],
+          "shadow": [
+            "Ego savaşları ve güç mücadeleleri ortaya çıkabilir."
+          ],
+          "potential": [
+            "Gerçek değerini sahicilikle ifade ettiğinde ilham verici bir liderlik doğar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik altyapında görünür olma ve takdir edilme ihtiyacı baskındır."
+          ],
+          "mechanism": [
+            "Zorluklar seni öz güvenini derinleştirmeye zorlar."
+          ],
+          "effect": [
+            "Zamanla içeriden gelen bir güç ve duruş geliştirirsin."
+          ],
+          "shadow": [
+            "Aşırı gurur içsel yalnızlık yaratabilir."
+          ],
+          "potential": [
+            "Alçakgönüllülükle birleşen ifade gücü psikolojik olgunluk getirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde tutku, bağlılık ve görünür sevgi beklersin."
+          ],
+          "mechanism": [
+            "Yakınlıkta bile kişisel alan ve özgürlük ihtiyacını korursun."
+          ],
+          "effect": [
+            "Bağların öğretici, eğitici ve ilham verici olabilir."
+          ],
+          "shadow": [
+            "Bağlanma korkusu ilişkide mesafe yaratabilir."
+          ],
+          "potential": [
+            "Gerçek paylaşım sağlandığında ilişkiler büyük büyüme alanı olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin yaratıcı, sahneye koyan ve büyük düşünen bir yapıdadır."
+          ],
+          "mechanism": [
+            "Fikirlerini dramatik ve etkili bir yapı ile ifade etmeye eğilimlisin."
+          ],
+          "effect": [
+            "Sanat, liderlik, eğlence ve iletişim alanlarında parlak fikirler geliştirebilirsin."
+          ],
+          "shadow": [
+            "Eleştiriye hassasiyet zihinsel esnekliği azaltabilir."
+          ],
+          "potential": [
+            "Zihinsel ışığın bilgelikle birleştiğinde etkileyici projeler yaratır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında görünür olma, liderlik ve yaratım temaları baskındır."
+          ],
+          "mechanism": [
+            "Zorluklar seni daha güçlü bir ifade ve otoriteye iter."
+          ],
+          "effect": [
+            "Yaratıcı alanlarda ve liderlik pozisyonlarında yüksek başarı elde edebilirsin."
+          ],
+          "shadow": [
+            "Aşırı kontrol veya gösteriş ihtiyacı gerilim yaratabilir."
+          ],
+          "potential": [
+            "Gerçek güç öz değerle birleştiğinde iş yaşamında kalıcı etki bırakırsın."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda öz değer, güç ve yaratıcılık konularında olgunlaşmaya çağrılırsın."
+          ],
+          "mechanism": [
+            "Deneyimler sana sahte güç ile gerçek güç arasındaki farkı öğretir."
+          ],
+          "effect": [
+            "Ruhsal yolunda ışığını paylaşmak büyük önem taşır."
+          ],
+          "shadow": [
+            "Ego temelli eylemler karmasal zorluklar getirir."
+          ],
+          "potential": [
+            "Kalpten gelen ifade seni ruhsal liderlik yoluna taşır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_virgo",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Virgo"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin çekirdeğinde düzen, iyileştirme ve kusursuzluk arayışı temaları vardır."
+          ],
+          "mechanism": [
+            "Krizler seni detayları yeniden düzenleyerek dönüşmeye iter."
+          ],
+          "effect": [
+            "Dışarıdan çalışkan, analitik ve derin gören biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aşırı öz eleştiri kimlik algını zayıflatabilir."
+          ],
+          "potential": [
+            "Kusursuzluk yerine bütünlüğü seçtiğinde güçlü bir iç ustalık doğar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik altyapında kontrol, düzen ve analiz temaları baskındır."
+          ],
+          "mechanism": [
+            "Zorluklar seni sistem kurmaya ve iyileştirmeye zorlar."
+          ],
+          "effect": [
+            "Zamanla derin bir farkındalık ve psikolojik ustalık gelişebilir."
+          ],
+          "shadow": [
+            "Takıntı ve aşırı analiz içsel gerginlik yaratabilir."
+          ],
+          "potential": [
+            "Kendine şefkat gösterdiğinde içsel bilgelik görünür hale gelir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde düzen, sadelik ve hizmet temaları öne çıkar."
+          ],
+          "mechanism": [
+            "Bağlarında yapıcı eleştiri ve iyileştirme isteği gösterebilirsin."
+          ],
+          "effect": [
+            "Partnerin seni sorumluluk sahibi ve emek veren biri olarak algılar."
+          ],
+          "shadow": [
+            "Fazla eleştirel olmak bağda gerginlik yaratabilir."
+          ],
+          "potential": [
+            "Şefkatle birleşen emek güçlü ve güvenli bağlar kurar."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin analitik, detaycı ve iyileştirmeye yönelik çalışır."
+          ],
+          "mechanism": [
+            "Karmaşık durumları parçalara ayırıp düzenlersin."
+          ],
+          "effect": [
+            "Araştırma, sağlık, analiz ve teknik alanlarda yüksek potansiyel geliştirirsin."
+          ],
+          "shadow": [
+            "Aşırı mükemmeliyetçilik zihinsel tıkanma yaratabilir."
+          ],
+          "potential": [
+            "Zihinsel disiplin empatiyle birleştiğinde gerçek ustalık açığa çıkar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında düzen, verimlilik ve somut katkı beklersin."
+          ],
+          "mechanism": [
+            "Görev bilinciyle hareket eder, sistemleri yeniden yapılandırırsın."
+          ],
+          "effect": [
+            "Sağlık, analiz ve teknik alanlarda yüksek başarı potansiyelin vardır."
+          ],
+          "shadow": [
+            "Aşırı yüklenme tükenmişliğe yol açabilir."
+          ],
+          "potential": [
+            "Sistem kurma becerin iş yaşamında kalıcı yapıların temeli olabilir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda hizmet, emek ve bütünlük temalarını dönüştürmeye çağrılırsın."
+          ],
+          "mechanism": [
+            "Deneyimler kontrol ile teslimiyet arasında denge kurmaya zorlar."
+          ],
+          "effect": [
+            "Ruhsal yolun sadeleşme ve arınma ile genişler."
+          ],
+          "shadow": [
+            "Aşırı analiz karmasal ağırlık yaratabilir."
+          ],
+          "potential": [
+            "Bütünlüğü seçtiğinde ruhsal olarak da büyük bir şifa başlar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_libra",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Libra"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde denge, adalet ve ilişki üzerinden dönüşüm teması vardır."
+          ],
+          "mechanism": [
+            "Krizler seni başkalarıyla olan bağlarını yeniden tanımlamaya iter."
+          ],
+          "effect": [
+            "Dışarıdan diplomatik ama derin ilişkisel farkındalık taşıyan biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Kendini kaybetmek kimlik karmaşası yaratabilir."
+          ],
+          "potential": [
+            "Hem kendini hem başkasını görebildiğinde güçlü bir iç denge oluşur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik altyapında uyum isteği ve çekirdek ilişkisel yaralar iç içedir."
+          ],
+          "mechanism": [
+            "Zorluklar seni ilişkisel sınırlarını güçlendirmeye zorlar."
+          ],
+          "effect": [
+            "Zamanla yüksek empati ve sosyal farkındalık geliştirebilirsin."
+          ],
+          "shadow": [
+            "Aşırı uyum sağlama çabası içsel öfkeye dönüşebilir."
+          ],
+          "potential": [
+            "Gerçek dengeyi bulduğunda psikolojik olgunluk hızla artar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkiler senin için en güçlü dönüşüm alanıdır."
+          ],
+          "mechanism": [
+            "Yakın bağlarda güç, kontrol ve adalet temaları sık sık sınanır."
+          ],
+          "effect": [
+            "Derin, dönüştürücü ve öğretici ilişkiler yaşarsın."
+          ],
+          "shadow": [
+            "Bağımlılık, manipülasyon veya dengesizlik kriz yaratabilir."
+          ],
+          "potential": [
+            "Sağlıklı sınırlar kurduğunda ilişkilerin ruhsal gelişim kapısı olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin ilişki, denge ve adalet üzerine yoğunlaşır."
+          ],
+          "mechanism": [
+            "Her durumu çok yönlü analiz eder ve altındaki güç dinamiklerini sezersin."
+          ],
+          "effect": [
+            "Soyut adalet kavramlarını somut kararlara dönüştürme kapasitesin yüksektir."
+          ],
+          "shadow": [
+            "Herkesi memnun etmeye çalışmak zihinsel karmaşa yaratabilir."
+          ],
+          "potential": [
+            "Net sınırlar zihinsel berraklık getirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında uyum, diplomasi ve adil yapı ararsın."
+          ],
+          "mechanism": [
+            "Ortaklıklar ve işbirliklerinde derin analiz yaparsın."
+          ],
+          "effect": [
+            "Hukuk, danışmanlık, estetik ve sosyal alanlarda güçlü potansiyelin vardır."
+          ],
+          "shadow": [
+            "Kararsızlık profesyonel ilerlemeyi zorlayabilir."
+          ],
+          "potential": [
+            "Adil liderlik geliştirdiğinde iş ortamında denge yaratırsın."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda ilişkiler üzerinden dönüşüm yaşarsın."
+          ],
+          "mechanism": [
+            "Deneyimler seni adalet, denge ve sınır konularında olgunlaştırır."
+          ],
+          "effect": [
+            "Ruhsal yolun ilişki teması üzerinden genişler."
+          ],
+          "shadow": [
+            "Aşırı uyum karmasal kayıplar yaratabilir."
+          ],
+          "potential": [
+            "Gerçek dengeyi bulduğunda ruhsal bütünleşme başlar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_scorpio",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Scorpio"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin çekirdeğinde güç, kriz ve dönüşüm teması vardır."
+          ],
+          "mechanism": [
+            "Her dönüşüm döngüsü seni daha da derinleştirir ve güçlendirir."
+          ],
+          "effect": [
+            "Dışarıdan yoğun, sezgisel ve etkileyici biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Kontrol, kıskançlık ve intikam eğilimleri ortaya çıkabilir."
+          ],
+          "potential": [
+            "Gücünü şifaya yönlendirdiğinde olağanüstü bir iç dönüşüm gerçekleşir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik altyapında ölüm–yeniden doğuş temaları baskındır."
+          ],
+          "mechanism": [
+            "Zorluklar seni içsel derinliklere iter ve köklü dönüşüm yaratır."
+          ],
+          "effect": [
+            "Olağanüstü bir psikolojik dayanıklılık geliştirebilirsin."
+          ],
+          "shadow": [
+            "Takıntılar ve obsesif duygular içsel yük yaratabilir."
+          ],
+          "potential": [
+            "Gölgene alan açtığında ruhsal güç ve bilgelik hızla büyür."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde tam bağlılık ve derinlik beklersin."
+          ],
+          "mechanism": [
+            "Bağlarında güç, sadakat ve birleşme temaları yoğunlaşır."
+          ],
+          "effect": [
+            "Tutkulu, derin ve dönüştürücü ilişkiler yaşarsın."
+          ],
+          "shadow": [
+            "Kıskançlık, manipülasyon ve güç mücadeleleri kriz yaratabilir."
+          ],
+          "potential": [
+            "Güvene dayalı bağlar kurduğunda ilişkilerin şifa alanına dönüşür."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin sezgisel, karanlığı görebilen ve tabuları çözmeye yatkındır."
+          ],
+          "mechanism": [
+            "Her düşünceyi derinlemesine analiz eder, görünmeyeni ortaya çıkarırsın."
+          ],
+          "effect": [
+            "Psikoloji, araştırma, kriz yönetimi ve strateji alanlarında büyük kapasite geliştirirsin."
+          ],
+          "shadow": [
+            "Aşırı kuşku zihinsel huzuru bozabilir."
+          ],
+          "potential": [
+            "Zihinsel sezgi bilgelikle birleştiğinde büyük keşifler doğurur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında güç, dönüşüm ve kriz yönetimi temaları baskındır."
+          ],
+          "mechanism": [
+            "Gizli yapıların içini görür, köklü değişim yaratabilecek sistemler kurarsın."
+          ],
+          "effect": [
+            "Finans, terapi, araştırma, strateji ve kriz alanlarında güçlenirsin."
+          ],
+          "shadow": [
+            "Aşırı kontrol profesyonel ilişkileri zorlayabilir."
+          ],
+          "potential": [
+            "Dönüşümü hizmete dönüştürdüğünde alanında güçlü bir otorite olursun."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda güç, gölge ve dönüşüm temalarıyla yüzleşirsin."
+          ],
+          "mechanism": [
+            "Deneyimler seni derin bir ruhsal arınmaya zorlar."
+          ],
+          "effect": [
+            "Ruhsal yolun karanlığı ışığa dönüştürme üzerine kuruludur."
+          ],
+          "shadow": [
+            "Takıntı ve tutunma karmasal döngüleri ağırlaştırabilir."
+          ],
+          "potential": [
+            "Bırakmayı öğrendiğinde ruhsal doğuş başlar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_sagittarius",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Sagittarius"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin çekirdeğinde anlam, özgürlük ve genişleme temaları vardır."
+          ],
+          "mechanism": [
+            "Krizler seni inançlarını, ideallerini ve yaşam felsefeni dönüştürmeye zorlar."
+          ],
+          "effect": [
+            "Dışarıdan vizyoner, özgürlükçü ve güçlü prensiplere sahip biri olarak görülürsün."
+          ],
+          "shadow": [
+            "Fanatizm ve aşırı inanç katılığı ortaya çıkabilir."
+          ],
+          "potential": [
+            "Gerçek bilgelik arayışını sürdürdüğünde güçlü bir öğretici kimlik gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik altyapında hakikat, etik ve özgürlük temaları baskındır."
+          ],
+          "mechanism": [
+            "Zorluklar seni inanç kalıplarını sorgulamaya iter."
+          ],
+          "effect": [
+            "Zamanla daha olgun ve gerçekçi bir iç bilgelik geliştirirsin."
+          ],
+          "shadow": [
+            "Kendini mutlak doğru görme eğilimi içsel çatışma yaratabilir."
+          ],
+          "potential": [
+            "Açık fikirli olduğunda ruhsal genişleme hızlanır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde dürüstlük, özgürlük ve zihinsel uyum beklersin."
+          ],
+          "mechanism": [
+            "Yakınlıkta bile kişisel alan ve özgürlük ihtiyacını korursun."
+          ],
+          "effect": [
+            "Bağların öğretici, eğitici ve ilham verici olabilir."
+          ],
+          "shadow": [
+            "Bağlanma korkusu ilişkide mesafe yaratabilir."
+          ],
+          "potential": [
+            "Gerçek paylaşım sağlandığında ilişkiler büyük büyüme alanı olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin geniş perspektifle, felsefi ve vizyoner çalışır."
+          ],
+          "mechanism": [
+            "Her bilgiyi bir üst anlamla ilişkilendirirsin."
+          ],
+          "effect": [
+            "Eğitim, yayıncılık, hukuk ve felsefe alanlarında güçlü düşünce yapısı geliştirebilirsin."
+          ],
+          "shadow": [
+            "Detaylardan kaçmak zihinsel kopukluk yaratabilir."
+          ],
+          "potential": [
+            "Vizyonunu somut planlarla birleştirdiğinde güçlü bir öğretici zihne dönüşürsün."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında büyüme, keşif ve öğretme temaları baskındır."
+          ],
+          "mechanism": [
+            "Yol gösterme, ilham verme ve bilgi yayma konularında güçlenirsin."
+          ],
+          "effect": [
+            "Danışmanlık, eğitim, hukuk, seyahat ve yayıncılık alanlarında yüksek başarı potansiyelin vardır."
+          ],
+          "shadow": [
+            "Aşırı iyimserlik gerçekçi planları geciktirebilir."
+          ],
+          "potential": [
+            "Gerçekçilik ve vizyon birleştiğinde büyük profesyonel başarılar doğar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda inanç, etik ve özgürlük konularında dönüşüm deneyimlersin."
+          ],
+          "mechanism": [
+            "Deneyimler seni daha derin bir hakikat arayışına iter."
+          ],
+          "effect": [
+            "Ruhsal yolun genişleme ve bilgelik üzerine kuruludur."
+          ],
+          "shadow": [
+            "Fanatizm karmasal sınav yaratabilir."
+          ],
+          "potential": [
+            "Gerçek bilgelik seni ruhsal öğretmenliğe taşır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_capricorn",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Capricorn"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin derininde güç, yapı ve kontrol temaları vardır."
+          ],
+          "mechanism": [
+            "Krizler seni sorumluluklarını yeniden tanımlamaya iter."
+          ],
+          "effect": [
+            "Dışarıdan ciddi, stratejik ve güçlü iradeli biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aşırı kontrol kimlik baskısı yaratabilir."
+          ],
+          "potential": [
+            "Gerçek güç iç otoriteye dönüştüğünde etkileyici bir liderlik doğar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik altyapında disiplin, sınır ve dayanıklılık temaları baskındır."
+          ],
+          "mechanism": [
+            "Zorluklar seni daha da güçlendiren bir iç yapı kurmana sebep olur."
+          ],
+          "effect": [
+            "Yüksek öz kontrol ve sabır geliştirirsin."
+          ],
+          "shadow": [
+            "Duyguları bastırmak içsel yalnızlık yaratabilir."
+          ],
+          "potential": [
+            "Şefkatle birleşen disiplin derin psikolojik olgunluk getirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde sorumluluk, sadakat ve uzun vadeli bağlılık beklersin."
+          ],
+          "mechanism": [
+            "Yakın bağlarda kontrollü, temkinli ve sağlam adımlarla ilerlersin."
+          ],
+          "effect": [
+            "Partnerin için dayanıklı ve güvenilir bir yapı taşırsın."
+          ],
+          "shadow": [
+            "Aşırı mesafe ilişkide soğukluk yaratabilir."
+          ],
+          "potential": [
+            "Duygusal açıklıkla birleşen sadakat güçlü bir ilişki temeli oluşturur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin stratejik, planlı ve gerçekçi çalışır."
+          ],
+          "mechanism": [
+            "Uzun vadeli düşünür, her adımı hesaplayarak ilerlersin."
+          ],
+          "effect": [
+            "Kriz yönetimi ve yapı kurma alanlarında güçlü zihinsel kapasite geliştirirsin."
+          ],
+          "shadow": [
+            "Aşırı katılık zihinsel esnekliği engelleyebilir."
+          ],
+          "potential": [
+            "Planlama gücün bilgelikle birleştiğinde zihinsel otorite doğar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında güç, statü ve yapı temaları önemlidir."
+          ],
+          "mechanism": [
+            "Adım adım yükselmeyi, uzun vadede başarı kurmayı hedeflersin."
+          ],
+          "effect": [
+            "Yönetim, finans, strateji ve kurumsal yapılarda yüksek başarı potansiyelin vardır."
+          ],
+          "shadow": [
+            "Aşırı kontrol veya otoriter tutum profesyonel çatışma yaratabilir."
+          ],
+          "potential": [
+            "Gerçek liderlik şefkatle birleştiğinde etkileyici bir kariyer yükselişi başlar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda güç, otorite ve sorumluluk temalarıyla dönüşüm yaşarsın."
+          ],
+          "mechanism": [
+            "Deneyimler seni otoriteyi yeniden tanımlamaya iter."
+          ],
+          "effect": [
+            "Ruhsal yolunda disiplin, yapı ve olgunluk temaları öne çıkar."
+          ],
+          "shadow": [
+            "Katılık karmasal kırılmalar yaratabilir."
+          ],
+          "potential": [
+            "Bilinçli liderlik ruhsal yükseliş getirir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_aquarius",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Aquarius"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin çekirdeğinde özgünlük, yenilik ve kolektifle bağ temaları vardır."
+          ],
+          "mechanism": [
+            "Krizler seni eski kimlik kalıplarından radikal şekilde özgürleştirir."
+          ],
+          "effect": [
+            "Dışarıdan sıra dışı, bağımsız ve vizyoner biri olarak görülürsün."
+          ],
+          "shadow": [
+            "Aşırı mesafe kimlik yalnızlığı yaratabilir."
+          ],
+          "potential": [
+            "Özgünlüğünü bilinçle ifade ettiğinde kolektife yön veren bir figür olursun."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik altyapında özgürlük ve zihinsel mesafe temaları baskındır."
+          ],
+          "mechanism": [
+            "Zorluklar seni yeni düşünce sistemleri kurmaya iter."
+          ],
+          "effect": [
+            "Geleneksel kalıpları sorgulayan güçlü bir zihinsel yapı geliştirirsin."
+          ],
+          "shadow": [
+            "Duygusal kopukluk içsel boşluk yaratabilir."
+          ],
+          "potential": [
+            "Hem zihin hem kalp birlikte çalıştığında psikolojik bütünlük gelişir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde özgürlük, bireysellik ve zihinsel uyum beklersin."
+          ],
+          "mechanism": [
+            "Bağlarda sınır, alan ve bağımsızlık temalarını korursun."
+          ],
+          "effect": [
+            "İlişkilerin yenilikçi, öğretici ve özgürleştirici olabilir."
+          ],
+          "shadow": [
+            "Aşırı mesafe yakınlığı zorlaştırabilir."
+          ],
+          "potential": [
+            "Hem bağ hem alan dengesini kurduğunda ilişkiler güçlü bir ruhsal ortaklık hâline gelir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin yenilikçi, radikal ve sezgisel çalışır."
+          ],
+          "mechanism": [
+            "Kolektif sistemleri, sosyal yapıları ve geleceği analiz etmeye eğilimlisin."
+          ],
+          "effect": [
+            "Bilim, teknoloji, sosyal reform ve vizyon alanlarında güçlü fikirler geliştirirsin."
+          ],
+          "shadow": [
+            "Soyut fikirlerde kaybolmak pratikliği azaltabilir."
+          ],
+          "potential": [
+            "Yeni sistemler kurma yeteneğinle kolektife büyük katkılar sağlayabilirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında yenilik, özgünlük ve kolektif etki temaları baskındır."
+          ],
+          "mechanism": [
+            "Sistemin dışına çıkarak yeni modeller yaratmayı hedeflersin."
+          ],
+          "effect": [
+            "Teknoloji, sosyal organizasyon, bilim ve reform alanlarında büyük başarı potansiyelin vardır."
+          ],
+          "shadow": [
+            "Otoriteyle çatışma profesyonel ilerlemeyi zorlaştırabilir."
+          ],
+          "potential": [
+            "Özgün liderlik geliştirdiğinde iş yaşamında dönüşüm yaratırsın."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda özgünlük ve kolektif bilinç temalarıyla dönüşürsün."
+          ],
+          "mechanism": [
+            "Deneyimler seni bireyselliğini daha büyük bir bütünle uyum içinde yaşamaya zorlar."
+          ],
+          "effect": [
+            "Ruhsal yolunda yenilik ve reform önemli bir tema olur."
+          ],
+          "shadow": [
+            "Aşırı ayrışma karmasal yalnızlık yaratabilir."
+          ],
+          "potential": [
+            "Kolektif faydaya hizmet eden özgünlük ruhsal yükseliş getirir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "pluto_in_pisces",
+      "conditions": [
+        {
+          "planet": "Pluto",
+          "sign": "Pisces"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin çekirdeğinde sezgi, şefkat ve kolektif bilinçle bağ temaları vardır."
+          ],
+          "mechanism": [
+            "Krizler seni ruhsal bir dönüşüm sürecine iter."
+          ],
+          "effect": [
+            "Dışarıdan derin, sezgisel ve mistik biri olarak algılanabilirsin."
+          ],
+          "shadow": [
+            "Sınır kaybı kimlik bulanıklığı yaratabilir."
+          ],
+          "potential": [
+            "Hem sınır hem sezgi geliştirdiğinde güçlü bir ruhsal kimlik açığa çıkar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik altyapında empati, fedakârlık ve akış temaları baskındır."
+          ],
+          "mechanism": [
+            "Zorluklarda geri çekilmek yerine içsel dünyanın derinliklerine dalabilirsin."
+          ],
+          "effect": [
+            "Derin duyarlılık ve güçlü sezgisel farkındalık gelişebilir."
+          ],
+          "shadow": [
+            "Kurban bilinci içsel yorgunluk yaratabilir."
+          ],
+          "potential": [
+            "Sınırlarını korumayı öğrendiğinde sezgisel bilgelik çok güçlenir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde ruhsal bağ, şefkat ve derin anlayış beklersin."
+          ],
+          "mechanism": [
+            "Bağlarında fedakârlık ve duyarlılık temaları öne çıkar."
+          ],
+          "effect": [
+            "Partnerin için çok şefkatli ve kapsayıcı bir alan yaratırsın."
+          ],
+          "shadow": [
+            "Kendini feda etmek ilişkisel dengesizlik yaratabilir."
+          ],
+          "potential": [
+            "Hem kendine hem partnerine şefkat gösterdiğinde ilişkilerin şifa kaynağı hâline gelir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin sezgisel, imgelerle çalışan ve sembolik düşünmeye yatkındır."
+          ],
+          "mechanism": [
+            "Gerçekliği sadece mantıkla değil, his ve sezgiyle de yorumlarsın."
+          ],
+          "effect": [
+            "Sanatsal, ruhsal ve yaratıcı alanlarda güçlü fikirler geliştirirsin."
+          ],
+          "shadow": [
+            "Belirsizlik zihinsel odaklanmayı zorlaştırabilir."
+          ],
+          "potential": [
+            "Zihnin sezgiyi disiplinle birleştirdiğinde büyük yaratıcı kapasite doğar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında anlam, şefkat ve ruhsal bütünlük temaları önemlidir."
+          ],
+          "mechanism": [
+            "Çalışırken görünmeyen dinamikleri sezersin ve akışa göre hareket edersin."
+          ],
+          "effect": [
+            "Sanat, şifa, meditasyon, yardım ve ruhsal alanlarda güçlü başarı potansiyelin vardır."
+          ],
+          "shadow": [
+            "Sınır eksikliği profesyonel tükenmişlik yaratabilir."
+          ],
+          "potential": [
+            "Hem sınır hem sezgi geliştirdiğinde iş yaşamında özgün bir yol açılır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda şefkat, sezgi ve teslimiyet temalarıyla dönüşürsün."
+          ],
+          "mechanism": [
+            "Deneyimler seni hem akışa hem sorumluluğa çağırır."
+          ],
+          "effect": [
+            "Ruhsal yolun şifa ve birlik teması üzerinden genişler."
+          ],
+          "shadow": [
+            "Kurban bilinci karmasal dengesizlik yaratabilir."
+          ],
+          "potential": [
+            "Sezgini sınırla birleştirdiğinde ruhsal yükseliş başlar."
+          ]
+        }
+      }
+    }
+  ],
+  "planet_house_rules": [],
+  "aspect_rules": [],
+  "meta_rules": []
+}

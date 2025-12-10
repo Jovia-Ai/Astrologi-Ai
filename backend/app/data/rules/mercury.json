@@ -1,0 +1,3267 @@
+{
+  "planet_sign_rules": [
+    {
+      "id": "mercury_in_aries",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Aries"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde hızlı kavrama ve doğrudan ifade etme ihtiyacı vardır.",
+            "Kendini fikirlerin aracılığıyla öne koyma eğilimi ağır basar.",
+            "Düşüncelerinin seni tanımladığına inanarak varlığını zihinsel hareketle kurarsın."
+          ],
+          "mechanism": [
+            "İçgüdüsel düşünce akışı, seni çoğu durumda ilk konuşan kişi yapar.",
+            "Yeni bir fikri hızla yakalar ve anında dışa yansıtırsın.",
+            "Zihnin bir anda kıvılcım üretir ve sen buna hemen tepki verirsin."
+          ],
+          "effect": [
+            "Dışarıdan cesur, kararlı ve doğrudan bir iletişim tarzın olduğu görülür.",
+            "İnsanlar seni enerjik, açık sözlü ve hızlı tepki veren biri olarak algılar.",
+            "Görüşlerin net, keskin ve zaman zaman meydan okuyan bir ton taşır."
+          ],
+          "shadow": [
+            "Hızlı tepki verme eğilimi kırıcı olabilen çıkışlara neden olabilir.",
+            "Sabırsızlık, detayları atlamana ve yanlış anlaşılmalara yol açabilir.",
+            "Zihinsel acelecilik, ani öfke patlamalarına dönüşebilir."
+          ],
+          "potential": [
+            "Enerjini bilinçle yönlendirdiğinde insanları motive eden bir öncü bilgeye dönüşür.",
+            "Hızını stratejiyle birleştirdiğinde etkileyici bir fikir liderliği ortaya çıkar.",
+            "Kıvılcım niteliğindeki zihinsel enerjin yaratıcı başlangıçlar için güçlü bir katalizöre dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelinde anında anlamlandırma ihtiyacı bulunur.",
+            "Zihinsel hızın duygusal ihtiyaçlarının önüne geçebilir.",
+            "Doğruluk ihtiyacı içsel dürtünü besleyen ana kaynaktır."
+          ],
+          "mechanism": [
+            "Duyguların, hızlı düşünceyle birleşerek seni çabuk yükselten bir iç ateş yaratır.",
+            "Yeni deneyimler seni zihinsel olarak uyandırır ve hızla harekete geçirir.",
+            "Psikolojik süreçlerin çoğu ani kararlarla ilerler."
+          ],
+          "effect": [
+            "Hızla motive olur, hızla sıkılırsın; bu ritim seni canlı tutar.",
+            "Çevrendekiler seni dürtüsel ama samimi biri olarak görür.",
+            "Psikolojik olarak yüksek bir ivme taşırsın ve bu zaman zaman ilham kaynağı olur."
+          ],
+          "shadow": [
+            "Aşırı dürtüsellik içsel dengesizliğe yol açabilir.",
+            "Sabrın düşük olduğunda tahammülsüzlük artar.",
+            "Düşüncelerinle duyguların arasında kopukluk yaşanabilir."
+          ],
+          "potential": [
+            "Zihinsel ateşini dinginlikle birleştirdiğinde olağanüstü bir iç güç ortaya çıkar.",
+            "Kendini gözlemlemeyi öğrendiğinde içgüdülerin bilge rehberliğe dönüşür.",
+            "Psikolojik hızın, yaratıcılıkta yeni kapılar açan bir sezgiye dönüşebilir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde zihinsel canlılık temel ihtiyaçlarından biridir.",
+            "Doğrudanlık, bağlantı kurma stilinin çekirdeğini oluşturur.",
+            "Fikir alışverişi senin için duygusal yakınlığın bir parçasıdır."
+          ],
+          "mechanism": [
+            "Hızlı iletişim kurar, düşüncelerini filtrelemeden paylaşmayı tercih edersin.",
+            "Partnerinle tartışmaların bile senin için canlılık ve yakınlık hissi yaratabilir.",
+            "Açık ve dürüst konuşma senin için güven işaretidir."
+          ],
+          "effect": [
+            "İlişkilerde cesur, tutkulu ve net bir ifade tarzın olur.",
+            "Karşındakine enerji katan, hareket getiren bir dinamik yaratırsın.",
+            "İlişkilerinde kıvılcım ve spontane iletişim belirgindir."
+          ],
+          "shadow": [
+            "Ani çıkışlar ilişkisel kırılmalara neden olabilir.",
+            "Söylediklerinin etkisini düşünmeden konuşmak gerginlik yaratabilir.",
+            "Partnerinin ritmine uyum sağlamakta zorlanabilirsin."
+          ],
+          "potential": [
+            "Dengesini bulduğunda ilişkilerde ilham veren bir dürüstlük modeli yaratırsın.",
+            "Açık iletişimin daha olgun bir tona eriştiğinde bağların güçlenir.",
+            "Zihinsel canlılığını empatiyle birleştirdiğinde tutkulu ve güvenilir bir partner olursun."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin ana motivasyonu anlama ve hemen sonuç üretme eğilimindedir.",
+            "Fikir üretmek senin doğal enerji kaynağındır.",
+            "Sorunları hızlı çözme isteği zihinsel yaklaşımının çekirdeğidir."
+          ],
+          "mechanism": [
+            "Zihnin, fikirleri parlayan kıvılcımlar şeklinde üretir.",
+            "Analizden çok sezgisel sıçrayışlarla ilerlersin.",
+            "Yeni bir düşünce seni hemen aksiyona geçirir."
+          ],
+          "effect": [
+            "Problemlere hızlı ve yaratıcı çözümler üretirsin.",
+            "Zihinsel cesaretin seni öne çıkarır.",
+            "İnsanlar senden netlik ve kararlılık bekler."
+          ],
+          "shadow": [
+            "Detay atlama eğilimi hatalara yol açabilir.",
+            "Aceleci sonuçlar yanlış kararlar doğurabilir.",
+            "Zihinsel gerginlik hızla yükselip düşebilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini yönlendirdiğinde olağanüstü bir odaklanma kapasitesine erişirsin.",
+            "Stratejik düşünmeyi öğrendiğinde doğal bir lider zekâsı ortaya çıkar.",
+            "İçsel hareketi dengelediğinde üretkenliğin katlanarak artar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında hızlı karar verme ihtiyacın belirgindir.",
+            "Yeni projeler seni canlı tutar.",
+            "Eylem odaklı düşünce kariyer hamlelerinin merkezindedir."
+          ],
+          "mechanism": [
+            "Fırsatları sezgisel hızla yakalar ve hemen harekete geçersin.",
+            "Rekabet seni motive eder ve zihinsel ivmeni artırır.",
+            "Aksiyon gerektiren alanlarda doğal bir şekilde parlayabilirsin."
+          ],
+          "effect": [
+            "İnsanlar seni hızlı çözümler üreten biri olarak görür.",
+            "İş ortamında net, cesur ve proaktif davranırsın.",
+            "Yenilik ve değişim sana güçlü bir avantaj sağlar."
+          ],
+          "shadow": [
+            "Sabırsızlık uzun vadeli projelerde zorluk yaratabilir.",
+            "Ani kararlar iş ilişkilerinde çatışmalar doğurabilir.",
+            "Fazla yüklenme tükenmişliğe yol açabilir."
+          ],
+          "potential": [
+            "Zihinsel hızını disiplinle harmanladığında etkileyici bir liderliğe dönüşür.",
+            "Proaktif yapını stratejik planlamayla birleştirdiğinde yüksek başarı elde edersin.",
+            "Doğal enerjin büyük projeleri başlatma kapasitesi sunar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması zihinsel cesareti açığa çıkarmaktır.",
+            "Engeller hızını kesmek için değil, bilgelik kazandırmak için gelir.",
+            "Ruhsal motivasyonun özgünlüğü ifade etmeye dayanır."
+          ],
+          "mechanism": [
+            "Deneyimleri hızlı tepkilerle işleyerek dönüşürsün.",
+            "Her çatışma sana yeni bir farkındalık kapısı açar.",
+            "Kararların seni sürekli içsel bir güçle yüzleştirir."
+          ],
+          "effect": [
+            "Ruhsal olarak bağımsız, cesur ve direkt bir gelişim ritmin olur.",
+            "Kaderin seni sürekli başlatıcı rollerin içine iter.",
+            "İçsel ateşin seni yeni yollar açmaya zorlar."
+          ],
+          "shadow": [
+            "Aşırı dürtüsellik karmayı ağırlaştırabilir.",
+            "Öfke ve sabırsızlık, ruhsal sınavlarının merkezine yerleşebilir.",
+            "Acelecilik seni karmasal döngülerde tekrar eden temalara iter."
+          ],
+          "potential": [
+            "Cesaretini bilgelikle birleştirdiğinde ruhsal atılım hızlanır.",
+            "Kendi iç hareketini yönettiğinde kader seni desteklemeye başlar.",
+            "Zihinsel ateşin bilinçle birleştiğinde ruhsal öncü olursun."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_taurus",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Taurus"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temel motivasyonu düşüncelerini somutlaştırmak ve kalıcı bir yapı oluşturabilmektir.",
+            "İstikrar ihtiyacı zihinsel kimliğini şekillendirir ve sana güven duygusu sağlar.",
+            "Fikirlerini sahiplenme eğilimin kimliğini belirgin ve dayanıklı kılar."
+          ],
+          "mechanism": [
+            "Zihinsel süreçlerin yavaş ama derin bir ritimde ilerler.",
+            "Bir düşünceye bağlandığında onun üzerine sabırla inşa etmeyi tercih edersin.",
+            "İçsel mekanizman hızlı değişim yerine sürekli gelişim üzerine kuruludur."
+          ],
+          "effect": [
+            "Dışarıdan kararlı, tutarlı ve güvenilir biri olarak görünürsün.",
+            "Sözlerin ölçülüdür ve insanlar senden sağlam değerlendirmeler bekler.",
+            "İletişim tarzın sakin ve yatıştırıcı bir etki yaratır."
+          ],
+          "shadow": [
+            "Yeni fikirlere direnç göstermek seni zihinsel olarak sıkıştırabilir.",
+            "İnatçı tutumlar düşünsel esnekliğini azaltabilir.",
+            "Değişime yavaş uyum sağlamak seni geride kalmış hissettirebilir."
+          ],
+          "potential": [
+            "Zihinsel sabrın, büyük projeleri inşa edebilecek kalıcı bir bilgelik sunar.",
+            "İçsel istikrarın, başkalarına rehberlik edecek türden güven verici bir yapıya dönüşebilir.",
+            "Kararlılığını esneklikle birleştirdiğinde düşünsel üretkenliğin olağanüstü artar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelinde huzur ve güven ihtiyacı belirgindir.",
+            "İçsel düzen ihtiyacı duygusal dengeyi korumana yardımcı olur.",
+            "İstikrar arayışı düşünsel süreçlerine yumuşak bir ritim kazandırır."
+          ],
+          "mechanism": [
+            "Duygularını işlemek için zamana ihtiyaç duyarsın.",
+            "Yeni bir düşünceyi içsel düzeyde sindirerek anlamlandırırsın.",
+            "Zihnin duygularını somut çerçeveler içinde düzenlemeyi tercih eder."
+          ],
+          "effect": [
+            "İnsanlara karşı sakin, düşünceli ve güven veren bir psikolojik profil sergilersin.",
+            "Duygusal süreçlerde aşamalı ilerlemek seni daha güvenli hissettirir.",
+            "Psikolojik dayanıklılığın sayesinde kriz anlarında merkezde kalmayı başarabilirsin."
+          ],
+          "shadow": [
+            "Aşırı sahiplenme psikolojik baskıya dönüşebilir.",
+            "Değişime direnç, içsel sıkışmışlık yaratabilir.",
+            "Duygularını fazla kontrol etmek seni içsel bir kör düğümle yüzleştirebilir."
+          ],
+          "potential": [
+            "Psikolojik sabrın, duygusal bilgelik üretme kapasitesine dönüşebilir.",
+            "İçsel güvenini dış koşullardan bağımsız geliştirdiğinde olağanüstü bir dayanıklılık kazanırsın.",
+            "Duygularını kabul ettiğinde içsel huzur derin bir köke dönüşür."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde güven ve istikrar senin için temel ihtiyaçtır.",
+            "Duygusal bağlılık düşünsel süreçlerini şekillendirir.",
+            "Sadakat eğilimin ilişkisel kimliğinde önemli bir yer tutar."
+          ],
+          "mechanism": [
+            "İlişkilerde yavaş ama sağlam bağlar kurmayı tercih edersin.",
+            "Partnerinin ihtiyaçlarını sabırla anlamaya çalışır, güven vermek için somut adımlar atarsın.",
+            "Duygusal yakınlık senin için ritmik ve düzenli bir süreçtir."
+          ],
+          "effect": [
+            "İlişkilerde güven veren, sakinleştiren ve istikrarlı bir partner olursun.",
+            "Duygusal bağları uzun vadeye taşıma eğilimin güçlüdür.",
+            "Partnerin seni sadık ve kararlı biri olarak görür."
+          ],
+          "shadow": [
+            "İnatçılık ilişkisel dinamiklerde çatışma yaratabilir.",
+            "Duygusal yavaşlık partnerinde sabırsızlık uyandırabilir.",
+            "Kıskançlık ve sahiplenicilik ilişkisel alanı daraltabilir."
+          ],
+          "potential": [
+            "Güven duygunu daha esnek bir yapıyla birleştirdiğinde güçlü bir ilişkisel bilgelik oluşturursun.",
+            "Sadakatin olgunlaştıkça sevgi daha sıcak ve istikrarlı bir forma dönüşür.",
+            "Duygusal esneklik kazandığında ilişkilerde derin bir uyum ortaya çıkar."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin temel motivasyonu somut düşünce ve yapısal netliktir.",
+            "Pratik çözümler üretmek senin için doğal bir zihinsel eğilimdir.",
+            "Yavaş ama derin düşünme kapasitesi zihinsel kimliğinin merkezindedir."
+          ],
+          "mechanism": [
+            "Bilgiyi sindirir, tekrar işleyerek kalıcı hale getirirsin.",
+            "Analizlerin nesneldir ve somut temeller üzerine kuruludur.",
+            "Zihnin bir fikri kökleştirmeden ilerlemeyi tercih etmez."
+          ],
+          "effect": [
+            "Sağlam, tutarlı ve pratik sonuçlar üretebilirsin.",
+            "İnsanlar senden gerçekçi ve uygulanabilir çözümler bekler.",
+            "Zihinsel süreçlerin güven veren bir düzen taşır."
+          ],
+          "shadow": [
+            "Zihinsel esneklik eksikliği yaratıcılığı azaltabilir.",
+            "Düşünce süreçlerinde yavaşlık baskı yaratabilir.",
+            "Aşırı tutuculuk zihinsel gelişimi engelleyebilir."
+          ],
+          "potential": [
+            "Zihinsel sabrın, stratejik düşünme kapasitesi oluşturur.",
+            "Derin düşünme biçimin kalıcı projelerin temelini güçlendirir.",
+            "Zihinsel dayanıklılığın bilgece bir analiz becerisine dönüşebilir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında stabil ve güvenilir bir zemin ararsın.",
+            "Kararlılık, profesyonel kimliğinin ana bileşenlerinden biridir.",
+            "Somut başarılar için istikrarlı çalışma ihtiyacı hissedersin."
+          ],
+          "mechanism": [
+            "Projelere adım adım yaklaşır, süreçleri sabırla tamamlarsın.",
+            "Zorluklar karşısında kolay pes etmez, dayanıklılıkla ilerlersin.",
+            "İş ilişkilerinde güven oluşturmak senin için doğal bir süreçtir."
+          ],
+          "effect": [
+            "İnsanlar seni güvenilir ve uzun vadeli işler için ideal biri olarak görür.",
+            "Profesyonel ortamda sakinlik ve sağlamlık getirirsin.",
+            "İşine olan bağlılığın çevrende takdir toplar."
+          ],
+          "shadow": [
+            "Değişime direnç kariyer gelişimini yavaşlatabilir.",
+            "İnatçılık ekip çalışmalarında zorluk yaratabilir.",
+            "Aşırı konfor arayışı yeniliklere kapalı hale getirebilir."
+          ],
+          "potential": [
+            "Kararlılığını inovasyonla birleştirdiğinde güçlü bir kariyer ivmesi oluşur.",
+            "Somut başarı üretme kapasiten kalıcı projelere öncülük edebilir.",
+            "Profesyonel dayanıklılığın liderlik potansiyeline dönüşebilir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması istikrarlı bir bilinç geliştirmektir.",
+            "Güven ihtiyacı, karmasal derslerinin ana kaynağını oluşturur.",
+            "Ruhsal olarak köklenme ihtiyacı deneyimlerini şekillendirir."
+          ],
+          "mechanism": [
+            "Derslerini yavaş ama derin bir ritimde öğrenirsin.",
+            "Her deneyim seni içsel dayanıklılığa doğru yönlendirir.",
+            "Zorluklarla karşılaştığında sabırla çözüm üretirsin."
+          ],
+          "effect": [
+            "Ruhsal gelişimde sağlam bir ilerleyiş gösterirsin.",
+            "Kader seni kalıcılık ve süreklilik gerektiren alanlara çeker.",
+            "Yaşam yolun, derinleşen bir bilgelik üretme kapasitesi taşır."
+          ],
+          "shadow": [
+            "Aşırı tutunma karmasal tekrarlar yaratabilir.",
+            "Değişime direnç ruhsal gelişimi zorlaştırabilir.",
+            "Maddi ve duygusal sabitlemeler seni kısıtlayabilir."
+          ],
+          "potential": [
+            "Esnediğinde ruhsal huzur kalıcı bir forma dönüşür.",
+            "İçsel dayanıklılığın ruhsal bir kök bilgelik yaratabilir.",
+            "Güven duygunu bilinçle kurduğunda karmasal döngüler çözülür."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_gemini",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Gemini"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde merak ve zihinsel hareketlilik bulunur.",
+            "Kendini sürekli öğrenme ve bağlantı kurma üzerinden tanımlarsın.",
+            "Çeşitlilik ihtiyacı kimliğinin temel ritmini belirler."
+          ],
+          "mechanism": [
+            "Yeni bir bilgi gördüğünde anında yönelir ve onu çözümlemeye başlarsın.",
+            "Zihnin bağlantılar kurarak, parçaları bir araya getirerek çalışır.",
+            "Kendini ifade ederken çok yönlü, esnek ve hızlı bir dil kullanırsın."
+          ],
+          "effect": [
+            "İnsanlara canlı, sosyal ve iletişim odaklı bir persona sunarsın.",
+            "Kimliğin değişken, hareketli ve esnek bir yapıyla dışa yansır.",
+            "Dışarıdan seni her konuya hakim, hızlı düşünen biri olarak algılarlar."
+          ],
+          "shadow": [
+            "Aşırı dağılma kimlik bütünlüğünü zayıflatabilir.",
+            "Tutarsızlık, dışarıdan güven vermekte zorlanmana neden olabilir.",
+            "Aşırı uyaran, kimliğini yüzeyde bırakarak seni yorabilir."
+          ],
+          "potential": [
+            "Çok yönlülüğün olgunlaştığında bilgelik dolu bir sentez yeteneğine dönüşür.",
+            "Zihinsel esnekliğin karmaşık konuları sadeleştirme kapasitesi yaratır.",
+            "Kimliğin, bilgiyi paylaşan ve insanları birbirine bağlayan bir rehber niteliği kazanır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Zihinsel canlılık psikolojik ihtiyaçlarının temelini oluşturur.",
+            "Anlam arayışın sürekli bilgi akışıyla beslenir.",
+            "İçsel motivasyonun düşünsel hareketten doğar."
+          ],
+          "mechanism": [
+            "Duyguları zihinsel bir mercekten geçirerek anlamlandırırsın.",
+            "Kendini daha iyi hissetmek için yeni fikirlerle temas etmeyi tercih edersin.",
+            "İçsel dalgalanmaları analiz ederek düzenlemeye çalışırsın."
+          ],
+          "effect": [
+            "Psikolojik esnekliğin yüksek adaptasyon kapasitesi sunar.",
+            "İç dünyan hızlı değişen ritimlerle çalışır ve bu seni canlı hissettirir.",
+            "Zihinsel aktivite seni dışsal duygusal baskılardan uzak tutar."
+          ],
+          "shadow": [
+            "Aşırı düşünme psikolojik gerginlik yaratabilir.",
+            "Duyguların derinliğine inmekte zorlanabilirsin.",
+            "Zihinsel kaçış eğilimi duygusal yüzleşmeleri geciktirebilir."
+          ],
+          "potential": [
+            "Zihinsel açıklığın, duygusal bilgelik kazanmanın kapısını açar.",
+            "İçsel süreçlerini tanımladıkça huzurun derinleşir.",
+            "Duygularla düşünceyi bütünleştirdiğinde yüksek bir psikolojik keskinlik ortaya çıkar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde iletişim ve zihinsel uyum senin için temel ihtiyaçtır.",
+            "Bağ kurma isteğin merak ve paylaşım üzerinden şekillenir.",
+            "Yakınlık, konuşma ve fikir alışverişiyle pekişir."
+          ],
+          "mechanism": [
+            "Partnerinle sürekli iletişim halinde olmak seni canlı tutar.",
+            "Zihinsel oyunlar, espriler ve keşifler ilişkindeki enerjiyi artırır.",
+            "Uyum sağlamak için düşünsel hızını partnerine göre ayarlayabilirsin."
+          ],
+          "effect": [
+            "İlişkilerde eğlenceli, hareketli ve uyumlu bir partner olursun.",
+            "Bağ kurduğun kişi seninle sıkılmadan sürekli bir zihin akışı yaşar.",
+            "İlişkilerin dinamiktir, durağanlığı sevmeyen bir ritim taşır."
+          ],
+          "shadow": [
+            "Tutarsızlık partnerinde güvensizlik yaratabilir.",
+            "Zihinsel aşırılık duygusal derinliği gölgeleyebilir.",
+            "İlişkide aynı anda fazla alana yönelmek bağları zayıflatabilir."
+          ],
+          "potential": [
+            "Duygusal netliği iletişime eklediğinde güçlü bir bağ kurma kapasitesi doğar.",
+            "İlişkilerde esneklik ve merak, uzun vadeli uyum yaratabilir.",
+            "Zihinsel yakınlığı duygusal içtenlikle birleştirdiğinde olağanüstü bir ilişkisel bilgelik gelişir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihninin doğal motivasyonu bilgi toplamak ve bağlantı kurmaktır.",
+            "Hızlı düşünme eğilimi zihinsel kimliğinin temel bileşenidir.",
+            "Merakın zekâ kapasitenin ana ateşleyicisidir."
+          ],
+          "mechanism": [
+            "Bilgileri hızla işler ve birbirleriyle ilişkilendirirsin.",
+            "Yeni bir konu gördüğünde zihnin hemen dallanıp budaklanır.",
+            "Sorunları farklı açılardan analiz ederek çözmeyi tercih edersin."
+          ],
+          "effect": [
+            "Çok yönlü çözümler üretebilirsin.",
+            "Zihinsel yaratıcılığın yüksek esneklik sunar.",
+            "İnsanlar seni hızlı kavrayan ve pratik zekâya sahip biri olarak görür."
+          ],
+          "shadow": [
+            "Odak eksikliği verimliliği düşürebilir.",
+            "Zihinsel kalabalık kendini tüketmene yol açabilir.",
+            "Aşırı analiz kararsızlık yaratabilir."
+          ],
+          "potential": [
+            "Zihinsel açıklığın bütünsel analiz yapma kapasitesi oluşturur.",
+            "Odak kazandığında zekân olağanüstü bir üretkenlik seviyesine ulaşır.",
+            "Çok yönlülüğün bilgi mimarlığına dönüşerek kalıcı etki yaratabilir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında çeşitlilik ve zihinsel hareketlilik seni besler.",
+            "Bilgi akışı profesyonel motivasyonunun temelidir.",
+            "Esnek ve hızlı düşünme ihtiyacı kariyer yolunu yönlendirir."
+          ],
+          "mechanism": [
+            "Aynı anda birden fazla projeyi yürütebilirsin.",
+            "İletişim yeteneklerin profesyonel alanlarda büyük avantaj sağlar.",
+            "Merakın seni yeni fırsatlara yönlendirir."
+          ],
+          "effect": [
+            "İş ortamında hızlı çözümler üreterek fark yaratırsın.",
+            "Takımlar arasında köprü görevi üstlenebilirsin.",
+            "Dinamik çalışma tarzın inovasyonu besler."
+          ],
+          "shadow": [
+            "Dikkat dağılması uzun vadeli projelerde zorluk çıkarabilir.",
+            "Tutarsızlık profesyonel imajını zayıflatabilir.",
+            "Aşırı bilgi yükü tükenmişlik yaratabilir."
+          ],
+          "potential": [
+            "Odaklanma becerin geliştiğinde kariyer ivmen katlanarak artar.",
+            "İletişim gücün liderlik kapasitesine dönüşebilir.",
+            "Çok yönlülüğün geniş bir mesleki ağ yaratma yeteneği sunar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması zihinsel çeşitliliği bilgelikle birleştirmektir.",
+            "Ruhsal gelişimin deneyimleri anlamlandırma ihtiyacınla şekillenir.",
+            "Kader seni bilgiyle büyümeye zorlar."
+          ],
+          "mechanism": [
+            "Deneyimleri analiz eder, her birinden yeni bir perspektif çıkarırsın.",
+            "Zihinsel öğrenme döngün seni içsel dönüşüme taşır.",
+            "Her karşılaşma yeni bir farkındalık tohumuna dönüşür."
+          ],
+          "effect": [
+            "Ruhsal olarak esnek, öğrenmeye açık bir gelişim ritmin olur.",
+            "Kaderin seni sürekli yeni fikirlere yönlendirir.",
+            "Yaşam yolunda bilgi alışverişi büyük rol oynar."
+          ],
+          "shadow": [
+            "Aşırı zihinsellik ruhsal derinliği gölgeleyebilir.",
+            "Yüzeysellik karmasal tekrarlara neden olabilir.",
+            "Tutarsızlık içsel ilerlemeyi geciktirebilir."
+          ],
+          "potential": [
+            "Zihinsel açıklığın ruhsal sentez kapasitesine dönüşebilir.",
+            "Bilgiyi derinleştirdiğinde ruhsal netlik kazanırsın.",
+            "Esnekliğin sana yaşam boyunca geniş bir bilgelik alanı sunar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_cancer",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Cancer"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde duyguları anlamlandırma ve içsel güven arayışı bulunur.",
+            "Hafıza ve geçmiş deneyimler düşünsel kimliğini güçlü biçimde şekillendirir.",
+            "İçsel dünyana uyum sağlayan düşünceler kimlik algını derinleştirir."
+          ],
+          "mechanism": [
+            "Zihnin duygusal tonlar üzerinden çalışır ve bilgiyi hislerle bağlantılandırır.",
+            "Yeni bir düşünceyi önce sezgisel olarak tartar, ardından içsel uyumuna göre kabul edersin.",
+            "Düşünceler duygusal bir süzgeçten geçerek kimlik dokuna işlenir."
+          ],
+          "effect": [
+            "Dışarıdan sıcak, empatik ve içe dönük bir zihinsel kimlik algısı yaratırsın.",
+            "İnsanlar seni anlayışlı ve duygusal zekâ ile konuşan biri olarak algılar.",
+            "Kimliğin çevrene yumuşak ama derin bir etki bırakır."
+          ],
+          "shadow": [
+            "Aşırı duyarlılık düşünsel berraklığı gölgeleyebilir.",
+            "Geçmişe tutunmak kimlik gelişimini yavaşlatabilir.",
+            "Duygusal içe çekilme, dışarıyla iletişimde kopukluk yaratabilir."
+          ],
+          "potential": [
+            "Duygusal zekân olgunlaştığında bilgece bir iletişim yeteneğine dönüşür.",
+            "İçsel dünyanı tanıdıkça güçlü bir sezgisel rehberlik oluşur.",
+            "Kimliğin, başkalarını şefkatle anlayan bir bilgelik odağı haline gelebilir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelinde derin duygulara bağlanma ihtiyacı vardır.",
+            "İçsel güvenlik arayışı düşünsel süreçlerini yönlendirir.",
+            "Duygusal hafıza psikolojinin ana yapı taşını oluşturur."
+          ],
+          "mechanism": [
+            "Duyguları sindirmek için zamana ihtiyaç duyar ve onları içsel bir alanda işlersin.",
+            "Bir konuyu anlamak için önce duygusal yankısını hissedersin.",
+            "Psikolojik ritmin sezgi, hatıra ve koruyuculuk üzerinden çalışır."
+          ],
+          "effect": [
+            "İnsanlara karşı duyarlı ve içten bir psikolojik alan açarsın.",
+            "Empatin, çevrende duygusal güvenlik sağlayan bir etki yaratır.",
+            "Duyguları derinlemesine anladığın için insanlara destek olmayı kolaylaştırırsın."
+          ],
+          "shadow": [
+            "Duygusal iniş çıkışlar düşünsel sabitliğini zorlayabilir.",
+            "Geçmişte takılı kalmak psikolojik ilerlemeyi yavaşlatabilir.",
+            "Fazla içselleştirme, kendi duygularını ifade etmekte zorluk yaratabilir."
+          ],
+          "potential": [
+            "Duygularını tanıdıkça psikolojik dayanıklılığın olağanüstü gelişir.",
+            "Sezgilerin olgunlaştığında derin bir iç bilgelik açığa çıkar.",
+            "İçsel süreçlerini kabul ettiğinde ruhsal şifacılık niteliği kazanırsın."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde duygusal güven ve anlayış temel ihtiyaçtır.",
+            "Bağ kurma isteğin sezgisel ve duygusal uyum üzerinden şekillenir.",
+            "Partnerinin hislerine uyum sağlama eğilimi ilişki yapını belirler."
+          ],
+          "mechanism": [
+            "Sevdiğin kişiyi dikkatle gözlemler, onun duygusal ihtiyaçlarını sezgisel olarak algılarsın.",
+            "İletişimde yumuşak, koruyucu ve kapsayıcı bir ton kullanırsın.",
+            "Duygusal paylaşım ilişkide derin bağlar kurmanın ana yoludur."
+          ],
+          "effect": [
+            "Bağ kurduğun kişilere güven ve sıcaklık hissettirirsin.",
+            "İlişkilerinde besleyici, empatik ve sadık bir partner profili sunarsın.",
+            "Yakınlığın doğal olarak iyileştirici bir enerji taşır."
+          ],
+          "shadow": [
+            "Aşırı hassasiyet yanlış anlaşılmalara yol açabilir.",
+            "Duygusal geri çekilme ilişkisel mesafe yaratabilir.",
+            "Geçmişteki kırgınlıkları taşımak bağların ritmini bozabilir."
+          ],
+          "potential": [
+            "Duygusal açıklığın arttıkça ilişkilerin daha sağlam ve şeffaf hale gelir.",
+            "Sezgisel anlayışın ilişkisel bilgelik oluşturabilir.",
+            "Sınırlarını koruduğunda sevgin daha derin ve sağlıklı bir forma dönüşür."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin temel motivasyonu hisleri anlamlandırmak ve duygulara anlam katmaktır.",
+            "Sezgisel kavrayış düşünsel yapının merkezindedir.",
+            "Derinlik ihtiyacı zihinsel yaklaşımını belirler."
+          ],
+          "mechanism": [
+            "Düşünceleri duygusal tonlarla birlikte işlersin.",
+            "Bir konuya tamamen zihinsel değil, içsel bir sezgi ile yaklaşmayı tercih edersin.",
+            "Zihnin bilgi ile his arasında köprü kurar."
+          ],
+          "effect": [
+            "İnsanların niyetlerini kolayca okuyabilir, sezgisel kavrayışla hareket edersin.",
+            "Zihinsel süreçlerin yumuşak ama derin bir enerji taşır.",
+            "Düşüncelerini içsel bir bilgelikle ifade edersin."
+          ],
+          "shadow": [
+            "Aşırı duyarlılık zihinsel netliği azaltabilir.",
+            "Korkular düşünsel analizleri gölgeleyebilir.",
+            "Duygusal dalgalanmalar karar süreçlerini zorlaştırabilir."
+          ],
+          "potential": [
+            "Sezgisel zekân olgunlaştığında güçlü bir iç rehbere dönüşür.",
+            "Zihinsel süreçlerini duygusal dengeyle beslediğinde berraklık kazanırsın.",
+            "Derin algı gücün karmaşık duygusal konuları çözme yeteneği sunar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında duygusal uyum ve güvenli alan senin için önemlidir.",
+            "Bağ kurma isteğin profesyonel yaklaşımlarını yönlendirir.",
+            "İnsanları anlamak iş ortamında en büyük gücündür."
+          ],
+          "mechanism": [
+            "Çalışırken sezgilerini kullanır, ortamın duygusal iklimini hissedersin.",
+            "Takım içinde destekleyici bir rol üstlenme eğilimin vardır.",
+            "İş süreçlerinde yumuşak ama etkili iletişim tercih edersin."
+          ],
+          "effect": [
+            "İnsanlar seni güven veren ve empatik biri olarak görür.",
+            "Takım ortamında denge sağlayan bir enerji yaratırsın.",
+            "Sorunlara duygusal farkındalıkla yaklaşarak yapıcı çözümler üretebilirsin."
+          ],
+          "shadow": [
+            "Duygusal yükler profesyonel motivasyonunu etkileyebilir.",
+            "Aşırı hassasiyet eleştiriyi zorlaştırabilir.",
+            "Geri çekilme eğilimi fırsatları kaçırmana neden olabilir."
+          ],
+          "potential": [
+            "Duygusal zekânı yönetmeyi öğrendiğinde güçlü bir liderlik tarzı ortaya çıkar.",
+            "İnsan ilişkilerindeki derin anlayış profesyonel alanda değer üretir.",
+            "Destekleyici doğan, iş ortamlarında doğal bir bağlayıcı güç oluşturur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması duygusal kökleri iyileştirmektir.",
+            "Ruhsal gelişimin geçmişle kurduğun bağları dönüştürme üzerine kuruludur.",
+            "İçsel güven ihtiyacı karmasal derslerinin temelidir."
+          ],
+          "mechanism": [
+            "Deneyimleri duygusal süreçlerden geçirerek ders alırsın.",
+            "Her karşılaşma sana sezgisel bir farkındalık yaratır.",
+            "Duygusal hafıza ruhsal dönüşümünde büyük rol oynar."
+          ],
+          "effect": [
+            "Ruhsal yolculuğun derin duygusal farkındalıkla ilerler.",
+            "Kader seni sezgisel bilgelik gerektiren alanlara yönlendirir.",
+            "İçsel duygusal döngüler ruhsal gelişim ritmini belirler."
+          ],
+          "shadow": [
+            "Geçmişe takılı kalmak karmayı ağırlaştırabilir.",
+            "Duygusal tutunmalar ruhsal ilerlemeyi yavaşlatabilir.",
+            "Hassasiyet ruhsal sınavların merkezine yerleşebilir."
+          ],
+          "potential": [
+            "Duygusal bilgelik olgunlaştığında ruhsal şifa kapasiten artar.",
+            "Sezgisel rehberliğin ruhsal büyümenin ana aracı haline gelir.",
+            "İçsel huzur kazandıkça karmasal döngüler çözülür."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_leo",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Leo"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde kendini ifade etme ve görünür olma arzusu vardır.",
+            "Düşüncelerinin değer gördüğünü hissetmek içsel özgüvenini besler.",
+            "Yaratıcı bir söz alanı kimlik duygunun ana kaynağını oluşturur."
+          ],
+          "mechanism": [
+            "Düşüncelerini samimi, dramatik ve etkileyici bir dille dışa aktarırsın.",
+            "Kendini anlatırken doğal bir sahne ışığı yaratabilirsin.",
+            "İçsel süreçlerin parlak ifadeye doğru akma eğilimindedir."
+          ],
+          "effect": [
+            "İnsanlar seni sıcak, karizmatik ve kendinden emin biri olarak algılar.",
+            "Konuşmaların çevrede dikkat çeker ve insanların sana yönelmesini sağlar.",
+            "Kimliğin, güçlü bir duruş ve ifade özgüveni ile dışa yansır."
+          ],
+          "shadow": [
+            "Onay ihtiyacı düşünsel güvenliğini zayıflatabilir.",
+            "Aşırı gurur, iletişimde esnekliği gölgeleyebilir.",
+            "Kendini fazla ciddiye almak düşünsel akışı kısıtlayabilir."
+          ],
+          "potential": [
+            "Olgunlaştığında düşüncelerin ilham veren bir merkeze dönüşebilir.",
+            "İfade gücün topluluklarda destekleyici bir liderlik yaratabilir.",
+            "Kimliğin, başkalarına cesaret veren güçlü bir ışık haline gelir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelinde takdir edilme ve görülme ihtiyacı bulunur.",
+            "Duygusal canlılık içsel motivasyonunu besler.",
+            "İfade alanı bulmak psikolojik enerjini dengeler."
+          ],
+          "mechanism": [
+            "Kendini değerli hissetmek için yaratıcı yollarla ifade etmeyi seçersin.",
+            "Duyguları zihinsel ışıkla harmanlayarak anlamlandırırsın.",
+            "İçsel süreçlerin dramatik ve canlı bir ritimle çalışır."
+          ],
+          "effect": [
+            "Psikolojik olarak neşeli, kendinden emin ve parlak bir enerji yaratırsın.",
+            "Çevrendekilere sıcaklık ve motivasyon taşırsın.",
+            "Duygularını ifade etme tarzın insanlara güven aşılar."
+          ],
+          "shadow": [
+            "Eleştiriye hassasiyet psikolojik stabiliteyi zorlayabilir.",
+            "Aşırı gurur duyguların gerçek tonunu gizleyebilir.",
+            "Kendine odaklanma eğilimi içsel kör noktalar yaratabilir."
+          ],
+          "potential": [
+            "Olgun bir özgüven geliştirdiğinde psikolojik ışığın başkalarını da güçlendirebilir.",
+            "Duygularını açıkça ifade ederek içsel bütünlüğünü büyütürsün.",
+            "Kendini tanıdıkça ruhsal cesaretin derinleşir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde sıcaklık, sadakat ve duygusal tutarlılık ararsın.",
+            "Görülme ihtiyacın ilişkisel motivasyonlarını şekillendirir.",
+            "Kendini ifade etmek ilişkisel bağın bir parçasıdır."
+          ],
+          "mechanism": [
+            "Partnerine sevgi ve ilgi göstermede cömert davranırsın.",
+            "Bağ kurarken duygularını açıkça, büyük bir gönüllülükle ifade edersin.",
+            "İlişkide özel bir alan yaratmak senin için önemlidir."
+          ],
+          "effect": [
+            "İlişkilerde sıcak, sadık ve tutkulu bir partner olursun.",
+            "Partnerin yanında enerjin yükselir ve bu etkileşimi besler.",
+            "Bağlarını dramatik ama samimi bir tonda yaşarsın."
+          ],
+          "shadow": [
+            "İlişkide dikkat bekleme eğilimi baskı yaratabilir.",
+            "Gurur, duygusal açıklığı engelleyebilir.",
+            "Kıskançlık benlik duygunu zayıflatabilir."
+          ],
+          "potential": [
+            "Kendini sağlıklı ifade ettiğinde ilişkilerin ilham veren bir sıcaklık taşır.",
+            "Cömertliğin bağları güçlendirici bir etki yaratır.",
+            "Duygusal cesaretin daha derin ve sağlıklı ilişkiler oluşturur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin temel motivasyonu yaratıcı ifade ve kendini ortaya koymaktır.",
+            "Düşüncelerine anlam katmak içsel ateşini besler.",
+            "Görünürlük ihtiyacı zihinsel süreçlerini şekillendirir."
+          ],
+          "mechanism": [
+            "Zihnin dramatik, etkileyici ve özgün bir ritimle çalışır.",
+            "Sorunları yaratıcı çözümlerle ele alırsın.",
+            "Düşüncelerin güçlü metaforlar ve canlı imgelerle birleşir."
+          ],
+          "effect": [
+            "İnsanlar seni doğal bir anlatıcı ve etkileyici bir konuşmacı olarak görür.",
+            "Fikirlerin karizmatik bir tonda ifade bulur.",
+            "Zihinsel enerjin başkalarına motivasyon kazandırır."
+          ],
+          "shadow": [
+            "Aşırı dramatikleştirme gerçekliği çarpıtabilir.",
+            "Gurur, fikirlerini savunma esnekliğini azaltabilir.",
+            "Duygusal iniş çıkışlar zihinsel parlaklığı gölgeleyebilir."
+          ],
+          "potential": [
+            "Yaratıcı zekân ilham verici çalışmalara dönüşebilir.",
+            "Zihinsel ifaden toplulukları harekete geçiren bir güce dönüşebilir.",
+            "Kendini tanıdıkça zihnin derin bir özgünlük kazanır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında yaratıcı alanlar ve ifade özgürlüğü seni besler.",
+            "Kendini gösterme isteğin profesyonel motivasyonlarının merkezindedir.",
+            "Takdir edilme arzusu kariyer yolunu şekillendirir."
+          ],
+          "mechanism": [
+            "Projelere tutkuyla yaklaşır, enerjini tamamen adarsın.",
+            "Takım içinde moral veren bir ışık taşırsın.",
+            "Kendine özgü yöntemler geliştirerek çalışmayı tercih edersin."
+          ],
+          "effect": [
+            "İş ortamında karizmatik ve etkileyici bir izlenim yaratırsın.",
+            "Yaratıcı yönün projelere estetik bir güç katar.",
+            "İnsanlar seni motive eden bir merkez olarak görür."
+          ],
+          "shadow": [
+            "Eleştiriye hassasiyet profesyonel gelişimini zorlaştırabilir.",
+            "Dikkat ihtiyacı iş ilişkilerinde karmaşa yaratabilir.",
+            "Abartılı özgüven riskli kararlar aldırabilir."
+          ],
+          "potential": [
+            "Yaratıcı liderlik kapasiten profesyonel çevrede büyük etki yaratabilir.",
+            "İfade gücünü olgunlaştırdığında etkili bir rol model olursun.",
+            "Kendini adadığın işler uzun vadeli başarı getirebilir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması ifade cesaretini geliştirmektir.",
+            "Ruhsal derslerin görünürlük ve içsel özdeğer üzerinden şekillenir.",
+            "Kendini parlatma arzun karmasal sınavlarını belirler."
+          ],
+          "mechanism": [
+            "Deneyimlerin seni içsel özdeğerle yüzleşmeye götürür.",
+            "Her karşılaşma kendini ifade etme bilincini artırır.",
+            "Zorluklar seni gerçek ışığını bulmaya yönlendirir."
+          ],
+          "effect": [
+            "Ruhsal yolculuğun cesaret, ifade ve yaratıcılık üzerinden ilerler.",
+            "Kader seni görünür olmaya zorlayan alanlara iter.",
+            "İçsel ateşin ruhsal gelişim ritmini belirler."
+          ],
+          "shadow": [
+            "Onay bağımlılığı karmayı ağırlaştırabilir.",
+            "Aşırı ego ruhsal büyümeyi engelleyebilir.",
+            "Gurur, karmasal derslerde kör noktalar yaratabilir."
+          ],
+          "potential": [
+            "İçsel ışığını tanıdığında ruhsal gelişimin hızlanır.",
+            "Özdeğerini dışarıdan değil içeriden kurduğunda güçlü bir bilgelik doğar.",
+            "Yaratıcı enerjin ruhsal ifadenin ana kaynağı olur."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_virgo",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Virgo"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde düzen kurma ve sistemi anlama ihtiyacı bulunur.",
+            "Mükemmelleştirme arzusu düşünsel kimliğini besler.",
+            "Faydalı olma motivasyonu kimlik algını derinden etkiler."
+          ],
+          "mechanism": [
+            "Detayları ayrıştırarak bütünü anlamaya çalışırsın.",
+            "Kendini ifade ederken analitik ve titiz bir yaklaşım kullanırsın.",
+            "Zihnin düzen, kontrol ve doğruluk üzerinden işler."
+          ],
+          "effect": [
+            "Dışarıdan dikkatli, çalışkan ve analitik biri olarak görünürsün.",
+            "İnsanlar seni güvenilir ve çözüm odaklı biri olarak algılar.",
+            "Kimliğin pratiklik ve akılcılık üzerinden tanımlanır."
+          ],
+          "shadow": [
+            "Aşırı eleştirel olmak kimlik baskısı yaratabilir.",
+            "Mükemmeliyetçilik içsel yetersizlik duyguları doğurabilir.",
+            "Detaylarda kaybolmak büyük resmi görmeni zorlaştırabilir."
+          ],
+          "potential": [
+            "Analitik zekân olgunlaştığında bilgece çözüm üretme kapasitesi kazanırsın.",
+            "Kimliğin, düzen kuran ve sorun gideren bir rehbere dönüşebilir.",
+            "Pratik bilgelik zamanla güçlü bir kimlik merkezine evrilir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelinde anlam kurma ve düzen sağlama ihtiyacı vardır.",
+            "Faydalı olmak içsel dengenin önemli parçasıdır.",
+            "Kontrol arayışı psikolojik motivasyonlarını şekillendirir."
+          ],
+          "mechanism": [
+            "İçsel karmaşayı zihinsel analizle çözmeye çalışırsın.",
+            "Duyguları düzenlemek için mantıksal çerçeveler kullanırsın.",
+            "Her olayı değerlendirmek için sistematik yollar geliştirirsin."
+          ],
+          "effect": [
+            "Psikolojik olarak dikkatli, özenli ve sorumluluk sahibi görünürsün.",
+            "İçsel süreçlerin disiplinli bir ritim taşır.",
+            "Zorlukları çözümleyerek aşma eğilimin belirgindir."
+          ],
+          "shadow": [
+            "Aşırı analiz içsel gerginlik yaratabilir.",
+            "Kusur bulma eğilimi psikolojik baskı oluşturabilir.",
+            "Kontrol ihtiyacı spontane duygusal akışa engel olabilir."
+          ],
+          "potential": [
+            "Psikolojik düzeni sağladığında içsel huzurun derinleşir.",
+            "Analitik zihin duygusal bilgelikle birleştiğinde güçlü bir iç denge ortaya çıkar.",
+            "Kendini kabul etmeyi öğrendiğinde içsel eleştirmen yumuşar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde güven, sorumluluk ve netlik ararsın.",
+            "Detaylara verdiğin önem ilişkisel seçimlerini etkiler.",
+            "Hizmet etme eğilimi bağ kurma stilinin temelini oluşturur."
+          ],
+          "mechanism": [
+            "Partnerini dikkatle gözlemler, ihtiyaçlarını anlamaya çalışırsın.",
+            "İlişkide düzen sağlamak için pratik çözümler önerirsin.",
+            "Bağ kurarken küçük jestler ve detaylarla ilgi gösterirsin."
+          ],
+          "effect": [
+            "İlişkilerde sadık, özenli ve destekleyici bir partner olursun.",
+            "Sözlerinde netlik, davranışlarında tutarlılık sunarsın.",
+            "Partnerin seni güvenilir ve çalışkan biri olarak görür."
+          ],
+          "shadow": [
+            "Eleştirel yaklaşım ilişkisel gerginlik doğurabilir.",
+            "Aşırı kontrol ilişkide baskı yaratabilir.",
+            "Mükemmellik arayışı duygusal spontaneiteyi engelleyebilir."
+          ],
+          "potential": [
+            "Empatiyi analitik zekânla birleştirdiğinde güçlü bir ilişkisel uyum ortaya çıkar.",
+            "Duygusal açıklık kazandığında ilişkiler daha yumuşak ve derin bir tona kavuşur.",
+            "Pratik sevgi dili uzun vadeli güçlü ilişkiler yaratabilir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin temel motivasyonu analiz etmek, düzenlemek ve iyileştirmektir.",
+            "Doğruluk ve verimlilik ihtiyacı zihinsel süreçlerini yönlendirir.",
+            "Kusurları fark etme eğilimi doğal bir zihinsel refleksindir."
+          ],
+          "mechanism": [
+            "Bilgiyi küçük parçalara ayırarak anlamlandırırsın.",
+            "Sorunlara sistematik yaklaşırsın.",
+            "Detaylar üzerinden büyük yapıları çözmeyi tercih edersin."
+          ],
+          "effect": [
+            "İnsanlar seni analitik, akılcı ve düzenli biri olarak görür.",
+            "Zihinsel süreçlerin netlik ve titizlik üretir.",
+            "Çözümlerinin uygulanabilirliği dikkat çeker."
+          ],
+          "shadow": [
+            "Aşırı analiz kararsızlığa neden olabilir.",
+            "Zihinsel baskı stres yaratabilir.",
+            "Sert içsel eleştiri zihinsel yaratıcılığı kısıtlayabilir."
+          ],
+          "potential": [
+            "Keskin zekân zamanla ustalığa dönüşebilir.",
+            "Zihinsel düzen kapasiten profesyonel yetkinlik yaratır.",
+            "Kusur bulmak yerine geliştirmeye odaklandığında parlak bir çözüm gücü doğar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında düzen, sistem ve verimlilik ararsın.",
+            "Sorumluluk alma ihtiyacı profesyonel motivasyonlarını yönlendirir.",
+            "İşleri mükemmelleştirme arzusu kariyer yaklaşımının merkezindedir."
+          ],
+          "mechanism": [
+            "Görevleri detaylı ve özenli biçimde tamamlarsın.",
+            "İş arkadaşlarının eksiklerini tamamlamak için doğal bir eğilim gösterirsin.",
+            "Projelere analitik bir çerçeve getirirsin."
+          ],
+          "effect": [
+            "İnsanlar seni son derece güvenilir ve çalışkan biri olarak tanımlar.",
+            "Çalışma alanında düzen ve profesyonellik enerjisi yaratırsın.",
+            "Ürettiğin işler yüksek kalite standardı taşır."
+          ],
+          "shadow": [
+            "Aşırı çalışma yükü tükenmişlik yaratabilir.",
+            "Mükemmeliyetçilik ilerlemeyi yavaşlatabilir.",
+            "Detaylarda kaybolmak zaman yönetimini zorlaştırabilir."
+          ],
+          "potential": [
+            "Profesyonel zekân güçlü bir uzmanlık alanına dönüşebilir.",
+            "Yapı kurma becerin liderlik için sağlam bir temel oluşturur.",
+            "Titizliğin olgunlaştığında güvenilir bir otoriteye dönüşür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması kusurdan bilgelik üretmektir.",
+            "Ruhsal derslerin düzen ve hizmet bilinci üzerinden şekillenir.",
+            "İçsel eleştirmen karmasal sınavlarının merkezindedir."
+          ],
+          "mechanism": [
+            "Deneyimleri çözümleyerek anlamlandırırsın.",
+            "Her zorluk seni içsel ustalığa doğru iter.",
+            "Ruhsal süreçlerin analiz ve netlik yoluyla işler."
+          ],
+          "effect": [
+            "Ruhsal gelişimin ince bir farkındalıkla ilerler.",
+            "Kaderin seni iyileştirme ve düzen kurma alanlarına çeker.",
+            "Yaşam yolunda hizmet etme teması belirginleşir."
+          ],
+          "shadow": [
+            "Aşırı öz-eleştiri karmayı ağırlaştırabilir.",
+            "Kusurlara odaklanmak ruhsal ilerlemeyi geciktirebilir.",
+            "Kontrol ihtiyacı ruhsal esnekliği azaltabilir."
+          ],
+          "potential": [
+            "Kendini kabul ettikçe ruhsal huzurun derinleşir.",
+            "İçsel bilgelik olgunlaştığında güçlü bir ruhsal rehber olursun.",
+            "Düzeni bilgelikle birleştirdiğinde karmasal döngüler çözülür."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_libra",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Libra"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde uyum yaratma ve ilişkisel denge kurma isteği bulunur.",
+            "Başkalarının düşüncelerini gözetme eğilimi kimliğinin şekillenmesine katkı sağlar.",
+            "Adalet duygusu ve karşılıklılık ihtiyacı düşünsel kimliğini belirler."
+          ],
+          "mechanism": [
+            "Kendini ifade ederken yumuşak, dengeli ve diplomatik bir dil kullanırsın.",
+            "Kararlarını çevrendeki kişilerin etkilerini hesaplayarak verirsin.",
+            "Her görüşü tartarak en adil ifadeyi bulmaya çalışırsın."
+          ],
+          "effect": [
+            "Dışarıdan zarif, uyumlu ve sosyal bir iletişim tarzın olduğu görülür.",
+            "İnsanlar seni anlayışlı, kibar ve dengeli biri olarak algılar.",
+            "Kimliğin barışçıl bir etki yaratır."
+          ],
+          "shadow": [
+            "Kararsızlık kimlik bütünlüğünü zayıflatabilir.",
+            "Onay arayışı seni kendi düşüncenden uzaklaştırabilir.",
+            "Aşırı uyumlanma kimliğini belirsizleştirebilir."
+          ],
+          "potential": [
+            "İfade bilincin olgunlaştığında güçlü bir diplomatik zekâya dönüşür.",
+            "Denge kurma yeteneğin sosyal bilgelik üretebilir.",
+            "Kimliğin uyum yaratan bir rehber formuna evrilebilir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelinde huzur, uyum ve karşılıklı anlayış ihtiyacı yer alır.",
+            "İçsel denge arayışı zihinsel süreçlerini yönlendirir.",
+            "Çatışmadan kaçınma eğilimi psikolojik motivasyonunun bir parçasıdır."
+          ],
+          "mechanism": [
+            "Duygusal dalgalanmaları mantıkla dengelemeye çalışırsın.",
+            "Olayları tarafsız bir bakışla değerlendirmeyi tercih edersin.",
+            "Kendini daha iyi hissetmek için ilişkisel uyum ararsın."
+          ],
+          "effect": [
+            "Psikolojik olarak yumuşak, sakin ve hoş bir enerji yaratırsın.",
+            "Çevrene denge ve uzlaşı getirme eğilimi gösterirsin.",
+            "Duygusal süreçlerin medeni bir ifade tarzıyla birleşir."
+          ],
+          "shadow": [
+            "Aşırı uzlaşmacılık ruhsal ihtiyaçlarını gölgeleyebilir.",
+            "Gerçek duyguları saklamak psikolojik baskı yaratabilir.",
+            "Kararsızlık içsel huzursuzluk doğurabilir."
+          ],
+          "potential": [
+            "Psikolojik dengeyi bulduğunda güçlü bir bilgelik üretirsin.",
+            "İçsel netliğin arttıkça ilişkilerindeki uyum gerçek bir temele oturur.",
+            "Denge kurma yeteneğin ruhsal bir ustalığa dönüşebilir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde uyum, zarafet ve karşılıklılık temel ihtiyaçlarındandır.",
+            "Bağ kurma isteğin zihinsel ve duygusal eşitlik üzerinden şekillenir.",
+            "Estetik ve incelik ilişki deneyimlerinde büyük rol oynar."
+          ],
+          "mechanism": [
+            "Partnerinle iletişimde nazik ve diplomatik bir ton kullanırsın.",
+            "Dengeyi korumak için kendi ihtiyaçlarını dikkatle düzenlersin.",
+            "Bağları güçlendirmek için ortak bir zemin aramayı tercih edersin."
+          ],
+          "effect": [
+            "İlişkilerde uyumlu, düşünceli ve nazik bir partner olursun.",
+            "Duygusal etkileşimlerde adil ve şeffaf bir duruş sergilersin.",
+            "Bağlarında hafif, estetik ve hoş bir enerji bulunur."
+          ],
+          "shadow": [
+            "Aşırı uyumlanma kendi benliğini gölgeleyebilir.",
+            "Kaçınmacı iletişim ilişkisel gerginlikleri artırabilir.",
+            "Kararsızlık bağın ritmini bozabilir."
+          ],
+          "potential": [
+            "İfade netliği geliştirdiğinde ilişkilerde olağanüstü bir uyum yaratabilirsin.",
+            "Denge kurma becerin ilişkisel bilgelik üretir.",
+            "Bağlarında incelik ve güç aynı anda var olabilir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin doğal motivasyonu karşıtlıkları anlamak ve uyum yaratmaktır.",
+            "Güzellik ve denge ihtiyacı düşünsel süreçlerini besler.",
+            "Objektiflik eğilimi zihinsel kimliğinin önemli parçasıdır."
+          ],
+          "mechanism": [
+            "Her fikri birkaç açıdan değerlendirerek dengeli bir sonuca varırsın.",
+            "Konuşurken nazik, adil ve özenli bir dil kullanırsın.",
+            "Zihnin fikirler arası uyumu arayan bir tartım sistemiyle çalışır."
+          ],
+          "effect": [
+            "İnsanlar seni adil, objektif ve estetik bir düşünür olarak görür.",
+            "Zihinsel süreçlerin uyum ve harmoni yaratır.",
+            "Çatışmaları yumuşatabilen bir iletişim tarzın vardır."
+          ],
+          "shadow": [
+            "Aşırı düşünme karar süreçlerini tıkanma noktasına getirebilir.",
+            "Her perspektifi görebilmek zihinsel yorgunluk yaratabilir.",
+            "Kaçınmacı tavır gerçeği ifade etmeyi zorlaştırabilir."
+          ],
+          "potential": [
+            "Objektif zekân olgunlaştığında güçlü bir adalet bilincine dönüşür.",
+            "Zihinsel esnekliğin karmaşık problemlerde denge kurar.",
+            "Uyum yaratan fikirlerinle topluluklara rehberlik edebilirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında uyum, estetik ve ilişkisel denge ararsın.",
+            "Ortaklık ve işbirliği motivasyonlarını besler.",
+            "Adil kararlar verme isteği profesyonel yaklaşımlarını yönlendirir."
+          ],
+          "mechanism": [
+            "Çalışma ortamında uyumu korumak için diplomatik davranırsın.",
+            "Takım içinde ara çözümler üretme eğilimin belirgindir.",
+            "Profesyonel ilişkilerde yumuşak ve nazik bir iletişim kurarsın."
+          ],
+          "effect": [
+            "İnsanlar seni çalışması kolay, uyumlu ve dengeli biri olarak görür.",
+            "İş ortamında gereksiz gerilimleri azaltan bir enerji taşırsın.",
+            "Profesyonel alanlarda estetik ve incelik dolu bir duruş sergilersin."
+          ],
+          "shadow": [
+            "Kararsızlık önemli fırsatları kaçırmana neden olabilir.",
+            "Aşırı uyum çaba göstermen gereken alanları gölgeleyebilir.",
+            "Güçlü duruş sergilemekte zorlanabilirsin."
+          ],
+          "potential": [
+            "Ustalık seviyesinde diplomasi geliştirdiğinde iş dünyasında güçlü bir figür olursun.",
+            "Denge kurma becerin iş ortamında yüksek bir değer yaratır.",
+            "Estetik ve uyum alanlarında olağanüstü başarı elde edebilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması dengeyi içten kurmaktır.",
+            "Karmasal derslerin ilişkisel alan üzerinden şekillenir.",
+            "Ruhsal olarak adalet ve uyum arayışı güçlü bir etki oluşturur."
+          ],
+          "mechanism": [
+            "Her karşılaşma sana daha adil ve dengeli olmayı öğretir.",
+            "Zorluklar seni kendi ihtiyaçlarını tanımaya iter.",
+            "Deneyimler duygusal açıklık kazanmanı sağlar."
+          ],
+          "effect": [
+            "Ruhsal yolculuğun ilişkiler üzerinden derinleşir.",
+            "Kader seni içsel denge gerektiren alanlara yönlendirir.",
+            "Barışçıl bir ruhsal ritim geliştirirsin."
+          ],
+          "shadow": [
+            "Kendini ifade etmemek karmasal tekrarlar yaratabilir.",
+            "Aşırı uzlaşma ruhsal gelişimini yavaşlatabilir.",
+            "Kararsızlık karmayı karmaşıklaştırabilir."
+          ],
+          "potential": [
+            "İçsel netlik kazandığında ruhsal dengeyi kolayca kurarsın.",
+            "Adalet duygun olgunlaştığında ruhsal bilgelik doğar.",
+            "İlişkisel farkındalığın karmayı çözme kapasitesine dönüşür."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_sagittarius",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Sagittarius"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde genişleme, özgürlük ve anlam arayışı bulunur.",
+            "İnançların ve büyük fikirlerin kimlik algında önemli bir rol oynar.",
+            "Gerçeği keşfetme arzusu düşünsel kimliğini derinden şekillendirir."
+          ],
+          "mechanism": [
+            "Kendini ifade ederken coşkulu, iyimser ve geniş perspektifli konuşursun.",
+            "Düşüncelerin hızlıca büyük çerçevelere sıçrar ve genellemeye eğilimlidir.",
+            "Kimliğin, kendi doğrularını yüksek bir enerjiyle savunarak inşa edilir."
+          ],
+          "effect": [
+            "Dışarıdan özgür ruhlu, iyimser ve vizyoner biri olarak algılanırsın.",
+            "İnsanlar seni ilham veren ve geniş ufuklu biri olarak tanımlar.",
+            "Kimliğin büyük bir heyecan ve hareket enerjisi taşır."
+          ],
+          "shadow": [
+            "Aşırı genelleme kimlik belirsizliği yaratabilir.",
+            "Hızlı yargılar düşünsel derinliği gölgeleyebilir.",
+            "Dogmatik tavırlar kimliğini katı bir çerçeveye sıkıştırabilir."
+          ],
+          "potential": [
+            "Geniş görüşlülüğün olgunlaştığında bilge bir rehberlik gücüne dönüşür.",
+            "Kimliğin ilham veren bir anlam taşıyıcısına evrilebilir.",
+            "İçsel özgürlük anlayışın ruhsal bilgelik yaratabilir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelinde özgürlük ve büyüme isteği vardır.",
+            "Yeni deneyimlerin heyecanı içsel motivasyonunu artırır.",
+            "Anlam arayışı psikolojik derinliğini besler."
+          ],
+          "mechanism": [
+            "Duygusal iniş çıkışları büyük resme bakarak dengelemeye çalışırsın.",
+            "Zorlukları bir macera gibi yorumlayarak etkilerini azaltırsın.",
+            "İçsel süreçlerin hızla iyimserleşmeye eğilimlidir."
+          ],
+          "effect": [
+            "Psikolojik olarak enerjik, canlı ve umut verici bir aura yayarsın.",
+            "İçsel gücün çevrendekilere ilham verir.",
+            "Kendini yenileme kapasiten yüksek ve doğal görünür."
+          ],
+          "shadow": [
+            "Aşırı iyimserlik sorunları küçümsemene neden olabilir.",
+            "Duygusal yüzleşmeleri ertelemek psikolojik baskı yaratabilir.",
+            "Kaçış eğilimi derin duygusal süreçleri gölgeleyebilir."
+          ],
+          "potential": [
+            "Gerçek anlamı bulduğunda psikolojik bütünlük kazanırsın.",
+            "İçsel genişlik ruhsal bilgelik üretme kapasitesi sunar.",
+            "Özgürlüğü bilinçle birleştirdiğinde duygusal olgunluk ortaya çıkar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde özgürlük, dürüstlük ve zihinsel uyum ararsın.",
+            "Bağ kurma isteğin ortak keşifler üzerine kuruludur.",
+            "İlişkilerde heyecan ve büyüme ihtiyacı belirgindir."
+          ],
+          "mechanism": [
+            "Partnerinle açık, direkt ve cesur bir iletişim kurarsın.",
+            "Bağı güçlendirmek için ortak hayaller ve deneyimler yaratırsın.",
+            "İlişkide hareket ve yenilik arayışın belirgin bir ritim oluşturur."
+          ],
+          "effect": [
+            "Sıcak, neşeli ve ilham veren bir partner olursun.",
+            "Bağlarında canlılık ve özgürlük duygusu baskındır.",
+            "İlişkilerin macera ruhu taşır ve monotonluktan uzaktır."
+          ],
+          "shadow": [
+            "Aşırı özgürlük ihtiyacı bağlanmayı zorlaştırabilir.",
+            "Patavatsızlık ilişkisel kırgınlıklara yol açabilir.",
+            "Tutarsızlık partnerini güvensiz hissettirebilir."
+          ],
+          "potential": [
+            "Dürüstlüğün olgunlaştığında ilişkilerde güçlü bir güven doğar.",
+            "Ortak keşifler bağlarını derinleştirici bir güç haline gelir.",
+            "İlişkilerde özgürlük ve sadakati birleştiren bilge bir enerji geliştirebilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin büyük resme bakmak ve anlam üretmek üzerine kuruludur.",
+            "Merakın farklı kültürler ve doğrular arasında bağlantı kurmanı sağlar.",
+            "Keşif motivasyonu zihinsel yapını canlı tutar."
+          ],
+          "mechanism": [
+            "Zihnin hızla geniş perspektiflere sıçrayarak fikir üretir.",
+            "Ayrıntılardan çok kavramsal büyük yapılarla çalışırsın.",
+            "Düşünceleri coşkuyla ifade eder ve kolayca genellersin."
+          ],
+          "effect": [
+            "İnsanlar seni vizyoner ve ilham veren biri olarak görür.",
+            "Zihnin yeni fikirler yaratma konusunda üretkendir.",
+            "Sorunlara geniş çaplı çözümler sunabilirsin."
+          ],
+          "shadow": [
+            "Detay atlamak yanlış sonuçlara neden olabilir.",
+            "Fanatik düşünceler zihinsel esnekliği zayıflatabilir.",
+            "Aşırı genelleme gerçekliği çarpıtabilir."
+          ],
+          "potential": [
+            "Zihinsel genişliğin bilgece bir öğreticiliğe dönüşebilir.",
+            "Farklı bakış açılarını sentezleyerek yüksek bir anlayış düzeyi oluşturursun.",
+            "Geniş görüşlülüğün zihinsel liderlik kapasitesi taşır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında özgürlük, vizyon ve büyüme fırsatları ararsın.",
+            "Keşfetme enerjin profesyonel motivasyonlarını yönlendirir.",
+            "Büyük hedefler belirlemek seni canlı tutar."
+          ],
+          "mechanism": [
+            "Projelere coşkuyla yaklaşır ve moral yükseltici bir enerji taşırsın.",
+            "İş ortamında yenilik ve genişleme önerileri sunarsın.",
+            "Fikirlerini açık ve direkt biçimde ifade ederek yön tayin edersin."
+          ],
+          "effect": [
+            "Profesyonel ortamda ilham veren ve motive eden biri olarak görünürsün.",
+            "Yaratıcı vizyonun iş süreçlerini canlandırır.",
+            "Geniş görüşlülüğün takımda stratejik bir avantaj sağlar."
+          ],
+          "shadow": [
+            "Aşırı risk alma profesyonel sorunlara yol açabilir.",
+            "Sabırsızlık uzun vadeli projelerde zorlanma yaratabilir.",
+            "Tutarsızlık iş ilişkilerinde güven kaybına neden olabilir."
+          ],
+          "potential": [
+            "Vizyoner zekân profesyonel liderlik kapasitesi sunar.",
+            "Büyük fikirlerin uzun vadeli başarılara dönüşebilir.",
+            "Özgür ruhlu yaklaşımın kariyerinde yeni yollar açabilir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması gerçeği aramak ve yaymaktır.",
+            "Ruhsal derslerin anlam ve inanç sistemleri üzerinden şekillenir.",
+            "Özgürlük ihtiyacı karmasal sınavlarının merkezindedir."
+          ],
+          "mechanism": [
+            "Kader seni genişleyen deneyimlere doğru yönlendirir.",
+            "Her karşılaşma içsel doğrularını sorgulamana neden olur.",
+            "Ruhsal gelişimin keşfetme ve öğrenme yoluyla ilerler."
+          ],
+          "effect": [
+            "Ruhsal ritmin açık, özgür ve geniş bir enerji taşır.",
+            "Kaderin seni öğretici ve ilham verici alanlara iter.",
+            "Deneyimler yoluyla büyük bir içsel bilgelik oluşur."
+          ],
+          "shadow": [
+            "Fanatizm karmayı ağırlaştırabilir.",
+            "Gerçeklerden kaçma ruhsal ilerlemeyi zorlaştırabilir.",
+            "Dağınıklık karmasal dersleri belirsiz kılabilir."
+          ],
+          "potential": [
+            "Anlamı derinleştirdiğinde ruhsal genişleme ortaya çıkar.",
+            "Öğreticilik kapasiten karmayı çözme gücüne dönüşebilir.",
+            "Gerçeği cesurca aradığında ruhsal büyüme hızlanır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_capricorn",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Capricorn"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde kontrol, yapı ve sorumluluk duygusu bulunur.",
+            "Gerçekçilik düşünsel kimliğini şekillendirir.",
+            "Uzun vadeli başarı isteği kimlik algını belirler."
+          ],
+          "mechanism": [
+            "Düşüncelerini mantık ve strateji süzgecinden geçirerek ifade edersin.",
+            "Kendini gösterirken ciddi, ölçülü ve hesaplı bir dil kullanırsın.",
+            "Kimliğin disiplin ve olgunluk üzerinden inşa edilir."
+          ],
+          "effect": [
+            "Dışarıdan olgun, güvenilir ve hedef odaklı biri olarak görünürsün.",
+            "İnsanlar seni ciddi ve odaklı biri olarak tanımlar.",
+            "Kimliğin sağlam bir duruş enerjisi taşır."
+          ],
+          "shadow": [
+            "Aşırı ciddiyet kimliği katı bir yapıya dönüştürebilir.",
+            "Kendini ifade ederken soğuk görünme riski vardır.",
+            "Mükemmeliyet baskısı kimlik ağırlaşması yaratabilir."
+          ],
+          "potential": [
+            "Kimliğin zamanla bilge, kontrollü ve lider ruhlu bir yapıya dönüşebilir.",
+            "Sorumluluk bilincin çevrene büyük güven verir.",
+            "Uzun vadeli hedef bilinci yüksek bir kimlik bütünlüğü oluşturabilir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelinde güvenlik, kontrol ve disiplin ihtiyacı bulunur.",
+            "İçsel düzen ihtiyacı duygusal süreçlerini yönlendirir.",
+            "Sorumluluk bilinci psikolojik motivasyonlarını belirler."
+          ],
+          "mechanism": [
+            "Duygusal süreçleri mantık ve yapı çerçevesinde düzenlemeye çalışırsın.",
+            "Kendini güvende hissetmek için net sınırlar oluşturursun.",
+            "Zorluklara sabır ve kararlılıkla yaklaşmayı tercih edersin."
+          ],
+          "effect": [
+            "Psikolojik olarak güçlü, dayanıklı ve kontrollü bir enerji sergilersin.",
+            "İnsanlar seni sakin ve güvenilir biri olarak görür.",
+            "Zorluklar karşısında içsel gücün kolay kolay sarsılmaz."
+          ],
+          "shadow": [
+            "Aşırı kontrol ihtiyacı psikolojik baskı yaratabilir.",
+            "Duyguları bastırmak içsel sertlik oluşturabilir.",
+            "Kendine karşı katı olmak ruhsal esnekliği zayıflatabilir."
+          ],
+          "potential": [
+            "Olgunlaştığında büyük bir içsel disiplin gücü kazanırsın.",
+            "Psikolojik sağlamlığın bilgelik üretir.",
+            "Kendini kabul ettiğinde sertlik yerini güçlendirilmiş bir dayanıklılığa bırakır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde güven, sadakat ve kararlılık ararsın.",
+            "Ciddiyet ve netlik ilişki motivasyonlarının temelini oluşturur.",
+            "Uzun vadeli bağlar kurma isteğin belirgindir."
+          ],
+          "mechanism": [
+            "Partnerine karşı sorumluluk sahibi ve koruyucu bir yaklaşım sergilersin.",
+            "Bağları güçlendirmek için istikrarlı davranmayı tercih edersin.",
+            "İlişkide sözlerini tutarak güven inşa edersin."
+          ],
+          "effect": [
+            "İlişkilerde güvenilir, sadık ve dayanıklı bir partner olursun.",
+            "Partnerin seni ciddi ve bağlı biri olarak algılar.",
+            "Duygusal bağlarda istikrar ve süreklilik ortaya koyarsın."
+          ],
+          "shadow": [
+            "Aşırı kontrollü olmak ilişkisel gerginlik yaratabilir.",
+            "Duygusal soğukluk bağın sıcaklığını azaltabilir.",
+            "Yüksek beklentiler partner üzerinde baskı oluşturabilir."
+          ],
+          "potential": [
+            "Olgun duygusal açıklık geliştiğinde ilişkilerin güçlü bir yapıya kavuşur.",
+            "Sadakatin uzun vadeli bağlar için büyük bir güven kaynağıdır.",
+            "İlişkilerde bilgece bir kararlılık geliştirebilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin mantık, yapı ve netlik üzerine kuruludur.",
+            "Gerçekçi düşünme eğilimi zihinsel yapının temelini oluşturur.",
+            "Uzun vadeli planlama motivasyonu düşünsel süreçlerini yönlendirir."
+          ],
+          "mechanism": [
+            "Düşünceleri stratejik bir çerçevede işler ve düzenlersin.",
+            "Zorluklara çözüm odaklı ve disiplinli bir yaklaşım tercih edersin.",
+            "Zihnin sabırlı, metodik ve dikkatli çalışır."
+          ],
+          "effect": [
+            "İnsanlar seni mantıklı, güvenilir ve ciddi bir düşünür olarak görür.",
+            "Çözümlerin sağlam, pratik ve uygulanabilir olur.",
+            "Zihinsel süreçlerin yüksek odak ve disiplin üretir."
+          ],
+          "shadow": [
+            "Aşırı ciddiyet yaratıcı akışı engelleyebilir.",
+            "Karamsarlık zihinsel berraklığı zayıflatabilir.",
+            "Kendini fazla sınırlandırmak düşünsel kapasiteyi daraltabilir."
+          ],
+          "potential": [
+            "Stratejik zekân zamanla ustalığa dönüşebilir.",
+            "Zihinsel disiplinin büyük projeleri başarıyla yürütme kapasitesi sağlar.",
+            "Gerçekçilikle bilgelik birleştiğinde güçlü bir akıl ortaya çıkar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında disiplin, yapı ve başarı odaklılık ararsın.",
+            "Uzun vadeli planlar profesyonel motivasyonunu belirler.",
+            "Sorumluluk bilinci iş yaklaşımının merkezindedir."
+          ],
+          "mechanism": [
+            "Görevleri metodik ve organize bir şekilde tamamlarsın.",
+            "Profesyonel ilişkilerde ciddi ve güvenilir bir duruş sergilersin.",
+            "Zorluklara sabırla yaklaşarak çözüm üretirsin."
+          ],
+          "effect": [
+            "İş ortamında olgun, güvenilir ve sorumluluk sahibi biri olarak görünürsün.",
+            "Disiplinli yaklaşımın projeleri güvenle ilerletir.",
+            "Profesyonel alanda güçlü bir saygınlık elde edebilirsin."
+          ],
+          "shadow": [
+            "Aşırı ciddi tavır iş ilişkilerini katılaştırabilir.",
+            "Aşırı yüklenme tükenmişlik yaratabilir.",
+            "Kontrol ihtiyacı profesyonel akışı bozabilir."
+          ],
+          "potential": [
+            "Disiplinli liderlik kapasiten profesyonel başarıyı büyütebilir.",
+            "Stratejik zekân uzun vadeli projelerde büyük avantaj sağlar.",
+            "Kararlılığın iş hayatında kalıcı başarı üretebilir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması sorumluluk bilinci geliştirmektir.",
+            "Ruhsal derslerin disiplin ve olgunluk üzerine kuruludur.",
+            "Köklenme ihtiyacı karmasal deneyimlerini şekillendirir."
+          ],
+          "mechanism": [
+            "Kader seni yapı kurmanız gereken alanlara iter.",
+            "Deneyimler sabır ve kararlılık kazandırır.",
+            "Zorlukları aşarken ruhsal dayanıklılık geliştirirsin."
+          ],
+          "effect": [
+            "Ruhsal yolculuğun ağır ama güçlü bir gelişim ritmi taşır.",
+            "Kader seni bilgelik gerektiren alanlara yönlendirir.",
+            "İçsel disiplin ruhsal ilerlemene zemin hazırlar."
+          ],
+          "shadow": [
+            "Aşırı katılık karmasal dersleri ağırlaştırabilir.",
+            "Kendini cezalandırma eğilimi ruhsal gelişimi zorlaştırabilir.",
+            "Korkular sınırlarını daraltabilir."
+          ],
+          "potential": [
+            "Olgun disiplin ruhsal güç yaratır.",
+            "Gerçekçilik bilgelikle birleştiğinde ruhsal ustalık doğar.",
+            "Zorlukları aşma kapasiten karmayı çözme gücü sunar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_aquarius",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Aquarius"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde özgünlük ve bağımsız düşünme isteği vardır.",
+            "Farklı olma arzusu düşünsel kimliğini şekillendirir.",
+            "Büyük resme katkı sunma motivasyonu kimliğinin merkezindedir."
+          ],
+          "mechanism": [
+            "Kendini ifade ederken sıra dışı, yenilikçi ve analitik bir yaklaşım kullanırsın.",
+            "Kimliğini zihinsel özgürlükle korur ve geliştirirsin.",
+            "Düşünceleri, geleneksel kalıpların dışına çıkararak yorumlamayı tercih edersin."
+          ],
+          "effect": [
+            "Dışarıdan ilerici, özgün ve bağımsız biri olarak görünürsün.",
+            "İnsanlar seni alışılmışın dışında düşünebilen biri olarak tanımlar.",
+            "Kimliğin zihinsel yenilik enerjisi taşır."
+          ],
+          "shadow": [
+            "Mesafe yaratma eğilimi kimlikte soğukluk hissi oluşturabilir.",
+            "Aşırı bağımsızlık bağ kurmayı zorlaştırabilir.",
+            "Kalıpları reddetmek kimlik istikrarını sarsabilir."
+          ],
+          "potential": [
+            "Özgün kimliğin zamanla kolektife ilham veren bir bilgelik oluşturabilir.",
+            "Analitik özgürlüğün yüksek bir bilinç seviyesine dönüşebilir.",
+            "Farklılık kapasiten güçlü bir toplumsal katkı yaratabilir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelinde zihinsel özgürlük ve tarafsız bakış ihtiyacı vardır.",
+            "Duygusal mesafe içsel süreçlerini düzenlemene yardımcı olur.",
+            "Bağımsız düşünme isteği psikolojik motivasyonlarının merkezindedir."
+          ],
+          "mechanism": [
+            "Duyguları analiz ederek anlamlandırır ve zihinsel çerçevelere oturtursun.",
+            "Zorluklara duygusal reaksiyondan çok kavramsal yaklaşmayı tercih edersin.",
+            "İçsel süreçlerin soğukkanlı ve tarafsız bir ritimle çalışır."
+          ],
+          "effect": [
+            "Psikolojik olarak sakin, mantıklı ve mesafeli biri olarak görünürsün.",
+            "Zihinsel netliğin çevrene açıklık ve güven verir.",
+            "Duygusal karmaşıklığı sadeleştirme becerin dikkat çeker."
+          ],
+          "shadow": [
+            "Duygusal kopukluk içsel yalnızlık yaratabilir.",
+            "Aşırı rasyonellik empatiyi gölgeleyebilir.",
+            "Mesafeli tavır insanlarla bağ kurmanı zorlaştırabilir."
+          ],
+          "potential": [
+            "Tarafsız bilgelik psikolojik gelişimini güçlendirebilir.",
+            "Duygusal farkındalık kazandığında içsel denge olağanüstü gelişir.",
+            "Zihinsel özgürlüğün ruhsal açıklık yaratabilir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde özgürlük, zihinsel uyum ve arkadaşlık temeldir.",
+            "Bağlanma isteğin bağımsızlık ihtiyacınla dengelenir.",
+            "İlişkilerde eşitlik ve açıklık senin için çok değerlidir."
+          ],
+          "mechanism": [
+            "Partnerinle doğrudan, objektif ve açık bir iletişim kurarsın.",
+            "Bağı güçlendirmek için ortak ilgi alanları ve zihinsel paylaşımlar yaratırsın.",
+            "Duygularını fazla dramatikleştirmeden, sade bir tonda ifade edersin."
+          ],
+          "effect": [
+            "İlişkilerde özgün, adil ve güvenilir bir partner olursun.",
+            "Bağlarında arkadaşlık enerjisi güçlüdür.",
+            "İlişkilerinde yenilikçi bir atmosfer yaratabilirsin."
+          ],
+          "shadow": [
+            "Duygusal mesafe partnerde güvensizlik yaratabilir.",
+            "Aşırı özgürlük ihtiyacı bağları zayıflatabilir.",
+            "Soğukluk derin duygusal temas kurmayı zorlaştırabilir."
+          ],
+          "potential": [
+            "Duygusal açıklık geliştiğinde ilişkilerin güçlü ve özgün bir yapıya kavuşur.",
+            "Zihinsel uyum ilişkilerde yüksek bir denge yaratabilir.",
+            "Bağımsızlıkla bağlılık arasında bilgece bir köprü kurabilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin özgünlük, yenilik ve tarafsız analiz üzerine kuruludur.",
+            "Farklı düşünme isteği zihinsel süreçlerini besler.",
+            "Toplumsal yapıları anlamlandırma ihtiyacı belirgindir."
+          ],
+          "mechanism": [
+            "Düşünceleri objektif bir bakışla analiz eder ve geleceğe yönelik yorumlarsın.",
+            "Zihnin kalıpları kıran, yenilikçi bir ritimle çalışır.",
+            "Karmaşık konuları sadeleştirme kapasiten yüksektir."
+          ],
+          "effect": [
+            "İnsanlar seni ileri görüşlü ve analitik biri olarak görür.",
+            "Sorunlara alışılmışın dışında çözümler getirirsin.",
+            "Zihinsel özgürlüğün ilham verici bir etki yaratır."
+          ],
+          "shadow": [
+            "Fazla soyut düşünmek gerçeklikten uzaklaşmana neden olabilir.",
+            "Aşırı objektiflik duygusal doğruluğu gölgeleyebilir.",
+            "Mesafeli zihin yapısı iletişimde kopukluk yaratabilir."
+          ],
+          "potential": [
+            "Yenilikçi zekân toplumsal katkı üretebilecek güçtedir.",
+            "Analitik özgürlüğün kolektif farkındalık yaratabilir.",
+            "Zihinsel açıklığın yüksek bir bilinç seviyesine evrilebilir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında özgürlük, yenilik ve zihinsel bağımsızlık ararsın.",
+            "Geleceğe yönelik projeler seni motive eder.",
+            "Toplumsal fayda oluşturma isteğin profesyonel gelişimini besler."
+          ],
+          "mechanism": [
+            "İş ortamına yenilikçi fikirler getirirsin.",
+            "Takım çalışmalarında objektif ve stratejik düşünürsün.",
+            "Karmaşık sistemleri hızlıca analiz ederek çözümler sunarsın."
+          ],
+          "effect": [
+            "Profesyonel ortamda vizyoner ve analitik biri olarak görünürsün.",
+            "Yenilikçi yaklaşımın iş süreçlerini ileri taşır.",
+            "İnsanlar seni açık fikirli ve güvenilir biri olarak tanımlar."
+          ],
+          "shadow": [
+            "Aşırı bağımsızlık profesyonel uyumu zorlaştırabilir.",
+            "Duygusal soğukluk iş ilişkilerini zayıflatabilir.",
+            "Soyut düşünme pratik uygulamalarda sorun yaratabilir."
+          ],
+          "potential": [
+            "Yenilikçi vizyonun profesyonel liderlik yaratabilir.",
+            "Analitik özgürlüğün büyük projelerde başarı sağlar.",
+            "Toplumsal bilgelik profesyonel katkını genişletebilir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması zihinsel özgürlüğü bilgece kullanmaktır.",
+            "Ruhsal derslerin farklılık ve bağımsızlık üzerinden şekillenir.",
+            "Kolektife katkı arayışı karmasal enerjini yönlendirir."
+          ],
+          "mechanism": [
+            "Deneyimler seni kalıpları kırmaya ve yeni yollar açmaya iter.",
+            "Kader seni objektiflik ve tarafsızlık gerektiren durumlara sürükler.",
+            "Ruhsal gelişimin yenilikçi farkındalıklarla ilerler."
+          ],
+          "effect": [
+            "Ruhsal yolculuğun özgür, geniş ve yenilikçi bir ritim taşır.",
+            "Kolektife katkı sunabileceğin alanlara çekilirsin.",
+            "Düşünsel özgürlük ruhsal ilerlemenin ana aracı olur."
+          ],
+          "shadow": [
+            "Aşırı mesafe karmayı ağırlaştırabilir.",
+            "Duygusal kopukluk ruhsal gelişimi zorlaştırabilir.",
+            "Israrla kalıpları reddetmek ruhsal köksüzlük yaratabilir."
+          ],
+          "potential": [
+            "Özgün bilincin ruhsal liderlik kapasitesi taşır.",
+            "Zihinsel açıklık karmayı çözme becerisi sunar.",
+            "Bağımsızlığın kolektif bilgelik üretme potansiyeline dönüşebilir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_pisces",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "sign": "Pisces"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde sezgisellik, empati ve içsel akış bulunur.",
+            "Hayal gücü ve duygusal algı kimlik duygunu derinden etkiler.",
+            "Görünmeyeni hissetme kapasiten düşünsel kimliğini şekillendirir."
+          ],
+          "mechanism": [
+            "Kendini ifade ederken yumuşak, şiirsel ve sezgisel bir dil kullanırsın.",
+            "Kimliğin, hislerinle düşüncelerin iç içe geçmesiyle anlam kazanır.",
+            "Düşünsel yapın soyut imgeler ve ruhsal çağrışımlarla çalışır."
+          ],
+          "effect": [
+            "Dışarıdan duyarlı, yaratıcı ve akışkan biri olarak görünürsün.",
+            "İnsanlar seni empatik ve ruhsal yönü güçlü biri olarak algılar.",
+            "Kimliğin yumuşak ama etkileyici bir enerji taşır."
+          ],
+          "shadow": [
+            "Belirsizlik kimliğinin dağılmasına neden olabilir.",
+            "Aşırı hassasiyet sınır sorunları yaratabilir.",
+            "Kaçınma eğilimi kimliğini bulanıklaştırabilir."
+          ],
+          "potential": [
+            "Sezgisel derinliğin olgunlaştığında ruhsal bilgelik ortaya çıkar.",
+            "Kimliğin iyileştirici bir varlık enerjisi taşıyabilir.",
+            "Yaratıcılık kimliğinin güçlü bir merkezine dönüşebilir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelinde empati, bağlılık ve ruhsal hassasiyet bulunur.",
+            "Duygusal algın yüksek olduğundan başkalarının hisleri seni etkiler.",
+            "İçsel akışa uyum sağlama ihtiyacı psikolojik motivasyonunu belirler."
+          ],
+          "mechanism": [
+            "Duyguları sezgisel olarak işler ve içsel bir alanda çözersin.",
+            "Zorlukları hayal gücünle dönüştürmeye çalışırsın.",
+            "Psikolojik süreçlerin dalgalı ama derin bir ritimle ilerler."
+          ],
+          "effect": [
+            "Duygusal olarak yumuşak, merhametli ve kapsayıcı bir enerji taşırısn.",
+            "İnsanlar seni anlayışlı ve duyarlı biri olarak tanımlar.",
+            "Psikolojik çevren ruhsal ve sezgisel sembollerle zenginleşir."
+          ],
+          "shadow": [
+            "Sınır eksikliği psikolojik yük yaratabilir.",
+            "Kaçış eğilimi içsel karışıklığı artırabilir.",
+            "Belirsizlik düşünsel karar vermeyi zorlaştırabilir."
+          ],
+          "potential": [
+            "Sezgisel farkındalığın ruhsal bilgelik üretme kapasitesi taşır.",
+            "Duygusal bütünleşme içsel huzuru güçlendirir.",
+            "Empati ruhsal şifa alanı oluşturabilir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde empati, bağlılık ve ruhsal uyum ararsın.",
+            "Bağ kurma isteğin duygusal bütünleşmeye dayanır.",
+            "Yakınlık ihtiyacın sezgisel bir alan üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Partnerinin duygularını derinden hisseder ve uyum sağlarsın.",
+            "Bağları güçlendirmek için fedakâr ve kapsayıcı davranırsın.",
+            "İlişkide şiirsel ve sezgisel bir iletişim tarzı kullanırsın."
+          ],
+          "effect": [
+            "İlişkilerde şefkatli, duyarlı ve derin bir partner olursun.",
+            "Bağların ruhsal bir uyum ve sıcaklık taşır.",
+            "Partnerin yanında güvenli bir duygusal alan yaratırsın."
+          ],
+          "shadow": [
+            "Aşırı idealizasyon bağları bulanıklaştırabilir.",
+            "Sınır eksikliği ilişkide dengesizlik yaratabilir.",
+            "Kaçış eğilimi ilişkinin gerçek ihtiyaçlarını gölgeleyebilir."
+          ],
+          "potential": [
+            "Ruhsal uyum geliştiğinde ilişkilerin derin iyileştirici bir hal alır.",
+            "Duygusal farkındalığın bağlarında güçlü bir güven alanı yaratabilir.",
+            "Şefkat ve sezgi birleştiğinde bilge bir ilişkisel varlık haline gelirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin sezgisel, hayal gücü yüksek ve soyut düşünmeye açıktır.",
+            "Semboller ve imgeler zihinsel yapının temelini oluşturur.",
+            "Derin anlam arayışı düşünsel motivasyonunu besler."
+          ],
+          "mechanism": [
+            "Düşünceleri soyut çağrışımlar ve sezgisel sıçramalarla birleştirirsin.",
+            "Analiz yerine hissetmeyi tercih ederek zihinsel akışını özgür bırakırsın.",
+            "Soyut fikirler zihninde yumuşak bir bütünlük oluşturur."
+          ],
+          "effect": [
+            "Yaratıcı, sezgisel ve sınırları aşan fikirler üretebilirsin.",
+            "Zihnin ruhsal ve sanatsal alanlarda özgün sonuçlar ortaya koyar.",
+            "İnsanlar seni içgörülü ve hayal gücü güçlü biri olarak tanır."
+          ],
+          "shadow": [
+            "Belirsizlik zihinsel netliği azaltabilir.",
+            "Rasyonel sınırların eksikliği karışıklık yaratabilir.",
+            "Hayal-perest eğilim gerçeklikten uzaklaşmana neden olabilir."
+          ],
+          "potential": [
+            "Sezgisel zihnin yüksek bir ruhsal bilgelik taşıyabilir.",
+            "Yaratıcı kapasiten soyut düşüncede ustalık sunar.",
+            "Zihinsel akışın ilham verici keşiflere dönüşebilir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında sezgisel uyum ve yaratıcılık ararsın.",
+            "Duygusal atmosfer senin için önemli bir motivasyon kaynağıdır.",
+            "Başkalarına destek olma isteği profesyonel yaklaşımını şekillendirir."
+          ],
+          "mechanism": [
+            "Çalışırken sezgi ve empatiyi rehber olarak kullanırsın.",
+            "Yaratıcı çözümler üretir, soyut düşünceyi pratiğe dökersin.",
+            "İş ortamına şefkatli ve duyarlı bir yaklaşım getirirsin."
+          ],
+          "effect": [
+            "İnsanlar seni nazik, yaratıcı ve sezgisel biri olarak tanımlar.",
+            "Çalışma ortamında yumuşak ama etkili bir enerji yaratırsın.",
+            "Mesleki alanlarda özgün çözümler ve alternatif yollar sunabilirsin."
+          ],
+          "shadow": [
+            "Belirsizlik profesyonel netliği zorlaştırabilir.",
+            "Kaçınma davranışı iş baskısı altında sorun yaratabilir.",
+            "Aşırı fedakârlık sınırların bulanıklaşmasına neden olabilir."
+          ],
+          "potential": [
+            "Sezgisel çalışmanın profesyonel bilgelik sunabilir.",
+            "Yaratıcılığın güçlü bir kariyer kimliği oluşturabilir.",
+            "Destekleyici doğan profesyonel alanda şifa niteliği taşıyabilir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam yolunun teması sezgisel bilgelik geliştirmektir.",
+            "Ruhsal derslerin empati, fedakârlık ve çözülme temalarıyla şekillenir.",
+            "Birlik bilinci arayışı karmasal gelişimin ana kaynağıdır."
+          ],
+          "mechanism": [
+            "Kader seni akışa teslim olmayı öğreten deneyimlere yönlendirir.",
+            "Duygusal sınavlar sezgisel farkındalığını artırır.",
+            "Ruhsal gelişimin semboller, rüyalar ve sezgiler yoluyla ilerler."
+          ],
+          "effect": [
+            "Ruhsal yolculuğun yumuşak, derin ve sezgisel bir ritim taşır.",
+            "Kader seni şefkat gerektiren alanlara çeker.",
+            "İçsel akışın ruhsal uyum yaratır."
+          ],
+          "shadow": [
+            "Belirsizlik karmayı ağırlaştırabilir.",
+            "Aşırı fedakârlık ruhsal sınır kaybı yaratabilir.",
+            "Kaçış eğilimi dersleri ertelemeni sağlayabilir."
+          ],
+          "potential": [
+            "Sezgisel bilgelik karmayı çözme gücüne dönüşebilir.",
+            "Ruhsal uyum olgunlaştığında büyük bir iç huzur elde edersin.",
+            "Şefkat kapasiten karmayı dönüştüren bir ışığa dönüşebilir."
+          ]
+        }
+      }
+    }
+  ],
+  "planet_house_rules": [
+    {
+      "id": "mercury_in_house_1",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 1
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin zihinsel hızın, ifade biçimin ve düşünsel görünürlüğün üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Kendini konuşarak, analiz ederek veya anında fikir üreterek gösterirsin."
+          ],
+          "effect": [
+            "Dışarıdan hızlı düşünen, meraklı ve zihinsel olarak canlı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aşırı düşünmek, her şeyi açıklamaya çalışma, zihinsel gerginlik."
+          ],
+          "potential": [
+            "Zihnini merkezlediğinde kimliğin net, keskin ve etkileyici bir hâl alır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin düşünce akışın ve içsel diyalogların tonuyla derinden bağlantılıdır."
+          ],
+          "mechanism": [
+            "Zihinsel hızın duygularını bastırabilir veya yönlendirebilir."
+          ],
+          "effect": [
+            "Denge kazandığında psikolojin berrak, mantıklı ve kendini düzenleyici olur."
+          ],
+          "shadow": [
+            "Aşırı analiz, her şeyi düşünceyle çözmeye çalışma."
+          ],
+          "potential": [
+            "Zihin–duygu uyumu psikolojini güçlü bir iç rehbere dönüştürür."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde iletişim senin için temel bağ kurma aracıdır."
+          ],
+          "mechanism": [
+            "Partnerini analiz eder, düşüncelerini açıklıkla ifade etmeye ihtiyaç duyarsın."
+          ],
+          "effect": [
+            "İlişkide açık, dürüst ve zihinsel uyumu güçlü bir partner olursun."
+          ],
+          "shadow": [
+            "Aşırı yorumlama, sözle savunma geliştirme, fazla eleştirellik."
+          ],
+          "potential": [
+            "İletişimi yumuşattığında ilişkilerin hem net hem besleyici olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin hızlı bağlantılar kuran, merak odaklı bir yapıya sahiptir."
+          ],
+          "mechanism": [
+            "Düşüncelerin anında dışa akar; içsel süreçler görünür olur."
+          ],
+          "effect": [
+            "Net olduğunda zihnin yaratıcı, pratik ve problem çözücüdür."
+          ],
+          "shadow": [
+            "Zihinsel dağınıklık, sabırsızlık, zihin–beden kopukluğu."
+          ],
+          "potential": [
+            "Odak kazandığında zihnin güçlü bir yönlendirici sisteme dönüşür."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde kendini ifade etmek, bilgi üretmek ve iletişim kurmak duygusal ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Hızlı düşünür, aynı hızla çözüm üretirsin."
+          ],
+          "effect": [
+            "Doğru ortamda etkili bir konuşmacı, yazar veya analist olabilirsin."
+          ],
+          "shadow": [
+            "Zihinsel yük, çoklu görevde tükenme."
+          ],
+          "potential": [
+            "Zihinsel yeteneklerini yapılandırdığında kariyerin hızla yükselir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, düşünce ile kimlik arasındaki bağı bilinçle kurmaktır."
+          ],
+          "mechanism": [
+            "Kader seni zihinsel yüzleşmelerle büyütür."
+          ],
+          "effect": [
+            "Her farkındalık zihinsel berraklığı artırır."
+          ],
+          "shadow": [
+            "Zihinsel savunmalar karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Saf ifade ve netlik ruhsal yolunu açar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_2",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 2
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin düşünce istikrarı, değer anlayışı ve pratik zekâ üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Kendini net, somut ve uygulanabilir fikirlerle ifade edersin."
+          ],
+          "effect": [
+            "Dışarıdan mantıklı, güvenilir ve sağlam bir düşünür olarak algılanırsın."
+          ],
+          "shadow": [
+            "Katı fikirler, değişime direnç, zihinsel inatçılık."
+          ],
+          "potential": [
+            "Zihnin esnediğinde kimliğin hem sabit hem yaratıcı bir hâl alır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin düşünsel güvenlik ve zihinsel düzen ihtiyacıyla bağlantılıdır."
+          ],
+          "mechanism": [
+            "Yeni düşünceleri kabul etmek için önce duygusal güven ararsın."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin sakin, sabırlı ve ayakları yere basan bir yapı kazanır."
+          ],
+          "shadow": [
+            "Zihinsel yavaşlama, kıskançlık, tutunduğun düşünceden kopamama."
+          ],
+          "potential": [
+            "Değer algın içeride netleştiğinde psikolojin güçlü bir istikrar üretir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde netlik, dürüstlük ve güven temelli iletişim beklersin."
+          ],
+          "mechanism": [
+            "Partnerle konuşmalarında pratik, gerçekçi ve doğrudan olursun."
+          ],
+          "effect": [
+            "İlişkide sadık, güven veren ve tutarlı bir enerji taşırsın."
+          ],
+          "shadow": [
+            "Sözde katılık, fikre yapışmak, inatlaşmak."
+          ],
+          "potential": [
+            "Esneklik iletişimine katıldığında ilişkilerin köklü ve huzurlu olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin somut düşünür; ispat, yapı ve düzen arar."
+          ],
+          "mechanism": [
+            "Bilgiyi yavaş ama güçlü şekilde işler, kalıcı kararlar üretirsin."
+          ],
+          "effect": [
+            "Denge olduğunda zihnin odaklı, üretken ve istikrarlıdır."
+          ],
+          "shadow": [
+            "Düşünce sertliği, yaratıcılığın daralması."
+          ],
+          "potential": [
+            "Zihinsel güven oluştuğunda üretimin daha zengin olur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde pratik çözümler, düzenli işleyiş ve somut sonuçlar beklersin."
+          ],
+          "mechanism": [
+            "Yavaş ama sağlam bir profesyonel gelişim gösterirsin."
+          ],
+          "effect": [
+            "Doğru ortamda güvenilir bir uzman veya istikrarlı bir planlayıcı olursun."
+          ],
+          "shadow": [
+            "Risk almamak, yenilikten kaçmak."
+          ],
+          "potential": [
+            "Zihinsel değerini fark ettiğinde kariyerin daha üretken hâle gelir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, değer–zihin dengesini kurmaktır."
+          ],
+          "mechanism": [
+            "Kader seni sahiplenme fikirleriyle sınar."
+          ],
+          "effect": [
+            "Her farkındalık zihinsel esneklik getirir."
+          ],
+          "shadow": [
+            "Fikrine tutunmak karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Zihinsel esneklik ruhsal yolu açar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_3",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 3
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin öğrenme biçimin, merakın ve zihinsel hareketliliğin üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Kendini konuşarak, yazarak, sorarak ve bağlantı kurarak ifade edersin."
+          ],
+          "effect": [
+            "Dışarıdan enerjik, zeki ve çok yönlü biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Yüzeysellik, dağınıklık, sürekli fikir değiştirme."
+          ],
+          "potential": [
+            "Zihinsel enerjini odakladığında kimliğin güçlü bir anlatıcıya dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin hızlı düşünce geçişleri ve merak odaklı bir ritme sahiptir."
+          ],
+          "mechanism": [
+            "Her duygusal deneyimi düşünceye çevirir, analiz etmek istersin."
+          ],
+          "effect": [
+            "Denge hâlinde psikolojin esnek, hafif ve üretkendir."
+          ],
+          "shadow": [
+            "Aşırı konuşma, kaygıyı zihinde büyütme."
+          ],
+          "potential": [
+            "Anlamlandırma kapasiten güçlendiğinde psikolojik berraklık artar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde zihinsel uyum ve iletişim enerjisi temel ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Partnerinle sürekli paylaşmak, konuşmak ve fikir üretmek istersin."
+          ],
+          "effect": [
+            "İlişkide eğlenceli, hareketli ve zihinsel açıdan besleyici bir enerji sunarsın."
+          ],
+          "shadow": [
+            "Duygudan kaçıp iletişimle savunma geliştirmek."
+          ],
+          "potential": [
+            "Hem duygu hem iletişim birleştiğinde ilişkilerin çok besleyici olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin hızlı, çevik ve bağlantı kurmaya yatkındır."
+          ],
+          "mechanism": [
+            "Bilgiyi sezgisel sıçramalarla birleştirir, çok yönlü düşünürsün."
+          ],
+          "effect": [
+            "Denge olduğunda zihnin yaratıcı, analitik ve etkili olur."
+          ],
+          "shadow": [
+            "Zihinsel gürültü, dedikoduya yatkınlık, odak kaybı."
+          ],
+          "potential": [
+            "Zihinsel enerjiyi yönlendirdiğinde üretimin çok güçlü olur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde iletişim, medya, eğitim, dil ve bilgi akışı seni besler."
+          ],
+          "mechanism": [
+            "Hızlı öğrenir, anında adapte olur ve birçok işi aynı anda yönetebilirsin."
+          ],
+          "effect": [
+            "Doğru ortamda etkili bir iletişimci veya yaratıcı fikir üreticisi olursun."
+          ],
+          "shadow": [
+            "Tutarsızlık, sıkılganlık, yarım bırakma."
+          ],
+          "potential": [
+            "Tek bir alanda derinleştiğinde kariyerin hızla büyür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, hakikati sade ve doğru bir dille ifade etmektir."
+          ],
+          "mechanism": [
+            "Kader seni iletişim sınavlarıyla netliğe zorlar."
+          ],
+          "effect": [
+            "Her dürüst ifade ruhsal gelişim yaratır."
+          ],
+          "shadow": [
+            "Yanlış aktarım, yüzeysellik karmayı artırır."
+          ],
+          "potential": [
+            "Duygu ve kelime birleştiğinde ruhsal yol açılır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_4",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 4
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin içsel diyalogların, anıların ve duygusal köklerinin üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Kendini sessiz düşünceler, refleksiyon ve derin iç konuşmalarla tanımlarsın."
+          ],
+          "effect": [
+            "Dışarıdan sakin, sezgisel ve içsel bilgeliği olan biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Geçmişte takılmak, düşünceleri içe gömmek, duygusal zihinsellik."
+          ],
+          "potential": [
+            "İç dünyanı işlediğinde kimliğin güçlü, sezgisel ve derinleşmiş olur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin geçmiş deneyimler, aile kalıpları ve duygusal hafıza ile örülüdür."
+          ],
+          "mechanism": [
+            "Düşüncelerin çoğu duygusal geçmişinle bağlantılı çalışır."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin sıcak, derin ve kendini iyileştiren bir yapıya kavuşur."
+          ],
+          "shadow": [
+            "İçe kapanma, melankolik düşünce, aşırı iç hesaplaşma."
+          ],
+          "potential": [
+            "Duygusal köklerin şifalandığında psikolojin güç kazanır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Bağlarda güven, samimiyet ve duygusal açıklık zihinsel ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Partnerle derin konuşmalar yapar, geçmiş–gelecek temalarını düşünürsün."
+          ],
+          "effect": [
+            "İlişkide sezgisel, empatik ve koruyucu bir iletişim sunarsın."
+          ],
+          "shadow": [
+            "Geçmişten getirdiğin zihinsel kalıpları ilişkiye taşımak."
+          ],
+          "potential": [
+            "İçsel netlik olduğunda ilişkilerin yumuşak ve şifalı olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin derin, sezgisel ve duygusal bilgiyle bağlantılı çalışır."
+          ],
+          "mechanism": [
+            "Fikirler içsel sessizlikte olgunlaşır; analiz değil sezgi öndedir."
+          ],
+          "effect": [
+            "Denge hâlinde zihnin içgörülü, sabırlı ve empatik olur."
+          ],
+          "shadow": [
+            "Paranoya, geçmişi zihinde büyütmek."
+          ],
+          "potential": [
+            "Zihinsel sezgi güçlendiğinde yaratıcı ve derin düşünceler üretirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde huzurlu, anlamlı ve içsel güven veren alanlar ararsın."
+          ],
+          "mechanism": [
+            "Sessiz çalışmalar, strateji geliştirme ve reflektif işler seni besler."
+          ],
+          "effect": [
+            "Doğru ortamda sezgisel ve derinlik gerektiren işlerde başarı gösterirsin."
+          ],
+          "shadow": [
+            "Duygusal dalgalanmalar, motivasyon düşüşü."
+          ],
+          "potential": [
+            "İç dünyan netleştiğinde kariyerin de güçlenir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, köklenmiş düşünce kalıplarını dönüştürmektir."
+          ],
+          "mechanism": [
+            "Kader seni içsel yüzleşmelere davet eder."
+          ],
+          "effect": [
+            "Her içsel netlik ruhsal güç yaratır."
+          ],
+          "shadow": [
+            "Geçmişi zihinde taşımak karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "İçsel şifa ruhsal yolunu açar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_5",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 5
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin yaratıcı düşünce, ifade özgürlüğü ve zihinsel oyunlar üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Kendini hikâyeleştirerek, dramatize ederek veya yaratıcı dille ifade edersin."
+          ],
+          "effect": [
+            "Dışarıdan parlak, esprili ve kendini ifade etmeyi seven biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Aşırı dramatik düşünme, abartı, zihinsel gösteriş."
+          ],
+          "potential": [
+            "Yaratıcı zihin merkezlendiğinde kimliğin ışıldayan bir güce dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin fark edilme, yaratma ve zihinsel oyun oynama ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Duygularını zihinsel kurgulara dönüştürebilir veya süsleyebilirsin."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin neşeli, üretken ve yaratıcı olur."
+          ],
+          "shadow": [
+            "Onay ihtiyacı, düşünsel ego, duyguyu abartmak."
+          ],
+          "potential": [
+            "İçsel merkez güçlendiğinde psikolojin yaratıcı bir üretim alanına dönüşür."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde entelektüel oyun, flört dili ve yaratıcı iletişim temel ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Partnerinle eğlenceli, sıcak ve zihin odaklı konuşmalar yaparsın."
+          ],
+          "effect": [
+            "İlişkide canlandırıcı, eğlenceli ve romantik bir iletişim sunarsın."
+          ],
+          "shadow": [
+            "Zihinsel drama yaratmak, flörtle manipülasyon."
+          ],
+          "potential": [
+            "Duygusal olgunlukla birleşen iletişim ilişkini büyütür."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin yaratıcı, teatral ve hayal gücüyle beslenen bir yapıya sahiptir."
+          ],
+          "mechanism": [
+            "Fikirler zihninde sahneye çıkar; imgelerle düşünürsün."
+          ],
+          "effect": [
+            "Denge olduğunda zihnin parlak, yaratıcı ve ilham vericidir."
+          ],
+          "shadow": [
+            "Aşırı fantazi kurma, gerçeklikten uzaklaşma."
+          ],
+          "potential": [
+            "Yaratıcılık odak kazandığında zihinsel üretimin olağanüstü olur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde ifade özgürlüğü, yaratım ve sahne enerjisi seni besler."
+          ],
+          "mechanism": [
+            "İlhamla hareket eder, fikirlerini görünür kılmak istersin."
+          ],
+          "effect": [
+            "Doğru alanda yaratıcı, etkileyici ve dikkat çeken bir profesyonel olursun."
+          ],
+          "shadow": [
+            "İstikrarsızlık, ilgi arayışı, aşırı özgüven."
+          ],
+          "potential": [
+            "Yaratıcılığı disiplinle birleştirdiğinde kariyerin parlayabilir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, yaratıcılığı sorumlulukla birleştirmektir."
+          ],
+          "mechanism": [
+            "Kader seni görünürlük ve ego sınavlarıyla büyütür."
+          ],
+          "effect": [
+            "Her farkındalık daha otantik bir ifade yaratır."
+          ],
+          "shadow": [
+            "Sahte parlaklık karmayı artırır."
+          ],
+          "potential": [
+            "Otantik ifade ruhsal yolu aydınlatır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_6",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 6
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin analiz, düzen kurma ve zihinsel fayda üretme üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Kendini detayları düzenleyerek, iyileştirerek ve sistem kurarak ifade edersin."
+          ],
+          "effect": [
+            "Dışarıdan çalışkan, dikkatli ve pratik zekâlı biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Aşırı analiz, kendini eleştirme, zihin yorgunluğu."
+          ],
+          "potential": [
+            "Zihinsel düzen sağlandığında kimliğin verimli, dengeli ve net olur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin kontrol, düzen ve zihinsel temizlik ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Duyguları çözmek için onları analiz eder, parçalara ayırırsın."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin sakin, sistematik ve öngörülebilirdir."
+          ],
+          "shadow": [
+            "Kaygı, aşırı eleştiri, kusur arayışı."
+          ],
+          "potential": [
+            "Şefkatle birleşen analiz psikolojini iyileştirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde düzenli iletişim, pratik destek ve zihinsel netlik temel beklentidir."
+          ],
+          "mechanism": [
+            "Sevdiklerine çözüm sunarak, düzen yaratarak sevgini gösterirsin."
+          ],
+          "effect": [
+            "İlişkide güvenilir, ilgili ve mantıklı bir iletişimci olursun."
+          ],
+          "shadow": [
+            "Aşırı düzeltme, eleştirellik, duygudan kopmak."
+          ],
+          "potential": [
+            "Hem duygu hem mantık birleştiğinde ilişkilerin istikrarlı hâle gelir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin detay odaklı, analitik ve düzeltici bir yapıya sahiptir."
+          ],
+          "mechanism": [
+            "Her bilgiyi optimize eder, sistemi nasıl iyileştireceğini düşünürsün."
+          ],
+          "effect": [
+            "Denge olduğunda zihnin keskin, düzenli ve üretkendir."
+          ],
+          "shadow": [
+            "Aşırı analiz, zihinsel sıkışma."
+          ],
+          "potential": [
+            "Zihinsel şefkat geldiğinde üretim kapasiten katlanır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde fayda üretmek, düzen kurmak ve iyileştirmek duygusal ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Detay gerektiren, rutin içeren ve hizmet odaklı işlerde güçlüsün."
+          ],
+          "effect": [
+            "Doğru ortamda çalışkan, güvenilir ve sistem kuran biri olursun."
+          ],
+          "shadow": [
+            "Tükenme, fazla yük alma."
+          ],
+          "potential": [
+            "Dengeli ritim kurduğunda kariyerin uzun vadeli başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, zihin ile fayda üretimi arasında denge kurmaktır."
+          ],
+          "mechanism": [
+            "Kader seni detay ve düzen sınavlarıyla büyütür."
+          ],
+          "effect": [
+            "Her sadeleşme ruhsal netlik getirir."
+          ],
+          "shadow": [
+            "Zihinsel katılık karmayı artırır."
+          ],
+          "potential": [
+            "Esneklik ve şefkat birleştiğinde kaderin açılır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_7",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 7
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin zihinsel aynalanma, karşılıklı anlayış ve ilişki içindeki ifade biçimin üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Kendini en net biçimde birebir iletişimde tanımlar ve geliştirirsin."
+          ],
+          "effect": [
+            "Dışarıdan diplomatik, uyumlu ve insan odaklı biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Başkasının fikirleriyle özdeşleşmek, kararsızlık, zihinsel bağımlılık."
+          ],
+          "potential": [
+            "Kendi zihinsel merkezini kurduğunda kimliğin dengeli, net ve etkileyici olur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin uyumlanma, anlaşılma ve zihinsel denge arayışıyla beslenir."
+          ],
+          "mechanism": [
+            "Zorlandığında başkalarının düşüncelerine göre kendini ayarlayabilirsin."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin barışçıl, akılcı ve ilişkisel zekâya sahiptir."
+          ],
+          "shadow": [
+            "Onay arama, pasif-agresif zihinsel süreçler, çatışmadan kaçış."
+          ],
+          "potential": [
+            "Kendi fikrini ifade ettiğinde psikolojin güç kazanır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde zihinsel uyum ve açık iletişim temel ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Partnerine hızla uyumlanabilir, iletişim tonunu ona göre şekillendirebilirsin."
+          ],
+          "effect": [
+            "İlişkide anlayışlı, adil ve çözüm odaklı bir partner olursun."
+          ],
+          "shadow": [
+            "Aşırı uyumlanma, kararsızlık, zihinsel gerilim."
+          ],
+          "potential": [
+            "Hem kendi zihnin hem partnerinki alanda olduğunda ilişkin güçlü bir köprüye dönüşür."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin ilişkilere, insan davranışlarına ve karşılıklı dinamiğe odaklıdır."
+          ],
+          "mechanism": [
+            "Fikirlerin çoğu 'biz nasıl oluruz?' sorusu etrafında oluşur."
+          ],
+          "effect": [
+            "Denge olduğunda zihnin diplomatik, adil ve stratejik düşünür."
+          ],
+          "shadow": [
+            "Kararsızlık, başkasına göre düşünme, fikri sürekli değiştirme."
+          ],
+          "potential": [
+            "Zihinsel denge kurulduğunda güçlü bir ilişkisel sezgi geliştirirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde ortaklıklar, danışmanlık ve ilişki yönetimi seni besler."
+          ],
+          "mechanism": [
+            "Uzlaşma, arabuluculuk ve iletişim gerektiren işlerde ustalaşırsın."
+          ],
+          "effect": [
+            "Doğru ortamda etkili bir iletişim köprüsü olursun."
+          ],
+          "shadow": [
+            "Kendi hedeflerini geri plana atmak."
+          ],
+          "potential": [
+            "Hem işbirliği hem bağımsızlık kurulduğunda kariyerin hızla büyür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, zihinsel bağımsızlık ile bağ kurma arasında denge bulmaktır."
+          ],
+          "mechanism": [
+            "Kader seni ilişkisel yüzleşmelerle netliğe çağırır."
+          ],
+          "effect": [
+            "Her içsel netlik ruhsal farkındalık yaratır."
+          ],
+          "shadow": [
+            "Fikirsiz uyum karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Net ifade kaderini açar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_8",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 8
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin zihinsel derinlik, sezgisel analiz ve görünmeyen gerçekleri çözme isteğin üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Düşüncelerin gizli alanlara, psikolojik motiflere ve yoğun duygulara iner."
+          ],
+          "effect": [
+            "Dışarıdan keskin sezgili, derin ve gizemi okuyan biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Takıntılı düşünme, karanlık senaryolar, zihinsel yoğunluk krizleri."
+          ],
+          "potential": [
+            "Zihin dönüştürücü gücünü bilinçle kullandığında kimliğin olağanüstü derinleşir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin güç, bağlılık, kriz ve dönüşüm temalarını zihinsel düzeyde işler."
+          ],
+          "mechanism": [
+            "Her duygusal süreci analiz eder, kök nedene inmeye çalışırsın."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin dayanıklı, keskin ve sezgiseldir."
+          ],
+          "shadow": [
+            "Paranoya, aşırı analiz, içsel karanlıkta kaybolma."
+          ],
+          "potential": [
+            "Zihinsel yüzleşme psikolojini özgürleştirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde zihinsel yakınlık, derinlik ve gizli alanların paylaşımı temel ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Partnerinin zihin ve duygu katmanlarını çözmeye çalışırsın."
+          ],
+          "effect": [
+            "İlişkide sezgisel, derin ve dönüştürücü bir iletişim sunarsın."
+          ],
+          "shadow": [
+            "Zihinsel manipülasyon, güç oyunları, aşırı merak."
+          ],
+          "potential": [
+            "Açıklık ve güven birleştiğinde ilişkin ruhsal bir alana dönüşür."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin derin analiz, psikolojik sezgi ve tabu alanlarını çözme üzerine kuruludur."
+          ],
+          "mechanism": [
+            "Bilgiyi yüzeyden değil, kökünden anlamaya çalışırsın."
+          ],
+          "effect": [
+            "Denge hâlinde zihnin olağanüstü içgörü üreten bir yapıdır."
+          ],
+          "shadow": [
+            "Aşırı şüphecilik, obsesif düşünceler."
+          ],
+          "potential": [
+            "Derinliği yapılandırdığında zihinsel gücün şifaya dönüşür."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde kriz çözme, analiz, araştırma ve dönüşüm alanları seni çeker."
+          ],
+          "mechanism": [
+            "Gizli bilgileri ortaya çıkarır, karmaşık durumları çözersin."
+          ],
+          "effect": [
+            "Doğru alanda güçlü bir araştırmacı, terapist veya stratejist olabilirsin."
+          ],
+          "shadow": [
+            "Aşırı kontrol, gizlilik, işyeri içi güç savaşları."
+          ],
+          "potential": [
+            "Gücünü bilinçle yönlendirdiğinde kariyerin derin etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, bilgi–güç ilişkisini dönüştürmektir."
+          ],
+          "mechanism": [
+            "Kader seni yüzleşme ve çözülme süreçleriyle eğitir."
+          ],
+          "effect": [
+            "Her içsel çözüm karmayı hafifletir."
+          ],
+          "shadow": [
+            "Karanlık fikirlerle özdeşleşmek karmayı artırır."
+          ],
+          "potential": [
+            "Saf niyetle kullanılan zihin ruhsal kapılar açar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_9",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 9
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin geniş düşünce, inanç sistemleri ve anlam arayışı üzerine kuruludur."
+          ],
+          "mechanism": [
+            "Kendini fikirle, kavramla ve zihinsel keşifle ifade edersin."
+          ],
+          "effect": [
+            "Dışarıdan vizyoner, bilgili ve entelektüel biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Aşırı idealizm, gerçeklerden kopma, fikirlerde dogmatizm."
+          ],
+          "potential": [
+            "Zihin genişlik ile gerçekliği birleştirdiğinde kimliğin bilgece bir hâl alır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin gelişim, öğrenme ve zihinsel özgürlük arayışıyla beslenir."
+          ],
+          "mechanism": [
+            "Zorlandığında uzaklaşabilir veya yüksek fikirlere sığınabilirsin."
+          ],
+          "effect": [
+            "Denge hâlinde psikolojin umutlu, açık ve ruhsal olarak geniştir."
+          ],
+          "shadow": [
+            "Kaçış, zihinsel idealizasyon, gerçekliği küçümseme."
+          ],
+          "potential": [
+            "Duygu ile anlam birleştiğinde psikolojin olağanüstü netleşir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde zihinsel uyum, ortak değerler ve geleceğe dair anlam önemlidir."
+          ],
+          "mechanism": [
+            "Partnerle konuşmalar genelde fikir, felsefe ve yaşam amacı üzerinedir."
+          ],
+          "effect": [
+            "İlişkide öğretici, ilham veren ve büyüten bir iletişim sunarsın."
+          ],
+          "shadow": [
+            "Yakınlıktan kaçmak, fazla özgürlük ihtiyacı, fikirle hükmetmek."
+          ],
+          "potential": [
+            "Hem özgürlük hem bağlılık dengelendiğinde ilişkin zenginleşir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin kavramsal, geniş görüşlü ve soyut düşünen bir yapıya sahiptir."
+          ],
+          "mechanism": [
+            "Detaylardan hızla genel anlamlara sıçrarsın."
+          ],
+          "effect": [
+            "Denge olduğunda zihnin bilgece, öğretici ve vizyoner çalışır."
+          ],
+          "shadow": [
+            "Genelleme, gerçeklerden kopma, fazla idealizm."
+          ],
+          "potential": [
+            "Zihin ideali gerçekle ilişkilendirdiğinde olağanüstü fikirler üretir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde öğretmek, rehberlik etmek, seyahat, akademi veya farklı kültürlerle çalışmak seni besler."
+          ],
+          "mechanism": [
+            "İş hayatına büyük resimden bakar, vizyonu genişletirsin."
+          ],
+          "effect": [
+            "Doğru ortamda ilham verici bir rehber veya düşünür olursun."
+          ],
+          "shadow": [
+            "İstikrarsızlık, fazla risk alma, sabırsızlık."
+          ],
+          "potential": [
+            "Anlam bulduğunda kariyerin hızlı ve özgürce yükselir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, kendi hakikatini aramak ve ifade etmektir."
+          ],
+          "mechanism": [
+            "Kader seni inanç sınavları ve genişleme süreçleriyle büyütür."
+          ],
+          "effect": [
+            "Her hakikat buluşu ruhsal genişlik yaratır."
+          ],
+          "shadow": [
+            "Kaçış, hayalî ideallere tutunmak karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Hakikati içeride bulduğunda kaderin netleşir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_10",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 10
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin zihinsel başarı, toplumsal rol ve profesyonel ifade biçiminle şekillenir."
+          ],
+          "mechanism": [
+            "Kendini yapılandırılmış, stratejik ve sorumluluk sahibi bir iletişimle gösterirsin."
+          ],
+          "effect": [
+            "Dışarıdan ciddi, profesyonel ve düşünsel olarak güçlü biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Aşırı kontrol, zihinsel katılık, eleştirel ifade."
+          ],
+          "potential": [
+            "Zihin–duygu dengesi kurulduğunda kimliğin doğal bir liderliğe evrilir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin güveni düşünsel kontrol, disiplin ve hedeflere bağlar."
+          ],
+          "mechanism": [
+            "Zorlanınca duyguyu kapatıp stratejik düşünceye çekilebilirsin."
+          ],
+          "effect": [
+            "Denge hâlinde psikolojin olgun, güçlü ve dayanıklıdır."
+          ],
+          "shadow": [
+            "Duygusal soğukluk, kendine aşırı yüklenme."
+          ],
+          "potential": [
+            "Esneklik kazandığında psikolojin daha derin ve insancıl olur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde netlik, sorumluluk ve kararlılık temelli iletişim beklersin."
+          ],
+          "mechanism": [
+            "Partnerle konuşmalarında yapı, hedef ve düzen baskındır."
+          ],
+          "effect": [
+            "İlişkide güvenilir, sorumluluk sahibi ve yön gösteren bir partner olursun."
+          ],
+          "shadow": [
+            "Fazla ciddiyet, duygudan kopma, yüksek beklenti."
+          ],
+          "potential": [
+            "Yumuşaklık eklendiğinde ilişkilerin daha besleyici olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin organize, stratejik ve uzun vadeli planlama odaklıdır."
+          ],
+          "mechanism": [
+            "Her düşünceyi sonuç ve sorumluluk açısından değerlendirirsin."
+          ],
+          "effect": [
+            "Denge olduğunda zihnin keskin, net ve liderlik eden bir yapıya sahiptir."
+          ],
+          "shadow": [
+            "Katı düşünce, siyah-beyaz zihin modelleri."
+          ],
+          "potential": [
+            "Sezgiyle birleşen strateji büyük başarılar doğurur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde görünür olmak, iz bırakmak ve yapısal başarı kazanmak duygusal ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Sistem kurar, sorumluluk alır, profesyonel duruş sergilersin."
+          ],
+          "effect": [
+            "Doğru ortamda güçlü bir lider veya yüksek uzmanlık sahibi olursun."
+          ],
+          "shadow": [
+            "İşkoliklik, tükenme, duygusal ihmal."
+          ],
+          "potential": [
+            "Denge kurulduğunda kariyerin kalıcı başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, güç–iletişim–duygu dengesini kurmaktır."
+          ],
+          "mechanism": [
+            "Kader seni otorite ve iletişim sınavlarıyla büyütür."
+          ],
+          "effect": [
+            "Her bütünleşme ruhsal olgunluk üretir."
+          ],
+          "shadow": [
+            "Duygudan kaçan zihin karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Yumuşak liderlik ruhsal yolu açar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_11",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 11
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin topluluk, fikir sistemi ve geleceğe yönelik zihinsel vizyon üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Kendini projelerde, gruplarda ve kolektif konuşmalarda ifade edersin."
+          ],
+          "effect": [
+            "Dışarıdan ilerici, sosyal ve yenilik odaklı biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Aşırı soyutluk, gerçek duygudan kopma, aidiyete bağımlılık."
+          ],
+          "potential": [
+            "Hem bireysel kimlik hem kolektif katkı birleştiğinde kimliğin bütünleşir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin vizyon, fikir üretimi ve geleceğe dair umutlarla beslenir."
+          ],
+          "mechanism": [
+            "Duyguları zihinselleştirebilir veya fikir formuna çevirebilirsin."
+          ],
+          "effect": [
+            "Denge hâlinde psikolojin yaratıcı, çözüm odaklı ve bağımsızdır."
+          ],
+          "shadow": [
+            "Duygudan kaçış, soyut fikirlerde kaybolmak."
+          ],
+          "potential": [
+            "Zihin duyguyla birleştiğinde psikolojin güçlü projeler üretir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde dostluk, entelektüel özgürlük ve zihinsel uyum temel ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Partnerle projeler, hayaller veya fikirler üzerinden bağ kurarsın."
+          ],
+          "effect": [
+            "İlişkide açık fikirli, arkadaşça ve destekleyici bir iletişim sunarsın."
+          ],
+          "shadow": [
+            "Duygusal mesafe, bağlanmaktan kaçış."
+          ],
+          "potential": [
+            "Özgürlük ile bağlılık dengesi kurulduğunda ilişkin güçlenir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin yenilikçi, sistemsel ve kolektif düşünmeye yatkındır."
+          ],
+          "mechanism": [
+            "Fikirleri geniş perspektifte değerlendirir, sistemler oluşturursun."
+          ],
+          "effect": [
+            "Denge olduğunda zihnin özgün, vizyoner ve yaratıcıdır."
+          ],
+          "shadow": [
+            "Soyutluk, duygudan kopuk analiz."
+          ],
+          "potential": [
+            "Sezgi sistemle birleştiğinde devrimsel düşünceler üretirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde ekip çalışması, inovasyon ve kolektif projeler seni besler."
+          ],
+          "mechanism": [
+            "Başkalarıyla fikir üretir, sosyal ağları kullanırsın."
+          ],
+          "effect": [
+            "Doğru ortamda etkili bir vizyon taşıyıcı veya yaratıcı stratejist olursun."
+          ],
+          "shadow": [
+            "Kendi yönünü kaybetmek, sadece projeye hizmet etmek."
+          ],
+          "potential": [
+            "Kendi liderliğini sistem içinde konumlandırdığında kariyerin hızla yükselir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, bireysel zihin ile kolektif katkı arasındaki dengeyi kurmaktır."
+          ],
+          "mechanism": [
+            "Kader seni topluluk deneyimleriyle olgunlaştırır."
+          ],
+          "effect": [
+            "Her farkındalık daha geniş bir vizyon yaratır."
+          ],
+          "shadow": [
+            "Gerçek duygudan kaçmak karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Zihin–kalp uyumu kolektif kaderini açar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mercury_in_house_12",
+      "conditions": [
+        {
+          "planet": "Mercury",
+          "house": 12
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin görünmeyen düşünce akışları, sezgisel zeka ve içsel sessizlikle şekillenir."
+          ],
+          "mechanism": [
+            "Kendini çoğu zaman sessizlik, semboller ve içsel imgelerle ifade edersin."
+          ],
+          "effect": [
+            "Dışarıdan derin, gizemli veya çözülmesi zor biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Kendini ifade edememe, zihinsel sis, kaçış eğilimi."
+          ],
+          "potential": [
+            "İç sesini görünür kıldığında kimliğin ruhsal bir bilgelik taşır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin bilinçdışı düşünceler, duygusal gölgeler ve sezgisel algı ile örülüdür."
+          ],
+          "mechanism": [
+            "Düşüncelerin görünmeyen kanallardan akar; doğrusal değildir."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin derin, spiritüel ve şifalı bir yapı kazanır."
+          ],
+          "shadow": [
+            "Kaybolma, kurban zihni, gerçeklikten kaçma."
+          ],
+          "potential": [
+            "Zihinsel netlik sezgiyle birleştiğinde psikolojin güçlenir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde ruhsal bağ, empati ve görünmeyen duygusal iletişim önemlidir."
+          ],
+          "mechanism": [
+            "Partnerinin düşüncelerini sezebilir, söylenmeyeni hissedebilirsin."
+          ],
+          "effect": [
+            "İlişkide merhametli, sezgisel ve şifalı bir iletişim sunarsın."
+          ],
+          "shadow": [
+            "Sınır kaybı, gizlilik, zihinsel idealizasyon."
+          ],
+          "potential": [
+            "Sezgi sınırla birleştiğinde ilişkin derin ve sağlıklı olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin semboller, rüyalar, imgesel düşünce ve bilinçdışı materyalle çalışır."
+          ],
+          "mechanism": [
+            "Fikirler sisin içinden çıkar; doğrudan değil, hissederek düşünürsün."
+          ],
+          "effect": [
+            "Denge olduğunda zihnin yaratıcı, spiritüel ve sezgisel olarak keskindir."
+          ],
+          "shadow": [
+            "Zihinsel dağılma, belirsizlik, kaçış."
+          ],
+          "potential": [
+            "Zihinsel yapı sezgiyle birleştiğinde olağanüstü bir içgörü kanalı açılır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde perde arkası işler, şifa alanları ve hizmet temaları seni besler."
+          ],
+          "mechanism": [
+            "Sessiz alanlarda, yaratıcı üretimde veya içsel sezgi gerektiren işlerde güçlüsün."
+          ],
+          "effect": [
+            "Doğru ortamda büyük şifalandırıcı veya yaratıcı katkılar sunarsın."
+          ],
+          "shadow": [
+            "Görünmezlik, motivasyon kaybı, tükenmişlik."
+          ],
+          "potential": [
+            "İçsel sesin netleştiğinde kariyerin görünür ve etkili olur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, zihinsel sisle yüzleşmek ve sezgiyi yapılandırmaktır."
+          ],
+          "mechanism": [
+            "Kader seni kaçtığın düşüncelerle karşılaştırır."
+          ],
+          "effect": [
+            "Her yüzleşme ruhsal özgürlük üretir."
+          ],
+          "shadow": [
+            "Kaçış karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "İç ses görünür olduğunda kader yolu açılır."
+          ]
+        }
+      }
+    }
+  ],
+  "aspect_rules": [],
+  "meta_rules": []
+}

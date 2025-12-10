@@ -1,0 +1,583 @@
+{
+  "planet_sign_rules": [
+    {
+      "id": "jupiter_in_aries",
+      "conditions": [{ "planet": "Jupiter", "sign": "Aries" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde büyümeyi başlatarak elde etme isteği vardır."],
+          "mechanism": ["Risk alarak genişler, cesur adımlarla kimliğini büyütürsün."],
+          "effect": ["Dışarıdan girişken, enerjik ve kendine güvenen biri olarak görünürsün."],
+          "shadow": ["Acelecilik kimlikte istikrarsız büyümeye yol açabilir."],
+          "potential": ["Cesaret stratejiyle birleştiğinde güçlü bir liderlik ortaya çıkar."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik genişlemenin kaynağı özgür irade ve yeni deneyimlerdir."],
+          "mechanism": ["Heyecan verici başlangıçlarla motivasyonun artar."],
+          "effect": ["İçsel coşku ve iyimserlik psikolojini güçlendirir."],
+          "shadow": ["Aşırı iyimserlik riskleri küçümsemene neden olabilir."],
+          "potential": ["Bilgelik enerjinle birleştiğinde psikolojik güçlenme hızlanır."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde hareket, dürüstlük ve cesaret beklersin."],
+          "mechanism": ["Bağları canlı tutmak için spontane davranırsın."],
+          "effect": ["İlişkilerine umut, enerji ve macera katan bir dinamizm getirirsin."],
+          "shadow": ["Sabırsızlık ilişkisel gerginlik yaratabilir."],
+          "potential": ["Cesur açıklık ilişkilerde güveni ve büyümeyi artırır."]
+        },
+        "mind": {
+          "cause": ["Zihnin hızlı, cesur ve vizyoner düşünür."],
+          "mechanism": ["Fikirleri eyleme dönüştürerek genişlersin."],
+          "effect": ["Yeni projeler, girişimler ve keşiflerde parlak başarı gösterebilirsin."],
+          "shadow": ["Düşünmeden hareket etmek zihinsel dağınıklık yaratabilir."],
+          "potential": ["Zihinsel hız planlamayla birleştiğinde etkileyici başarı gelir."]
+        },
+        "career": {
+          "cause": ["İş hayatında büyüme cesaretten geçer."],
+          "mechanism": ["Başlatıcı enerjiyle fırsatları hızlıca yakalarsın."],
+          "effect": ["Girişimcilik, liderlik ve aksiyon gerektiren alanlarda başarı potansiyelin yüksektir."],
+          "shadow": ["Uzun vadeli projelerde istikrar zorlanabilir."],
+          "potential": ["Doğal lider enerjin bilgelikle birleştiğinde büyük kariyer sıçramaları yaşarsın."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda cesaretle büyümeyi öğrenirsin."],
+          "mechanism": ["Kararlar seni özgün hareketler yapmaya iter."],
+          "effect": ["Ruhsal yolun hız, cesaret ve atılım temaları taşır."],
+          "shadow": ["Aşırılık karmasal tekrar yaratabilir."],
+          "potential": ["Bilinçli cesaret ruhsal genişlemeyi hızlandırır."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_taurus",
+      "conditions": [{ "planet": "Jupiter", "sign": "Taurus" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin temelinde güvenli ve istikrarlı büyüme isteği vardır."],
+          "mechanism": ["Yavaş ama kalıcı adımlarla genişlersin."],
+          "effect": ["Dışarıdan sakin, güçlü ve güven veren biri olarak algılanırsın."],
+          "shadow": ["Aşırı konfor arayışı gelişimini yavaşlatabilir."],
+          "potential": ["Sabitlik ve bereket birleştiğinde güçlü bir kimlik inşa edersin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde huzur ve istikrar arayışı baskındır."],
+          "mechanism": ["Duyusal deneyimler psikolojik rahatlama sağlar."],
+          "effect": ["Zihinsel ve duygusal dayanıklılık geliştirirsin."],
+          "shadow": ["Aşırı güven ihtiyacı psikolojik esnekliği azaltabilir."],
+          "potential": ["Sağlam temelde büyüyen psikoloji ruhsal huzur yaratır."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde sadakat, dokunsallık ve huzur beklersin."],
+          "mechanism": ["Bağlarını yavaş ama güçlü bir şekilde kurarsın."],
+          "effect": ["İlişkilerinde güvenilir, sakin ve besleyici bir enerji sunarsın."],
+          "shadow": ["Kıskançlık veya inatçılık bağları zorlayabilir."],
+          "potential": ["Denge ve güven ilişkilerinde uzun süreli büyüme getirir."]
+        },
+        "mind": {
+          "cause": ["Zihnin pratik, sabırlı ve üretken çalışır."],
+          "mechanism": ["Fikirleri somut adımlarla kalıcı hale getirirsin."],
+          "effect": ["Finans, tasarım, üretim ve doğayla ilgili alanlarda parlak başarı gösterebilirsin."],
+          "shadow": ["Yeniliklere direnç zihinsel durağanlık yaratabilir."],
+          "potential": ["Zihinsel istikrar yaratıcılıkla birleştiğinde güçlü sonuçlar doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında kalıcılık, verimlilik ve bereket beklersin."],
+          "mechanism": ["Kaynakları sabırla yönetir, sağlam bir sistem kurarsın."],
+          "effect": ["Sanat, finans, tarım ve üretim alanlarında yüksek başarı potansiyelin vardır."],
+          "shadow": ["Hareket etmekte zorlanmak fırsat kaçırmana neden olabilir."],
+          "potential": ["Kararlı ilerleme büyük kariyer başarıları getirir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda değer, emek ve sabır temalarıyla büyürsün."],
+          "mechanism": ["Deneyimler seni istikrar yaratmaya zorlar."],
+          "effect": ["Ruhsal yolun huzur ve bereketle genişler."],
+          "shadow": ["Maddeye aşırı bağlılık karmasal ağırlık yaratabilir."],
+          "potential": ["Gerçek değer bilinci ruhsal bolluk getirir."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_gemini",
+      "conditions": [{ "planet": "Jupiter", "sign": "Gemini" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde öğrenme, merak ve zihinsel genişleme vardır."],
+          "mechanism": ["Yeni bilgilerle kimliğini besler, sürekli değişimle büyürsün."],
+          "effect": ["Dışarıdan zeki, esprili ve çok yönlü biri olarak görünürsün."],
+          "shadow": ["Dağılma kimlikte yüzeysellik yaratabilir."],
+          "potential": ["Zihinsel çeşitlilik kimlik ustalığına dönüşebilir."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde iletişim ve zihinsel hareket ihtiyacı vardır."],
+          "mechanism": ["Fikir alışverişi psikolojik genişleme sağlar."],
+          "effect": ["Yüksek algı ve hızlı adaptasyon geliştirirsin."],
+          "shadow": ["Aşırı zihinsel uyarılma huzuru bozabilir."],
+          "potential": ["Odaklanmış zihin psikolojik büyümeyi hızlandırır."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde iletişim, esneklik ve zihinsel uyum beklersin."],
+          "mechanism": ["Yakınlıkta bile sohbet, fikir ve hareket ararsın."],
+          "effect": ["İlişkilerine canlılık, zeka ve dinamizm getirirsin."],
+          "shadow": ["Tutarsızlık güveni zedeleyebilir."],
+          "potential": ["Net iletişim ilişkilerinde derin büyüme sağlar."]
+        },
+        "mind": {
+          "cause": ["Zihnin hızlı, meraklı ve çok yönlü çalışır."],
+          "mechanism": ["Bilgiyi parçalara ayırır, yeniden birleştirerek öğrenirsin."],
+          "effect": ["Yazı, eğitim, medya, teknoloji ve ticarette yüksek başarı gösterebilirsin."],
+          "shadow": ["Zihinsel dağınıklık planlamayı zorlaştırabilir."],
+          "potential": ["Zihinsel çeşitlilik disiplinle birleştiğinde büyük üretkenlik sağlar."]
+        },
+        "career": {
+          "cause": ["İş hayatında hareket, öğrenme ve iletişim beklersin."],
+          "mechanism": ["Birden fazla projeyi aynı anda yönetebilirsin."],
+          "effect": ["İletişim, reklam, eğitim ve teknoloji alanlarında yüksek başarı potansiyelin vardır."],
+          "shadow": ["İstikrarsızlık profesyonel ilerlemeyi zorlayabilir."],
+          "potential": ["Çok yönlülük stratejiyle birleştiğinde kariyerin yükselir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda zihin, iletişim ve merak üzerinden büyürsün."],
+          "mechanism": ["Deneyimler seni ifade etmeye ve öğrenmeye iter."],
+          "effect": ["Ruhsal yolun bilgi ve iletişimle genişler."],
+          "shadow": ["Yüzeysellik karmasal tekrar yaratabilir."],
+          "potential": ["Derin anlam arayışı ruhsal bilgelik getirir."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_cancer",
+      "conditions": [{ "planet": "Jupiter", "sign": "Cancer" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde şefkat, koruma ve duygusal büyüme vardır."],
+          "mechanism": ["Duygusal bağlarla genişler, empatiyle kimlik geliştirirsin."],
+          "effect": ["Dışarıdan sıcak, güvenilir ve koruyucu biri olarak görünürsün."],
+          "shadow": ["Aşırı duygusallık kimliği zayıflatabilir."],
+          "potential": ["Şefkat bilgelikle birleştiğinde güçlü bir içsel liderlik doğar."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde güvenlik ve duygusal bağlılık ihtiyacı bulunur."],
+          "mechanism": ["Duygusal deneyimlerden hızla büyürsün."],
+          "effect": ["Güçlü sezgi ve empati kapasitesi gelişir."],
+          "shadow": ["Duygusal bağımlılık psikolojik dengesizliğe yol açabilir."],
+          "potential": ["Sağlam duygusal kökler psikolojik huzur getirir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde bağlanma, şefkat ve güven beklersin."],
+          "mechanism": ["Sevdiklerini korumaya yönelik bir ilişki stili geliştirirsin."],
+          "effect": ["İlişkilerinde besleyici ve sadık bir enerji taşırsın."],
+          "shadow": ["Aşırı sahiplenme ilişkiyi zorlayabilir."],
+          "potential": ["Duygusal olgunlaşma ilişkilerde derin bağ yaratır."]
+        },
+        "mind": {
+          "cause": ["Zihnin sezgisel ve duygusal olarak beslenen bir yapıya sahiptir."],
+          "mechanism": ["Bilgiyi duygusal hafıza yoluyla işlersin."],
+          "effect": ["Psikoloji, tarih, şifa ve aile yapıları üzerine güçlü içgörü geliştirirsin."],
+          "shadow": ["Duygusal tarafgirlik objektifliği bozabilir."],
+          "potential": ["Sezgisel zihin disiplinle birleştiğinde çok güçlü olur."]
+        },
+        "career": {
+          "cause": ["İş hayatında koruma, destek ve güven temaları baskındır."],
+          "mechanism": ["İnsanları bir araya getirme ve besleme gücün yüksektir."],
+          "effect": ["Eğitim, beslenme, psikoloji, bakım ve emlak alanlarında başarı potansiyelin vardır."],
+          "shadow": ["Aşırı hassasiyet profesyonel stres yaratabilir."],
+          "potential": ["Şefkat temelli liderlik kariyerinde büyük gelişim getirir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda duygusal bilgelik ve şefkat üzerinden büyürsün."],
+          "mechanism": ["Deneyimler seni kalpten bağlar kurmaya iter."],
+          "effect": ["Ruhsal yolunda empati ve besleme temaları güçlenir."],
+          "shadow": ["Duygusal bağımlılık karmasal tekrar yaratabilir."],
+          "potential": ["Kalp bilinci ruhsal genişleme sağlar."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_leo",
+      "conditions": [{ "planet": "Jupiter", "sign": "Leo" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde kendini büyük ve özgün biçimde ifade etme isteği vardır."],
+          "mechanism": ["Yaratıcı deneyimlerle büyürsün."],
+          "effect": ["Dışarıdan karizmatik, sıcak ve ilham verici biri olarak görünürsün."],
+          "shadow": ["Aşırı gurur kimlikte kırılmalar yaratabilir."],
+          "potential": ["Otantik ifade güçlü bir kimlik ışığı oluşturur."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde görünme, takdir edilme ve yaratma isteği vardır."],
+          "mechanism": ["Yaratıcı projeler psikolojik genişleme sağlar."],
+          "effect": ["Güçlü özgüven ve içsel motivasyon gelişir."],
+          "shadow": ["Onay ihtiyacı psikolojik kırılganlık yaratabilir."],
+          "potential": ["Gerçek özdeğer duygusu psikolojik olgunluk getirir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde sıcaklık, tutku ve yaratıcı enerji beklersin."],
+          "mechanism": ["Bağlarda cömertlik ve canlılık sunarsın."],
+          "effect": ["İlişkilerine neşe, cesaret ve bağlılık getirirsin."],
+          "shadow": ["Dramatik tepkiler ilişkiyi zorlayabilir."],
+          "potential": ["Otantik açıklık ilişkinde güçlü büyüme yaratır."]
+        },
+        "mind": {
+          "cause": ["Zihnin yaratıcı ve dramatik düşünür."],
+          "mechanism": ["Fikirleri coşku ve ilhamla genişletirsin."],
+          "effect": ["Sanat, liderlik ve sahne alanlarında ilham verici fikirler üretebilirsin."],
+          "shadow": ["Ego temelli düşünceler objektifliği bozabilir."],
+          "potential": ["Yaratıcı vizyon bilgelikle birleştiğinde büyük işler doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında görünürlük, yaratıcılık ve liderlik beklersin."],
+          "mechanism": ["Projelerde cesur roller üstlenirsin."],
+          "effect": ["Sanat, medya, girişimcilik ve liderlik alanlarında yüksek başarı potansiyelin vardır."],
+          "shadow": ["Aşırı dramatizasyon profesyonel ilişkileri zorlayabilir."],
+          "potential": ["Gerçek liderlik ifadesi büyük başarı getirir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda yaratıcı ifade ile büyürsün."],
+          "mechanism": ["Deneyimler seni kalbini açmaya zorlar."],
+          "effect": ["Ruhsal yolunda ışık, ifade ve cesaret temaları baskındır."],
+          "shadow": ["Aşırı ego karmasal dersler yaratabilir."],
+          "potential": ["Kalpten yaşam ruhsal genişleme sağlar."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_virgo",
+      "conditions": [{ "planet": "Jupiter", "sign": "Virgo" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde fayda üretme ve düzen içinde büyüme isteği vardır."],
+          "mechanism": ["Detaylara hâkim oldukça kimliğin güçlenir."],
+          "effect": ["Dışarıdan çalışkan, mantıklı ve güvenilir biri olarak algılanırsın."],
+          "shadow": ["Aşırı analiz kimliği kısıtlayabilir."],
+          "potential": ["Fayda yaratan kimlik bilinci büyük etki oluşturur."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde iyileştirme ve geliştirme isteği vardır."],
+          "mechanism": ["Düzensizlik seni sistem kurmaya iter."],
+          "effect": ["Psikolojik dayanıklılık ve üretkenlik gelişir."],
+          "shadow": ["Kusur arayışı psikolojik baskı yaratabilir."],
+          "potential": ["Kabul duygusu psikolojik büyümeyi hızlandırır."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde güvenilirlik, sadelik ve fayda ararsın."],
+          "mechanism": ["Bağlara özen göstererek emek verirsin."],
+          "effect": ["İlişkilerinde destekleyici ve hizmet eden bir enerji taşırsın."],
+          "shadow": ["Eleştirellik partneri zorlayabilir."],
+          "potential": ["Şefkatle birleşen netlik ilişkinde büyük iyileşme sağlar."]
+        },
+        "mind": {
+          "cause": ["Zihnin analitik, işlevsel ve çözüm odaklı çalışır."],
+          "mechanism": ["Verileri detaylı işleyerek anlam çıkarırsın."],
+          "effect": ["Sağlık, analiz, hizmet ve organizasyon alanlarında yüksek başarı gösterebilirsin."],
+          "shadow": ["Aşırı mükemmeliyetçilik zihinsel yorgunluk yaratır."],
+          "potential": ["Analitik zeka bilgelikle birleştiğinde büyük sistemler kurarsın."]
+        },
+        "career": {
+          "cause": ["İş hayatında düzen ve fayda yaratma temaları baskındır."],
+          "mechanism": ["Çalışma ahlakın güçlüdür ve detayları başarıyla yönetirsin."],
+          "effect": ["Sağlık, danışmanlık, analiz ve organizasyon alanlarında yüksek potansiyel taşırsın."],
+          "shadow": ["Aşırı iş yükü tükenmişlik yaratabilir."],
+          "potential": ["Hizmet temelli liderlik kariyerde büyük başarı getirir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda fayda üretme ve arınma temalarıyla büyürsün."],
+          "mechanism": ["Deneyimler seni mükemmeli bırakıp gerçek faydayı bulmaya iter."],
+          "effect": ["Ruhsal yolun düzen, iyileştirme ve hizmetle genişler."],
+          "shadow": ["Takıntı karmasal döngü yaratabilir."],
+          "potential": ["Kabul ve hizmet ruhsal bilgelik getirir."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_libra",
+      "conditions": [{ "planet": "Jupiter", "sign": "Libra" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde denge, uyum ve sosyal genişleme isteği vardır."],
+          "mechanism": ["Bağlar kurarak kimliğini büyütürsün."],
+          "effect": ["Dışarıdan zarif, diplomatik ve adil biri olarak görünürsün."],
+          "shadow": ["Kararsızlık kimlik gücünü azaltabilir."],
+          "potential": ["Gerçek denge kimlikte büyük bir bilgelik yaratır."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde estetik, uyum ve barış ihtiyacı bulunur."],
+          "mechanism": ["Çatışmaları çözmek psikolojik genişleme sağlar."],
+          "effect": ["İlişkisel zekâ ve sosyal empati gelişir."],
+          "shadow": ["Onay ihtiyacı psikolojik dağılma yaratabilir."],
+          "potential": ["Netlik psikolojik güçlenme sağlar."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde uyum, zarafet ve karşılıklılık beklersin."],
+          "mechanism": ["Bağlarda eşitliği gözeterek ilerlersin."],
+          "effect": ["İlişkilerinde yumuşak, adil ve çekici bir enerji sunarsın."],
+          "shadow": ["Aşırı fedakarlık ilişkiyi dengesiz hale getirebilir."],
+          "potential": ["Gerçek sınırlar ilişkilerde derin büyüme getirir."]
+        },
+        "mind": {
+          "cause": ["Zihnin estetik, adalet ve ilişki modelleri üzerine düşünür."],
+          "mechanism": ["Çelişkileri çözerek zihinsel genişleme yaşarsın."],
+          "effect": ["Tasarım, hukuk, sanat ve iletişim alanlarında yüksek potansiyel gösterirsin."],
+          "shadow": ["Kararsızlık zihinsel ilerlemeyi yavaşlatabilir."],
+          "potential": ["Netlik sanatında ustalaştığında zihinsel parlaklık ortaya çıkar."]
+        },
+        "career": {
+          "cause": ["İş hayatında uyum, diplomasi ve estetik temaları baskındır."],
+          "mechanism": ["Ortak projelerde parlarsın."],
+          "effect": ["Sanat, tasarım, hukuk ve ilişkisel yönetimde yüksek başarı potansiyelin vardır."],
+          "shadow": ["Kararsızlık fırsatları kaçırmana neden olabilir."],
+          "potential": ["Denge temelli liderlik kariyerde büyük ilerleme sağlar."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda ilişkisel bilgelik ve uyum üzerinden büyürsün."],
+          "mechanism": ["Deneyimler seni sınırlarını ve adalet anlayışını geliştirmeye iter."],
+          "effect": ["Ruhsal yolun barış, estetik ve dengeyle genişler."],
+          "shadow": ["Aşırı uyum karmasal kayıplar yaratabilir."],
+          "potential": ["Gerçek denge ruhsal özgürleşme getirir."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_scorpio",
+      "conditions": [{ "planet": "Jupiter", "sign": "Scorpio" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde derinlik, güç ve dönüşüm temaları vardır."],
+          "mechanism": ["Krizler yoluyla büyür, yoğunlukla kimliğini güçlendirirsin."],
+          "effect": ["Dışarıdan etkileyici, derin ve sezgisel biri olarak görünürsün."],
+          "shadow": ["Aşırı kontrol kimlikte karmaşa yaratabilir."],
+          "potential": ["Dönüşüm bilinci güçlü bir kimlik liderliği oluşturur."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde tutkular, sezgi ve derin araştırma isteği bulunur."],
+          "mechanism": ["Zorluklar seni içsel gücünü keşfetmeye iter."],
+          "effect": ["Psikolojik dayanıklılık ve kriz bilinci gelişir."],
+          "shadow": ["Takıntılar psikolojik yük yaratabilir."],
+          "potential": ["Karanlığı dönüştürdüğünde büyük psikolojik güç doğar."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde yoğunluk, sadakat ve duygusal derinlik beklersin."],
+          "mechanism": ["Bağlarda dönüşüm ararsın ve derinleşmek istersin."],
+          "effect": ["İlişkilerinde tutkulu, sezgisel ve bağlı bir enerji sunarsın."],
+          "shadow": ["Kıskançlık veya güç savaşları ortaya çıkabilir."],
+          "potential": ["Güven ve açıklık ilişkide güçlü dönüşüm sağlar."]
+        },
+        "mind": {
+          "cause": ["Zihnin derin, sezgisel ve araştırmacı çalışır."],
+          "mechanism": ["Gizli bilgileri sezgisel olarak ortaya çıkarırsın."],
+          "effect": ["Psikoloji, araştırma, strateji ve kriz yönetiminde başarılı olabilirsin."],
+          "shadow": ["Aşırı şüphe zihinsel kapanma yaratabilir."],
+          "potential": ["Zihinsel sezgi bilgelikle birleştiğinde büyük keşifler doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında güç, dönüşüm ve gizli yapıları çözme temaları baskındır."],
+          "mechanism": ["Derin analizlerle sistemi dönüştürebilirsin."],
+          "effect": ["Finans, araştırma, terapi ve strateji alanlarında yüksek başarı potansiyelin vardır."],
+          "shadow": ["Aşırı kontrol profesyonel gerilim yaratabilir."],
+          "potential": ["Stratejik bilgelik kariyerde büyük sıçrama sağlar."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda dönüşüm, güç ve sezgi temalarıyla büyürsün."],
+          "mechanism": ["Deneyimler seni karanlık alanları iyileştirmeye iter."],
+          "effect": ["Ruhsal yolun derinlik ve yenilenme üzerine kuruludur."],
+          "shadow": ["Aşırı yoğunluk karmasal yük yaratabilir."],
+          "potential": ["Gerçek teslimiyet ruhsal güçlenme getirir."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_sagittarius",
+      "conditions": [{ "planet": "Jupiter", "sign": "Sagittarius" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde özgürlük, keşif ve büyük anlam arayışı vardır."],
+          "mechanism": ["Yeni deneyimlerle genişler, ideallerin doğrultusunda büyürsün."],
+          "effect": ["Dışarıdan bilge, enerjik ve vizyoner biri olarak görünürsün."],
+          "shadow": ["Aşırı özgüven kimlikte dengesizlik yaratabilir."],
+          "potential": ["Gerçek bilgelik kimliğini güçlü bir öğreticiye dönüştürür."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde umut, ilham ve geniş düşünme isteği bulunur."],
+          "mechanism": ["Yeni bilgiler ve kültürlerle psikolojik genişleme yaşarsın."],
+          "effect": ["Felsefi farkındalık ve zihinsel esneklik gelişir."],
+          "shadow": ["Aşırı iyimserlik gerçeklikle çatışabilir."],
+          "potential": ["Bilgelikle birleşen umut güçlü psikolojik büyüme yaratır."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde özgürlük, dürüstlük ve zihinsel uyum beklersin."],
+          "mechanism": ["Bağlarda gelişim ve macera ararsın."],
+          "effect": ["İlişkilerine iyimserlik, neşe ve genişlik getirirsin."],
+          "shadow": ["Sorumluluktan kaçma ilişkileri zedeleyebilir."],
+          "potential": ["Açık iletişim ilişkide büyük büyüme sağlar."]
+        },
+        "mind": {
+          "cause": ["Zihnin vizyoner, geniş düşünceli ve keşif odaklı çalışır."],
+          "mechanism": ["Fikirleri büyük ölçekli modellerle birleştirirsin."],
+          "effect": ["Eğitim, felsefe, yayıncılık ve seyahat alanlarında yüksek başarı gösterebilirsin."],
+          "shadow": ["Detay eksikliği zihinsel boşluk yaratabilir."],
+          "potential": ["Vizyon disipline kavuştuğunda büyük işler doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında büyüme, özgürlük ve anlam temaları baskındır."],
+          "mechanism": ["Yeni deneyimlerle kariyer genişliği kazanırsın."],
+          "effect": ["Eğitim, hukuk, yolculuk ve danışmanlık alanlarında parlarsın."],
+          "shadow": ["Sabırsızlık uzun vadeli hedeflere zarar verebilir."],
+          "potential": ["Bilgeliğe dayalı liderlik kariyerde büyük başarı getirir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda bilgelik, özgürlük ve anlam arayışıyla büyürsün."],
+          "mechanism": ["Deneyimler seni dogmalardan özgürleşmeye iter."],
+          "effect": ["Ruhsal yolun keşif ve genişleme üzerine kuruludur."],
+          "shadow": ["Aşırı özgürlük karmasal dağılım yaratabilir."],
+          "potential": ["Bilge özgürlük ruhsal yükseliş sağlar."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_capricorn",
+      "conditions": [{ "planet": "Jupiter", "sign": "Capricorn" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde disiplin, sorumluluk ve yapı içinde büyüme vardır."],
+          "mechanism": ["Uzun vadeli hedeflerle kimliğini güçlendirirsin."],
+          "effect": ["Dışarıdan ciddi, güvenilir ve kararlı biri olarak görünürsün."],
+          "shadow": ["Aşırı katılık kimliği baskılayabilir."],
+          "potential": ["Disiplinli büyüme güçlü bir kimlik otoritesi yaratır."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde kontrol, başarı ve güven ihtiyacı vardır."],
+          "mechanism": ["Zorluklar seni dayanıklı bir psikoloji geliştirmeye iter."],
+          "effect": ["Sorumluluk bilinci ve iç gücün artar."],
+          "shadow": ["Aşırı baskı psikolojik yorgunluk yaratabilir."],
+          "potential": ["Olgunlaşmış kontrol sağlıklı psikolojik güçlenme getirir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde sadakat, netlik ve ciddiyet beklersin."],
+          "mechanism": ["Bağlarda güven inşa etmeye odaklanırsın."],
+          "effect": ["İlişkilerinde kararlı, güvenilir ve planlı bir enerji sunarsın."],
+          "shadow": ["Duygusal mesafe bağları zorlayabilir."],
+          "potential": ["Olgun sorumluluk ilişkide güçlü bir yapı oluşturur."]
+        },
+        "mind": {
+          "cause": ["Zihnin stratejik, planlı ve gerçekçi düşünür."],
+          "mechanism": ["Verileri uzun vadeli hedeflerle ilişkilendirirsin."],
+          "effect": ["Yönetim, finans, mühendislik ve strateji alanlarında yüksek başarı gösterirsin."],
+          "shadow": ["Aşırı gerçekçilik yaratıcılığı engelleyebilir."],
+          "potential": ["Keskin stratejik zihin bilgelikle birleştiğinde büyük işler doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında disiplin, hedef ve yapı temaları baskındır."],
+          "mechanism": ["Sabırlı ilerleyişle büyük başarılar biriktirirsin."],
+          "effect": ["Kurumlar, yönetim, finans ve mühendislik alanlarında parlarsın."],
+          "shadow": ["Aşırı çalışma tükenmişlik yaratabilir."],
+          "potential": ["Uzun vadeli istikrar büyük kariyer başarısı getirir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda sorumluluk, yapı ve disiplinle büyürsün."],
+          "mechanism": ["Deneyimler seni iç otorite oluşturmaya iter."],
+          "effect": ["Ruhsal yolun olgunluk, çalışma ve disiplinle genişler."],
+          "shadow": ["Aşırı kontrol karmasal yük yaratabilir."],
+          "potential": ["Bilge otorite ruhsal güçlenme sağlar."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_aquarius",
+      "conditions": [{ "planet": "Jupiter", "sign": "Aquarius" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde özgürlük, yenilik ve toplumsal bilgelik vardır."],
+          "mechanism": ["Kolektifle bağlantı kurarak kimliğini genişletirsin."],
+          "effect": ["Dışarıdan özgün, sosyal ve vizyoner biri olarak görünürsün."],
+          "shadow": ["Aşırı mesafe kimliği soyutlaştırabilir."],
+          "potential": ["Özgünlük bilgelikle birleştiğinde güçlü bir toplumsal kimlik oluşur."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde bireysellik ve insancıllık birlikte çalışır."],
+          "mechanism": ["Zorluklar seni sosyal bilinci büyütmeye iter."],
+          "effect": ["Geniş perspektifli ve objektif psikoloji gelişir."],
+          "shadow": ["Duygusal kopukluk psikolojik yalnızlık yaratabilir."],
+          "potential": ["Kalple birleşen zihin güçlü bir psikolojik özgürlük getirir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde özgürlük, eşitlik ve zihinsel uyum beklersin."],
+          "mechanism": ["Bağlarda alan ve özgünlük ararsın."],
+          "effect": ["İlişkiler dinamik, dostane ve öğretici olabilir."],
+          "shadow": ["Mesafe ilişkide sıcaklık eksikliği yaratabilir."],
+          "potential": ["Özgür bağ anlayışı güçlü ruhsal ortaklık doğurur."]
+        },
+        "mind": {
+          "cause": ["Zihnin yenilikçi, sistemsel ve kolektif odaklı düşünür."],
+          "mechanism": ["Soyut kavramları geniş modeller içinde ilişkilendirirsin."],
+          "effect": ["Teknoloji, bilim, sosyal reform ve inovasyon alanlarında yüksek başarı gösterebilirsin."],
+          "shadow": ["Aşırı soyut düşünme pratikliği azaltabilir."],
+          "potential": ["Zihinsel özgünlük sistemli çalışmayla birleştiğinde büyük başarı getirir."]
+        },
+        "career": {
+          "cause": ["İş hayatında yenilik, özgünlük ve ekip bilinci temaları baskındır."],
+          "mechanism": ["Toplumsal fayda yaratmaya yönelik projelerde parlayabilirsin."],
+          "effect": ["Teknoloji, sosyal girişim, bilim ve yönetim alanlarında potansiyelin yüksektir."],
+          "shadow": ["Kural tanımazlık profesyonel çatışmalar yaratabilir."],
+          "potential": ["Özgün liderlik büyük kariyer reformları getirir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda özgünlük ve topluma katkı üzerinden büyürsün."],
+          "mechanism": ["Deneyimler seni bireysellik ve kolektif arasında denge kurmaya iter."],
+          "effect": ["Ruhsal yolun yenilik ve insanlık değerleriyle genişler."],
+          "shadow": ["Ayrışma karmasal yalnızlık yaratabilir."],
+          "potential": ["Kolektif uyum ruhsal yükseliş sağlar."]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_pisces",
+      "conditions": [{ "planet": "Jupiter", "sign": "Pisces" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde sezgisel genişleme, şefkat ve ruhsal büyüme vardır."],
+          "mechanism": ["Akışa teslim oldukça kimliğin güçlenir."],
+          "effect": ["Dışarıdan duyarlı, sezgisel ve merhametli biri olarak görünürsün."],
+          "shadow": ["Belirsizlik kimlikte dağılma yaratabilir."],
+          "potential": ["Sezgiyi yapılandırdığında kimliğin ruhsal liderliğe dönüşebilir."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde empati, sezgi ve ruhsal bağlantı isteği bulunur."],
+          "mechanism": ["Zorluklar seni içsel dünyaya yönlendirir."],
+          "effect": ["Psikolojik farkındalık ve ruhsal sezgi gelişir."],
+          "shadow": ["Kaçış eğilimleri psikolojik karmaşa yaratabilir."],
+          "potential": ["Şefkat bilinci psikolojik güçlenme sağlar."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde şefkat, bağ ve ruhsal uyum beklersin."],
+          "mechanism": ["Bağlarda sınır ve teslimiyet arasında denge ararsın."],
+          "effect": ["İlişkilerin şifalı, derin ve sezgisel olabilir."],
+          "shadow": ["İdealizasyon hayal kırıklığı yaratabilir."],
+          "potential": ["Hem sınır hem şefkat geliştiğinde ilişkiler ruhsal rehberliğe dönüşür."]
+        },
+        "mind": {
+          "cause": ["Zihnin sembolik, sezgisel ve hayal gücü yüksek çalışır."],
+          "mechanism": ["Bilgiyi sezgisel sıçrayışlarla anlamlandırırsın."],
+          "effect": ["Sanat, ruhsallık, psikoloji ve şifa alanlarında yüksek başarı gösterebilirsin."],
+          "shadow": ["Odak eksikliği zihinsel dağılma yaratabilir."],
+          "potential": ["Hayal gücü disipline kavuştuğunda büyük yaratıcılık doğar."]
+        },
+        "career": {
+          "cause": ["İş hayatında anlam, şifa ve duyarlılık temaları baskındır."],
+          "mechanism": ["Akış ve sezgiyle yön bulursun."],
+          "effect": ["Sanat, şifa, psikoloji ve ruhsal rehberlik alanlarında başarı potansiyelin çok yüksektir."],
+          "shadow": ["Belirsizlik profesyonel istikrarı zorlayabilir."],
+          "potential": ["Ruhsal ilham kariyerinde büyük başarı yaratır."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda şefkat, sezgi ve teslimiyetle büyürsün."],
+          "mechanism": ["Deneyimler seni ruhsal hizmete yönlendirir."],
+          "effect": ["Ruhsal yolun birlik, empati ve sezgiyle genişler."],
+          "shadow": ["Kurban bilinci karmasal döngü yaratabilir."],
+          "potential": ["Sezgisel güç ruhsal yükseliş getirir."]
+        }
+      }
+    }
+  ],
+  "planet_house_rules": [],
+  "aspect_rules": [],
+  "meta_rules": []
+}

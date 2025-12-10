@@ -121,15 +121,31 @@ def build_natal_chart(payload: Mapping[str, Any]) -> Dict[str, Any]:
     local_dt, utc_dt = parse_birth_datetime_components(date_value, time_value, location.timezone)
     jd_ut = julian_day(utc_dt)
 
+    logger.warning(f"LOCAL DT (before conversion) = {local_dt} tzinfo={local_dt.tzinfo}")
+    logger.warning(f"UTC DT (after conversion) = {utc_dt} tzinfo={utc_dt.tzinfo}")
+    logger.warning(f"JD UT USED = {jd_ut}")
+
     try:
         swe.set_topo(location.longitude, location.latitude, 0.0)
     except Exception as exc:  # pragma: no cover - defensive
         logger.debug("Failed to set topocentric coordinates: %s", exc)
 
-    house_list, angles = calc_houses(jd_ut, location.latitude, location.longitude)
+    house_list, angles = calc_houses(
+        jd_ut,
+        location.latitude,
+        location.longitude,
+        local_dt=local_dt,
+        utc_dt=utc_dt,
+    )
     cusp_sequence = [0.0, *house_list]
 
-    planets: Dict[str, Dict[str, Any]] = calc_planets(jd_ut, cusp_sequence, angles=angles)
+    planets: Dict[str, Dict[str, Any]] = calc_planets(
+        jd_ut,
+        cusp_sequence,
+        angles=angles,
+        local_dt=local_dt,
+        utc_dt=utc_dt,
+    )
 
     houses: Dict[str, Any] = {
         str(index + 1): round((value % 360), 4) for index, value in enumerate(house_list)

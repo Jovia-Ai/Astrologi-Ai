@@ -83,3 +83,104 @@ def save_birth_data(user_id: str, birth_date: str, birth_time: str, timezone: st
         }
     ).execute()
     return response.data
+
+
+def save_astro_settings(user_id: str, house_system: str, zodiac_type: str):
+    response = (
+        supabase.table("astro_settings")
+        .upsert(
+            {
+                "user_id": user_id,
+                "house_system": house_system,
+                "zodiac_type": zodiac_type,
+            },
+            on_conflict="user_id",
+        )
+        .execute()
+    )
+    return response.data
+
+
+def get_astro_settings(user_id: str):
+    response = (
+        supabase.table("astro_settings")
+        .select("*")
+        .eq("user_id", user_id)
+        .single()
+        .execute()
+    )
+    return response.data
+
+
+def get_profile(user_id: str) -> Dict[str, Any] | None:
+    try:
+        response = (
+            supabase.table("profiles")
+            .select("*")
+            .eq("id", user_id)
+            .single()
+            .execute()
+        )
+        return response.data
+    except Exception:
+        return None
+
+
+def create_profile(data: Mapping[str, Any]) -> Dict[str, Any]:
+    response = supabase.table("profiles").insert(dict(data)).execute()
+    payload = response.data
+    if isinstance(payload, list):
+        return payload[0]
+    return payload
+
+
+def update_profile(user_id: str, data: Mapping[str, Any]) -> Dict[str, Any] | None:
+    response = (
+        supabase.table("profiles")
+        .update(dict(data))
+        .eq("id", user_id)
+        .execute()
+    )
+    payload = response.data
+    if isinstance(payload, list) and payload:
+        return payload[0]
+    if isinstance(payload, dict) and payload:
+        return payload
+    return get_profile(user_id)
+
+
+def get_settings(user_id: str) -> Dict[str, Any] | None:
+    try:
+        response = (
+            supabase.table("astro_settings")
+            .select("*")
+            .eq("user_id", user_id)
+            .single()
+            .execute()
+        )
+        return response.data
+    except Exception:
+        return None
+
+
+def create_settings(data: Mapping[str, Any]) -> Dict[str, Any]:
+    response = supabase.table("astro_settings").insert(dict(data)).execute()
+    payload = response.data
+    if isinstance(payload, list):
+        return payload[0]
+    return payload
+
+
+def update_settings(user_id: str, data: Mapping[str, Any]) -> Dict[str, Any] | None:
+    response = (
+        supabase.table("astro_settings")
+        .update(dict(data))
+        .eq("user_id", user_id)
+        .execute()
+    )
+    payload = response.data
+    if isinstance(payload, list) and payload:
+        return payload[0]
+    if isinstance(payload, dict) and payload:
+        return payload
+    return get_settings(user_id)

@@ -1,60 +1,90 @@
-"""Profile CRUD routes."""
+"""Profile and astro settings endpoints."""
 from __future__ import annotations
 
 import logging
-from datetime import datetime
 
-from flask import Blueprint, jsonify, request
+from fastapi import APIRouter, HTTPException
 
+from app.models.profile import ProfileCreate, ProfileUpdate
+from app.models.settings import AstroSettingsCreate, AstroSettingsUpdate
 from app.services.profiles import (
-    extract_profile_payload,
-    fetch_profile_by_email,
-    serialise_profile,
-    upsert_profile_record,
-    validate_profile_payload,
+    create_profile,
+    create_settings,
+    get_profile as fetch_profile,
+    get_settings,
+    update_profile,
+    update_settings,
 )
 
-profile_bp = Blueprint("profile", __name__, url_prefix="/api")
+router = APIRouter(prefix="/api", tags=["profiles"])
 logger = logging.getLogger(__name__)
 
 
-@profile_bp.route("/profile", methods=["GET", "OPTIONS"])
-def get_profile():
-    if request.method == "OPTIONS":
-        return "", 204
+@router.get("/profile/{user_id}")
+def get_profile(user_id: str):
+    record = fetch_profile(user_id)
+    if not record:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    return {"status": "ok", "data": record}
 
-    email = request.args.get("email", "").strip().lower()
-    if not email:
-        return jsonify({"error": "email parametresi gereklidir."}), 400
 
+@router.post("/profile", status_code=201)
+def create_profile_route(payload: ProfileCreate):
     try:
-        document = fetch_profile_by_email(email)
-        if not document:
-            return jsonify({"error": "Profil bulunamadı."}), 404
-        return jsonify(serialise_profile(document))
+        created = create_profile(payload.dict())
+        return {"status": "ok", "data": created}
     except Exception as exc:  # pylint: disable=broad-except
-        logger.exception("Profile lookup failed: %s", exc)
-        return jsonify({"error": "Profil alınamadı."}), 500
+        logger.exception("Failed to create profile: %s", exc)
+        raise HTTPException(status_code=500, detail="Unable to create profile") from exc
 
 
-@profile_bp.route("/profile", methods=["POST", "PUT", "OPTIONS"])
-def upsert_profile():
-    if request.method == "OPTIONS":
-        return "", 204
-
-    payload = request.get_json(force=True) or {}
-    profile_payload = extract_profile_payload(payload)
-    errors = validate_profile_payload(profile_payload)
-    if errors:
-        return jsonify({"errors": errors}), 400
-
-    if request.method == "POST":
-        profile_payload["created_at"] = datetime.utcnow()
-
+@router.patch("/profile/{user_id}")
+def update_profile_route(user_id: str, payload: ProfileUpdate):
+    updates = payload.dict(exclude_none=True)
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
     try:
-        updated_document = upsert_profile_record(profile_payload)
+        updated = update_profile(user_id, updates)
+        if not updated:
+            raise HTTPException(status_code=404, detail="Profile not found")
+        return {"status": "ok", "data": updated}
+    except HTTPException:
+        raise
     except Exception as exc:  # pylint: disable=broad-except
-        logger.exception("Profile save failed: %s", exc)
-        return jsonify({"error": "Profil kaydedilemedi."}), 500
+        logger.exception("Failed to update profile: %s", exc)
+        raise HTTPException(status_code=500, detail="Unable to update profile") from exc
 
-    return jsonify(serialise_profile(updated_document or profile_payload)), 200
+
+@router.get("/settings/{user_id}")
+def get_astro_settings_route(user_id: str):
+    record = get_settings(user_id)
+    if not record:
+        raise HTTPException(status_code=404, detail="Astro settings not found")
+    return {"status": "ok", "data": record}
+
+
+@router.post("/settings", status_code=201)
+def create_astro_settings_route(payload: AstroSettingsCreate):
+    try:
+        created = create_settings(payload.dict())
+        return {"status": "ok", "data": created}
+    except Exception as exc:  # pylint: disable=broad-except
+        logger.exception("Failed to create astro settings: %s", exc)
+        raise HTTPException(status_code=500, detail="Unable to create astro settings") from exc
+
+
+@router.patch("/settings/{user_id}")
+def update_astro_settings_route(user_id: str, payload: AstroSettingsUpdate):
+    updates = payload.dict(exclude_none=True)
+    if not updates:
+        raise HTTPException(status_code=400, detail="No fields to update")
+    try:
+        updated = update_settings(user_id, updates)
+        if not updated:
+            raise HTTPException(status_code=404, detail="Astro settings not found")
+        return {"status": "ok", "data": updated}
+    except HTTPException:
+        raise
+    except Exception as exc:  # pylint: disable=broad-except
+        logger.exception("Failed to update astro settings: %s", exc)
+        raise HTTPException(status_code=500, detail="Unable to update astro settings") from exc

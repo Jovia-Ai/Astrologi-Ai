@@ -1,11 +1,11 @@
 """User routes placeholder."""
 from __future__ import annotations
 
-from flask import Blueprint, jsonify
+from fastapi import APIRouter
 
-user_bp = Blueprint("user", __name__, url_prefix="/api/users")
+router = APIRouter(prefix="/api/users", tags=["users"])
 
 
-@user_bp.route("", methods=["GET"])
+@router.get("")
 def list_users():
-    return jsonify({"users": []})
+    return {"users": []}

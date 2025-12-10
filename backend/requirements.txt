@@ -1,5 +1,3 @@
-Flask
-Flask-Cors
 requests
 pytz
 python-dotenv
@@ -11,3 +9,8 @@ transformers==4.46.1
 tokenizers>=0.20.0,<0.21
 pydantic>=2.0.0
 supabase
+fastapi
+uvicorn
+pydantic-settings
+email-validator
+

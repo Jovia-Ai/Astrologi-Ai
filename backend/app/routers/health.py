@@ -1,11 +1,11 @@
 """Health check routes."""
 from __future__ import annotations
 
-from flask import Blueprint, jsonify
+from fastapi import APIRouter
 
 from app.services.supabase import supabase
 
-health_bp = Blueprint("health", __name__, url_prefix="/api")
+router = APIRouter(prefix="/api", tags=["health"])
 
 
 def _supabase_healthcheck() -> tuple[bool, str]:
@@ -16,13 +16,11 @@ def _supabase_healthcheck() -> tuple[bool, str]:
         return False, str(exc)
 
 
-@health_bp.route("/health", methods=["GET"])
+@router.get("/health")
 def health_check():
     supabase_ok, supabase_msg = _supabase_healthcheck()
-    return jsonify(
-        {
-            "status": "ok" if supabase_ok else "degraded",
-            "supabase": supabase_ok,
-            "supabase_message": supabase_msg,
-        }
-    )
+    return {
+        "status": "ok" if supabase_ok else "degraded",
+        "supabase": supabase_ok,
+        "supabase_message": supabase_msg,
+    }

@@ -1,0 +1,583 @@
+{
+  "planet_sign_rules": [
+    {
+      "id": "neptune_in_aries",
+      "conditions": [{ "planet": "Neptune", "sign": "Aries" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin derininde sezgisel cesaret ve içsel kahramanlık arzusu vardır."],
+          "mechanism": ["Kendini çoğu zaman içsel bir misyona çağrılmış gibi hissederek hareket edersin."],
+          "effect": ["Dışarıdan idealleri uğruna atılgan davranan, sezgisel yönü güçlü biri olarak algılanırsın."],
+          "shadow": ["Gerçekçi olmayan kahramanlık fantezileri hayal kırıklığına yol açabilir."],
+          "potential": ["İdeallerini somut adımlarla birleştirdiğinde ilham veren bir öncü olursun."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde, bir şeyleri başlatma arzusu ile belirsiz bir iç çağrı iç içe geçmiştir."],
+          "mechanism": ["Duygusal dalgalanmalar sırasında içsel ilham aniden yükselebilir."],
+          "effect": ["Kriz anlarında bile sezgisel bir yön duygusu geliştirebilirsin."],
+          "shadow": ["Dürtüsel kaçışlar, içsel karışıklığı artırabilir."],
+          "potential": ["Duygusal enerjini bilinçli yönlendirdiğinde içsel savaşçı tarafın şifaya dönüşür."]
+        },
+        "relationships": {
+          "cause": ["Bağlarda idealize ettiğin aktif, cesur ve sürükleyici bir dinamik ararsın."],
+          "mechanism": ["İlişkilerde hızlı bağ kurabilir, sonra duygusal sisin içinde kaybolabilirsin."],
+          "effect": ["Bağlarına tutku, ilham ve duygusal ateş katarsın."],
+          "shadow": ["Partnerini kurtarma ya da ‘kurtarıcı’ olma eğilimi hayal kırıklığı yaratabilir."],
+          "potential": ["İlişkilerinde eşitlik ve gerçekçilik sağlandığında ortak idealler için güçlü bir birliktelik yaratabilirsin."]
+        },
+        "mind": {
+          "cause": ["Zihnin sezgisel, hızlı ve vizyon odaklı çalışır."],
+          "mechanism": ["Ani ilhamlarla yeni fikirler doğar, sonra bunları gerçeğe dökmek istersin."],
+          "effect": ["Yaratıcı projelerde çarpıcı ve özgün başlangıçlar yapabilirsin."],
+          "shadow": ["Sabırsızlık, zihinsel vizyonu yarıda bırakmana neden olabilir."],
+          "potential": ["Vizyonlarını yapılandırdığında zihinsel enerjin öncü projelere dönüşür."]
+        },
+        "career": {
+          "cause": ["İş hayatında ilham veren başlangıçlar yapma arzun güçlüdür."],
+          "mechanism": ["Kendini bir amaç uğruna mücadele ederken bulursun."],
+          "effect": ["Ruhsal ya da yaratıcı projelerde hareket getiren kişi olabilirsin."],
+          "shadow": ["Net hedefler olmadan savrulma, mesleki belirsizlik yaratabilir."],
+          "potential": ["Harekete geçirme gücünü anlamlı hedeflerle birleştirdiğinde başkalarına yol açan biri olursun."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda sezgisel cesaret ve bilinçli eylem temalarıyla yüzleşirsin."],
+          "mechanism": ["Deneyimler seni dürtüsel tepkiler yerine ruhsal motivasyonla hareket etmeye zorlar."],
+          "effect": ["Ruhsal yolunda, benliğini daha yüksek bir amaçla hizalama ihtiyacı belirginleşir."],
+          "shadow": ["Dürtüsel kaçışlar karmasal döngüleri tekrar ettirebilir."],
+          "potential": ["İçsel çağrını ayırt etmeyi öğrendiğinde ruhsal öncü rolü üstlenebilirsin."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_taurus",
+      "conditions": [{ "planet": "Neptune", "sign": "Taurus" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin derininde huzuru, güveni ve maddi dünyayı idealize etme eğilimi vardır."],
+          "mechanism": ["Somut olanla ruhsal olana bir köprü kurmaya çalışırsın."],
+          "effect": ["Dışarıdan sakin, yumuşak ama gizli bir hayal dünyası olan biri gibi görünürsün."],
+          "shadow": ["Gerçekçi olmayan konfor ve güven beklentileri hayal kırıklığı yaratabilir."],
+          "potential": ["Değer anlayışını ruhsal olgunlukla birleştirdiğinde sade ama çok derin bir kimlik geliştirirsin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde kalıcılık, huzur ve duyusal tatmin arayışı bulunur."],
+          "mechanism": ["Belirsizlik arttıkça kendini somut zevklere ya da kaçışlara yöneltebilirsin."],
+          "effect": ["Zamanla, içsel huzuru çevresel koşullara bağlamadan da üretmeyi öğrenebilirsin."],
+          "shadow": ["Tembellik, inat ya da aşırı rahatlık psikolojik büyümeyi yavaşlatabilir."],
+          "potential": ["İçsel güven geliştirdiğinde dış koşullardan bağımsız bir huzur alanı yaratırsın."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde sakinlik, sadelik ve fiziksel yakınlığı idealize edersin."],
+          "mechanism": ["Bağlarda konfor alanı yaratmaya çalışır, huzuru paylaşmak istersin."],
+          "effect": ["İlişkilerde yumuşak, besleyici ve istikrarlı bir enerji sunabilirsin."],
+          "shadow": ["Gerçekleri görmezden gelme, ilişkisel durağanlığa ve birikmiş kırgınlıklara yol açabilir."],
+          "potential": ["Hem gerçekçi hem şefkatli olduğunda ilişkilerin uzun vadede derin güvene dönüşür."]
+        },
+        "mind": {
+          "cause": ["Zihnin somut dünyayı sezgisel düzeyde algılama eğilimindedir."],
+          "mechanism": ["Semboller, doğa ve beden deneyimleri üzerinden farkındalık geliştirirsin."],
+          "effect": ["Sanat, tasarım, doğa ve beden odaklı işleri sezgisel bir incelikle kavrayabilirsin."],
+          "shadow": ["Değişime karşı direnç, zihinsel esnekliğini sınırlayabilir."],
+          "potential": ["Zihinsel dinginliği korurken esnek kaldığında çok üretken bir iç alan açılır."]
+        },
+        "career": {
+          "cause": ["İş hayatında maddi güvenlik ve estetik uyumu önemseyen bir motivasyonun vardır."],
+          "mechanism": ["Küçük ama sürekli adımlarla ilerleyerek bir şeyleri yavaşça inşa etmeye yatkınsın."],
+          "effect": ["Güzel, sağlam ve kalıcı işler üretme potansiyeline sahipsin."],
+          "shadow": ["Yoğun kaçış eğilimleri üretkenliğini düşürebilir."],
+          "potential": ["Ruhsal değerler ile maddi üretimi birleştirdiğinde hem anlamlı hem bereketli bir kariyer ortaya çıkar."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda değer, beden ve maddeyle ilişkini dönüştürme teması baskındır."],
+          "mechanism": ["Deneyimler seni dışsal güven kalıplarını sorgulamaya zorlar."],
+          "effect": ["Ruhsal yolun, sahip olmak ile huzur arasında yeni bir denge kurmayı öğretir."],
+          "shadow": ["Sahip olduklarına tutunmak karmasal tekrarları güçlendirebilir."],
+          "potential": ["Bırakmayı ve paylaşmayı öğrendiğinde ruhsal bolluk derinleşir."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_gemini",
+      "conditions": [{ "planet": "Neptune", "sign": "Gemini" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin derininde kelimeler, fikirler ve kimliklerin akışkanlığına dair güçlü bir sezgi vardır."],
+          "mechanism": ["Kendini farklı rolleri deneyimleyerek ve zihinsel oyunlarla ifade etmeye eğilimlisin."],
+          "effect": ["Dışarıdan değişken, zeki ve biraz da çözülemeyen biri gibi algılanabilirsin."],
+          "shadow": ["Netlikten kaçmak, kimlikte dağınık ve tutarsız bir izlenim yaratabilir."],
+          "potential": ["İfade gücünü merkezine topladığında çok katmanlı ama tutarlı bir kimlik inşa edersin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde anlamı dil, semboller ve hikâyeler üzerinden arama eğilimi vardır."],
+          "mechanism": ["Kafa karışıklığı arttığında zihinsel kaçışlara, hayallere ya da bilgi tüketimine sığınabilirsin."],
+          "effect": ["Zamanla ruhsal ve zihinsel bilgiyi ayrıştırmayı öğrenebilirsin."],
+          "shadow": ["Aşırı zihinsellik duygusal derinlikle bağ kurmayı zorlaştırabilir."],
+          "potential": ["Zihni kalple hizaladığında içsel bilgelik net bir iletişime dönüşür."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde zihinsel uyum, sohbet ve karşılıklı yansıma ararsın."],
+          "mechanism": ["Bağları çoğu zaman kelimelerle kurar, duyguları dolaylı yoldan ifade edebilirsin."],
+          "effect": ["İlişkilerinde anlayış, esneklik ve çok yönlülük sunabilirsin."],
+          "shadow": ["Tutarsız iletişim, güvensizlik ve belirsizlik hissi yaratabilir."],
+          "potential": ["Şeffaf ve yavaş iletişim kurduğunda bağların çok daha derin ve besleyici hale gelir."]
+        },
+        "mind": {
+          "cause": ["Zihnin sembolik, esnek ve çok katmanlı çalışır."],
+          "mechanism": ["Bilgiler, sezgiler ve içgörüler zihninde parçalı ama yaratıcı biçimde birleşir."],
+          "effect": ["Yazı, hikâye, öğretim ve çok boyutlu düşünme alanlarında güçlü potansiyel taşırsın."],
+          "shadow": ["Sürekli fikir değiştirmek, zihinsel yorgunluk ve kararsızlık yaratabilir."],
+          "potential": ["Fikirlerini yapılandırdığında sezgisel zekân güçlü bir entelektüel güce dönüşür."]
+        },
+        "career": {
+          "cause": ["İş hayatında iletişim, öğrenme ve bağlantı kurma temelli alanlara çekilirsin."],
+          "mechanism": ["Birden fazla işle, rol ve fikirle aynı anda uğraşmayı tercih edebilirsin."],
+          "effect": ["Esnek çalışma modellerinde, yaratıcılık ve iletişimin birleştiği işlerde başarılı olabilirsin."],
+          "shadow": ["Sürekli yön değiştirmek, mesleki istikrarı zorlayabilir."],
+          "potential": ["Odaklanacağın birkaç aksı seçtiğinde çok yönlülüğün mesleki avantaja dönüşür."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda düşünce, dil ve algı üzerinden ruhsal dersler alırsın."],
+          "mechanism": ["Deneyimler seni doğru bilgi ile yanılsama arasındaki çizgiyi görmeye zorlar."],
+          "effect": ["Ruhsal yolunda, zihnini ruhsal farkındalıkla hizalama ihtiyacı belirgindir."],
+          "shadow": ["Gerçeklerden kaçmak karmasal karmaşıklığı artırabilir."],
+          "potential": ["Hakikati ifade etmeyi öğrendiğinde sözlerin şifalı bir araca dönüşür."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_cancer",
+      "conditions": [{ "planet": "Neptune", "sign": "Cancer" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin derininde ait olma, korunma ve duygusal erime arzusu vardır."],
+          "mechanism": ["Kendini çoğu zaman duygusal alanlarda kaybederek ya da başkalarıyla birleşerek tanımlarsın."],
+          "effect": ["Dışarıdan şefkatli, yumuşak ve duygusal dünyası yoğun biri gibi görünürsün."],
+          "shadow": ["Sınırların belirsiz kaldığında kimliğin başkalarının duygularında çözünmeye başlayabilir."],
+          "potential": ["Hem hassas hem sağlam sınırlar kurduğunda derin ama bütün bir kimlik geliştirirsin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde şefkat, korunma ve beslenme temaları baskındır."],
+          "mechanism": ["Duygusal dalgalar seni bazen içe kapanmaya, bazen aşırı fedakârlığa itebilir."],
+          "effect": ["Zamanla duygularını yönetmeyi öğrendiğinde çok güçlü bir duygusal sezgi geliştirirsin."],
+          "shadow": ["Kurban rolüne kaymak psikolojik yükü ağırlaştırabilir."],
+          "potential": ["Kendi duygusal ihtiyaçlarını onurlandırdığında şefkatin hem sana hem başkalarına şifa olur."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde derin duygusal bağ, empati ve ait olma hissi ararsın."],
+          "mechanism": ["Bağlarda besleyen, koruyan ve içine alan bir atmosfer kurmaya çalışırsın."],
+          "effect": ["İlişkilerinde sıcak, anlayışlı ve duygusal olarak derin bir alan sunabilirsin."],
+          "shadow": ["Fazla yapışma ya da duygusal manipülasyon ilişkide bulanıklık yaratabilir."],
+          "potential": ["Hem kendine hem karşı tarafa alan tanıdığında ilişkilerin gerçek bir duygusal güvene dönüşür."]
+        },
+        "mind": {
+          "cause": ["Zihnin duygusal ve sezgisel imgelerle çalışır."],
+          "mechanism": ["Anıları, duyguları ve sembolleri bir araya getirerek anlam çıkarmaya eğilimlisin."],
+          "effect": ["Sanat, hikâye, psikoloji ve şifa alanlarında yüksek empati ve sezgiyle düşünebilirsin."],
+          "shadow": ["Duygusal tarafgirlik, zihinsel netliği azaltabilir."],
+          "potential": ["Duygularını kabul edip düzenlediğinde zihnin derin sezgisel içgörüler üretir."]
+        },
+        "career": {
+          "cause": ["İş hayatında besleme, koruma ve duygusal güven yaratma temaları ağır basar."],
+          "mechanism": ["İnsanların duygusal ihtiyaçlarını sezgisel olarak hissederek hareket edersin."],
+          "effect": ["Şifa, bakım, psikoloji, aile ve mekân oluşturma alanlarında başarılı olabilirsin."],
+          "shadow": ["Aşırı duygusal yüklenme, tükenmişlik riskini artırabilir."],
+          "potential": ["Kendi sınırlarını koruduğunda işinde hem şefkatli hem sürdürülebilir bir etki yaratırsın."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda aidiyet, aile ve duygusal bağlar üzerinden derin dersler alırsın."],
+          "mechanism": ["Deneyimler seni kendi duygularının sorumluluğunu almaya zorlar."],
+          "effect": ["Ruhsal yolun, içsel güvenlik ve şefkat kapasiteni geliştirmek üzerine kuruludur."],
+          "shadow": ["Geçmişe tutunmak karmasal döngüleri ağırlaştırabilir."],
+          "potential": ["Geçmişi onurlandırıp bırakmayı öğrendiğinde duygusal özgürlük ortaya çıkar."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_leo",
+      "conditions": [{ "planet": "Neptune", "sign": "Leo" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde yaratıcı ifade ve içsel ışığı idealize etme eğilimi vardır."],
+          "mechanism": ["Kendini özel, anlamlı ve sahnede hissetme isteğiyle kimlik kurarsın."],
+          "effect": ["Dışarıdan karizmatik, romantik ve hayal gücü yüksek biri gibi görünürsün."],
+          "shadow": ["Onay bağımlılığı ve sahne ilüzyonları kimlikte kırılma yaratabilir."],
+          "potential": ["Işığını içsel bir kaynağa bağladığında çok otantik ve ilham verici bir kimlik geliştirirsin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde sevilme, görülme ve değerli hissetme ihtiyacı yoğundur."],
+          "mechanism": ["İdealleştirilmiş öz-imgene sığınarak duygusal dalgalanmaları dengelemeye çalışabilirsin."],
+          "effect": ["Zamanla, dış onaydan çok içsel özsaygıya yönelme ihtiyacını fark edebilirsin."],
+          "shadow": ["Dramatik tepkiler, psikolojik kırılganlığı artırabilir."],
+          "potential": ["Kendini koşulsuz kabul etmeyi öğrendiğinde psikolojin doğal bir neşe üretir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde romantizm, drama ve kalpten bağlılık beklersin."],
+          "mechanism": ["Bağları idealize edebilir, büyük jestler ve duygusal sahneler arayabilirsin."],
+          "effect": ["İlişkilerinde sıcak, yaratıcı ve ilham verici bir atmosfer taşırsın."],
+          "shadow": ["Gerçekliği görmezden gelmek, hayal kırıklığı ve kırgınlığa yol açabilir."],
+          "potential": ["Gerçek sevgiyle teatral beklentiyi ayırdığında bağların daha duru ve derin hale gelir."]
+        },
+        "mind": {
+          "cause": ["Zihnin dramatik, imgelerle dolu ve yaratıcı bir şekilde çalışır."],
+          "mechanism": ["Fikirler genellikle sahne, hikâye ve sembolik anlatım üzerinden şekillenir."],
+          "effect": ["Sanat, performans, yaratıcılık ve hikâye kurgusunda güçlü bir zihinsel sahne kurabilirsin."],
+          "shadow": ["Abartılı düşünme tarzı, gerçekçi planlama kapasiteni zayıflatabilir."],
+          "potential": ["Yaratıcı zihnini yapılandırdığında çok etkileyici ve dokunaklı üretimler ortaya koyarsın."]
+        },
+        "career": {
+          "cause": ["İş hayatında görünür olmak, yaratmak ve ilham vermek istersin."],
+          "mechanism": ["Çalıştığın alanı sahneye dönüştürmeye ve anlam katmaya eğilimlisin."],
+          "effect": ["Sanat, sahne, yaratıcılık ve liderlik temasının olduğu işler sana iyi gelebilir."],
+          "shadow": ["Gerçek sorumluluklardan kaçmak, kariyer çizgisinde bulanıklık yaratabilir."],
+          "potential": ["Yaratıcı egonu ruhsal hizmetle birleştirdiğinde işin hem sana hem başkalarına ışık olur."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda kalpten ifade, ego ve gerçek öz arasındaki dengeyle yüzleşirsin."],
+          "mechanism": ["Deneyimler seni gösteri ile otantiklik arasındaki farkı görmeye zorlar."],
+          "effect": ["Ruhsal yolun, iç ışığını maskesiz biçimde dünyaya açmayı öğretir."],
+          "shadow": ["Sahte roller karmasal tekrarları güçlendirebilir."],
+          "potential": ["Gerçek kalbini sahneye koyduğunda ruhsal yolun başkalarına da ilham olur."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_virgo",
+      "conditions": [{ "planet": "Neptune", "sign": "Virgo" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin derininde yararlı olma, iyileştirme ve sadeleşme idealine bağlılık vardır."],
+          "mechanism": ["Kendini çoğu zaman hizmet, emek ve düzen üzerinden tanımlamaya çalışırsın."],
+          "effect": ["Dışarıdan çalışkan, alçakgönüllü ve detaycı biri gibi görünürsün, içten içe daha yumuşak bir hayal alanı taşırsın."],
+          "shadow": ["Kendini feda etme ve asla yeterli hissetmeme döngüsü kimliğini zayıflatabilir."],
+          "potential": ["Kendini de kapsayan bir hizmet anlayışı geliştirdiğinde çok sağlam ama şefkatli bir kimlik kurarsın."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde düzen, kontrol ve arınma ihtiyacı baskındır."],
+          "mechanism": ["Belirsizlik arttığında kendini düzeltme, iyileştirme ve mükemmelleştirme çabasına girebilirsin."],
+          "effect": ["Zamanla dağınıklığın ortasında bile sadeleşmeyi öğrenme potansiyelin vardır."],
+          "shadow": ["Aşırı öz-eleştiri, psikolojik yorgunluk ve suçluluk duygusunu besleyebilir."],
+          "potential": ["Kusursuzluk yerine şefkat seçildiğinde psikolojin derin bir rahatlama yaşar."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde sadelik, dürüstlük ve pratik destek ararsın."],
+          "mechanism": ["Karşındakini düzeltme ya da iyileştirme rolüne kayabilirsin."],
+          "effect": ["İlişkinde emek veren, detayları düşünen ve pratikte yanında olan kişi olabilirsin."],
+          "shadow": ["Fazla eleştirel ya da yargılayıcı tutum, bağı zedeleyebilir."],
+          "potential": ["Kendini ve karşındakini olduğu haliyle kabul ettiğinde ilişkide gerçek şifa başlar."]
+        },
+        "mind": {
+          "cause": ["Zihnin analitik ama aynı zamanda sezgisel ayrıntılarla çalışır."],
+          "mechanism": ["Karmaşık konuları küçük parçalara bölerek anlamaya eğilimlisin."],
+          "effect": ["Şifa, analiz, hizmet ve organizasyon alanlarında incelikli bir zihinle çalışabilirsin."],
+          "shadow": ["Detaylara takılıp bütünü kaybetmek zihinsel gerginlik yaratabilir."],
+          "potential": ["Zihnini sadeleştirdiğinde hem net hem sezgisel bir zeka ortaya çıkar."]
+        },
+        "career": {
+          "cause": ["İş hayatında anlamı, bir işe yarama ve iyileştirme hissinde ararsın."],
+          "mechanism": ["Arka planda çalışıp sistemi görünmez şekilde toparlamaya yatkınsın."],
+          "effect": ["Sağlık, hizmet, analiz, bakım ve düzen kurma alanlarında işlevsel olabilirsin."],
+          "shadow": ["Kendini geri plana atmak, emeğinin görülmemesine yol açabilir."],
+          "potential": ["Kendi sınırlarını korurken hizmet ettiğinde işin hem sürdürülebilir hem anlamlı olur."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda hizmet, arınma ve işlevsellik üzerinden ruhsal dersler alırsın."],
+          "mechanism": ["Deneyimler seni kontrolü bırakıp akıllı emek vermeye yönlendirir."],
+          "effect": ["Ruhsal yolun, sadeleşme ve gerçek ihtiyaçları ayırt etme teması taşır."],
+          "shadow": ["Kendini kurban etme eğilimi karmasal yükü artırabilir."],
+          "potential": ["Kendini de dahil ettiğin bir hizmet bilinci geliştirdiğinde ruhsal olarak hafiflersin."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_libra",
+      "conditions": [{ "planet": "Neptune", "sign": "Libra" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin derininde uyum, güzellik ve ideal ilişki arketipine bağlılık vardır."],
+          "mechanism": ["Kendini çoğu zaman başkalarıyla kurduğun dengede tanımlamaya eğilimlisin."],
+          "effect": ["Dışarıdan zarif, uyumlu ve ilişkisel zekâsı yüksek biri olarak algılanırsın."],
+          "shadow": ["Başkalarının beklentisine göre şekillenmek kimlikte bulanıklık yaratabilir."],
+          "potential": ["Kendi merkezini koruyarak uyum sağladığında çok rafine bir kimlik ortaya çıkar."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde barış, estetik ve adalet ihtiyacı baskındır."],
+          "mechanism": ["Çatışma karşısında geri çekilerek ya da durumu idealize ederek denge ararsın."],
+          "effect": ["Zamanla içsel dengenin dış koşullardan bağımsız olması gerektiğini fark edebilirsin."],
+          "shadow": ["Kararsızlık ve insanları memnun etme eğilimi, psikolojik gerilim yaratabilir."],
+          "potential": ["Kendi değerlerini netleştirdiğinde içsel barışın daha kalıcı hale gelir."]
+        },
+        "relationships": {
+          "cause": ["İlişkiler senin için hem büyüme alanı hem de kaçış alanı olabilir."],
+          "mechanism": ["Bağlarda romantik, idealize eden ve yumuşatan bir tavır sergileyebilirsin."],
+          "effect": ["İlişkilerinde anlayışlı, estetik ve yumuşatıcı bir atmosfer kurarsın."],
+          "shadow": ["Gerçek sorunları görmezden gelmek, ilişkide derin kırılmalar yaratabilir."],
+          "potential": ["Hem kendine hem karşındakine dürüst olduğunda ilişkilerin çok daha şeffaf ve besleyici olur."]
+        },
+        "mind": {
+          "cause": ["Zihnin uzlaşma, denge ve estetik algı üzerine çalışır."],
+          "mechanism": ["Farklı bakış açılarını sezgisel biçimde tartar, ortak zemin ararsın."],
+          "effect": ["Tasarım, sanat, hukuk, danışmanlık ve arabuluculuk alanlarında güçlü düşünebilirsin."],
+          "shadow": ["Sürekli tartma hali zihinsel kararsızlığa yol açabilir."],
+          "potential": ["Önceliklerini netleştirdiğinde zihinsel dengen keskin bir sezgiyle birleşir."]
+        },
+        "career": {
+          "cause": ["İş hayatında uyum, estetik ve insani bağ odaklı alanlara çekilirsin."],
+          "mechanism": ["Ortaklık ve ekip işlerinde köprü kuran kişi rolünü alabilirsin."],
+          "effect": ["Estetik, hukuk, ilişkisel yönetim ve arabuluculuk gerektiren işlerde başarılı olabilirsin."],
+          "shadow": ["Sürekli uzlaşma arayışı kendi hedeflerinden uzaklaşmana neden olabilir."],
+          "potential": ["Kendi çizgini koruyarak uyum sağladığında kariyerinde dengeli ve derin bir tatmin yaşarsın."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda ilişkiler, adalet ve denge üzerinden ruhsal dersler alırsın."],
+          "mechanism": ["Deneyimler seni sahte uyum ile gerçek barış arasındaki farkı görmeye zorlar."],
+          "effect": ["Ruhsal yolun, kişisel sınırlar ve ortak alan dengesi üzerine kurulur."],
+          "shadow": ["Kendinden vazgeçmek karmasal yükü artırabilir."],
+          "potential": ["Hem kendini hem diğerini görebildiğinde ruhsal ilişkiler deneyimin derinleşir."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_scorpio",
+      "conditions": [{ "planet": "Neptune", "sign": "Scorpio" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin derininde yoğunluk, gizem ve tabuları çözme arzusu vardır."],
+          "mechanism": ["Kendini krizler, takıntılar ve güçlü duygusal deneyimler üzerinden tanımlamaya eğilimlisin."],
+          "effect": ["Dışarıdan derin, manyetik ve kolay kolay okunamayan biri olarak görünürsün."],
+          "shadow": ["Kendi karanlığında kaybolmak, kimlikte parçalanma hissi yaratabilir."],
+          "potential": ["Kendi gölgene şefkatle baktığında çok güçlü ve bütünleşmiş bir kimlik geliştirirsin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde kontrol, birleşme ve dönüşüm ihtiyacı baskındır."],
+          "mechanism": ["Yoğun duygular yükseldiğinde ya derine inersin ya da tamamen kapanırsın."],
+          "effect": ["Sezgisel analiz, psikolojik derinlik ve kriz bilinci geliştirebilirsin."],
+          "shadow": ["Takıntı, kuşku ve kendini sabote eden döngüler psikolojik yükü artırabilir."],
+          "potential": ["Korkularınla yüzleştiğinde psikolojin çok güçlü bir şifa alanına dönüşür."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde derin bağ, mutlak sadakat ve yoğun duygusal birleşme beklersin."],
+          "mechanism": ["Bağlarda kontrol, test etme ve sınırları zorlama eğilimi gösterebilirsin."],
+          "effect": ["İlişkilerinde dönüştürücü, sezgisel ve çok güçlü bir bağ enerjisi taşırsın."],
+          "shadow": ["Gizlilik, manipülasyon ya da güç savaşları ilişkileri yıpratabilir."],
+          "potential": ["Güç yerine güveni seçtiğinde ilişkilerin karşılıklı dönüşüm alanına dönüşür."]
+        },
+        "mind": {
+          "cause": ["Zihnin derin, sezgisel ve gizli motifleri okuyabilen bir yapıya sahiptir."],
+          "mechanism": ["Görünmeyen dinamikleri hissederek, satır aralarını çözmeye çalışırsın."],
+          "effect": ["Psikoloji, araştırma, kriz yönetimi ve şifa alanlarında yüksek zihinsel kapasite taşırsın."],
+          "shadow": ["Zihinde kurgulanan karanlık senaryolar, gerçeklik algını bozabilir."],
+          "potential": ["Zihinsel sezgini netlik ve etikle birleştirdiğinde güçlü içgörüler üretirsin."]
+        },
+        "career": {
+          "cause": ["İş hayatında dönüşüm, güç ve derinlik içeren alanlara çekilirsin."],
+          "mechanism": ["Krizi, bilinmeyeni ve tabu alanları yönetmeyi içgüdüsel olarak üstlenebilirsin."],
+          "effect": ["Araştırma, finans, terapi, strateji ve şifa alanlarında güçlü etki yaratabilirsin."],
+          "shadow": ["Kontrol ihtiyacı ekip içinde gerginlik yaratabilir."],
+          "potential": ["Güçle değil, bilgelikle hareket ettiğinde kariyerin hem derin hem kalıcı bir etki bırakır."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda güç, kayıp, kriz ve dönüşüm üzerinden ruhsal dersler alırsın."],
+          "mechanism": ["Deneyimler seni ölüm–yeniden doğum temalarını içsel düzeyde yaşamaya zorlar."],
+          "effect": ["Ruhsal yolun, karanlığı dönüştürüp güçle değil hakikatle hizalanmayı öğretir."],
+          "shadow": ["İntikam ve saplantı karmasal bağları ağırlaştırır."],
+          "potential": ["Bırakmayı ve teslimiyeti öğrendiğinde ruhsal olarak çok büyük bir sıçrama yaşarsın."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_sagittarius",
+      "conditions": [{ "planet": "Neptune", "sign": "Sagittarius" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde anlam arayışı, özgürlük ve inançlarla bütünleşme isteği vardır."],
+          "mechanism": ["Kendini yolculuklar, fikirler ve idealler üzerinden tanımlamaya eğilimlisin."],
+          "effect": ["Dışarıdan idealist, maceracı ve geniş ufuklu biri gibi görünürsün."],
+          "shadow": ["Aşırı idealizm ve dogmatik inanışlar kimlikte kırılma yaratabilir."],
+          "potential": ["İnançlarını deneyimle sınayıp sadeleştirdiğinde çok bilge ve özgür bir kimlik geliştirirsin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde umut, ilham ve genişlemek isteyen bir bilinç yapısı vardır."],
+          "mechanism": ["Zorluk anlarında daha büyük bir anlam, amaç ya da vizyon arayışına girersin."],
+          "effect": ["Felsefi düşünce, ruhsal araştırma ve içsel keşif psikolojini besler."],
+          "shadow": ["Gerçeklerden kaçmak için pozitiflik maskesi kullanmak içsel kopukluk yaratabilir."],
+          "potential": ["Gerçeklikle yüzleşen umut, psikolojinizi dayanıklı ve sezgisel kılar."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde özgürlük, dürüstlük ve ortak vizyon ararsın."],
+          "mechanism": ["Bağları bazen idealize eder, bazen de fazla çabuk bırakabilirsin."],
+          "effect": ["İlişkilerine ilham, neşe ve geniş perspektif katarsın."],
+          "shadow": ["Sorumluluktan kaçma ya da ‘daha iyisi vardır’ illüzyonu bağları zayıflatabilir."],
+          "potential": ["Hem dürüst hem bağlı olduğunda ilişkilerin ruhsal yol arkadaşlığına dönüşebilir."]
+        },
+        "mind": {
+          "cause": ["Zihnin vizyoner, sezgisel ve geniş ölçekli düşünmeye yatkındır."],
+          "mechanism": ["Küçük detaylar yerine büyük resim üzerinden anlam üretirsin."],
+          "effect": ["Felsefe, eğitim, ruhsallık ve keşif odaklı alanlarda güçlü fikirler üretebilirsin."],
+          "shadow": ["Detayları yok saymak, zihinsel projelerini havada bırakabilir."],
+          "potential": ["Vizyonunu küçük adımlarla desteklediğinde zihnin hem büyük hem uygulanabilir çözümler bulur."]
+        },
+        "career": {
+          "cause": ["İş hayatında anlam, özgürlük ve gelişim sunan alanlara çekilirsin."],
+          "mechanism": ["Çalıştığın yerde ilham vermek, öğretmek ve genişletmek istersin."],
+          "effect": ["Eğitim, seyahat, danışmanlık, yayıncılık ve ruhsal alanlarda güçlü potansiyelin vardır."],
+          "shadow": ["Uzun vadeli sorumluluklardan kaçmak, mesleki çizgini belirsizleştirebilir."],
+          "potential": ["Değerlerini netleştirip hedeflerine bağlandığında kariyerin hem anlamlı hem bereketli olur."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda inançlar, anlam ve özgürlük üzerinden ruhsal dersler alırsın."],
+          "mechanism": ["Deneyimler seni kör inanç ile gerçek bilgelik arasındaki farkı görmeye zorlar."],
+          "effect": ["Ruhsal yolun, içsel öğretmenini keşfetmek üzerine kuruludur."],
+          "shadow": ["Aşırı kaçış ve sorumluluktan uzaklaşma karmasal döngüleri uzatabilir."],
+          "potential": ["Hakikati yaşamayı seçtiğinde ruhsal ufkun olağanüstü genişler."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_capricorn",
+      "conditions": [{ "planet": "Neptune", "sign": "Capricorn" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin derininde yapı, sorumluluk ve başarı kavramlarını idealize etme eğilimi vardır."],
+          "mechanism": ["Kendini incinebilirliğini kontrol ederek ve güçlü görünerek tanımlamaya çalışabilirsin."],
+          "effect": ["Dışarıdan ciddi, hedef odaklı ama iç dünyası yumuşak biri gibi algılanırsın."],
+          "shadow": ["Sadece güçlü görünme ihtiyacı, gerçek ihtiyaçlarınla bağını koparabilir."],
+          "potential": ["Hem güçlü hem kırılgan yanını kabul ettiğinde çok olgun ve güvenilir bir kimlik geliştirirsin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde kontrol, düzen ve saygı görme isteği baskındır."],
+          "mechanism": ["Duygusal zorlukları mantıkla yönetmeye ve yapı kurarak çözmeye çalışırsın."],
+          "effect": ["Zamanla duygularını yapıcı bir disiplinle düzenleyebilirsin."],
+          "shadow": ["Aşırı yüklenmek, içsel yorgunluk ve tükenmişlik yaratabilir."],
+          "potential": ["Sınırlarını ve kapasiteni onurlandırdığında psikolojin daha esnek ve dayanıklı olur."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde ciddiyet, güven ve sorumluluk beklersin."],
+          "mechanism": ["Bağlarda duyguyu göstermek yerine eylemle ifade etmeye yatkın olabilirsin."],
+          "effect": ["İlişkilerinde güven veren, dayanıklı ve istikrarlı bir figür olursun."],
+          "shadow": ["Duygusal mesafe, bağda yalnızlık hissi yaratabilir."],
+          "potential": ["Duygularını yumuşak ama dürüst şekilde paylaştığında ilişkilerin daha derin ve samimi olur."]
+        },
+        "mind": {
+          "cause": ["Zihnin yapı kurma, planlama ve uzun vadeli düşünme üzerine çalışır."],
+          "mechanism": ["Soyut idealleri somut hedeflere dönüştürme eğilimindesin."],
+          "effect": ["Strateji, yönetim, sistem tasarımı ve organizasyon alanlarında güçlü bir zihinsel potansiyele sahipsin."],
+          "shadow": ["Aşırı gerçekçilik, hayal gücünü bastırabilir."],
+          "potential": ["Vizyon ile planlamayı birleştirdiğinde zihnin hem pratik hem sezgisel işler üretir."]
+        },
+        "career": {
+          "cause": ["İş hayatında saygınlık, kalıcılık ve somut başarı ararsın."],
+          "mechanism": ["Uzun vadeli yapılar kurmak ve sorumluluk almak senin için doğal bir rol olabilir."],
+          "effect": ["Yönetim, iş geliştirme, devlet, kurum ve sistem alanlarında güçlü kariyer potansiyelin vardır."],
+          "shadow": ["Sürekli performans baskısı, yaşam dengenin bozulmasına yol açabilir."],
+          "potential": ["Başarı tanımını içsel tatminle hizaladığında kariyerin daha anlamlı ve sürdürülebilir olur."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda otorite, sorumluluk ve yapı kavramları üzerinden ruhsal dersler alırsın."],
+          "mechanism": ["Deneyimler seni dış otoriteyi sorgulayıp iç otoriteyi bulmaya iter."],
+          "effect": ["Ruhsal yolun, çalışmak–hizmet etmek–dinlenmek dengesini öğrenmek üzerine kurulur."],
+          "shadow": ["Kendini sadece başarı üzerinden tanımlamak karmasal yükü artırabilir."],
+          "potential": ["Varoluş değerini başarıdan ayırdığında ruhsal olarak çok daha özgür hissedersin."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_aquarius",
+      "conditions": [{ "planet": "Neptune", "sign": "Aquarius" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin merkezinde özgünlük, farklılık ve kolektife bağlı idealler vardır."],
+          "mechanism": ["Kendini çoğu zaman ‘sistemin dışındaki’ ya da ‘ilerideki’ biri gibi algılayabilirsin."],
+          "effect": ["Dışarıdan sıra dışı, entelektüel ve özgürlükçü biri gibi görünürsün."],
+          "shadow": ["Aşırı mesafe ve duygudan kopuş, kimlikte yalnızlık hissini artırabilir."],
+          "potential": ["Hem bireyselliğini hem ait olma ihtiyacını kabul ettiğinde çok dengeli bir kimlik oluşur."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde özgür düşünce, bağımsızlık ve insancıllık temasına bağlılık vardır."],
+          "mechanism": ["Duygusal yoğunluk karşısında zihne çekilip analiz etmeye eğilimlisin."],
+          "effect": ["Zamanla duyguyu, düşünceyi ve ideali bir arada taşıma kapasitesi geliştirebilirsin."],
+          "shadow": ["Aşırı rasyonelleştirme, bastırılmış duyguların içten içe büyümesine yol açabilir."],
+          "potential": ["Hem kalbi hem zihni dahil ettiğinde psikolojin net ama sıcak bir yere yerleşir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde özgürlük, eşitlik ve zihinsel bağ ararsın."],
+          "mechanism": ["Bağlarda duygudan çok prensip ve fikirler üzerinden hareket edebilirsin."],
+          "effect": ["İlişkilerinde arkadaşlık, anlayış ve ortak vizyon ön plana çıkar."],
+          "shadow": ["Aşırı mesafeli durmak, karşı tarafta reddedilme hissi yaratabilir."],
+          "potential": ["Hem alan hem yakınlık tanıdığında ilişkilerin çok özgün ve derin bağlara dönüşebilir."]
+        },
+        "mind": {
+          "cause": ["Zihnin soyut, analitik ve geleceğe yönelik çalışır."],
+          "mechanism": ["Kolektif yapıları, sistemleri ve insan davranışını geniş çerçevede düşünmeye eğilimlisin."],
+          "effect": ["Bilim, teknoloji, sosyal yapı ve kolektif bilinç konularında sezgisel bir kavrayış geliştirebilirsin."],
+          "shadow": ["Duygusal gerçekliği dışarıda bırakan teoriler, zihinsel kopukluk yaratabilir."],
+          "potential": ["Zihinsel berraklık kalple birleştiğinde hem yenilikçi hem insani çözümler üretirsin."]
+        },
+        "career": {
+          "cause": ["İş hayatında özgünlük, yenilik ve toplumsal katkı ararsın."],
+          "mechanism": ["Sistemi dönüştürmeyi, kalabalıkları etkilemeyi ya da farklı işler yapmayı istersin."],
+          "effect": ["Teknoloji, sosyal girişim, yeni medya ve gelecek odaklı alanlarda güçlü potansiyele sahipsin."],
+          "shadow": ["Sürekli değişim ihtiyacı, uzun vadeli yapı kurmanı zorlaştırabilir."],
+          "potential": ["Kendi değerlerine uygun bir yapı bulduğunda kariyerinde hem özgür hem etkili olursun."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda bireysellik, kolektif ve özgürlük kavramları üzerinden ruhsal dersler alırsın."],
+          "mechanism": ["Deneyimler seni sürüden ayrılmak ile tamamen kopmak arasındaki farkı görmeye iter."],
+          "effect": ["Ruhsal yolun, insanlıkla bağını korurken kendin kalmayı öğrenmek üzerinedir."],
+          "shadow": ["Ayrışma ve yabancılaşma karmasal yalnızlığı artırabilir."],
+          "potential": ["Kolektife katkı sunan özgün bir yol bulduğunda ruhsal olarak çok daha bütün hissedersin."]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_pisces",
+      "conditions": [{ "planet": "Neptune", "sign": "Pisces" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinin derininde çözülme, birleşme ve sınırsızlık arzusu vardır."],
+          "mechanism": ["Kendini çoğu zaman hislerin, sezgilerin ve görünmeyen bağların içinde tanımlarsın."],
+          "effect": ["Dışarıdan yumuşak, empatik ve dünyalar arası gezen biri gibi algılanabilirsin."],
+          "shadow": ["Net sınırların olmaması, kimlikte dağılma ve yorgunluk yaratabilir."],
+          "potential": ["Hem dünyasal hem ruhsal yönünü kabul ettiğinde çok derin ve kapsayıcı bir kimlik geliştirirsin."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik temelinde empati, sezgi ve birleşme ihtiyacı ağır basar."],
+          "mechanism": ["Yoğun duygular karşısında kaçış, idealizasyon ya da teslimiyet döngülerine girebilirsin."],
+          "effect": ["Zamanla duygusal okyanuslarını yönetmeyi öğrendiğinde çok büyük bir içsel şifa kapasitesi geliştirirsin."],
+          "shadow": ["Kurban bilinci ve kendini feda etme eğilimi psikolojik yükü ağırlaştırabilir."],
+          "potential": ["Sınır koymayı ve yardım istemeyi öğrendiğinde psikolojin çok daha hafif ve akışkan hale gelir."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde ruhsal bağ, derin empati ve koşulsuz sevgi ararsın."],
+          "mechanism": ["Bağlarda karşı tarafı yüceltme, idealize etme ya da tamamen yok sayma uçlarına gidebilirsin."],
+          "effect": ["İlişkilerinde sezgisel olarak karşı tarafın duygularını çok net hissedersin."],
+          "shadow": ["Sınır eksikliği, suçluluk ve belirsizliğe dayalı ilişkiler yaratabilir."],
+          "potential": ["Hem sevgi hem sınır koyabildiğinde ilişkilerin çok şifalı ruhsal ortaklıklara dönüşebilir."]
+        },
+        "mind": {
+          "cause": ["Zihnin lineer değil, imgesel ve sezgisel çalışır."],
+          "mechanism": ["Bilgiyi rüyalar, semboller, hisler ve çağrışımlar üzerinden birleştirirsin."],
+          "effect": ["Sanat, müzik, şifa, psikoloji ve ruhsallık alanlarında olağanüstü yaratıcılık geliştirebilirsin."],
+          "shadow": ["Odaklanma güçlüğü ve kaçış eğilimleri, zihinsel kapasiteni tam kullanmanı zorlaştırabilir."],
+          "potential": ["Zihinsel akışını küçük günlük pratiklerle desteklediğinde sezgisel zekân çok somut sonuçlar üretir."]
+        },
+        "career": {
+          "cause": ["İş hayatında anlam, şefkat ve ruhsal tatmin ararsın."],
+          "mechanism": ["Katı yapılara uyum sağlamakta zorlanabilir, esnek ve yaratıcı alanlara çekilebilirsin."],
+          "effect": ["Sanat, şifa, psikoloji, yardım kuruluşları ve ruhsal rehberlik alanlarında güçlü potansiyelin vardır."],
+          "shadow": ["Belirsiz hedefler, mesleki dağınıklık yaratabilir."],
+          "potential": ["Yeteneklerini somut bir hizmet formuna dönüştürdüğünde işin hem sana hem başkalarına büyük şifa getirir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda birlik, şefkat, teslimiyet ve sınır temaları üzerinden ruhsal dersler alırsın."],
+          "mechanism": ["Deneyimler seni hem insan hem ruhsal varlık olduğunu hatırlamaya zorlar."],
+          "effect": ["Ruhsal yolun, ayrı gibi görünen her şeyin aslında bağlantılı olduğunu fark etmeye yöneliktir."],
+          "shadow": ["Kurban rolünde kalmak karmasal döngüleri ağırlaştırabilir."],
+          "potential": ["Kendini de sevgi alanına dahil ettiğinde ruhsal gelişimin çok hızlanır."]
+        }
+      }
+    }
+  ],
+  "planet_house_rules": [],
+  "aspect_rules": [],
+  "meta_rules": []
+}

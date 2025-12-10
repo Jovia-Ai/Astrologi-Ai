@@ -2,9 +2,9 @@
 from __future__ import annotations
 
 import logging
-from typing import Mapping
+from typing import Any, Dict, Mapping
 
-from flask import Blueprint, jsonify, request
+from fastapi import APIRouter, Body, HTTPException
 
 from app.ai.narrative.formatter import (
     build_formatted_aspects,
@@ -18,48 +18,42 @@ from app.ai.narrative.groq_client import (
 )
 from app.astro.chart_engine.builder import build_natal_chart
 from app.astro.synastry.cross_aspects import calculate_synastry_aspects
-from app.models.user import BirthDataSchema
 from app.core.config import settings
 from app.core.errors import AIError, ApiError
+from app.models.user import BirthDataSchema
 from app.services.profiles import save_birth_data
 
-charts_bp = Blueprint("charts", __name__)
+router = APIRouter(prefix="/api", tags=["charts"])
 logger = logging.getLogger(__name__)
 
 
-def _handle_natal_chart_request():
+def _calculate_chart(payload: Mapping[str, Any]) -> Dict[str, Any]:
+    chart = build_natal_chart(payload)
+    summary = chart_to_summary(chart)
+    chart["interpretation"] = generate_ai_interpretation(summary)
+    chart["formatted_positions"] = build_formatted_planet_positions(chart)
+    chart["formatted_houses"] = build_formatted_house_positions(chart)
+    chart["formatted_aspects"] = build_formatted_aspects(chart)
+    return chart
+
+
+@router.post("/calculate-natal-chart")
+@router.post("/natal-chart")
+def calculate_natal_chart(payload: Dict[str, Any] = Body(...)):
     try:
-        payload = request.get_json(force=True) or {}
-        chart = build_natal_chart(payload)
-        summary = chart_to_summary(chart)
-        chart["interpretation"] = generate_ai_interpretation(summary)
-        chart["formatted_positions"] = build_formatted_planet_positions(chart)
-        chart["formatted_houses"] = build_formatted_house_positions(chart)
-        chart["formatted_aspects"] = build_formatted_aspects(chart)
+        return _calculate_chart(payload)
     except ApiError as exc:
         logger.error("External API error: %s", exc)
-        return jsonify({"error": str(exc)}), 502
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
     except Exception as exc:  # pylint: disable=broad-except
         logger.exception("Failed to calculate natal chart")
-        return jsonify({"error": str(exc)}), 400
-    return jsonify(chart)
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
-@charts_bp.route("/api/calculate-natal-chart", methods=["POST", "OPTIONS"])
-@charts_bp.route("/natal-chart", methods=["POST", "OPTIONS"])
-def calculate_natal_chart():
-    if request.method == "OPTIONS":
-        return "", 204
-    return _handle_natal_chart_request()
-
-
-@charts_bp.route("/api/calculate-synastry", methods=["POST", "OPTIONS"])
-@charts_bp.route("/calculate_synastry_chart", methods=["POST", "OPTIONS"])
-def calculate_synastry():
-    if request.method == "OPTIONS":
-        return "", 204
+@router.post("/calculate-synastry")
+@router.post("/calculate_synastry_chart")
+def calculate_synastry(payload: Dict[str, Any] = Body(...)):
     try:
-        payload = request.get_json(force=True) or {}
         person1 = payload.get("person1")
         person2 = payload.get("person2")
         if not isinstance(person1, Mapping) or not isinstance(person2, Mapping):
@@ -67,7 +61,7 @@ def calculate_synastry():
         chart1 = build_natal_chart(person1)
         chart2 = build_natal_chart(person2)
         aspects = calculate_synastry_aspects(chart1["planets"], chart2["planets"])
-        response = {
+        response: Dict[str, Any] = {
             "person1": chart1,
             "person2": chart2,
             "aspects": aspects,
@@ -78,18 +72,17 @@ def calculate_synastry():
             except AIError as exc:
                 logger.warning("Synastry interpretation failed: %s", exc)
                 response["interpretation_error"] = str(exc)
+        return response
     except ApiError as exc:
         logger.error("External API error: %s", exc)
-        return jsonify({"error": str(exc)}), 502
+        raise HTTPException(status_code=502, detail=str(exc)) from exc
     except Exception as exc:  # pylint: disable=broad-except
         logger.exception("Failed to calculate synastry")
-        return jsonify({"error": str(exc)}), 400
-    return jsonify(response)
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
-@charts_bp.route("/save-birth-data", methods=["POST"])
-def save_birth_data_route():
-    payload = BirthDataSchema(**(request.get_json(force=True) or {}))
+@router.post("/save-birth-data")
+def save_birth_data_route(payload: BirthDataSchema):
     result = save_birth_data(
         user_id=payload.user_id,
         birth_date=payload.birth_date,
@@ -99,4 +92,4 @@ def save_birth_data_route():
         lat=payload.latitude,
         lon=payload.longitude,
     )
-    return jsonify({"status": "ok", "saved": result})
+    return {"status": "ok", "saved": result}

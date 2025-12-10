@@ -1,6 +1,7 @@
 """Planetary position helpers built on Swiss Ephemeris."""
 from __future__ import annotations
 
+from datetime import datetime
 import logging
 from typing import Any, Dict, Iterable, Mapping, Sequence
 
@@ -94,6 +95,8 @@ def calc_planets(
     cusps: Sequence[float] | None = None,
     *,
     angles: Mapping[str, Any] | None = None,
+    local_dt: datetime | None = None,
+    utc_dt: datetime | None = None,
 ) -> Dict[str, Dict[str, Any]]:
     """Calculate planetary longitudes with safe unpacking and metadata."""
 
@@ -116,8 +119,16 @@ def calc_planets(
                     return idx
         return None
 
+    context_logged = False
     for planet_name, planet_id in PLANET_CODES.items():
         try:
+            if not context_logged:
+                if local_dt is not None:
+                    logger.warning(f"LOCAL DT (before conversion) = {local_dt} tzinfo={local_dt.tzinfo}")
+                if utc_dt is not None:
+                    logger.warning(f"UTC DT (after conversion) = {utc_dt} tzinfo={utc_dt.tzinfo}")
+                logger.warning(f"JD UT USED = {jd_ut}")
+                context_logged = True
             result = swe.calc_ut(jd_ut, planet_id)
             values = result[0] if isinstance(result[0], (list, tuple)) else result
 

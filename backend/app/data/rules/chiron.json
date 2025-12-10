@@ -1,0 +1,532 @@
+{
+  "planet_sign_rules": [
+    {
+      "id": "chiron_in_taurus",
+      "conditions": [{ "planet": "Chiron", "sign": "Taurus" }],
+      "output": {
+        "identity": {
+          "cause": ["Değer görmeme veya maddi güvensizlik yarası taşıyabilirsin."],
+          "mechanism": ["Kendini kanıtlamak için gereğinden fazla çabalayabilirsin."],
+          "effect": ["Şifa bulduğunda kimliğin sakin ve sağlam bir çekirdek kazanır."],
+          "shadow": ["Aşırı tutunma, inat ve kendini küçültme."],
+          "potential": ["Gerçek öz-değerini bulduğunda kimliğin sarsılmaz olur."]
+        },
+        "psychology": {
+          "cause": ["Psikolojin kaybetme korkusunu taşıyabilir."],
+          "mechanism": ["Belirsizlik seni içsel olarak dondurabilir."],
+          "effect": ["Güven kazandığında psikolojin yumuşak ve huzurlu olur."],
+          "shadow": ["Aşırı bağlılık, riskten kaçış ve içsel yoksunluk hissi."],
+          "potential": ["Bırakmayı öğrendiğinde psikolojin güçlü bir merkez oluşturur."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde terk edilme veya değer görmeme yarası tetiklenebilir."],
+          "mechanism": ["Partnerine tutunabilir veya aşırı idealize edebilirsin."],
+          "effect": ["Şifa bulduğunda ilişkilerinde sadakat ve güven hâkim olur."],
+          "shadow": ["Kıskançlık, tutuculuk ve pasif direnç."],
+          "potential": ["Öz-değer güçlendiğinde ilişkilerin daha sağlıklı temelde büyür."]
+        },
+        "mind": {
+          "cause": ["Zihinsel güven ihtiyacı yüksektir."],
+          "mechanism": ["Belirsizlikte zihnin bloklanabilir."],
+          "effect": ["Netlik sağlandığında üretken, sabırlı ve sağlam fikirler ortaya çıkar."],
+          "shadow": ["Sabit düşünce kalıpları ve durağanlık."],
+          "potential": ["Esnediğinde zihnin yaratıcı bir bereket alanına dönüşür."]
+        },
+        "career": {
+          "cause": ["Kariyerde istikrar arayışı temadır."],
+          "mechanism": ["Risk almakta zorlanabilirsin."],
+          "effect": ["Sağlam adımlarla ilerlediğinde kariyerin kalıcı bir yapı kazanır."],
+          "shadow": ["Yerinde saymak, güvenli olana fazla tutunmak."],
+          "potential": ["Kendi değerini ortaya koyduğunda bolluk seni takip eder."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda öz-değer sınavları ruhsal gündemdir."],
+          "mechanism": ["Kader seni sahip olduklarını sorgulayan durumlara iter."],
+          "effect": ["Gerçek değerini bulduğunda özgürleşirsin."],
+          "shadow": ["Maddi veya duygusal aşırı tutunma."],
+          "potential": ["İçsel güven kazandığında kaderin akışı yumuşar."]
+        }
+      }
+    },
+    {
+      "id": "chiron_in_gemini",
+      "conditions": [{ "planet": "Chiron", "sign": "Gemini" }],
+      "output": {
+        "identity": {
+          "cause": ["Kendini ifade ederken yanlış anlaşılma yarası taşıyabilirsin."],
+          "mechanism": ["Sesini bastırabilir veya aşırı konuşarak savunma geliştirebilirsin."],
+          "effect": ["Şifa bulduğunda kimliğin güçlü bir iletişim merkezi hâline gelir."],
+          "shadow": ["Dağınıklık, rol değişimleri, yüzeysel uyumlanma."],
+          "potential": ["Kendi sesini bulduğunda kimliğin öğretici ve bağlantı kurucu olur."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik yaraların iletişim ve anlaşılma temalı olabilir."],
+          "mechanism": ["Duyguları analiz ederek çözmeye çalışırsın."],
+          "effect": ["Net ifade psikolojini güçlendirir."],
+          "shadow": ["Aşırı analiz, zihinsel kaos, kararsızlık."],
+          "potential": ["İfade özgünleştiğinde psikolojin berrak ve güçlü olur."]
+        },
+        "relationships": {
+          "cause": ["Yanlış anlaşılma korkusu ilişkilerde tetiklenir."],
+          "mechanism": ["Duyguları kelimelere hapsetme eğilimi oluşur."],
+          "effect": ["Şifalı iletişim bağlarını güçlendirir."],
+          "shadow": ["Duygudan kaçış, ikircikli davranış, sözle manipülasyon."],
+          "potential": ["Sade ve dürüst iletişim ilişkilerini derinleştirir."]
+        },
+        "mind": {
+          "cause": ["Zihnin aşırı aktif olabilir."],
+          "mechanism": ["Tetiklendiğinde bilgi biriktirme veya kaçma davranışı görülür."],
+          "effect": ["Odaklandığında zihnin yaratıcı ve parlak olur."],
+          "shadow": ["Dağılma, sürekli fikir değiştirme."],
+          "potential": ["Zihinsel netlik kazandığında çok yönlü bir bilgelik doğar."]
+        },
+        "career": {
+          "cause": ["İfade etmeye zorlayan durumlar kariyer yaralarını tetikleyebilir."],
+          "mechanism": ["Bilgiye aşırı yüklenebilir veya kararsızlık yaşayabilirsin."],
+          "effect": ["Şifa ile birlikte iletişim odaklı başarı gelir."],
+          "shadow": ["Tutarsızlık ve odaksızlık."],
+          "potential": ["Doğru alanda zihinsel çevikliğin büyük başarı yaratır."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda hakikati sade ifade etmeyi öğrenirsin."],
+          "mechanism": ["Kader seni iletişim sınavlarıyla eğitir."],
+          "effect": ["Gerçek sesini bulduğunda ruhsal netlik kazanırsın."],
+          "shadow": ["Hakikatten kaçış karmayı büyütür."],
+          "potential": ["İfade özgünleştiğinde ruhsal yolun açılır."]
+        }
+      }
+    },
+    {
+      "id": "chiron_in_cancer",
+      "conditions": [{ "planet": "Chiron", "sign": "Cancer" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinde terk edilme, duygusal ihmal veya korunmasız kalma yarası olabilir."],
+          "mechanism": ["Kendini korumak için kabuğa çekilir veya aşırı bakım verme rolüne bürünebilirsin."],
+          "effect": ["Şifa bulduğunda kimliğin sıcak, besleyici ve güven veren bir hâle dönüşür."],
+          "shadow": ["Aşırı hassasiyet, alınganlık, duygusal savunma duvarları."],
+          "potential": ["Duygusal ihtiyaçlarını onurlandırdığında kimliğin olağanüstü bir şefkat gücü kazanır."]
+        },
+        "psychology": {
+          "cause": ["Duygularının küçümsenmesi veya sahiplenilmemesi psikolojik yara bırakmış olabilir."],
+          "mechanism": ["Yoğun hisler karşısında içe kapanabilir veya geçmişe saplanabilirsin."],
+          "effect": ["Şefkatle yaklaşınca psikolojin derin bir sezgi ve iç huzur geliştirir."],
+          "shadow": ["Kırgınlık biriktirme, suçluluk, duygusal regresyon."],
+          "potential": ["Duygularını kabul ettiğinde psikolojin iyileştirici bir alan yaratır."]
+        },
+        "relationships": {
+          "cause": ["Yakın ilişkilerde terk edilme veya duygusal reddedilme teması tetiklenebilir."],
+          "mechanism": ["Partnerine fazla bağlanabilir veya duygusal testlere başvurabilirsin."],
+          "effect": ["Şifa aldığında ilişkilerinde güvenli bağlanma ortaya çıkar."],
+          "shadow": ["Kıskançlık, pasif-agresif davranışlar, duygusal kaçış."],
+          "potential": ["Sağlıklı sınırlar kurduğunda ilişkilerin çok daha sıcak ve gerçek olur."]
+        },
+        "mind": {
+          "cause": ["Zihnin duygusal geçmişe bağlanabilir."],
+          "mechanism": ["Zihinsel süreçlerin hislerinle iç içe geçer."],
+          "effect": ["Güvende olduğunda zihnin yüksek sezgi ve empati üretir."],
+          "shadow": ["Paranoya, aşırı yorumlama, zihinsel sis."],
+          "potential": ["Duygu–zihin uyumu kurulduğunda zihnin şifacı bir sezgi kanalına dönüşür."]
+        },
+        "career": {
+          "cause": ["Kariyerde güven ortamı ihtiyacın güçlüdür."],
+          "mechanism": ["Soğuk, rekabetçi ortamlarda kapanabilir veya geri çekilebilirsin."],
+          "effect": ["Destekleyici ortamlarda üretkenliğin ve bağlılığın artar."],
+          "shadow": ["Aşırı duygusallık, kaçış, güven eksikliği."],
+          "potential": ["İnsana dokunan işlerde olağanüstü bir şifacılık potansiyelin vardır."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda duygusal bağımlılık döngülerini şifalandırmak ruhsal dersindir."],
+          "mechanism": ["Kader seni duygusal sınır ve bağımlılık temalarıyla yüzleştirir."],
+          "effect": ["Her farkındalık adımı ruhsal olgunluk getirir."],
+          "shadow": ["Duyguları bastırmak karmayı ağırlaştırır."],
+          "potential": ["Duygusal güveni kurduğunda ruhsal yolun berraklaşır."]
+        }
+      }
+    },
+    {
+      "id": "chiron_in_leo",
+      "conditions": [{ "planet": "Chiron", "sign": "Leo" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinde görülmeme, yeterince özel hissettirilmemiş olma yarası olabilir."],
+          "mechanism": ["Aşırı parlamak veya tamamen geri çekilmek arasında gidip gelebilirsin."],
+          "effect": ["Şifa bulduğunda kimliğin otantik bir ışık ve sıcaklık yayar."],
+          "shadow": ["Onay bağımlılığı, dramatik savunmalar, ego kırılganlığı."],
+          "potential": ["Kendi ışığını içsel olarak kabul ettiğinde kimliğin doğal bir liderliğe dönüşür."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik yaraların beğenilme, takdir görme ve değerli hissetme temalarından gelebilir."],
+          "mechanism": ["Duygusal tetiklenmelerde gurur duvarları yükselebilir."],
+          "effect": ["Şefkatle yaklaştığında psikolojin güç ve yaratıcılık kazanır."],
+          "shadow": ["Aşırı hassasiyet, küskünlük ve gurur oyunları."],
+          "potential": ["Kendini olduğu gibi kabul ettiğinde psikolojin sağlam bir özgüvene kavuşur."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde özel hissetmeme yarası tetiklenebilir."],
+          "mechanism": ["İlgi azalınca dramatik tepkiler veya geri çekilmeler yaşanabilir."],
+          "effect": ["Şifa ile ilişkilerinde sıcak, sadık ve yaratıcı bağlar gelişir."],
+          "shadow": ["Kıskançlık, ego savaşları, onay beklentisi."],
+          "potential": ["Kalpten ifade ilişkilerini derinleştirir ve güçlendirir."]
+        },
+        "mind": {
+          "cause": ["Zihinsel yaraların öz-değer algısıyla bağlantılı olabilir."],
+          "mechanism": ["Eleştiri zihninde büyük bir tehdit gibi algılanabilir."],
+          "effect": ["Netlik bulduğunda zihnin yaratıcı ve ilham verici olur."],
+          "shadow": ["Aşırı kişiselleştirme, sabit fikirlilik."],
+          "potential": ["Özgüven büyüdüğünde zihnin doğal liderlik üretir."]
+        },
+        "career": {
+          "cause": ["Kariyerde görünür olmak isteği yara nedeniyle gölgelenebilir."],
+          "mechanism": ["Başarısızlık korkusu risk almaktan alıkoyabilir."],
+          "effect": ["Şifa bulduğunda yaratıcı projelerde doğal olarak öne çıkarsın."],
+          "shadow": ["Övgü bağımlılığı, aşırı rekabet, tükenmişlik."],
+          "potential": ["Otantik ifaden liderliği ve başarıyı kendine çeker."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda ‘kendini parlatma’ korkusunu şifalandırmak ruhsal dersindir."],
+          "mechanism": ["Kader seni görünürlük sınavlarıyla güçlendirir."],
+          "effect": ["Her aşama kalp merkezini büyütür."],
+          "shadow": ["Gurur ve kaçış karmayı ağırlaştırır."],
+          "potential": ["Kalpten yaratıcılık kaderini açar."]
+        }
+      }
+    },
+    {
+      "id": "chiron_in_virgo",
+      "conditions": [{ "planet": "Chiron", "sign": "Virgo" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinde kusurlu görülme veya yeterince iyi olmama yarası olabilir."],
+          "mechanism": ["Kendini kanıtlamak için mükemmeliyetçiliğe kayabilirsin."],
+          "effect": ["Şifa bulduğunda kimliğin sade, net ve bilge bir yapıya dönüşür."],
+          "shadow": ["Aşırı eleştiri, takıntı ve kendini sürekli düzeltme eğilimi."],
+          "potential": ["Kusurları kabul ettiğinde kimliğinin doğal bilgelik kapasitesi açılır."]
+        },
+        "psychology": {
+          "cause": ["Psikolojin erken dönemde eleştirilme veya yüksek beklentilerle şekillenmiş olabilir."],
+          "mechanism": ["Duyguları analizle kontrol etmeye çalışırsın."],
+          "effect": ["Denge sağlandığında psikolojin berrak ve üretken olur."],
+          "shadow": ["Kaygı, takıntı, sürekli yetersizlik hissi."],
+          "potential": ["Kendine şefkat gösterdiğinde psikolojin derin bir ustalık kazanır."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde yeterli olmama yarası tetiklenebilir."],
+          "mechanism": ["Partnerini düzeltmeye veya kendini geri çekmeye eğilim gösterebilirsin."],
+          "effect": ["Şifa ile ilişkilerin temiz, dürüst ve sağlıklı olur."],
+          "shadow": ["Eleştirel tavır, duygusal mesafe, aşırı beklenti."],
+          "potential": ["Kusurlu yanları kabul etmek ilişkilerinde gerçek sıcaklık yaratır."]
+        },
+        "mind": {
+          "cause": ["Zihnin mükemmel olma çabasıyla yüklenmiş olabilir."],
+          "mechanism": ["Detaylara aşırı odaklanabilir, büyük resmi kaçırabilirsin."],
+          "effect": ["Şifalı hâlde zihnin keskin, düzenli ve pratik olur."],
+          "shadow": ["Takıntı, sürekli analiz, durdurulamayan eleştiri döngüsü."],
+          "potential": ["Zihnin dengeye geldiğinde hem yaratıcı hem işlevsel bir bilgelik doğar."]
+        },
+        "career": {
+          "cause": ["Kariyerde hatasız olma baskısı taşıyabilirsin."],
+          "mechanism": ["Aşırı yük almak veya erteleme döngüsüne girebilirsin."],
+          "effect": ["Şifa aldığında istikrarlı, dikkatli ve kusursuza yakın işler çıkarırsın."],
+          "shadow": ["Tükenmişlik, aşırı çalışma, kendini değersiz görme."],
+          "potential": ["Gerçek kapasiten disiplin + şefkat birleştiğinde ortaya çıkar."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda kendi kusurluluğunu kabul etmek ruhsal dersindir."],
+          "mechanism": ["Kader seni kontrol edemediğin alanlarla sınar."],
+          "effect": ["Her teslimiyet içsel bilgelik getirir."],
+          "shadow": ["Aşırı kontrol, öz-eleştiri karmayı kalınlaştırır."],
+          "potential": ["Kusurları kabul etmek seni ruhsal bütünlüğe taşır."]
+        }
+      }
+    },
+    {
+      "id": "chiron_in_libra",
+      "conditions": [{ "planet": "Chiron", "sign": "Libra" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinde onaylanmama veya sevilmek için uyum sağlama yarası olabilir."],
+          "mechanism": ["Kendi isteklerini baskılayıp uyum göstermeye eğilimli olabilirsin."],
+          "effect": ["Şifa bulduğunda kimliğin zarif, dengeli ve güçlü olur."],
+          "shadow": ["Kararsızlık, pasiflik, görünmezleşme."],
+          "potential": ["Kendi merkezinde durmayı öğrendiğinde kimliğin adil ve otantik bir güce dönüşür."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik yaraların ilişkilerde denge kuramama temasından gelebilir."],
+          "mechanism": ["Duyguları bastırıp zihinsel uyum stratejisi geliştirirsin."],
+          "effect": ["Dürüstlükle ifade ettiğinde psikolojin netleşir."],
+          "shadow": ["Sürekli uyum, manipülatif nezaket, öz değer bulanıklığı."],
+          "potential": ["Gerçek seçim yaptığında psikolojin huzur ve berraklık kazanır."]
+        },
+        "relationships": {
+          "cause": ["Bağlılık ve kabul edilme yarası ilişkilerde tetiklenir."],
+          "mechanism": ["Yakınlıkta sınır kaybı veya aşırı uyum ortaya çıkabilir."],
+          "effect": ["Şifa ile ilişkilerinde karşılıklılık ve uyum güçlenir."],
+          "shadow": ["Pasif-agresif davranışlar, görünmez savaşlar, kaçınma."],
+          "potential": ["Net sınırlar ilişkilerini güçlendirir ve dengeyi sağlar."]
+        },
+        "mind": {
+          "cause": ["Zihnin barış ve uyum arar fakat çatışmadan kaçar."],
+          "mechanism": ["İki seçenek arasında sıkışıp zihinsel yorulma yaşayabilirsin."],
+          "effect": ["Gerçek seçimle zihnin keskinleşir."],
+          "shadow": ["Kararsızlık, aşırı düşünme, başkası için yaşama."],
+          "potential": ["Zihnin adalet ve estetik açıdan güçlü bir bilgelik kazanır."]
+        },
+        "career": {
+          "cause": ["Kariyerde görünür olmak için uyum sağlama baskısı olabilir."],
+          "mechanism": ["Kendi fikirlerini geri plana atabilirsin."],
+          "effect": ["Şifa ile diploması, zarafeti ve iş birlikleri seni öne çıkarır."],
+          "shadow": ["Görünmeyen emek, kararsızlık, içe çekilme."],
+          "potential": ["Adil ve net olduğunda kariyerin hızla dengeli bir şekilde büyür."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda kendi değerini başkasının bakışından bağımsız tanımlamak dersindir."],
+          "mechanism": ["Kader seni kararsızlık ve seçim sınavlarıyla güçlendirir."],
+          "effect": ["Seçim yaptıkça ruhun özgürleşir."],
+          "shadow": ["Kaçış karmayı ağırlaştırır."],
+          "potential": ["Kendi merkezini kurduğunda kaderin doğru insanlarla hizalanır."]
+        }
+      }
+    },
+    {
+      "id": "chiron_in_scorpio",
+      "conditions": [{ "planet": "Chiron", "sign": "Scorpio" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinde güç, güven ve teslimiyet temalarıyla ilgili derin bir yara olabilir."],
+          "mechanism": ["Güçlü görünmek için duygularını gizleyebilirsin."],
+          "effect": ["Şifa ile kimliğin manyetik, sezgisel ve dönüştürücü olur."],
+          "shadow": ["Aşırı kontrol, gizlilik, içsel çatışma."],
+          "potential": ["Kendi karanlığını kabul ettiğinde kimliğin ruhsal bir güç kazanır."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik yaraların yoğun duygular, travma veya güven kaybıyla bağlantılı olabilir."],
+          "mechanism": ["Duygular içte birikir ve patlamaya hazır hâle gelebilir."],
+          "effect": ["Şifayla derin sezgi ve olağanüstü dayanıklılık gelişir."],
+          "shadow": ["Obsesyon, paranoya, aşırı tetikte olma."],
+          "potential": ["Karanlığı dönüştürdüğünde psikolojin rehberlik eden bir bilgelik taşır."]
+        },
+        "relationships": {
+          "cause": ["Bağlanma, güven ve güç temaları ilişkilerde yara taşır."],
+          "mechanism": ["Yakınlık arttıkça kontrol veya duvar örme eğilimi ortaya çıkar."],
+          "effect": ["Şifa ile derin, sadık ve ruhsal bağlar kurarsın."],
+          "shadow": ["Kıskançlık, manipülasyon, sessiz cezalandırma."],
+          "potential": ["Dürüstlük ve teslimiyet ilişkilerinde dönüşüm yaratır."]
+        },
+        "mind": {
+          "cause": ["Zihnin görünmeyeni araştıran bir yapıya sahiptir."],
+          "mechanism": ["Zihnin krizlerde aşırı keskinleşir fakat huzur anında tetikte olabilir."],
+          "effect": ["Odaklandığında yüksek sezgi ve psikolojik analiz gücü gelişir."],
+          "shadow": ["Karanlık senaryolar üretme, şüphecilik."],
+          "potential": ["Zihin ışıkla birleştiğinde olağanüstü bir sezgisel bilgelik doğar."]
+        },
+        "career": {
+          "cause": ["Kariyerde güç ve kontrol temaları tetiklenebilir."],
+          "mechanism": ["Krize girebilir veya kriz çözmeye çekilebilirsin."],
+          "effect": ["Şifa ile dönüştürücü alanlarda başarılı olursun."],
+          "shadow": ["Aşırı rekabet, güç savaşları, tükenme."],
+          "potential": ["Gücünü bilinçle kullandığında kariyerin derin bir etki yaratır."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda güç–teslimiyet dengesini öğrenirsin."],
+          "mechanism": ["Kader seni karanlık ve kriz temalarıyla eğitir."],
+          "effect": ["Yüzleşme ruhsal gücü artırır."],
+          "shadow": ["Direnç karmayı ağırlaştırır."],
+          "potential": ["Teslimiyet ruhsal dönüşümün kapısını açar."]
+        }
+      }
+    },
+    {
+      "id": "chiron_in_sagittarius",
+      "conditions": [{ "planet": "Chiron", "sign": "Sagittarius" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinde inançlarının küçümsenmesi veya özgürlüğünün kısıtlanması yarası olabilir."],
+          "mechanism": ["Aşırı bağımsızlık veya aşırı doğruculuk geliştirebilirsin."],
+          "effect": ["Şifa ile kimliğin bilge, ilham veren ve özgün olur."],
+          "shadow": ["Aşırılık, fanatizm, kibir, kaçış."],
+          "potential": ["Hakikati kendi içinde bulduğunda kimliğin ışık saçan bir rehbere dönüşür."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik yaraların umut kırılması veya hayal kırıklıklarıyla ilişkilidir."],
+          "mechanism": ["Duygunu inkâr edebilir veya idealizme kaçabilirsin."],
+          "effect": ["Anlam bulduğunda psikolojin genişler ve güçlenir."],
+          "shadow": ["Aşırı iyimserlik, duyguyu hafife alma."],
+          "potential": ["Gerçek içsel doğruna döndüğünde psikolojin sağlamlaşır."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde özgürlüğün kısıtlanması büyük tetikleyicidir."],
+          "mechanism": ["Yakınlıkta mesafe koyabilir veya aşırı idealize edebilirsin."],
+          "effect": ["Şifa ile ilişkilerinde dürüstlük ve ilham verici bağ gelişir."],
+          "shadow": ["Bağlanma korkusu, sadakatsizlik, kaçış."],
+          "potential": ["Hakikati paylaştığında bağların güçlenir."]
+        },
+        "mind": {
+          "cause": ["Zihnin anlam ve perspektif arar."],
+          "mechanism": ["Detaydan kaçarak aşırı genelleme yapabilirsin."],
+          "effect": ["Şifalı hâlde zihnin vizyoner ve üretken olur."],
+          "shadow": ["Dağınıklık, abartı, gerçeklerden kaçış."],
+          "potential": ["Hakikati empatiyle birleştirdiğinde öğretici bir zihin ortaya çıkar."]
+        },
+        "career": {
+          "cause": ["Kariyerde özgürlük ve gelişim isteği temeldir."],
+          "mechanism": ["Rutine sıkışınca işten kaçınabilirsin."],
+          "effect": ["Şifa ile ilham verici projelerde parıldarsın."],
+          "shadow": ["İstikrarsızlık, aşırı risk alma."],
+          "potential": ["Bilgiyi ve deneyimi paylaştığında kariyerin yükselir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda içsel hakikatle hizalanma dersin vardır."],
+          "mechanism": ["Kader seni sahte umutları kıran deneyimlerle sınar."],
+          "effect": ["Gerçek doğruna döndüğünde özgürleşirsin."],
+          "shadow": ["Kaçış karmayı ağırlaştırır."],
+          "potential": ["Hakikatle hizalandığında ruhsal yolun genişler."]
+        }
+      }
+    },
+    {
+      "id": "chiron_in_capricorn",
+      "conditions": [{ "planet": "Chiron", "sign": "Capricorn" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinde başarısızlık korkusu veya duygusal soğukluk yarası olabilir."],
+          "mechanism": ["Güvende hissetmek için güçlü görünmeye çalışırsın."],
+          "effect": ["Şifalı hâlde kimliğin olgun, sabırlı ve kararlı olur."],
+          "shadow": ["Duygusal kapanma, aşırı kontrol, kendini baskılama."],
+          "potential": ["Şefkatle birleşen disiplin kimliğinde bilge bir otorite yaratır."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik yaraların erken yaşta ağır sorumluluk almaktan gelebilir."],
+          "mechanism": ["Duyguları bastırıp mantığa yönelirsin."],
+          "effect": ["Şifa ile psikolojin dayanıklı ve sağlam olur."],
+          "shadow": ["Karamsarlık, suçluluk, yalnızlık."],
+          "potential": ["Duygusal güveni kurduğunda psikolojin derin bir bilgelik kazanır."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde duygusal açıklık teması tetiklenir."],
+          "mechanism": ["Yakınlıkta mesafe veya kontrol eğilimi oluşabilir."],
+          "effect": ["Şifayla sadık, ciddi ve güvenilir bağlar kurarsın."],
+          "shadow": ["Soğukluk, beklenti baskısı, duvar örme."],
+          "potential": ["Duyguları paylaşmak ilişkilerini daha sıcak hâle getirir."]
+        },
+        "mind": {
+          "cause": ["Zihnin düzen ve kontrol ister."],
+          "mechanism": ["Belirsizlik zihinsel gerginlik yaratır."],
+          "effect": ["Planlı olduğunda zihnin çok üretkendir."],
+          "shadow": ["Katı düşünceler, karamsarlık."],
+          "potential": ["Zihin–kalp dengesi sağlandığında stratejik bilgelik ortaya çıkar."]
+        },
+        "career": {
+          "cause": ["Kariyerde yükseğe çıkma baskısı olabilir."],
+          "mechanism": ["Aşırı çalışma veya riske girmeme döngüsü yaşanabilir."],
+          "effect": ["Şifa ile kariyerinde güvenilir bir otorite hâline gelirsin."],
+          "shadow": ["Tükenmişlik, aşırı sorumluluk alma."],
+          "potential": ["Dengeli ilerlediğinde büyük başarılar elde edersin."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda güç–sorumluluk dengesi dersindir."],
+          "mechanism": ["Kader seni sınırlarını test eden durumlara iter."],
+          "effect": ["Her yüzleşme dayanıklılığını artırır."],
+          "shadow": ["Kontrol takıntısı karmayı ağırlaştırır."],
+          "potential": ["Şefkatle birleşen güç ruhsal yükseliş getirir."]
+        }
+      }
+    },
+    {
+      "id": "chiron_in_aquarius",
+      "conditions": [{ "planet": "Chiron", "sign": "Aquarius" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinde dışlanma, farklı olduğu için kabul edilmeme yarası olabilir."],
+          "mechanism": ["Aşırı bağımsızlık geliştirip kendini gruptan soyutlayabilirsin."],
+          "effect": ["Şifalı hâlde kimliğin özgür, yaratıcı ve ilham verici olur."],
+          "shadow": ["Kopukluk, aidiyet reddi, duygusal mesafe."],
+          "potential": ["Hem bireyselliği hem bağ kurmayı onurlandırdığında kimliğin bütünleşir."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik yaraların kabul edilmeme veya dışlanma temalarından gelir."],
+          "mechanism": ["Duyguları mantıkla uzaklaştırmaya çalışırsın."],
+          "effect": ["Şifayla objektif ama bağ kurabilen bir psikoloji gelişir."],
+          "shadow": ["Soğukluk, izole olma, isyan."],
+          "potential": ["Zihin–kalp uyumu oluştuğunda psikolojin güçlü bir özgürlük bilinci taşır."]
+        },
+        "relationships": {
+          "cause": ["Bağlanma + özgürlük çatışması ilişkilerde yara yaratabilir."],
+          "mechanism": ["Yakınlık arttıkça mesafe koyabilir veya duyguyu rasyonalize edebilirsin."],
+          "effect": ["Şifa ile ilişkilerin sıra dışı ama sağlam olur."],
+          "shadow": ["Ani kopuşlar, duygusal yokluk, bağlanmaktan kaçış."],
+          "potential": ["Hem özgür hem bağlı olmayı öğrendiğinde ilişkilerin derinleşir."]
+        },
+        "mind": {
+          "cause": ["Zihnin özgün ve bağımsızdır."],
+          "mechanism": ["Aşırı objektiflik duygudan kopma yaratabilir."],
+          "effect": ["Şifalı hâlde zihnin yenilikçi ve devrimci olur."],
+          "shadow": ["Uç fikirler, duygusal kopuş, aşırı rasyonalizasyon."],
+          "potential": ["Zihin sezgiyle birleştiğinde dahiyane içgörüler doğar."]
+        },
+        "career": {
+          "cause": ["Kariyerde özgünlük ihtiyacı belirgindir."],
+          "mechanism": ["Bağımsız çalışmaya yönelirsin, kurallı yapı zorlayabilir."],
+          "effect": ["Şifa ile yenilikçi projelerde parıldarsın."],
+          "shadow": ["Ekipten kopma, tutarsızlık, isyankârlık."],
+          "potential": ["Hem bireysel hem kolektif vizyonu taşıdığında kariyerinde büyük etki yaratırsın."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda özgünlük–aidiyet dengesini öğrenirsin."],
+          "mechanism": ["Kader seni farklılık sınavlarıyla güçlendirir."],
+          "effect": ["Kendi yolunu kabul ettiğinde ruhun özgürleşir."],
+          "shadow": ["Aşırı kopukluk karmayı büyütür."],
+          "potential": ["Hem birey hem kolektif bilincini taşıdığında ruhsal görevini yerine getirirsin."]
+        }
+      }
+    },
+    {
+      "id": "chiron_in_pisces",
+      "conditions": [{ "planet": "Chiron", "sign": "Pisces" }],
+      "output": {
+        "identity": {
+          "cause": ["Kimliğinde çözülme, görünmeme veya aşırı empati yüzünden sınır kaybı yarası olabilir."],
+          "mechanism": ["Kendini korumak için iç dünyana çekilebilir veya aşırı uyumlanabilirsin."],
+          "effect": ["Şifa ile kimliğin sezgisel, şefkatli ve ruhsal olarak güçlü olur."],
+          "shadow": ["Kurban bilinci, kaçış, kimlik erimesi."],
+          "potential": ["Sınırlarını tanımladığında kimliğin parlak bir ruhsal merkeze dönüşür."]
+        },
+        "psychology": {
+          "cause": ["Psikolojik yaraların aşırı empati veya duygusal yükleri absorbe etmekten gelir."],
+          "mechanism": ["Yoğun hisler içsel karmaşa oluşturabilir."],
+          "effect": ["Şifa ile psikolojin yumuşak, sezgisel ve bilge olur."],
+          "shadow": ["Gerçeklikten kopma, idealizasyon, bağımlılıklar."],
+          "potential": ["Sağlıklı sınırlarla psikolojin şifacı bir alana dönüşür."]
+        },
+        "relationships": {
+          "cause": ["İlişkilerde aşırı fedakârlık ve kendini feda etme yarası olabilir."],
+          "mechanism": ["Partnerin duygularını kendi duyguların gibi taşıyabilirsin."],
+          "effect": ["Şifa ile ilişkilerin derin, ruhsal ve yumuşak olur."],
+          "shadow": ["Kurban–kurtarıcı döngüsü, kaçış, yasak aşk temaları."],
+          "potential": ["Sınır koymayı öğrendiğinde ilişkilerin sağlıklı bir ruha kavuşur."]
+        },
+        "mind": {
+          "cause": ["Zihnin sezgi ve duygu üzerinden çalışır."],
+          "mechanism": ["Zihinsel sis veya aşırı hayal kurma oluşabilir."],
+          "effect": ["Şifa ile zihnin yaratıcı, sanatsal ve spiritüel olur."],
+          "shadow": ["Dağılma, gerçeklikten kaçış."],
+          "potential": ["Netlik kazandığında zihnin güçlü bir sezgisel rehbere dönüşür."]
+        },
+        "career": {
+          "cause": ["Kariyerde anlam arayışı güçlüdür."],
+          "mechanism": ["Belirsizlik kariyer yolunu etkileyebilir."],
+          "effect": ["Şifa ile yaratıcı, ruhsal veya şefkat içeren alanlarda parıldarsın."],
+          "shadow": ["Erteleme, kendini feda etme, sınır kaybı."],
+          "potential": ["Sınır ve yapı kazandığında kariyerin ruhsal güçle birleşir."]
+        },
+        "karma": {
+          "cause": ["Bu yaşamda teslimiyet ve sınır bilinci dersindir."],
+          "mechanism": ["Kader seni gerçeklik–kaçış temasında sınar."],
+          "effect": ["Hakikati gördüğünde ruhun özgürleşir."],
+          "shadow": ["Kurbanlık karmayı ağırlaştırır."],
+          "potential": ["Teslimiyet + sınır dengesi ruhsal yükseliş getirir."]
+        }
+      }
+    }
+  ]
+}

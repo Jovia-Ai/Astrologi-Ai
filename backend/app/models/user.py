@@ -26,3 +26,4 @@ class BirthDataSchema(BaseModel):
     place: str
     latitude: float
     longitude: float
+

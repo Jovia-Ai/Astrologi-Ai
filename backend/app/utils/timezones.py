@@ -2,8 +2,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-
-import pytz
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 
 def parse_birth_datetime_components(date_value: str, time_value: str | None, timezone_name: str) -> tuple[datetime, datetime]:
@@ -29,13 +28,12 @@ def parse_birth_datetime_components(date_value: str, time_value: str | None, tim
             raise ValueError("birth time must be in HH:MM format.") from exc
 
     try:
-        tz = pytz.timezone(timezone_name)
-    except pytz.UnknownTimeZoneError as exc:
+        tz = ZoneInfo(timezone_name)
+    except ZoneInfoNotFoundError as exc:
         raise ValueError(f"Unknown timezone '{timezone_name}'.") from exc
 
-    local_naive = datetime(year, month, day, hour, minute)
-    local_dt = tz.localize(local_naive)
-    utc_dt = local_dt.astimezone(pytz.utc)
+    local_dt = datetime(year, month, day, hour, minute, tzinfo=tz)
+    utc_dt = local_dt.astimezone(ZoneInfo("UTC"))
     return local_dt, utc_dt
 
 
@@ -67,16 +65,16 @@ def parse_birth_datetime(birth_str: str, timezone_name: str) -> tuple[datetime, 
         raise ValueError("birth_date must match ISO format (YYYY-MM-DDTHH:MM) or 'YYYY-MM-DD HH:MM'.")
 
     try:
-        tz = pytz.timezone(timezone_name)
-    except pytz.UnknownTimeZoneError as exc:
+        tz = ZoneInfo(timezone_name)
+    except ZoneInfoNotFoundError as exc:
         raise ValueError(f"Unknown timezone '{timezone_name}'.") from exc
 
     if parsed.tzinfo is not None:
         local_dt = parsed.astimezone(tz)
     else:
-        local_dt = tz.localize(parsed)
+        local_dt = parsed.replace(tzinfo=tz)
 
-    utc_dt = local_dt.astimezone(pytz.utc)
+    utc_dt = local_dt.astimezone(ZoneInfo("UTC"))
     return local_dt, utc_dt
 
 

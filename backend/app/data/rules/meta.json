@@ -1,0 +1,1195 @@
+{
+  "planet_sign_rules": [
+    {
+      "id": "lilith_in_aries",
+      "conditions": [{ "planet": "Lilith", "sign": "Aries" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin karanlık kökünde bastırılmış öfke ve doğrudanlık ihtiyacı bulunur."
+          ],
+          "mechanism": [
+            "İrade gösterdiğinde reddedilme korkusu tetiklenir."
+          ],
+          "effect": [
+            "Kendini savunduğunda hem özgürleşir hem de suçluluk duyabilirsin."
+          ],
+          "shadow": [
+            "Patlayıcı tepkiler veya tamamen geri çekilme arasında salınabilirsin."
+          ],
+          "potential": [
+            "Cesaretini bilinçli kullandığında korkutucu değil, öncü bir güç olursun."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik kökenin seni kendi arzularını bastırmaya itmiş olabilir."
+          ],
+          "mechanism": [
+            "Duygular hızla yükselir, sonra kendini suçlama döngüsüne girersin."
+          ],
+          "effect": [
+            "İçsel savaşın seni ateşli ve güçlü bir sezgiye ulaştırabilir."
+          ],
+          "shadow": [
+            "Kendini sürekli tehdit altında hissetmek psikolojik yorulma yaratabilir."
+          ],
+          "potential": [
+            "Sınır koyduğunda psikolojin güçlenir ve netleşir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde kendi iradeni bastırman yönünde koşullanmış olabilirsin."
+          ],
+          "mechanism": [
+            "Yakınlık arttıkça savunma duvarların yükselir."
+          ],
+          "effect": [
+            "Açık olduğunda bağlarında tutku ve dürüstlük belirir."
+          ],
+          "shadow": [
+            "Güç savaşları veya ani kopuşlar ilişki döngülerine dönüşebilir."
+          ],
+          "potential": [
+            "Duygusal cesaret, ilişkilerinde özgün bir birliktelik yaratır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin hız ve özgürlük ister ama bunu bastırmışsındır."
+          ],
+          "mechanism": [
+            "Kafa karışıklığı genellikle bastırılmış öfkeden doğar."
+          ],
+          "effect": [
+            "Kendini ifade ettiğinde zihnin keskinleşir."
+          ],
+          "shadow": [
+            "Acelecilik yanlış kararları tetikleyebilir."
+          ],
+          "potential": [
+            "İçsel ateşi yönlendirdiğinde zihinsel öncülük kapasitesi doğar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde başlatıcı olmaktan korkutulmuş olabilirsin."
+          ],
+          "mechanism": [
+            "Otorite figürleri tetikleyici olabilir."
+          ],
+          "effect": [
+            "Kendi liderliğini kabul ettiğinde yol kendiliğinden açılır."
+          ],
+          "shadow": [
+            "Güvensizlik, potansiyel liderliği gölgeleyebilir."
+          ],
+          "potential": [
+            "Cesur adım attığında kariyerin radikal sıçramalar yapar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema kendi iradeni sahiplenmektir."
+          ],
+          "mechanism": [
+            "Korktuğun sahneler sana tekrar tekrar sunulur."
+          ],
+          "effect": [
+            "Her yüzleşme seni güçlendirir."
+          ],
+          "shadow": [
+            "Kaçındığın her alan karmayı kalınlaştırır."
+          ],
+          "potential": [
+            "Kendi ateşinle barıştığında kaderin hızla akmaya başlar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_taurus",
+      "conditions": [{ "planet": "Lilith", "sign": "Taurus" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinde değer görmeme ve sahip olduklarını ispatlama yarası olabilir."
+          ],
+          "mechanism": [
+            "Güven sarsıldığında inat ve kontrol ortaya çıkar."
+          ],
+          "effect": [
+            "Denge bulduğunda güçlü bir sadelik ve sağlamlık yayarsın."
+          ],
+          "shadow": [
+            "Aşırı sahiplenme içsel yoksunluk hissini büyütebilir."
+          ],
+          "potential": [
+            "Gerçek öz-değerini bulduğunda kimliğin sarsılmaz bir köke dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin derin güven eksikliğiyle şekillenmiş olabilir."
+          ],
+          "mechanism": [
+            "Kaybetme korkusu seni duygusal tutukluğa itebilir."
+          ],
+          "effect": [
+            "Dinginliğe ulaştığında iç huzur hızla genişler."
+          ],
+          "shadow": [
+            "Aşırı maddi veya duygusal tutunmalar psikolojik tıkanma yaratabilir."
+          ],
+          "potential": [
+            "Bırakmayı öğrendiğinde psikolojin köklenmiş bir huzura dönüşür."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde sahip olunma korkusu ve sahiplenme arzusu aynı anda çalışır."
+          ],
+          "mechanism": [
+            "Güven testleri ilişki döngülerini zedeleyebilir."
+          ],
+          "effect": [
+            "Gerçek yakınlık kurduğunda sadakat ve derinlik açığa çıkar."
+          ],
+          "shadow": [
+            "Kıskançlık ve tutku karışımı ilişkiyi tüketebilir."
+          ],
+          "potential": [
+            "Güveni içten kurduğunda ilişkilerin daha barışçıl ve sağlam olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin somut güven ister ama bu genelde reddedilmiştir."
+          ],
+          "mechanism": [
+            "Belirsizlik zihinsel huzursuzluk yaratır."
+          ],
+          "effect": [
+            "Denge bulduğunda zihinsel üretimin sakin ama çok güçlü olur."
+          ],
+          "shadow": [
+            "Israr ve sabit fikir zihni kilitleyebilir."
+          ],
+          "potential": [
+            "Esnediğinde zihnin yaratıcı ve bereketli bir alana dönüşür."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde istikrar isteğin çoğu zaman gölgelenmiştir."
+          ],
+          "mechanism": [
+            "Kaybetme korkusu risk almaktan alıkoyabilir."
+          ],
+          "effect": [
+            "Temkinli ilerlediğinde kalıcı başarı potansiyelin yüksektir."
+          ],
+          "shadow": [
+            "Yerinde saymak, iç huzursuzluğunu büyütebilir."
+          ],
+          "potential": [
+            "Değerini ortaya koyduğunda kariyerin doğal olarak genişler."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal dersin öz-değeri dışsal şeylere bağlamaktan kurtulmaktır."
+          ],
+          "mechanism": [
+            "Sahip olduğun ne varsa test edilir."
+          ],
+          "effect": [
+            "Gerçek değerini bulduğunda özgürleşirsin."
+          ],
+          "shadow": [
+            "Tutundukça karmasal döngü ağırlaşır."
+          ],
+          "potential": [
+            "Bolluğu içeriden kurduğunda kaderin seninle çalışır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_gemini",
+      "conditions": [{ "planet": "Lilith", "sign": "Gemini" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin kökünde anlaşılmama, sesinin duyulmaması veya ciddiye alınmama yarası bulunabilir."
+          ],
+          "mechanism": [
+            "Kendini ifade ederken ya aşırı uyumlanır ya da kararsızlıkla dağılabilirsin."
+          ],
+          "effect": [
+            "Doğru ortamı bulduğunda çok yönlü, meraklı ve keskin bir kimlik ortaya çıkar."
+          ],
+          "shadow": [
+            "Yüzeysellik, dağınıklık ve rol değiştirme kimlikte boşluk yaratabilir."
+          ],
+          "potential": [
+            "Kendi sesini sahiplenip merkezini bulduğunda çok güçlü bir anlatıcıya dönüşürsün."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik kökenin, düşüncelerinin küçümsenmesi veya duygularının rasyonalize edilmesiyle şekillenmiş olabilir."
+          ],
+          "mechanism": [
+            "Zihin hızlandıkça duyguların sisten kaybolur."
+          ],
+          "effect": [
+            "İçsel ikilemler zamanla güçlü bir farkındalığa dönüşebilir."
+          ],
+          "shadow": [
+            "Aşırı analiz, parçalanmış düşünceler ve zihinsel yorgunluk."
+          ],
+          "potential": [
+            "Zihinsel enerjini topladığında içgörün keskin, sezgin ise şaşırtıcı derecede derin olur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde görülmeme veya yanlış anlaşılma temaları sıkça tetiklenir."
+          ],
+          "mechanism": [
+            "Yakınlık arttıkça kendini sözlerle savunmaya veya duyguyu açıklamaya yönelirsin."
+          ],
+          "effect": [
+            "Şeffaf iletişim kurduğunda bağların daha esnek, canlı ve gerçek olur."
+          ],
+          "shadow": [
+            "İkircikli davranışlar, duygudan kaçış ve iletişim manipülasyonu döngü yaratabilir."
+          ],
+          "potential": [
+            "Duyguyu kelimeyle buluşturduğunda ilişkilerin derinleşir ve güven oluşur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin çok hızlı çalışır ama bu hız çoğu zaman bastırılmış huzursuzluktan gelir."
+          ],
+          "mechanism": [
+            "Düşünceler, bağlantılar ve ihtimaller arasında sürekli geçiş yaparsın."
+          ],
+          "effect": [
+            "Farklı perspektifleri bir araya getirdiğinde yaratıcı bir zihin ortaya çıkar."
+          ],
+          "shadow": [
+            "Kaos, odaksızlık, bilgi tüketerek duygudan kaçma."
+          ],
+          "potential": [
+            "Odaklandığında zihnin senin için bir iletişim aracı değil, aynı zamanda bir şifa aracı olur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde görünür olmak için kendini ifade etme becerini geliştirmek zorunda kalmış olabilirsin."
+          ],
+          "mechanism": [
+            "Sürekli yeni fikirlere kaymak uzun vadeli istikrarı zorlayabilir."
+          ],
+          "effect": [
+            "Doğru alanda çok yönlülüğün büyük bir avantaj haline gelir."
+          ],
+          "shadow": [
+            "Tutarsızlık, ilgisizlik, başladığını bitirememe."
+          ],
+          "potential": [
+            "Tek bir alanda bile derinlik kazandığında fikir gücün seni çok ileri taşır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda hakikati eğip bükmeden ifade etmeyi öğrenirsin."
+          ],
+          "mechanism": [
+            "Kadersel olarak iletişim sınavları, yanlış anlaşılmalar ve yansıtmalarla karşılaşırsın."
+          ],
+          "effect": [
+            "Her doğruluk adımı ruhsal yolunda netlik getirir."
+          ],
+          "shadow": [
+            "Hakikatten kaçmak karmasal düğümleri büyütür."
+          ],
+          "potential": [
+            "Kendi gerçeğini sade ve dürüst ifade ettiğinde kaderin çok net biçimde açılır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_virgo",
+      "conditions": [{ "planet": "Lilith", "sign": "Virgo" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin derininde kusurlu görülme, yetersiz bulunma veya sürekli düzeltilme yarası olabilir."
+          ],
+          "mechanism": [
+            "Kendini kanıtlamak için aşırı sorumluluk alma veya mükemmel olma çabası ortaya çıkar."
+          ],
+          "effect": [
+            "Denge bulduğunda kimliğin netlik, ustalık ve sakin bir güç yayar."
+          ],
+          "shadow": [
+            "Aşırı öz-eleştiri, kontrol ihtiyacı ve görünmez hissetme krizleri kimliği yorabilir."
+          ],
+          "potential": [
+            "Kusurları kabul ettiğinde kimliğin bilgelik ve gerçek sadelikle parlamaya başlar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapında değerinin performansa bağlanması teması erken yaşta yerleşmiş olabilir."
+          ],
+          "mechanism": [
+            "Duygularını analiz ederek düzenlemeye çalışırsın; bu da onları bastırmaya yol açabilir."
+          ],
+          "effect": [
+            "Kendini rahat bıraktığında psikolojin yumuşar ve iç denge ortaya çıkar."
+          ],
+          "shadow": [
+            "Takıntı, detaylara gömülme, kronik kaygı ve sürekli kendiyle uğraşma döngüleri."
+          ],
+          "potential": [
+            "Zihnin ve duygun uyumlandığında yüksek sezgi + pratik zekâ birleşir ve derin farkındalık doğar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde ‘yeterince iyi olmama’ ya da sevilmek için mükemmel görünme teması tetiklenebilir."
+          ],
+          "mechanism": [
+            "Partneri düzeltme, analiz etme veya fazla sorumluluk alma eğilimi ortaya çıkabilir."
+          ],
+          "effect": [
+            "Hizmet ve özen enerjin doğru kullanıldığında ilişkilerine iyileştirici bir kalite getirir."
+          ],
+          "shadow": [
+            "Eleştirel ton, duygusal mesafe veya sürekli kendini geri çekme ilişkiyi zorlayabilir."
+          ],
+          "potential": [
+            "Kusursuzluk yerine açıklığı seçtiğinde ilişkilerin daha sıcak, gerçek ve şefkatli hale gelir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin düzen, kontrol ve doğruluk ister; buna ulaşamayınca huzursuzluk yükselir."
+          ],
+          "mechanism": [
+            "Aşırı analiz, senin için duygudan kaçma stratejisine dönüşebilir."
+          ],
+          "effect": [
+            "Netlik bulduğunda zihninin analitik yeteneği olağanüstü bir keskinlik kazanır."
+          ],
+          "shadow": [
+            "Takıntı, aşırı düşünme, hata arama ve zihinsel tükenmişlik."
+          ],
+          "potential": [
+            "Zihnin kabul ve esneklik kazandığında hem yaratıcı hem verimli bir akış doğar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde kusursuz iş çıkarma ihtiyacı, baskı ve kendini kanıtlama döngüsünü tetikleyebilir."
+          ],
+          "mechanism": [
+            "En ufak detay üzerinde bile aşırı yoğunlaşarak enerjini tüketebilirsin."
+          ],
+          "effect": [
+            "Denge bulduğunda iş ortamında güvenilir, titiz ve olağanüstü etkili biri olarak tanınırsın."
+          ],
+          "shadow": [
+            "Mükemmelliyetçilik, gecikme, tükenmişlik ve hayattan kopma."
+          ],
+          "potential": [
+            "Yapabildiklerini akıllıca seçtiğinde kariyer çizgin net, sürdürülebilir ve çok güçlü olur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda ‘kusurlu olma korkusunu’ bırakıp kendini olduğu gibi kabul etmek ana temadır."
+          ],
+          "mechanism": [
+            "Kader seni kusursuzluk illüzyonuyla sınayarak öz-değerini yeniden tanımlamana zorlar."
+          ],
+          "effect": [
+            "Kabul ettikçe ruhsal yüklerin çözülür ve hafiflersin."
+          ],
+          "shadow": [
+            "Aşırı kontrol, kendine işkence edercesine çalışma ve bitmeyen öz-eleştiri karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Kendi insaniliğini kabul ettiğinde ruhsal yolun sade, şefkatli ve bilgece açılır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_leo",
+      "conditions": [{ "planet": "Lilith", "sign": "Leo" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin kökünde görülmeme, değerinin fark edilmeme veya sahneden indirilmeye dair derin bir yara bulunabilir."
+          ],
+          "mechanism": [
+            "Kendini ifade ederken ya aşırı gösterişli ya da aşırı mütevazı bir uçta davranabilirsin."
+          ],
+          "effect": [
+            "Doğru ifade alanını bulduğunda sıcak, karizmatik ve yaratıcı bir benlik ortaya çıkar."
+          ],
+          "shadow": [
+            "Onay bağımlılığı, dramatik tepkiler ve egosal savunmalar kimliği bulanıklaştırabilir."
+          ],
+          "potential": [
+            "İç ışığını başkalarının bakışı yerine kendi kalbinden aldığında, kimliğin otantik bir güce dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapında reddedilme, beğenilmeme veya yetersiz hissetme temaları gizli bir gerilim yaratabilir."
+          ],
+          "mechanism": [
+            "Duyguların görülmediğinde savunma olarak aşırı parlamaya veya tamamen geri çekilmeye kayabilirsin."
+          ],
+          "effect": [
+            "Kendini ifade etmeye izin verdiğinde psikolojin canlanır ve özgüvenin beslenir."
+          ],
+          "shadow": [
+            "Dram, abartı, kıskançlık ve sürekli onay arayışı psikolojik yorulma yaratabilir."
+          ],
+          "potential": [
+            "Kendi değerini dışsal alkıştan bağımsız tanımladığında psikolojin olgun bir özgüvene dönüşür."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde beğenilme, hayranlık görme ve özel hissetme ihtiyacı güçlü şekilde çalışır."
+          ],
+          "mechanism": [
+            "Partnerin ilgisi azaldığında tetiklenir, ilgi çekme davranışları devreye girebilir."
+          ],
+          "effect": [
+            "Gerçekten sevildiğinde ilişkilerinde sıcaklık, sadakat ve yaratıcılık ortaya çıkar."
+          ],
+          "shadow": [
+            "İlişkide sahne savaşları, manipülatif gurur oyunları veya dramatik kopuşlar oluşabilir."
+          ],
+          "potential": [
+            "Duygularını dürüstçe paylaştığında bağların daha samimi ve kalp-merkezli hale gelir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihinsel yapında görülme ve değerli hissetme ihtiyacı düşünce süreçlerini etkileyebilir."
+          ],
+          "mechanism": [
+            "Fikirlerini ifade ederken ya kendini abartabilir ya da görünmez kılabilirsin."
+          ],
+          "effect": [
+            "Gerçek yaratıcılığını kabul ettiğinde zihnin ilham verici bir akışa girer."
+          ],
+          "shadow": [
+            "Benmerkezci düşünceler, sabit fikirlilik ve eleştiriye aşırı duyarlılık oluşabilir."
+          ],
+          "potential": [
+            "Zihnini kalbinle hizaladığında yaratıcı zekân hem net hem etkileyici hale gelir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde parlamak, yaratmak ve kendine ait bir imza bırakmak temel motivasyondur."
+          ],
+          "mechanism": [
+            "Otorite figürleri tarafından küçümsenmek veya göz ardı edilmek tetikleyici olabilir."
+          ],
+          "effect": [
+            "Sahneye çıktığında veya liderlik aldığında gerçek potansiyelin görünür olur."
+          ],
+          "shadow": [
+            "Onay için çalışma, aşırı prestij arayışı veya gurur kaynaklı tıkanmalar oluşabilir."
+          ],
+          "potential": [
+            "Otantik bir liderlik tonu bulduğunda kariyerin doğal bir çekim alanına dönüşür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda kalp merkezli ifade, yaratıcılık ve otantik öz-değer temalarıyla yüzleşirsin."
+          ],
+          "mechanism": [
+            "Seni, kendi ışığını başkaları için değil kendin için yakmaya davet eden deneyimlerle sınar."
+          ],
+          "effect": [
+            "Her dürüst ifade ruhsal yolunu berraklaştırır."
+          ],
+          "shadow": [
+            "Ego oyunları, gereksiz gurur ve dramatik kaçışlar karmasal döngüleri ağırlaştırabilir."
+          ],
+          "potential": [
+            "Kalbinle hizalandığında kaderin seni doğru sahnelere ve doğru insanlara taşır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_libra",
+      "conditions": [{ "planet": "Lilith", "sign": "Libra" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin derininde onay görme ve kabul edilme ihtiyacının gölgelemiş olabileceği bir öz-değer yarası bulunabilir."
+          ],
+          "mechanism": [
+            "Kendi isteklerini bastırıp uyum sağlama eğilimi kimliğini bulanıklaştırabilir."
+          ],
+          "effect": [
+            "Dengeye geldiğinde kimliğin zarif, adil ve güçlü bir estetik bilinçle parlar."
+          ],
+          "shadow": [
+            "Kararsızlık, pasiflik, maskelenmiş öfke ve başkalarının beklentilerine göre şekil alma."
+          ],
+          "potential": [
+            "Kendi merkezinde durmayı öğrendiğinde kimliğin barışçıl ve etkileyici bir otoriteye dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapında ‘yanlış anlaşılma’ ve ‘ilişkide yalnız kalma’ korkusu kök yarayı besleyebilir."
+          ],
+          "mechanism": [
+            "Duygusal gerilimden kaçmak için zihinsel uyumlanma stratejileri geliştirirsin."
+          ],
+          "effect": [
+            "Duyguları açıkça ifade ettiğinde psikolojin güçlenir ve gerçek denge oluşur."
+          ],
+          "shadow": [
+            "Gerçek duyguyu saklama, manipülatif nezaket, uyum adına kendini yok sayma."
+          ],
+          "potential": [
+            "Kendinle çatışmayı bitirdiğinde psikolojin net bir iç barışa kavuşur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde kabul görme arzusu, kendini partner üzerinden tanımlamana neden olabilir."
+          ],
+          "mechanism": [
+            "Yakınlık arttıkça kendi sınırlarını flu hâle getirme eğilimi ortaya çıkar."
+          ],
+          "effect": [
+            "Dengeyi bulduğunda ilişkilerinde karşılıklılık, estetik uyum ve rafine bir bağ oluşur."
+          ],
+          "shadow": [
+            "Aşırı uyum, pasif-agresif tepkiler, görünmeyen rekabet ve sessiz savaşlar."
+          ],
+          "potential": [
+            "Kendi değerini merkeze aldığında ilişkilerin daha adil, net ve besleyici olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin barış ve uyum ister ancak bu çoğu zaman baskılanmış çatışmalardan doğar."
+          ],
+          "mechanism": [
+            "Düşüncelerin iki uç arasında gidip gelebilir; kararsızlık zihni yorabilir."
+          ],
+          "effect": [
+            "Gerçek seçim yaptığında zihnin keskinleşir ve berraklığa ulaşır."
+          ],
+          "shadow": [
+            "Aşırı düşünme, diplomatik manipülasyon, gerçekte istemediğin şeylere evet deme."
+          ],
+          "potential": [
+            "Zihnin denge bulduğunda olağanüstü bir sosyal sezgi ve adalet anlayışı ortaya çıkar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde kabul edilme isteği, kendini fazla uyumlandırmana yol açabilir."
+          ],
+          "mechanism": [
+            "Yeteneğini göstermek yerine ortamın beklentisine göre şekil alma eğilimi olabilir."
+          ],
+          "effect": [
+            "Doğru pozisyonda zarafet, diplomasi ve sosyal zeka ile öne çıkarsın."
+          ],
+          "shadow": [
+            "Aşırı uzlaşma, kendi fikrinden vazgeçme ve görünmez emek."
+          ],
+          "potential": [
+            "Sınırlarını netleştirdiğinde kariyerin doğal olarak saygınlık ve dengeye kavuşur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda kendi değerini başkasının bakışıyla değil, kendi merkezinden tanımlamak ruhsal dersindir."
+          ],
+          "mechanism": [
+            "Kader seni yeniden ve yeniden seçim yapmaya zorlayarak güçlendirir."
+          ],
+          "effect": [
+            "Her net seçim karmasal tıkanıklığı çözer ve seni özgürlüğe yaklaştırır."
+          ],
+          "shadow": [
+            "Kararsızlıkla kaçınmak karmayı ağırlaştırır ve aynı döngüyü tekrar ettirir."
+          ],
+          "potential": [
+            "Kendi merkezinde durduğunda kaderin seni doğru ortaklıklara ve doğru insanlara taşır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_scorpio",
+      "conditions": [{ "planet": "Lilith", "sign": "Scorpio" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin kökünde güç kaybı, ihanet, kontrol edilme veya çok erken yaşta duygusal olgunlaşma zorunluluğu gibi derin bir yara bulunabilir."
+          ],
+          "mechanism": [
+            "Güçlü görünmek için duygularını gizleme ve her şeyi kontrol etme eğilimi ortaya çıkar."
+          ],
+          "effect": [
+            "Güveni bulduğunda kimliğin sezgisel, karizmatik ve olağanüstü dirençli bir yapıya dönüşür."
+          ],
+          "shadow": [
+            "Aşırı ihtiyat, duvar örme, güvenmeyen bakış ve yoğun iç çatışmalar kimliği ağırlaştırabilir."
+          ],
+          "potential": [
+            "Kendi karanlığınla yüzleştiğinde kimliğin dönüştürücü bir manyetik güç kazanır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin bastırılmış korkular, yoğun duygular ve travmatik temalarla şekillenmiş olabilir."
+          ],
+          "mechanism": [
+            "Duygular içte birikir, patlamaya veya tamamen kapanmaya dönüşebilir."
+          ],
+          "effect": [
+            "Duygularına alan açtığında psikolojin güçlü bir sezgisel derinliğe ulaşır."
+          ],
+          "shadow": [
+            "Obsesyon, paranoya, aşırı kontrol isteği ve ‘güçlü görünme’ zorunluluğu."
+          ],
+          "potential": [
+            "Dönüşümü kabul ettiğinde psikolojin bir şifa rehberine dönüşebilir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde kaybetme, terk edilme ve ihanet temaları derin tetiklenmeler yaratabilir."
+          ],
+          "mechanism": [
+            "Bağ kurarken yoğun tutku ile yoğun korku aynı anda çalışır; güven sağlanana kadar duvarlar yükselir."
+          ],
+          "effect": [
+            "Gerçek güven oluştuğunda sadakat, sezgi ve duygusal derinlik eşsiz bir bağ yaratır."
+          ],
+          "shadow": [
+            "Kıskançlık, sahiplenme, güç savaşları, manipülasyon ve sessiz cezalandırma."
+          ],
+          "potential": [
+            "Duygusal çıplaklık ve dürüstlük sağlandığında ilişkilerin dönüştürücü bir ruhsal bağa dönüşür."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin görünmeyen motivasyonları çözmeye, gizli niyetleri okumaya ve derine inmeye programlıdır."
+          ],
+          "mechanism": [
+            "Zihin kriz anlarında olağanüstü keskinleşir, fakat huzur anlarında bile tetikte olabilir."
+          ],
+          "effect": [
+            "Odaklandığında zihinsel sezgin neredeyse psişik bir doğruluk gösterir."
+          ],
+          "shadow": [
+            "Karanlık senaryolar üretmek, aşırı şüphecilik, zihinsel kapanmalar."
+          ],
+          "potential": [
+            "Zihnini güven ve açıklıkla hizaladığında olağanüstü bir derin analiz ve sezgi kapasitesi doğar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer alanında güç, kontrol ve derinleşme ihtiyacı baskın olabilir."
+          ],
+          "mechanism": [
+            "Tehlikeli, krizli veya dönüşüm gerektiren ortamlarda doğal olarak aktifleşirsin."
+          ],
+          "effect": [
+            "Güvenilirliğin, sezgiselliğin ve kriz yönetimi becerilerinle öne çıkarsın."
+          ],
+          "shadow": [
+            "Aşırı rekabet, kontrol etme arzusu ve gücü elden kaçırma korkusu tükenmişlik yaratabilir."
+          ],
+          "potential": [
+            "Gücünü paylaşmayı öğrendiğinde kariyerin organik ve derin bir şekilde büyür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda karanlıkla yüzleşmek, gücü bilinçle kullanmak ve dönüşümden kaçmamak ana ruhsal dersindir."
+          ],
+          "mechanism": [
+            "Kader seni kontrolü bırakmaya, teslimiyete ve gerçek güç tanımına yönlendiren olaylarla sınar."
+          ],
+          "effect": [
+            "Her yüzleşme ruhsal gücünü artırır; her teslimiyet yeni bir başlatma enerjisi doğurur."
+          ],
+          "shadow": [
+            "Direnç, intikam duygusu, takıntı ve duygusal kapanma karmasal döngüleri ağırlaştırabilir."
+          ],
+          "potential": [
+            "Karanlığından korkmadığında kaderin seni dönüştürücü, bilge ve derin bir güce taşır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_sagittarius",
+      "conditions": [{ "planet": "Lilith", "sign": "Sagittarius" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin kökünde özgürlüğün kısıtlanması, inançlarının küçümsenmesi veya kendi doğrularının değersiz görülmesiyle ilgili bir yara olabilir."
+          ],
+          "mechanism": [
+            "Kendini korumak için aşırı bağımsızlık veya aşırı doğruculuk geliştirebilirsin."
+          ],
+          "effect": [
+            "Özgünlüğünü sahiplenince kimliğin geniş, umutlu ve ilham verici bir tona bürünür."
+          ],
+          "shadow": [
+            "Aşırılık, fanatik tavırlar, kibirli doğruculuk ve duygudan kaçma eğilimleri kimliği gölgeleyebilir."
+          ],
+          "potential": [
+            "Kendi hakikatini yumuşaklıkla ifade ettiğinde kimliğin bilge ve yön gösterici bir ışığa dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik kökeninde hayal kırıklığı, umut kırılması veya görmezden gelinme temaları olabilir."
+          ],
+          "mechanism": [
+            "Zorlanınca duyguları inkâr edip ‘yukarıdan bakma’ ya da kaçma davranışı ortaya çıkabilir."
+          ],
+          "effect": [
+            "Gerçek anlam duygusuna ulaştığında psikolojin genişler ve güçlenir."
+          ],
+          "shadow": [
+            "Aşırı iyimserlik, kaçış, duyguları hafife alma ve gerçeği çarpıtma."
+          ],
+          "potential": [
+            "Hakikati içsel olarak bulduğunda psikolojin bilgelik, genişlik ve umutla dolar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde özgürlüğünün kısıtlanması veya inançlarının sorgulanması büyük tetikleyicidir."
+          ],
+          "mechanism": [
+            "Yakınlık arttığında mesafe koyma, duyguyu şakaya vurma veya aşırı dürüstlükle yaralama ortaya çıkabilir."
+          ],
+          "effect": [
+            "Gerçek güven olduğunda ilişkilerinde neşe, açık iletişim ve ilham verici bir bağ oluşur."
+          ],
+          "shadow": [
+            "Bağlanma korkusu, sadakatsizlik eğilimleri, duygusal kaçış ve aşırı idealizasyon."
+          ],
+          "potential": [
+            "Hakikati paylaşarak bağ kurduğunda ilişkilerin sana özgürlük kadar derinlik de sağlar."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin anlam arar; sınırlanmak veya dogmaya zorlanmak zihinsel yarayı tetikler."
+          ],
+          "mechanism": [
+            "Düşünceler geniş perspektiflere atlar ama detayları atlayabilir."
+          ],
+          "effect": [
+            "Odaklandığında zihnin vizyoner, üretken ve ilham verici olur."
+          ],
+          "shadow": [
+            "Abartı, zihinsel dağılma, aşırı genelleme ve kaçış senaryoları."
+          ],
+          "potential": [
+            "Hakikati empatiyle birleştirdiğinde zihnin öğretici ve şifalandırıcı bir güce dönüşür."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde özgürlük, gelişim ve geniş perspektif senin için temel ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Sıkıştığında işi bırakma, kaçma veya yeni bir maceraya atılma eğilimi olabilir."
+          ],
+          "effect": [
+            "Doğru alanda etkileyici bir vizyonerlik ve motivasyon yayırsın."
+          ],
+          "shadow": [
+            "Aşırı risk alma, istikrarsızlık, sabırsızlık ve gerçekleri süsleme."
+          ],
+          "potential": [
+            "Bilgiyi ve deneyimi harmanladığında kariyerinde öğretici, rehber veya lider olursun."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda hakikat, özgürlük ve içsel anlamla ilgili karmasal bir ders taşırsın."
+          ],
+          "mechanism": [
+            "Kader, seni sahte umutlar veya aşırı özgürlük arayışlarıyla sınayarak gerçeğe yönlendirir."
+          ],
+          "effect": [
+            "Gerçek içsel doğruna döndüğünde karmasal yüklerin çözülür."
+          ],
+          "shadow": [
+            "Gerçeklerden kaçmak karmayı ağırlaştırır; aynı döngüler tekrar eder."
+          ],
+          "potential": [
+            "Hakikati kendi içinde bulduğunda ruhsal yolun geniş, hafif ve aydınlık bir hâl alır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_capricorn",
+      "conditions": [{ "planet": "Lilith", "sign": "Capricorn" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin kökünde erken yaşta olgunlaşma, ağır sorumluluklar üstlenme veya duygusal ihtiyaçların geri plana itilmesiyle ilgili bir yara bulunabilir."
+          ],
+          "mechanism": [
+            "Güvende hissetmek için her şeyi kontrol etmeye veya güçlü görünmeye çalışabilirsin."
+          ],
+          "effect": [
+            "Denge sağlandığında kimliğin sakin, otoriter ve saygı uyandıran bir güç kazanır."
+          ],
+          "shadow": [
+            "Duygulara erişememe, katılaşma, aşırı mesafe ve kendine acımasız disiplin uygulama."
+          ],
+          "potential": [
+            "Kendine şefkati öğrettiğinde kimliğin hem güçlü hem de bilge bir temele oturur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin, duygusal ihtiyaçlarının karşılanmaması veya zayıf görünmenin tehlikeli hissettirilmesiyle şekillenmiş olabilir."
+          ],
+          "mechanism": [
+            "Duygularını bastırır, yerine mantık ve sorumluluk koyarsın."
+          ],
+          "effect": [
+            "Duygularını güvenli şekilde açtığında psikolojin derin bir güç ve dayanıklılık geliştirir."
+          ],
+          "shadow": [
+            "Aşırı kontrol, karamsarlık, suçluluk duygusu, duygusal uyuşma ve yalnızlaşma."
+          ],
+          "potential": [
+            "İçsel güveni kurduğunda psikolojin bilge bir denge ve sağlam bir çekirdek oluşturur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde güven testleri, sınır koyma ve duygusal çekilme temaları sıkça tetiklenebilir."
+          ],
+          "mechanism": [
+            "Yakınlık arttığında kontrol, mesafe veya beklenti yönetimi devreye girebilir."
+          ],
+          "effect": [
+            "Gerçek güven oluştuğunda sadakat, istikrar ve derin bağlılık ortaya çıkar."
+          ],
+          "shadow": [
+            "Duygusal soğukluk, zorlayıcı beklentiler, duvar örme və güç dinamikleri."
+          ],
+          "potential": [
+            "Kırılganlığı kabul ettiğinde ilişkilerin daha sıcak, gerçek ve temelinde daha sağlam olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin düzen, yapı, kontrol ve verimlilik ister; kaos zihinsel yarayı tetikler."
+          ],
+          "mechanism": [
+            "Zihnin duygulardan çok sorumluluklara odaklanır ve duyguları rasyonalize edebilir."
+          ],
+          "effect": [
+            "Netlik bulduğunda zihnin stratejik, sabırlı ve olağanüstü dayanıklıdır."
+          ],
+          "shadow": [
+            "Kötümserlik, katı düşünce kalıpları, aşırı eleştiri ve zihinsel kapanma."
+          ],
+          "potential": [
+            "Zihin–kalp uyumu oluştuğunda çok büyük projeleri bile yönetebilen bir liderlik kapasitesi doğar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde yeterlilik, başarı ve kontrol arzusu temel bir motivasyon olarak çalışır."
+          ],
+          "mechanism": [
+            "Hata yapmaktan korktuğun için fazladan yük alabilir veya işi tek başına yapmaya çalışabilirsin."
+          ],
+          "effect": [
+            "Disiplinli olduğunda iş ortamında stratejik, güvenilir ve yüksek performanslı biri olarak tanınırsın."
+          ],
+          "shadow": [
+            "Aşırı çalışma, duygusal tükenme, otoriteyle güç çatışmaları ve yalnızlaşma."
+          ],
+          "potential": [
+            "Sağlıklı sınırlar koyduğunda kariyer çizgin kalıcı başarı ve saygınlıkla büyür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda güç, sorumluluk, otorite ve öz-değer arasındaki dengeyi öğrenmek ruhsal dersindir."
+          ],
+          "mechanism": [
+            "Kader, seni sık sık sınırlarını, dayanıklılığını ve gücünü test eden olaylarla karşılaştırabilir."
+          ],
+          "effect": [
+            "Her yüzleşmede ruhsal çekirdeğin güçlenir ve gerçek dayanıklılık ortaya çıkar."
+          ],
+          "shadow": [
+            "Duygudan kaçmak, kontrol etmek, katılaşmak ve yalnızlaşmak karmasal döngüleri ağırlaştırabilir."
+          ],
+          "potential": [
+            "Yumuşak güçle hareket ettiğinde kaderin sana hem başarı hem de içsel huzur getirir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_aquarius",
+      "conditions": [{ "planet": "Lilith", "sign": "Aquarius" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin derininde dışlanma, farklı olduğu için anlaşılmama veya gruptan kopma yarası bulunabilir."
+          ],
+          "mechanism": [
+            "Kendini korumak için aşırı bağımsızlık veya duygusal mesafe geliştirebilirsin."
+          ],
+          "effect": [
+            "Özgünlüğünü sahiplenince kimliğin yenilikçi, vizyoner ve özgür bir tona kavuşur."
+          ],
+          "shadow": [
+            "Aşırı kopukluk, duygusuz görünme, asi tutumlar ve aidiyetten kaçma eğilimi."
+          ],
+          "potential": [
+            "Hem bireyselliğini hem bağını onurlandırdığında kimliğin güçlü bir bilgelik ve özgürlük kaynağı olur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin систем dışına itilme, farklı hissetme veya duyguların mantığa zorlanmasıyla şekillenmiş olabilir."
+          ],
+          "mechanism": [
+            "Duygusal yoğunluğu kontrol altına almak için zihinsel mesafe koyarsın."
+          ],
+          "effect": [
+            "Kendini güvende hissettiğinde psikolojin yaratıcı, objektif ve sıra dışı bir berraklığa ulaşır."
+          ],
+          "shadow": [
+            "Soğukluk, duygusal kopukluk, zihinsel isyan, kaçınganlık ve içsel yalnızlık."
+          ],
+          "potential": [
+            "Zihin–kalp uyumunu kurduğunda psikolojin hem özgür hem de derin bağlara açık hâle gelir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde özgürlük ihtiyacın ile bağ kurma arzun arasında büyük bir çatışma yaşanabilir."
+          ],
+          "mechanism": [
+            "Yakınlık arttıkça mesafe koyma, duyguyu rasyonalize etme veya bağdan kaçma eğilimi ortaya çıkabilir."
+          ],
+          "effect": [
+            "Gerçek güven oluştuğunda ilişkilerin eşsiz, yenilikçi ve zihinsel olarak çok uyumlu olur."
+          ],
+          "shadow": [
+            "Duygusal yokluk, bağlanmaktan kaçış, ani kopuşlar ve partneri zihinde aşırı analiz etme."
+          ],
+          "potential": [
+            "Hem özgürlüğü hem bağlılığı aynı anda taşıdığında ilişki dinamiğin devrimsel bir uyuma dönüşür."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin bağımsız ve sıra dışı çalışır; sınırlandırılmak zihinsel yarayı tetikler."
+          ],
+          "mechanism": [
+            "Fikirler arasında elektriksel sıçramalar yapar, duygudan ziyade mantık üzerinden ilerlersin."
+          ],
+          "effect": [
+            "Odaklandığında zihnin yenilikçi, vizyoner ve çığır açıcı bir kapasite gösterir."
+          ],
+          "shadow": [
+            "Aşırı objektiflik, duyguyu yadsıma, fikir uçuculuğu ve zihin–kalp kopukluğu."
+          ],
+          "potential": [
+            "Zihnin duyguyla birleştiğinde dahiyane sezgiler ve kolektife fayda sağlayan fikirler üretebilirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde özgünlük, yenilik ve bağımsızlık temel motivasyonlardır."
+          ],
+          "mechanism": [
+            "Yapısal, kuralcı veya kontrolcü ortamlarda sıkışıp uzaklaşma eğilimi oluşabilir."
+          ],
+          "effect": [
+            "Doğru alanda radikal çözümler üreten, vizyoner ve sistem dönüştürücü biri olursun."
+          ],
+          "shadow": [
+            "Otoriteye isyan, ekipten kopma, dengesiz ilerleme ve ilişkisiz çalışma."
+          ],
+          "potential": [
+            "Hem bireysel hem kolektif katkıyı bir arada tuttuğunda kariyerinde devrim yaratacak etkiler ortaya koyarsın."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda özgünlüğünü korurken bağ kurmayı, bağ kurarken de özgürlüğünü onurlandırmayı öğrenirsin."
+          ],
+          "mechanism": [
+            "Kader seni ait olmadığını düşündüğün alanlara getirerek içsel özgürlüğünü test eder."
+          ],
+          "effect": [
+            "Gerçek içsel özgürlüğü bulduğunda hem insanlarla hem hayatla daha doğal bir uyum oluşur."
+          ],
+          "shadow": [
+            "Aşırı kopukluk, isyan ve bağ kurmayı reddetme karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Hem birey hem kolektif bilincini taşıdığında kaderin seni geleceği şekillendiren bir role çağırır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_pisces",
+      "conditions": [{ "planet": "Lilith", "sign": "Pisces" }],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin kökünde görülmeme, çözülme, aşırı empati yüzünden sınır kaybı veya duygularının yok sayılmasıyla ilgili bir yara bulunabilir."
+          ],
+          "mechanism": [
+            "Gerçek benliğini korumak için ya aşırı uyumlanır ya da tamamen iç dünyana çekilebilirsin."
+          ],
+          "effect": [
+            "Kendini tanıdığında kimliğin yumuşak ama çok güçlü bir sezgisel merkezden doğar."
+          ],
+          "shadow": [
+            "Kaçış, kurban bilinci, belirsizlik, bağımlılıklar ve kimlik erimesi."
+          ],
+          "potential": [
+            "Sınırlarını tanımladığında kimliğin ruhsal derinlik ve güçlü bir şefkat enerjisi taşır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin aşırı empati, duygusal yükleri absorbe etme veya kendi duygularını yabancı hissetme temalarıyla şekillenmiş olabilir."
+          ],
+          "mechanism": [
+            "Yoğun hisler karşısında zihinsel çözülme veya spiritüel kaçış eğilimi devreye girer."
+          ],
+          "effect": [
+            "Duygularını ayırt etmeyi öğrendiğinde psikolojik yapın şifacı, sezgisel ve derinleşmiş bir hâl alır."
+          ],
+          "shadow": [
+            "Kendini feda etmek, duygusal karmaşa, gerçeklikten kopma, inkar ve idealizasyon."
+          ],
+          "potential": [
+            "Psikolojin sağlıklı sınırlarla birleştiğinde olağanüstü bir sezgi ve merhamet gücü ortaya çıkar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde fazla empati, rol değişimi, aşırı fedakârlık ve idealizasyon temaları sıkça tetiklenir."
+          ],
+          "mechanism": [
+            "Partnerin duygu hâlini kendi ruh hâlinmiş gibi taşıyabilir veya sağlıksız bağlara çekilebilirsin."
+          ],
+          "effect": [
+            "Sağlıklı bağ kurduğunda ilişkilerin ruhsal, yumuşak, derin ve iyileştirici olur."
+          ],
+          "shadow": [
+            "Kurban–kurtarıcı döngüleri, kaçış, yanılsamalar, yasak/ulaşılmaz aşk temaları."
+          ],
+          "potential": [
+            "Sınır koyduğunda ve gerçeği gördüğünde ilişkilerin hem şefkatli hem de güçlü bir yapıya dönüşür."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin semboller, hisler ve sezgiler üzerinden çalışır; rasyonel netlik bazen ikinci planda kalabilir."
+          ],
+          "mechanism": [
+            "Düşünce süreçlerin duygusal akışa bağlanır, sınır kaybı zihinsel sis yaratabilir."
+          ],
+          "effect": [
+            "Doğru odakta zihnin yaratıcı, sanatsal ve sezgisel olarak olağanüstü çalışır."
+          ],
+          "shadow": [
+            "Gerçeklikten kopma, zihinsel karmaşa, aşırı hayal kurma ve kaçış modelleri."
+          ],
+          "potential": [
+            "Zihnin sezgiyi yapılandırdığında hem yaratıcı hem bilge bir iç rehberlik sistemi oluşur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde anlam, empati ve ruhsal tatmin senin için maddi başarıdan daha ön planda olabilir."
+          ],
+          "mechanism": [
+            "Belirsizlik, sınır eksikliği veya aşırı hayalcilik iş ortamında zorlanmalara yol açabilir."
+          ],
+          "effect": [
+            "Doğru alanda derin sezgi, yaratıcılık ve şifa enerjisiyle etkileyici işler ortaya koyarsın."
+          ],
+          "shadow": [
+            "Dağılma, erteleme, kurban psikolojisi, sağlıksız çalışma döngüleri."
+          ],
+          "potential": [
+            "Sınır ve disiplin kazandığında kariyerin ruhsal derinlik ve yaratıcı güçle birleşir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda sınır, gerçeklik, teslimiyet ve ruhsal farkındalık temalarıyla büyürsün."
+          ],
+          "mechanism": [
+            "Kader seni idealizasyonlarını kıran ve gerçeği gösteren deneyimlerle terbiye edebilir."
+          ],
+          "effect": [
+            "Gerçeklik ile sezgi birleştiğinde ruhsal yolun berraklaşır."
+          ],
+          "shadow": [
+            "Kaçış, bağımlılıklar, kurban rolü ve yanıltıcı sezgiler karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Hakiki teslimiyetle ilerlediğinde kaderin seni derin bir şefkat, bilgelik ve ruhsal güç alanına taşır."
+          ]
+        }
+      }
+    }
+  ],
+  "planet_house_rules": [],
+  "aspect_rules": [],
+  "meta_rules": []
+}
