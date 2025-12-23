@@ -46,12 +46,21 @@ def serialize_aspects(aspects_data: Any) -> List[Dict[str, Any]]:
         aspect_type = aspect.get("type") or aspect.get("aspect")
         if not (planet_one and planet_two and aspect_type):
             continue
+        orb_value = aspect.get("orb")
+        if orb_value is None:
+            expected = aspect.get("aspect_angle")
+            exact = aspect.get("exact_angle") or aspect.get("angle")
+            if isinstance(expected, (int, float)) and isinstance(exact, (int, float)):
+                orb_value = abs(float(exact) - float(expected))
         serialized.append(
             {
                 "planet1": str(planet_one),
                 "planet2": str(planet_two),
                 "type": str(aspect_type),
-                "orb": aspect.get("orb") or aspect.get("exact_angle"),
+                "angle": aspect.get("angle"),
+                "aspect_angle": aspect.get("aspect_angle"),
+                "orb": orb_value,
+                "exact_angle": aspect.get("exact_angle"),
             }
         )
     return serialized

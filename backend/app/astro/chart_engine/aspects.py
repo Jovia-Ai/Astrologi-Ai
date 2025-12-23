@@ -51,14 +51,18 @@ def calculate_chart_aspects(
             name_a, lon_a = planet_items[i]
             name_b, lon_b = planet_items[j]
             diff = diff_angle(lon_a, lon_b)
-            for aspect_name, aspect_angle, orb in ASPECT_DEFINITIONS:
-                if abs(diff - aspect_angle) <= orb:
+            for aspect_name, aspect_angle, allowed_orb in ASPECT_DEFINITIONS:
+                deviation = abs(diff - aspect_angle)
+                if deviation <= allowed_orb:
                     aspects.append(
                         {
                             "planet1": name_a,
                             "planet2": name_b,
                             "aspect": aspect_name,
+                            "angle": round(diff, 2),
+                            "aspect_angle": aspect_angle,
                             "exact_angle": round(diff, 2),
+                            "orb": round(deviation, 2),
                         }
                     )
                     break
