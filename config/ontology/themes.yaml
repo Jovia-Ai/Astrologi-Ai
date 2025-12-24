@@ -1,0 +1,118 @@
+{
+  "version": "2.2.0",
+  "last_updated": "2025-12-23",
+  "notes": "Themes are orthogonal. Each theme answers a distinct psychological question. No two themes explain the same tension.",
+  "defaults": {
+    "max_themes_per_paragraph": 2,
+    "top_theme_share_cap": 0.6
+  },
+  "caps": {
+    "repetition_factor_cap": 0.45
+  },
+  "themes": {
+    "boundary": {
+      "question": "Where limits are drawn; containment vs leakage?",
+      "description": "Where limits are drawn; containment vs leakage.",
+      "tension": "boundary",
+      "share_weight": 0.45,
+      "keywords": ["boundary", "containment", "leakage"],
+      "allowed_domains": ["identity", "inner_life", "relating"]
+    },
+    "agency": {
+      "question": "What makes you able to initiate, choose, and act?",
+      "description": "Capacity to initiate, choose, act.",
+      "tension": "agency",
+      "share_weight": 0.4,
+      "keywords": ["agency", "choice", "initiative"],
+      "allowed_domains": ["identity", "career"]
+    },
+    "merge_separate": {
+      "question": "How do fusion and individuation dynamics play out?",
+      "description": "Fusion vs individuation dynamics.",
+      "tension": "merge_separate",
+      "share_weight": 0.35,
+      "keywords": ["merging", "separation", "individuality"],
+      "allowed_domains": ["relating", "inner_life", "resources"]
+    },
+    "power_control": {
+      "question": "Where are authority, dominance, and submission in tension?",
+      "description": "Authority, dominance, submission.",
+      "tension": "power_control",
+      "share_weight": 0.4,
+      "keywords": ["authority", "dominance", "control"],
+      "allowed_domains": ["career", "relating", "identity"]
+    },
+    "security": {
+      "question": "How do safety and stabilization demand attention?",
+      "description": "Safety, loss avoidance, stabilization.",
+      "tension": "security",
+      "share_weight": 0.35,
+      "keywords": ["security", "safety", "stabilization"],
+      "allowed_domains": ["resources", "inner_life"]
+    },
+    "evaluation_standards": {
+      "question": "What patterns make you feel measured or judged?",
+      "description": "Being measured, judged, evaluated.",
+      "tension": "evaluation_standards",
+      "share_weight": 0.35,
+      "keywords": ["evaluation", "judgment", "measurement"],
+      "allowed_domains": ["career", "identity", "public_life"]
+    },
+    "intimacy_trust": {
+      "question": "Where are closeness, vulnerability, and trust in motion?",
+      "description": "Closeness, vulnerability, trust mechanics.",
+      "tension": "intimacy_trust",
+      "share_weight": 0.4,
+      "keywords": ["intimacy", "trust", "vulnerability"],
+      "allowed_domains": ["relating", "inner_life"]
+    },
+    "desire_drive": {
+      "question": "What fuels your impulse, wanting, and pursuit?",
+      "description": "Impulse, wanting, pursuit.",
+      "tension": "desire_drive",
+      "share_weight": 0.35,
+      "keywords": ["desire", "drive", "pursuit"],
+      "allowed_domains": ["identity", "relating"]
+    },
+    "belonging_network": {
+      "question": "How do belonging and group embedding arise?",
+      "description": "Belonging, groups, social embedding.",
+      "tension": "belonging_network",
+      "share_weight": 0.3,
+      "keywords": ["belonging", "groups", "network"],
+      "allowed_domains": ["relating", "public_life"]
+    },
+    "visibility": {
+      "question": "What does recognition and exposure ask of you?",
+      "description": "Exposure, recognition, being seen.",
+      "tension": "visibility",
+      "share_weight": 0.35,
+      "keywords": ["visibility", "recognition", "exposure"],
+      "allowed_domains": ["career", "identity", "public_life"]
+    },
+    "duty": {
+      "question": "Where do responsibility and endurance meet demand?",
+      "description": "Responsibility, obligation, endurance.",
+      "tension": "duty",
+      "share_weight": 0.4,
+      "keywords": ["duty", "responsibility", "endurance"],
+      "allowed_domains": ["career", "identity"]
+    },
+    "meaning_belief": {
+      "question": "What meaning-making frames are in motion?",
+      "description": "Meaning-making, belief frames.",
+      "tension": "meaning_belief",
+      "share_weight": 0.35,
+      "keywords": ["meaning", "belief", "framework"],
+      "allowed_domains": ["inner_life", "identity"]
+    },
+    "order_optimization": {
+      "question": "Where does improvement or fixing impulse operate?",
+      "description": "Improvement, fixing, optimization drive.",
+      "tension": "order_optimization",
+      "share_weight": 0.3,
+      "keywords": ["optimization", "order", "fixing"],
+      "allowed_domains": ["career", "resources"]
+    }
+  }
+}

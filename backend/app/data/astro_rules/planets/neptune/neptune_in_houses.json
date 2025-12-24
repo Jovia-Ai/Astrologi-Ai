@@ -1,0 +1,1360 @@
+{
+  "planet_house_rules": [
+    {
+      "id": "neptune_in_house_1",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 1
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde sınırların belirsizleşmesi ve duyarlılık teması vardır."
+          ],
+          "mechanism": [
+            "Bu yapı seni çevrenin enerjisini içine alarak şekillenmeye iter."
+          ],
+          "effect": [
+            "Dışarıdan gizemli, akışkan ve zor tanımlanan biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Kimlikte dağılma veya yön kaybı oluşabilir."
+          ],
+          "potential": [
+            "Kendi merkezini kurduğunda ilham veren bir varlığa dönüşürsün."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı yüksek hassasiyetle şekillenir."
+          ],
+          "mechanism": [
+            "Duyguları ve atmosferi bilinçsizce emersin."
+          ],
+          "effect": [
+            "Bu seni empatik ama kolay etkilenen biri yapar."
+          ],
+          "shadow": [
+            "Gerçeklikten kaçma eğilimi gelişebilir."
+          ],
+          "potential": [
+            "Farkındalık arttıkça güçlü bir sezgisel denge oluşur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde idealizasyon ve ruhsal bağ arayışı vardır."
+          ],
+          "mechanism": [
+            "Karşındakini olduğu gibi değil, hissettiğin gibi algılarsın."
+          ],
+          "effect": [
+            "Bu seni romantik ve fedakâr bir partner yapar."
+          ],
+          "shadow": [
+            "Hayal kırıklıkları tekrarlanabilir."
+          ],
+          "potential": [
+            "Net sınırlarla ilişkiler şifalanır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin sezgisel ve imgelerle çalışır."
+          ],
+          "mechanism": [
+            "Mantıktan çok his ve çağrışımlarla düşünürsün."
+          ],
+          "effect": [
+            "Bu seni yaratıcı ve ilham dolu biri yapar."
+          ],
+          "shadow": [
+            "Zihinsel bulanıklık kararları zorlaştırabilir."
+          ],
+          "potential": [
+            "Zihinsel netlik ilhamı üretime dönüştürür."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kimliğin meslekte ilham ve anlam arar."
+          ],
+          "mechanism": [
+            "Akışta ilerlemeyi tercih edersin."
+          ],
+          "effect": [
+            "Sanat, tasarım, şifa alanlarında öne çıkarsın."
+          ],
+          "shadow": [
+            "Yönsüzlük profesyonel belirsizlik yaratabilir."
+          ],
+          "potential": [
+            "İlhamı yapılandırdığında güçlü bir etki alanı oluşur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda benlik ve sınır karması taşınır."
+          ],
+          "mechanism": [
+            "Deneyimler seni ayırt etmeyi öğrenmeye iter."
+          ],
+          "effect": [
+            "Kimlik sezgiyle çözülür."
+          ],
+          "shadow": [
+            "Kaçış davranışları karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Bilinçli farkındalıkla karmayı dönüştürürsün."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_2",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 2
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde değer ve güven kavramları belirsizleşmiştir."
+          ],
+          "mechanism": [
+            "Bu belirsizlik seni maddi ve manevi anlamda akışa bırakmaya iter."
+          ],
+          "effect": [
+            "Dışarıdan idealist ve dünyasal beklentilerden uzak biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Değer kaybı veya maddi karmaşa yaşanabilir."
+          ],
+          "potential": [
+            "Gerçek değeri içsel kaynaktan kurduğunda denge oluşur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı güven ihtiyacının çözülmesiyle şekillenir."
+          ],
+          "mechanism": [
+            "Sahip olmaktan çok hissetmeye yönelirsin."
+          ],
+          "effect": [
+            "Bu seni maddeden bağımsız ama kırılgan kılabilir."
+          ],
+          "shadow": [
+            "Kaybolmuşluk hissi oluşabilir."
+          ],
+          "potential": [
+            "İçsel güven geliştikçe psikoloji güçlenir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde maddi veya somut beklentiler zayıftır."
+          ],
+          "mechanism": [
+            "Bağ kurarken fedakârlık yapma eğilimi gösterirsin."
+          ],
+          "effect": [
+            "Bu seni verici ama sömürüye açık bir partner yapabilir."
+          ],
+          "shadow": [
+            "Sınırlar ihlal edilebilir."
+          ],
+          "potential": [
+            "Değer bilinci ilişkileri dengeler."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin soyut ve sezgisel değerlerle çalışır."
+          ],
+          "mechanism": [
+            "Mantıktan çok his üzerinden karar verirsin."
+          ],
+          "effect": [
+            "Bu seni yaratıcı ama kararsız yapabilir."
+          ],
+          "shadow": [
+            "Gerçeklikten kopma riski oluşur."
+          ],
+          "potential": [
+            "Sezgiyi yapılandırdığında zihinsel denge sağlanır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Para ve değer kavramı kariyerde net değildir."
+          ],
+          "mechanism": [
+            "Anlam bulduğun işlere yönelirsin."
+          ],
+          "effect": [
+            "Sanat, yardım ve ruhsal alanlarda öne çıkarsın."
+          ],
+          "shadow": [
+            "Maddi düzensizlik oluşabilir."
+          ],
+          "potential": [
+            "Değer üretimini bilinçle kurduğunda bolluk gelir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda değer ve güven karması taşınır."
+          ],
+          "mechanism": [
+            "Kaybetme ve bırakma deneyimleri tekrar eder."
+          ],
+          "effect": [
+            "Değer algısı dönüşür."
+          ],
+          "shadow": [
+            "Maddeyle karmaşık bağlar oluşabilir."
+          ],
+          "potential": [
+            "Gerçek değeri içselleştirdiğinde karmayı çözerin."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_3",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 3
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin düşünce ve iletişim alanında akışkanlık taşır."
+          ],
+          "mechanism": [
+            "Bu yapı seni sezgisel ve çağrışımlarla düşünmeye iter."
+          ],
+          "effect": [
+            "Dışarıdan hayal gücü yüksek ve farklı düşünen biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Zihinsel dağınıklık oluşabilir."
+          ],
+          "potential": [
+            "Zihinsel sezgi üretkenliğe dönüşebilir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı zihinsel hassasiyetle şekillenir."
+          ],
+          "mechanism": [
+            "Düşünceler duygularla iç içe geçer."
+          ],
+          "effect": [
+            "Bu seni empatik ama zihinsel olarak savunmasız yapar."
+          ],
+          "shadow": [
+            "Yanlış anlaşılmalar artabilir."
+          ],
+          "potential": [
+            "Netlik kazandıkça zihinsel huzur gelişir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde iletişim sezgisel bağlarla kurulur."
+          ],
+          "mechanism": [
+            "Sözlerden çok alt metinlere odaklanırsın."
+          ],
+          "effect": [
+            "Bu seni anlayışlı ama belirsiz bir iletişimci yapar."
+          ],
+          "shadow": [
+            "İfade netliği azalabilir."
+          ],
+          "potential": [
+            "Bilinçli iletişim ilişkileri güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin imgeler ve sembollerle çalışır."
+          ],
+          "mechanism": [
+            "Mantık yerine sezgiyle bağlantılar kurarsın."
+          ],
+          "effect": [
+            "Bu seni yaratıcı bir anlatıcı yapar."
+          ],
+          "shadow": [
+            "Zihinsel bulanıklık kararları zorlaştırabilir."
+          ],
+          "potential": [
+            "Zihinsel disiplin sezgiyi ustalığa dönüştürür."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İletişimde ilham ve anlam ararsın."
+          ],
+          "mechanism": [
+            "Yaratıcı ifade alanlarına yönelirsin."
+          ],
+          "effect": [
+            "Yazı, medya, sanat ve hikâye anlatımında başarı gelir."
+          ],
+          "shadow": [
+            "Odak kaybı profesyonel ilerlemeyi zorlayabilir."
+          ],
+          "potential": [
+            "İlhamı yapılandırdığında güçlü bir anlatı gücü oluşur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda zihin ve ifade karması taşınır."
+          ],
+          "mechanism": [
+            "Yanılsama ve netlik dersleri tekrar eder."
+          ],
+          "effect": [
+            "Zihin sezgiyle dönüşür."
+          ],
+          "shadow": [
+            "Yanlış algılar karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Bilinçli farkındalıkla karmayı dönüştürürsün."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_4",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 4
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde kökler ve aidiyet duygusu akışkandır."
+          ],
+          "mechanism": [
+            "Bu akış seni duygusal olarak iç dünyana çekilmeye iter."
+          ],
+          "effect": [
+            "Dışarıdan hassas ve içe dönük biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aidiyet karmaşası veya kaçış eğilimi oluşabilir."
+          ],
+          "potential": [
+            "Kendi iç yuvanı kurduğunda derin bir huzur gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı erken dönem duygusal belirsizliklerle şekillenir."
+          ],
+          "mechanism": [
+            "Duyguları idealize ederek korumaya çalışırsın."
+          ],
+          "effect": [
+            "Bu seni şefkatli ama kırılgan kılar."
+          ],
+          "shadow": [
+            "Geçmişe saplanma görülebilir."
+          ],
+          "potential": [
+            "Duygusal netlik içsel güven yaratır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde duygusal birleşme ararsın."
+          ],
+          "mechanism": [
+            "Sınırları sezgisel olarak belirlersin."
+          ],
+          "effect": [
+            "Bu seni besleyici ama belirsiz bir partner yapar."
+          ],
+          "shadow": [
+            "Sınır ihlalleri yaşanabilir."
+          ],
+          "potential": [
+            "Net sınırlarla bağlar şifalanır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin geçmiş imgelerle çalışır."
+          ],
+          "mechanism": [
+            "Hatıralar sezgisel çağrışımlarla birleşir."
+          ],
+          "effect": [
+            "Bu seni derin bir iç gözleme taşır."
+          ],
+          "shadow": [
+            "Zihinsel dağılma oluşabilir."
+          ],
+          "potential": [
+            "Farkındalık zihinsel denge sağlar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Güven ve anlam arayışı kariyeri etkiler."
+          ],
+          "mechanism": [
+            "İçsel tatmin sunan alanlara yönelirsin."
+          ],
+          "effect": [
+            "Şifa, sanat ve bakım alanlarında öne çıkarsın."
+          ],
+          "shadow": [
+            "Yönsüzlük profesyonel belirsizlik yaratabilir."
+          ],
+          "potential": [
+            "İlhamı yapılandırdığında kalıcı etki oluşur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda kökler ve aidiyet karması taşınır."
+          ],
+          "mechanism": [
+            "Bırakma ve kabullenme dersleri tekrar eder."
+          ],
+          "effect": [
+            "İçsel arınma başlar."
+          ],
+          "shadow": [
+            "Kaçış karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Bilinçli köklenmeyle karmayı dönüştürürsün."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_5",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 5
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin yaratıcılık ve ifade alanında idealleşir."
+          ],
+          "mechanism": [
+            "Bu ideal seni ilhamla üretmeye iter."
+          ],
+          "effect": [
+            "Dışarıdan romantik ve hayal gücü yüksek biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "İfade bulanıklaşabilir."
+          ],
+          "potential": [
+            "Yaratıcılığı yapılandırdığında güçlü eserler ortaya çıkar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı onay ve ilham arayışıyla şekillenir."
+          ],
+          "mechanism": [
+            "Duyguları estetikle dönüştürürsün."
+          ],
+          "effect": [
+            "Bu seni duyarlı ve yaratıcı kılar."
+          ],
+          "shadow": [
+            "Hayal kırıklıkları tekrarlanabilir."
+          ],
+          "potential": [
+            "Gerçekçilik duygusal denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Aşk ve romantizm idealleştirilir."
+          ],
+          "mechanism": [
+            "Sevgiyi fedakârlıkla ifade edersin."
+          ],
+          "effect": [
+            "Bu seni büyüleyici ama kırılgan bir partner yapar."
+          ],
+          "shadow": [
+            "İdealizasyon hayal kırıklığı yaratabilir."
+          ],
+          "potential": [
+            "Netlik ilişkileri besler."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin imgeler ve sembollerle çalışır."
+          ],
+          "mechanism": [
+            "İlham sezgiyle birleşir."
+          ],
+          "effect": [
+            "Bu seni yaratıcı düşünür yapar."
+          ],
+          "shadow": [
+            "Odak kaybı oluşabilir."
+          ],
+          "potential": [
+            "Disiplin yaratıcılığı ustalığa taşır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İlham odaklı üretim kariyeri yönlendirir."
+          ],
+          "mechanism": [
+            "Sanatsal alanlara çekilirsin."
+          ],
+          "effect": [
+            "Sanat, tasarım ve sahnede başarı gelir."
+          ],
+          "shadow": [
+            "Profesyonel belirsizlik yaşanabilir."
+          ],
+          "potential": [
+            "İlhamı sistemleştirdiğinde kalıcılık oluşur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda ifade ve idealizm karması vardır."
+          ],
+          "mechanism": [
+            "Hayal–gerçek dengesi ders olur."
+          ],
+          "effect": [
+            "Yaratıcılık olgunlaşır."
+          ],
+          "shadow": [
+            "Yanılsama karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Bilinçli üretim karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_6",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 6
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin hizmet ve şefkat temasıyla çözülür."
+          ],
+          "mechanism": [
+            "Bu çözülme seni başkalarına destek olmaya iter."
+          ],
+          "effect": [
+            "Dışarıdan fedakâr ve duyarlı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Sınırlar silikleşebilir."
+          ],
+          "potential": [
+            "Sağlıklı sınırlarla güçlü hizmet bilinci gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı başkalarının yüklerini alma eğilimi taşır."
+          ],
+          "mechanism": [
+            "Empatiyle denge kurmaya çalışırsın."
+          ],
+          "effect": [
+            "Bu seni şefkatli ama yorgun kılabilir."
+          ],
+          "shadow": [
+            "Tükenmişlik riski."
+          ],
+          "potential": [
+            "Öz-bakım psikolojik gücü artırır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde yardım ve fedakârlık ön plandadır."
+          ],
+          "mechanism": [
+            "Sevgiyi hizmetle gösterirsin."
+          ],
+          "effect": [
+            "Bu seni destekleyici bir partner yapar."
+          ],
+          "shadow": [
+            "Sömürülme riski oluşabilir."
+          ],
+          "potential": [
+            "Denge ilişkileri şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin sezgisel problem çözmeye odaklanır."
+          ],
+          "mechanism": [
+            "Hislerle karar alırsın."
+          ],
+          "effect": [
+            "Bu seni yaratıcı çözümler üreten biri yapar."
+          ],
+          "shadow": [
+            "Netlik kaybı olabilir."
+          ],
+          "potential": [
+            "Yapı zihinsel berraklık sağlar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Şifa ve hizmet kariyer temasına dönüşür."
+          ],
+          "mechanism": [
+            "İnsanlara dokunan işlere yönelirsin."
+          ],
+          "effect": [
+            "Sağlık, terapi ve yardım alanlarında başarı."
+          ],
+          "shadow": [
+            "Belirsiz roller oluşabilir."
+          ],
+          "potential": [
+            "Net görevlerle sürdürülebilir etki yaratırsın."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda hizmet ve fedakârlık karması vardır."
+          ],
+          "mechanism": [
+            "Sınır koyma dersleri tekrar eder."
+          ],
+          "effect": [
+            "Şefkat olgunlaşır."
+          ],
+          "shadow": [
+            "Aşırı fedakârlık karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli hizmet karmayı dengeler."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_7",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 7
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin ilişkilerde idealizmle çözülür."
+          ],
+          "mechanism": [
+            "Bu ideal seni ruhsal bağ arayışına iter."
+          ],
+          "effect": [
+            "Dışarıdan romantik ve anlayışlı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Yanılsamalar ilişkiyi zorlayabilir."
+          ],
+          "potential": [
+            "Netlik kurduğunda derin ortaklıklar gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı birleşme arzusuyla şekillenir."
+          ],
+          "mechanism": [
+            "Kendini ilişkide eritmeye eğilimlisin."
+          ],
+          "effect": [
+            "Bu seni empatik ama savunmasız kılar."
+          ],
+          "shadow": [
+            "Kimlik kaybı riski."
+          ],
+          "potential": [
+            "Sağlıklı sınırlar psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde ruhsal uyum beklersin."
+          ],
+          "mechanism": [
+            "Partneri idealleştirirsin."
+          ],
+          "effect": [
+            "Bu derin ama kırılgan bağlar yaratır."
+          ],
+          "shadow": [
+            "Hayal kırıklıkları tekrarlanabilir."
+          ],
+          "potential": [
+            "Gerçekçi sevgi ilişkileri şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin ilişki imgeleriyle çalışır."
+          ],
+          "mechanism": [
+            "Sezgiyle karar alırsın."
+          ],
+          "effect": [
+            "Bu seni anlayışlı kılar."
+          ],
+          "shadow": [
+            "Kararsızlık oluşabilir."
+          ],
+          "potential": [
+            "Net düşünme bağları güçlendirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Ortaklıklar ilhamla kurulur."
+          ],
+          "mechanism": [
+            "Yumuşak iş birliklerini seçersin."
+          ],
+          "effect": [
+            "Danışmanlık, sanat ve arabuluculukta başarı."
+          ],
+          "shadow": [
+            "Sözleşme belirsizliği."
+          ],
+          "potential": [
+            "Açık yapı profesyonel güven sağlar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda ilişki ve idealizm karması vardır."
+          ],
+          "mechanism": [
+            "Ayırt etme dersleri tekrar eder."
+          ],
+          "effect": [
+            "Sevgi olgunlaşır."
+          ],
+          "shadow": [
+            "Yanılsama karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli bağ kurma karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_8",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 8
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin dönüşüm ve gizemle çözülür."
+          ],
+          "mechanism": [
+            "Bu çözülme seni derin sezgisel alanlara iter."
+          ],
+          "effect": [
+            "Dışarıdan gizemli ve manyetik biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Korku ve kaçış oluşabilir."
+          ],
+          "potential": [
+            "Bilinçli yüzleşme derin şifa getirir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı bilinçaltı hassasiyetle şekillenir."
+          ],
+          "mechanism": [
+            "Duygular yoğun imgelerle çalışır."
+          ],
+          "effect": [
+            "Bu seni derin ama kırılgan kılar."
+          ],
+          "shadow": [
+            "Takıntı veya kaçış."
+          ],
+          "potential": [
+            "Farkındalık psikolojik dönüşüm sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlık ruhsal birleşmeyle yaşanır."
+          ],
+          "mechanism": [
+            "Bağlar yoğun idealleştirilir."
+          ],
+          "effect": [
+            "Bu dönüştürücü ama belirsiz ilişkiler yaratır."
+          ],
+          "shadow": [
+            "Sınırlar eriyebilir."
+          ],
+          "potential": [
+            "Netlik bağları şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin semboller ve bilinçaltıyla çalışır."
+          ],
+          "mechanism": [
+            "Sezgisel analiz baskındır."
+          ],
+          "effect": [
+            "Bu derin içgörü sağlar."
+          ],
+          "shadow": [
+            "Zihinsel bulanıklık."
+          ],
+          "potential": [
+            "Disiplin zihni berraklaştırır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Gizli ve derin alanlar kariyeri çeker."
+          ],
+          "mechanism": [
+            "Araştırma ve şifaya yönelirsin."
+          ],
+          "effect": [
+            "Psikoloji, kriz ve sanat alanlarında başarı."
+          ],
+          "shadow": [
+            "Belirsiz roller."
+          ],
+          "potential": [
+            "Yapı derin etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda dönüşüm ve teslimiyet karması vardır."
+          ],
+          "mechanism": [
+            "Yüzleşme dersleri tekrar eder."
+          ],
+          "effect": [
+            "Arınma gerçekleşir."
+          ],
+          "shadow": [
+            "Kaçış karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli teslimiyet karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_9",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 9
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin anlam ve inançta idealleşir."
+          ],
+          "mechanism": [
+            "Bu ideal seni ruhsal arayışa iter."
+          ],
+          "effect": [
+            "Dışarıdan vizyoner ve ilham verici biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Dogmatik yanılsamalar oluşabilir."
+          ],
+          "potential": [
+            "Gerçekçilik bilgelik üretir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı anlam arayışıyla şekillenir."
+          ],
+          "mechanism": [
+            "İnançları sezgiyle kurarsın."
+          ],
+          "effect": [
+            "Bu umut ve ilham verir."
+          ],
+          "shadow": [
+            "Hayal kırıklığı yaşanabilir."
+          ],
+          "potential": [
+            "İçsel doğruluk denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde ortak vizyon önemlidir."
+          ],
+          "mechanism": [
+            "Ruhsal uyum ararsın."
+          ],
+          "effect": [
+            "Bu ilham verici bağlar yaratır."
+          ],
+          "shadow": [
+            "Gerçeklikten kopuş."
+          ],
+          "potential": [
+            "Net vizyon ilişkileri güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin sembolik ve vizyoner çalışır."
+          ],
+          "mechanism": [
+            "Sezgiyle anlam kurarsın."
+          ],
+          "effect": [
+            "Bu öğretici bakış sağlar."
+          ],
+          "shadow": [
+            "Zihinsel dağılma."
+          ],
+          "potential": [
+            "Odak bilgelik üretir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Anlam odaklı işler kariyeri çeker."
+          ],
+          "mechanism": [
+            "Eğitim ve ilham alanlarına yönelirsin."
+          ],
+          "effect": [
+            "Akademi, spiritüel rehberlik ve sanat."
+          ],
+          "shadow": [
+            "Belirsiz yön."
+          ],
+          "potential": [
+            "Yapı kalıcı etki sağlar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda inanç ve anlam karması vardır."
+          ],
+          "mechanism": [
+            "Ayırt etme dersleri tekrar eder."
+          ],
+          "effect": [
+            "Bilgelik olgunlaşır."
+          ],
+          "shadow": [
+            "Yanılsama karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli inanç karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_10",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 10
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik toplumsal rolde idealleşir."
+          ],
+          "mechanism": [
+            "Bu ideal seni anlamlı bir etki yaratmaya iter."
+          ],
+          "effect": [
+            "Dışarıdan ilham veren ama belirsiz biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Rol karmaşası oluşabilir."
+          ],
+          "potential": [
+            "Net vizyon liderliği güçlendirir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı onay ve anlam arayışı taşır."
+          ],
+          "mechanism": [
+            "İmajla özdeşleşirsin."
+          ],
+          "effect": [
+            "Bu hassasiyet yaratır."
+          ],
+          "shadow": [
+            "Hayal kırıklığı."
+          ],
+          "potential": [
+            "İçsel doğruluk denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde saygı idealleştirilir."
+          ],
+          "mechanism": [
+            "Partneri rol üzerinden algılarsın."
+          ],
+          "effect": [
+            "Bu mesafe yaratabilir."
+          ],
+          "shadow": [
+            "Yanlış beklentiler."
+          ],
+          "potential": [
+            "Gerçekçilik bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin vizyon ve imajla çalışır."
+          ],
+          "mechanism": [
+            "Sezgiyle yön bulursun."
+          ],
+          "effect": [
+            "Bu yaratıcı liderlik sağlar."
+          ],
+          "shadow": [
+            "Kararsızlık."
+          ],
+          "potential": [
+            "Netlik zihni berraklaştırır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Toplumsal etki arayışı kariyeri belirler."
+          ],
+          "mechanism": [
+            "İlham veren alanlara yönelirsin."
+          ],
+          "effect": [
+            "Sanat, medya ve yardım alanlarında görünürlük."
+          ],
+          "shadow": [
+            "Profesyonel belirsizlik."
+          ],
+          "potential": [
+            "Yapı kalıcı itibar yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda rol ve idealizm karması vardır."
+          ],
+          "mechanism": [
+            "Ayırt etme dersleri tekrar eder."
+          ],
+          "effect": [
+            "Kimlik arınır."
+          ],
+          "shadow": [
+            "Yanılsama karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Gerçek amaç karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_11",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 11
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik topluluk ve ideal üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Bu ideal seni kolektife hizmete iter."
+          ],
+          "effect": [
+            "Dışarıdan vizyoner ve fedakâr biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Hayal kırıklığı ve kopuş."
+          ],
+          "potential": [
+            "Gerçekçi vizyon topluluğu güçlendirir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı kabul ve anlam arayışı taşır."
+          ],
+          "mechanism": [
+            "Kolektife uyumlanırsın."
+          ],
+          "effect": [
+            "Bu empatiyi artırır."
+          ],
+          "shadow": [
+            "Bireysel sınırlar eriyebilir."
+          ],
+          "potential": [
+            "Sınırlar psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Dostluklar idealleştirilir."
+          ],
+          "mechanism": [
+            "Bağlar ruhsal beklentiyle kurulur."
+          ],
+          "effect": [
+            "Bu ilham verici ama kırılgan bağlar yaratır."
+          ],
+          "shadow": [
+            "Yanılsamalar."
+          ],
+          "potential": [
+            "Net beklentiler bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin vizyoner ve semboliktir."
+          ],
+          "mechanism": [
+            "Sezgiyle gelecek kurgularsın."
+          ],
+          "effect": [
+            "Bu yaratıcı fikirler üretir."
+          ],
+          "shadow": [
+            "Dağılma."
+          ],
+          "potential": [
+            "Odak vizyonu somutlaştırır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Toplumsal fayda kariyer temasına dönüşür."
+          ],
+          "mechanism": [
+            "Kolektif projelere yönelirsin."
+          ],
+          "effect": [
+            "STK, teknoloji ve sanat alanlarında başarı."
+          ],
+          "shadow": [
+            "Hedef belirsizliği."
+          ],
+          "potential": [
+            "Yapı kalıcı etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda kolektif idealizm karması vardır."
+          ],
+          "mechanism": [
+            "Ayırt etme dersleri tekrar eder."
+          ],
+          "effect": [
+            "Vizyon olgunlaşır."
+          ],
+          "shadow": [
+            "Yanılsama karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli kolektif hizmet karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "neptune_in_house_12",
+      "conditions": [
+        {
+          "planet": "Neptune",
+          "house": 12
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik bilinçaltı ve çözülme temasıyla şekillenir."
+          ],
+          "mechanism": [
+            "Bu çözülme seni içsel ve ruhsal alanlara iter."
+          ],
+          "effect": [
+            "Dışarıdan gizemli ve sessiz biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Kaçış ve erime riski."
+          ],
+          "potential": [
+            "İçsel disiplinle derin ruhsal güç gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı kolektif bilinçle bağlantılıdır."
+          ],
+          "mechanism": [
+            "Duyguları bilinçaltında işler."
+          ],
+          "effect": [
+            "Bu yüksek empati ve sezgi yaratır."
+          ],
+          "shadow": [
+            "Kaygı ve kaçış."
+          ],
+          "potential": [
+            "Farkındalık arınma sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde koşulsuzluk teması vardır."
+          ],
+          "mechanism": [
+            "Sevgiyi görünmez biçimde sunarsın."
+          ],
+          "effect": [
+            "Bu derin ama belirsiz bağlar yaratır."
+          ],
+          "shadow": [
+            "Kendini feda etme."
+          ],
+          "potential": [
+            "Sağlıklı sınırlar ilişkileri şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin sezgisel ve semboliktir."
+          ],
+          "mechanism": [
+            "Rüyalar ve imgelerle düşünürsün."
+          ],
+          "effect": [
+            "Bu derin içgörü sağlar."
+          ],
+          "shadow": [
+            "Zihinsel dağılma."
+          ],
+          "potential": [
+            "Zihinsel disiplin bilgelik üretir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Perde arkası ve şifa işleri kariyeri çeker."
+          ],
+          "mechanism": [
+            "Yalnız ve sessiz çalışmayı seçersin."
+          ],
+          "effect": [
+            "Psikoloji, sanat ve ruhsal alanlarda etki."
+          ],
+          "shadow": [
+            "Görünürlükten kaçınma."
+          ],
+          "potential": [
+            "Sessiz güç kalıcı etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda çözülme ve teslimiyet karması vardır."
+          ],
+          "mechanism": [
+            "Bırakma dersleri tekrar eder."
+          ],
+          "effect": [
+            "Ruhsal arınma gerçekleşir."
+          ],
+          "shadow": [
+            "Kaçış karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli farkındalık karmayı çözer."
+          ]
+        }
+      }
+    }
+  ]
+}

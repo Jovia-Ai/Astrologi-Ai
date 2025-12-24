@@ -1,0 +1,79 @@
+{
+  "patterns": [
+    {
+      "id": "axis_polarity_balance",
+      "conditions": [
+        "axis_1_7_active",
+        "sun_conjunction_ascendant",
+        "sun_square_descendant"
+      ],
+      "output": {
+        "composite_interpretation": [
+          "İlişkisel sistem, karşılıklı yön ayarlaması gerektirir; benlik yönelimleri ile karşı tarafın sınırları aynı anda sahnededir.",
+          "Karşıt kutuplar arasında çalışan gerilim, öz-durumu korumak ile görünürlüğü eş zamanlı biçimde eşleştirir.",
+          "Bu yapı, self-direction ile relational pull arasında sürekli bir regülasyon döngüsü üretir."
+        ]
+      }
+    },
+    {
+      "id": "mirroring_projection_loop",
+      "conditions": [
+        "sun_opposition_descendant",
+        "moon_square_descendant",
+        "north_node_in_seventh_house"
+      ],
+      "output": {
+        "composite_interpretation": [
+          "Aksanlar, karşılıklı yansımayı ve projeksiyonu işaret eder; kendi yönelimler karşı taraftaki bekleyişlere ayna tutar.",
+          "Sun-planeti ile Descendant noktası arasındaki çalışma, benlik ile diğerinin algısal temasını mekanize eder.",
+          "Bu mekanizma, relational feedback loop’un döngüsünü artırırken kendi geri bildirimini sürekli dengede tutmayı gerektirir."
+        ]
+      }
+    },
+    {
+      "id": "control_negotiation_grid",
+      "conditions": [
+        "saturn_in_seventh_house",
+        "mars_square_saturn",
+        "venus_sextile_midheaven"
+      ],
+      "output": {
+        "composite_interpretation": [
+          "Satürn ve Mars etkileşimi, ilişki alanında kontrolün düzenlenmesi için pazarlık alanı yaratır.",
+          "Mars-Satürn bağlantısı, güç akışını sınırlar içinde tutan yapıların tekrar tekrar test edilmesini sağlar.",
+          "Bu konfigürasyon, ilişkisel düzenleyicilerin karşılıklı regülasyon kurallarını pacifik biçimde takip etmesini zorunlu kılar."
+        ]
+      }
+    },
+    {
+      "id": "intimacy_boundary_field",
+      "conditions": [
+        "moon_in_8th_house",
+        "venus_in_12th_house",
+        "pluto_conjunction_descendant"
+      ],
+      "output": {
+        "composite_interpretation": [
+          "8. ev ve Pluto bağlantıları, sınır ve sır paylaşımını sistematik biçimde yeniden yapılandırır.",
+          "Ay ile 12. ev yerleşimi, bağlanma ve içe dönük tanımları bir arada tutan şeffaf bir düzen üretir.",
+          "Bu katman, kolayca açılmayan alanların mekanik olarak regüle edilmesini ve kapasitelerin dengelenmesini zorunlu kılar."
+        ]
+      }
+    },
+    {
+      "id": "values_alignment_vector",
+      "conditions": [
+        "venus_opposition_north_node",
+        "venus_trine_saturn",
+        "venus_conjunction_descendant"
+      ],
+      "output": {
+        "composite_interpretation": [
+          "Venus ve Node etkileşimi, ortak değerlerin yeniden hizalanmasını tetikler.",
+          "Bu düzen ortaklık içinde stabiliteyi sağlayacak kriterleri sistematik biçimde yeniden tanımlar.",
+          "İkili düzen, uyum için etkiliyeten bir prosedür gibi çalışarak ortak çıkarları yeniden dengeler."
+        ]
+      }
+    }
+  ]
+}

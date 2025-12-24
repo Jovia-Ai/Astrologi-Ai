@@ -1,0 +1,19 @@
+{
+  "id": "inner_authority_evolution",
+  "triggers": {
+    "planet_load": {
+      "planet": "Moon",
+      "minimum": 3
+    },
+    "core_aspects": [
+      "sun_square_moon"
+    ]
+  },
+  "output": {
+    "upper_meaning": [
+      "Bu yapı, içsel tutkuyu bastırmak için değil; onu taşıyabilecek bir iç omurga geliştirmek için tasarlanmıştır.",
+      "Kişi, sorumluluk ile duygusal yoğunluğu aynı bedende tutmayı öğrendiğinde gerçek gücünü keşfeder.",
+      "Bu bilinç düzeyi, başkalarına da içsel denge kurma konusunda referans olma potansiyeli taşır."
+    ]
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "thresholds": {
+    "low": 1,
+    "medium": 3,
+    "high": 5
+  },
+  "interpretation": {
+    "medium": "bu gezegen hayat boyunca tekrar eden deneyimlerle işlenir",
+    "high": "bu gezegen bilinçli farkındalık geliştirilmeden rahatlamaz"
+  }
+}

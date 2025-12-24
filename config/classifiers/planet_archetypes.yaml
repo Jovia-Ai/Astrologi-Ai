@@ -1,0 +1,12 @@
+{
+  "version": "2.2.0",
+  "last_updated": "2025-12-23",
+  "classifiers": {
+    "moon_like": ["Moon"],
+    "neptunian": ["Neptune"],
+    "solar_like": ["Sun"],
+    "martial": ["Mars"],
+    "jupiterian": ["Jupiter"],
+    "saturnian": ["Saturn"]
+  }
+}

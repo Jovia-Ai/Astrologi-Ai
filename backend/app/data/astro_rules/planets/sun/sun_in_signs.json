@@ -1,0 +1,1247 @@
+{
+  "planet_sign_rules": [
+    {
+      "id": "sun_in_taurus",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Taurus"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğini oluşturan temel yapı istikrar ve güven ihtiyacına dayanır."
+          ],
+          "mechanism": [
+            "Bu enerji seni yavaş ama emin adımlarla ilerleyen biri haline getirir."
+          ],
+          "effect": [
+            "Dışarıdan sakin, kararlı ve dayanıklı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Değişime direnç göstermek seni zaman zaman sıkıştırabilir."
+          ],
+          "potential": [
+            "Güven ihtiyacını içsel kaynaklara bağladığında güçlü bir merkez oluşturursun."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik temelde huzur arayışı baskındır."
+          ],
+          "mechanism": [
+            "Duyguları sindirerek ve zaman tanıyarak işlersin."
+          ],
+          "effect": [
+            "Bu da seni sabırlı ve dengeli kılar."
+          ],
+          "shadow": [
+            "Aşırı sahiplenme içsel çelişkiler yaratabilir."
+          ],
+          "potential": [
+            "Rahatlama alanlarını bilinçle kurduğunda sağlam bir iç güven gelişir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde sadelik ve güven temel ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Bağ kurarken sağlam temeller ararsın."
+          ],
+          "effect": [
+            "Bu seni güven veren, bağlılık odaklı bir partner yapar."
+          ],
+          "shadow": [
+            "Kıskançlık veya inat bağları zorlayabilir."
+          ],
+          "potential": [
+            "Sevgiye esneklik eklediğinde bağların daha sıcak ve uzun ömürlü olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin somut ve pratik düşünür."
+          ],
+          "mechanism": [
+            "Bilgiyi yavaş ama derin bir şekilde işlersin."
+          ],
+          "effect": [
+            "Bu sayede üretken ve istikrarlı sonuçlar elde edersin."
+          ],
+          "shadow": [
+            "Yeni fikirlere kapalı kalma riski oluşabilir."
+          ],
+          "potential": [
+            "Pratik zekânı esneklikle birleştirdiğinde kalıcı çözümler ortaya koyarsın."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında istikrar senin için önceliklidir."
+          ],
+          "mechanism": [
+            "Süreçleri sabırla ve titizlikle yönetirsin."
+          ],
+          "effect": [
+            "Bu seni güvenilir ve uzun vadeli başarıya uygun biri yapar."
+          ],
+          "shadow": [
+            "Değişime direniş gelişimi yavaşlatabilir."
+          ],
+          "potential": [
+            "Değer üretme kapasiteni esneklikle birleştirdiğinde güçlü projeler yaratabilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın dersi, güveni dış koşullardan değil içsel temelden kurmaktır."
+          ],
+          "mechanism": [
+            "Yavaş ve derin dönüşümlerle ilerlersin."
+          ],
+          "effect": [
+            "Bu da ruhsal sağlamlık getirir."
+          ],
+          "shadow": [
+            "Maddi veya duygusal tutunmalar karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Esnediğinde ruhsal huzurun daha kalıcı hale gelir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "sun_in_gemini",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Gemini"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğini oluşturan temel enerji merak ve zihinsel hareketliliktir."
+          ],
+          "mechanism": [
+            "Bu yapı seni sürekli öğrenen, araştıran ve bağlantı kuran biri yapar."
+          ],
+          "effect": [
+            "Dışarıdan canlı, sosyal ve konuşkan biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Dağınıklık zaman zaman kimlikte kararsızlık yaratabilir."
+          ],
+          "potential": [
+            "Odaklandığında çok yönlülüğün güçlü bir kimlik zenginliğine dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "İçsel dünyanda bilgi ve anlam arayışı belirgindir."
+          ],
+          "mechanism": [
+            "Duyguları zihinsel bir süzgeçten geçirerek anlamlandırırsın."
+          ],
+          "effect": [
+            "Bu seni uyumlu ve hızlı adapte olan biri yapar."
+          ],
+          "shadow": [
+            "Aşırı düşünme zihinsel gerginlik yaratabilir."
+          ],
+          "potential": [
+            "Zihinsel esnekliğini köklendirdiğinde içsel huzur artar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde iletişim senin için vazgeçilmezdir."
+          ],
+          "mechanism": [
+            "Yakınlık kurarken sohbet, paylaşılan fikirler ve zihinsel uyum ararsın."
+          ],
+          "effect": [
+            "Bu seni eğlenceli, esprili ve ilgi çekici bir partner yapar."
+          ],
+          "shadow": [
+            "Tutarsızlık ilişkisel güveni zorlayabilir."
+          ],
+          "potential": [
+            "Duygusal netlik kazandığında bağların çok daha derinleşir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin hızlı, meraklı ve çok yönlü çalışır."
+          ],
+          "mechanism": [
+            "Bilgileri bağlantılar kurarak işler."
+          ],
+          "effect": [
+            "Bu da seni yaratıcı bir problem çözücü yapar."
+          ],
+          "shadow": [
+            "Odak kaybı verimliliği etkileyebilir."
+          ],
+          "potential": [
+            "Bilgi akışını yönettiğinde büyük zihinsel kapasite ortaya çıkar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş yaşamında çeşitlilik seni besler."
+          ],
+          "mechanism": [
+            "Birden fazla görevi aynı anda yürütebilirsin."
+          ],
+          "effect": [
+            "Bu seni iletişim ve organizasyon gerektiren alanlarda öne çıkarır."
+          ],
+          "shadow": [
+            "Stabil olmayan ortamlar motivasyonunu düşürebilir."
+          ],
+          "potential": [
+            "Yeteneklerini net yönlendirdiğinde çok yönlülük kariyer başarını katlar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın teması öğrenmek ve öğretmektir."
+          ],
+          "mechanism": [
+            "Bilgiyi paylaştıkça dönüşürsün."
+          ],
+          "effect": [
+            "Bu süreç ruhsal açıklık getirir."
+          ],
+          "shadow": [
+            "Dikkati dağıtan bağlantılar karmayı zorlaştırabilir."
+          ],
+          "potential": [
+            "Zihinsel enerjiyi merkezlediğinde ruhsal büyüme hızlanır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "sun_in_cancer",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Cancer"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde duyarlılık ve koruma içgüdüsü bulunur."
+          ],
+          "mechanism": [
+            "Hayata sezgisel ve içsel bir radar ile yaklaşırsın."
+          ],
+          "effect": [
+            "Dışarıya güven veren, şefkatli ve içten bir persona yansır."
+          ],
+          "shadow": [
+            "Aşırı korumacılık kimlik sınırlarını bulanıklaştırabilir."
+          ],
+          "potential": [
+            "Duygusallığını bilgelikle kucakladığında güçlü bir iç rehbere dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "İçsel dünyan yoğun ve derindir."
+          ],
+          "mechanism": [
+            "Duyguları zamanla işleyerek anlamlandırırsın."
+          ],
+          "effect": [
+            "Bu yapı seni sezgisel ve empatik yapar."
+          ],
+          "shadow": [
+            "Geçmişe tutunmak içsel dalgalanma yaratabilir."
+          ],
+          "potential": [
+            "Duygularını özgür bıraktığında içsel bütünlük güçlenir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde güven ve duygusal bağ ilk sıradadır."
+          ],
+          "mechanism": [
+            "Karşındakinin ihtiyaçlarını sezgisel olarak algılarsın."
+          ],
+          "effect": [
+            "Bu seni besleyici ve sadık bir partner yapar."
+          ],
+          "shadow": [
+            "Alınganlık ilişkisel akışı zorlayabilir."
+          ],
+          "potential": [
+            "Duygusal açıklık arttıkça bağların derin ve iyileştirici hale gelir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin sezgisel ve duygusal temalı çalışır."
+          ],
+          "mechanism": [
+            "Düşünceleri hislerle harmanlayarak yorumlarsın."
+          ],
+          "effect": [
+            "Bu sayede insanların niyetlerini kolayca okursun."
+          ],
+          "shadow": [
+            "Aşırı duyarlılık odak kaybı yaratabilir."
+          ],
+          "potential": [
+            "Sezgi ile mantığı dengelediğinde güçlü bir iç zekâ açığa çıkar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında güvenli ortamlar seni besler."
+          ],
+          "mechanism": [
+            "Çalışırken aidiyet ve bağ kurma ihtiyacı duyarsın."
+          ],
+          "effect": [
+            "Bu seni destekleyici ve işbirlikçi yapar."
+          ],
+          "shadow": [
+            "Duygusal yükler motivasyonunu etkileyebilir."
+          ],
+          "potential": [
+            "Duygusal zekânı profesyonel alanlarda kullandığında güçlü liderlik ortaya çıkar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın teması duygusal köklerini anlamaktır."
+          ],
+          "mechanism": [
+            "Geçmişi iyileştirerek ilerlersin."
+          ],
+          "effect": [
+            "Bu da ruhsal derinlik getirir."
+          ],
+          "shadow": [
+            "Duygusal tutunmalar karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Duygusal bilgelik arttıkça ruhsal özgürlük açılır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "sun_in_leo",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Leo"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğini besleyen temel güç ifade edilme isteğidir."
+          ],
+          "mechanism": [
+            "Bu istek seni doğal olarak merkezde duran biri haline getirir."
+          ],
+          "effect": [
+            "Dışarıya sıcak, özgüvenli ve kararlı bir duruş yansır."
+          ],
+          "shadow": [
+            "Onay beklentisi kimliğini kırılganlaştırabilir."
+          ],
+          "potential": [
+            "Öz-değerini içeriden kurduğunda kimliğin güçlü bir ışığa dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "İçsel dünyanda görünür olma ihtiyacı belirgindir."
+          ],
+          "mechanism": [
+            "Duygularını dramatik ve yoğun bir enerjiyle işlersin."
+          ],
+          "effect": [
+            "Psikolojin yaratıcı ve kendini motive eden bir yapı kazanır."
+          ],
+          "shadow": [
+            "Eleştirilere aşırı duyarlılık dalgalanmalar yaratabilir."
+          ],
+          "potential": [
+            "Kendini kabul ettiğinde içsel dayanıklılığın istikrarlı hale gelir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde bağlılık ve sıcaklık temeldir."
+          ],
+          "mechanism": [
+            "Bağ kurarken cömert ve kapsayıcı davranırsın."
+          ],
+          "effect": [
+            "Bu seni sadık, enerjik ve destekleyici bir partner yapar."
+          ],
+          "shadow": [
+            "Aşırı gurur ilişkisel akışı zorlayabilir."
+          ],
+          "potential": [
+            "Duygusal esneklik kazandığında bağların daha yaratıcı bir form alır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin kendini ifade etme ihtiyacıyla çalışır."
+          ],
+          "mechanism": [
+            "Fikirleri güçlü bir özgüvenle yapılandırırsın."
+          ],
+          "effect": [
+            "Bu yapı stratejik ve etkileyici düşünmeyi destekler."
+          ],
+          "shadow": [
+            "Sabit fikirli olmak zihinsel akışı daraltabilir."
+          ],
+          "potential": [
+            "Esneklik geliştirildiğinde zihinsel parlaklık daha görünür olur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında görünür olmak motivasyon sağlar."
+          ],
+          "mechanism": [
+            "Sorumluluk alarak ve yönlendirerek ilerlersin."
+          ],
+          "effect": [
+            "Bu seni doğal bir lider konumuna taşır."
+          ],
+          "shadow": [
+            "Aşırı kontrol isteği ekip dinamiklerini zorlayabilir."
+          ],
+          "potential": [
+            "İşbirliği geliştirdiğinde etkili ve ilham veren bir otorite oluşur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam temasında öz-değerini oluşturma görevi vardır."
+          ],
+          "mechanism": [
+            "Zorlukları kendini güçlendirmek için kullanırsın."
+          ],
+          "effect": [
+            "Bu yol ruhsal yaratıcılık ve özgünlük getirir."
+          ],
+          "shadow": [
+            "Ego odaklı tutumlar karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Kalpten yaklaşmayı öğrendiğinde ruhsal ışığın çevreye de şifa olur."
+          ]
+        }
+      }
+    },
+    {
+      "id": "sun_in_virgo",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Virgo"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde düzen ve işlevsellik ihtiyacı vardır."
+          ],
+          "mechanism": [
+            "Bu ihtiyaç seni pratik ve çözüm odaklı biri yapar."
+          ],
+          "effect": [
+            "Dışarıya sade, çalışkan ve güvenilir bir kimlik yansır."
+          ],
+          "shadow": [
+            "Aşırı öz-eleştiri kimlik algını zayıflatabilir."
+          ],
+          "potential": [
+            "Kusursuzluk yerine yeterliliği seçtiğinde güçlü bir öz-değer gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "İçsel olarak kontrol ve netlik ararsın."
+          ],
+          "mechanism": [
+            "Duyguları analiz ederek ve kategorize ederek işlersin."
+          ],
+          "effect": [
+            "Bu seni aklı ve duyguyu dengeleyen biri yapar."
+          ],
+          "shadow": [
+            "Aşırı analiz psikolojik gerilim yaratabilir."
+          ],
+          "potential": [
+            "Kabul enerjisi arttığında içsel huzurun sağlamlaşır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde güvenilirlik ve pratik destek temeldir."
+          ],
+          "mechanism": [
+            "Sevgi göstermeyi hizmet ve ilgi ile ifade edersin."
+          ],
+          "effect": [
+            "Bu seni istikrarlı ve duyarlı bir partner yapar."
+          ],
+          "shadow": [
+            "Eleştirel davranışlar bağları zorlayabilir."
+          ],
+          "potential": [
+            "Şefkat dili güçlendiğinde ilişkilerin daha yumuşak akmaya başlar."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin düzen kurmaya yönelik çalışır."
+          ],
+          "mechanism": [
+            "Bilgileri sistematik olarak işler ve ayıklar."
+          ],
+          "effect": [
+            "Bu somut ve verimli çözümler üretmeni sağlar."
+          ],
+          "shadow": [
+            "Detaylara takılmak zihinsel tıkanma yaratabilir."
+          ],
+          "potential": [
+            "Perspektif genişlediğinde berrak bir zihinsel akış oluşur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında mükemmel iş çıkarma isteği baskındır."
+          ],
+          "mechanism": [
+            "Görevleri titizlik ve sorumlulukla yürütürsün."
+          ],
+          "effect": [
+            "Bu seni güvenilir bir profesyonel yapar."
+          ],
+          "shadow": [
+            "Aşırı yüklenme tükenmişliği hızlandırabilir."
+          ],
+          "potential": [
+            "Görev dağıtmayı öğrendiğinde kariyer yolun daha sürdürülebilir olur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın teması hizmet ederek büyümektir."
+          ],
+          "mechanism": [
+            "Küçük adımlarla düzen kurarak ilerlersin."
+          ],
+          "effect": [
+            "Bu süreç ruhsal sadelik ve netlik getirir."
+          ],
+          "shadow": [
+            "Yetersizlik hissi karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Kendine şefkat kattığında ruhsal gelişim hızlanır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "sun_in_libra",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Libra"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde uyum ve denge ihtiyacı vardır."
+          ],
+          "mechanism": [
+            "Bu ihtiyaç seni nazik, diplomatik ve zarif bir duruşa yönlendirir."
+          ],
+          "effect": [
+            "Dışarıya estetik ve dengeli bir kimlik yansıtır."
+          ],
+          "shadow": [
+            "Kararsızlık kimlik netliğini zorlayabilir."
+          ],
+          "potential": [
+            "İçsel referanslarını güçlendirdiğinde kimliğin berraklaşır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik olarak huzur ve barış ararsın."
+          ],
+          "mechanism": [
+            "Duyguları tartarak ve uzlaştırarak işlersin."
+          ],
+          "effect": [
+            "Bu da seni ilişkisel zekâsı güçlü biri yapar."
+          ],
+          "shadow": [
+            "Bastırılmış öfke içsel dengenin bozulmasına neden olabilir."
+          ],
+          "potential": [
+            "Gerçek duyguları ifade ettiğinde psikolojik denge yerine oturur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde eşitlik ve karşılıklılık beklersin."
+          ],
+          "mechanism": [
+            "Uyumu korumak için özenli davranırsın."
+          ],
+          "effect": [
+            "Bu da seni anlayışlı, uyumlu bir partner yapar."
+          ],
+          "shadow": [
+            "Aşırı taviz gerçek ihtiyaçlarını gölgeleyebilir."
+          ],
+          "potential": [
+            "Sınır koyduğunda ilişkiler daha samimi ve sağlam hale gelir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin adil ve dengeli çözümler arar."
+          ],
+          "mechanism": [
+            "Bilgileri karşılaştırarak ve tartarak işlersin."
+          ],
+          "effect": [
+            "Bu da objektif düşünebilmeni sağlar."
+          ],
+          "shadow": [
+            "Belirsizlik zihinsel dağınıklık yaratabilir."
+          ],
+          "potential": [
+            "Karar kası güçlendiğinde fikirlerin daha etkili hale gelir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında işbirliği seni besler."
+          ],
+          "mechanism": [
+            "Sosyal bağları kullanarak ilerlersin."
+          ],
+          "effect": [
+            "Bu seni ekip çalışmasında öne çıkarır."
+          ],
+          "shadow": [
+            "Çatışmadan kaçınmak profesyonel ilerlemeyi yavaşlatabilir."
+          ],
+          "potential": [
+            "Netlik eklendiğinde güçlü bir arabulucu ve stratejist olursun."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam temasında dengeyi öğrenme görevi vardır."
+          ],
+          "mechanism": [
+            "Zıtlıkları uyumlayarak dönüşürsün."
+          ],
+          "effect": [
+            "Bu süreç ruhsal incelik kazandırır."
+          ],
+          "shadow": [
+            "Kendi ihtiyaçlarını yok saymak karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Dengeyi içeriden kurduğunda ilişkisel bilgelik gelişir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "sun_in_scorpio",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Scorpio"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğini besleyen temel enerji derinlik ve yoğunluktur."
+          ],
+          "mechanism": [
+            "Bu yoğunluk seni güçlü bir iç merkeze yöneltir."
+          ],
+          "effect": [
+            "Dışarıya kararlı, sezgisel ve etkileyici bir persona yansır."
+          ],
+          "shadow": [
+            "Gizleme eğilimi kimlik akışını zorlayabilir."
+          ],
+          "potential": [
+            "Açıklık kazandığında kimliğin dönüşüm gücüne ulaşır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "İçsel dünyanda derin analiz ihtiyacı baskındır."
+          ],
+          "mechanism": [
+            "Duyguları kök seviyesinde inceleyerek işlersin."
+          ],
+          "effect": [
+            "Bu yapı seni sezgisel ve dayanıklı bir ruh haline taşır."
+          ],
+          "shadow": [
+            "Aşırı kontrol psikolojik gerilim yaratabilir."
+          ],
+          "potential": [
+            "Güveni geliştirdiğinde içsel güç net biçimde yükselir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde derin bağlar ararsın."
+          ],
+          "mechanism": [
+            "Bağ kurarken tutkuyu ve sadakati önceliklendirirsin."
+          ],
+          "effect": [
+            "Bu seni kararlı ve yoğun bir partner yapar."
+          ],
+          "shadow": [
+            "Kıskançlık veya kontrol ihtiyacı bağları zedeleyebilir."
+          ],
+          "potential": [
+            "Güven derinleştiğinde ilişkiler daha şifalı ve bağlı hale gelir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin gizli dinamikleri çözmeye yönelir."
+          ],
+          "mechanism": [
+            "Bilgileri sezgi ve analizle bütünleştirirsin."
+          ],
+          "effect": [
+            "Bu da karmaşık konularda strateji geliştirmene yardımcı olur."
+          ],
+          "shadow": [
+            "Takıntılı senaryolar zihinsel yük oluşturabilir."
+          ],
+          "potential": [
+            "Şeffaflık kazandığında zihinsel gücün yaratıcı dönüşüme dönüşür."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında yoğun sorumluluk seni motive eder."
+          ],
+          "mechanism": [
+            "Krizleri yönetme becerinle ilerlersin."
+          ],
+          "effect": [
+            "Bu seni dayanıklı ve kararlı bir profesyonel yapar."
+          ],
+          "shadow": [
+            "Aşırı yüklenme tükenmişliği artırabilir."
+          ],
+          "potential": [
+            "Kaynak paylaşımını öğrendiğinde iş yolun daha sürdürülebilir olur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam temasında dönüşüm ve güç sınavı vardır."
+          ],
+          "mechanism": [
+            "Zorlukları derinleşme fırsatına çevirirsin."
+          ],
+          "effect": [
+            "Bu süreç ruhsal güç ve sezgi geliştirir."
+          ],
+          "shadow": [
+            "Kayıp korkusu karmayı zorlaştırabilir."
+          ],
+          "potential": [
+            "Teslimiyet arttığında ruhsal yenilenme gerçekleşir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "sun_in_sagittarius",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Sagittarius"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde özgürlük ve anlam arayışı vardır."
+          ],
+          "mechanism": [
+            "Bu arayış seni geniş perspektiften hayatı kavrayan biri yapar."
+          ],
+          "effect": [
+            "Dışarıya iyimser, enerjik ve keşfetmeye açık bir persona yansıtırsın."
+          ],
+          "shadow": [
+            "Aşırı dağılma kimlik tutarlılığını zorlayabilir."
+          ],
+          "potential": [
+            "Yönünü netleştirdiğinde kimliğin ilham veren bir vizyona dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "İçsel dünyanda genişleme ve büyüme ihtiyacı baskındır."
+          ],
+          "mechanism": [
+            "Duyguları umut ve anlam filtresinden geçirerek işlersin."
+          ],
+          "effect": [
+            "Bu seni dayanıklı ve motive eden bir psikolojiye taşır."
+          ],
+          "shadow": [
+            "Gerçeklerden kaçma eğilimi içsel karmaşa yaratabilir."
+          ],
+          "potential": [
+            "Gerçekliği kabul ettiğinde içsel özgürlük daha sağlam hale gelir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde özgür alan ve entelektüel uyum istersin."
+          ],
+          "mechanism": [
+            "Bağ kurarken dürüstlük ve yüksek enerjiyle yaklaşırısın."
+          ],
+          "effect": [
+            "Bu seni neşeli, ilham veren bir partner yapar."
+          ],
+          "shadow": [
+            "Aşırı bağımsızlık bağları zayıflatabilir."
+          ],
+          "potential": [
+            "Samimiyeti derinleştirdiğinde ilişkiler daha sıcak ve güvenli olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin büyük resme odaklanır."
+          ],
+          "mechanism": [
+            "Bilgileri anlam ve bağlantılar üzerinden yorumlarsın."
+          ],
+          "effect": [
+            "Bu vizyoner ve geniş düşünme kapasitesi yaratır."
+          ],
+          "shadow": [
+            "Detay ihmal etmek zihinsel bütünlüğü zorlayabilir."
+          ],
+          "potential": [
+            "Detayları da kattığında güçlü bir bilgelik açığa çıkar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında özgür hareket etmek motivasyon sağlar."
+          ],
+          "mechanism": [
+            "Fırsatları geniş perspektiften değerlendirirsin."
+          ],
+          "effect": [
+            "Bu seni stratejik, vizyoner bir profesyonel yapar."
+          ],
+          "shadow": [
+            "Aşırı iyimserlik planlamayı zayıflatabilir."
+          ],
+          "potential": [
+            "Gerçekçi adımlar attığında kariyer yolun güçlü ivme kazanır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Yaşam temasında anlamı keşfetme görevi vardır."
+          ],
+          "mechanism": [
+            "Seyahat, deneyim ve öğrenmeyle dönüşürsün."
+          ],
+          "effect": [
+            "Bu süreç ruhsal genişlik getirir."
+          ],
+          "shadow": [
+            "Kaçınmacı tutumlar karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Merkezini bulduğunda ruhsal özgürlük sabit bir hal alır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "sun_in_capricorn",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Capricorn"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde güçlenme ve sorumluluk alma ihtiyacı bulunur."
+          ],
+          "mechanism": [
+            "Bu ihtiyaç seni kararlı, yapıcı ve hedef odaklı bir kimliğe yöneltir."
+          ],
+          "effect": [
+            "Dışarıya disiplinli, ciddi ve güvenilir bir persona yansır."
+          ],
+          "shadow": [
+            "Aşırı kontrol ihtiyacı kimlik esnekliğini daraltabilir."
+          ],
+          "potential": [
+            "Sınırlarını yumuşattığında kimliğin bilge ve olgun bir forma dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "İçsel dünyanda düzen ve kontrol ihtiyacı baskındır."
+          ],
+          "mechanism": [
+            "Duyguları yapılandırarak ve mesafe koyarak işlersin."
+          ],
+          "effect": [
+            "Bu seni sağlam ve dayanıklı bir psikolojiye taşır."
+          ],
+          "shadow": [
+            "Duyguları bastırmak içsel katılık yaratabilir."
+          ],
+          "potential": [
+            "Duygulara güven verdiğinde psikolojik esneklik güçlenir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde güvenilirlik ve sadakat beklersin."
+          ],
+          "mechanism": [
+            "Bağ kurarken ciddi, ölçülü ve sorumluluk alan bir tutumla yaklaşırsın."
+          ],
+          "effect": [
+            "Bu seni istikrarlı ve dayanıklı bir partner yapar."
+          ],
+          "shadow": [
+            "Mesafe koymak duygusal yakınlığı zorlayabilir."
+          ],
+          "potential": [
+            "Yumuşaklık kazandığında ilişkiler daha sıcak ve derin bir hale gelir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin yapı kurmaya yönelik çalışır."
+          ],
+          "mechanism": [
+            "Bilgileri planlama ve stratejiyle düzenlersin."
+          ],
+          "effect": [
+            "Bu uzun vadeli düşünme kapasitesi yaratır."
+          ],
+          "shadow": [
+            "Aşırı katılık zihinsel esnekliği kısıtlayabilir."
+          ],
+          "potential": [
+            "Esneklik artırıldığında zihinsel parlaklık daha verimli olur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında sorumluluk ve başarı temeldir."
+          ],
+          "mechanism": [
+            "Kararlı çalışarak uzun vadeli yapı kurarsın."
+          ],
+          "effect": [
+            "Bu seni yükselen, güvenilir bir profesyonel yapar."
+          ],
+          "shadow": [
+            "Aşırı yüklenmek tükenmişlik yaratabilir."
+          ],
+          "potential": [
+            "Destek almak kariyerde sürdürülebilir başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın teması duygusal dayanıklılığı bilinçle kurmaktır."
+          ],
+          "mechanism": [
+            "Zorlukları disiplinle aşarak dönüşürsün."
+          ],
+          "effect": [
+            "Ruhsal güç ve olgunluk artar."
+          ],
+          "shadow": [
+            "Katılık karmayı yoğunlaştırabilir."
+          ],
+          "potential": [
+            "Şefkatle yumuşadığında ruhsal özgürlük gelişir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "sun_in_aquarius",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Aquarius"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde özgün olma ve sınırları aşma ihtiyacı bulunur."
+          ],
+          "mechanism": [
+            "Bu ihtiyaç seni bağımsız, yenilikçi ve sıradışı bir duruşa yönlendirir."
+          ],
+          "effect": [
+            "Dışarıya özgün, objektif ve farklı bir kimlik yansır."
+          ],
+          "shadow": [
+            "Duygusal mesafe kimlik bütünlüğünü zorlayabilir."
+          ],
+          "potential": [
+            "İçsel bağ kurulduğunda kimliğin ilham veren bir vizyona dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "İçsel dünyanda özgür düşünme ihtiyacı baskındır."
+          ],
+          "mechanism": [
+            "Duyguları zihinsel mesafeyle işlersin."
+          ],
+          "effect": [
+            "Bu seni bağımsız bir psikolojik yapıya taşır."
+          ],
+          "shadow": [
+            "Aşırı kopukluk yalnızlık duygusu yaratabilir."
+          ],
+          "potential": [
+            "Bağ kurmayı öğrendiğinde psikolojin daha sağlam bir zemine oturur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde özgür alan ve entelektüel yakınlık istersin."
+          ],
+          "mechanism": [
+            "Bağ kurarken açık fikirli ve tarafsız davranırsın."
+          ],
+          "effect": [
+            "Bu seni dostluk temelli, güvenilir bir partner yapar."
+          ],
+          "shadow": [
+            "Duygusal mesafe ilişkide sıcaklığı azaltabilir."
+          ],
+          "potential": [
+            "Duygusal açıklık kazandığında bağların çok daha derinleşir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin yenilik ve özgünlük arayışıyla çalışır."
+          ],
+          "mechanism": [
+            "Bilgileri alışılmış kalıpların dışından yorumlarsın."
+          ],
+          "effect": [
+            "Bu yaratıcı, ilerici ve analitik bir düşünce yapısı oluşturur."
+          ],
+          "shadow": [
+            "Aşırı kopukluk pratikliği zayıflatabilir."
+          ],
+          "potential": [
+            "Köklenme sağlandığında zihinsel yenilik gücü katlanır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında özgünlük ve bağımsızlık seni motive eder."
+          ],
+          "mechanism": [
+            "Sistemleri yeniden düşünerek ilerlersin."
+          ],
+          "effect": [
+            "Bu seni yenilikçi alanlarda öne çıkarır."
+          ],
+          "shadow": [
+            "Düzensizlik verimliliği düşürebilir."
+          ],
+          "potential": [
+            "Yapı kurduğunda kariyer yolun ileri görüşlü bir etki bırakır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın teması özgünlüğü bilinçle kullanmaktır."
+          ],
+          "mechanism": [
+            "Alışılmış kalıpları kırarak ilerlersin."
+          ],
+          "effect": [
+            "Bu süreç ruhsal özgürlük getirir."
+          ],
+          "shadow": [
+            "Ayrışma arzusu karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Birlik bilinci geliştiğinde ruhsal yenilik gücü ortaya çıkar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "sun_in_pisces",
+      "conditions": [
+        {
+          "planet": "Sun",
+          "sign": "Pisces"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde empati ve bütünlük arayışı vardır."
+          ],
+          "mechanism": [
+            "Bu arayış seni sezgisel, duyarlı ve akışkan bir kimliğe yöneltir."
+          ],
+          "effect": [
+            "Dışarıya yumuşak, kapsayıcı ve derin bir persona yansır."
+          ],
+          "shadow": [
+            "Sınırların silikleşmesi kimlik belirsizliği yaratabilir."
+          ],
+          "potential": [
+            "Merkezini bulduğunda kimliğin şifalı ve yaratıcı bir form kazanır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "İçsel dünyanda bağlantı ve anlam arayışı baskındır."
+          ],
+          "mechanism": [
+            "Duyguları sezgisel dalgalarla işlersin."
+          ],
+          "effect": [
+            "Bu seni derin ve empatik bir psikolojiye taşır."
+          ],
+          "shadow": [
+            "Kaçınma eğilimi içsel karışıklık yaratabilir."
+          ],
+          "potential": [
+            "Gerçeklikle bağ kurduğunda psikolojinin yaratıcılığı katlanır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde derin duygusal bağ ararsın."
+          ],
+          "mechanism": [
+            "Bağ kurarken şefkatli ve sezgisel davranırsın."
+          ],
+          "effect": [
+            "Bu seni anlayışlı ve bütünleştirici bir partner yapar."
+          ],
+          "shadow": [
+            "Sınır kaybı ilişkide belirsizlik yaratabilir."
+          ],
+          "potential": [
+            "Sağlam sınırlar kurduğunda ilişkiler daha besleyici hale gelir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin semboller ve hislerle çalışır."
+          ],
+          "mechanism": [
+            "Bilgileri sezgisel bağlantılarla yorumlarsın."
+          ],
+          "effect": [
+            "Bu yaratıcı, sanatsal ve esnek bir düşünce yapısı üretir."
+          ],
+          "shadow": [
+            "Belirsizlik zihinsel dağınıklık yaratabilir."
+          ],
+          "potential": [
+            "Zihinsel merkezleme arttığında hayal gücü güçlü bir zekâya dönüşür."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İş hayatında anlam ve katkı ihtiyacı belirgindir."
+          ],
+          "mechanism": [
+            "İşe duygusal sezgi ve yaratıcılık katarak yaklaşırsın."
+          ],
+          "effect": [
+            "Bu seni şifalandırıcı, yaratıcı ve empatik alanlarda öne çıkarır."
+          ],
+          "shadow": [
+            "Kaotik ortamlar yön kaybına neden olabilir."
+          ],
+          "potential": [
+            "Yapı kurulduğunda profesyonel üretkenliğin büyük ölçüde artar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın teması teslimiyet ve bütünlük bilincidir."
+          ],
+          "mechanism": [
+            "Duygusal akışla ilerleyerek dönüşürsün."
+          ],
+          "effect": [
+            "Bu süreç ruhsal derinlik ve şefkat geliştirir."
+          ],
+          "shadow": [
+            "Kayıtsızlık karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Bilinçli farkındalıkla birleştiğinde ruhsal şifa gücü açığa çıkar."
+          ]
+        }
+      }
+    }
+  ]
+}

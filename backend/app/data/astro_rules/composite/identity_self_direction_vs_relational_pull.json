@@ -1,0 +1,9 @@
+{
+  "composite_id": "identity_self_direction_vs_relational_pull",
+  "sources": [
+    "sun_in_1st_house",
+    "sun_opposition_descendant",
+    "sun_conjunction_ascendant"
+  ],
+  "domains": ["identity"]
+}

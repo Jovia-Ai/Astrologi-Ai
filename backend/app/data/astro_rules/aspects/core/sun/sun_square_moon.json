@@ -1,0 +1,18 @@
+{
+  "id": "sun_square_moon",
+  "aspect": "square",
+  "from": "Sun",
+  "to": "Moon",
+  "focus": "identity_expression_vs_emotional_response",
+  "experience": {
+    "activation": [
+      "kimlik yönelimi aktive olduğunda duygusal sistem eş zamanlı talepler üretir"
+    ],
+    "tension_point": [
+      "yön belirleme ve kendini ortaya koyma anlarında içsel uyumsuzluk hissi oluşur"
+    ],
+    "behavior_loop": [
+      "önce yön ve ifade kurulmaya çalışılır, ardından duygusal tepki ayarlanmaya çalışılır"
+    ]
+  }
+}

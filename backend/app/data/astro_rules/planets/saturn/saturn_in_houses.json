@@ -1,0 +1,1360 @@
+{
+  "planet_house_rules": [
+    {
+      "id": "saturn_in_house_1",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 1
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik erken yaşta sorumluluk ve ciddiyet temasıyla şekillenir."
+          ],
+          "mechanism": [
+            "Kendini kanıtlama ihtiyacı davranışlarını kontrol altında tutar."
+          ],
+          "effect": [
+            "Dışarıdan mesafeli, olgun ve güçlü bir duruş sergilersin."
+          ],
+          "shadow": [
+            "Kendine karşı sertlik ve yetersizlik hissi gelişebilir."
+          ],
+          "potential": [
+            "Zamanla doğal bir otorite ve güven veren liderliğe evrilirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Erken dönemde yüklenilen sorumluluklar iç dünyayı yapılandırır."
+          ],
+          "mechanism": [
+            "Duygular bastırılarak kontrol altında tutulur."
+          ],
+          "effect": [
+            "Psikolojik dayanıklılık ve sabır gelişir."
+          ],
+          "shadow": [
+            "İçe kapanma ve yalnızlık eğilimi görülebilir."
+          ],
+          "potential": [
+            "Sağlıklı sınırlar kurulduğunda güçlü öz-değer oluşur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Kendini koruma ihtiyacı ilişkilerde mesafe yaratır."
+          ],
+          "mechanism": [
+            "Güven yavaş inşa edilir."
+          ],
+          "effect": [
+            "Ciddi ve uzun vadeli bağlar kurarsın."
+          ],
+          "shadow": [
+            "Soğuk veya erişilmez algılanabilirsin."
+          ],
+          "potential": [
+            "Olgun ve güvenilir bir partner olursun."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin sorumluluk bilinciyle çalışır."
+          ],
+          "mechanism": [
+            "Düşünceler disiplinli ve kontrollüdür."
+          ],
+          "effect": [
+            "Gerçekçi ve stratejik kararlar alırsın."
+          ],
+          "shadow": [
+            "Aşırı kaygı ve kendini sınırlama oluşabilir."
+          ],
+          "potential": [
+            "Zihinsel ustalık ve netlik gelişir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Toplumsal rol bilinci erken oluşur."
+          ],
+          "mechanism": [
+            "Adım adım ilerleme tercih edilir."
+          ],
+          "effect": [
+            "Geç ama kalıcı başarı elde edilir."
+          ],
+          "shadow": [
+            "Kariyer yükü kimliği bastırabilir."
+          ],
+          "potential": [
+            "Uzun vadeli saygın bir konum inşa edilir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda benlik sınavı ön plandadır."
+          ],
+          "mechanism": [
+            "Sabır ve öz-disiplin öğrenilir."
+          ],
+          "effect": [
+            "Geç olgunlaşma ama kalıcı güç oluşur."
+          ],
+          "shadow": [
+            "Ağır sorumluluk karması hissedilebilir."
+          ],
+          "potential": [
+            "Kendi otoriteni kurarak karmayı dengelersin."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_2",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 2
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Güvenlik ve değer algısı erken kısıtlarla şekillenir."
+          ],
+          "mechanism": [
+            "Maddi ve manevi kaynaklar sıkı kontrol edilir."
+          ],
+          "effect": [
+            "Tutumlu, temkinli ve planlı bir kimlik oluşur."
+          ],
+          "shadow": [
+            "Yoksunluk korkusu gelişebilir."
+          ],
+          "potential": [
+            "Zamanla sağlam ve sürdürülebilir değer sistemi kurarsın."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Kaybetme korkusu içsel güvensizlik yaratır."
+          ],
+          "mechanism": [
+            "Kontrol ihtiyacı psikolojik savunma olur."
+          ],
+          "effect": [
+            "Dayanıklı ama temkinli bir ruh hali oluşur."
+          ],
+          "shadow": [
+            "Kendini değersiz hissetme riski vardır."
+          ],
+          "potential": [
+            "Öz-değer içsel olarak güçlenir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Güven maddi-manevi istikrarla ilişkilidir."
+          ],
+          "mechanism": [
+            "Bağlanmadan önce sağlam zemin beklersin."
+          ],
+          "effect": [
+            "Sadık ama yavaş açılan ilişkiler kurarsın."
+          ],
+          "shadow": [
+            "Paylaşımda ketumluk görülebilir."
+          ],
+          "potential": [
+            "Güven temelli güçlü bağlar inşa edersin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin güvenlik odaklı çalışır."
+          ],
+          "mechanism": [
+            "Riskler dikkatle analiz edilir."
+          ],
+          "effect": [
+            "Finansal ve pratik zekâ gelişir."
+          ],
+          "shadow": [
+            "Aşırı kaygı zihni daraltabilir."
+          ],
+          "potential": [
+            "Uzun vadeli stratejik düşünme ustalığı oluşur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Maddi istikrar ihtiyacı kariyeri yönlendirir."
+          ],
+          "mechanism": [
+            "Yavaş ama sağlam ilerleme tercih edilir."
+          ],
+          "effect": [
+            "Finans, yapı ve kaynak yönetiminde başarı."
+          ],
+          "shadow": [
+            "Risk almaktan kaçınma olabilir."
+          ],
+          "potential": [
+            "Kalıcı maddi güvenlik sağlanır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Değer ve güven karması taşınır."
+          ],
+          "mechanism": [
+            "Sabırla inşa etme dersi verilir."
+          ],
+          "effect": [
+            "Emekle kazanılan değerler öne çıkar."
+          ],
+          "shadow": [
+            "Kıtlık bilinci karması yaşanabilir."
+          ],
+          "potential": [
+            "Gerçek değerin içten geldiğini öğrenirsin."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_3",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 3
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "İfade ve öğrenme alanında erken kısıtlar yaşanır."
+          ],
+          "mechanism": [
+            "Düşünceler dikkatle filtrelenir."
+          ],
+          "effect": [
+            "Ciddi, ölçülü ve sorumlu bir iletişim tarzı oluşur."
+          ],
+          "shadow": [
+            "Kendini ifade etmekte çekingenlik olabilir."
+          ],
+          "potential": [
+            "Bilgelik içeren güçlü bir anlatım gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Zihinsel baskı erken yaşta oluşur."
+          ],
+          "mechanism": [
+            "Düşünceler kontrol altında tutulur."
+          ],
+          "effect": [
+            "Disiplinli ve yapılandırılmış zihin gelişir."
+          ],
+          "shadow": [
+            "Zihinsel katılık görülebilir."
+          ],
+          "potential": [
+            "Derin konsantrasyon ve öğretici zihin oluşur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İletişimde güven ihtiyacı vardır."
+          ],
+          "mechanism": [
+            "Sözler dikkatle seçilir."
+          ],
+          "effect": [
+            "Ciddi ve anlamlı diyaloglar kurarsın."
+          ],
+          "shadow": [
+            "Mesafeli iletişim algılanabilir."
+          ],
+          "potential": [
+            "Bilgece rehberlik eden bir iletişim tarzı oluşur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin öğrenmeyi sorumluluk olarak görür."
+          ],
+          "mechanism": [
+            "Bilgi sistematik şekilde işlenir."
+          ],
+          "effect": [
+            "Analitik ve yapılandırılmış düşünme gelişir."
+          ],
+          "shadow": [
+            "Aşırı zihinsel yük oluşabilir."
+          ],
+          "potential": [
+            "Usta bir öğretici zihne evrilirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Bilgi ve iletişim kariyerde önemlidir."
+          ],
+          "mechanism": [
+            "Yavaş ama derin öğrenme tercih edilir."
+          ],
+          "effect": [
+            "Eğitim, yazı ve analiz alanlarında başarı."
+          ],
+          "shadow": [
+            "Kendini ifade etmekte gecikme."
+          ],
+          "potential": [
+            "Uzmanlık ve otorite kazanılır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Zihinsel sorumluluk karması vardır."
+          ],
+          "mechanism": [
+            "Söz ve bilgiyle sınavlar yaşanır."
+          ],
+          "effect": [
+            "Bilgi olgunlaşarak aktarılır."
+          ],
+          "shadow": [
+            "Sessizlik karması oluşabilir."
+          ],
+          "potential": [
+            "Bilgeliği paylaşarak karmayı dönüştürürsün."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_4",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 4
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde kökler, aidiyet ve içsel güven teması vardır."
+          ],
+          "mechanism": [
+            "Bu yapı seni duygusal olarak kendini korumaya ve iç dünyanı yapılandırmaya iter."
+          ],
+          "effect": [
+            "Dışarıdan güçlü ama içe dönük bir duruş sergilersin."
+          ],
+          "shadow": [
+            "Duygusal mesafe veya yalnızlık hissi zamanla artabilir."
+          ],
+          "potential": [
+            "Kendi iç temelini kurduğunda derin bir güven oluşur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı erken dönem duygusal sorumluluklarla şekillenir."
+          ],
+          "mechanism": [
+            "Duyguları bastırarak kontrol altında tutarsın."
+          ],
+          "effect": [
+            "Bu seni dayanıklı ama temkinli bir ruh haline taşır."
+          ],
+          "shadow": [
+            "Geçmiş yükleri bugüne taşıma eğilimi oluşabilir."
+          ],
+          "potential": [
+            "Duygularla temas kurdukça içsel huzur artar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde güven ve süreklilik ihtiyacı baskındır."
+          ],
+          "mechanism": [
+            "Bağ kurmadan önce uzun süre gözlemlersin."
+          ],
+          "effect": [
+            "Bu seni sadık ama mesafeli bir partner yapar."
+          ],
+          "shadow": [
+            "Duygusal ifade sınırlı kalabilir."
+          ],
+          "potential": [
+            "Güvende hissettiğinde derin bağlar kurarsın."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin geçmiş deneyimlerle şekillenir."
+          ],
+          "mechanism": [
+            "Hatıraları referans alarak düşünürsün."
+          ],
+          "effect": [
+            "Bu da seni temkinli ve gerçekçi biri yapar."
+          ],
+          "shadow": [
+            "Geçmişe takılı kalma zihni zorlayabilir."
+          ],
+          "potential": [
+            "İçsel farkındalıkla zihinsel denge gelişir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Güvenli yapı kurma ihtiyacı kariyeri etkiler."
+          ],
+          "mechanism": [
+            "Riskten kaçınarak istikrarlı yolları seçersin."
+          ],
+          "effect": [
+            "Bu seni uzun vadeli ve sağlam bir konuma taşır."
+          ],
+          "shadow": [
+            "Değişimden kaçınmak ilerlemeyi yavaşlatabilir."
+          ],
+          "potential": [
+            "Sağlam temeller üzerine kalıcı başarı kurarsın."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda aile ve kökler üzerinden sınanırsın."
+          ],
+          "mechanism": [
+            "Geçmişle yüzleşme dersleri tekrar eder."
+          ],
+          "effect": [
+            "İçsel olgunluk zamanla gelişir."
+          ],
+          "shadow": [
+            "Duygusal yük karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Kendi iç yuvanı kurduğunda karmayı dönüştürürsün."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_5",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 5
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde kendini ifade etme ve onay ihtiyacı vardır."
+          ],
+          "mechanism": [
+            "Bu ihtiyaç seni yaratıcılığını kontrollü şekilde ortaya koymaya iter."
+          ],
+          "effect": [
+            "Dışarıdan ciddi, ölçülü ve mesafeli bir ifade tarzı sergilersin."
+          ],
+          "shadow": [
+            "Neşe ve spontane ifade bastırılabilir."
+          ],
+          "potential": [
+            "Zamanla olgun ve güçlü bir yaratıcılık gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı eleştirilme korkusuyla şekillenir."
+          ],
+          "mechanism": [
+            "Kendini geri çekerek korunursun."
+          ],
+          "effect": [
+            "Bu seni temkinli ama içsel olarak baskılı kılar."
+          ],
+          "shadow": [
+            "Keyif suçlulukla karışabilir."
+          ],
+          "potential": [
+            "Kendine izin verdikçe içsel rahatlama artar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Aşk ve romantizm ciddiyetle yaşanır."
+          ],
+          "mechanism": [
+            "Bağ kurmadan önce güven ve süre ararsın."
+          ],
+          "effect": [
+            "Bu seni sadık ama mesafeli bir aşık yapar."
+          ],
+          "shadow": [
+            "Duygusal ifade sınırlı kalabilir."
+          ],
+          "potential": [
+            "Kendini açtığında ilişkiler daha sıcak olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin üretimi kontrol altında tutar."
+          ],
+          "mechanism": [
+            "Yaratıcı fikirleri filtreleyerek düşünürsün."
+          ],
+          "effect": [
+            "Bu da seni planlı ve bilinçli bir üretici yapar."
+          ],
+          "shadow": [
+            "Aşırı kontrol üretkenliği kısıtlayabilir."
+          ],
+          "potential": [
+            "Zihinsel özgürlük yaratıcılığı artırır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Yaratıcılık sorumlulukla birleşir."
+          ],
+          "mechanism": [
+            "Uzun vadeli projelere yönelirsin."
+          ],
+          "effect": [
+            "Sanat, eğitim ve liderlikte kalıcı başarı gelir."
+          ],
+          "shadow": [
+            "Risk almaktan kaçınmak görünürlüğü azaltabilir."
+          ],
+          "potential": [
+            "Olgun ifade saygın bir üretim alanı yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda kendini ifade etme karması taşınır."
+          ],
+          "mechanism": [
+            "Onay arayışı ders olarak tekrar eder."
+          ],
+          "effect": [
+            "Yaratıcılık zamanla olgunlaşır."
+          ],
+          "shadow": [
+            "Bastırma karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Kendini özgürce ifade ettiğinde karmayı çözersin."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_6",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 6
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde görev ve sorumluluk bilinci vardır."
+          ],
+          "mechanism": [
+            "Bu bilinç seni çalışarak ve hizmet ederek var olmaya iter."
+          ],
+          "effect": [
+            "Dışarıdan disiplinli, güvenilir ve çalışkan biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aşırı yüklenme kimliği daraltabilir."
+          ],
+          "potential": [
+            "Ustalık geliştikçe özgüven artar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı yeterli olma baskısıyla şekillenir."
+          ],
+          "mechanism": [
+            "Kontrol ve düzenle rahatlama sağlarsın."
+          ],
+          "effect": [
+            "Bu seni dayanıklı ama gergin kılabilir."
+          ],
+          "shadow": [
+            "Kaygı ve tükenmişlik riski oluşur."
+          ],
+          "potential": [
+            "Sağlıklı rutinlerle psikolojik denge kurarsın."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde sorumluluk ve destek ön plandadır."
+          ],
+          "mechanism": [
+            "Sevgini davranışla gösterirsin."
+          ],
+          "effect": [
+            "Bu seni güvenilir ama romantizmden uzak gösterebilir."
+          ],
+          "shadow": [
+            "Eleştirel tutum bağları zorlayabilir."
+          ],
+          "potential": [
+            "Şefkatle birleştiğinde ilişkiler güçlenir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin işlevsellik odaklı çalışır."
+          ],
+          "mechanism": [
+            "Detayları analiz ederek düşünürsün."
+          ],
+          "effect": [
+            "Bu seni pratik ve çözüm odaklı yapar."
+          ],
+          "shadow": [
+            "Mükemmeliyetçilik zihni yorar."
+          ],
+          "potential": [
+            "Esneklik verimliliği artırır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Çalışma etiği kariyer yönünü belirler."
+          ],
+          "mechanism": [
+            "Disiplinle ve sabırla ilerlersin."
+          ],
+          "effect": [
+            "Hizmet, sağlık ve analiz alanlarında başarı gelir."
+          ],
+          "shadow": [
+            "İş-yaşam dengesi zorlanabilir."
+          ],
+          "potential": [
+            "Uzmanlık kazandıkça saygınlık artar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda emek ve hizmet karması vardır."
+          ],
+          "mechanism": [
+            "Sorumluluk tekrar eden ders haline gelir."
+          ],
+          "effect": [
+            "Olgunluk çalışarak gelişir."
+          ],
+          "shadow": [
+            "Aşırı fedakarlık karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Bilinçli hizmetle karmayı dönüştürürsün."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_7",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 7
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin ilişkiler yoluyla sınanır."
+          ],
+          "mechanism": [
+            "Bağ kurarken sorumluluk ve ciddiyet ararsın."
+          ],
+          "effect": [
+            "Dışarıdan mesafeli ama güvenilir biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Yalnızlık veya geç başlayan ilişkiler olabilir."
+          ],
+          "potential": [
+            "Olgun ve kalıcı ortaklıklar kurarsın."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı terk edilme korkusuyla şekillenir."
+          ],
+          "mechanism": [
+            "Kontrol ederek güven sağlarsın."
+          ],
+          "effect": [
+            "Bu seni temkinli ama dayanıklı kılar."
+          ],
+          "shadow": [
+            "Duygusal mesafe artabilir."
+          ],
+          "potential": [
+            "Sınırlarını yumuşattığında yakınlık derinleşir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde ciddiyet ve sorumluluk baskındır."
+          ],
+          "mechanism": [
+            "Bağlar zamanla ve emekle oluşur."
+          ],
+          "effect": [
+            "Uzun vadeli ve kalıcı ilişkiler kurarsın."
+          ],
+          "shadow": [
+            "Soğuk veya hesapçı algılanabilirsin."
+          ],
+          "potential": [
+            "Gerçek eşitlik ve ortaklık bilinci gelişir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin ilişki dinamiklerini analiz eder."
+          ],
+          "mechanism": [
+            "Denge arayışıyla düşünürsün."
+          ],
+          "effect": [
+            "Bu seni adil ve gerçekçi yapar."
+          ],
+          "shadow": [
+            "Aşırı analiz kararsızlık yaratabilir."
+          ],
+          "potential": [
+            "Bilgece ilişki yönetimi gelişir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Ortaklıklar kariyer yönünü etkiler."
+          ],
+          "mechanism": [
+            "Sözleşme ve yapı önceliklidir."
+          ],
+          "effect": [
+            "Hukuk, danışmanlık ve yönetimde başarı gelir."
+          ],
+          "shadow": [
+            "Ortaklık korkusu ilerlemeyi zorlayabilir."
+          ],
+          "potential": [
+            "Güçlü iş birlikleri kurarsın."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda ilişki karması taşınır."
+          ],
+          "mechanism": [
+            "Bağlanma ve sınır dersleri tekrar eder."
+          ],
+          "effect": [
+            "İlişkiler zamanla olgunlaşır."
+          ],
+          "shadow": [
+            "Yalnızlık karmasal sınav olabilir."
+          ],
+          "potential": [
+            "Gerçek bağ kurduğunda karmayı dönüştürürsün."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_8",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 8
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde kriz, kayıp ve dönüşüm temaları vardır."
+          ],
+          "mechanism": [
+            "Bu temalar seni kontrol ederek ve derinleşerek ayakta kalmaya iter."
+          ],
+          "effect": [
+            "Dışarıdan güçlü, kapalı ve dayanıklı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Kontrol ihtiyacı korkularla birleşebilir."
+          ],
+          "potential": [
+            "Teslimiyet geliştikçe derin bir içsel güç ortaya çıkar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı kaybetme ve güvensizlik deneyimleriyle şekillenir."
+          ],
+          "mechanism": [
+            "Duyguları bastırarak ve kontrol ederek güven sağlarsın."
+          ],
+          "effect": [
+            "Bu seni kriz anlarında dayanıklı kılar."
+          ],
+          "shadow": [
+            "Takıntı veya yoğun kaygı oluşabilir."
+          ],
+          "potential": [
+            "Duygularla yüzleştikçe psikolojik şifa gelişir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde yakınlık güç ve güvenle bağlantılıdır."
+          ],
+          "mechanism": [
+            "Bağlanmadan önce derin testler uygularsın."
+          ],
+          "effect": [
+            "Yoğun, bağlayıcı ve dönüştürücü ilişkiler yaşarsın."
+          ],
+          "shadow": [
+            "Kontrolcü dinamikler bağları zorlayabilir."
+          ],
+          "potential": [
+            "Karşılıklı teslimiyetle ilişkiler şifalanır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin gizli süreçleri ve derinlikleri anlamaya odaklanır."
+          ],
+          "mechanism": [
+            "Sezgisel ve analitik düşünme birlikte çalışır."
+          ],
+          "effect": [
+            "Bu seni psikolojik olarak keskin biri yapar."
+          ],
+          "shadow": [
+            "Şüphecilik zihni ağırlaştırabilir."
+          ],
+          "potential": [
+            "Zihinsel derinlik bilgelik üretir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kriz ve kaynak yönetimi kariyer temasına dönüşür."
+          ],
+          "mechanism": [
+            "Stratejik ve kapalı alanlarda çalışmayı seçersin."
+          ],
+          "effect": [
+            "Finans, psikoloji, araştırma alanlarında başarı gelir."
+          ],
+          "shadow": [
+            "Riskten kaçınma ilerlemeyi yavaşlatabilir."
+          ],
+          "potential": [
+            "Kriz ustalığı yüksek değer yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda güç ve kontrol karması taşınır."
+          ],
+          "mechanism": [
+            "Kayıp ve dönüşüm deneyimleri tekrar eder."
+          ],
+          "effect": [
+            "Olgunluk krizle birlikte gelişir."
+          ],
+          "shadow": [
+            "Kontrole tutunmak karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Teslimiyetle karmayı dönüştürürsün."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_9",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 9
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde anlam, inanç ve doğruluk arayışı vardır."
+          ],
+          "mechanism": [
+            "Bu arayış seni sorgulayarak ve sınayarak ilerlemeye iter."
+          ],
+          "effect": [
+            "Dışarıdan ciddi, mesafeli ve düşünceli biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Anlam kaybı veya katı inançlar oluşabilir."
+          ],
+          "potential": [
+            "Zamanla derin ve olgun bir bilgelik gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı doğruyu bulma baskısıyla şekillenir."
+          ],
+          "mechanism": [
+            "İnançları zihinsel süzgeçten geçirerek güven sağlarsın."
+          ],
+          "effect": [
+            "Bu seni gerçekçi ama temkinli kılar."
+          ],
+          "shadow": [
+            "Umutsuzluk dönemleri yaşanabilir."
+          ],
+          "potential": [
+            "İçsel anlam duygusu güçlendikçe psikoloji dengelenir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde zihinsel ve etik uyum önemlidir."
+          ],
+          "mechanism": [
+            "Ortak değerler olmadan bağ kurmazsın."
+          ],
+          "effect": [
+            "Ciddi ve öğretici ilişkiler yaşarsın."
+          ],
+          "shadow": [
+            "Üstten bakma algısı oluşabilir."
+          ],
+          "potential": [
+            "Birlikte öğrenilen ilişkiler derinleşir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin hakikat ve sistem arayışına odaklanır."
+          ],
+          "mechanism": [
+            "Felsefi ve analitik düşünme gelişir."
+          ],
+          "effect": [
+            "Bu seni öğretici ve sorgulayıcı yapar."
+          ],
+          "shadow": [
+            "Aşırı şüphecilik zihni sertleştirebilir."
+          ],
+          "potential": [
+            "Zihinsel esneklik bilgelik üretir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Anlam ve uzmanlık kariyer yönünü belirler."
+          ],
+          "mechanism": [
+            "Uzun eğitim ve deneyim yolları seçilir."
+          ],
+          "effect": [
+            "Akademi, hukuk ve danışmanlıkta başarı gelir."
+          ],
+          "shadow": [
+            "Geç ilerleme motivasyonu zorlayabilir."
+          ],
+          "potential": [
+            "Saygın bir uzmanlık alanı oluşur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda inanç ve anlam karması taşınır."
+          ],
+          "mechanism": [
+            "Hakikatle yüzleşme dersleri tekrar eder."
+          ],
+          "effect": [
+            "Bilgelik zamanla inşa edilir."
+          ],
+          "shadow": [
+            "Anlamdan kopuş karmasal yük yaratır."
+          ],
+          "potential": [
+            "Gerçek inançla karmayı dönüştürürsün."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_10",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 10
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde başarı, statü ve sorumluluk vardır."
+          ],
+          "mechanism": [
+            "Bu temalar seni disiplinle ve sabırla yükselmeye iter."
+          ],
+          "effect": [
+            "Dışarıdan ciddi, güçlü ve otoriter biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Başarı baskısı kimliği daraltabilir."
+          ],
+          "potential": [
+            "Zamanla doğal bir liderlik oluşur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı başarma zorunluluğuyla şekillenir."
+          ],
+          "mechanism": [
+            "Duyguları bastırarak hedefe odaklanırsın."
+          ],
+          "effect": [
+            "Bu seni dayanıklı ama yorgun kılabilir."
+          ],
+          "shadow": [
+            "Tükenmişlik riski oluşur."
+          ],
+          "potential": [
+            "İçsel tatmin geliştikçe denge kurulur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde saygı ve güven ön plandadır."
+          ],
+          "mechanism": [
+            "Sorumluluk alarak bağ kurarsın."
+          ],
+          "effect": [
+            "Olgun ve uzun vadeli ilişkiler yaşarsın."
+          ],
+          "shadow": [
+            "Duygusal mesafe artabilir."
+          ],
+          "potential": [
+            "Güven temelli bağlar güçlenir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin hedef ve yapı odaklı çalışır."
+          ],
+          "mechanism": [
+            "Stratejik planlama ile düşünürsün."
+          ],
+          "effect": [
+            "Bu seni gerçekçi ve kararlı yapar."
+          ],
+          "shadow": [
+            "Katı düşünce kalıpları oluşabilir."
+          ],
+          "potential": [
+            "Zihinsel esneklik liderliği güçlendirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer yaşamın ana sınav alanıdır."
+          ],
+          "mechanism": [
+            "Adım adım ve sabırla ilerlersin."
+          ],
+          "effect": [
+            "Yönetim, kurumsal ve devlet alanlarında başarı gelir."
+          ],
+          "shadow": [
+            "Geç başarı hayal kırıklığı yaratabilir."
+          ],
+          "potential": [
+            "Kalıcı itibar ve otorite inşa edilir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda otorite ve sorumluluk karması vardır."
+          ],
+          "mechanism": [
+            "Emek ve zaman temel ders haline gelir."
+          ],
+          "effect": [
+            "Statü olgunlukla kazanılır."
+          ],
+          "shadow": [
+            "Başarıya tutunmak karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Gerçek liderlikle karmayı dengelersin."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_11",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 11
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde aidiyet ve gelecek beklentisi vardır."
+          ],
+          "mechanism": [
+            "Bu beklenti seni sosyal bağları seçici kurmaya iter."
+          ],
+          "effect": [
+            "Dışarıdan ciddi, mesafeli ama güvenilir biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Yalnızlık veya dışlanmışlık hissi oluşabilir."
+          ],
+          "potential": [
+            "Zamanla saygın bir topluluk rolü gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı kabul görme ihtiyacıyla şekillenir."
+          ],
+          "mechanism": [
+            "Mesafe koyarak korunursun."
+          ],
+          "effect": [
+            "Bu seni dayanıklı ama temkinli kılar."
+          ],
+          "shadow": [
+            "Umutsuzluk veya kopukluk hissi oluşabilir."
+          ],
+          "potential": [
+            "Gerçek aidiyet duygusu geliştikçe psikoloji dengelenir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Dostluklar sorumluluk ve güvenle kurulur."
+          ],
+          "mechanism": [
+            "Az ama kalıcı bağlar oluşturursun."
+          ],
+          "effect": [
+            "Bu seni güvenilir bir dost yapar."
+          ],
+          "shadow": [
+            "Sosyal izolasyon riski oluşabilir."
+          ],
+          "potential": [
+            "Topluluk içinde sağlam bağlar kurarsın."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin gelecek ve sistem kurmaya odaklanır."
+          ],
+          "mechanism": [
+            "Uzun vadeli planlarla düşünürsün."
+          ],
+          "effect": [
+            "Bu seni vizyoner ama gerçekçi yapar."
+          ],
+          "shadow": [
+            "Hayal kırıklığı zihni daraltabilir."
+          ],
+          "potential": [
+            "Zihinsel vizyon güç kazandıkça umut artar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Toplumsal katkı kariyer temasına dönüşür."
+          ],
+          "mechanism": [
+            "Organizasyon ve yapı içinde ilerlersin."
+          ],
+          "effect": [
+            "STK, teknoloji ve kolektif projelerde başarı gelir."
+          ],
+          "shadow": [
+            "Yavaş ilerleme motivasyonu düşürebilir."
+          ],
+          "potential": [
+            "Toplumsal liderlik rolü oluşur."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda topluluk ve aidiyet karması vardır."
+          ],
+          "mechanism": [
+            "Sosyal sınavlar tekrar eder."
+          ],
+          "effect": [
+            "Bağlar zamanla olgunlaşır."
+          ],
+          "shadow": [
+            "Yalnızlık karmasal ders olabilir."
+          ],
+          "potential": [
+            "Gerçek topluluk bilinci karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "saturn_in_house_12",
+      "conditions": [
+        {
+          "planet": "Saturn",
+          "house": 12
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin temelinde bilinçaltı ve içsel sınavlar vardır."
+          ],
+          "mechanism": [
+            "Bu sınavlar seni içe çekilerek güç toplamaya iter."
+          ],
+          "effect": [
+            "Dışarıdan sessiz, derin ve kapalı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Yalnızlık veya kaçış eğilimi oluşabilir."
+          ],
+          "potential": [
+            "İçsel disiplinle güçlü bir ruhsal merkez gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı bastırılmış korkularla şekillenir."
+          ],
+          "mechanism": [
+            "İçe kapanarak ve kontrol ederek denge sağlarsın."
+          ],
+          "effect": [
+            "Bu seni dayanıklı ama içsel olarak yüklenmiş kılar."
+          ],
+          "shadow": [
+            "Kaygı ve suçluluk döngüleri oluşabilir."
+          ],
+          "potential": [
+            "Farkındalık arttıkça içsel arınma başlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde fedakarlık ve gizlilik teması vardır."
+          ],
+          "mechanism": [
+            "Sevgiyi sessizce ve dolaylı yoldan gösterirsin."
+          ],
+          "effect": [
+            "Bu seni derin ama görünmez bir partner yapabilir."
+          ],
+          "shadow": [
+            "Kendini feda etme sınırları zorlayabilir."
+          ],
+          "potential": [
+            "Sağlıklı sınırlar kurulduğunda ilişkiler şifalanır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin bilinçaltı süreçlere odaklanır."
+          ],
+          "mechanism": [
+            "Sezgisel ve içsel düşünme baskındır."
+          ],
+          "effect": [
+            "Bu seni derin farkındalığa sahip biri yapar."
+          ],
+          "shadow": [
+            "Zihinsel kaçış veya dağılma oluşabilir."
+          ],
+          "potential": [
+            "Zihinsel disiplin ruhsal bilgelik üretir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Perde arkası ve içsel işler kariyer temasına dönüşür."
+          ],
+          "mechanism": [
+            "Yalnız veya kapalı alanlarda çalışmayı seçersin."
+          ],
+          "effect": [
+            "Psikoloji, sanat ve şifa alanlarında başarı gelir."
+          ],
+          "shadow": [
+            "Görünürlükten kaçınma ilerlemeyi yavaşlatabilir."
+          ],
+          "potential": [
+            "Sessiz ama derin etki yaratırsın."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda ruhsal ve bilinçaltı karması taşınır."
+          ],
+          "mechanism": [
+            "Yalnızlık ve teslimiyet dersleri tekrar eder."
+          ],
+          "effect": [
+            "Ruhsal olgunluk içsel çalışmayla gelişir."
+          ],
+          "shadow": [
+            "Kaçış karmayı ağırlaştırabilir."
+          ],
+          "potential": [
+            "Bilinçli farkındalıkla karmayı dönüştürürsün."
+          ]
+        }
+      }
+    }
+  ]
+}

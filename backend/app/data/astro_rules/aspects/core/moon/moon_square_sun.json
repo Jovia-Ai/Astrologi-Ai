@@ -1,0 +1,18 @@
+{
+  "id": "moon_square_sun",
+  "aspect": "square",
+  "from": "Moon",
+  "to": "Sun",
+  "focus": "emotional_activation_vs_identity_direction",
+  "experience": {
+    "activation": [
+      "duygusal sistem aktive olduğunda kimlik yönelimi eş zamanlı karşılık verir"
+    ],
+    "tension_point": [
+      "duygusal yoğunluk anlarında yön ve ifade biçimi zorlanır"
+    ],
+    "behavior_loop": [
+      "önce duygusal tepki yükselir, ardından yön ve ifade yeniden düzenlenir"
+    ]
+  }
+}

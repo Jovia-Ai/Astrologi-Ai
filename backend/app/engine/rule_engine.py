@@ -1,12 +1,13 @@
 """Rule engine that evaluates natal chart rules from JSON definitions."""
 from __future__ import annotations
 
+import copy
 import json
 import logging
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Sequence, Set, Tuple
 
-from app.engine.meta_detectors import (
+from app.helpers.meta_detectors import (
     analyze_planets,
     normalize_node_alias,
     normalize_planet_key,
@@ -32,21 +33,29 @@ class RuleEngine:
         all_aspect_rules: List[Dict[str, Any]] = []
         all_meta_rules: List[Dict[str, Any]] = []
 
+        rule_files: List[Path] = []
         if rules_dir.exists():
-            for file in sorted(rules_dir.glob("*.json")):
-                with file.open("r", encoding="utf-8") as handle:
-                    payload = json.load(handle)
-                all_sign_rules.extend(payload.get("planet_sign_rules", []))
-                all_house_rules.extend(payload.get("planet_house_rules", []))
-                all_aspect_rules.extend(payload.get("aspect_rules", []))
-                all_meta_rules.extend(payload.get("meta_rules", []))
+            rule_files.extend(sorted(rules_dir.glob("*.json")))
+        astro_root = rules_dir.parent / "astro_rules"
+        if astro_root.exists():
+            rule_files.extend(sorted(astro_root.rglob("*.json")))
+
+        for file in rule_files:
+            with file.open("r", encoding="utf-8") as handle:
+                payload = json.load(handle)
+            if not isinstance(payload, Mapping):
+                continue
+            all_sign_rules.extend(payload.get("planet_sign_rules", []))
+            all_house_rules.extend(payload.get("planet_house_rules", []))
+            all_aspect_rules.extend(payload.get("aspect_rules", []))
+            all_meta_rules.extend(payload.get("meta_rules", []))
 
         self.planet_sign_rules = self._normalize_rule_list(all_sign_rules)
         self.planet_house_rules = self._normalize_rule_list(all_house_rules)
         self.aspect_rules = self._normalize_rule_list(all_aspect_rules)
         self.meta_rules = self._normalize_rule_list(all_meta_rules)
         print("RuleEngine initialized with", len(self.planet_sign_rules), "planet sign rules")
-        self.interpretation: Dict[str, List[Dict[str, str]]] = {category: [] for category in CATEGORIES}
+        self.interpretation: Dict[str, List[Dict[str, Any]]] = {category: [] for category in CATEGORIES}
 
     def interpret(
         self,
@@ -65,27 +74,29 @@ class RuleEngine:
         meta_info = analyze_planets(planets)
         meta_info["aspect_pairs"] = self._build_aspect_pairs(aspects)
 
-        results: Dict[str, Dict[str, List[str]]] = {
+        results: Dict[str, Dict[str, List[Dict[str, Any]]]] = {
             category: {type_name: [] for type_name in TYPE_NAMES}
             for category in CATEGORIES
         }
 
+        meta_info["aspects_list"] = aspects
+        seen_fragments: Set[Tuple[str, str, str, str, str, str]] = set()
         for rule in self.planet_sign_rules:
             logger.info("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
             if self._conditions_met(rule.get("conditions"), meta_info, rule_id=rule.get("id")):
-                self._append_output(results, rule.get("output"))
+                self._append_output(results, rule.get("output"), rule, meta_info, seen_fragments)
         for rule in self.planet_house_rules:
             logger.info("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
             if self._conditions_met(rule.get("conditions"), meta_info, rule_id=rule.get("id")):
-                self._append_output(results, rule.get("output"))
+                self._append_output(results, rule.get("output"), rule, meta_info, seen_fragments)
         for rule in self.aspect_rules:
             logger.info("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
             if self._conditions_met(rule.get("conditions"), meta_info, rule_id=rule.get("id")):
-                self._append_output(results, rule.get("output"))
+                self._append_output(results, rule.get("output"), rule, meta_info, seen_fragments)
         for rule in self.meta_rules:
             logger.info("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
             if self._conditions_met(rule.get("conditions"), meta_info, rule_id=rule.get("id")):
-                self._append_output(results, rule.get("output"))
+                self._append_output(results, rule.get("output"), rule, meta_info, seen_fragments)
 
         self.interpretation = results
 
@@ -263,7 +274,14 @@ class RuleEngine:
         count = sum(house_counts.get(int(house), 0) for house in houses)
         return count >= min_planets
 
-    def _append_output(self, results: MutableMapping[str, Dict[str, List[str]]], output: Any) -> None:
+    def _append_output(
+        self,
+        results: MutableMapping[str, Dict[str, List[Dict[str, Any]]]],
+        output: Any,
+        rule: Mapping[str, Any],
+        meta_info: Mapping[str, Any],
+        dedup_keys: Set[Tuple[str, str, str, str, str, str]],
+    ) -> None:
         """
         Merge rule output (tagged) into the global results dictionary.
         output structure:
@@ -280,7 +298,8 @@ class RuleEngine:
         if not isinstance(output, Mapping):
             return
 
-        for category, tagged in output.items():
+        tagged_copy = copy.deepcopy(output)
+        for category, tagged in tagged_copy.items():
             if category not in results or not isinstance(tagged, Mapping):
                 continue
 
@@ -288,18 +307,124 @@ class RuleEngine:
                 bucket = results[category].get(type_name)
                 if bucket is None:
                     continue
-                normalized = self._normalize_fragments(sentences)
-                bucket.extend(normalized)
+                trigger = self._derive_trigger(rule, meta_info)
+                rule_id = str(rule.get("id") or "").strip()
+                normalized = self._normalize_fragments(sentences, type_name, trigger, category, rule_id)
+                for fragment in normalized:
+                    key = self._fragment_dedup_key(fragment, type_name, rule_id)
+                    if key in dedup_keys:
+                        continue
+                    dedup_keys.add(key)
+                    bucket.append(fragment)
 
-    @staticmethod
-    def _normalize_fragments(value: Any) -> List[str]:
+    def _derive_trigger(self, rule: Mapping[str, Any], meta_info: Mapping[str, Any]) -> Mapping[str, Any]:
+        conditions = rule.get("conditions")
+        if not isinstance(conditions, Sequence):
+            return {}
+        for condition in conditions:
+            if not isinstance(condition, Mapping):
+                continue
+            trigger = self._build_planet_trigger(condition, meta_info)
+            if trigger:
+                return trigger
+            trigger = self._build_aspect_trigger(condition)
+            if trigger:
+                return trigger
+        return {}
+
+    def _build_planet_trigger(
+        self, condition: Mapping[str, Any], meta_info: Mapping[str, Any]
+    ) -> Mapping[str, Any]:
+        if "planet" not in condition:
+            return {}
+        normalized_planet = normalize_node_alias(normalize_planet_key(condition.get("planet")))
+        if not normalized_planet:
+            normalized_planet = str(condition.get("planet", "")).strip()
+        trigger: Dict[str, Any] = {
+            "type": "planet_house" if "house" in condition else "planet",
+            "planet": normalized_planet,
+        }
+        planet_signs: Mapping[str, Any] = meta_info.get("planet_signs", {})
+        planet_houses: Mapping[str, Any] = meta_info.get("planet_houses", {})
+        if normalized_planet and normalized_planet in planet_signs:
+            trigger["sign"] = planet_signs[normalized_planet]
+        if normalized_planet and normalized_planet in planet_houses:
+            trigger["house"] = planet_houses[normalized_planet]
+        return trigger
+
+    def _build_aspect_trigger(self, condition: Mapping[str, Any]) -> Mapping[str, Any]:
+        if "aspect" in condition and isinstance(condition["aspect"], Mapping):
+            aspect_condition = condition["aspect"]
+        else:
+            aspect_condition = condition
+        planet1 = str(aspect_condition.get("planet1") or aspect_condition.get("planet") or "").strip()
+        planet2 = str(aspect_condition.get("planet2") or aspect_condition.get("target") or "").strip()
+        aspect_type = str(aspect_condition.get("type") or aspect_condition.get("aspect") or "").strip()
+        if not (planet1 and planet2 and aspect_type):
+            return {}
+        return {
+            "type": "aspect",
+            "planet1": normalize_node_alias(normalize_planet_key(planet1)),
+            "planet2": normalize_node_alias(normalize_planet_key(planet2)),
+            "aspect": aspect_type,
+        }
+
+    def _build_fragment(
+        self,
+        text: str,
+        slot: str,
+        trigger: Mapping[str, Any],
+        domain: str,
+        rule_id: str,
+    ) -> Dict[str, Any]:
+        fragment: Dict[str, Any] = {
+            "text": text,
+            "type": slot,
+            "trigger": trigger,
+            "domain": domain,
+            "source_triggers": [trigger],
+            "source_rule_ids": [rule_id] if rule_id else [],
+        }
+        planet_name = trigger.get("planet") or trigger.get("planet1") or ""
+        fragment["planet"] = planet_name
+        return fragment
+
+    def _normalize_fragments(
+        self,
+        value: Any,
+        slot: str,
+        trigger: Mapping[str, Any],
+        category: str,
+        rule_id: str,
+    ) -> List[Dict[str, Any]]:
         if isinstance(value, Mapping):
-            fragments: List[str] = []
+            fragments: List[Dict[str, Any]] = []
             for sub_value in value.values():
-                fragments.extend(RuleEngine._normalize_fragments(sub_value))
+                fragments.extend(self._normalize_fragments(sub_value, slot, trigger, category, rule_id))
             return fragments
         if isinstance(value, str):
-            return [value.strip()] if value.strip() else []
-        if isinstance(value, Sequence):
-            return [str(item).strip() for item in value if str(item).strip()]
+            cleaned = value.strip()
+            return [self._build_fragment(cleaned, slot, trigger, category, rule_id)] if cleaned else []
+        if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
+            fragments: List[Dict[str, Any]] = []
+            for item in value:
+                fragments.extend(self._normalize_fragments(item, slot, trigger, category, rule_id))
+            return fragments
         return []
+
+    def _fragment_dedup_key(
+        self, fragment: Mapping[str, Any], slot: str, rule_id: str
+    ) -> Tuple[str, str, str, str, str, str]:
+        trigger = fragment.get("trigger") or {}
+        planet = str(fragment.get("planet") or "").lower().strip()
+        sign = str(trigger.get("sign") or "").lower().strip()
+        house_value = trigger.get("house")
+        house = "" if house_value is None else str(house_value).strip()
+        text = str(fragment.get("text") or "")
+        normalized_text = self._normalize_text_for_dedup(text)
+        return (rule_id, slot, planet, sign, house, normalized_text)
+
+    @staticmethod
+    def _normalize_text_for_dedup(text: str) -> str:
+        normalized = " ".join(text.strip().lower().split())
+        return normalized

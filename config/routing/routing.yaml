@@ -1,0 +1,43 @@
+{
+  "layers": {
+    "composite_interpretation": {
+      "allowed_signals": ["aspect_cluster", "house_emphasis", "dispositor_chain"],
+      "diversity_requirement": {
+        "axes_min": 2,
+        "domains_min": 2
+      }
+    },
+    "inner_narrative": {
+      "allowed_signals": ["focus_object", "axis_activation", "slot_candidates"],
+      "anti_duplication": {
+        "require_scene_shift": true,
+        "reuse_keywords": false
+      }
+    },
+    "upper_meaning": {
+      "allowed_signals": ["experience_tension", "life_stage", "dominance_stream"],
+      "threshold": {
+        "required_support": 0.6,
+        "required_pressure": 0.6
+      }
+    }
+  },
+  "anti_duplication_rules": [
+    "same_signal_in_two_layers_must_change_focus",
+    "no_share_of_exact_phrase_between_layers"
+  ],
+  "diversity_constraints": {
+    "min_unique_axes": 2,
+    "min_unique_domains": 2,
+    "mode": "hard"
+  },
+  "relaxation_ladder": [
+    "allow_template_variant_flag",
+    "drop_trigger_tags",
+    "shorten_provenance",
+    "swap_theme_candidate",
+    "reduce_slot_count_keep_anchor",
+    "fallback_anchor_plus_micro",
+    "widen_domain_for_micro_only"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "composite_id": "constructed_inner_authority",
+  "sources": [
+    "sun_in_capricorn",
+    "sun_in_1st_house",
+    "sun_square_moon"
+  ],
+  "domains": ["identity"]
+}

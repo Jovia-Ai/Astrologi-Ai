@@ -1,0 +1,10 @@
+{
+  "version": "2.2.0",
+  "assertions": [
+    "trace_integrity",
+    "constraint_relaxation_used_when_deadlock",
+    "template_repeat_budget_enforced",
+    "theme_mapping_present",
+    "object_weight_applied"
+  ]
+}

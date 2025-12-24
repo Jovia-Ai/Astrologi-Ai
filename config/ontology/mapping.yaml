@@ -1,0 +1,233 @@
+"{
+  \"version\": \"2.3.0\",
+  \"last_updated\": \"2025-12-23\",
+  \"notes\": \"Theme mapping is a 3-stage deterministic process: 1) Candidate generation 2) Contextual modification 3) Resolution with guards. A signal without a resolved theme MUST NOT be selected.\",
+  \"settings\": {
+    \"max_candidates\": 3,
+    \"weak_mapping_threshold\": 0.3,
+    \"hard_fail_if_no_theme\": true
+  },
+  \"candidates\": [
+    {
+      \"id\": \"AC_SATURN_HARD\",
+      \"if\": {
+        \"aspect_cluster\": {
+          \"involves\": [\"Saturn\"],
+          \"type\": \"hard\",
+          \"min_count\": 1
+        }
+      },
+      \"then\": {
+        \"candidates\": [
+          {\"theme\": \"duty\", \"base\": 0.55},
+          {\"theme\": \"security\", \"base\": 0.35},
+          {\"theme\": \"evaluation_standards\", \"base\": 0.25}
+        ]
+      }
+    },
+    {
+      \"id\": \"AC_MOON_HARD\",
+      \"if\": {
+        \"aspect_cluster\": {
+          \"involves\": [\"Moon\"],
+          \"type\": \"hard\",
+          \"min_count\": 1
+        }
+      },
+      \"then\": {
+        \"candidates\": [
+          {\"theme\": \"intimacy_trust\", \"base\": 0.55},
+          {\"theme\": \"security\", \"base\": 0.3},
+          {\"theme\": \"boundary\", \"base\": 0.25}
+        ]
+      }
+    },
+    {
+      \"id\": \"AC_MARS_HARD\",
+      \"if\": {
+        \"aspect_cluster\": {
+          \"involves\": [\"Mars\"],
+          \"type\": \"hard\",
+          \"min_count\": 1
+        }
+      },
+      \"then\": {
+        \"candidates\": [
+          {\"theme\": \"desire_drive\", \"base\": 0.55},
+          {\"theme\": \"power_control\", \"base\": 0.35},
+          {\"theme\": \"agency\", \"base\": 0.3}
+        ]
+      }
+    },
+    {
+      \"id\": \"AC_VENUS_HARD\",
+      \"if\": {
+        \"aspect_cluster\": {
+          \"involves\": [\"Venus\"],
+          \"type\": \"hard\",
+          \"min_count\": 1
+        }
+      },
+      \"then\": {
+        \"candidates\": [
+          {\"theme\": \"intimacy_trust\", \"base\": 0.45},
+          {\"theme\": \"evaluation_standards\", \"base\": 0.3},
+          {\"theme\": \"belonging_network\", \"base\": 0.25}
+        ]
+      }
+    },
+    {
+      \"id\": \"HOUSE_8_EMPHASIS\",
+      \"if\": {
+        \"house_emphasis\": {
+          \"house\": 8,
+          \"level\": \"strong\"
+        }
+      },
+      \"then\": {
+        \"candidates\": [
+          {\"theme\": \"intimacy_trust\", \"base\": 0.5},
+          {\"theme\": \"merge_separate\", \"base\": 0.45},
+          {\"theme\": \"security\", \"base\": 0.3}
+        ]
+      }
+    },
+    {
+      \"id\": \"HOUSE_10_EMPHASIS\",
+      \"if\": {
+        \"house_emphasis\": {
+          \"house\": 10,
+          \"level\": \"strong\"
+        }
+      },
+      \"then\": {
+        \"candidates\": [
+          {\"theme\": \"evaluation_standards\", \"base\": 0.6},
+          {\"theme\": \"visibility\", \"base\": 0.45},
+          {\"theme\": \"duty\", \"base\": 0.35}
+        ]
+      }
+    },
+    {
+      \"id\": \"HOUSE_11_EMPHASIS\",
+      \"if\": {
+        \"house_emphasis\": {
+          \"house\": 11,
+          \"level\": \"strong\"
+        }
+      },
+      \"then\": {
+        \"candidates\": [
+          {\"theme\": \"belonging_network\", \"base\": 0.55},
+          {\"theme\": \"visibility\", \"base\": 0.3}
+        ]
+      }
+    },
+    {
+      \"id\": \"HOUSE_RULER_1_CHAIN\",
+      \"if\": {
+        \"house_ruler_chain\": {
+          \"house\": 1,
+          \"length\": 2
+        }
+      },
+      \"then\": {
+        \"candidates\": [
+          {\"theme\": \"agency\", \"base\": 0.55},
+          {\"theme\": \"boundary\", \"base\": 0.35}
+        ]
+      }
+    },
+    {
+      \"id\": \"HOUSE_RULER_7_CHAIN\",
+      \"if\": {
+        \"house_ruler_chain\": {
+          \"house\": 7,
+          \"length\": 2
+        }
+      },
+      \"then\": {
+        \"candidates\": [
+          {\"theme\": \"intimacy_trust\", \"base\": 0.5},
+          {\"theme\": \"merge_separate\", \"base\": 0.4}
+        ]
+      }
+    }
+  ],
+  \"modifiers\": [
+    {
+      \"if\": {\"axis\": [\"1-7\"]},
+      \"add\": {
+        \"boundary\": 0.2,
+        \"intimacy_trust\": 0.15
+      }
+    },
+    {
+      \"if\": {\"axis\": [\"4-10\"]},
+      \"add\": {
+        \"security\": 0.2,
+        \"evaluation_standards\": 0.15
+      }
+    },
+    {
+      \"if\": {\"object\": \"chart_ruler\"},
+      \"add\": {
+        \"agency\": 0.25
+      }
+    },
+    {
+      \"if\": {\"object\": \"stellium_core\"},
+      \"add\": {
+        \"merge_separate\": 0.2,
+        \"power_control\": 0.2
+      }
+    },
+    {
+      \"if\": {\"life_stage\": \"major\"},
+      \"add\": {
+        \"duty\": 0.2,
+        \"meaning_belief\": 0.2
+      }
+    }
+  ],
+  \"resolve\": {
+    \"overlap_guards\": [
+      {
+        \"pair\": [\"visibility\", \"evaluation_standards\"],
+        \"prefer\": {
+          \"if_house\": 10,
+          \"else\": \"evaluation_standards\"
+        }
+      },
+      {
+        \"pair\": [\"security\", \"boundary\"],
+        \"prefer\": {
+          \"if_axis\": [\"4-10\"],
+          \"else\": \"security\"
+        }
+      },
+      {
+        \"pair\": [\"duty\", \"order_optimization\"],
+        \"prefer\": {
+          \"if_house\": 6,
+          \"else\": \"duty\"
+        }
+      }
+    ],
+    \"selection\": {
+      \"rule\": \"highest_total_score\",
+      \"tie_breaker\": [
+        \"higher_base_score\",
+        \"signal_score\",
+        \"deterministic_hash\"
+      ]
+    }
+  },
+  \"weak_mapping\": {
+    \"allowed\": true,
+    \"max_usage_per_chart\": 1,
+    \"candidates\": [
+      {\"theme\": \"meaning_belief\", \"base\": 0.25}
+    ]
+  }
+}

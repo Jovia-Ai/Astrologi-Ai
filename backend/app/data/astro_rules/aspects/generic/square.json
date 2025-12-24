@@ -1,0 +1,10 @@
+{
+  "aspect": "square",
+  "type": "dynamic_tension",
+  "interaction": {
+    "simultaneity": "iki ayrı fonksiyon aynı zaman aralığında aktive olma eğilimindedir",
+    "friction": "eş zamanlı çalışamadıklarında içsel sürtünme oluşur",
+    "imbalance_risk": "bir fonksiyon aktifken diğeri geçici olarak bastırılabilir",
+    "integration_condition": "bilinçli eşzamanlama sağlandığında sistem içi dayanıklılık artar"
+  }
+}

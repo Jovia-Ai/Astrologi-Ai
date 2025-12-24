@@ -1,0 +1,1362 @@
+{
+  "planet_house_rules": [
+    {
+      "id": "lilith_in_house_1",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 1
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğinin merkezinde bastırılmış güç ve görünür olma çatışması vardır."
+          ],
+          "mechanism": [
+            "Bu çatışma seni kendini güçlü ama savunmalı ifade etmeye iter."
+          ],
+          "effect": [
+            "Dışarıdan çekici, yoğun ve meydan okuyan biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Kimlikte öfke veya reddedilme korkusu oluşabilir."
+          ],
+          "potential": [
+            "Kendi gücünü sahiplenip yumuşattığında karizmatik bir merkez oluşur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı erken bastırılma deneyimleriyle şekillenir."
+          ],
+          "mechanism": [
+            "Savunma olarak sertlik veya mesafe geliştirebilirsin."
+          ],
+          "effect": [
+            "Bu seni güçlü ama yalnız hissettirebilir."
+          ],
+          "shadow": [
+            "İçsel öfke birikebilir."
+          ],
+          "potential": [
+            "Farkındalık duygusal özgürlük sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde güç dengesi hassastır."
+          ],
+          "mechanism": [
+            "Zayıf görünmemek için kontrol eğilimi oluşabilir."
+          ],
+          "effect": [
+            "Bu tutkulu ama zorlayıcı ilişkiler yaratır."
+          ],
+          "shadow": [
+            "Güç savaşları."
+          ],
+          "potential": [
+            "Eşitlik bağları derinleştirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin kimlik algısını sürekli sorgular."
+          ],
+          "mechanism": [
+            "Kendini savunma düşünceleri baskındır."
+          ],
+          "effect": [
+            "Bu keskin farkındalık sağlar."
+          ],
+          "shadow": [
+            "Aşırı tetikte olma."
+          ],
+          "potential": [
+            "Zihinsel kabulleniş netlik getirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Görünürlük ve güç temaları kariyeri etkiler."
+          ],
+          "mechanism": [
+            "Kendi alanını yaratmak istersin."
+          ],
+          "effect": [
+            "Sanat, liderlik ve bireysel alanlarda etki."
+          ],
+          "shadow": [
+            "Otorite çatışmaları."
+          ],
+          "potential": [
+            "Otantik duruş güçlü bir marka yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda benlik ve bastırılmış güç karması vardır."
+          ],
+          "mechanism": [
+            "Reddedilme deneyimleri tekrar edebilir."
+          ],
+          "effect": [
+            "Kimlik dönüşür."
+          ],
+          "shadow": [
+            "Öfke karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Kendi gücünü sevgiyle sahiplenmek karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_2",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 2
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik değer ve güven alanında bastırılmış arzular taşır."
+          ],
+          "mechanism": [
+            "Bu bastırma seni sahip olma ve kaybetme korkusuna iter."
+          ],
+          "effect": [
+            "Dışarıdan güçlü ama güvensiz biri olarak algılanabilirsin."
+          ],
+          "shadow": [
+            "Değer algısı uçlara kayabilir."
+          ],
+          "potential": [
+            "Gerçek değeri içsel olarak kurduğunda sağlam bir merkez oluşur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı yetersizlik korkusuyla şekillenir."
+          ],
+          "mechanism": [
+            "Maddi veya duygusal güvenle rahatlamaya çalışırsın."
+          ],
+          "effect": [
+            "Bu geçici tatmin yaratır."
+          ],
+          "shadow": [
+            "Tatminsizlik artabilir."
+          ],
+          "potential": [
+            "İçsel güven psikolojik özgürlük sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde sahiplenme ve değer teması yoğundur."
+          ],
+          "mechanism": [
+            "Sevgi güvenle eşitlenebilir."
+          ],
+          "effect": [
+            "Bu yoğun ama zorlayıcı bağlar yaratır."
+          ],
+          "shadow": [
+            "Kıskançlık."
+          ],
+          "potential": [
+            "Paylaşım ilişkileri dengeler."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin değer ve yeterlilik konularına takılır."
+          ],
+          "mechanism": [
+            "Kendini kanıtlama düşünceleri baskındır."
+          ],
+          "effect": [
+            "Bu motivasyon sağlar."
+          ],
+          "shadow": [
+            "Zihinsel yorgunluk."
+          ],
+          "potential": [
+            "Kendini yeterli hissetmek zihni rahatlatır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Maddi güç kariyerde önemli hale gelir."
+          ],
+          "mechanism": [
+            "Kendi değerini kanıtlamak istersin."
+          ],
+          "effect": [
+            "Finans, sanat ve bireysel üretimde etki."
+          ],
+          "shadow": [
+            "Para–özdeğer çatışması."
+          ],
+          "potential": [
+            "Değer bilinci kalıcı başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda değer ve özsaygı karması vardır."
+          ],
+          "mechanism": [
+            "Kaybetme–kazanma döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Değer algısı dönüşür."
+          ],
+          "shadow": [
+            "Açgözlülük karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Özdeğer farkındalığı karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_3",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 3
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik ifade ve düşünce alanında bastırılmıştır."
+          ],
+          "mechanism": [
+            "Bu bastırma seni ya suskun ya sivri ifade etmeye iter."
+          ],
+          "effect": [
+            "Dışarıdan keskin, zeki ama huzursuz biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Yanlış anlaşılmalar."
+          ],
+          "potential": [
+            "Otantik ifade güçlü bir ses yaratır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı kendini anlatamama hissi taşır."
+          ],
+          "mechanism": [
+            "Zihinsel savunmalar geliştirirsin."
+          ],
+          "effect": [
+            "Bu zihinsel gerilim yaratır."
+          ],
+          "shadow": [
+            "Kaygı."
+          ],
+          "potential": [
+            "Kendini ifade etmek rahatlama sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde iletişim tetikleyici olabilir."
+          ],
+          "mechanism": [
+            "Sözler güç mücadelesine dönüşebilir."
+          ],
+          "effect": [
+            "Bu yoğun ama zorlayıcı bağlar yaratır."
+          ],
+          "shadow": [
+            "Sözlü çatışmalar."
+          ],
+          "potential": [
+            "Açık iletişim bağları şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin sürekli sorgular ve savunur."
+          ],
+          "mechanism": [
+            "Düşünceler keskindir."
+          ],
+          "effect": [
+            "Bu güçlü analiz sağlar."
+          ],
+          "shadow": [
+            "Aşırı tetikte olma."
+          ],
+          "potential": [
+            "Zihinsel kabulleniş netlik getirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "İfade gücü kariyeri etkiler."
+          ],
+          "mechanism": [
+            "Yazı, medya ve konuşma alanlarına çekilirsin."
+          ],
+          "effect": [
+            "Keskin anlatım dikkat çeker."
+          ],
+          "shadow": [
+            "Yanlış anlaşılma riski."
+          ],
+          "potential": [
+            "Bilinçli dil güçlü etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda söz ve ifade karması vardır."
+          ],
+          "mechanism": [
+            "Söylenemeyenler tekrar eder."
+          ],
+          "effect": [
+            "Ses dönüşür."
+          ],
+          "shadow": [
+            "Sessizlik karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Gerçeği söylemek karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_4",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 4
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik kökler ve aile alanında bastırılmıştır."
+          ],
+          "mechanism": [
+            "Bu bastırma seni içsel isyana iter."
+          ],
+          "effect": [
+            "Dışarıdan güçlü ama içe kapalı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aidiyet yaraları."
+          ],
+          "potential": [
+            "Kendi iç yuvanı kurduğunda derin güç açığa çıkar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı çocukluk bastırmalarıyla şekillenir."
+          ],
+          "mechanism": [
+            "Duyguları saklama eğilimi oluşur."
+          ],
+          "effect": [
+            "Bu içsel ağırlık yaratır."
+          ],
+          "shadow": [
+            "Geçmişe takılma."
+          ],
+          "potential": [
+            "Duygusal yüzleşme özgürlük sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkiler aile kalıplarını tetikler."
+          ],
+          "mechanism": [
+            "Savunma refleksi gelişir."
+          ],
+          "effect": [
+            "Bu yoğun ama zor bağlar yaratır."
+          ],
+          "shadow": [
+            "Geri çekilme."
+          ],
+          "potential": [
+            "Şefkat bağları şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin geçmiş anılarla çalışır."
+          ],
+          "mechanism": [
+            "Hatıralar güçlü duygular taşır."
+          ],
+          "effect": [
+            "Bu derin içgörü sağlar."
+          ],
+          "shadow": [
+            "Zihinsel ağırlık."
+          ],
+          "potential": [
+            "Kabulleniş zihni hafifletir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Güven teması kariyeri etkiler."
+          ],
+          "mechanism": [
+            "Kendi alanını korumak istersin."
+          ],
+          "effect": [
+            "Ev, psikoloji ve bakım alanlarında etki."
+          ],
+          "shadow": [
+            "Görünürlükten kaçınma."
+          ],
+          "potential": [
+            "İçsel güç kalıcı etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda kökler ve bastırılmış duygu karması vardır."
+          ],
+          "mechanism": [
+            "Aile döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Duygusal dönüşüm yaşanır."
+          ],
+          "shadow": [
+            "Geçmişe tutunma karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Kendi ailesel döngünü kırmak karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_5",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 5
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik ifade ve haz alanında bastırılmıştır."
+          ],
+          "mechanism": [
+            "Bu bastırma seni ya aşırı ya kapalı yaşama iter."
+          ],
+          "effect": [
+            "Dışarıdan çekici ama öngörülemez biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Haz–suçluluk çatışması."
+          ],
+          "potential": [
+            "Otantik ifade yaratıcı gücü açar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı görülme ihtiyacı taşır."
+          ],
+          "mechanism": [
+            "Onayla rahatlamaya çalışırsın."
+          ],
+          "effect": [
+            "Bu dalgalı duygular yaratır."
+          ],
+          "shadow": [
+            "Tatminsizlik."
+          ],
+          "potential": [
+            "Kendini ifade etmek duygusal denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Aşk ve tutku yoğun yaşanır."
+          ],
+          "mechanism": [
+            "Bağlar dramatikleşebilir."
+          ],
+          "effect": [
+            "Bu güçlü ama yorucu ilişkiler yaratır."
+          ],
+          "shadow": [
+            "Güç oyunları."
+          ],
+          "potential": [
+            "Dürüst ifade bağları besler."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin yaratıcı ama huzursuzdur."
+          ],
+          "mechanism": [
+            "Kendini ifade etme düşünceleri baskındır."
+          ],
+          "effect": [
+            "Bu yaratıcı üretim sağlar."
+          ],
+          "shadow": [
+            "Odak kaybı."
+          ],
+          "potential": [
+            "Disiplin yaratıcılığı ustalığa taşır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Yaratıcılık kariyeri etkiler."
+          ],
+          "mechanism": [
+            "Sanat ve sahne alanlarına çekilirsin."
+          ],
+          "effect": [
+            "Dikkat çekici üretimler."
+          ],
+          "shadow": [
+            "İstikrarsızlık."
+          ],
+          "potential": [
+            "Kendi stilin kalıcı etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda haz ve ifade karması vardır."
+          ],
+          "mechanism": [
+            "Bastırma–taşkınlık döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Yaratıcılık olgunlaşır."
+          ],
+          "shadow": [
+            "Suçluluk karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Hazla barışmak karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_6",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 6
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik hizmet ve düzen alanında bastırılmıştır."
+          ],
+          "mechanism": [
+            "Bu bastırma seni ya aşırı çalışmaya ya isyana iter."
+          ],
+          "effect": [
+            "Dışarıdan güçlü ama yorgun biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Tükenmişlik."
+          ],
+          "potential": [
+            "Sağlıklı sınırlar sürdürülebilir güç sağlar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı görev ve yük baskısıyla şekillenir."
+          ],
+          "mechanism": [
+            "Kendini işe adama eğilimi oluşur."
+          ],
+          "effect": [
+            "Bu sorumluluk duygusu yaratır."
+          ],
+          "shadow": [
+            "Öfke birikimi."
+          ],
+          "potential": [
+            "Öz-bakım psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde görev–fedakârlık teması vardır."
+          ],
+          "mechanism": [
+            "Sevgi hizmetle ifade edilir."
+          ],
+          "effect": [
+            "Bu destekleyici ama dengesiz bağlar yaratır."
+          ],
+          "shadow": [
+            "Sömürülme hissi."
+          ],
+          "potential": [
+            "Denge ilişkileri şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin yapılması gerekenlere odaklıdır."
+          ],
+          "mechanism": [
+            "Sorumluluk düşünceleri baskındır."
+          ],
+          "effect": [
+            "Bu verimlilik sağlar."
+          ],
+          "shadow": [
+            "Zihinsel yorgunluk."
+          ],
+          "potential": [
+            "Esneklik zihni rahatlatır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Çalışma etiği kariyeri belirler."
+          ],
+          "mechanism": [
+            "Yük almayı kabul edersin."
+          ],
+          "effect": [
+            "Hizmet, sağlık ve destek alanlarında etki."
+          ],
+          "shadow": [
+            "Aşırı yüklenme."
+          ],
+          "potential": [
+            "Bilinçli sınırlar başarıyı sürdürülebilir kılar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda hizmet ve bastırılmış öfke karması vardır."
+          ],
+          "mechanism": [
+            "Aşırı yük alma döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Çalışma anlayışı dönüşür."
+          ],
+          "shadow": [
+            "Kendini ihmal karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Kendine hizmet etmek karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_7",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 7
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik ilişkilerde bastırılmış güç ve eşitlik çatışması taşır."
+          ],
+          "mechanism": [
+            "Bu çatışma seni ya boyun eğmeye ya da meydan okumaya iter."
+          ],
+          "effect": [
+            "Dışarıdan çekici ama zorlayıcı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Güç savaşları ve projeksiyonlar oluşabilir."
+          ],
+          "potential": [
+            "Eşitlik kurduğunda ilişkiler dönüştürücü olur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı onay–özgürlük ikileminde şekillenir."
+          ],
+          "mechanism": [
+            "Yakınlık arttıkça savunma gelişebilir."
+          ],
+          "effect": [
+            "Bu içsel gerilim yaratır."
+          ],
+          "shadow": [
+            "Bağlanma korkusu."
+          ],
+          "potential": [
+            "Bilinçli sınırlar psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde gölge güç temaları tetiklenir."
+          ],
+          "mechanism": [
+            "Partner karşılıklı yaraları ayna gibi yansıtır."
+          ],
+          "effect": [
+            "Bu yoğun ve dönüştürücü bağlar yaratır."
+          ],
+          "shadow": [
+            "Manipülasyon."
+          ],
+          "potential": [
+            "Şeffaflık bağları şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin ilişki kalıplarını sorgular."
+          ],
+          "mechanism": [
+            "Eşitlik düşüncesi baskındır."
+          ],
+          "effect": [
+            "Bu farkındalık sağlar."
+          ],
+          "shadow": [
+            "Kararsızlık."
+          ],
+          "potential": [
+            "Netlik ilişkileri netleştirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Ortaklıklar güç dinamiklerini içerir."
+          ],
+          "mechanism": [
+            "Bağımsızlık talebi artar."
+          ],
+          "effect": [
+            "Danışmanlık ve birebir çalışmalarda etki."
+          ],
+          "shadow": [
+            "Sözleşme çatışmaları."
+          ],
+          "potential": [
+            "Açık kurallar profesyonel güven sağlar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda ilişki ve güç karması vardır."
+          ],
+          "mechanism": [
+            "Ayna deneyimleri tekrar eder."
+          ],
+          "effect": [
+            "Bağlanma bilinci dönüşür."
+          ],
+          "shadow": [
+            "Projeksiyon karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Eşitlik karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_8",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 8
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik bastırılmış arzu ve güç alanında yoğunlaşır."
+          ],
+          "mechanism": [
+            "Bu yoğunluk seni derin yüzleşmelere iter."
+          ],
+          "effect": [
+            "Dışarıdan manyetik ve gizemli biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Kontrol ve takıntı oluşabilir."
+          ],
+          "potential": [
+            "Bilinçli yüzleşme derin şifa getirir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı bilinçaltı dürtülerle şekillenir."
+          ],
+          "mechanism": [
+            "Duygular aşırı yoğun yaşanır."
+          ],
+          "effect": [
+            "Bu güç ve kırılganlığı birlikte getirir."
+          ],
+          "shadow": [
+            "Kaybetme korkusu."
+          ],
+          "potential": [
+            "Farkındalık psikolojik dönüşüm sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlıkta güç ve teslimiyet teması vardır."
+          ],
+          "mechanism": [
+            "Bağlar dönüştürücü yaşanır."
+          ],
+          "effect": [
+            "Bu tutkulu ama zor ilişkiler yaratır."
+          ],
+          "shadow": [
+            "Bağımlılık."
+          ],
+          "potential": [
+            "Şeffaflık bağları dengeler."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin tabu ve gizli konulara çekilir."
+          ],
+          "mechanism": [
+            "Derin analiz ve sezgi çalışır."
+          ],
+          "effect": [
+            "Bu güçlü içgörü sağlar."
+          ],
+          "shadow": [
+            "Zihinsel karanlık."
+          ],
+          "potential": [
+            "Bilinçli analiz denge sağlar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kriz ve dönüşüm alanları kariyeri etkiler."
+          ],
+          "mechanism": [
+            "Araştırma ve şifa yönelimi artar."
+          ],
+          "effect": [
+            "Psikoloji, finans ve kriz yönetiminde etki."
+          ],
+          "shadow": [
+            "Riskli kararlar."
+          ],
+          "potential": [
+            "Strateji kalıcı güç yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda güç ve teslimiyet karması vardır."
+          ],
+          "mechanism": [
+            "Yüzleşme döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Dönüşüm derinleşir."
+          ],
+          "shadow": [
+            "Kontrol karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Teslimiyet karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_9",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 9
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik inanç ve anlam alanında bastırılmıştır."
+          ],
+          "mechanism": [
+            "Bu bastırma seni dogmaları sorgulamaya iter."
+          ],
+          "effect": [
+            "Dışarıdan radikal ve sorgulayıcı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aşırı uçlara kayma."
+          ],
+          "potential": [
+            "Bilinçli sorgulama bilgelik üretir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı doğruyu bulma ihtiyacı taşır."
+          ],
+          "mechanism": [
+            "İnançlar sertleşebilir."
+          ],
+          "effect": [
+            "Bu zihinsel güç verir."
+          ],
+          "shadow": [
+            "Fanatizm."
+          ],
+          "potential": [
+            "Esneklik psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde fikirsel üstünlük teması vardır."
+          ],
+          "mechanism": [
+            "Haklı olma ihtiyacı öne çıkabilir."
+          ],
+          "effect": [
+            "Bu entelektüel ama zorlayıcı bağlar yaratır."
+          ],
+          "shadow": [
+            "Fikir çatışmaları."
+          ],
+          "potential": [
+            "Açık zihin bağları besler."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin anlam ve hakikatle meşguldür."
+          ],
+          "mechanism": [
+            "Sorgulama derindir."
+          ],
+          "effect": [
+            "Bu felsefi güç sağlar."
+          ],
+          "shadow": [
+            "Zihinsel katılık."
+          ],
+          "potential": [
+            "Çoklu bakış zihni yumuşatır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Eğitim ve düşünce alanları kariyeri etkiler."
+          ],
+          "mechanism": [
+            "Öğretme ve yazma yönelimi artar."
+          ],
+          "effect": [
+            "Akademi, hukuk ve yayıncılıkta etki."
+          ],
+          "shadow": [
+            "Otorite çatışmaları."
+          ],
+          "potential": [
+            "Bilgelik kalıcı saygınlık yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda inanç ve hakikat karması vardır."
+          ],
+          "mechanism": [
+            "Dogma kırılmaları tekrar eder."
+          ],
+          "effect": [
+            "Anlam dönüşür."
+          ],
+          "shadow": [
+            "Katılık karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Gerçek arayışı karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_10",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 10
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik toplumsal rolde bastırılmıştır."
+          ],
+          "mechanism": [
+            "Bu bastırma seni görünürlükle çatıştırır."
+          ],
+          "effect": [
+            "Dışarıdan güçlü ama mesafeli biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "İtibar kaygısı."
+          ],
+          "potential": [
+            "Otantik duruş güçlü liderlik yaratır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı onay ve reddedilme teması taşır."
+          ],
+          "mechanism": [
+            "Başarıyla değer ararsın."
+          ],
+          "effect": [
+            "Bu motivasyon sağlar."
+          ],
+          "shadow": [
+            "Başarısızlık korkusu."
+          ],
+          "potential": [
+            "İçsel değer psikolojik güven sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde statü ve güç teması çalışır."
+          ],
+          "mechanism": [
+            "Rol beklentileri öne çıkar."
+          ],
+          "effect": [
+            "Bu mesafeli bağlar yaratır."
+          ],
+          "shadow": [
+            "Soğukluk."
+          ],
+          "potential": [
+            "Eşitlik ilişkileri yumuşatır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin başarı ve kontrol odaklıdır."
+          ],
+          "mechanism": [
+            "Stratejik düşünürsün."
+          ],
+          "effect": [
+            "Bu yönlendirici güç sağlar."
+          ],
+          "shadow": [
+            "Aşırı kontrol."
+          ],
+          "potential": [
+            "Esneklik zihni rahatlatır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Güç ve otorite kariyeri etkiler."
+          ],
+          "mechanism": [
+            "Kendi yolunu açmak istersin."
+          ],
+          "effect": [
+            "Yönetim, politika ve medya alanlarında etki."
+          ],
+          "shadow": [
+            "Otorite çatışmaları."
+          ],
+          "potential": [
+            "Otantik liderlik kalıcı itibar sağlar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda statü ve güç karması vardır."
+          ],
+          "mechanism": [
+            "Yükselme–düşme döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Toplumsal rol dönüşür."
+          ],
+          "shadow": [
+            "Hırs karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Hizmet bilinci karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_11",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 11
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik kolektif içinde bastırılmış hisseder."
+          ],
+          "mechanism": [
+            "Bu bastırma seni sisteme karşı konumlandırır."
+          ],
+          "effect": [
+            "Dışarıdan asi ve bağımsız biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aidiyet kopukluğu."
+          ],
+          "potential": [
+            "Otantik vizyon topluluğu dönüştürür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı kabul görmeme deneyimleri taşır."
+          ],
+          "mechanism": [
+            "Dışlanmaya karşı savunma gelişir."
+          ],
+          "effect": [
+            "Bu bireysel güç yaratır."
+          ],
+          "shadow": [
+            "Yalnızlık."
+          ],
+          "potential": [
+            "Bilinçli bağlar psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Dostluklarda güç ve sınır teması vardır."
+          ],
+          "mechanism": [
+            "Yakınlık–mesafe salınımı yaşanır."
+          ],
+          "effect": [
+            "Bu değişken bağlar yaratır."
+          ],
+          "shadow": [
+            "Kopuşlar."
+          ],
+          "potential": [
+            "Net sınırlar bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin sistemleri eleştirel okur."
+          ],
+          "mechanism": [
+            "Toplumsal normları sorgularsın."
+          ],
+          "effect": [
+            "Bu yenilikçi bakış sağlar."
+          ],
+          "shadow": [
+            "Sürekli muhalefet."
+          ],
+          "potential": [
+            "Yapıcı vizyon zihni dengeler."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Toplumsal dönüşüm kariyeri etkiler."
+          ],
+          "mechanism": [
+            "Alternatif projelere yönelirsin."
+          ],
+          "effect": [
+            "STK, teknoloji ve sosyal girişimde etki."
+          ],
+          "shadow": [
+            "Hedef dağınıklığı."
+          ],
+          "potential": [
+            "Net vizyon kalıcı etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda kolektif dışlanma karması vardır."
+          ],
+          "mechanism": [
+            "Grup deneyimleri tekrar eder."
+          ],
+          "effect": [
+            "Aidiyet bilinci dönüşür."
+          ],
+          "shadow": [
+            "İzolasyon karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Otantik topluluk karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "lilith_in_house_12",
+      "conditions": [
+        {
+          "planet": "Lilith",
+          "house": 12
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik bilinçaltında bastırılmış güç taşır."
+          ],
+          "mechanism": [
+            "Bu bastırma seni görünmez alanlara iter."
+          ],
+          "effect": [
+            "Dışarıdan gizemli ve derin biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Kaçış ve kendini sabote etme."
+          ],
+          "potential": [
+            "Bilinçli farkındalık derin ruhsal güç açar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı bastırılmış korkularla çalışır."
+          ],
+          "mechanism": [
+            "Duygular bilinçaltında birikir."
+          ],
+          "effect": [
+            "Bu yoğun iç dünya yaratır."
+          ],
+          "shadow": [
+            "Kaygı ve suçluluk."
+          ],
+          "potential": [
+            "Farkındalık psikolojik arınma sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde görünmez bağlar ve fedakârlık teması vardır."
+          ],
+          "mechanism": [
+            "Sevgiyi sessizce yaşarsın."
+          ],
+          "effect": [
+            "Bu derin ama kapalı ilişkiler yaratır."
+          ],
+          "shadow": [
+            "Kendini feda etme."
+          ],
+          "potential": [
+            "Sağlıklı sınırlar bağları şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin rüyalar ve sembollerle çalışır."
+          ],
+          "mechanism": [
+            "Sezgi bilinçaltından yükselir."
+          ],
+          "effect": [
+            "Bu güçlü içgörü sağlar."
+          ],
+          "shadow": [
+            "Zihinsel kaçış."
+          ],
+          "potential": [
+            "Zihinsel disiplin berraklık getirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Perde arkası güç kariyeri etkiler."
+          ],
+          "mechanism": [
+            "Sessiz ve derin çalışmayı seçersin."
+          ],
+          "effect": [
+            "Psikoloji, sanat ve ruhsal alanlarda etki."
+          ],
+          "shadow": [
+            "Görünürlükten kaçınma."
+          ],
+          "potential": [
+            "Sessiz güç kalıcı dönüşüm yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda bastırılmış güç ve teslimiyet karması vardır."
+          ],
+          "mechanism": [
+            "Gizli döngüler tekrar eder."
+          ],
+          "effect": [
+            "Ruhsal arınma başlar."
+          ],
+          "shadow": [
+            "Kaçış karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli yüzleşme karmayı çözer."
+          ]
+        }
+      }
+    }
+  ],
+  "aspect_rules": [],
+  "meta_rules": []
+}

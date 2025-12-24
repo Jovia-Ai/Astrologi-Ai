@@ -1,0 +1,1021 @@
+{
+  "planet_house_rules": [
+    {
+      "id": "uranus_in_house_4",
+      "conditions": [
+        {
+          "planet": "Uranus",
+          "house": 4
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin kökler ve aidiyet alanında ani kopuşlarla şekillenir."
+          ],
+          "mechanism": [
+            "Bu yapı seni alışılmış aile kalıplarından özgürleşmeye iter."
+          ],
+          "effect": [
+            "Dışarıdan bağımsız ve yerleşik olmayan biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aidiyet duygusunda dalgalanmalar yaşanabilir."
+          ],
+          "potential": [
+            "Kendi tanımını kurduğunda güçlü bir iç özgürlük gelişir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı erken dönem değişimlerle şekillenir."
+          ],
+          "mechanism": [
+            "Duygusal güveni bağımsızlıkla kurarsın."
+          ],
+          "effect": [
+            "Bu seni güçlü ama huzursuz kılabilir."
+          ],
+          "shadow": [
+            "İçsel kopukluk hissi oluşabilir."
+          ],
+          "potential": [
+            "Köklenme bilinci psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakın ilişkilerde özgürlük ihtiyacı yüksektir."
+          ],
+          "mechanism": [
+            "Bağlanırken alan ihtiyacını korursun."
+          ],
+          "effect": [
+            "Bu seni özgür ama mesafeli bir partner yapar."
+          ],
+          "shadow": [
+            "Duygusal kopuşlar yaşanabilir."
+          ],
+          "potential": [
+            "Alan–bağ dengesi ilişkileri güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin alışılmış kalıpları sorgular."
+          ],
+          "mechanism": [
+            "Düşünceler ani farkındalıklarla değişir."
+          ],
+          "effect": [
+            "Bu seni yenilikçi bir iç gözlemci yapar."
+          ],
+          "shadow": [
+            "Zihinsel huzursuzluk oluşabilir."
+          ],
+          "potential": [
+            "Bilinçli farkındalık zihni sakinleştirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Ev ve köklerle ilgili alanlarda özgün yollar aranır."
+          ],
+          "mechanism": [
+            "Bağımsız çalışma düzenleri tercih edilir."
+          ],
+          "effect": [
+            "Gayrimenkul, uzaktan çalışma ve teknoloji temaları öne çıkar."
+          ],
+          "shadow": [
+            "İstikrarsız yönelimler."
+          ],
+          "potential": [
+            "Esnek yapı kalıcı güven yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda kökler ve özgürlük karması vardır."
+          ],
+          "mechanism": [
+            "Kopuş ve yeniden kurma döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Aidiyet bilinci dönüşür."
+          ],
+          "shadow": [
+            "Kaçış karmayı sertleştirir."
+          ],
+          "potential": [
+            "Bilinçli köklenme karmayı dengeler."
+          ]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_house_5",
+      "conditions": [
+        {
+          "planet": "Uranus",
+          "house": 5
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik yaratıcılık ve ifade alanında özgürleşir."
+          ],
+          "mechanism": [
+            "Bu özgürlük seni sıra dışı üretime iter."
+          ],
+          "effect": [
+            "Dışarıdan yaratıcı, eğlenceli ve farklı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "İfade dalgalanabilir."
+          ],
+          "potential": [
+            "Yaratıcılığı bilinçle yönettiğinde güçlü bir stil oluşur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı heyecan ve yenilik ihtiyacı taşır."
+          ],
+          "mechanism": [
+            "Risk alarak canlılık hissedersin."
+          ],
+          "effect": [
+            "Bu seni enerjik ama huzursuz kılabilir."
+          ],
+          "shadow": [
+            "Tatminsizlik oluşabilir."
+          ],
+          "potential": [
+            "İçsel odak psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Aşk ve romantizmde özgürlük ön plandadır."
+          ],
+          "mechanism": [
+            "İlişkiler ani başlayıp değişebilir."
+          ],
+          "effect": [
+            "Bu seni heyecan verici ama değişken bir partner yapar."
+          ],
+          "shadow": [
+            "Süreklilik zorlanabilir."
+          ],
+          "potential": [
+            "Bilinçli seçimler bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin oyunlu ve yaratıcı çalışır."
+          ],
+          "mechanism": [
+            "Fikirler beklenmedik sıçramalarla gelir."
+          ],
+          "effect": [
+            "Bu özgün ifade sağlar."
+          ],
+          "shadow": [
+            "Odak kaybı yaşanabilir."
+          ],
+          "potential": [
+            "Disiplin yaratıcılığı ustalığa taşır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Yaratıcılık kariyerde özgürlük ister."
+          ],
+          "mechanism": [
+            "Sanat ve eğlence alanlarına yönelirsin."
+          ],
+          "effect": [
+            "Dijital sanat, sahne ve tasarımda başarı."
+          ],
+          "shadow": [
+            "İstikrarsız projeler."
+          ],
+          "potential": [
+            "Özgün tarz kalıcı etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda ifade ve özgürlük karması vardır."
+          ],
+          "mechanism": [
+            "Deneme–yanılma döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Yaratıcılık olgunlaşır."
+          ],
+          "shadow": [
+            "Dağılma karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli ifade karmayı dönüştürür."
+          ]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_house_6",
+      "conditions": [
+        {
+          "planet": "Uranus",
+          "house": 6
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik günlük düzen ve çalışma alanında özgürleşir."
+          ],
+          "mechanism": [
+            "Bu özgürlük seni alışılmadık rutinlere iter."
+          ],
+          "effect": [
+            "Dışarıdan esnek ve bağımsız biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Düzensizlik oluşabilir."
+          ],
+          "potential": [
+            "Esnek sistemler verimliliği artırır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı özgürlük ihtiyacına hassastır."
+          ],
+          "mechanism": [
+            "Kısıtlandığında huzursuzluk artar."
+          ],
+          "effect": [
+            "Bu seni yenilikçi ama stresli kılabilir."
+          ],
+          "shadow": [
+            "Sinirsel yorgunluk."
+          ],
+          "potential": [
+            "Bilinçli düzen psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde işbirliği esnek olmalıdır."
+          ],
+          "mechanism": [
+            "Günlük hayatta alan ihtiyacı hissedersin."
+          ],
+          "effect": [
+            "Bu bağımsız ama destekleyici bir bağ yaratır."
+          ],
+          "shadow": [
+            "Süreksizlik."
+          ],
+          "potential": [
+            "Net düzen bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin pratik ama yenilikçi çalışır."
+          ],
+          "mechanism": [
+            "Çözümler ani farkındalıklarla gelir."
+          ],
+          "effect": [
+            "Bu problem çözmede hız sağlar."
+          ],
+          "shadow": [
+            "Dağınıklık."
+          ],
+          "potential": [
+            "Yapı zihni netleştirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Çalışma hayatında özgürlük aranır."
+          ],
+          "mechanism": [
+            "Esnek ve teknoloji odaklı işlere yönelirsin."
+          ],
+          "effect": [
+            "Start-up, uzaktan çalışma ve inovasyon alanları."
+          ],
+          "shadow": [
+            "İstikrarsız tempo."
+          ],
+          "potential": [
+            "Esnek disiplin sürdürülebilir başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda düzen ve özgürlük karması vardır."
+          ],
+          "mechanism": [
+            "Ani değişimler tekrar eder."
+          ],
+          "effect": [
+            "Hizmet anlayışı dönüşür."
+          ],
+          "shadow": [
+            "Kaotik yaşam karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli yapı karmayı dengeler."
+          ]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_house_7",
+      "conditions": [
+        {
+          "planet": "Uranus",
+          "house": 7
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik ilişkilerde özgürleşme ihtiyacıyla şekillenir."
+          ],
+          "mechanism": [
+            "Bu ihtiyaç seni alışılmadık bağlar kurmaya iter."
+          ],
+          "effect": [
+            "Dışarıdan özgürlükçü ve bağımsız biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Ani kopuşlar yaşanabilir."
+          ],
+          "potential": [
+            "Alan tanıyan ortaklıklar derinleşir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı bağlanma–özgürlük çatışması taşır."
+          ],
+          "mechanism": [
+            "Yakınlık arttıkça geri çekilme eğilimi oluşabilir."
+          ],
+          "effect": [
+            "Bu içsel gerilim yaratır."
+          ],
+          "shadow": [
+            "Bağlanma korkusu."
+          ],
+          "potential": [
+            "Bilinçli denge psikolojik huzur sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde bireysellik korunmak istenir."
+          ],
+          "mechanism": [
+            "Eşitlik ve alan önemlidir."
+          ],
+          "effect": [
+            "Bu özgür ama dinamik ilişkiler yaratır."
+          ],
+          "shadow": [
+            "İstikrarsızlık."
+          ],
+          "potential": [
+            "Açık kurallar bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin ilişki kalıplarını sorgular."
+          ],
+          "mechanism": [
+            "Yeni bağlanma modelleri geliştirirsin."
+          ],
+          "effect": [
+            "Bu yenilikçi bakış sağlar."
+          ],
+          "shadow": [
+            "Kararsızlık."
+          ],
+          "potential": [
+            "Net düşünce ilişkileri netleştirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Ortaklıklar özgün biçimde kurulur."
+          ],
+          "mechanism": [
+            "Bağımsız işbirlikleri tercih edilir."
+          ],
+          "effect": [
+            "Danışmanlık, teknoloji ve serbest projelerde başarı."
+          ],
+          "shadow": [
+            "Sözleşme belirsizliği."
+          ],
+          "potential": [
+            "Şeffaf yapı profesyonel güven sağlar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda ilişki ve özgürlük karması vardır."
+          ],
+          "mechanism": [
+            "Kopuş–birleşme döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Bağlanma bilinci dönüşür."
+          ],
+          "shadow": [
+            "Kaçış karmayı sertleştirir."
+          ],
+          "potential": [
+            "Bilinçli ortaklık karmayı dengeler."
+          ]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_house_8",
+      "conditions": [
+        {
+          "planet": "Uranus",
+          "house": 8
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik dönüşüm alanında ani uyanışlarla şekillenir."
+          ],
+          "mechanism": [
+            "Bu uyanış seni tabu ve derin konuları sorgulamaya iter."
+          ],
+          "effect": [
+            "Dışarıdan yoğun ve manyetik biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Krizler sert yaşanabilir."
+          ],
+          "potential": [
+            "Bilinçli dönüşüm güçlü şifa getirir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı ani farkındalıklarla sarsılır."
+          ],
+          "mechanism": [
+            "Duygular hızla değişir."
+          ],
+          "effect": [
+            "Bu seni güçlü ama dalgalı kılar."
+          ],
+          "shadow": [
+            "Kontrol kaybı korkusu."
+          ],
+          "potential": [
+            "Farkındalık psikolojik gücü artırır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlıkta özgürlük ve yoğunluk bir aradadır."
+          ],
+          "mechanism": [
+            "Bağlar dönüştürücü yaşanır."
+          ],
+          "effect": [
+            "Bu tutkulu ama değişken ilişkiler yaratır."
+          ],
+          "shadow": [
+            "Ani kopuşlar."
+          ],
+          "potential": [
+            "Şeffaflık bağları şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin derin ve sorgulayıcıdır."
+          ],
+          "mechanism": [
+            "Gerçekler ani şekilde açığa çıkar."
+          ],
+          "effect": [
+            "Bu güçlü içgörü sağlar."
+          ],
+          "shadow": [
+            "Zihinsel şok."
+          ],
+          "potential": [
+            "Bilinçli analiz denge sağlar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kriz ve dönüşüm alanları kariyeri çeker."
+          ],
+          "mechanism": [
+            "Araştırma ve teknolojiye yönelirsin."
+          ],
+          "effect": [
+            "Finans, psikoloji ve inovasyonda başarı."
+          ],
+          "shadow": [
+            "Riskli yönelimler."
+          ],
+          "potential": [
+            "Strateji kalıcı güç yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda dönüşüm ve uyanış karması vardır."
+          ],
+          "mechanism": [
+            "Kriz döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Bilincin sıçraması yaşanır."
+          ],
+          "shadow": [
+            "Kaos karmayı sertleştirir."
+          ],
+          "potential": [
+            "Bilinçli dönüşüm karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_house_9",
+      "conditions": [
+        {
+          "planet": "Uranus",
+          "house": 9
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik inanç ve anlam alanında özgürleşir."
+          ],
+          "mechanism": [
+            "Bu özgürlük seni dogmaları yıkmaya iter."
+          ],
+          "effect": [
+            "Dışarıdan vizyoner ve radikal düşünen biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aşırı uçlar oluşabilir."
+          ],
+          "potential": [
+            "Bilinçli vizyon bilgelik üretir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı anlam arayışında ani sıçramalar yaşar."
+          ],
+          "mechanism": [
+            "İnançlar hızla değişebilir."
+          ],
+          "effect": [
+            "Bu zihinsel canlılık yaratır."
+          ],
+          "shadow": [
+            "Zihinsel kopuş."
+          ],
+          "potential": [
+            "İçsel doğruluk denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde ortak vizyon özgür olmalıdır."
+          ],
+          "mechanism": [
+            "Fikirsel uyum ararsın."
+          ],
+          "effect": [
+            "Bu entelektüel ama mesafeli bağlar yaratır."
+          ],
+          "shadow": [
+            "Fikir çatışmaları."
+          ],
+          "potential": [
+            "Açık zihin ilişkileri güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin vizyoner ve sıçramalıdır."
+          ],
+          "mechanism": [
+            "Fikirler ani farkındalıklarla gelir."
+          ],
+          "effect": [
+            "Bu öğretici ve ilham verici bakış sağlar."
+          ],
+          "shadow": [
+            "Dağınıklık."
+          ],
+          "potential": [
+            "Odak bilgelik üretir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Eğitim ve vizyon alanları kariyeri çeker."
+          ],
+          "mechanism": [
+            "Yenilikçi öğretim ve keşfe yönelirsin."
+          ],
+          "effect": [
+            "Akademi, teknoloji ve uluslararası alanlarda başarı."
+          ],
+          "shadow": [
+            "Yön değişiklikleri."
+          ],
+          "potential": [
+            "Net vizyon kalıcı etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda inanç ve özgürlük karması vardır."
+          ],
+          "mechanism": [
+            "Dogma yıkımları tekrar eder."
+          ],
+          "effect": [
+            "Bilincin genişler."
+          ],
+          "shadow": [
+            "Aşırılık karmayı sertleştirir."
+          ],
+          "potential": [
+            "Bilinçli anlayış karmayı dengeler."
+          ]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_house_10",
+      "conditions": [
+        {
+          "planet": "Uranus",
+          "house": 10
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik toplumsal rolde özgürleşme ihtiyacı taşır."
+          ],
+          "mechanism": [
+            "Bu ihtiyaç seni alışılmadık kariyer yollarına iter."
+          ],
+          "effect": [
+            "Dışarıdan yenilikçi ve sıra dışı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "İmaj dalgalanabilir."
+          ],
+          "potential": [
+            "Özgün liderlik güçlü etki yaratır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı onay yerine özgürlük arar."
+          ],
+          "mechanism": [
+            "Toplumsal beklentilere direnirsin."
+          ],
+          "effect": [
+            "Bu cesaret ama stres yaratabilir."
+          ],
+          "shadow": [
+            "Otorite çatışmaları."
+          ],
+          "potential": [
+            "İçsel özgürlük denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde statüden çok bireysellik önemlidir."
+          ],
+          "mechanism": [
+            "Partneri özgür birey olarak görürsün."
+          ],
+          "effect": [
+            "Bu eşit ama mesafeli bağlar yaratır."
+          ],
+          "shadow": [
+            "Rol çatışmaları."
+          ],
+          "potential": [
+            "Net sınırlar ilişkileri dengeler."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin geleceğe odaklı ve yenilikçidir."
+          ],
+          "mechanism": [
+            "Vizyon ani sıçramalarla şekillenir."
+          ],
+          "effect": [
+            "Bu stratejik bakış sağlar."
+          ],
+          "shadow": [
+            "Kararsızlık."
+          ],
+          "potential": [
+            "Net hedefler zihni sakinleştirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Toplumsal değişim yaratma arzusu kariyeri belirler."
+          ],
+          "mechanism": [
+            "Teknoloji ve inovasyona yönelirsin."
+          ],
+          "effect": [
+            "Start-up, medya ve dönüşüm projelerinde başarı."
+          ],
+          "shadow": [
+            "Ani yön değişimleri."
+          ],
+          "potential": [
+            "Özgün vizyon kalıcı itibar sağlar."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda otorite ve özgürlük karması vardır."
+          ],
+          "mechanism": [
+            "Kopuş ve yeniden kurma döngüleri tekrar eder."
+          ],
+          "effect": [
+            "Toplumsal rol dönüşür."
+          ],
+          "shadow": [
+            "İsyan karmayı sertleştirir."
+          ],
+          "potential": [
+            "Bilinçli liderlik karmayı dengeler."
+          ]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_house_11",
+      "conditions": [
+        {
+          "planet": "Uranus",
+          "house": 11
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik kolektif ve vizyon üzerinden özgürleşir."
+          ],
+          "mechanism": [
+            "Bu özgürlük seni toplumsal değişime iter."
+          ],
+          "effect": [
+            "Dışarıdan yenilikçi ve vizyoner biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Aidiyet kopukluğu."
+          ],
+          "potential": [
+            "Gerçekçi vizyon topluluğu güçlendirir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı kabul yerine özgürlük arar."
+          ],
+          "mechanism": [
+            "Kolektiften kopuşlar yaşanabilir."
+          ],
+          "effect": [
+            "Bu bireysel güç yaratır."
+          ],
+          "shadow": [
+            "Yalnızlık hissi."
+          ],
+          "potential": [
+            "Bilinçli bağlar psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Dostluklar özgürlük temellidir."
+          ],
+          "mechanism": [
+            "Eşitlik ve alan beklersin."
+          ],
+          "effect": [
+            "Bu dinamik ama değişken bağlar yaratır."
+          ],
+          "shadow": [
+            "Ani kopuşlar."
+          ],
+          "potential": [
+            "Net beklentiler bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin geleceğe ve kolektife odaklıdır."
+          ],
+          "mechanism": [
+            "Fikirler ani farkındalıklarla gelir."
+          ],
+          "effect": [
+            "Bu inovatif düşünce sağlar."
+          ],
+          "shadow": [
+            "Dağılma."
+          ],
+          "potential": [
+            "Odak vizyonu somutlaştırır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Toplumsal fayda ve teknoloji kariyeri çeker."
+          ],
+          "mechanism": [
+            "Ağlar ve topluluklarla çalışırsın."
+          ],
+          "effect": [
+            "Teknoloji, STK ve dijital projelerde başarı."
+          ],
+          "shadow": [
+            "Hedef belirsizliği."
+          ],
+          "potential": [
+            "Net vizyon kalıcı etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda kolektif özgürlük karması vardır."
+          ],
+          "mechanism": [
+            "Toplumsal kopuşlar tekrar eder."
+          ],
+          "effect": [
+            "Vizyon olgunlaşır."
+          ],
+          "shadow": [
+            "İzolasyon karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli kolektif hizmet karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "uranus_in_house_12",
+      "conditions": [
+        {
+          "planet": "Uranus",
+          "house": 12
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimlik bilinçaltında ani uyanışlarla şekillenir."
+          ],
+          "mechanism": [
+            "Bu uyanış seni içsel özgürlüğe iter."
+          ],
+          "effect": [
+            "Dışarıdan gizemli ve farklı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "İçsel huzursuzluk."
+          ],
+          "potential": [
+            "Bilinçli farkındalık derin özgürlük sağlar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik yapı bastırılmış enerjilerle çalışır."
+          ],
+          "mechanism": [
+            "Ani içgörüler ortaya çıkar."
+          ],
+          "effect": [
+            "Bu güçlü sezgi yaratır."
+          ],
+          "shadow": [
+            "Kaygı ve kaçış."
+          ],
+          "potential": [
+            "Farkındalık psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde görünmez alan ihtiyacı vardır."
+          ],
+          "mechanism": [
+            "Bağları bilinçaltında yaşarsın."
+          ],
+          "effect": [
+            "Bu derin ama kapalı ilişkiler yaratır."
+          ],
+          "shadow": [
+            "Uzaklaşma."
+          ],
+          "potential": [
+            "Açık farkındalık bağları şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin sezgisel ve ani çalışır."
+          ],
+          "mechanism": [
+            "Fikirler rüya gibi gelir."
+          ],
+          "effect": [
+            "Bu derin içgörü sağlar."
+          ],
+          "shadow": [
+            "Zihinsel kopukluk."
+          ],
+          "potential": [
+            "Zihinsel disiplin berraklık getirir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Perde arkası ve yenilik alanları kariyeri çeker."
+          ],
+          "mechanism": [
+            "Bağımsız ve sessiz çalışmayı seçersin."
+          ],
+          "effect": [
+            "Araştırma, teknoloji ve ruhsal alanlarda etki."
+          ],
+          "shadow": [
+            "Görünürlükten kaçınma."
+          ],
+          "potential": [
+            "Sessiz yenilik kalıcı etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamda bilinçaltı ve özgürlük karması vardır."
+          ],
+          "mechanism": [
+            "Ani uyanışlar tekrar eder."
+          ],
+          "effect": [
+            "Ruhsal özgürleşme yaşanır."
+          ],
+          "shadow": [
+            "Kaçış karmayı sertleştirir."
+          ],
+          "potential": [
+            "Bilinçli farkındalık karmayı çözer."
+          ]
+        }
+      }
+    }
+  ]
+}

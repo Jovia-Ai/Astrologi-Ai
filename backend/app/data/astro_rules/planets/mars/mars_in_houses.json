@@ -1,0 +1,682 @@
+{
+  "planet_house_rules": [
+    {
+      "id": "mars_in_house_1",
+      "conditions": [
+        {
+          "planet": "Mars",
+          "house": 1
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin doğrudan eylem, hız ve kişisel irade üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Kendini girişken, keskin, kararlı ve anında tepki veren bir enerjiyle ifade edersin."
+          ],
+          "effect": [
+            "Dışarıdan güçlü iradeli, savaşçı ve kararlı biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Sabırsızlık, agresyon, çatışmayı büyütme, refleksif savunma."
+          ],
+          "potential": [
+            "Bilinçli yönlendirme kimliğini karizmatik ve lider bir güce dönüştürür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin kendini kanıtlama, harekete geçme ve bağımsızlık ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Duygusal gerilim hızlıca davranışa ve dışa vuran enerjiye dönüşür."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin canlı, cesur ve motive edicidir."
+          ],
+          "shadow": [
+            "Tetikte yaşamak, öfkeyi hızla dışa vurmak."
+          ],
+          "potential": [
+            "İçsel sakinlik geliştirildiğinde psikolojin güçlü bir özgüven kaynağı olur."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Aşk ilişkilerinde tutku, hız ve doğrudanlık temeldir."
+          ],
+          "mechanism": [
+            "Partnerine yoğun enerji, güçlü çekim ve açık ilgiyle yaklaşabilirsin."
+          ],
+          "effect": [
+            "İlişkide ateşli, motive eden ve aktif bir partner olursun."
+          ],
+          "shadow": [
+            "Sabırsızlık, çatışma eğilimi, baskınlık."
+          ],
+          "potential": [
+            "Enerjini bilinçle paylaştığında ilişki dinamiği güçlü ve canlı olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin hızlı, doğrudan ve eylem odaklıdır."
+          ],
+          "mechanism": [
+            "Düşünceler hızla karara dönüşür ve harekete geçersin."
+          ],
+          "effect": [
+            "Zihin cesur, net ve kararlı çalışır."
+          ],
+          "shadow": [
+            "Hızlı yargılama, aceleci kararlar."
+          ],
+          "potential": [
+            "Strateji + hız birleştiğinde zihnin güçlü bir liderlik potansiyeli yaratır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde öne çıkmak, lider olmak ve hızlı ilerlemek istersin."
+          ],
+          "mechanism": [
+            "İnisiyatif alır, engelleri zorlar ve rekabetten güç alırsın."
+          ],
+          "effect": [
+            "Doğru ortamda güçlü bir girişimci, lider veya öncü olabilirsin."
+          ],
+          "shadow": [
+            "Tükenmişlik, gereksiz çatışma yaratma."
+          ],
+          "potential": [
+            "Enerjiyi yönlendirmek kariyeri olağanüstü hızlandırır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, güç ve irade kullanımını bilinçli hâle getirmektir."
+          ],
+          "mechanism": [
+            "Kader seni cesaret ve sabır sınavlarıyla eğitir."
+          ],
+          "effect": [
+            "Her yüzleşme ruhsal güç kazandırır."
+          ],
+          "shadow": [
+            "Öfkeyle hareket karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli güç kader kapılarını açar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mars_in_house_2",
+      "conditions": [
+        {
+          "planet": "Mars",
+          "house": 2
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin değer, maddi güven ve sahip olduklarını koruma dürtüsüyle şekillenir."
+          ],
+          "mechanism": [
+            "Güvenlik alanını korumak için sabit, kararlı ve dirençli bir enerji kullanırsın."
+          ],
+          "effect": [
+            "Dışarıdan güçlü iradeli, dayanıklı ve kontrollü biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Sahiplenme, inatçılık, maddi konularda agresif tutum."
+          ],
+          "potential": [
+            "Enerji değer üretme yönünde kullanıldığında kimliğin sağlam bir temele oturur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin maddi ve duygusal güven ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Tehdit algıladığında savunmacı ve inatçı davranabilirsin."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin sabırlı, dayanıklı ve istikrarlıdır."
+          ],
+          "shadow": [
+            "Kayıp korkusu, değeri sabitleme çabası."
+          ],
+          "potential": [
+            "İçsel güven oturduğunda psikolojik dayanıklılık güçlenir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Aşkta sahiplenicilik, sadakat ve güven temel ihtiyaçtır."
+          ],
+          "mechanism": [
+            "Partnerine istikrar, sadakat ve fiziksel bağlılık sunarsın."
+          ],
+          "effect": [
+            "İlişkide sağlam, güven veren ve koruyucu bir enerji taşırsın."
+          ],
+          "shadow": [
+            "Kıskançlık, kontrol, değişime direnç."
+          ],
+          "potential": [
+            "Sevgiye esneklik katıldığında ilişkin çok derinleşir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin pratik, sabit ve güven odaklı çalışır."
+          ],
+          "mechanism": [
+            "Fikirleri uzun vadeli dayanıklılık açısından değerlendirirsin."
+          ],
+          "effect": [
+            "Zihin kararlı, tutarlı ve yapıcı çözümler üretir."
+          ],
+          "shadow": [
+            "Katılık, değişime kapalı zihinsel yapı."
+          ],
+          "potential": [
+            "Güven + strateji birleştiğinde zihnin kalıcı projeler yaratır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde güvenli bir temel oluşturmak istersin."
+          ],
+          "mechanism": [
+            "Hedeflerine istikrarlı, sabırlı ve kararlı biçimde ilerlersin."
+          ],
+          "effect": [
+            "Doğru alanda kalıcı başarı, finansal güç ve maddi istikrar üretebilirsin."
+          ],
+          "shadow": [
+            "Risk almamak."
+          ],
+          "potential": [
+            "İçsel değerle birleşen irade kariyeri büyütür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, değer–güç dengesini öğrenmektir."
+          ],
+          "mechanism": [
+            "Kader seni sahip olduklarını test eden süreçlere yönlendirir."
+          ],
+          "effect": [
+            "Her bırakış ve farkındalık hafiflik getirir."
+          ],
+          "shadow": [
+            "Değeri maddede sabitlemek karmayı artırır."
+          ],
+          "potential": [
+            "Gerçek değer içeride bulunduğunda güç açığa çıkar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mars_in_house_3",
+      "conditions": [
+        {
+          "planet": "Mars",
+          "house": 3
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin zihinsel hız, merak ve güçlü sözel ifade üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Eylemlerini çoğunlukla düşünce, iletişim ve fikir mücadelesiyle gösterirsin."
+          ],
+          "effect": [
+            "Dışarıdan keskin zekâlı, hızlı konuşan ve aktif biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Tartışmacılık, sabırsız iletişim, zihinsel agresyon."
+          ],
+          "potential": [
+            "Zihinsel keskinlik bilinçle birleştiğinde kimliğin parlak bir iletişim gücüne dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin zihinsel hareket, öğrenme ve fikir üretme ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Gerilim anında fikir üretir, konuşur veya yön değiştirirsin."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin aktif, canlı ve merak doludur."
+          ],
+          "shadow": [
+            "Aşırı düşünme, zihinsel saldırganlık."
+          ],
+          "potential": [
+            "Zihinsel denge geliştirildiğinde psikoloji güç kazanır."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Aşkta zihinsel uyum, sohbet ve aktif iletişim çok önemlidir."
+          ],
+          "mechanism": [
+            "Partnerle tartışarak, fikir üreterek veya hareket ederek bağ kurarsın."
+          ],
+          "effect": [
+            "İlişkide kıpır kıpır, canlı ve entelektüel bir enerji taşırsın."
+          ],
+          "shadow": [
+            "Tartışmayı büyütme, gereksiz gergin sözler."
+          ],
+          "potential": [
+            "Zihinsel netlik + duygu birleştiğinde ilişkin güçlenir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin hızlı, keskin ve rekabetçidir."
+          ],
+          "mechanism": [
+            "Fikirler hızla davranışa dönüşür; konuşma enerjin yüksektir."
+          ],
+          "effect": [
+            "Zihin etkili bir tartışmacı ve çözüm üreticidir."
+          ],
+          "shadow": [
+            "Dikkat dağınıklığı, saldırgan zihin."
+          ],
+          "potential": [
+            "Odak eklediğinde zihnin olağanüstü üretken olur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde iletişim, medya, eğitim, satış veya hızlı düşünme gerektiren işler seni çeker."
+          ],
+          "mechanism": [
+            "Hızlı uyum sağlar, fikir üreterek ilerlersin."
+          ],
+          "effect": [
+            "Doğru alanda etkili bir iletişimci, pazarlamacı veya stratejist olursun."
+          ],
+          "shadow": [
+            "Fazla parçalanma."
+          ],
+          "potential": [
+            "Disiplin + hız birleştiğinde kariyer çok hızlı yükselir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, sözel güç ile sorumluluk arasında denge kurmaktır."
+          ],
+          "mechanism": [
+            "Kader seni iletişim sınavlarıyla büyütür."
+          ],
+          "effect": [
+            "Her sağlıklı ifade karmayı hafifletir."
+          ],
+          "shadow": [
+            "Sözle yaralamak karmayı artırır."
+          ],
+          "potential": [
+            "Bilinçli ifade kader yolunu açar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mars_in_house_4",
+      "conditions": [
+        {
+          "planet": "Mars",
+          "house": 4
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin içsel güvenlik, aile kökleri ve duygusal savunma üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Eylemin çoğu görünmeyen, içsel ve koruyucu bir motivasyondan çıkar."
+          ],
+          "effect": [
+            "Dışarıdan güçlü bir iç çekirdek, koruyucu enerji ve derin irade algılanır."
+          ],
+          "shadow": [
+            "Duygusal öfke, pasif-agresif tepkiler, aileyle çatışma."
+          ],
+          "potential": [
+            "İçsel güven sağlandığında kimliğin güçlü bir dayanıklılığa dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin duygusal güvenlik ve köklenme ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Gerilimde içe kapanabilir veya duygusal savunma geliştirebilirsin."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin dayanıklı, derin ve sezgiseldir."
+          ],
+          "shadow": [
+            "Duygulara hapsolma, içsel öfke."
+          ],
+          "potential": [
+            "Duygusal farkındalık geliştirildiğinde psikoloji güçlenir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Aşkta mahremiyet, güven ve içsel yakınlık önemlidir."
+          ],
+          "mechanism": [
+            "Sevdiğini korur, sahiplenir ve duygusal alanında güvenli bir yer açarsın."
+          ],
+          "effect": [
+            "İlişkide sadık, savunmacı ve derin bağlı bir enerji taşırsın."
+          ],
+          "shadow": [
+            "Kıskançlık, duygusal patlama, kontrol."
+          ],
+          "potential": [
+            "Güven + açıklık birleştiğinde ilişkin çok güçlenir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin duygusal hafıza ve sezgisel bağlantılarla çalışır."
+          ],
+          "mechanism": [
+            "Düşünceler içsel güvenlik ihtiyacıyla yönlenir."
+          ],
+          "effect": [
+            "Zihin derin, koruyucu ve sezgisel olur."
+          ],
+          "shadow": [
+            "Geçmişe takılmak, duygusal tetiklenmeler."
+          ],
+          "potential": [
+            "Zihin duyguyla dengelendiğinde güçlü içgörüler doğar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde güvenli ortamlar, duygusal bağ ve uzun vadeli yapı önemlidir."
+          ],
+          "mechanism": [
+            "Derin odaklanma ve dayanıklılıkla çalışırsın."
+          ],
+          "effect": [
+            "Doğru ortamda istikrarlı başarı ve güvenilir bir varlık olursun."
+          ],
+          "shadow": [
+            "Motivasyon dalgalanması."
+          ],
+          "potential": [
+            "İçsel huzur kariyerini güçlendirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, öfke–duygu–güven üçlüsünü dengelemektir."
+          ],
+          "mechanism": [
+            "Kader seni köklenme ve aile üzerinden sınar."
+          ],
+          "effect": [
+            "Her farkındalık duygusal özgürlük oluşturur."
+          ],
+          "shadow": [
+            "Duygusal öfkeyi bastırmak karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "İçsel güven ruhsal yolu açar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mars_in_house_5",
+      "conditions": [
+        {
+          "planet": "Mars",
+          "house": 5
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin yaratıcı irade, tutku, oyun ve sahne enerjisi üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Kendini dramatik, kararlı ve kendini gösteren şekilde ifade edersin."
+          ],
+          "effect": [
+            "Dışarıdan canlı, tutkulu, iddialı ve yaratıcı biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Dramatik ego, aşırı gurur, dikkat çekme ihtiyacı."
+          ],
+          "potential": [
+            "Yaratıcılık bilinçle birleştiğinde kimliğin parlak bir güce dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin beğenilme, yaratma ve sahneye çıkma ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Duygusal gerilim yaratıcı patlama veya dramatik tepkiye dönüşebilir."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin güçlü, motive ve neşelidir."
+          ],
+          "shadow": [
+            "Aşırı dramatizasyon, duygusal aşırılık."
+          ],
+          "potential": [
+            "Otantik ifade psikolojini merkezler."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Aşkta tutku, romantik oyun ve yaratıcı yakınlık önemlidir."
+          ],
+          "mechanism": [
+            "Partnerine güçlü bir enerji, parlak çekim ve ateşli ilgi sunarsın."
+          ],
+          "effect": [
+            "İlişkide dinamik, tutkulu ve çekici bir partner olursun."
+          ],
+          "shadow": [
+            "Kıskançlık, ego çatışmaları."
+          ],
+          "potential": [
+            "Kendini ifade özgürlüğü + sevgi birleştiğinde bağ güçlenir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin dramatik imgeler ve yaratıcı ateşle çalışır."
+          ],
+          "mechanism": [
+            "Fikirler tutku enerjisiyle hızla eyleme dökülür."
+          ],
+          "effect": [
+            "Zihin yaratıcı, büyük düşünen ve cesur olur."
+          ],
+          "shadow": [
+            "Abartı, riskli kararlar."
+          ],
+          "potential": [
+            "Yaratıcılık + yapı birleştiğinde zihnin parlak işler üretir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde görünürlük, yaratıcılık ve sahne enerjisi önemlidir."
+          ],
+          "mechanism": [
+            "İddialı, tutkulu ve girişken bir çalışma tarzın vardır."
+          ],
+          "effect": [
+            "Sanat, eğlence, medya veya liderlik alanlarında başarı getirebilir."
+          ],
+          "shadow": [
+            "İstikrarsızlık, ego çatışmaları."
+          ],
+          "potential": [
+            "Disiplinle birleşen tutku kariyeri yükseltir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, iradeyi egodan ayırmayı öğrenmektir."
+          ],
+          "mechanism": [
+            "Kader seni yaratıcılığınla yüzleştirir."
+          ],
+          "effect": [
+            "Her olgunlaşma adımı parlak bir ruh enerjisi doğurur."
+          ],
+          "shadow": [
+            "Ego savaşları karmayı artırır."
+          ],
+          "potential": [
+            "Otantik yaratım ruhunu arındırır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "mars_in_house_6",
+      "conditions": [
+        {
+          "planet": "Mars",
+          "house": 6
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin hizmet, iş üretme ve düzen yaratma iradesiyle şekillenir."
+          ],
+          "mechanism": [
+            "Enerjini görev, sorumluluk ve günlük işleyiş üzerinden ifade edersin."
+          ],
+          "effect": [
+            "Dışarıdan çalışkan, disiplinli ve görev odaklı görünürsün."
+          ],
+          "shadow": [
+            "Aşırı çalışma, kendini tüketme, kusur arama eğilimi."
+          ],
+          "potential": [
+            "Enerjiyi dengelediğinde kimliğin hem güçlü hem verimli olur."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojin düzen, kontrol ve faydalı hissetme ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Gerilim anında analiz, düzenleme veya çalışmaya sığınabilirsin."
+          ],
+          "effect": [
+            "Denge olduğunda psikolojin pratik, sabırlı ve organize olur."
+          ],
+          "shadow": [
+            "Kaygı, mükemmeliyetçilik."
+          ],
+          "potential": [
+            "Kendine şefkat eklediğinde psikolojinin yükü hafifler."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Aşkta hizmet, özen ve pratik destek senin sevgi dilindir."
+          ],
+          "mechanism": [
+            "Partnerine fedakârlık, düzen ve küçük jestlerle sevgi gösterirsin."
+          ],
+          "effect": [
+            "İlişkide sadık, ilgili ve güvenilir bir partner olursun."
+          ],
+          "shadow": [
+            "Aşırı eleştirellik, karşı tarafı düzeltme isteği."
+          ],
+          "potential": [
+            "Sınır + sevgi birleştiğinde bağ çok sağlıklı olur."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin analitik, detaycı ve düzen kurma eğilimlidir."
+          ],
+          "mechanism": [
+            "Fikirleri optimize etmek, iyileştirmek istersin."
+          ],
+          "effect": [
+            "Zihin verimli, sistematik ve çözüm odaklı olur."
+          ],
+          "shadow": [
+            "Takıntılar, aşırı analiz döngüsü."
+          ],
+          "potential": [
+            "Analiz + sezgi birleştiğinde zihnin olağanüstü üretir."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyerde düzen, hizmet, sistem ve günlük işleyiş önemlidir."
+          ],
+          "mechanism": [
+            "Disiplinli ve detay odaklı çalışırsın."
+          ],
+          "effect": [
+            "Doğru ortamda verimli, güvenilir ve yüksek performanslı bir çalışan olursun."
+          ],
+          "shadow": [
+            "Tükenmişlik."
+          ],
+          "potential": [
+            "Dengeyle birleşen çalışma kariyeri istikrarlı büyütür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Ruhsal tema, hizmet ederken kendini kaybetmemeyi öğrenmektir."
+          ],
+          "mechanism": [
+            "Kader seni iş–öz-değer dengesinde sınar."
+          ],
+          "effect": [
+            "Her farkındalık ruhu sadeleştirir."
+          ],
+          "shadow": [
+            "Kendini yok saymak karmayı artırır."
+          ],
+          "potential": [
+            "Dengeyi bulduğunda kader yolu açılır."
+          ]
+        }
+      }
+    }
+  ]
+}

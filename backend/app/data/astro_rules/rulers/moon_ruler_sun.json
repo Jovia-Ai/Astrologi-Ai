@@ -1,0 +1,13 @@
+{
+  "id": "moon_ruler_sun",
+  "condition": {
+    "planet": "Moon",
+    "sign": "Leo"
+  },
+  "flow": {
+    "direction": "Moon_to_Sun",
+    "meaning": [
+      "duygusal güvenlik ihtiyacı kimlik ve yön duygusu üzerinden çözülmeye çalışılır"
+    ]
+  }
+}

@@ -1,0 +1,1250 @@
+{
+  "planet_house_rules": [
+    {
+      "id": "jupiter_in_house_1",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 1
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin doğal bir büyüme, genişleme ve anlam yaratma arzusundan beslenir."
+          ],
+          "mechanism": [
+            "Benlik duygun çoğunlukla yaşamda daha fazlasını deneyimleme ve ufkunu genişletme isteğiyle şekillenir."
+          ],
+          "effect": [
+            "Dışarıya iyimser, enerjik, geniş perspektifli ve ilham veren biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Kendini fazla abartma, aşırılık veya gerçeklerden kopma eğilimi oluşabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirdiğinde büyük bir bilgelik, ilham ve liderlik enerjisi taşıyan bir figüre dönüşebilirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin anlam arayışı, büyüme ve içsel genişleme ihtiyacıyla tetiklenir."
+          ],
+          "mechanism": [
+            "Duygusal süreçlerin çoğu umut, inanç ve fırsat beklentisiyle bütünleşir."
+          ],
+          "effect": [
+            "Zor zamanlarda bile içsel bir dayanıklılık ve 'her şey daha iyi olabilir' duygusu geliştirirsin."
+          ],
+          "shadow": [
+            "Aşırı iyimserlik veya sorunları küçümseme eğilimi psikolojik tutarsızlık yaratabilir."
+          ],
+          "potential": [
+            "Psikolojik enerjini bilinçli kullandığında kendine ve başkalarına umut veren güçlü bir içsel rehber olursun."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde özgürlük, ilham ve büyüme alanı senin için temel bir motivasyon kaynağıdır."
+          ],
+          "mechanism": [
+            "Bağ kurarken karşı tarafın vizyonunu, yaşam felsefesini ve eğilimlerini değerlendirirsin."
+          ],
+          "effect": [
+            "İlişkilerde cömert, sıcak, destekleyici ve moral yükselten bir enerji taşırsın."
+          ],
+          "shadow": [
+            "Aşırı beklenti, fazla iyimserlik veya ilişkide fazlaca alan ihtiyacı çatışma yaratabilir."
+          ],
+          "potential": [
+            "Doğru bağda partnerine ilham veren, genişleten ve birlikte büyümeyi teşvik eden bir figür olursun."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin geniş perspektifler arar ve fikirlerin büyük ölçekli anlamlar etrafında şekillenir."
+          ],
+          "mechanism": [
+            "Düşünce sürecin öğrenme, keşfetme, öğretme ve vizyon geliştirme temasına yönelir."
+          ],
+          "effect": [
+            "Zihinsel olarak umut veren, hikayeleştiren ve büyük bağlantılar kuran bir bakış açısı geliştirirsin."
+          ],
+          "shadow": [
+            "Gerçekleri idealize etme, aşırı genelleme veya yüzeysel iyimserlik düşünsel dengesizliğe yol açabilir."
+          ],
+          "potential": [
+            "Doğru odaklandığında geniş düşünme ve insanlara ilham veren fikirler üretme kapasitesi açığa çıkar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel motivasyonun büyümek, genişlemek ve anlamlı bir katkı sunma arzusundan doğar."
+          ],
+          "mechanism": [
+            "İşi ele alma biçimin umut, vizyon ve ileriye dönük düşünme temasını taşır."
+          ],
+          "effect": [
+            "Eğitim, felsefe, uluslararası işler, seyahat, rehberlik, danışmanlık ve liderlik alanlarında güçlü potansiyel sergilersin."
+          ],
+          "shadow": [
+            "Aşırı risk alma, detayları önemsememe veya fazla iyimser planlar profesyonel istikrarı zorlayabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirildiğinde büyük projeleri yürüten, vizyoner ve etkileyici bir profesyonel olabilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak bu yaşamda genişleme, bilgelik ve ruhsal büyüme dersleri taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni yeni deneyimlere, farklı kültürlere ve öğretici yolculuklara yönlendirerek büyütür."
+          ],
+          "effect": [
+            "Hayatın boyunca fırsatlar, öğretmenler ve genişlemeye açılan kapılar karşına çıkar."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda aşırı özgüven, aşırılık veya öğreticiliğin kötüye kullanılması temaları olabilir."
+          ],
+          "potential": [
+            "Bu yaşam senin için bilgelik, rehberlik ve ruhsal büyüme yolunda büyük bir potansiyel taşır."
+          ]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_house_2",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 2
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin, değerlerini büyütme ve kendin için daha geniş bir yaşam alanı yaratma ihtiyacından beslenir."
+          ],
+          "mechanism": [
+            "Benlik duygun çoğunlukla maddi güven, üretkenlik ve sahip olduklarını geliştirme arzusu üzerinden şekillenir."
+          ],
+          "effect": [
+            "Dışarıya cömert, üretken, maddi olarak vizyoner ve güven veren bir duruş yansıtırsın."
+          ],
+          "shadow": [
+            "Aşırı harcama, maddi aşırılıklar veya kendini maddi başarıyla tanımlama eğilimi doğabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirildiğinde güçlü bir bolluk bilinci ve yaratıcı kaynak üretme kapasitesi geliştirebilirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin, kendine değer verme ve yaşamda sahip olduklarını geliştirme ihtiyacıyla tetiklenir."
+          ],
+          "mechanism": [
+            "İçsel güvenin çoğunlukla üretkenlik, kazanım ve somut başarı hissiyle güçlenir."
+          ],
+          "effect": [
+            "Kendine güveni destekleyen geniş bir içsel bolluk algısı oluşturursun."
+          ],
+          "shadow": [
+            "Duygusal boşlukları maddi tüketimle doldurma veya aşırı iyimser maddi beklentiler geliştirme riski oluşabilir."
+          ],
+          "potential": [
+            "Gerçek değer duygusunu içsel kaynaklara bağladığında güçlü bir psikolojik istikrar ve bolluk bilinci doğar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlık dinamiklerinde güven, cömertlik ve karşılıklı değer oluşturma önemli bir motivasyon kaynağıdır."
+          ],
+          "mechanism": [
+            "Bağ kurarken partnerin üretkenliğini, değer bilincini ve maddi yaklaşımını sezgisel olarak değerlendirirsin."
+          ],
+          "effect": [
+            "İlişkilerde destekleyici, genişleten ve maddi/emotional güven yaratan bir enerji sunarsın."
+          ],
+          "shadow": [
+            "Aşırı sahiplenme, beklentiyi büyütme veya partnerin kaynaklarını fazla üstlenme eğilimi ortaya çıkabilir."
+          ],
+          "potential": [
+            "Doğru bağda karşılıklı büyüme, maddi/emotional bolluk ve uzun vadeli istikrar yaratabilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin, değer üretme, potansiyeli büyütme ve kaynakları genişletme fikriyle çalışır."
+          ],
+          "mechanism": [
+            "Düşünce sürecin çoğunlukla pratik fırsatlar, maddi vizyonlar ve kullanılabilir beceriler etrafında şekillenir."
+          ],
+          "effect": [
+            "Zihinsel olarak üretken, çözüm odaklı ve bolluğa yönelen bir yaklaşım geliştirirsin."
+          ],
+          "shadow": [
+            "Aşırı iyimser maddi planlar veya gerçek olmayan beklentiler zihinsel dağınıklık yaratabilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini doğru yönlendirdiğinde sürdürülebilir büyüme ve stratejik kaynak yönetimi kapasitesi oluşur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel motivasyonun maddi gelişim, yeteneklerini büyütme ve sağlam bir temel oluşturma ihtiyacından kaynaklanır."
+          ],
+          "mechanism": [
+            "Çalışma biçimin üretkenlik, istikrar ve maddi fırsatları çoğaltma temalarını taşır."
+          ],
+          "effect": [
+            "Finans, ticaret, yaratıcılık, yatırım, üretim veya kaynak yönetimi gibi alanlarda büyük potansiyel sergilersin."
+          ],
+          "shadow": [
+            "Aşırı risk alma, maddi aşırılık ya da gelir-gider dengesinin kaybolması profesyonel zorluk yaratabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirdiğinde büyük projeleri besleyen, kaynak yaratan ve bolluğu destekleyen bir profesyonel olursun."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak bu yaşamda değer bilinci, sahip olma, üretkenlik ve bolluk dersleri taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni maddi ve manevi kaynakları değerlendirmeye ve büyütmeye zorlayarak geliştirebilir."
+          ],
+          "effect": [
+            "Hayat boyunca fırsatlar, kazanç kapıları ve büyüme alanları karşına çıkar."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda maddi aşırılık, sorumsuzluk veya değeri yanlış tanımlama temaları olabilir."
+          ],
+        "potential": [
+            "Bu yaşam sana gerçek bolluğu içsel kaynaklarla birleştirerek güçlü bir değer yaratma fırsatı sunar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_house_4",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 4
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin, içsel güven arayışı ve köklerinden beslenen bir büyüme ihtiyacıyla şekillenir."
+          ],
+          "mechanism": [
+            "Benlik duygun çoğunlukla duygusal istikrar, iç huzur ve aileden gelen değerlerle gelişir."
+          ],
+          "effect": [
+            "Dışarıya sıcak, kapsayıcı ve güven veren bir enerji yansıtırsın."
+          ],
+          "shadow": [
+            "Aileye aşırı bağlılık veya geçmişe fazla idealize bakan bir kimlik algısı oluşabilir."
+          ],
+          "potential": [
+            "İçsel huzurunu ve köklerinden gelen bilgeliği bilinçli kullandığında güçlü bir içsel liderliğe dönüşür."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin, duygusal güvenliği derinleştirme ve içsel köklenme ihtiyacıyla tetiklenir."
+          ],
+          "mechanism": [
+            "Duygusal süreçlerin çoğu aile temaları, geçmiş deneyimler ve içsel huzur alanıyla bağlantılıdır."
+          ],
+          "effect": [
+            "Güçlü bir içsel dayanıklılık ve zor durumlarda bile umut yaratan bir psikolojik güç geliştirirsin."
+          ],
+          "shadow": [
+            "Geçmişe tutunmak, duygusal aşırılıklar veya içsel huzuru dış koşullara bağlama eğilimi oluşabilir."
+          ],
+          "potential": [
+            "İçsel dünyanı büyüterek yüksek bir duygusal zekâ ve ruhsal bilgelik geliştirebilirsin."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlık dinamiklerinde duygusal güvenlik, sıcaklık ve derin bağlılık temel motivasyonlardır."
+          ],
+          "mechanism": [
+            "Bağ kurarken karşı tarafın duygusal olgunluğunu ve güven verme kapasitesini değerlendirirsin."
+          ],
+          "effect": [
+            "İlişkilerde besleyici, koruyucu, sadık ve sıcak bir partner olursun."
+          ],
+          "shadow": [
+            "Aşırı korumacılık, duygusal beklentilerin büyümesi veya partneri kendi alanına çekme eğilimi oluşabilir."
+          ],
+          "potential": [
+            "Doğru bağda derin, kalıcı ve ruhsal olarak besleyici ilişkiler kurabilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin, duygusal anlamlar üretme ve yaşamın kök yapılarını anlama ihtiyacıyla çalışır."
+          ],
+          "mechanism": [
+            "Düşünce sürecin çoğunlukla içsel dünyayı, aile hikâyelerini ve duygusal yapıların temelini analiz eder."
+          ],
+          "effect": [
+            "Zihinde derin bağlantılar kuran, sezgiye dayalı ve kapsayıcı bir bakış açısı gelişir."
+          ],
+          "shadow": [
+            "Aşırı duygusal düşünme, geçmişi idealize etme veya zihnin içe kapanması dengesizlik yaratabilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini bilinçli kullandığında duygusal anlam üretme ve danışmanlık alanında güçlü bir sezgisel kapasite oluşur."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel motivasyonun istikrar yaratma, güven inşa etme ve uzun vadeli bir temel oluşturma ihtiyacından kaynaklanır."
+          ],
+          "mechanism": [
+            "Çalışma biçimin koruyucu, yapıcı ve uzun vadeli düşünmeye yönelir."
+          ],
+          "effect": [
+            "Emlak, psikoloji, aile işletmeleri, danışmanlık, şifa, iç mekânlar veya öğreticilik gibi alanlarda güçlü potansiyel ortaya çıkabilir."
+          ],
+          "shadow": [
+            "Geçmişe bağlı kalmak, risk almamak veya aşırı konfor alanı eğilimi profesyonel büyümeyi yavaşlatabilir."
+          ],
+          "potential": [
+            "Doğru ortamda köklü yapılar kuran, içsel bilgelikle yöneten ve kalıcı projeler oluşturan biri olabilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak bu yaşamda aile, kökler, duygusal güvenlik ve içsel huzur temalarıyla ilgili dersler taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni içsel yaraları iyileştirmeye, geçmişle barışmaya ve köklerini genişletmeye yönlendirir."
+          ],
+          "effect": [
+            "Hayat boyunca içsel şifalanma, aileden gelen destek ve ruhsal büyüme fırsatları karşına çıkar."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda aileye aşırı bağlılık, kapanma veya duygusal yükler temaları olabilir."
+          ],
+        "potential": [
+            "Bu yaşam sana içsel huzuru büyütme ve ruhsal köklenme yolunda güçlü bir fırsat sunar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_house_5",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 5
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin yaratıcı ifade, neşe, oyun ve kendini özgürce ortaya koyma ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Benlik duygun çoğunlukla sahneye çıkma, üretme ve hayattan keyif alma süreçleriyle şekillenir."
+          ],
+          "effect": [
+            "Dışarıya sıcak, yaratıcı, eğlenceli ve canlı bir enerji yansıtırsın."
+          ],
+          "shadow": [
+            "Aşırılık, dikkat arayışı veya sorumsuz risk alma eğilimleri kimlik dengesini zorlayabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirdiğinde ilham veren, yaratıcı ve etkileyici bir ifade alanı geliştirirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin kendini özel hissetme, yaratıcı üretim ve duygusal genişleme ihtiyacıyla çalışır."
+          ],
+          "mechanism": [
+            "Duygusal süreçlerin çoğu keyif, ilham ve içsel canlılıkla bütünleşir."
+          ],
+          "effect": [
+            "Yüksek bir yaratıcı enerji, şefkat ve içsel coşku geliştirirsin."
+          ],
+          "shadow": [
+            "Aşırı iyimserlik veya duygusal aşırılık psikolojik dengesizlik yaratabilir."
+          ],
+          "potential": [
+            "Psikolojik enerjini bilinçli yönlendirdiğinde büyük bir yaratıcı şifa ve coşku kaynağına dönüşebilirsin."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlık dinamiklerinde romantizm, eğlence, ilham ve karşılıklı coşku önemli bir motivasyon kaynağıdır."
+          ],
+          "mechanism": [
+            "Bağ kurarken partnerinin yaşam enerjisine, yaratıcılığına ve spontane doğasına dikkat edersin."
+          ],
+          "effect": [
+            "İlişkilerde sıcak, neşeli, cömert ve büyüten bir enerji sunarsın."
+          ],
+          "shadow": [
+            "Aşırı idealizasyon, hızlı bağlanma veya tatmin arayışında aşırılıklar ilişkide dengesizlik yaratabilir."
+          ],
+          "potential": [
+            "Doğru bağda ilişkileri neşeyle besleyen, ilham veren ve özgürleştiren bir partner olursun."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin yaratıcı düşünce, hikâyeleştirme ve ilham üretme ihtiyacıyla motive olur."
+          ],
+          "mechanism": [
+            "Düşünce sürecin oyun, sanat, performans ve yaratıcı bağlantılar etrafında genişler."
+          ],
+          "effect": [
+            "Zihnin vizyoner, renkli ve özgün fikirler üretmeye açıktır."
+          ],
+          "shadow": [
+            "Zihinsel olarak aşırı dağılma, romantize etme veya gerçeklikten kopma eğilimi oluşabilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini odakladığında büyük yaratıcı projeler, sanat üretimi veya ilham verici anlatımlar ortaya çıkar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel motivasyonun yaratıcı ifade, sahne, liderlik ve ilham verme isteğinden doğar."
+          ],
+          "mechanism": [
+            "Çalışma biçimin neşe, yaratıcılık ve kendini özgün şekilde ortaya koyma teması taşır."
+          ],
+          "effect": [
+            "Sanat, eğlence, medya, performans, çocuklarla çalışma, spor veya yaratıcı projelerde yüksek potansiyel sergilersin."
+          ],
+          "shadow": [
+            "Aşırı risk alma, motivasyon dalgalanmaları veya dikkat dağınıklığı profesyonel istikrarı zorlayabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirme ile geniş kitlelere ilham veren yaratıcı bir lider veya üretici olabilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak bu yaşamda neşe, yaratıcılık, kendini ifade ve içsel çocuk enerjisiyle ilgili dersler taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni oyun, sanat, aşk ve yaratıcılık deneyimleri üzerinden büyütür."
+          ],
+          "effect": [
+            "Hayat boyunca ilham veren fırsatlar, yaratıcı alanlar ve kalbini büyüten deneyimler karşına çıkar."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda aşırılık, bencillik veya sorumsuz arzu tatmini temaları olabilir."
+          ],
+          "potential": [
+            "Bu yaşam sana yaratıcı bilgelik, sevgiyle genişleme ve kalpten liderlik yolunda büyük bir potansiyel sunar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_house_6",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 6
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin, üretken olma ve sorumluluk alanlarında büyüme isteğiyle beslenir."
+          ],
+          "mechanism": [
+            "Benlik duygun çoğunlukla hizmet etme, fayda yaratma ve düzen kurma ihtiyacıyla güç kazanır."
+          ],
+          "effect": [
+            "Dışarıya çalışkan, iyi niyetli, organize etmeye yatkın ve fayda odaklı biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Kendini fazla işe adamak veya başkalarını memnun etme zorunluluğu kimlik dengesini bozabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirdiğinde üretkenliğiyle ilham veren, iyileştiren ve katkı sunan bir figüre dönüşebilirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin düzen kurma, iyileşme ve çalışma alanlarında genişleme ihtiyacıyla tetiklenir."
+          ],
+          "mechanism": [
+            "Duygusal süreçlerin çoğu üretkenlik, düzen, görevler ve fayda üretimi ile bağlantılıdır."
+          ],
+          "effect": [
+            "İçsel bir amaç duygusu ve sistemli yaklaşım psikolojik motivasyonunu artırır."
+          ],
+          "shadow": [
+            "Aşırı sorumluluk yükleme, mükemmeliyetçilik veya yapılacaklar arasında kaybolma psikolojik baskı yaratabilir."
+          ],
+          "potential": [
+            "Psikolojik enerjini dengeli kullandığında iyileştirici bir bilgelik, çalışma disiplini ve içsel düzen yaratabilirsin."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlık dinamiklerinde sadakat, sorumluluk ve karşılıklı destek önemli bir motivasyon kaynağıdır."
+          ],
+          "mechanism": [
+            "Bağ kurarken karşı tarafın çalışma alışkanlıklarını, düzenini ve sorumluluk bilincini değerlendirirsin."
+          ],
+          "effect": [
+            "İlişkilerde destekleyen, sabırlı, dengeli ve birlikte düzen kuran bir partner olursun."
+          ],
+          "shadow": [
+            "Fazla eleştirel olmak, partneri düzeltmeye çalışma veya aşırı sorumluluk üstlenme ilişkide yük yaratabilir."
+          ],
+          "potential": [
+            "Doğru bağda güvenli, dengeli ve karşılıklı destekle büyüyen bir ilişki yapısı oluşturabilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin düzen, analiz, iyileştirme ve pratik çözümler üretme ihtiyacıyla çalışır."
+          ],
+          "mechanism": [
+            "Düşünce sürecin yapısal planlama, organizasyon, üretkenlik ve detay analizi etrafında şekillenir."
+          ],
+          "effect": [
+            "Günlük işler, sistem kurma ve operasyonel düşünme alanlarında güçlü bir zihinsel kapasite geliştirebilirsin."
+          ],
+          "shadow": [
+            "Zihin aşırı detaylara takılabilir veya yapılacaklar listesi arasında kaybolabilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini doğru yönlendirdiğinde son derece fayda üreten, analitik ve iyileştirici bir akla dönüşür."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel motivasyonun hizmet etmek, düzen kurmak ve üretkenlik yaratma ihtiyacından kaynaklanır."
+          ],
+          "mechanism": [
+            "İş ortamında görevleri büyütür, süreçleri geliştirir ve detayları organize edersin."
+          ],
+          "effect": [
+            "İyileştirme, sağlık, analiz, organizasyon, operasyon yönetimi ve hizmet sektörlerinde büyük potansiyel sergilersin."
+          ],
+          "shadow": [
+            "Aşırı çalışma, tükenmişlik veya fazla sorumluluk alma profesyonel dengeyi bozabilir."
+          ],
+          "potential": [
+            "Doğru ortamda geniş ekipleri yöneten, süreçleri optimize eden ve düzen yaratan bir profesyonel olursun."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak bu yaşamda hizmet, çalışma disiplini, iyileştirme ve sağlıklı düzen kurma temalarıyla ilgili dersler taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni sorumluluk alanlarına çekerek hem kendini hem başkalarını iyileştirmeye yönlendirir."
+          ],
+          "effect": [
+            "Hayat boyunca hizmet ederek büyüme ve düzen kurarak ruhsal gelişim fırsatları karşına çıkar."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda aşırı fedakarlık, tükenmişlik veya sağlıkla ilgili sınavlar teması olabilir."
+          ],
+          "potential": [
+            "Bu yaşam sana hem ruhsal hem fiziksel düzende şifayı büyütme ve hizmet yoluyla olgunlaşma fırsatı sunar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_house_7",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 7
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin önemli bir kısmı ilişki ve ortaklıklar üzerinden şekillenme eğilimindedir."
+          ],
+          "mechanism": [
+            "Benlik duygun, başkalarıyla kurduğun bağlardan ve onlarla geliştirdiğin uyum süreçlerinden güç alır."
+          ],
+          "effect": [
+            "Dışarıya sosyal, uyumlu, iş birliğine açık ve ilişkilerde büyüten bir enerji yansıtırsın."
+          ],
+          "shadow": [
+            "Kendini fazla başkalarına göre tanımlamak veya ilişkide fazla idealist davranmak benlik sınırlarını zayıflatabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirildiğinde ilişki alanında şans, uyum ve genişleyen fırsatları hayatına çekebilirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin ilişki kurma, bağlantı güçlendirme ve uyum yaratma ihtiyacıyla çalışır."
+          ],
+          "mechanism": [
+            "Duygusal süreçlerin çoğu partnerlik, karşılıklı anlayış ve sosyal yansımalar üzerinden işler."
+          ],
+          "effect": [
+            "Psikolojik olarak ilişkilerden öğrenme ve büyüme kapasiten yüksektir."
+          ],
+          "shadow": [
+            "Kendini fazla vermek, karşı tarafı aşırı idealize etmek veya dış onaya bağımlı hissetmek psikolojik dengesizlik yaratabilir."
+          ],
+          "potential": [
+            "Duygusal enerjini bilinçli yönettiğinde ilişkilerde yüksek olgunluk, şefkat ve bilgelik geliştirebilirsin."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Partnerlik alanı senin için büyüme, öğrenme ve genişleme fırsatlarının merkezidir."
+          ],
+          "mechanism": [
+            "Bağ kurarken anlamlı diyalog, karşılıklı destek ve ortak hedef arayışına odaklanırsın."
+          ],
+          "effect": [
+            "İlişkilerde uzun vadeli şans, uyum, cömertlik ve olumlu deneyimler yaşama eğilimin yüksektir."
+          ],
+          "shadow": [
+            "Aşırı tolerans, partneri abartılı şekilde idealleştirme veya ilişkide fazla ödün verme dengesizlik yaratabilir."
+          ],
+          "potential": [
+            "Doğru ilişkide hem sen büyürsün hem karşındakini büyütürsün; ilişki senin için bir bilgeleşme alanına dönüşebilir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin iş birliği, diplomasi, tarafsızlık ve karşılıklı anlayış ihtiyacıyla çalışır."
+          ],
+          "mechanism": [
+            "Düşünce sürecin çoğunlukla karşı tarafı anlamlandırmak, denge kurmak ve çözüm üretmek üzerine ilerler."
+          ],
+          "effect": [
+            "Zihnin diplomatik, objektif ve sosyal çözüm odaklı çalışır."
+          ],
+          "shadow": [
+            "Karar verirken fazla başkalarının fikirlerine dayanmak veya kararsızlık yaşamak zihinsel dağınıklık yaratabilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini yönettiğinde arabuluculuk, iş birliği yönetimi ve ilişkisel zekâ alanlarında üstün başarı sağlayabilirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel başarıların çoğu partnerlikler, ortaklıklar veya iş birlikleri üzerinden gelişme eğilimindedir."
+          ],
+          "mechanism": [
+            "Mesleki motivasyonun karşılıklı fayda, diplomasi ve anlaşma süreçleri ile beslenir."
+          ],
+          "effect": [
+            "Hukuk, danışmanlık, iş birlikleri, sözleşmeli işler, insan ilişkileri ve sosyal alanlarda yüksek potansiyel taşırsın."
+          ],
+          "shadow": [
+            "Yanlış ortaklıklar, fazla güven veya tolerans profesyonel kayıplar yaratabilir."
+          ],
+          "potential": [
+            "Doğru ortaklıkları seçtiğinde profesyonel yaşamda büyük fırsatlar elde edebilir, geniş çevrelerden destek görebilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak bu yaşamda ilişki, uyum, eşitlik ve ortaklık derslerini öğrenme temasını taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni partnerlik deneyimlerine çekerek büyüme, iyileşme ve kendini tanıma yolları açar."
+          ],
+          "effect": [
+            "İlişkiler aracılığıyla büyük öğreticiler, fırsatlar ve dönüşüm alanları deneyimleyebilirsin."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda ilişki bağımlılığı, aşırı fedakârlık veya uyumsuz partnerlerle sınanmış olabilirsin."
+          ],
+          "potential": [
+            "Bu yaşam senin için ilişkiler yoluyla bilgeleşme ve ruhsal genişleme fırsatı sunar."
+          ]
+        }
+      }
+    }
+    ,
+    {
+      "id": "jupiter_in_house_8",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 8
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin krizlerden güçlenme, dönüşüm yoluyla büyüme ve bilinmeyeni araştırma ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Benlik duygun çoğunlukla yoğun duygusal süreçlerde derinleşerek, gölgeyle yüzleşerek şekillenir."
+          ],
+          "effect": [
+            "Dışarıya güçlü sezgileri olan, derinlikli, karizmatik ve kolay sarsılmayan bir enerji yansıtırsın."
+          ],
+          "shadow": [
+            "Güç arayışı, kontrol etme eğilimi veya krizleri büyütme kimlik dengesini zorlayabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirmeyle krizleri dönüştüren, başkalarına ilham veren ve derin bilgelik taşıyan bir figüre dönüşebilirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin bilinçaltı, gölge, korkular ve dönüşüm alanlarına doğal bir genişleme taşır."
+          ],
+          "mechanism": [
+            "Duygusal süreçlerin yoğun temalarla yüzleşme, çözümleme ve derin sezgiyle ilerleme eğilimindedir."
+          ],
+          "effect": [
+            "Zorluklardan öğrenme ve duygusal krizleri büyüme fırsatına dönüştürme becerin yüksektir."
+          ],
+          "shadow": [
+            "Aşırı dramatizasyon, karanlık senaryoları büyütme veya kriz bağımlılığı psikolojik baskı yaratabilir."
+          ],
+          "potential": [
+            "Psikolojik enerjini bilinçli kullandığında travma şifası, derin dönüşüm ve ruhsal bilgelik geliştirebilirsin."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlık alanında derin bağlar, güven, tutku ve ruhsal birleşme ihtiyacı belirleyicidir."
+          ],
+          "mechanism": [
+            "Bağ kurarken karşı tarafın gizli motivasyonlarını, duygusal derinliklerini ve zayıf noktalarını sezersin."
+          ],
+          "effect": [
+            "İlişkilerde yoğun, tutkuyla bağlı, sezgisel ve dönüştürücü bir partner olursun."
+          ],
+          "shadow": [
+            "Kıskançlık, kontrol, güç oyunları veya aşırı iç içelik ilişkide gölge alanları tetikleyebilir."
+          ],
+          "potential": [
+            "Doğru bağda iki tarafı da spiritüel ve duygusal olarak dönüştüren derin bir birliktelik kurabilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin gizli bilgileri çözme, motivasyonları anlama ve içsel derinlikleri analiz etme ihtiyacıyla çalışır."
+          ],
+          "mechanism": [
+            "Düşünce sürecin çoğunlukla psikoloji, kriz çözümü, güç dinamikleri ve araştırma alanlarına yönelir."
+          ],
+          "effect": [
+            "Keskin sezgi, yüksek analiz kapasitesi ve görünmeyeni fark edebilme yeteneği geliştirirsin."
+          ],
+          "shadow": [
+            "Zihin paranoya, fazla analiz veya karanlık senaryolara odaklanma eğilimi gösterebilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini bilinçli yönlendirdiğinde derin araştırma, terapi, strateji veya kriz yönetimi alanlarında üstün başarı sağlayabilirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel motivasyonun dönüşüm yaratma, gizli bilgileri anlama ve krizleri çözme isteğinden doğar."
+          ],
+          "mechanism": [
+            "İş ortamında strateji, analiz, psikoloji, finansal krizler veya dönüşüm süreçleri seni çeker."
+          ],
+          "effect": [
+            "Araştırma, psikoloji, finans, kriz yönetimi, terapi, strateji ve okült alanlarda yüksek potansiyel sergilersin."
+          ],
+          "shadow": [
+            "Riskli kararlar, güç mücadeleleri veya aşırı kontrol isteği profesyonel sorunlara neden olabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirmeyle başkalarının çözemediği krizleri çözen, derin dönüşüm yaratan bir uzman olabilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak güç, kriz, dönüşüm ve ortak kaynaklar temalarıyla ilgili dersler taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni defalarca derin duygusal deneyimlere, bırakma süreçlerine ve yeniden doğuş döngülerine yönlendirir."
+          ],
+          "effect": [
+            "Hayatın boyunca dönüşüm, şifa ve ruhsal genişleme fırsatları sıkça karşına çıkar."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda güçle ilgili sınavlar, kayıplar, manipülasyon veya krizler teması olabilir."
+          ],
+          "potential": [
+            "Bu yaşam sana ruhsal alanda büyük bir bilgelik, şifacılık ve dönüşüm ustalığı geliştirme fırsatı sunar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_house_9",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 9
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin yüksek bilgi, anlam arayışı ve dünyayı geniş perspektiften anlama ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Benlik duygun genellikle keşif, öğrenme, öğretme ve büyük resme ulaşma süreçleriyle şekillenir."
+          ],
+          "effect": [
+            "Dışarıya vizyoner, bilge, özgür ruhlu ve geniş perspektifli biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Aşırı kesin konuşmak, inançlarında katılaşmak veya kendi doğrularını mutlaklaştırmak kimlik dengesini bozabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirme ile ilham veren bir öğretmen, rehber veya düşünür kimliği geliştirebilirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin anlam bulma, büyüme ve sürekli genişleme ihtiyacıyla çalışır."
+          ],
+          "mechanism": [
+            "Duygusal süreçlerin çoğu büyük resme bağlanarak, deneyimleri ruhsal bilgiye dönüştürerek işler."
+          ],
+          "effect": [
+            "İçsel iyimserlik, umut ve ruhsal bütünlük psikolojik motivasyonunu artırır."
+          ],
+          "shadow": [
+            "Aşırı romantizasyon, gerçeklikten uzaklaşma veya her şeyi 'bir ders' gibi görme duygusal kaçınma yaratabilir."
+          ],
+          "potential": [
+            "Psikolojik enerjini bilinçli kullandığında ruhsal bilgelik, felsefi derinlik ve güçlü iç rehberlik geliştirirsin."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlık alanında entelektüel uyum, ruhsal rezonans ve karşılıklı büyüme ihtiyacı belirleyicidir."
+          ],
+          "mechanism": [
+            "Bağ kurarken partnerinin vizyonuna, değerlerine ve anlam arayışına odaklanırsın."
+          ],
+          "effect": [
+            "İlişkilerde genişleten, öğreten, ilham veren ve özgürleştiren bir enerji sunarsın."
+          ],
+          "shadow": [
+            "Partneri düzeltmeye çalışma, kendi doğrularını empoze etme veya aşırı idealizasyon ilişkide zorluk yaratabilir."
+          ],
+          "potential": [
+            "Doğru bağda birlikte büyüyen, keşfeden ve ruhsal gelişim sağlayan bir birliktelik kurabilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin büyük resmi kavrama, yüksek bilgiye ulaşma ve yaşamın anlamını çözme ihtiyacıyla motive olur."
+          ],
+          "mechanism": [
+            "Düşünce sürecin felsefi sistemler, inançlar, kültürel perspektifler ve yüksek eğitim konularında genişler."
+          ],
+          "effect": [
+            "Zihnin vizyoner, soyut düşünceye açık, meraklı ve öğrenmeye güçlü şekilde yöneliktir."
+          ],
+          "shadow": [
+            "Aşırı genelleme, dogmatizm veya zihinsel aşırı özgüven gölgeler oluşturabilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini bilinçli yönlendirdiğinde öğretmenlik, danışmanlık, akademi, yazarlık veya spiritüel rehberlik gibi alanlarda üstün başarı sağlayabilirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel motivasyonun keşfetme, öğretme, genişleme ve anlam yaratma isteğinden doğar."
+          ],
+          "mechanism": [
+            "İş ortamında bilgiyi yayma, vizyon oluşturma, yol gösterme ve büyük ölçekli düşünme eğilimin vardır."
+          ],
+          "effect": [
+            "Akademi, öğretmenlik, felsefe, hukuk, seyahat, yayıncılık, spiritüel rehberlik veya uluslararası işler alanında yüksek potansiyel taşırsın."
+          ],
+          "shadow": [
+            "Fazla idealist hedefler, aşırı risk alma veya hedefleri fazla büyütme profesyonel istikrarı zorlayabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirmeyle geniş kitlelere ilham veren bir bilgelik figürü, vizyon stratejisti veya ruhsal lider olabilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak bu yaşamda bilgelik, felsefi derinlik, öğretme ve ruhsal yolculuk temalarıyla ilgili dersler taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni yeni kültürler, yüksek bilgi, öğreticiler ve yaşam amaçlarıyla sık sık karşılaştırır."
+          ],
+          "effect": [
+            "Hayat boyunca genişleme, keşif ve ruhsal gelişim fırsatları sürekli olarak önüne çıkar."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda dogmatizm, aşırı inanç katılığı veya bilgi gücünü yanlış kullanma teması olabilir."
+          ],
+          "potential": [
+            "Bu yaşam, bilgeliği eyleme dönüştürerek öğretici bir ruh, vizyoner bir zihin ve yüksek bir farkındalık geliştirme fırsatı sunar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_house_10",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 10
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin toplumsal görünürlük, başarı ve anlamlı bir hedefe hizmet etme ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Benlik duygun çoğunlukla kariyer yolculuğunda büyüyerek, sorumluluk üstlenerek ve geniş çevrelere etki ederek şekillenir."
+          ],
+          "effect": [
+            "Dışarıya doğal liderlik enerjisi, özgüven ve ileriye dönük bir vizyon yansıtırsın."
+          ],
+          "shadow": [
+            "Başarıya aşırı bağlanmak, statü arayışı veya otoriteyle ilgili aşırılıklar kimlik dengesini bozabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirildiğinde ilham veren bir liderliğe, güçlü bir kariyer kimliğine ve kalıcı başarıya dönüşebilirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin hedef belirleme, başarıya yönelme ve toplumda anlamlı bir yer edinme isteğiyle çalışır."
+          ],
+          "mechanism": [
+            "Duygusal süreçlerin çoğu kariyer, sorumluluklar ve toplumsal konumla ilişkilidir."
+          ],
+          "effect": [
+            "Psikolojik olarak güçlü bir amaç duygusu, çalışma motivasyonu ve başarı bilinci geliştirirsin."
+          ],
+          "shadow": [
+            "Aşırı kontrol, başarı baskısı veya 'yeterince iyi değilim' döngüsü psikolojik yük oluşturabilir."
+          ],
+          "potential": [
+            "İçsel enerjini dengeli kullandığında başkalarını motive eden, vizyonuyla yönlendiren bir ruhsal olgunluk geliştirirsin."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlık alanında partnerin hedefleri, vizyonu ve toplumsal rolü senin için belirleyici bir faktördür."
+          ],
+          "mechanism": [
+            "Bağ kurarken karşı tarafın sorumluluk alma kapasitesini, olgunluğunu ve hedeflerini değerlendirirsin."
+          ],
+          "effect": [
+            "İlişkilerde güçlü bir destekçi, rehberlik eden ve partnerini büyüten bir enerji sunarsın."
+          ],
+          "shadow": [
+            "İlişkide fazla yönlendirmek, dominant olmak veya kariyeri partnerliğin önüne koymak dengesizlik yaratabilir."
+          ],
+          "potential": [
+            "Doğru bağda birlikte büyüyen, birbirinin hedeflerine ilham veren ve güçlü bir birliktelik kurabilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin hedef belirleme, strateji kurma ve uzun vadeli planlama ihtiyacıyla motive olur."
+          ],
+          "mechanism": [
+            "Düşünce sürecin kariyer yapıları, toplumsal düzen ve büyük projeler üzerine genişler."
+          ],
+          "effect": [
+            "Zihnin vizyoner, stratejik, organizasyonel ve büyük ölçekli düşünmeye açıktır."
+          ],
+          "shadow": [
+            "Kendine aşırı yüklenme, kontrol ihtiyacı veya mükemmeliyetçilik zihinsel baskı yaratabilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini bilinçli yönlendirdiğinde etkileyici liderlik, strateji geliştirme ve toplumsal vizyon üretimi alanlarında üstün başarı sağlayabilirsin."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel motivasyonun yükselme, genişleme ve toplumsal etki yaratma isteğinden doğar."
+          ],
+          "mechanism": [
+            "İş ortamında fırsatları büyütme, sorumluluk alma ve çevresel etkileri genişletme eğilimin vardır."
+          ],
+          "effect": [
+            "Kariyerde şans, fırsat, tanınma ve görünür başarı elde etme potansiyelin yüksektir."
+          ],
+          "shadow": [
+            "Aşırı risk alma, fazla özgüven veya yanlış zamanda büyük adımlar atma profesyonel sorunlara neden olabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirildiğinde uluslararası arenada başarı, liderlik pozisyonları, kamuya mal olma ve kalıcı prestij elde edebilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak bu yaşamda liderlik, toplumsal rol, sorumluluk ve başarıyla ilgili dersler taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni yüksek sorumluluk alanlarına çekerek hem kişisel hem toplumsal büyümeyi tetikler."
+          ],
+          "effect": [
+            "Hayat boyunca doğru kişiler, mentorlar ve yönlendirmeler kariyer yoluna destek olarak gelir."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda güç kullanımı, otorite çatışmaları veya statü kayıpları teması olabilir."
+          ],
+          "potential": [
+            "Bu yaşam sana bilgece liderlik, toplumsal etki yaratma ve ulvi bir amaca hizmet etme fırsatı sunar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_house_11",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 11
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin sosyal alanlarda büyüme, kolektife katkı verme ve geleceğe dair büyük idealler kurma ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Benlik duygun topluluklar, arkadaşlıklar ve büyük projeler içinde var olarak genişler."
+          ],
+          "effect": [
+            "Dışarıya vizyoner, sosyal, ilham veren ve geleceğe dönük bir enerji yansıtırsın."
+          ],
+          "shadow": [
+            "Aşırı hayalcilik, amaçsız yayılma veya herkesle uyum sağlama isteği kimlik sınırlarını bulanıklaştırabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirmeyle topluluklara yön veren, büyük vizyonları hayata geçiren ilham kaynağı bir figüre dönüşebilirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin umut, vizyon, idealizm ve kolektifle bağ kurma ihtiyacıyla çalışır."
+          ],
+          "mechanism": [
+            "Duygusal süreçlerin çoğu geleceğe dair motivasyon, projeler ve topluluk içinde yer alma arzusuyla şekillenir."
+          ],
+          "effect": [
+            "Yüksek bir moral kapasitesi, iyimserlik ve insanlara güven duyma eğilimin vardır."
+          ],
+          "shadow": [
+            "Aşırı idealizm, gerçekçi olmayan beklentiler veya hayal kırıklıkları psikolojik dalgalanma yaratabilir."
+          ],
+          "potential": [
+            "Psikolojik enerjini dengeli kullandığında umut veren, insanları bir araya getiren ve ilham dağıtan bir ruhsal bilgelik geliştirirsin."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlık alanında arkadaşlık, zihinsel uyum ve ortak idealler belirleyici temalardır."
+          ],
+          "mechanism": [
+            "Bağ kurarken partnerinin vizyonu, sosyal çevresi ve geleceğe dair planlarına dikkat edersin."
+          ],
+          "effect": [
+            "İlişkilerde arkadaşlığı, özgürlüğü, karşılıklı gelişimi ve birlikte büyümeyi önemseyen bir yapı sunarsın."
+          ],
+          "shadow": [
+            "Fazla özgürlük ihtiyacı, ilişkide mesafe, aşırı sosyal yoğunluk veya hedef uyumsuzluğu gölge alanları oluşturabilir."
+          ],
+          "potential": [
+            "Doğru bağda hem romantik hem arkadaş temelli, vizyoner ve uzun vadeli bir ilişki kurabilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin geleceği planlama, büyük vizyon kurma ve toplumsal bağlamda düşünme ihtiyacıyla motive olur."
+          ],
+          "mechanism": [
+            "Düşünce sürecin çoğunlukla inovasyon, kolektif projeler, teknoloji, sosyal yapılar ve büyük ölçekli hedefler üzerine genişler."
+          ],
+          "effect": [
+            "Zihnin vizyoner, yenilikçi, sistem kuran ve geleceği öngören bir yapıya sahiptir."
+          ],
+          "shadow": [
+            "Zihin fazla dağılabilir, gereğinden büyük projeler hayal edebilir veya planlama zayıf kalabilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini yönettiğinde stratejik inovasyon, sosyal liderlik ve topluluk oluşturma alanlarında yüksek başarı sağlarsın."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel motivasyonun topluluklar, büyük projeler ve kolektife katkı üzerinden büyüme isteğinden doğar."
+          ],
+          "mechanism": [
+            "İş ortamında geniş network kurar, büyük fikirleri toplulukla buluşturur ve ekipleri bir araya getirirsin."
+          ],
+          "effect": [
+            "Kariyerde sosyal medya, teknoloji, girişimcilik, topluluk liderliği, organizasyon, politik alanlar ve inovasyon gibi alanlarda yüksek potansiyel taşırsın."
+          ],
+          "shadow": [
+            "Gerçek dışı beklentiler, fazla iş yükü veya plansız genişleme profesyonel dengesizlik yaratabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirmeyle topluma etkisi olan projeleri yöneten, büyük vizyonlar oluşturan ve insanları birleştiren güçlü bir lider olursun."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak bu yaşamda topluluk, kolektif bilinç, vizyon ve sosyal katkı temalarıyla ilgili dersler taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni arkadaş gruplarına, topluluklara veya büyük projelere çekerek ruhsal genişleme sağlar."
+          ],
+          "effect": [
+            "Hayat boyunca doğru çevrelerde büyük fırsatlar, destek ve ilham veren insanlar karşına çıkar."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda toplumsal dışlanma, yanlış çevreler veya vadedilen şeyleri gerçekleştirememe teması olabilir."
+          ],
+          "potential": [
+            "Bu yaşam sana kolektif bilincin parçası olma, geleceğe yön verme ve sosyal anlamda iz bırakma fırsatı sunar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "jupiter_in_house_12",
+      "conditions": [
+        {
+          "planet": "Jupiter",
+          "house": 12
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kimliğin ruhsal derinlik, içsel bilgelik ve görünmeyen alanlarla bağlantı kurma ihtiyacıyla beslenir."
+          ],
+          "mechanism": [
+            "Benlik duygun çoğunlukla içsel sessizlik, sezgisel farkındalık ve bilinçdışı süreçler üzerinden şekillenir."
+          ],
+          "effect": [
+            "Dışarıya sakin, bilge, empatik ve içsel dünyası zengin bir enerji yansıtırsın."
+          ],
+          "shadow": [
+            "Kendini geri çekme, görünmez kalma veya kurban bilincine kayma kimlik dengesini zorlayabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirildiğinde spiritüel bilgelik taşıyan, derin şifacılık kapasitesine sahip bir kimliğe dönüşebilirsin."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik enerjin bilinçdışının derin katmanlarıyla ve kolektif duygularla doğal bir bağlantı taşır."
+          ],
+          "mechanism": [
+            "Duygusal süreçlerin çoğu sezgi, rüyalar, iç ses, empati ve iç dünyada genişleme üzerinden işler."
+          ],
+          "effect": [
+            "Empati, affedicilik, sezgisel bilgelik ve duygusal şifa kapasitesi psikolojik gücünü artırır."
+          ],
+          "shadow": [
+            "Kaçış, aşırı duyarlılık, kurban psikolojisi veya görünmeyen korkuları büyütme eğilimi tetiklenebilir."
+          ],
+          "potential": [
+            "Psikolojik enerjini bilinçli yönlendirdiğinde hem kendine hem başkalarına derin ruhsal şifa sağlayabilirsin."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "Yakınlık alanında ruhsal bağ, empati ve görünmeyen bir duygusal rezonans senin için belirleyicidir."
+          ],
+          "mechanism": [
+            "Bağ kurarken partnerin içsel dünyasına, duygusal kırılganlıklarına ve ruhsal titreşimine dikkat edersin."
+          ],
+          "effect": [
+            "İlişkilerde koşulsuz sevgi, anlayış ve derin empati taşıyan bir enerji sunarsın."
+          ],
+          "shadow": [
+            "Fedakârlık, kendini yok sayma, gizli ilişkiler veya kurtarıcı–kurban döngüleri ilişkide gölge oluşturabilir."
+          ],
+          "potential": [
+            "Doğru bağda ruhsal gelişimi destekleyen, şifalı ve derin bir birleşme ortaya çıkarabilirsin."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihnin sezgi, semboller, bilinçdışı işaretler ve ruhsal bilgiye yönelme ihtiyacıyla çalışır."
+          ],
+          "mechanism": [
+            "Düşünce sürecin çoğunlukla sezgisel çağrışımlar, içsel imgeler ve kolektif bilinç üzerinden genişler."
+          ],
+          "effect": [
+            "Yaratıcı, sembolik, mistik ve derinleşmiş bir zihinsel kapasite ortaya çıkar."
+          ],
+          "shadow": [
+            "Zihinde belirsizlik, kaçış, aşırı idealizm veya hayal dünyasında kaybolma eğilimi oluşabilir."
+          ],
+          "potential": [
+            "Zihinsel enerjini bilinçli yönlendirdiğinde ilham, sanatsal üretim, sezgisel bilgi ve spiritüel rehberlik kapasitesine ulaşırsın."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Profesyonel motivasyonun şifacılık, gizli alanlarda çalışma, yardım etme ve ruhsal gelişim isteğinden doğar."
+          ],
+          "mechanism": [
+            "İş ortamında arkada çalışmak, yardım süreçlerini yönetmek veya görünmez destek rollerinde büyürsün."
+          ],
+          "effect": [
+            "Psikoloji, terapi, sanat, spiritüel rehberlik, hastaneler, kapalı kurumlar veya gizli strateji gerektiren alanlarda yüksek potansiyel taşırsın."
+          ],
+          "shadow": [
+            "Görünmeyen emek, takdir edilmeme veya fazla fedakârlık profesyonel dengesizliğe yol açabilir."
+          ],
+          "potential": [
+            "Doğru yönlendirildiğinde güçlü bir şifacı, spiritüel rehber, stratejik danışman veya kolektife gizli katkılar sunan bir uzman olabilirsin."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Karmik olarak bu yaşamda şifa, empati, ruhsal hizmet, fedakârlık ve bilinçdışı ile çalışma temaları taşıyorsun."
+          ],
+          "mechanism": [
+            "Kader seni içsel sessizlik, ruhsal arayış ve gizli destek mekanizmaları üzerinden büyütür."
+          ],
+          "effect": [
+            "Hayat boyunca görünmez korumalar, beklenmedik fırsatlar ve ruhsal rehberlik seni destekler."
+          ],
+          "shadow": [
+            "Geçmiş karmalarda kurban–kurtarıcı döngüleri, gizli düşmanlıklar veya aşırı fedakârlık teması olabilir."
+          ],
+          "potential": [
+            "Bu yaşam sana ruhsal bilgelik, derin şifa ve kolektife görünmeyen katkılar sunarak karmayı dönüştürme fırsatı sağlar."
+          ]
+        }
+      }
+    }
+  ],
+  "aspect_rules": [],
+  "meta_rules": []
+}

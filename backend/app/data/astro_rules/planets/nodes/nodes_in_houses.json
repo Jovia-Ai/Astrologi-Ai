@@ -1,0 +1,1362 @@
+{
+  "planet_house_rules": [
+    {
+      "id": "north_node_in_house_1",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 1
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda kimliğini bireysellik üzerinden inşa etmen beklenir."
+          ],
+          "mechanism": [
+            "Kendi isteklerini öne koymaya yönlendirilirsin."
+          ],
+          "effect": [
+            "Bu seni bağımsız ve kendini tanıyan biri haline getirir."
+          ],
+          "shadow": [
+            "Başkalarına aşırı odaklanmak gelişimi yavaşlatabilir."
+          ],
+          "potential": [
+            "Kendin olmayı seçtiğinde yönün netleşir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim öz güven kazanımıyla başlar."
+          ],
+          "mechanism": [
+            "Deneyimler seni bireysel karar almaya iter."
+          ],
+          "effect": [
+            "Bu içsel güç yaratır."
+          ],
+          "shadow": [
+            "Onay ihtiyacı."
+          ],
+          "potential": [
+            "İç referans sistemi psikolojik denge sağlar."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkiler bireyselliği öğrenme alanıdır."
+          ],
+          "mechanism": [
+            "Kendi sınırlarını keşfetmen gerekir."
+          ],
+          "effect": [
+            "Bu daha sağlıklı bağlar kurmanı sağlar."
+          ],
+          "shadow": [
+            "Bağımlı ilişkiler."
+          ],
+          "potential": [
+            "Eşit ve özgür bağlar gelişimi destekler."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin kendini tanıma sürecine odaklanır."
+          ],
+          "mechanism": [
+            "Karar alma pratiği gelişir."
+          ],
+          "effect": [
+            "Bu zihinsel netlik sağlar."
+          ],
+          "shadow": [
+            "Kararsızlık."
+          ],
+          "potential": [
+            "Netlik yön bilinci kazandırır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer kişisel yönelimle şekillenir."
+          ],
+          "mechanism": [
+            "Kendi yolunu çizmen beklenir."
+          ],
+          "effect": [
+            "Girişimci ve öncü alanlar desteklenir."
+          ],
+          "shadow": [
+            "Başkasının yolunu izlemek."
+          ],
+          "potential": [
+            "Özgün rota başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması bireyselleşmektir."
+          ],
+          "mechanism": [
+            "Kendi seçimlerinle ilerlersin."
+          ],
+          "effect": [
+            "Kimlik bilinci gelişir."
+          ],
+          "shadow": [
+            "Bağımlılık karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Kendin olmak karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_2",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 2
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda öz değer inşası ana temadır."
+          ],
+          "mechanism": [
+            "Kendi kaynaklarını oluşturman beklenir."
+          ],
+          "effect": [
+            "Bu seni sağlam ve güvenli biri yapar."
+          ],
+          "shadow": [
+            "Başkalarına maddi–duygusal bağımlılık."
+          ],
+          "potential": [
+            "Kendi değerini kurduğunda istikrar gelir."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim güven duygusuyla bağlantılıdır."
+          ],
+          "mechanism": [
+            "Emek ve sabır öğretici olur."
+          ],
+          "effect": [
+            "Bu içsel dayanıklılık sağlar."
+          ],
+          "shadow": [
+            "Yoksunluk korkusu."
+          ],
+          "potential": [
+            "İçsel güven psikolojiyi güçlendirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde değer ve sınır öğrenilir."
+          ],
+          "mechanism": [
+            "Alma–verme dengesi kurulmalıdır."
+          ],
+          "effect": [
+            "Bu sağlıklı bağlar yaratır."
+          ],
+          "shadow": [
+            "Aşırı fedakârlık."
+          ],
+          "potential": [
+            "Net değerler ilişkileri dengeler."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin somut gerçeklik üzerine odaklanır."
+          ],
+          "mechanism": [
+            "Planlama ve yapı gelişir."
+          ],
+          "effect": [
+            "Bu üretkenlik sağlar."
+          ],
+          "shadow": [
+            "Aşırı kontrol."
+          ],
+          "potential": [
+            "Esnek yapı zihni rahatlatır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer maddi istikrar üzerinden şekillenir."
+          ],
+          "mechanism": [
+            "Somut sonuçlar hedeflenir."
+          ],
+          "effect": [
+            "Finans, üretim ve tasarım desteklenir."
+          ],
+          "shadow": [
+            "Riskten kaçma."
+          ],
+          "potential": [
+            "Değer üretimi başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması öz değer yaratmaktır."
+          ],
+          "mechanism": [
+            "Kaynak bilinci gelişir."
+          ],
+          "effect": [
+            "Güvenli zemin oluşur."
+          ],
+          "shadow": [
+            "Bağımlılık karmayı zorlaştırır."
+          ],
+          "potential": [
+            "Kendi değerini bilmek karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_3",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 3
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda öğrenme ve iletişim gelişim alanıdır."
+          ],
+          "mechanism": [
+            "Merak seni hareket ettirir."
+          ],
+          "effect": [
+            "Bu zihinsel çeviklik kazandırır."
+          ],
+          "shadow": [
+            "Yüzeysel bilgi."
+          ],
+          "potential": [
+            "Derin öğrenme yön bilinci sağlar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim ifade ihtiyacıyla bağlantılıdır."
+          ],
+          "mechanism": [
+            "Konuşmak ve yazmak iyileştirici olur."
+          ],
+          "effect": [
+            "Bu zihinsel rahatlama sağlar."
+          ],
+          "shadow": [
+            "Aşırı düşünme."
+          ],
+          "potential": [
+            "Net ifade psikolojik denge getirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde iletişim öğrenme alanıdır."
+          ],
+          "mechanism": [
+            "Diyalog bağ kurar."
+          ],
+          "effect": [
+            "Bu yakınlığı artırır."
+          ],
+          "shadow": [
+            "Yanlış anlaşılmalar."
+          ],
+          "potential": [
+            "Açık iletişim bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin bilgi akışıyla gelişir."
+          ],
+          "mechanism": [
+            "Bağlantı kurarak öğrenirsin."
+          ],
+          "effect": [
+            "Bu zihinsel esneklik sağlar."
+          ],
+          "shadow": [
+            "Dağınıklık."
+          ],
+          "potential": [
+            "Odak zihni berraklaştırır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer bilgi paylaşımıyla şekillenir."
+          ],
+          "mechanism": [
+            "Anlatmak ve öğretmek öne çıkar."
+          ],
+          "effect": [
+            "Eğitim, medya ve yazı alanları desteklenir."
+          ],
+          "shadow": [
+            "İstikrarsız yönelim."
+          ],
+          "potential": [
+            "Bilgi ustalığı kariyeri büyütür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması öğrenmek ve öğretmektir."
+          ],
+          "mechanism": [
+            "İfade yoluyla evrilirsin."
+          ],
+          "effect": [
+            "Zihinsel gelişim hızlanır."
+          ],
+          "shadow": [
+            "Yüzeysellik karmayı zorlaştırır."
+          ],
+          "potential": [
+            "Bilgiyi sindirmek karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_4",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 4
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda içsel güven ve köklenme geliştirilir."
+          ],
+          "mechanism": [
+            "Duygusal temeller güçlendirilir."
+          ],
+          "effect": [
+            "Bu seni içten ve sağlam biri yapar."
+          ],
+          "shadow": [
+            "Dış dünyaya aşırı odaklanma."
+          ],
+          "potential": [
+            "İçsel merkez yön bilinci sağlar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim duygusal güvenle bağlantılıdır."
+          ],
+          "mechanism": [
+            "Ait olma ihtiyacı çalışır."
+          ],
+          "effect": [
+            "Bu duygusal dayanıklılık sağlar."
+          ],
+          "shadow": [
+            "Geçmişe takılma."
+          ],
+          "potential": [
+            "Şefkat psikolojik denge getirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde duygusal bağ önceliklidir."
+          ],
+          "mechanism": [
+            "Yakınlık ve güven öğrenilir."
+          ],
+          "effect": [
+            "Bu derin bağlar yaratır."
+          ],
+          "shadow": [
+            "Duygusal bağımlılık."
+          ],
+          "potential": [
+            "Sağlıklı bağlanma gelişimi destekler."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin duygusal verilerle çalışır."
+          ],
+          "mechanism": [
+            "Hatıralar öğretici olur."
+          ],
+          "effect": [
+            "Bu içgörü sağlar."
+          ],
+          "shadow": [
+            "Zihinsel kapanma."
+          ],
+          "potential": [
+            "Bilinçli hatırlama zihni yumuşatır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer içsel tatminle ilişkilidir."
+          ],
+          "mechanism": [
+            "Ev, bakım ve destek temaları öne çıkar."
+          ],
+          "effect": [
+            "Psikoloji, gayrimenkul ve bakım alanları desteklenir."
+          ],
+          "shadow": [
+            "Dış başarıya direnç."
+          ],
+          "potential": [
+            "İçsel denge kariyeri besler."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması duygusal köklenmedir."
+          ],
+          "mechanism": [
+            "Aile ve iç dünya çalışır."
+          ],
+          "effect": [
+            "İçsel güven oluşur."
+          ],
+          "shadow": [
+            "Kaçınma karmayı zorlaştırır."
+          ],
+          "potential": [
+            "Aidiyet karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_5",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 5
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda kendini ifade etmek ana gelişim alanıdır."
+          ],
+          "mechanism": [
+            "Yaratıcılık ve cesaret çalışır."
+          ],
+          "effect": [
+            "Bu seni görünür ve canlı biri yapar."
+          ],
+          "shadow": [
+            "Geri planda kalma alışkanlığı."
+          ],
+          "potential": [
+            "Kendini ortaya koymak yönü açar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim keyif ve neşeyle bağlantılıdır."
+          ],
+          "mechanism": [
+            "Oyun ve yaratıcılık iyileştirir."
+          ],
+          "effect": [
+            "Bu canlılık sağlar."
+          ],
+          "shadow": [
+            "Ciddiyet fazlalığı."
+          ],
+          "potential": [
+            "Keyif psikolojik denge getirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde romantizm ve ifade öğrenilir."
+          ],
+          "mechanism": [
+            "Kalpten davranmak gerekir."
+          ],
+          "effect": [
+            "Bu sıcak bağlar yaratır."
+          ],
+          "shadow": [
+            "Dramdan kaçma."
+          ],
+          "potential": [
+            "Cesur ifade bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin yaratıcı ifade üzerine çalışır."
+          ],
+          "mechanism": [
+            "Hayal gücü aktifleşir."
+          ],
+          "effect": [
+            "Bu ilham sağlar."
+          ],
+          "shadow": [
+            "Kendini küçümseme."
+          ],
+          "potential": [
+            "Yaratıcı güven zihni açar."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer yaratıcı ifade ile şekillenir."
+          ],
+          "mechanism": [
+            "Sahne, sanat ve liderlik öne çıkar."
+          ],
+          "effect": [
+            "Yaratıcı alanlarda başarı."
+          ],
+          "shadow": [
+            "Riskten kaçma."
+          ],
+          "potential": [
+            "Cesur ifade kariyeri büyütür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması kalpten yaşamaktır."
+          ],
+          "mechanism": [
+            "Yaratıcılık yol gösterir."
+          ],
+          "effect": [
+            "Neşe bilinci gelişir."
+          ],
+          "shadow": [
+            "Bastırma karmayı zorlaştırır."
+          ],
+          "potential": [
+            "Kendini yaşamak karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_6",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 6
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda hizmet ve düzen gelişim alanıdır."
+          ],
+          "mechanism": [
+            "Sorumluluk alman beklenir."
+          ],
+          "effect": [
+            "Bu seni üretken ve güvenilir biri yapar."
+          ],
+          "shadow": [
+            "Kaçınma ve dağınıklık."
+          ],
+          "potential": [
+            "Düzen yön bilinci sağlar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim faydalı olma hissiyle bağlantılıdır."
+          ],
+          "mechanism": [
+            "Günlük yapı güven verir."
+          ],
+          "effect": [
+            "Bu içsel denge sağlar."
+          ],
+          "shadow": [
+            "Aşırı eleştiri."
+          ],
+          "potential": [
+            "Şefkatli disiplin psikolojiyi güçlendirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde destek ve sorumluluk öğrenilir."
+          ],
+          "mechanism": [
+            "Somut katkı bağ kurar."
+          ],
+          "effect": [
+            "Bu güvenli ilişkiler yaratır."
+          ],
+          "shadow": [
+            "Hizmet–fedakârlık dengesizliği."
+          ],
+          "potential": [
+            "Denge bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin detay ve işlev üzerine çalışır."
+          ],
+          "mechanism": [
+            "Analiz gelişir."
+          ],
+          "effect": [
+            "Bu verimlilik sağlar."
+          ],
+          "shadow": [
+            "Mükemmeliyetçilik."
+          ],
+          "potential": [
+            "Esnek düzen zihni rahatlatır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer hizmet ve uzmanlıkla şekillenir."
+          ],
+          "mechanism": [
+            "Ustalık geliştirilir."
+          ],
+          "effect": [
+            "Sağlık, analiz ve hizmet alanları desteklenir."
+          ],
+          "shadow": [
+            "Aşırı yük alma."
+          ],
+          "potential": [
+            "Ustalık kariyeri büyütür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması hizmet bilincidir."
+          ],
+          "mechanism": [
+            "Günlük emek öğretici olur."
+          ],
+          "effect": [
+            "Yol netleşir."
+          ],
+          "shadow": [
+            "Kaçınma karmayı zorlaştırır."
+          ],
+          "potential": [
+            "Sorumluluk karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_7",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 7
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda gelişim eşitlik ve işbirliği üzerinden ilerler."
+          ],
+          "mechanism": [
+            "Ben-merkezlilikten çıkmaya yönlendirilirsin."
+          ],
+          "effect": [
+            "Bu seni ortaklığa açık ve uzlaşmacı biri yapar."
+          ],
+          "shadow": [
+            "Aşırı bireysellik yönü kapatabilir."
+          ],
+          "potential": [
+            "Eşit ilişki kurduğunda yol açılır."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim karşılıklı aynalanmayla olur."
+          ],
+          "mechanism": [
+            "Geri bildirim öğretici hale gelir."
+          ],
+          "effect": [
+            "Bu empati geliştirir."
+          ],
+          "shadow": [
+            "Onay bağımlılığı."
+          ],
+          "potential": [
+            "İç denge ilişkileri güçlendirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkiler ana gelişim alanıdır."
+          ],
+          "mechanism": [
+            "Uzlaşma ve dinleme öğrenilir."
+          ],
+          "effect": [
+            "Bu kalıcı bağlar yaratır."
+          ],
+          "shadow": [
+            "Kendini feda etme."
+          ],
+          "potential": [
+            "Eşitlik bağları olgunlaştırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin birlikte düşünmeyi öğrenir."
+          ],
+          "mechanism": [
+            "Farklı bakışlar entegre edilir."
+          ],
+          "effect": [
+            "Bu zihinsel esneklik sağlar."
+          ],
+          "shadow": [
+            "Kararsızlık."
+          ],
+          "potential": [
+            "Net sınırlar zihni dengeler."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer ortaklık ve danışmanlıkla şekillenir."
+          ],
+          "mechanism": [
+            "Birlikte üretmek desteklenir."
+          ],
+          "effect": [
+            "Hukuk, danışmanlık ve arabuluculuk alanları öne çıkar."
+          ],
+          "shadow": [
+            "Tek başına ilerleme ısrarı."
+          ],
+          "potential": [
+            "Stratejik ortaklık başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması eşit ilişkiler kurmaktır."
+          ],
+          "mechanism": [
+            "Ayna deneyimleri tekrar eder."
+          ],
+          "effect": [
+            "İşbirliği bilinci gelişir."
+          ],
+          "shadow": [
+            "Bağımlılık karmayı zorlaştırır."
+          ],
+          "potential": [
+            "Eşitlik karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_8",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 8
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda derin dönüşüm ve paylaşım gelişim alanıdır."
+          ],
+          "mechanism": [
+            "Kontrolü bırakmaya yönlendirilirsin."
+          ],
+          "effect": [
+            "Bu seni güçlü ve derin biri yapar."
+          ],
+          "shadow": [
+            "Yüzleşmeden kaçma."
+          ],
+          "potential": [
+            "Teslimiyet yönü açar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim kriz ve yüzleşmeyle olur."
+          ],
+          "mechanism": [
+            "Bastırılanlar görünür hale gelir."
+          ],
+          "effect": [
+            "Bu içsel güç yaratır."
+          ],
+          "shadow": [
+            "Korku ve takıntı."
+          ],
+          "potential": [
+            "Farkındalık psikolojiyi dönüştürür."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde derin bağ ve paylaşım öğrenilir."
+          ],
+          "mechanism": [
+            "Güven inşa edilir."
+          ],
+          "effect": [
+            "Bu dönüştürücü bağlar yaratır."
+          ],
+          "shadow": [
+            "Bağımlılık."
+          ],
+          "potential": [
+            "Şeffaflık bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin gizli olanı anlamaya yönelir."
+          ],
+          "mechanism": [
+            "Derin analiz gelişir."
+          ],
+          "effect": [
+            "Bu güçlü içgörü sağlar."
+          ],
+          "shadow": [
+            "Zihinsel karanlık."
+          ],
+          "potential": [
+            "Bilinçli derinlik zihni dengeler."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer dönüşüm ve kriz alanlarıyla şekillenir."
+          ],
+          "mechanism": [
+            "Araştırma ve strateji öne çıkar."
+          ],
+          "effect": [
+            "Psikoloji, finans ve kriz yönetimi desteklenir."
+          ],
+          "shadow": [
+            "Riskten kaçma."
+          ],
+          "potential": [
+            "Stratejik cesaret başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması teslimiyet ve dönüşümdür."
+          ],
+          "mechanism": [
+            "Kriz döngüleri öğreticidir."
+          ],
+          "effect": [
+            "Güç bilinci gelişir."
+          ],
+          "shadow": [
+            "Kontrol karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bırakmak karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_9",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 9
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda anlam ve vizyon geliştirmek ana temadır."
+          ],
+          "mechanism": [
+            "Sınırların ötesine yönelirsin."
+          ],
+          "effect": [
+            "Bu seni vizyoner biri yapar."
+          ],
+          "shadow": [
+            "Dogmaya saplanma."
+          ],
+          "potential": [
+            "Açık ufuk yönü açar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim inanç sistemleriyle olur."
+          ],
+          "mechanism": [
+            "Deneyim ve öğrenme öğreticidir."
+          ],
+          "effect": [
+            "Bu zihinsel genişlik sağlar."
+          ],
+          "shadow": [
+            "Haklı olma takıntısı."
+          ],
+          "potential": [
+            "Esneklik psikolojiyi dengeler."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde ortak vizyon öğrenilir."
+          ],
+          "mechanism": [
+            "Paylaşılan anlam bağ kurar."
+          ],
+          "effect": [
+            "Bu ilham veren ilişkiler yaratır."
+          ],
+          "shadow": [
+            "Fikir çatışmaları."
+          ],
+          "potential": [
+            "Açık zihin bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin büyük resmi görmeye yönelir."
+          ],
+          "mechanism": [
+            "Soyut düşünme gelişir."
+          ],
+          "effect": [
+            "Bu felsefi derinlik sağlar."
+          ],
+          "shadow": [
+            "Gerçeklikten kopma."
+          ],
+          "potential": [
+            "Topraklanma zihni dengeler."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer eğitim ve vizyonla şekillenir."
+          ],
+          "mechanism": [
+            "Öğretme ve yol gösterme öne çıkar."
+          ],
+          "effect": [
+            "Akademi, hukuk ve yayıncılık desteklenir."
+          ],
+          "shadow": [
+            "Pratikten kaçma."
+          ],
+          "potential": [
+            "Bilgelik kariyeri büyütür."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması anlam arayışıdır."
+          ],
+          "mechanism": [
+            "Ufuk genişletici deneyimler tekrar eder."
+          ],
+          "effect": [
+            "Bilgelik gelişir."
+          ],
+          "shadow": [
+            "Katılık karmayı zorlaştırır."
+          ],
+          "potential": [
+            "Hakikat arayışı karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_10",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 10
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda toplumsal rol ve sorumluluk gelişir."
+          ],
+          "mechanism": [
+            "Görünürlük almaya yönlendirilirsin."
+          ],
+          "effect": [
+            "Bu seni lider ve yön gösteren biri yapar."
+          ],
+          "shadow": [
+            "Geri planda kalma eğilimi."
+          ],
+          "potential": [
+            "Sorumluluk yönü açar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim başarıyla sınanır."
+          ],
+          "mechanism": [
+            "Disiplin öğretici olur."
+          ],
+          "effect": [
+            "Bu özgüven sağlar."
+          ],
+          "shadow": [
+            "Başarısızlık korkusu."
+          ],
+          "potential": [
+            "İçsel otorite psikolojiyi güçlendirir."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde hedef ve yapı önemlidir."
+          ],
+          "mechanism": [
+            "Roller netleşir."
+          ],
+          "effect": [
+            "Bu saygı temelli bağlar yaratır."
+          ],
+          "shadow": [
+            "Duygusal mesafe."
+          ],
+          "potential": [
+            "Denge ilişkileri yumuşatır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin hedef odaklı çalışır."
+          ],
+          "mechanism": [
+            "Strateji gelişir."
+          ],
+          "effect": [
+            "Bu yön bilinci sağlar."
+          ],
+          "shadow": [
+            "Aşırı kontrol."
+          ],
+          "potential": [
+            "Esneklik zihni rahatlatır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer liderlik ve sorumlulukla şekillenir."
+          ],
+          "mechanism": [
+            "Yetki almak teşvik edilir."
+          ],
+          "effect": [
+            "Yönetim, politika ve kurumsal alanlar desteklenir."
+          ],
+          "shadow": [
+            "Aşırı yük."
+          ],
+          "potential": [
+            "Sağlam yapı başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması sorumluluk almaktır."
+          ],
+          "mechanism": [
+            "Toplumsal sınavlar tekrar eder."
+          ],
+          "effect": [
+            "Olgunluk gelişir."
+          ],
+          "shadow": [
+            "Kaçınma karmayı zorlaştırır."
+          ],
+          "potential": [
+            "Sahiplenmek karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_11",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 11
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda kolektif vizyon geliştirmek esastır."
+          ],
+          "mechanism": [
+            "Bireysel olandan toplumsala geçilir."
+          ],
+          "effect": [
+            "Bu seni vizyon kurucu yapar."
+          ],
+          "shadow": [
+            "Kişisel parlamaya tutunma."
+          ],
+          "potential": [
+            "Ortak ideal yönü açar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim aidiyetle olur."
+          ],
+          "mechanism": [
+            "Topluluk bilinci gelişir."
+          ],
+          "effect": [
+            "Bu güven verir."
+          ],
+          "shadow": [
+            "Dışlanma korkusu."
+          ],
+          "potential": [
+            "Bilinçli aidiyet psikolojiyi dengeler."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde dostluk ve eşitlik öğrenilir."
+          ],
+          "mechanism": [
+            "Ortak amaç bağ kurar."
+          ],
+          "effect": [
+            "Bu kalıcı bağlar yaratır."
+          ],
+          "shadow": [
+            "Duygusal mesafe."
+          ],
+          "potential": [
+            "Samimiyet bağları güçlendirir."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin sistem ve gelecek üzerine çalışır."
+          ],
+          "mechanism": [
+            "Yenilikçi fikirler gelişir."
+          ],
+          "effect": [
+            "Bu ilerici bakış sağlar."
+          ],
+          "shadow": [
+            "Aşırı idealizm."
+          ],
+          "potential": [
+            "Gerçekçilik zihni dengeler."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer ekip ve toplumsal projelerle şekillenir."
+          ],
+          "mechanism": [
+            "Ağlar ve işbirliği büyütür."
+          ],
+          "effect": [
+            "Teknoloji, STK ve sosyal girişim desteklenir."
+          ],
+          "shadow": [
+            "Hedef dağınıklığı."
+          ],
+          "potential": [
+            "Net vizyon başarı getirir."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması kolektife katkıdır."
+          ],
+          "mechanism": [
+            "Grup deneyimleri öğreticidir."
+          ],
+          "effect": [
+            "Toplumsal bilinç gelişir."
+          ],
+          "shadow": [
+            "Ayrışma karmayı zorlaştırır."
+          ],
+          "potential": [
+            "Birlik bilinci karmayı çözer."
+          ]
+        }
+      }
+    },
+    {
+      "id": "north_node_in_house_12",
+      "conditions": [
+        {
+          "planet": "North Node",
+          "house": 12
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Bu yaşamda teslimiyet ve içsel bilinç geliştirilir."
+          ],
+          "mechanism": [
+            "Kontrol bırakılmaya yönlendirilirsin."
+          ],
+          "effect": [
+            "Bu seni sezgisel ve derin biri yapar."
+          ],
+          "shadow": [
+            "Kaçış eğilimi."
+          ],
+          "potential": [
+            "Bilinçli teslimiyet yönü açar."
+          ]
+        },
+        "psychology": {
+          "cause": [
+            "Psikolojik gelişim bilinçaltı çalışmasıyla olur."
+          ],
+          "mechanism": [
+            "İçe dönüş öğreticidir."
+          ],
+          "effect": [
+            "Bu ruhsal hassasiyet sağlar."
+          ],
+          "shadow": [
+            "Kaybolma hissi."
+          ],
+          "potential": [
+            "Topraklanma psikolojiyi dengeler."
+          ]
+        },
+        "relationships": {
+          "cause": [
+            "İlişkilerde şefkat ve empati öğrenilir."
+          ],
+          "mechanism": [
+            "Görünmeyeni hissetmek bağ kurar."
+          ],
+          "effect": [
+            "Bu derin ama sessiz bağlar yaratır."
+          ],
+          "shadow": [
+            "Kendini feda etme."
+          ],
+          "potential": [
+            "Sağlıklı sınırlar bağları şifalandırır."
+          ]
+        },
+        "mind": {
+          "cause": [
+            "Zihin sezgisel ve sembolik çalışır."
+          ],
+          "mechanism": [
+            "Rüyalar ve imajlar öğreticidir."
+          ],
+          "effect": [
+            "Bu içgörü sağlar."
+          ],
+          "shadow": [
+            "Zihinsel kaçış."
+          ],
+          "potential": [
+            "Bilinçli farkındalık zihni berraklaştırır."
+          ]
+        },
+        "career": {
+          "cause": [
+            "Kariyer perde arkası hizmetle şekillenir."
+          ],
+          "mechanism": [
+            "Şifa ve destek alanları öne çıkar."
+          ],
+          "effect": [
+            "Psikoloji, sanat ve ruhsal hizmetler desteklenir."
+          ],
+          "shadow": [
+            "Görünürlükten kaçma."
+          ],
+          "potential": [
+            "Sessiz katkı kalıcı etki yaratır."
+          ]
+        },
+        "karma": {
+          "cause": [
+            "Bu yaşamın karması teslimiyet ve şefkattir."
+          ],
+          "mechanism": [
+            "İçsel çözülme döngüleri yaşanır."
+          ],
+          "effect": [
+            "Ruhsal bilinç gelişir."
+          ],
+          "shadow": [
+            "Kaçış karmayı ağırlaştırır."
+          ],
+          "potential": [
+            "Bilinçli hizmet karmayı çözer."
+          ]
+        }
+      }
+    }
+  ],
+  "aspect_rules": [],
+  "meta_rules": []
+}
