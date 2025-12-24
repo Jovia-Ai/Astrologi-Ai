@@ -12,9 +12,10 @@ from app.helpers.meta_detectors import (
     normalize_node_alias,
     normalize_planet_key,
 )
+from app.helpers.domain_normalizer import canon_domain, canonical_domains
 
 TYPE_NAMES = ("cause", "mechanism", "effect", "shadow", "potential")
-CATEGORIES = ("identity", "psychology", "relationships", "mind", "career", "karma")
+CATEGORIES = canonical_domains()
 
 logger = logging.getLogger(__name__)
 
@@ -300,16 +301,17 @@ class RuleEngine:
 
         tagged_copy = copy.deepcopy(output)
         for category, tagged in tagged_copy.items():
-            if category not in results or not isinstance(tagged, Mapping):
+            canonical_category = canon_domain(category)
+            if not canonical_category or canonical_category not in results or not isinstance(tagged, Mapping):
                 continue
 
             for type_name, sentences in tagged.items():
-                bucket = results[category].get(type_name)
+                bucket = results[canonical_category].get(type_name)
                 if bucket is None:
                     continue
                 trigger = self._derive_trigger(rule, meta_info)
                 rule_id = str(rule.get("id") or "").strip()
-                normalized = self._normalize_fragments(sentences, type_name, trigger, category, rule_id)
+                normalized = self._normalize_fragments(sentences, type_name, trigger, canonical_category, rule_id)
                 for fragment in normalized:
                     key = self._fragment_dedup_key(fragment, type_name, rule_id)
                     if key in dedup_keys:

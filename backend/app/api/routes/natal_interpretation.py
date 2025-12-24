@@ -40,6 +40,7 @@ from app.services.chart_service import (
     serialize_planets,
 )
 from app.helpers.narrative_context import derive_core_aspects, derive_placements
+from app.helpers.domain_normalizer import canon_domain
 
 logger = logging.getLogger(__name__)
 
@@ -235,6 +236,9 @@ def _prepare_payload(
         "narrative_builder": builder.__class__.__name__,
         "pipeline_version": "v2.4",
     }
+    routing_info = {
+        "active_domains_source": builder.narrative_debug_active_domains_source,
+    }
 
     debug_info = {
         "used_domain_composites": domain_builder.used_composite_ids,
@@ -263,6 +267,8 @@ def _prepare_payload(
         "narrative_debug_selected_domains": builder.narrative_debug_selected_domains,
         "narrative_debug_selected_slots": builder.narrative_debug_selected_slots,
         "narrative_debug_source_fragment_ids": builder.narrative_debug_source_fragment_ids,
+        "narrative_debug_active_domains_source": builder.narrative_debug_active_domains_source,
+        "routing": routing_info,
     }
     if debug_mode:
         debug_info["warnings"] = warnings
@@ -414,9 +420,17 @@ def _collect_debug_warnings(
     if not accepted_slots:
         warnings.append("Phase2 slot map normalized to zero entries.")
     accepted_domains = {
-        entry.get("domain") for entry in accepted_slots if isinstance(entry.get("domain"), str)
+        canon_domain(entry.get("domain"))
+        for entry in accepted_slots
+        if isinstance(entry.get("domain"), str)
     }
-    active_domains = {str(domain).lower() for domain in guidance.get("active_domains") or [] if isinstance(domain, str)}
+    accepted_domains = {domain for domain in accepted_domains if domain}
+    active_domains = {
+        canon_domain(domain)
+        for domain in guidance.get("active_domains") or []
+        if isinstance(domain, str)
+    }
+    active_domains = {domain for domain in active_domains if domain}
     if active_domains and not accepted_domains.intersection(active_domains):
         warnings.append(
             "Composite guidance active domains do not align with any selected phase2 slot domains."
@@ -425,11 +439,13 @@ def _collect_debug_warnings(
     if drop_clause_count > 2:
         warnings.append(f"Quality gate drop_clause triggered {drop_clause_count} times.")
     for domain, plan in getattr(builder, "narrative_plan", {}).items():
+        canonical_domain = canon_domain(domain)
         compiler_input = str(plan.get("compiler_input") or "").strip()
         final_text = str(plan.get("final_text") or "").strip()
         if compiler_input and not final_text:
+            domain_label = canonical_domain or domain
             warnings.append(
-                f"Domain '{domain}' had compiler input ({len(compiler_input)} chars) but produced empty paragraph text."
+                f"Domain '{domain_label}' had compiler input ({len(compiler_input)} chars) but produced empty paragraph text."
             )
     return warnings
 
@@ -441,16 +457,16 @@ def _build_fragment_paragraphs(
     paragraphs: Dict[str, str] = {}
     seen: set[str] = set()
     for domain in domains:
-        normalized_domain = str(domain or "").strip().lower()
-        if not normalized_domain or normalized_domain in seen:
+        canonical_domain = canon_domain(domain)
+        if not canonical_domain or canonical_domain in seen:
             continue
-        seen.add(normalized_domain)
-        entry = fragments.get(normalized_domain)
+        seen.add(canonical_domain)
+        entry = fragments.get(canonical_domain)
         if not isinstance(entry, Mapping):
             continue
         paragraph = _paragraph_from_fragment_slots(entry.get("slots") or {})
         if paragraph:
-            paragraphs[normalized_domain] = paragraph
+            paragraphs[canonical_domain] = paragraph
     return paragraphs
 
 
@@ -484,6 +500,9 @@ def _build_phase2_fragment_payload(
 ) -> Tuple[Dict[str, Dict[str, Any]], Dict[str, Any]]:
     payload: Dict[str, Dict[str, Any]] = {}
     for domain, entry in phase2_fragments.items():
+        canonical_domain = canon_domain(domain)
+        if not canonical_domain or canonical_domain in payload:
+            continue
         if not isinstance(entry, Mapping):
             continue
         slots = entry.get("slots")
@@ -497,7 +516,7 @@ def _build_phase2_fragment_payload(
                 valid_slots[slot_name] = dict(value)
         if not valid_slots:
             continue
-        payload[domain] = {
+        payload[canonical_domain] = {
             "slots": valid_slots,
             "anchor": anchor if isinstance(anchor, Mapping) else valid_slots.get("cause"),
         }
@@ -522,7 +541,8 @@ def _apply_semantic_normalization(payload: Dict[str, Dict[str, Any]]) -> Tuple[D
         "domains_with_accepted": set(),
     }
     for domain, entry in payload.items():
-        if not isinstance(entry, Mapping):
+        canonical_domain = canon_domain(domain)
+        if not canonical_domain or not isinstance(entry, Mapping):
             continue
         slots = entry.get("slots") or {}
         normalized_slots: Dict[str, Dict[str, Any]] = {}
@@ -537,7 +557,7 @@ def _apply_semantic_normalization(payload: Dict[str, Dict[str, Any]]) -> Tuple[D
                 summary["rejected_slots"] += 1
                 rejected.append(
                     {
-                        "domain": domain,
+                        "domain": canonical_domain,
                         "slot": slot_name,
                         "reason": "no_text",
                         "original_text": original_text,
@@ -551,7 +571,7 @@ def _apply_semantic_normalization(payload: Dict[str, Dict[str, Any]]) -> Tuple[D
                 summary["rejected_slots"] += 1
                 rejected.append(
                     {
-                        "domain": domain,
+                        "domain": canonical_domain,
                         "slot": slot_name,
                         "reason": "empty_after_normalize",
                         "original_text": original_text,
@@ -564,7 +584,7 @@ def _apply_semantic_normalization(payload: Dict[str, Dict[str, Any]]) -> Tuple[D
                 summary["rejected_slots"] += 1
                 rejected.append(
                     {
-                        "domain": domain,
+                        "domain": canonical_domain,
                         "slot": slot_name,
                         "reason": "contains_verb_phrase",
                         "original_text": original_text,
@@ -577,10 +597,10 @@ def _apply_semantic_normalization(payload: Dict[str, Dict[str, Any]]) -> Tuple[D
             normalized_fragment["text"] = semantic_text
             normalized_slots[slot_name] = normalized_fragment
             summary["accepted_slots"] += 1
-            summary["domains_with_accepted"].add(domain)
+            summary["domains_with_accepted"].add(canonical_domain)
             accepted.append(
                 {
-                    "domain": domain,
+                    "domain": canonical_domain,
                     "slot": slot_name,
                     "normalized_text": semantic_text,
                     "original_text": original_text,
@@ -589,7 +609,7 @@ def _apply_semantic_normalization(payload: Dict[str, Dict[str, Any]]) -> Tuple[D
                 }
             )
         anchor = entry.get("anchor")
-        normalized_payload[domain] = {
+        normalized_payload[canonical_domain] = {
             "slots": normalized_slots,
             "anchor": anchor if isinstance(anchor, Mapping) else normalized_slots.get("cause"),
         }
@@ -609,10 +629,11 @@ def _apply_semantic_normalization(payload: Dict[str, Dict[str, Any]]) -> Tuple[D
 def _normalize_phase2_texts(payload: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     normalized: Dict[str, Dict[str, Any]] = {}
     for domain, entry in payload.items():
-        if not isinstance(entry, Mapping):
+        canonical_domain = canon_domain(domain)
+        if not canonical_domain or not isinstance(entry, Mapping):
             continue
-        if domain == "identity":
-            normalized[domain] = entry
+        if canonical_domain == "identity":
+            normalized[canonical_domain] = entry
             continue
         slots = entry.get("slots") or {}
         normalized_slots: Dict[str, Dict[str, Any]] = {}
@@ -630,7 +651,7 @@ def _normalize_phase2_texts(payload: Dict[str, Dict[str, Any]]) -> Dict[str, Dic
                     normalized_fragment["text"] = fallback
             normalized_slots[slot_name] = normalized_fragment
         anchor = entry.get("anchor")
-        normalized[domain] = {
+        normalized[canonical_domain] = {
             "slots": normalized_slots,
             "anchor": anchor if isinstance(anchor, Mapping) else normalized_slots.get("cause"),
         }
@@ -648,7 +669,7 @@ def _primary_domain_regulations(
         key=lambda comp: _extract_composite_priority(patterns, comp),
         reverse=True,
     ):
-        domain = str(composite.get("domain") or "").lower()
+        domain = canon_domain(composite.get("domain"))
         comp_id = composite.get("composite_id")
         if not domain or not comp_id:
             continue

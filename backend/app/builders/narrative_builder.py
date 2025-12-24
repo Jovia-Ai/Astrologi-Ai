@@ -5,6 +5,7 @@ import re
 from typing import Any, Dict, List, Mapping
 
 from app.builders.semantic_normalizer import contains_verb_phrase
+from app.helpers.domain_normalizer import canon_domain
 
 
 SLOT_NAMES: tuple[str, ...] = ("cause", "mechanism", "effect", "shadow", "potential")
@@ -89,9 +90,22 @@ class JoviaSemanticNarrativeBuilder:
         self.axis_activation: Mapping[str, Any] = getattr(engine_result, "axis_activation", {}) or {}
         self.fragments: Mapping[str, Dict[str, Any]] = getattr(engine_result, "fragments", {}) or {}
         self.guidance: Mapping[str, Any] = getattr(engine_result, "guidance", {}) or {}
-        self.active_domains: set[str] = set(
-            str(domain).lower() for domain in self.guidance.get("active_domains", [])
-        )
+        guidance_domains: List[str] = []
+        for domain in self.guidance.get("active_domains", []):
+            canonical = canon_domain(domain)
+            if canonical:
+                guidance_domains.append(canonical)
+        fragment_domains: List[str] = []
+        for domain in self.fragments.keys():
+            canonical = canon_domain(domain)
+            if canonical:
+                fragment_domains.append(canonical)
+        if guidance_domains:
+            self.active_domains = set(guidance_domains)
+            self.narrative_debug_active_domains_source = "guidance"
+        else:
+            self.active_domains = set(fragment_domains)
+            self.narrative_debug_active_domains_source = "phase2"
         self.regulations: Mapping[str, Dict[str, Any]] = getattr(engine_result, "regulations", {}) or {}
         self.expression_profile: Mapping[str, Any] = getattr(engine_result, "expression_profile", {}) or {}
         self._allowed_templates: set[str] = {

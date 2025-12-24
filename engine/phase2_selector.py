@@ -6,13 +6,14 @@ import hashlib
 from collections import Counter
 from typing import Iterable, Mapping, Sequence
 
+from app.helpers.domain_normalizer import canon_domain, canonical_domains
 from app.ontology.theme_loader import load_theme_config, ThemeOntology
 
 POOL_K = 30
 MAX_SLOTS = 6
 BUFFER_MULTIPLIER = 2
 SLOT_ORDER = ("cause", "mechanism", "effect", "shadow", "potential")
-DOMAIN_PRIORITY = ["identity", "relating", "career", "resources", "inner_life", "public_life"]
+DOMAIN_PRIORITY = tuple(canonical_domains())
 AXIS_PRIORITY = ["1-7", "4-10", "2-8", "3-9"]
 TOP_THEME_SHARE_CAP = 0.55
 
@@ -97,7 +98,11 @@ class Phase2Selector:
         )[:POOL_K]
 
     def _choose_domain(self, signal: Mapping[str, object], chart_hash: str) -> str:
-        candidates = [str(item) for item in signal.get("domain_candidates", [])]
+        candidates = [
+            canon_domain(item)
+            for item in signal.get("domain_candidates", [])
+        ]
+        candidates = [candidate for candidate in candidates if candidate]
         focus = str(signal.get("focus_object", ""))
         return self._choose_from_priority(candidates, DOMAIN_PRIORITY, chart_hash, signal.get("signal_id"), focus)
 
@@ -178,10 +183,16 @@ class Phase2Selector:
         return (projected / total) <= TOP_THEME_SHARE_CAP
 
     def _build_slot_entry(self, signal: Mapping[str, object], slot_name: str) -> dict[str, object]:
+        domain_value = canon_domain(signal.get("domain"))
+        candidates = [
+            canon_domain(item)
+            for item in signal.get("domain_candidates", [])
+        ]
+        domain_candidates = [candidate for candidate in candidates if candidate]
         return {
             "slot": slot_name,
             "theme": signal["theme"],
-            "domain": signal["domain"],
+            "domain": domain_value,
             "axis": signal["axis"],
             "focus_object": signal.get("focus_object"),
             "activation_type": signal.get("activation_type"),
@@ -193,7 +204,7 @@ class Phase2Selector:
             ),
             "selection_reason": None,
             "rejected_reasons": [],
-            "domain_candidates": list(signal.get("domain_candidates", [])),
+            "domain_candidates": domain_candidates,
             "axis_candidates": list(signal.get("axis_candidates", [])),
         }
 
@@ -202,7 +213,7 @@ class Phase2Selector:
             [
                 signal.get("theme", ""),
                 str(signal.get("focus_object", "")),
-                signal.get("domain", ""),
+                canon_domain(signal.get("domain", "")),
                 slot,
             ]
         )

@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from app.builders.semantic_normalizer import normalize_slot_text
 from app.helpers.meta_detectors import normalize_node_alias, normalize_planet_key
+from app.helpers.domain_normalizer import canon_domain, canonical_domains
 
 
 SLOT_INTENTS: Dict[str, str] = {
@@ -16,6 +17,7 @@ SLOT_INTENTS: Dict[str, str] = {
 }
 
 SIMILARITY_THRESHOLD = 0.7
+CANONICAL_DOMAIN_SET = set(canonical_domains())
 
 
 def select_phase2_fragments(
@@ -30,8 +32,9 @@ def select_phase2_fragments(
 
     reduced: Dict[str, Dict[str, Any]] = {}
     domain_text_tokens: Dict[str, List[set[str]]] = {}
-    for domain, slots in fragments_by_domain.items():
-        domain_key = domain.lower()
+    normalized_fragments = _canonicalize_fragment_map(fragments_by_domain)
+    for domain, slots in normalized_fragments.items():
+        domain_key = domain
         tokens = domain_text_tokens.setdefault(domain_key, [])
         reduced_slots: Dict[str, Dict[str, Any] | None] = {}
         for slot in ("cause", "mechanism", "effect", "shadow", "potential"):
@@ -49,6 +52,13 @@ def select_phase2_fragments(
                 fragment_tokens = _fragment_text_tokens(fragment, slot)
                 if fragment_tokens:
                     tokens.append(fragment_tokens)
+        _ensure_required_slots(
+            domain_key,
+            slots,
+            reduced_slots,
+            domain_priorities.get(domain_key, 0.0),
+            tokens,
+        )
         anchor = reduced_slots.get("cause")
         reduced[domain_key] = {"slots": reduced_slots, "anchor": anchor}
     return reduced
@@ -167,7 +177,9 @@ def _aggregate_composite_priorities(composites: Sequence[Mapping[str, Any]]) -> 
         domain = comp.get("domain")
         if not isinstance(domain, str) or not domain.strip():
             continue
-        key = domain.strip().lower()
+        key = canon_domain(domain)
+        if not key:
+            continue
         score = _coerce_float(comp.get("priority_score"))
         if score is None:
             score = 0.0
@@ -175,6 +187,51 @@ def _aggregate_composite_priorities(composites: Sequence[Mapping[str, Any]]) -> 
         if score > existing:
             priorities[key] = score
     return priorities
+
+
+def _canonicalize_fragment_map(
+    fragments: Mapping[str, Mapping[str, List[Dict[str, Any]]]]
+) -> Dict[str, Mapping[str, List[Dict[str, Any]]]]:
+    normalized: Dict[str, Mapping[str, List[Dict[str, Any]]]] = {}
+    deferred: List[Tuple[str, Mapping[str, List[Dict[str, Any]]]]] = []
+    for domain, entry in fragments.items():
+        canonical = canon_domain(domain)
+        if not canonical:
+            continue
+        if canonical in normalized:
+            continue
+        cleaned = str(domain or "").strip().lower()
+        if canonical in CANONICAL_DOMAIN_SET and canonical == cleaned:
+            normalized[canonical] = entry
+        else:
+            deferred.append((canonical, entry))
+    for canonical, entry in deferred:
+        normalized.setdefault(canonical, entry)
+    return normalized
+
+
+def _ensure_required_slots(
+    domain: str,
+    slots: Mapping[str, Sequence[Dict[str, Any]]],
+    reduced_slots: Dict[str, Dict[str, Any] | None],
+    composite_priority: float,
+    tokens: List[set[str]],
+) -> None:
+    required = ("cause", "mechanism", "potential")
+    for slot in required:
+        if reduced_slots.get(slot):
+            continue
+        candidates = slots.get(slot) or []
+        fallback, reason = _fallback_fragment_for_slot(slot, candidates, composite_priority)
+        if not fallback:
+            continue
+        fallback["selection_reason"] = "fallback_required_slot"
+        fallback["why_empty"] = reason or "no_reason"
+        reduced_slots[slot] = fallback
+        if tokens is not None:
+            fragment_tokens = _fragment_text_tokens(fallback, slot)
+            if fragment_tokens:
+                tokens.append(fragment_tokens)
 
 
 def _fragment_text_tokens(fragment: Mapping[str, Any], slot: str) -> set[str] | None:
@@ -244,6 +301,20 @@ def _detect_stellium_planets(meta_info: Mapping[str, Any]) -> Sequence[str]:
             if normalized_planet:
                 normalized.append(normalized_planet)
     return normalized
+
+
+def _fallback_fragment_for_slot(
+    slot: str,
+    candidates: Sequence[Dict[str, Any]],
+    composite_priority: float,
+) -> tuple[Dict[str, Any] | None, str | None]:
+    if not candidates:
+        return None, "no_candidates"
+    entries = list(enumerate(candidates))
+    best = _resolve_best_fragment(entries, composite_priority)
+    if not best:
+        return None, "no_best_candidate"
+    return _format_fragment_output(best, slot), "similarity_filtered"
 
 
 def _format_fragment_output(fragment: Dict[str, Any], slot: str) -> Dict[str, Any]:

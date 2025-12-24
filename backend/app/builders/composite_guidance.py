@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
+from app.helpers.domain_normalizer import canon_domain
+
 
 def build_guidance(
     composites: Sequence[Mapping[str, Any]],
@@ -12,10 +14,16 @@ def build_guidance(
     axis_activation: Mapping[str, Any],
     activation_sensitivity: Mapping[str, str],
 ) -> Dict[str, Any]:
-    active_domains = sorted({str(comp.get("domain")).lower() for comp in composites if comp.get("domain")})
+    domains: set[str] = set()
+    for comp in composites:
+        domain = canon_domain(comp.get("domain"))
+        if not domain:
+            continue
+        domains.add(domain)
+    active_domains = sorted(domains)
     domain_priority: Dict[str, float] = {}
     for comp in composites:
-        domain = str(comp.get("domain")).lower()
+        domain = canon_domain(comp.get("domain"))
         comp_id = comp.get("composite_id")
         priority = 0.0
         if comp_id:
@@ -30,7 +38,9 @@ def build_guidance(
         if not comp_id:
             continue
         if patterns.get(comp_id, {}).get("stellium"):
-            stellium_domains.append(str(comp.get("domain")).lower())
+            canonical = canon_domain(comp.get("domain"))
+            if canonical:
+                stellium_domains.append(canonical)
     element = None
     dominant_elements = meta_info.get("dominant_elements") or {}
     if dominant_elements:
@@ -105,8 +115,10 @@ def _map_modality(modality: Mapping[str, Any] | None) -> str | None:
 def _collect_derived_signals(composites: Sequence[Mapping[str, Any]]) -> Dict[str, Dict[str, Any]]:
     signals: Dict[str, Dict[str, Any]] = {}
     for comp in composites:
-        domain = str(comp.get("domain") or "").lower()
+        domain = canon_domain(comp.get("domain"))
         derived = comp.get("derived_signals") or {}
+        if not domain:
+            continue
         if derived:
             existing = signals.setdefault(domain, {})
             for key, value in derived.items():
