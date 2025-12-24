@@ -20,20 +20,20 @@ CATEGORY_LABELS: Dict[str, str] = {
 }
 
 TENSION_DESCRIPTIONS: Dict[str, str] = {
-    "visibility_vs_control": "görünürlük ile kontrol arasında titreyen",
-    "trait_reinforcement": "özelliklerin güçlenmesine odaklanan",
-    "balanced_flow": "dengeyi gözeten",
+    "visibility_vs_control": "Görünürlük ile kontrol arasındaki denge",
+    "trait_reinforcement": "Belli bir niteliği güçlendirme yönelimi",
+    "balanced_flow": "Dengeyi koruma ihtiyacı",
 }
 
 DOMAIN_TEMPLATES: Dict[str, Dict[str, str]] = {
     "identity": {
-        "opening": "Kimliğin, {core_tension} etrafında şekillenen bir yapı gösterir.",
+        "opening": "{core_tension}",
         "effect": "Bu durum seni dış dünyada {effect_expression} biri olarak algılanır hale getirir.",
         "shadow": "Denge bozulduğunda ise {shadow_risk} eğilimi ortaya çıkabilir.",
         "potential": "Ancak bu düzen, doğru regülasyonla {potential_gain} kapasitesine dönüşebilir.",
     },
     "psychology": {
-        "opening": "Psikolojik alanın, {core_tension} çevresinde bir iç denge haritası çıkarıyor.",
+        "opening": "{core_tension}",
         "effect": "Bu durum, çevrendekilerin seni {effect_expression} biri olarak gözlemlemesine yol açıyor.",
         "shadow": "Kontrol kaybı anı {shadow_risk} eğilimini gün yüzüne çıkarabiliyor.",
         "potential": "Yine de bu bütünleşme, sınırlarını bilinçle belirlediğinde {potential_gain} bir güç sunuyor.",
@@ -89,6 +89,8 @@ class JoviaSemanticNarrativeBuilder:
         self.dispositor_flow: Mapping[str, Any] = getattr(engine_result, "dispositor_flow", {}) or {}
         self.axis_activation: Mapping[str, Any] = getattr(engine_result, "axis_activation", {}) or {}
         self.fragments: Mapping[str, Dict[str, Any]] = getattr(engine_result, "fragments", {}) or {}
+        self.narrative_anchor: Mapping[str, Any] = getattr(engine_result, "narrative_anchor", {}) or {}
+        self.meaning_weighting: Mapping[str, Any] = getattr(engine_result, "meaning_weighting", {}) or {}
         self.guidance: Mapping[str, Any] = getattr(engine_result, "guidance", {}) or {}
         guidance_domains: List[str] = []
         for domain in self.guidance.get("active_domains", []):
@@ -108,9 +110,6 @@ class JoviaSemanticNarrativeBuilder:
             self.narrative_debug_active_domains_source = "phase2"
         self.regulations: Mapping[str, Dict[str, Any]] = getattr(engine_result, "regulations", {}) or {}
         self.expression_profile: Mapping[str, Any] = getattr(engine_result, "expression_profile", {}) or {}
-        self._allowed_templates: set[str] = {
-            str(template).lower() for template in self.expression_profile.get("allowed_templates", []) or []
-        }
         self._fallback_mode = str(self.expression_profile.get("fallback_mode") or "regulator_neutral").lower()
         self._softening_level = float(self.expression_profile.get("softening_level") or 0.5)
 
@@ -158,8 +157,6 @@ class JoviaSemanticNarrativeBuilder:
             raw_paragraph = ""
             if self._fallback_mode == "silent":
                 raw_paragraph = ""
-            elif self._allowed_templates and category not in self._allowed_templates:
-                raw_paragraph = ""
             else:
                 if not has_fragment_data:
                     raw_paragraph = self._soft_fail_sentence(category) or ""
@@ -195,21 +192,61 @@ class JoviaSemanticNarrativeBuilder:
         template = DOMAIN_TEMPLATES.get(domain)
         if not template:
             return None
-        sentences: List[str] = []
         core_tension = self._core_tension_phrase(regulation)
-        sentences.append(template["opening"].format(core_tension=core_tension))
+        header = template["opening"].format(core_tension=core_tension).strip()
+        body_sentences: List[str] = []
+        anchor_sentence = self._anchor_sentence_for_domain(domain, slots)
+        if anchor_sentence:
+            body_sentences.append(anchor_sentence)
         effect_text = self._slot_fragment_text(slots.get("effect"), "effect")
         if effect_text:
-            sentences.append(template["effect"].format(effect_expression=effect_text))
+            body_sentences.append(template["effect"].format(effect_expression=effect_text))
         axis_tension = (self.axis_activation or {}).get("axis_tension")
         include_shadow = axis_tension in {"high", "medium"}
         shadow_text = self._slot_fragment_text(slots.get("shadow"), "shadow")
         if include_shadow and shadow_text:
-            sentences.append(template["shadow"].format(shadow_risk=shadow_text))
+            body_sentences.append(template["shadow"].format(shadow_risk=shadow_text))
         potential_text = self._slot_fragment_text(slots.get("potential"), "potential")
         if potential_text:
-            sentences.append(template["potential"].format(potential_gain=potential_text))
-        return " ".join(sentences)
+            body_sentences.append(template["potential"].format(potential_gain=potential_text))
+        body = " ".join(segment.strip() for segment in body_sentences if segment and segment.strip()).strip()
+        if header and body:
+            return f"{header}\n{body}"
+        if body:
+            return body
+        return header or None
+
+    def _anchor_for_domain(self, domain: str) -> Mapping[str, Any] | None:
+        na = self.narrative_anchor
+        if isinstance(na, Mapping) and str(na.get("domain") or "").lower() == str(domain).lower():
+            return na
+        return None
+
+    def _anchor_sentence_for_domain(
+        self,
+        domain: str,
+        slots: Mapping[str, Dict[str, Any]],
+    ) -> str | None:
+        anchor_payload = self._anchor_for_domain(domain)
+        if anchor_payload:
+            sentence = str(anchor_payload.get("anchor_sentence") or "").strip()
+            if sentence:
+                return self._ensure_sentence(sentence)
+        cause_text = self._slot_fragment_text(slots.get("cause"), "cause")
+        mechanism_text = self._slot_fragment_text(slots.get("mechanism"), "mechanism")
+        anchor = self._compose_anchor_sentence(cause_text, mechanism_text)
+        return self._ensure_sentence(anchor) if anchor else None
+
+    def _compose_anchor_sentence(self, cause: str | None, mechanism: str | None) -> str | None:
+        cause_text = cause.strip() if cause else ""
+        mechanism_text = mechanism.strip() if mechanism else ""
+        if cause_text and mechanism_text:
+            return f"Genellikle, {cause_text} olduğunda, {mechanism_text} eğilimi ortaya çıkar."
+        if cause_text:
+            return f"Genellikle, {cause_text} olduğunda içsel bir hareketlenme yaşanır."
+        if mechanism_text:
+            return f"Genellikle, {mechanism_text} yöneliminde olursun."
+        return None
 
     def _slot_fragment_text(self, fragment: Mapping[str, Any] | None, slot_name: str | None = None) -> str | None:
         if not fragment or not isinstance(fragment, Mapping):

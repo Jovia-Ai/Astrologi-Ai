@@ -27,6 +27,8 @@ from app.engine.pattern_engine import PatternEmphasisEngine
 from app.engine.router import build_combined_insights
 from app.engine.rule_engine import CATEGORIES, RuleEngine, TYPE_NAMES
 from app.engine.upper_meaning_engine import UpperMeaningEngine
+from app.engine.meaning_weighting import build_meaning_weighting
+from app.engine.narrative_anchor import build_narrative_anchor
 from app.engine.inquiry_engine import InquiryEngine
 from app.engine.dispositor_flow import DispositorFlowEngine
 from app.engine.activation_sensitivity import ActivationSensitivityEngine
@@ -171,16 +173,26 @@ def _prepare_payload(
     )
     composite_interpretation = domain_builder.build()
     pressure_support = calculate_pressure_support(composites, patterns, axis_activation)
+    meaning_weighting = build_meaning_weighting(
+        pressure_index=pressure_support["pressure_index"],
+        support_index=pressure_support["support_index"],
+        dominant_domain=pressure_support["dominant_domain"],
+        theme_shares=None,
+        patterns=patterns,
+        theme_mapper_result=None,
+    )
     expression_profile = ExpressionResolver.resolve(
         composite_output=composites,
         pressure_index=pressure_support["pressure_index"],
         support_index=pressure_support["support_index"],
         axis_balance=pressure_support["axis_balance"],
-        dominant_domain=pressure_support["dominant_domain"],
-        dominant_axis=pressure_support["dominant_axis"],
-        themes=pressure_support["themes"],
     )
     narrative_fragments, phase2_snapshot = _build_phase2_fragment_payload(phase2_fragments)
+    narrative_anchor = build_narrative_anchor(
+        fragments_by_domain=narrative_fragments,
+        dominant_domain=meaning_weighting["dominant_domain"],
+        meaning_weighting=meaning_weighting,
+    )
     if snapshots is not None:
         snapshots["semantic_normalizer_output_summary"] = phase2_snapshot["summary"]
         snapshots["phase2_slots"] = phase2_snapshot["slots"]
@@ -195,7 +207,8 @@ def _prepare_payload(
         ratio = filled / total_slots if total_slots else 0.0
         phase2_fragment_probe["slot_counts"][domain] = ratio
     expression_profile_probe: Dict[str, Any] = {
-        "allowed_templates": expression_profile.get("allowed_templates") or [],
+        "tone": expression_profile.get("tone"),
+        "sentence_length": expression_profile.get("sentence_length"),
         "fallback_mode": expression_profile.get("fallback_mode"),
     }
     builder = JoviaSemanticNarrativeBuilder(
@@ -209,6 +222,7 @@ def _prepare_payload(
             axis_activation=axis_activation,
             activation_sensitivity=activation_sensitivity,
             fragments=narrative_fragments,
+            narrative_anchor=narrative_anchor,
             guidance=composite_guidance,
             regulations=domain_regulators,
             expression_profile=expression_profile,
@@ -259,7 +273,9 @@ def _prepare_payload(
         "composite_guidance": composite_guidance,
         "quality_actions_applied": builder.quality_actions_applied,
         "pressure_support": pressure_support,
+        "meaning_weighting": meaning_weighting,
         "expression_profile": expression_profile,
+        "narrative_anchor": narrative_anchor,
         "guidance_probe": guidance_probe,
         "expression_profile_probe": expression_profile_probe,
         "phase2_fragments_probe": phase2_fragment_probe,
@@ -294,6 +310,8 @@ def _prepare_payload(
         "activation_sensitivity": activation_sensitivity,
         "latent_potential": latent_potential,
         "composite_guidance": composite_guidance,
+        "meaning_weighting": meaning_weighting,
+        "narrative_anchor": narrative_anchor,
         "debug": debug_info,
         "__narrative_fragments": narrative_fragments,
         "_phase2_snapshot": phase2_snapshot,
@@ -322,6 +340,8 @@ def _finalize_response(base_payload: Mapping[str, Any], *, premium_mode: bool, d
         "activation_sensitivity": base_payload["activation_sensitivity"],
         "latent_potential": base_payload["latent_potential"],
         "composite_guidance": base_payload["composite_guidance"],
+        "meaning_weighting": base_payload["meaning_weighting"],
+        "narrative_anchor": base_payload["narrative_anchor"],
         "debug": base_payload["debug"],
         "narrative_interpretation": base_payload["narrative_interpretation"],
         "narrative_text": base_payload.get("narrative_text") or base_payload.get("narrative_interpretation"),
