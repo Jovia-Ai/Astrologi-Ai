@@ -150,6 +150,11 @@ def _prepare_payload(
         axis_activation,
         activation_sensitivity,
     )
+    guidance_probe: Dict[str, Any] = {
+        "active_domains": list(composite_guidance.get("active_domains") or []),
+    }
+    if composite_guidance.get("domain_priority"):
+        guidance_probe["domain_priority"] = composite_guidance.get("domain_priority")
     if snapshots is not None:
         snapshots["composite_guidance"] = _snapshot_composite_guidance(composite_guidance)
 
@@ -178,6 +183,20 @@ def _prepare_payload(
     if snapshots is not None:
         snapshots["semantic_normalizer_output_summary"] = phase2_snapshot["summary"]
         snapshots["phase2_slots"] = phase2_snapshot["slots"]
+    phase2_fragment_probe: Dict[str, Any] = {
+        "domains": list(phase2_fragments.keys()),
+        "slot_counts": {},
+    }
+    total_slots = len(SLOT_NAMES)
+    for domain, entry in phase2_fragments.items():
+        slots = entry.get("slots") or {}
+        filled = sum(1 for slot_name in SLOT_NAMES if slots.get(slot_name))
+        ratio = filled / total_slots if total_slots else 0.0
+        phase2_fragment_probe["slot_counts"][domain] = ratio
+    expression_profile_probe: Dict[str, Any] = {
+        "allowed_templates": expression_profile.get("allowed_templates") or [],
+        "fallback_mode": expression_profile.get("fallback_mode"),
+    }
     builder = JoviaSemanticNarrativeBuilder(
         SimpleNamespace(
             composites=composites,
@@ -237,6 +256,9 @@ def _prepare_payload(
         "quality_actions_applied": builder.quality_actions_applied,
         "pressure_support": pressure_support,
         "expression_profile": expression_profile,
+        "guidance_probe": guidance_probe,
+        "expression_profile_probe": expression_profile_probe,
+        "phase2_fragments_probe": phase2_fragment_probe,
         "runtime": runtime_info,
         "narrative_debug_selected_domains": builder.narrative_debug_selected_domains,
         "narrative_debug_selected_slots": builder.narrative_debug_selected_slots,
