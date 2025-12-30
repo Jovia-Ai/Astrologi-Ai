@@ -1,3 +1,50 @@
 {
-  "rules": []
+  "weights": {
+    "angular_house_bonus": 2.0,
+    "dignity_bonus": 1.5,
+    "rulership_bonus": 1.0,
+    "stellium_house_bonus": 1.0,
+    "aspect_tight_orb_bonus": 1.0
+  },
+  "thresholds": {
+    "dominant_min_score": 3.0,
+    "max_planets": 3
+  },
+  "dignities": {
+    "sun": [
+      "leo"
+    ],
+    "moon": [
+      "cancer"
+    ],
+    "mercury": [
+      "gemini",
+      "virgo"
+    ],
+    "venus": [
+      "taurus",
+      "libra"
+    ],
+    "mars": [
+      "aries",
+      "scorpio"
+    ],
+    "jupiter": [
+      "sagittarius",
+      "pisces"
+    ],
+    "saturn": [
+      "capricorn",
+      "aquarius"
+    ],
+    "uranus": [
+      "aquarius"
+    ],
+    "neptune": [
+      "pisces"
+    ],
+    "pluto": [
+      "scorpio"
+    ]
+  }
 }

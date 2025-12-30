@@ -15,6 +15,7 @@ from app.ai.narrative.formatter import (
     build_formatted_house_positions,
     build_formatted_planet_positions,
 )
+from app.builders.composite_fragments import CompositeFragmentsBuilder
 from app.builders.composite_guidance import build_guidance
 from app.builders.composite_interpreter import CompositeInterpretationBuilder
 from app.builders.composite_regulator import build_composite_regulation
@@ -35,6 +36,7 @@ from app.engine.activation_sensitivity import ActivationSensitivityEngine
 from app.engine.axis_activation import AxisActivationEngine
 from app.engine.latent_potential import LatentPotentialEngine
 from app.helpers.pressure_support import calculate_pressure_support
+from app.helpers.strain_resilience import build_strain_resilience
 from app.resolvers.expression_resolver import ExpressionResolver
 from app.services.chart_service import (
     compute_natal_chart,
@@ -111,7 +113,7 @@ def _prepare_payload(
     placements = derive_placements(planets)
     core_aspects = derive_core_aspects(aspects)
     composite_engine = CompositeEngine()
-    composites = composite_engine.build(placements, core_aspects)
+    composites = composite_engine.build_composites(chart_data)
     dispositor_engine = DispositorFlowEngine()
     dispositor_flow = dispositor_engine.build(placements)
     axis_engine = AxisActivationEngine()
@@ -180,6 +182,11 @@ def _prepare_payload(
         theme_shares=None,
         patterns=patterns,
         theme_mapper_result=None,
+    )
+    meta_info["strain_resilience"] = build_strain_resilience(
+        pressure_support=pressure_support,
+        meaning_weighting=meaning_weighting,
+        aspect_mechanics=aspect_mechanics,
     )
     expression_profile = ExpressionResolver.resolve(
         composite_output=composites,

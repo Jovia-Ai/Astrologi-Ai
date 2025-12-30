@@ -130,6 +130,13 @@ class JoviaSemanticNarrativeBuilder:
         self._current_plan_selected_slots: List[str] = []
 
     def build(self) -> Dict[str, str]:
+        golden_path_enabled = True
+        if golden_path_enabled:
+            paragraph = self.build_identity_narrative_golden_path(self.fragments)
+            if paragraph:
+                return {"identity": paragraph}
+            return {}
+
         result: Dict[str, str] = {}
         for category in CATEGORY_LABELS:
             text = self._build_category_text(category)
@@ -490,3 +497,37 @@ class JoviaSemanticNarrativeBuilder:
         if PROHIBITED_ASTRO_TERMS.search(text):
             return ""
         return text
+
+    def build_identity_narrative_golden_path(self, fragments: Mapping[str, Any]) -> str | None:
+        """
+        GOLDEN PATH v1 — JOVIA CANON
+        'Sen / senin yapin' dili
+        Tanimlayici, yargisiz, akiskan
+        """
+
+        identity = fragments.get("identity")
+        if not identity:
+            return None
+
+        cause = identity.get("cause", {}).get("text")
+        effect = identity.get("effect", {}).get("text")
+        shadow = identity.get("shadow", {}).get("text")
+
+        if not cause or not effect:
+            return None
+
+        paragraph = (
+            "Senin yapin, kimligini cogu zaman kontrollu ve olculu bir durus uzerinden "
+            "insa etmeye calisirken, ayni anda "
+            f"{cause} ile birlikte calisiyor. "
+            "Bu iki yonun eszamanliligi, icinde "
+            f"{effect} gibi bir deneyim yaratabiliyor. "
+        )
+
+        if shadow:
+            paragraph += (
+                f"Bazen de {shadow}, "
+                "hangi taraftan hareket ettigini netlestirmeyi zorlastirabiliyor."
+            )
+
+        return paragraph

@@ -50,6 +50,13 @@ class PatternEmphasisEngine:
 
     @staticmethod
     def _derive_dominance(meta_info: Mapping[str, Any]) -> str | None:
+        dominant_planets = meta_info.get("dominant_planets") or []
+        if isinstance(dominant_planets, list) and dominant_planets:
+            top = dominant_planets[0]
+            if isinstance(top, Mapping):
+                planet = str(top.get("planet") or "").strip().lower()
+                if planet:
+                    return f"planet:{planet}"
         dominant_elements = meta_info.get("dominant_elements") or {}
         dominant_modalities = meta_info.get("dominant_modalities") or {}
         if dominant_elements:

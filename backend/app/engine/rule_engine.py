@@ -12,6 +12,8 @@ from app.helpers.meta_detectors import (
     normalize_node_alias,
     normalize_planet_key,
 )
+from app.engine.aspect_pattern_engine import AspectPatternEngine
+from app.engine.dominance_engine import DominanceEngine
 from app.helpers.domain_normalizer import canon_domain, canonical_domains
 
 TYPE_NAMES = ("cause", "mechanism", "effect", "shadow", "potential")
@@ -74,6 +76,23 @@ class RuleEngine:
         logger.info("PLANETS INPUT: %s", planets)
         meta_info = analyze_planets(planets)
         meta_info["aspect_pairs"] = self._build_aspect_pairs(aspects)
+        dominance_engine = DominanceEngine()
+        meta_info.update(
+            dominance_engine.compute(
+                planets=planets,
+                houses=None,
+                aspects=aspects,
+                meta_info=meta_info,
+            )
+        )
+        aspect_pattern_engine = AspectPatternEngine()
+        meta_info.update(
+            aspect_pattern_engine.compute(
+                aspects=aspects,
+                planets=meta_info.get("normalized_planets", {}),
+                meta_info=meta_info,
+            )
+        )
 
         results: Dict[str, Dict[str, List[Dict[str, Any]]]] = {
             category: {type_name: [] for type_name in TYPE_NAMES}
