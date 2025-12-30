@@ -1,0 +1,28 @@
+{
+  "id": "UM_EMOTIONAL_ALCHEMY_TR_V1",
+  "description": "8. ev / Pluto derinligi + stabil destek acilarinin duygusal sifa ve liderlige donusmesi",
+  "triggers": {
+    "planet_load": {
+      "planet": "pluto",
+      "minimum": 2
+    },
+    "core_aspects": [
+      "moon trine pluto",
+      "moon trine venus"
+    ],
+    "aspect_mechanics": {
+      "energy_mode": [
+        "depth",
+        "intensity"
+      ],
+      "regulation_required": false
+    }
+  },
+  "output": {
+    "upper_meaning": [
+      "Bu harita, krizi bilince, yarayi guce, yogunlugu sefkatli otoriteye donusturebilen duygusal simya potansiyeli tasir.",
+      "Bu yapi, zor olan yerde kalabilen, derinlikte sicaklik tasiyabilen ve baskalarina psikolojik alan acabilecek nadir bir duygusal liderlik uretir.",
+      "Basarisiz Calisma Formu: guc oyunlari, gurur yaralari, duygusal asirilik. Evrilmis Formu: duygusal egemenlik, sifa tasiyan varlik, donusturucu sevgi."
+    ]
+  }
+}

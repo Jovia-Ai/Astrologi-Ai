@@ -1,0 +1,31 @@
+{
+  "id": "UM_SATURN_CONSCIOUS_MASTERY_TR_V1",
+  "description": "Saturn yonetisimli haritalarda guclu kare/karsit acilarla gelen baskinin bilincli guce donusmesi",
+  "triggers": {
+    "planet_load": {
+      "planet": "saturn",
+      "minimum": 3
+    },
+    "core_aspects": [
+      "sun square saturn",
+      "mars opposite saturn",
+      "asc square saturn"
+    ],
+    "dominance": "saturn",
+    "ruler_flow": "saturn_final",
+    "aspect_mechanics": {
+      "energy_mode": [
+        "tension",
+        "pressure"
+      ],
+      "regulation_required": true
+    }
+  },
+  "output": {
+    "upper_meaning": [
+      "Bu harita, baskiyi bilincli guce donusturme inisiyasyonunu tasir: yuku varolus agirligina, zorunlulugu etik otoriteye, sorumlulugu bilincli guce cevirme ustaligi.",
+      "Bu sistem direnc uzerinden egitilir; dogru regulasyonla olaganustu dayaniklilik, etik derinlik ve hayati ciddiyetle tasiyan bir liderlik uretir.",
+      "Basarisiz Calisma Formu: katilasma, kronik oz-elestiri, tukenmislik. Evrilmis Formu: bedensellesmis olgunluk, koklu guven, bilincli ve etik guc kullanimi."
+    ]
+  }
+}

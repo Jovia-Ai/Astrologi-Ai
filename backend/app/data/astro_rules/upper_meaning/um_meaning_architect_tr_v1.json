@@ -1,0 +1,28 @@
+{
+  "id": "UM_MEANING_ARCHITECT_TR_V1",
+  "description": "3-9 aksi aktive oldugunda dusunce, anlam ve bilinc mimarligi uretme potansiyeli",
+  "triggers": {
+    "planet_load": {
+      "planet": "mercury",
+      "minimum": 2
+    },
+    "core_aspects": [
+      "mercury conjunct jupiter",
+      "mercury conjunct neptune"
+    ],
+    "dominance": "saturn",
+    "aspect_mechanics": {
+      "energy_mode": [
+        "integration"
+      ],
+      "regulation_required": false
+    }
+  },
+  "output": {
+    "upper_meaning": [
+      "Bu harita, yapisal dusunce ile sembolik algiyi birlestirebilen nadir bir bilinc uretir: anlam mimarligi.",
+      "Bu sistem, hem zihinsel keskinlik hem sezgisel derinligi birlikte tasiyarak karmasik insan deneyimine dil, duzen ve perspektif kazandirir.",
+      "Basarisiz Calisma Formu: asiri dusunme, ideolojik katilik, zihinsel karmasa. Evrilmis Formu: berrak bilgelik, disiplinli hayal gucu, ogretici bilinc."
+    ]
+  }
+}

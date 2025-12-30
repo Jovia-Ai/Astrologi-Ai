@@ -1,0 +1,28 @@
+{
+  "id": "UM_MARS_STRATEGIC_WILL_TR_V1",
+  "description": "Yuksek gerilimli Mars-Saturn ekseninde enerjinin duzenlenerek stratejik iradeye donusmesi",
+  "triggers": {
+    "planet_load": {
+      "planet": "mars",
+      "minimum": 2
+    },
+    "core_aspects": [
+      "mars opposite saturn",
+      "mars trine jupiter"
+    ],
+    "aspect_mechanics": {
+      "energy_mode": [
+        "tension",
+        "discipline"
+      ],
+      "regulation_required": true
+    }
+  },
+  "output": {
+    "upper_meaning": [
+      "Bu yapi, kor guc degil; egitilmis, zamanlamasi dogru, stratejik irade uretmek icin tasarlanmistir.",
+      "Dogru regulasyonla bu sistem, dogru anda harekete gecen, yuksek hassasiyetli cesaret ve elit performans kapasitesi yaratir.",
+      "Basarisiz Calisma Formu: tikanma, ic savas, kronik huzursuzluk. Evrilmis Formu: stratejik kararlilik, bilincli hareket, dogru zamanda dogru guc kullanimi."
+    ]
+  }
+}
