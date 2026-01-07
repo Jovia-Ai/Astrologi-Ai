@@ -2,12 +2,17 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from app.engine.context_maps import DEFAULT_CONTEXT, HOUSE_CONTEXT
+from app.engine.style_maps import DEFAULT_STYLE, ELEMENT_FALLBACK, SIGN_STYLE
+
 
 class CompositeEngine:
     """
     CompositeEngine builds lived-experience composites.
     GOLDEN PATH v1: base identity composites only.
     """
+
+    DEFAULT_COMPOSITE_PRIORITY = 0.5
 
     def __init__(self) -> None:
         pass
@@ -46,6 +51,7 @@ class CompositeEngine:
         composite = {
             "composite_id": "identity_core_tension",
             "domain": "identity",
+            "priority_score": self.DEFAULT_COMPOSITE_PRIORITY,
             "base_interpretation": (
                 "Bu yapı, kimliğini kontrollü ve yapılandırılmış bir duruş "
                 "üzerinden kurmaya çalışan bir yönelimle, daha içgüdüsel ve "
@@ -59,3 +65,39 @@ class CompositeEngine:
 
         composites.append(composite)
         return composites
+
+    def _sign_style(self, sign: str) -> Dict[str, str]:
+        """Legacy helper for sign-based style lookups."""
+        normalized = str(sign or "").strip().lower()
+        style = SIGN_STYLE.get(normalized)
+        if style:
+            return dict(style)
+        element = None
+        if normalized:
+            element = {
+                "aries": "fire",
+                "taurus": "earth",
+                "gemini": "air",
+                "cancer": "water",
+                "leo": "fire",
+                "virgo": "earth",
+                "libra": "air",
+                "scorpio": "water",
+                "sagittarius": "fire",
+                "capricorn": "earth",
+                "aquarius": "air",
+                "pisces": "water",
+            }.get(normalized)
+        if element and element in ELEMENT_FALLBACK:
+            return dict(ELEMENT_FALLBACK[element])
+        return dict(DEFAULT_STYLE)
+
+    def _house_context(self, house: int) -> Dict[str, str]:
+        """Legacy helper for house-based context lookups."""
+        try:
+            house_value = int(house)
+        except (TypeError, ValueError):
+            house_value = None
+        if house_value in HOUSE_CONTEXT:
+            return dict(HOUSE_CONTEXT[house_value])
+        return dict(DEFAULT_CONTEXT)

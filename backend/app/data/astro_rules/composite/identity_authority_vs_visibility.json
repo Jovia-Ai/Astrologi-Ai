@@ -5,5 +5,16 @@
     "sun_square_saturn",
     "moon_in_leo"
   ],
-  "domains": ["identity"]
+  "domains": [
+    "identity"
+  ],
+  "meaning": {
+    "meaning_id": "cm.identity.authority_vs_visibility.v1",
+    "templates": {
+      "headline": "Görünür olmak istiyorsun; ama bunu “hak ederek” ve sağlam durarak yapmak istersin.",
+      "p1_bridge": "İçeride bir tarafın öne çıkmayı isterken, başka bir tarafın “önce hazır olmalıyım” dediği bir eşik yaşayabilirsin.",
+      "p2_bridge": "Bu eşik bazen kendine karşı sertleşmeye, bazen de çıtayı çok yükseltmeye dönebilir; ama aynı zamanda seni güçlendiren bir omurga kurar.",
+      "p3_bridge": "İlişkide saygı ve güven temel olur; fazla dağılan, belirsiz dinamikler seni geri çekebilir."
+    }
+  }
 }

@@ -1,0 +1,18 @@
+{
+  "tone_defaults": {
+    "warmth_bias": 0.6,
+    "uncertainty_default": 0.35
+  },
+  "tone_thresholds": {
+    "certainty_hi": 0.75,
+    "certainty_mid": 0.45,
+    "directness_hi": 0.65,
+    "warmth_hi": 0.65,
+    "tempo_hi": 0.65,
+    "distance_hi": 0.6
+  },
+  "shadow_safety": {
+    "always_soften": true,
+    "template": "Golge tarafinda bu, {shadow_text} baskisini hissettirebilir; bu bir suc degil, sadece bir yuklenme alanidir."
+  }
+}

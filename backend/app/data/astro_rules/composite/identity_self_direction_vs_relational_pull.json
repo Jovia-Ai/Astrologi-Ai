@@ -5,5 +5,16 @@
     "sun_opposition_descendant",
     "sun_conjunction_ascendant"
   ],
-  "domains": ["identity"]
+  "domains": [
+    "identity"
+  ],
+  "meaning": {
+    "meaning_id": "cm.identity.self_direction_vs_relational_pull.v1",
+    "templates": {
+      "headline": "Kendi yönünü korumak istiyorsun; ama ilişkiler de seni sürekli ayarlamaya çağırıyor olabilir.",
+      "p1_bridge": "Bazen “benim yolum” ile “birlikte nasıl yürürüz?” sorusu aynı anda çalışıyor gibi olur; bu da duruşunu netleştirmene yardım eder.",
+      "p2_bridge": "Zihninde sık sık tartıp biçme, geri çekilip yeniden karar verme hali görülebilir; bu bir kararsızlık değil, denge kurma ihtiyacı olabilir.",
+      "p3_bridge": "Doğru ilişkide bu çekişme çatışmaya değil; daha olgun bir yakınlık ve daha net sınırlar kurmaya dönüşebilir."
+    }
+  }
 }

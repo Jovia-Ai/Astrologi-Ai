@@ -5,5 +5,16 @@
     "moon_opposition_saturn",
     "moon_in_cancer"
   ],
-  "domains": ["emotional"]
+  "domains": [
+    "emotional"
+  ],
+  "meaning": {
+    "meaning_id": "cm.inner_vision_hidden_life.v1",
+    "templates": {
+      "headline": "Dışarıdan görünenin arkasında, daha mahrem ve zengin bir iç dünya var.",
+      "p1_bridge": "Herkese her şeyi açmazsın; bazı şeyleri yalnızken düşünür, hisseder ve sonra seçerek paylaşırsın.",
+      "p2_bridge": "Bu mahrem alan bazen güçlü bir sezgi, bazen de hayal kırıklıklarını sessiz taşımaya dönüşebilir.",
+      "p3_bridge": "Yakın ilişkide “görülmek” burada kilit: seni yargılamadan anlayan biriyle çok daha hızlı yumuşarsın."
+    }
+  }
 }

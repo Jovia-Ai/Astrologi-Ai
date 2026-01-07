@@ -2,27 +2,39 @@
 from __future__ import annotations
 
 import copy
+import hashlib
+import json
 import logging
+import os
 from types import SimpleNamespace
 from typing import Any, Dict, List, Mapping, Sequence
 
 
 from fastapi import APIRouter, HTTPException
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.ai.narrative.formatter import (
     build_formatted_aspects,
     build_formatted_house_positions,
     build_formatted_planet_positions,
 )
+from app.builders.composite_builder import build_composite_layer, split_composites
 from app.builders.composite_fragments import CompositeFragmentsBuilder
 from app.builders.composite_guidance import build_guidance
 from app.builders.composite_interpreter import CompositeInterpretationBuilder
 from app.builders.composite_regulator import build_composite_regulation
+from app.builders.meta_binding import build_meta_summary
+from app.builders.narrative_binding import build_core_story_plan, build_narrative
+from app.builders.narrative_renderer_v26 import render_core_story
 from app.builders.narrative_builder import JoviaSemanticNarrativeBuilder, SLOT_NAMES
+from app.builders.output_compactor import build_user_compact
 from app.builders.phase2_selector import select_phase2_fragments
 from app.builders.semantic_normalizer import contains_verb_phrase, normalize_slot_text
+from app.builders.upper_meaning_gate import build_upper_meaning_output
 from app.engine.aspect_mechanics import AspectMechanicsEngine
+from app.engine.astro_dynamics_engine import AstroDynamicsEngine
+from app.engine.pattern_context_engine import PatternContextEngine
+from app.engine.composite_meaning_engine import CompositeMeaningEngineV1
 from app.engine.composite_engine import CompositeEngine
 from app.engine.pattern_engine import PatternEmphasisEngine
 from app.engine.router import build_combined_insights
@@ -45,6 +57,8 @@ from app.services.chart_service import (
 )
 from app.helpers.narrative_context import derive_core_aspects, derive_placements
 from app.helpers.domain_normalizer import canon_domain
+from app.helpers.normalize import normalize_node_alias, normalize_planet_key, normalize_aspect_type
+from app.engine.astro_normalize import aspect_strength, clamp01
 
 logger = logging.getLogger(__name__)
 
@@ -55,28 +69,45 @@ rule_engine = RuleEngine()
 class NatalInterpretationRequest(BaseModel):
     """Request body containing the birth data required for natal calculations."""
 
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     birth_date: str = Field(..., description="Birth date in YYYY-MM-DD format.")
     birth_time: str = Field(..., description="Birth time in HH:MM format.")
     birth_place: str = Field(..., description="City + country or recognizable location label.")
 
-    class Config:
-        anystr_strip_whitespace = True
-
 
 @router.post("/interpret")
-def interpret_natal_chart(request: NatalInterpretationRequest, debug: bool = False) -> Dict[str, Any]:
+def interpret_natal_chart(
+    request: NatalInterpretationRequest,
+    debug: bool = False,
+    output_profile: str = "user_compact",
+) -> Dict[str, Any]:
     """Free deterministic interpretation endpoint (JoviaWeighted narratives)."""
 
     base_payload = _prepare_payload(request, premium_mode=False, debug_mode=debug)
-    return _finalize_response(base_payload, premium_mode=False, debug_mode=debug)
+    return _finalize_response(
+        base_payload,
+        premium_mode=False,
+        debug_mode=debug,
+        output_profile=output_profile,
+    )
 
 
 @router.post("/interpret/premium")
-def interpret_natal_chart_premium(request: NatalInterpretationRequest, debug: bool = False) -> Dict[str, Any]:
+def interpret_natal_chart_premium(
+    request: NatalInterpretationRequest,
+    debug: bool = False,
+    output_profile: str = "user_compact",
+) -> Dict[str, Any]:
     """Premium endpoint (PRO Jovia narratives)."""
 
     base_payload = _prepare_payload(request, premium_mode=True, debug_mode=debug)
-    return _finalize_response(base_payload, premium_mode=True, debug_mode=debug)
+    return _finalize_response(
+        base_payload,
+        premium_mode=True,
+        debug_mode=debug,
+        output_profile=output_profile,
+    )
 
 
 def _build_metadata(request: NatalInterpretationRequest, chart_data: Mapping[str, Any]) -> Dict[str, Any]:
@@ -95,16 +126,50 @@ def _prepare_payload(
     *,
     premium_mode: bool,
     debug_mode: bool = False,
+    tone_enabled: bool = True,
 ) -> Dict[str, Any]:
     try:
         chart_data = compute_natal_chart(request.birth_date, request.birth_time, request.birth_place)
     except Exception as exc:  # pragma: no cover - network/env specific
         logger.exception("Failed to calculate natal chart from inputs")
         raise HTTPException(status_code=500, detail=f"Chart calculation failed: {exc}") from exc
+    return _prepare_payload_from_chart(
+        chart_data,
+        premium_mode=premium_mode,
+        debug_mode=debug_mode,
+        tone_enabled=tone_enabled,
+        request=request,
+    )
 
+
+def _prepare_payload_from_chart(
+    chart_data: Mapping[str, Any],
+    *,
+    premium_mode: bool,
+    debug_mode: bool = False,
+    tone_enabled: bool = True,
+    request: NatalInterpretationRequest | None = None,
+) -> Dict[str, Any]:
     snapshots: Dict[str, Any] | None = {} if debug_mode else None
 
     planets = serialize_planets(chart_data.get("planets", {}))
+    angles = chart_data.get("angles") if isinstance(chart_data, Mapping) else None
+    if isinstance(angles, Mapping):
+        asc_sign = angles.get("ascendant_sign")
+        if asc_sign and not any(
+            str(entry.get("planet") or "").strip().lower() == "ascendant"
+            for entry in planets
+            if isinstance(entry, Mapping)
+        ):
+            planets.append(
+                {
+                    "planet": "Ascendant",
+                    "sign": asc_sign,
+                    "house": 1,
+                    "degree": angles.get("ascendant"),
+                    "is_point": True,
+                }
+            )
     aspects = serialize_aspects(chart_data.get("aspects", []))
     interpretation, meta_info = rule_engine.interpret(planets=planets, aspects=aspects, return_meta=True)
     if snapshots is not None:
@@ -136,7 +201,9 @@ def _prepare_payload(
         composites,
         meta_info,
         domain_regulators,
+        axis_activation,
     )
+    compressed_domains = phase2_fragments.pop("__compressed_domains__", None)
     latent_engine = LatentPotentialEngine()
     latent_potential = latent_engine.build(composites, patterns, aspect_mechanics)
     upper_engine = UpperMeaningEngine()
@@ -188,6 +255,26 @@ def _prepare_payload(
         meaning_weighting=meaning_weighting,
         aspect_mechanics=aspect_mechanics,
     )
+    meta_summary = build_meta_summary(
+        composites=composites,
+        patterns=patterns,
+        axis_activation=axis_activation,
+        pressure_support=pressure_support,
+        dispositor_flow=dispositor_flow,
+        meta_info=meta_info,
+        placements=placements,
+        core_aspects=core_aspects,
+    )
+    composite_layer = build_composite_layer(
+        composites,
+        patterns=patterns,
+        axis_activation=axis_activation,
+        activation_sensitivity=activation_sensitivity,
+        meta_summary=meta_summary,
+        dispositor_flow=dispositor_flow,
+        meta_info=meta_info,
+    )
+    composite_split = split_composites(composite_layer)
     expression_profile = ExpressionResolver.resolve(
         composite_output=composites,
         pressure_index=pressure_support["pressure_index"],
@@ -195,6 +282,45 @@ def _prepare_payload(
         axis_balance=pressure_support["axis_balance"],
     )
     narrative_fragments, phase2_snapshot = _build_phase2_fragment_payload(phase2_fragments)
+    potential_count = 0
+    for entry in phase2_fragments.values():
+        slots = entry.get("slots") or {}
+        if slots.get("potential"):
+            potential_count += 1
+    local_pressure = compute_local_pressure(
+        meta_info,
+        phase2_snapshot,
+        dynamic_insights=None,
+        composite_meanings=None,
+    )
+    resilience_score = _safe_float(
+        ((meta_info.get("strain_resilience") or {}).get("resilience") or {}).get("score")
+    )
+    uncertainty_score = _safe_float((meta_summary or {}).get("uncertainty"), 0.35)
+    capacity_score = compute_capacity_score(
+        support_index=pressure_support["support_index"],
+        resilience=resilience_score,
+        uncertainty=uncertainty_score,
+    )
+    integration_score, integration_components = compute_integration_score(
+        aspects,
+        meta_info,
+        meta_summary,
+    )
+    upper_meaning_selected = build_upper_meaning_output(
+        upper_meanings,
+        pressure_index=pressure_support["pressure_index"],
+        support_index=pressure_support["support_index"],
+        capacity_score=capacity_score,
+        integration_score=integration_score,
+        integration_components=integration_components,
+        dispositor_flow=dispositor_flow,
+        latent_potential=latent_potential,
+        potential_count=potential_count,
+        axis_activation=axis_activation,
+        dynamic_insights=None,
+        premium_mode=premium_mode,
+    )
     narrative_anchor = build_narrative_anchor(
         fragments_by_domain=narrative_fragments,
         dominant_domain=meaning_weighting["dominant_domain"],
@@ -234,6 +360,9 @@ def _prepare_payload(
             regulations=domain_regulators,
             expression_profile=expression_profile,
             quality_gates=phase2_snapshot["quality_gates_applied"],
+            meaning_weighting=meaning_weighting,
+            tone_enabled=tone_enabled,
+            compressed_domains=compressed_domains,
         )
     )
     narrative = builder.build()
@@ -280,6 +409,7 @@ def _prepare_payload(
         "composite_guidance": composite_guidance,
         "quality_actions_applied": builder.quality_actions_applied,
         "pressure_support": pressure_support,
+        "local_pressure": local_pressure,
         "meaning_weighting": meaning_weighting,
         "expression_profile": expression_profile,
         "narrative_anchor": narrative_anchor,
@@ -291,6 +421,7 @@ def _prepare_payload(
         "narrative_debug_selected_slots": builder.narrative_debug_selected_slots,
         "narrative_debug_source_fragment_ids": builder.narrative_debug_source_fragment_ids,
         "narrative_debug_active_domains_source": builder.narrative_debug_active_domains_source,
+        "tone_profile": builder.tone_profiles,
         "routing": routing_info,
     }
     if debug_mode:
@@ -298,7 +429,7 @@ def _prepare_payload(
         if snapshots:
             debug_info["snapshots"] = snapshots
     return {
-        "metadata": _build_metadata(request, chart_data),
+        "metadata": _build_metadata(request, chart_data) if request else _build_metadata_from_chart(chart_data),
         "planets": planets,
         "aspects": aspects,
         "formatted_positions": build_formatted_planet_positions(chart_data),
@@ -307,9 +438,13 @@ def _prepare_payload(
         "interpretation": interpretation,
         "meta_info": meta_info,
         "combined_insights": combined_insights,
+        "meta_summary": meta_summary,
         "composites": composites,
+        "composite_layer": composite_layer,
+        "composite_split": composite_split,
         "patterns": patterns,
         "upper_meaning": upper_meanings,
+        "upper_meaning_selected": upper_meaning_selected,
         "aspect_mechanics": aspect_mechanics,
         "composite_interpretation": composite_interpretation,
         "dispositor_flow": dispositor_flow,
@@ -320,13 +455,56 @@ def _prepare_payload(
         "meaning_weighting": meaning_weighting,
         "narrative_anchor": narrative_anchor,
         "debug": debug_info,
+        "local_pressure": local_pressure,
         "__narrative_fragments": narrative_fragments,
         "_phase2_snapshot": phase2_snapshot,
         "narrative_interpretation": narrative,
         "narrative_meta": narrative_meta,
         "expression_profile": expression_profile,
     }
-def _finalize_response(base_payload: Mapping[str, Any], *, premium_mode: bool, debug_mode: bool = False) -> Dict[str, Any]:
+
+
+def _build_metadata_from_chart(chart_data: Mapping[str, Any]) -> Dict[str, Any]:
+    return {
+        "birth_date": chart_data.get("birth_date"),
+        "birth_time": chart_data.get("birth_time"),
+        "birth_place": chart_data.get("birth_place"),
+        "location": chart_data.get("location"),
+        "birth_datetime": chart_data.get("birth_datetime"),
+        "timezone": chart_data.get("timezone"),
+    }
+
+
+def build_natal_interpretation_response_from_chart(
+    chart_data: Mapping[str, Any],
+    *,
+    output_profile: str = "user_compact",
+    debug_mode: bool = False,
+    tone_enabled: bool = True,
+    premium_mode: bool = False,
+) -> Dict[str, Any]:
+    base_payload = _prepare_payload_from_chart(
+        chart_data,
+        premium_mode=premium_mode,
+        debug_mode=debug_mode,
+        tone_enabled=tone_enabled,
+    )
+    return _finalize_response(
+        base_payload,
+        premium_mode=premium_mode,
+        debug_mode=debug_mode,
+        output_profile=output_profile,
+    )
+def _finalize_response(
+    base_payload: Mapping[str, Any],
+    *,
+    premium_mode: bool,
+    debug_mode: bool = False,
+    output_profile: str = "user_compact",
+) -> Dict[str, Any]:
+    legacy_enabled = os.getenv("ENABLE_LEGACY_NARRATIVE", "false").strip().lower() == "true"
+    dynamic_enabled = os.getenv("ENABLE_DYNAMIC_INSIGHTS", "false").strip().lower() == "true"
+    phase2_snapshot = base_payload.get("_phase2_snapshot") or {}
     response = {
         "metadata": base_payload["metadata"],
         "planets": base_payload["planets"],
@@ -337,9 +515,11 @@ def _finalize_response(base_payload: Mapping[str, Any], *, premium_mode: bool, d
         "formatted_houses": base_payload["formatted_houses"],
         "formatted_aspects": base_payload["formatted_aspects"],
         "combined_insights": base_payload["combined_insights"],
-        "composites": base_payload["composites"],
+        "meta": base_payload.get("meta_summary") or {},
+        "composites": base_payload.get("composite_split") or {"focus": [], "supporting": []},
         "patterns": base_payload["patterns"],
         "upper_meaning": base_payload["upper_meaning"],
+        "upper_meaning_selected": base_payload.get("upper_meaning_selected"),
         "aspect_mechanics": base_payload["aspect_mechanics"],
         "composite_interpretation": base_payload.get("composite_interpretation", {}),
         "dispositor_flow": base_payload["dispositor_flow"],
@@ -350,15 +530,454 @@ def _finalize_response(base_payload: Mapping[str, Any], *, premium_mode: bool, d
         "meaning_weighting": base_payload["meaning_weighting"],
         "narrative_anchor": base_payload["narrative_anchor"],
         "debug": base_payload["debug"],
-        "narrative_interpretation": base_payload["narrative_interpretation"],
-        "narrative_text": base_payload.get("narrative_text") or base_payload.get("narrative_interpretation"),
+        "phase2_snapshot": phase2_snapshot,
+        "narrative_interpretation": base_payload["narrative_interpretation"] if legacy_enabled else "",
+        "narrative_text": (
+            base_payload.get("narrative_text") or base_payload.get("narrative_interpretation")
+        )
+        if legacy_enabled
+        else "",
         "premium_mode": premium_mode,
         "expression_profile": base_payload.get("expression_profile"),
     }
-    _ensure_narrative_presence(base_payload, response)
+    dynamic_insights = None
+    enable_pattern_context = os.getenv("ENABLE_PATTERN_CONTEXT", "true").strip().lower() in {"1", "true", "yes", "on"}
+    render_pattern_context = os.getenv("RENDER_PATTERN_CONTEXT", "false").strip().lower() in {"1", "true", "yes", "on"}
+    composite_meanings = None
+    if dynamic_enabled:
+        chart_payload = {
+            "planets": base_payload.get("planets") or [],
+            "aspects": base_payload.get("aspects") or [],
+            "formatted_positions": base_payload.get("formatted_positions") or [],
+            "formatted_aspects": base_payload.get("formatted_aspects") or [],
+            "formatted_houses": base_payload.get("formatted_houses") or [],
+        }
+        engine = AstroDynamicsEngine()
+        theme_scores, dynamic_insights_payload = engine.build(
+            chart_payload,
+            base_payload.get("meta_info") or {},
+            phase2_snapshot,
+            base_payload.get("composite_split") or {},
+            debug=debug_mode,
+        )
+        response["theme_scores"] = theme_scores
+        response["dynamic_insights"] = dynamic_insights_payload
+        dynamic_insights = response.get("dynamic_insights")
+    if dynamic_insights and enable_pattern_context:
+        patterns = (base_payload.get("meta_info") or {}).get("aspect_patterns") or []
+        pattern_engine = PatternContextEngine()
+        updated_spines = pattern_engine.build(
+            patterns=patterns,
+            spines=dynamic_insights.get("selected") or [],
+            theme_scores=dynamic_insights.get("theme_scores") or {},
+        )
+        dynamic_insights["selected"] = updated_spines
+        if render_pattern_context:
+            dynamic_insights["render_pattern_context"] = True
+    chart_payload = {
+        "planets": base_payload.get("planets") or [],
+        "aspects": base_payload.get("aspects") or [],
+        "formatted_positions": base_payload.get("formatted_positions") or [],
+        "formatted_aspects": base_payload.get("formatted_aspects") or [],
+        "formatted_houses": base_payload.get("formatted_houses") or [],
+    }
+    composite_engine = CompositeMeaningEngineV1()
+    composite_meanings = composite_engine.build_composite_meanings_v1(
+        composites=base_payload.get("composites") or [],
+        theme_scores=response.get("theme_scores"),
+        dynamic_insights=dynamic_insights,
+        debug=debug_mode,
+    )
+    response["composite_meanings"] = composite_meanings
+    local_pressure = compute_local_pressure(
+        base_payload.get("meta_info") or {},
+        phase2_snapshot,
+        dynamic_insights=dynamic_insights,
+        composite_meanings=composite_meanings,
+    )
+    potential_count = 0
+    for entry in (base_payload.get("__narrative_fragments") or {}).values():
+        slots = entry.get("slots") or {}
+        if slots.get("potential"):
+            potential_count += 1
+    pressure_support = (base_payload.get("debug") or {}).get("pressure_support") or {}
+    resilience_score = _safe_float(
+        ((base_payload.get("meta_info") or {}).get("strain_resilience") or {}).get("resilience", {}).get("score")
+    )
+    uncertainty_score = _safe_float((base_payload.get("meta_summary") or {}).get("uncertainty"), 0.35)
+    capacity_score = compute_capacity_score(
+        support_index=pressure_support.get("support_index", 0.0),
+        resilience=resilience_score,
+        uncertainty=uncertainty_score,
+    )
+    integration_score, integration_components = compute_integration_score(
+        base_payload.get("aspects") or [],
+        base_payload.get("meta_info") or {},
+        base_payload.get("meta_summary") or {},
+    )
+    updated_upper_meaning = build_upper_meaning_output(
+        base_payload.get("upper_meaning") or [],
+        pressure_index=pressure_support.get("pressure_index", 0.0),
+        support_index=pressure_support.get("support_index", 0.0),
+        capacity_score=capacity_score,
+        integration_score=integration_score,
+        integration_components=integration_components,
+        dispositor_flow=base_payload.get("dispositor_flow") or {},
+        latent_potential=base_payload.get("latent_potential") or {},
+        potential_count=potential_count,
+        axis_activation=base_payload.get("axis_activation") or {},
+        dynamic_insights=dynamic_insights,
+        premium_mode=bool(base_payload.get("premium_mode")),
+    )
+    response["upper_meaning_selected"] = updated_upper_meaning
+    response["local_pressure"] = local_pressure
+    if isinstance(base_payload, dict):
+        base_payload["upper_meaning_selected"] = updated_upper_meaning
+        base_payload["local_pressure"] = local_pressure
+        debug_entry = base_payload.get("debug")
+        if isinstance(debug_entry, dict):
+            debug_entry["upper_meaning_mode"] = updated_upper_meaning.get("mode")
+            debug_entry["local_pressure"] = local_pressure
+            debug_entry["upper_meaning_gate"] = _build_upper_meaning_gate_debug(
+                updated_upper_meaning,
+                meta_summary=base_payload.get("meta_summary") or {},
+                pressure_support=pressure_support,
+            )
+    debug_entry = response.get("debug")
+    if isinstance(debug_entry, dict):
+        debug_entry["upper_meaning_mode"] = updated_upper_meaning.get("mode")
+        debug_entry["local_pressure"] = local_pressure
+        debug_entry["upper_meaning_gate"] = _build_upper_meaning_gate_debug(
+            updated_upper_meaning,
+            meta_summary=base_payload.get("meta_summary") or {},
+            pressure_support=pressure_support,
+        )
+    if legacy_enabled:
+        _ensure_narrative_presence(base_payload, response)
+    else:
+        debug_entry = response.get("debug")
+        if isinstance(debug_entry, dict):
+            debug_entry["narrative_deprecation"] = (
+                "legacy narrative_interpretation is disabled; use core_story."
+            )
+    narrative_fragments = base_payload.get("__narrative_fragments") or {}
+    response["core_story_plan"] = build_core_story_plan(
+        phase2_snapshot,
+        base_payload.get("meta_info") or {},
+        base_payload.get("expression_profile"),
+        base_payload.get("upper_meaning_selected"),
+        dynamic_insights=dynamic_insights,
+        composite_meanings=composite_meanings,
+    )
+    response["core_story"] = render_core_story(
+        phase2_snapshot,
+        response.get("core_story_plan") or {},
+        base_payload.get("expression_profile"),
+        dynamic_insights=response.get("dynamic_insights"),
+        composite_meanings=composite_meanings,
+        upper_meaning_selected=base_payload.get("upper_meaning_selected"),
+        debug=debug_mode,
+        debug_payload=response.get("debug") if debug_mode else None,
+    )
+    response["data_quality"] = _build_data_quality_payload(
+        response.get("core_story_plan") or {},
+        base_payload.get("meta_summary") or {},
+        base_payload.get("upper_meaning_selected") or {},
+        debug_mode=debug_mode,
+    )
+    meta_entry = response.get("meta")
+    if isinstance(meta_entry, dict):
+        meta_entry["deprecated_fields"] = ["narrative_interpretation", "narrative_text"]
+    if output_profile != "debug":
+        fragments = base_payload.get("__narrative_fragments") or {}
+        response["user_compact"] = build_user_compact(
+            fragments,
+            phase2_snapshot=base_payload.get("_phase2_snapshot") or {},
+            tone_profile=base_payload.get("expression_profile"),
+        )
     if debug_mode:
         _record_final_response_snapshot(response, base_payload.get("debug") or {})
     return response
+
+
+def _build_data_quality_payload(
+    core_story_plan: Mapping[str, Any],
+    meta_summary: Mapping[str, Any],
+    upper_meaning: Mapping[str, Any],
+    *,
+    debug_mode: bool,
+) -> Dict[str, Any]:
+    data_quality = core_story_plan.get("data_quality") if isinstance(core_story_plan, Mapping) else {}
+    summary = {
+        "blocked_sections": data_quality.get("blocked_sections", []),
+        "fallback_used_slots": data_quality.get("fallback_used", []),
+        "missing_signals": data_quality.get("missing_slots", []),
+        "confidence": meta_summary.get("support_index"),
+        "uncertainty": meta_summary.get("pressure_index"),
+    }
+    if not debug_mode:
+        return {"summary": summary}
+
+    debug_detail = {
+        "slot_empty_reasons": (core_story_plan.get("debug") or {}).get("slot_empty_reasons", {}),
+        "fallback_sources": (core_story_plan.get("debug") or {}).get("fallback_sources", {}),
+        "upper_meaning_reasons": (core_story_plan.get("debug") or {}).get(
+            "upper_meaning_reasons", []
+        ),
+        "phase2_domains": (core_story_plan.get("debug") or {}).get("phase2_domains", []),
+        "max_domains": (core_story_plan.get("debug") or {}).get("max_domains", 3),
+        "upper_meaning_gate": _build_upper_meaning_gate_debug(
+            upper_meaning,
+            meta_summary=meta_summary,
+            pressure_support={},
+        ),
+    }
+    return {"summary": summary, "detail": debug_detail}
+
+
+def _build_upper_meaning_gate_debug(
+    upper_meaning: Mapping[str, Any],
+    *,
+    meta_summary: Mapping[str, Any],
+    pressure_support: Mapping[str, Any],
+) -> Dict[str, Any]:
+    thresholds = upper_meaning.get("thresholds") or {
+        "pressure_min": 0.45,
+        "capacity_min": 0.55,
+        "integration_min": 0.55,
+    }
+    pressure_index = _safe_float(meta_summary.get("pressure_index") or pressure_support.get("pressure_index"))
+    support_index = _safe_float(meta_summary.get("support_index") or pressure_support.get("support_index"))
+    debug_scores = upper_meaning.get("debug_scores") or {}
+    return {
+        "enabled": bool(upper_meaning.get("enabled")),
+        "reasons": upper_meaning.get("reasons") or [],
+        "pressure_index": round(pressure_index, 3),
+        "support_index": round(support_index, 3),
+        "capacity": debug_scores.get("capacity"),
+        "integration": debug_scores.get("integration"),
+        "thresholds": thresholds,
+        "source": "meta_summary",
+    }
+
+
+def compute_local_pressure(
+    meta_info: Mapping[str, Any],
+    phase2_snapshot: Mapping[str, Any],
+    dynamic_insights: Mapping[str, Any] | None,
+    composite_meanings: Mapping[str, Any] | None,
+) -> Dict[str, float]:
+    _ = (meta_info, composite_meanings)
+    local_pressure: Dict[str, float] = {}
+    accepted = ((phase2_snapshot.get("slots") or {}).get("accepted") or [])
+    has_slot_roles = any(isinstance(entry, Mapping) and entry.get("slot") for entry in accepted)
+
+    if has_slot_roles:
+        for entry in accepted:
+            if not isinstance(entry, Mapping):
+                continue
+            domain = canon_domain(entry.get("domain"))
+            if not domain:
+                continue
+            local_pressure.setdefault(domain, 0.0)
+            if entry.get("slot") == "shadow":
+                local_pressure[domain] += 0.25
+
+        selected = (dynamic_insights or {}).get("selected")
+        if isinstance(selected, list):
+            for entry in selected:
+                if not isinstance(entry, Mapping):
+                    continue
+                themes = [
+                    canon_domain(theme)
+                    for theme in (entry.get("themes") or [])
+                    if isinstance(theme, str)
+                ]
+                themes = [theme for theme in themes if theme]
+                if not themes:
+                    continue
+                evidence = entry.get("evidence") or []
+                has_hard_aspect = any(
+                    isinstance(e, Mapping)
+                    and e.get("type") == "aspect"
+                    and str(e.get("aspect") or "").lower() in {"square", "opposition"}
+                    for e in evidence
+                )
+                if has_hard_aspect:
+                    for domain in themes:
+                        local_pressure[domain] = local_pressure.get(domain, 0.0) + 0.25
+
+                insight_id = str(entry.get("insight_id") or "")
+                if insight_id in {
+                    "dyn.mars_saturn.drive_brake.v1",
+                    "dyn.sun_saturn.authority.v1",
+                    "dyn.moon_saturn.containment.v1",
+                }:
+                    for domain in themes:
+                        local_pressure[domain] = local_pressure.get(domain, 0.0) + 0.30
+                if insight_id in {"dyn.house8.depth.v1", "dyn.house12.hidden_layer.v1"}:
+                    for domain in themes:
+                        local_pressure[domain] = local_pressure.get(domain, 0.0) + 0.20
+    else:
+        selected = (dynamic_insights or {}).get("selected")
+        if isinstance(selected, list):
+            for entry in selected:
+                if not isinstance(entry, Mapping):
+                    continue
+                themes = [
+                    canon_domain(theme)
+                    for theme in (entry.get("themes") or [])
+                    if isinstance(theme, str)
+                ]
+                themes = [theme for theme in themes if theme]
+                if not themes:
+                    continue
+                strength = _safe_float(entry.get("strength") or entry.get("score"))
+                tension = _safe_float((entry.get("polarity") or {}).get("tension"))
+                contribution = (0.6 * strength + 0.4 * tension) * 0.5
+                for domain in themes:
+                    local_pressure[domain] = local_pressure.get(domain, 0.0) + contribution
+
+    for domain, score in list(local_pressure.items()):
+        local_pressure[domain] = max(0.0, min(1.0, score))
+    return local_pressure
+
+
+def compute_capacity_score(
+    *,
+    support_index: float,
+    resilience: float,
+    uncertainty: float,
+) -> float:
+    return clamp01(0.55 * support_index + 0.25 * resilience + 0.20 * (1.0 - uncertainty))
+
+
+def compute_integration_score(
+    aspects: Sequence[Mapping[str, Any]],
+    meta_info: Mapping[str, Any],
+    meta_summary: Mapping[str, Any],
+) -> tuple[float, Dict[str, float]]:
+    planet_houses = meta_info.get("planet_houses") or {}
+    sun_house = planet_houses.get("sun")
+    moon_house = planet_houses.get("moon")
+    node_house = planet_houses.get("node")
+    chiron_house = planet_houses.get("chiron")
+
+    major_aspects = {"conjunction", "opposition", "square", "trine", "sextile"}
+    hard_aspects = {"square", "opposition"}
+
+    sun_moon = _best_aspect(aspects, "sun", "moon", major_aspects)
+    if sun_moon:
+        bridge = aspect_strength(sun_moon)
+    elif sun_house in {1, 10} and moon_house in {4, 8, 12}:
+        bridge = 0.55
+    else:
+        bridge = 0.0
+
+    hard_counts: Dict[str, int] = {}
+    for entry in aspects:
+        aspect_type = normalize_aspect_type(entry.get("type") or entry.get("aspect"))
+        if aspect_type not in hard_aspects:
+            continue
+        a = _normalize_body(entry.get("planet1") or entry.get("a") or entry.get("planet"))
+        b = _normalize_body(entry.get("planet2") or entry.get("b") or entry.get("target"))
+        if not (a and b):
+            continue
+        hard_counts[a] = hard_counts.get(a, 0) + 1
+        hard_counts[b] = hard_counts.get(b, 0) + 1
+    recurrence = 0.0
+    if any(count >= 2 for count in hard_counts.values()):
+        recurrence += 0.25
+
+    if _best_aspect(aspects, "mars", "saturn", hard_aspects) or _best_aspect(
+        aspects, "sun", "saturn", hard_aspects
+    ) or _best_aspect(aspects, "moon", "saturn", hard_aspects):
+        recurrence += 0.35
+
+    personal = {"sun", "moon", "mercury", "venus", "mars"}
+    if _best_aspect(aspects, "node", tuple(personal), hard_aspects):
+        recurrence += 0.20
+
+    pattern_bonus = 0.0
+    if recurrence > 0.35:
+        patterns = meta_summary.get("aspect_patterns") or meta_info.get("aspect_patterns") or []
+        pattern_bonus += _pattern_bonus(patterns)
+    recurrence = clamp01(recurrence + pattern_bonus)
+
+    directionality = 0.0
+    if node_house in {9, 10, 12}:
+        directionality += 0.25
+    node_personal = _best_aspect(aspects, "node", tuple(personal), major_aspects)
+    if node_personal:
+        directionality += 0.35 * aspect_strength(node_personal)
+    if chiron_house == 10:
+        directionality += 0.15
+    if _best_aspect(aspects, "jupiter", "neptune", major_aspects):
+        directionality += 0.15
+    directionality = clamp01(directionality)
+
+    integration = clamp01(0.35 * bridge + 0.35 * recurrence + 0.30 * directionality)
+    return integration, {
+        "bridge": round(bridge, 3),
+        "recurrence": round(recurrence, 3),
+        "directionality": round(directionality, 3),
+    }
+
+
+def _best_aspect(
+    aspects: Sequence[Mapping[str, Any]],
+    a: str,
+    b: str | tuple[str, ...],
+    allowed: set[str],
+) -> Mapping[str, Any] | None:
+    targets = {b} if isinstance(b, str) else set(b)
+    best: Mapping[str, Any] | None = None
+    best_strength = -1.0
+    for entry in aspects:
+        aspect_type = normalize_aspect_type(entry.get("type") or entry.get("aspect"))
+        if aspect_type not in allowed:
+            continue
+        p1 = _normalize_body(entry.get("planet1") or entry.get("a") or entry.get("planet"))
+        p2 = _normalize_body(entry.get("planet2") or entry.get("b") or entry.get("target"))
+        if not (p1 and p2):
+            continue
+        if not ({p1, p2} & {a}):
+            continue
+        if not ({p1, p2} & targets):
+            continue
+        strength = aspect_strength(entry)
+        if strength > best_strength:
+            best_strength = strength
+            best = entry
+    return best
+
+
+def _pattern_bonus(patterns: Sequence[Mapping[str, Any]]) -> float:
+    bonus_map = {
+        "t_square": 0.30,
+        "stellium": 0.20,
+        "kite": 0.20,
+        "grand_trine": 0.10,
+    }
+    bonus = 0.0
+    for entry in patterns:
+        if not isinstance(entry, Mapping):
+            continue
+        pattern_type = str(entry.get("pattern") or entry.get("pattern_type") or "").strip().lower()
+        bonus += bonus_map.get(pattern_type, 0.0)
+    return bonus
+
+
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def _normalize_body(value: Any) -> str:
+    normalized = normalize_node_alias(normalize_planet_key(value))
+    return normalized or ""
 
 
 def _ensure_narrative_presence(base_payload: Mapping[str, Any], response: Dict[str, Any]) -> None:
@@ -391,6 +1010,8 @@ def _record_final_response_snapshot(response: Dict[str, Any], debug_entry: Mappi
     if not isinstance(snapshots, dict):
         return
     final_snapshot = copy.deepcopy(response)
+    final_snapshot.pop("user", None)
+    final_snapshot.pop("user_compact", None)
     debug_payload = final_snapshot.get("debug")
     if isinstance(debug_payload, dict):
         debug_payload = dict(debug_payload)
@@ -619,9 +1240,17 @@ def _apply_semantic_normalization(payload: Dict[str, Dict[str, Any]]) -> Tuple[D
                     }
                 )
                 continue
+            fragment_id = _ensure_fragment_id(
+                fragment,
+                domain=canonical_domain,
+                slot=slot_name,
+                normalized_text=semantic_text,
+            )
             normalized_fragment = dict(fragment)
             normalized_fragment["_semantic_text"] = semantic_text
             normalized_fragment["text"] = semantic_text
+            if fragment_id:
+                normalized_fragment["fragment_id"] = fragment_id
             normalized_slots[slot_name] = normalized_fragment
             summary["accepted_slots"] += 1
             summary["domains_with_accepted"].add(canonical_domain)
@@ -631,7 +1260,7 @@ def _apply_semantic_normalization(payload: Dict[str, Dict[str, Any]]) -> Tuple[D
                     "slot": slot_name,
                     "normalized_text": semantic_text,
                     "original_text": original_text,
-                    "fragment_id": fragment.get("fragment_ref") or fragment.get("id"),
+                    "fragment_id": fragment_id,
                     "source_composite_ids": fragment.get("source_composite_ids") or [],
                 }
             )
@@ -683,6 +1312,41 @@ def _normalize_phase2_texts(payload: Dict[str, Dict[str, Any]]) -> Dict[str, Dic
             "anchor": anchor if isinstance(anchor, Mapping) else normalized_slots.get("cause"),
         }
     return normalized
+
+
+def _ensure_fragment_id(
+    fragment: Mapping[str, Any],
+    *,
+    domain: str,
+    slot: str,
+    normalized_text: str,
+) -> str | None:
+    fragment_id = fragment.get("fragment_id") or fragment.get("fragment_ref") or fragment.get("id")
+    if fragment_id:
+        return str(fragment_id)
+    rule_id = fragment.get("rule_id")
+    if not rule_id:
+        rule_ids = fragment.get("rule_ids") or fragment.get("source_rule_ids") or []
+        if isinstance(rule_ids, list) and rule_ids:
+            rule_id = rule_ids[0]
+    trigger = fragment.get("trigger") if isinstance(fragment.get("trigger"), Mapping) else None
+    if not trigger:
+        trigger = {
+            "planet": fragment.get("planet"),
+            "sign": fragment.get("sign"),
+            "house": fragment.get("house"),
+            "aspect": fragment.get("aspect"),
+        }
+        trigger = {k: v for k, v in trigger.items() if v is not None}
+    payload = {
+        "domain": domain,
+        "slot": slot,
+        "normalized_text": normalized_text,
+        "rule_id": rule_id,
+        "trigger": trigger,
+    }
+    raw = json.dumps(payload, sort_keys=True, ensure_ascii=False)
+    return "sha256:" + hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 
 def _primary_domain_regulations(

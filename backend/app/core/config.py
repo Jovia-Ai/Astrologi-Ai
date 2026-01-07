@@ -22,20 +22,26 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    debug: bool = Field(default=False, env="DEBUG")
-    allowed_origins: List[str] = Field(default_factory=lambda: ["http://localhost:5173"], env="ALLOWED_ORIGINS")
-    swisseph_path: str = Field(default="./ephe", env="SWISSEPH_PATH")
-    opencage_api_key: str | None = Field(default=None, env="OPENCAGE_API_KEY")
-    groq_api_key: str | None = Field(default=None, env="GROQ_API_KEY")
-    groq_model: str = Field(default="llama-3.1-8b-instant", env="GROQ_MODEL")
-    groq_api_url: str = Field(default="https://api.groq.com/openai/v1/chat/completions", env="GROQ_API_URL")
-    cors_supports_credentials: bool = Field(default=True, env="CORS_SUPPORTS_CREDENTIALS")
-    environment: str = Field(default="development", env="APP_ENV")
-    log_level: str = Field(default="INFO", env="LOG_LEVEL")
-    supabase_url: str | None = Field(default=None, env="SUPABASE_URL")
-    supabase_anon_key: str | None = Field(default=None, env="SUPABASE_ANON_KEY")
-    supabase_service_role_key: str | None = Field(default=None, env="SUPABASE_SERVICE_ROLE_KEY")
-    house_system: str = Field(default="P", env="HOUSE_SYSTEM")
+    debug: bool = Field(default=False, validation_alias="DEBUG")
+    allowed_origins: List[str] = Field(
+        default_factory=lambda: ["http://localhost:5173"],
+        validation_alias="ALLOWED_ORIGINS",
+    )
+    swisseph_path: str = Field(default="./ephe", validation_alias="SWISSEPH_PATH")
+    opencage_api_key: str | None = Field(default=None, validation_alias="OPENCAGE_API_KEY")
+    groq_api_key: str | None = Field(default=None, validation_alias="GROQ_API_KEY")
+    groq_model: str = Field(default="llama-3.1-8b-instant", validation_alias="GROQ_MODEL")
+    groq_api_url: str = Field(
+        default="https://api.groq.com/openai/v1/chat/completions",
+        validation_alias="GROQ_API_URL",
+    )
+    cors_supports_credentials: bool = Field(default=True, validation_alias="CORS_SUPPORTS_CREDENTIALS")
+    environment: str = Field(default="development", validation_alias="APP_ENV")
+    log_level: str = Field(default="INFO", validation_alias="LOG_LEVEL")
+    supabase_url: str | None = Field(default=None, validation_alias="SUPABASE_URL")
+    supabase_anon_key: str | None = Field(default=None, validation_alias="SUPABASE_ANON_KEY")
+    supabase_service_role_key: str | None = Field(default=None, validation_alias="SUPABASE_SERVICE_ROLE_KEY")
+    house_system: str = Field(default="P", validation_alias="HOUSE_SYSTEM")
 
     @field_validator("allowed_origins", mode="before")
     @classmethod

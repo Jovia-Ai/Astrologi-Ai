@@ -11,7 +11,7 @@ app_module = types.ModuleType("app")
 app_module.__path__ = [str(ROOT / "backend" / "app")]
 sys.modules["app"] = app_module
 
-from engine.conflict_vector_builder import ConflictVectorBuilder
+from app.builders.conflict_vector_builder import ConflictVectorBuilder
 
 
 def _build_slot(

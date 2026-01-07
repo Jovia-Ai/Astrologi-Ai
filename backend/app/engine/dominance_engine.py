@@ -129,8 +129,12 @@ class DominanceEngine:
             for entry in planets:
                 if not isinstance(entry, Mapping):
                     continue
+                if entry.get("is_point"):
+                    continue
                 planet = DominanceEngine._normalize_planet(entry.get("planet"))
                 if not planet:
+                    continue
+                if planet in {"ascendant", "descendant", "midheaven", "mc", "imum_coeli", "ic"}:
                     continue
                 normalized[planet] = {
                     "sign": DominanceEngine._normalize_sign(entry.get("sign")),

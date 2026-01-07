@@ -12,7 +12,7 @@ app_module = types.ModuleType("app")
 app_module.__path__ = [str(ROOT / "backend" / "app")]
 sys.modules["app"] = app_module
 
-from engine.phase2_selector import Phase2Selector
+from app.builders.phase2_selector import Phase2Selector
 
 
 def _build_signal(theme: str, slot: str, weight: float, domain: str, axis: str) -> dict[str, object]:

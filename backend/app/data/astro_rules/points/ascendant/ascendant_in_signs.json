@@ -1,0 +1,312 @@
+{
+  "planet_sign_rules": [
+    {
+      "id": "ascendant_in_aries",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Aries"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Hayata yaklaşımın, var olabilmek için önce harekete geçmen gerektiği hissiyle şekillenir."
+          ],
+          "mechanism": [
+            "Bir durumla karşılaştığında düşünmeden önce tepki verme eğilimi çalışır."
+          ],
+          "effect": [
+            "Dışarıdan hızlı, cesur ve inisiyatif alan biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Yavaşlaman gereken anlarda bile durmak zor gelebilir."
+          ],
+          "potential": [
+            "Tepkini bilinçli seçebildiğinde güçlü bir yön açıcı etki yaratırsın."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_taurus",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Taurus"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Hayatta güvende hissetme ihtiyacı, kimliğinin temel referans noktasıdır."
+          ],
+          "mechanism": [
+            "Yeni durumları yavaşça tartar, sağlamlık hissi oluşmadan ilerlemezsin."
+          ],
+          "effect": [
+            "Dışarıdan sakin, dayanıklı ve güven veren biri olarak görünürsün."
+          ],
+          "shadow": [
+            "Değişim zorunlu olduğunda direnç oluşabilir."
+          ],
+          "potential": [
+            "Esnekliği koruduğunda istikrarın başkaları için de merkez haline gelir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_gemini",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Gemini"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Dünyayı anlamlandırma ihtiyacı kimliğini sürekli hareket halinde tutar."
+          ],
+          "mechanism": [
+            "Her durumu zihinsel olarak kavramaya ve adlandırmaya çalışırsın."
+          ],
+          "effect": [
+            "Meraklı, iletişime açık ve zihinsel olarak çevik algılanırsın."
+          ],
+          "shadow": [
+            "Dağınıklık ve yüzeysellik hissi oluşabilir."
+          ],
+          "potential": [
+            "Zihinsel odağı koruduğunda güçlü bir bağlayıcı olursun."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_cancer",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Cancer"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Duygusal güvenlik ihtiyacı hayata yaklaşımını belirler."
+          ],
+          "mechanism": [
+            "Ortamın duygusal tonunu sezerek hareket edersin."
+          ],
+          "effect": [
+            "Koruyucu, duyarlı ve içgüdüsel biri olarak algılanırsın."
+          ],
+          "shadow": [
+            "Geri çekilme veya aşırı hassasiyet oluşabilir."
+          ],
+          "potential": [
+            "Duygusal sınırlarını netleştirdiğinde derin bir güven alanı yaratırsın."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_leo",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Leo"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Görünür olma ve etki yaratma ihtiyacı kimliğinin merkezindedir."
+          ],
+          "mechanism": [
+            "Bulunduğun ortamda doğal olarak dikkat çekersin."
+          ],
+          "effect": [
+            "Kendine güvenli, sıcak ve lider bir izlenim bırakırsın."
+          ],
+          "shadow": [
+            "Onay ihtiyacı artabilir."
+          ],
+          "potential": [
+            "Işığını paylaştığında başkalarını da cesaretlendiren bir figür olursun."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_virgo",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Virgo"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Hayatı düzenleme ve anlamlı hale getirme ihtiyacı baskındır."
+          ],
+          "mechanism": [
+            "Detayları fark ederek kontrol hissi kurarsın."
+          ],
+          "effect": [
+            "Dikkatli, ölçülü ve fayda odaklı görünürsün."
+          ],
+          "shadow": [
+            "Aşırı eleştirel bir iç ses devreye girebilir."
+          ],
+          "potential": [
+            "Kendine de aynı şefkati gösterdiğinde gerçek ustalık oluşur."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_libra",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Libra"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Denge ve uyum arayışı hayata yaklaşımını belirler."
+          ],
+          "mechanism": [
+            "Kararları karşılıklı etkiyi gözeterek alırsın."
+          ],
+          "effect": [
+            "Zarif, adil ve ilişki odaklı algılanırsın."
+          ],
+          "shadow": [
+            "Kararsızlık veya erteleme görülebilir."
+          ],
+          "potential": [
+            "Netlik kazandığında doğal bir denge noktası olursun."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_sagittarius",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Sagittarius"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Anlam arayışı ve genişleme ihtiyacı kimliğini yönlendirir."
+          ],
+          "mechanism": [
+            "Hayata büyük resim üzerinden bakarsın."
+          ],
+          "effect": [
+            "Özgür, iyimser ve vizyoner görünürsün."
+          ],
+          "shadow": [
+            "Detaylar gözden kaçabilir."
+          ],
+          "potential": [
+            "Gerçekçilikle birleştiğinde ilham verici bir yol açarsın."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_capricorn",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Capricorn"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Sorumluluk alma ihtiyacı hayata duruşunu belirler."
+          ],
+          "mechanism": [
+            "Kontrol ve yapı kurarak güvenlik sağlarsın."
+          ],
+          "effect": [
+            "Ciddi, olgun ve güvenilir algılanırsın."
+          ],
+          "shadow": [
+            "Ağırlık ve mesafe hissi oluşabilir."
+          ],
+          "potential": [
+            "Yumuşadığında liderliğin sürdürülebilir hale gelir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_aquarius",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Aquarius"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Farklı olma ve özgünlük ihtiyacı kimliğini şekillendirir."
+          ],
+          "mechanism": [
+            "Durumlara mesafeli ve objektif yaklaşmaya çalışırsın."
+          ],
+          "effect": [
+            "Bağımsız, sıra dışı ve yenilikçi algılanırsın."
+          ],
+          "shadow": [
+            "Duygusal kopukluk hissi oluşabilir."
+          ],
+          "potential": [
+            "Bağ kurduğunda kolektif için ilham kaynağı olursun."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_pisces",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "sign": "Pisces"
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Sınırların geçirgen olması hayata yaklaşımını belirler."
+          ],
+          "mechanism": [
+            "Ortamın duygusal ve sezgisel akışına uyumlanırsın."
+          ],
+          "effect": [
+            "Yumuşak, empatik ve akışkan algılanırsın."
+          ],
+          "shadow": [
+            "Belirsizlik ve dağılma yaşanabilir."
+          ],
+          "potential": [
+            "Sınır bilinciyle birleştiğinde şifa alanı oluşur."
+          ]
+        }
+      }
+    }
+  ]
+}

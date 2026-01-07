@@ -5,5 +5,17 @@
     "sun_trine_saturn",
     "mars_conjunction_midheaven"
   ],
-  "domains": ["career", "direction"]
+  "domains": [
+    "career",
+    "direction"
+  ],
+  "meaning": {
+    "meaning_id": "cm.career_direction_focus.v1",
+    "templates": {
+      "headline": "İş ve yön tarafında “netleşme” ihtiyacı var; belirsizlik seni dağıtabilir.",
+      "p1_bridge": "Bir şeyin sistemini kurmak, standardını belirlemek ve sürdürülebilir hale getirmek senin doğal gücün olabilir.",
+      "p2_bridge": "Zihnin “nasıl daha iyi olur?” sorusuna takılır; bu bazen mükemmeliyetçiliğe kaçsa da seni ustalaştırır.",
+      "p3_bridge": "İlişkide de benzer şekilde: hedefi olan, yolu olan bağlar sana daha güvenli gelir."
+    }
+  }
 }

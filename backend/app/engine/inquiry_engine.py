@@ -28,7 +28,7 @@ class InquiryEngine:
 
     @staticmethod
     def _describe_reason(meta: Dict[str, Any]) -> str:
-        if meta.get("planet_load") == "high":
+        if meta.get("planet_load_level") == "high":
             return "high_load"
         if meta.get("stellium"):
             return "stellium_load"

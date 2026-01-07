@@ -50,6 +50,7 @@ def analyze_planets(planets: Iterable[Mapping[str, object]]) -> Dict[str, object
         normalized_planet = normalize_node_alias(normalize_planet_key(planet))
         if not normalized_planet:
             continue
+        is_point = bool(entry.get("is_point"))
 
         sign = entry.get("sign")
         house = entry.get("house")
@@ -60,13 +61,14 @@ def analyze_planets(planets: Iterable[Mapping[str, object]]) -> Dict[str, object
             sign_value = sign.strip()
             sign_normalized = sign_value.lower()
             planet_signs[normalized_planet] = sign_normalized
-            formatted_sign = sign_value.title()
-            element = ELEMENT_MAP.get(formatted_sign)
-            modality = MODALITY_MAP.get(formatted_sign)
-            if element:
-                element_counts[element] += 1
-            if modality:
-                modality_counts[modality] += 1
+            if not is_point:
+                formatted_sign = sign_value.title()
+                element = ELEMENT_MAP.get(formatted_sign)
+                modality = MODALITY_MAP.get(formatted_sign)
+                if element:
+                    element_counts[element] += 1
+                if modality:
+                    modality_counts[modality] += 1
 
         house_value: int | None = None
         if house is not None:
@@ -76,13 +78,15 @@ def analyze_planets(planets: Iterable[Mapping[str, object]]) -> Dict[str, object
                 house_value = None
         if house_value is not None:
             planet_houses[normalized_planet] = house_value
-            house_counts[house_value] += 1
+            if not is_point:
+                house_counts[house_value] += 1
 
-        normalized_planets[normalized_planet] = {
-            "sign": sign_normalized if isinstance(sign_value, str) else None,
-            "house": house_value,
-            "degree": degree,
-        }
+        if not is_point:
+            normalized_planets[normalized_planet] = {
+                "sign": sign_normalized if isinstance(sign_value, str) else None,
+                "house": house_value,
+                "degree": degree,
+            }
 
     stelliums = detect_stelliums(house_counts)
     dominant_elements = detect_dominance(element_counts, minimum=4)

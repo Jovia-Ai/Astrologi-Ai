@@ -12,7 +12,7 @@ app_module = types.ModuleType("app")
 app_module.__path__ = [str(ROOT / "backend" / "app")]
 sys.modules["app"] = app_module
 
-from engine.theme_mapper import ThemeMapper, ThemeResolutionError
+from app.builders.theme_mapper import ThemeMapper, ThemeResolutionError
 
 
 def _build_signal(

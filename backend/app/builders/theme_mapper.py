@@ -8,8 +8,10 @@ import logging
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+import yaml
+
 DEFAULT_MAPPING_PATH = (
-    Path(__file__).resolve().parents[1] / "config" / "ontology" / "mapping.yaml"
+    Path(__file__).resolve().parents[3] / "config" / "ontology" / "mapping.yaml"
 )
 
 logger = logging.getLogger(__name__)
@@ -43,6 +45,8 @@ class ThemeMapper:
                 raise ThemeResolutionError("No theme candidates could be generated.")
             candidates = self._stage2_contextual_modifiers(candidates)
             resolved = self._stage3_resolve(candidates, chart_hash)
+            if resolved and self._should_force_weak_fallback(resolved):
+                resolved = None
             if not resolved:
                 resolved = self._stage4_weak_fallback(chart_hash, candidates)
             if not resolved:
@@ -57,7 +61,99 @@ class ThemeMapper:
     def _load_mapping(self, mapping_path: Path) -> Mapping[str, Any]:
         if not mapping_path.exists():
             raise FileNotFoundError(f"Theme mapping file not found at {mapping_path}")
-        return json.loads(mapping_path.read_text())
+        text = mapping_path.read_text(encoding="utf-8")
+        parsed = None
+        try:
+            parsed = yaml.safe_load(text)
+        except yaml.YAMLError:
+            parsed = None
+        if isinstance(parsed, Mapping):
+            if "candidates" in parsed and "rules" not in parsed:
+                return self._normalize_mapping(parsed)
+            if self._looks_like_mapping(parsed):
+                return parsed
+        try:
+            parsed = json.loads(text)
+        except json.JSONDecodeError:
+            parsed = self._decode_embedded_json(text)
+        if isinstance(parsed, str):
+            parsed = self._decode_embedded_json(parsed)
+        if isinstance(parsed, str):
+            parsed = self._decode_embedded_json(parsed)
+        if isinstance(parsed, Mapping):
+            if "candidates" in parsed and "rules" not in parsed:
+                return self._normalize_mapping(parsed)
+            if self._looks_like_mapping(parsed):
+                return parsed
+        raise ValueError("Theme mapping payload could not be parsed.")
+
+    @staticmethod
+    def _looks_like_mapping(parsed: Mapping[str, Any]) -> bool:
+        if "rules" in parsed:
+            return True
+        return any(
+            key in parsed
+            for key in ("candidate_generation", "tie_breaker", "weak_fallback", "settings")
+        )
+
+    @staticmethod
+    def _decode_embedded_json(text: str) -> str | Mapping[str, Any] | None:
+        cleaned = text.strip()
+        if cleaned.startswith('"'):
+            cleaned = cleaned[1:]
+        if cleaned.endswith('"'):
+            cleaned = cleaned[:-1]
+        cleaned = cleaned.replace('\\"', '"')
+        cleaned = cleaned.replace("\\n", "\n")
+        try:
+            return json.loads(cleaned)
+        except json.JSONDecodeError:
+            return None
+
+    @staticmethod
+    def _normalize_mapping(parsed: Mapping[str, Any]) -> Mapping[str, Any]:
+        settings = parsed.get("settings") or {}
+        max_candidates = int(settings.get("max_candidates", 3))
+        weak_threshold = float(settings.get("weak_mapping_threshold", 0.25))
+        weak_candidates = (parsed.get("weak_mapping") or {}).get("candidates") or []
+        fallback_theme = ""
+        if weak_candidates:
+            fallback_theme = str(weak_candidates[0].get("theme") or "")
+        rules: list[Mapping[str, Any]] = []
+        for entry in parsed.get("candidates") or []:
+            condition = entry.get("if") or {}
+            normalized_condition: dict[str, Any] = {}
+            aspect_cluster = condition.get("aspect_cluster")
+            if isinstance(aspect_cluster, Mapping):
+                if aspect_cluster.get("type"):
+                    normalized_condition["aspect_type"] = aspect_cluster.get("type")
+                if aspect_cluster.get("involves"):
+                    normalized_condition["involves"] = aspect_cluster.get("involves")
+            for key in ("axis", "house_group", "house", "dispositor_loop"):
+                if key in condition:
+                    normalized_condition[key] = condition.get(key)
+            if not normalized_condition:
+                continue
+            candidates = (entry.get("then") or {}).get("candidates") or []
+            for candidate in candidates:
+                theme = candidate.get("theme")
+                priority = float(candidate.get("base", 0.0))
+                if not theme:
+                    continue
+                rules.append(
+                    {"if": normalized_condition, "then": {"theme": theme, "priority": priority}}
+                )
+        return {
+            "candidate_generation": {"max_candidates": max_candidates},
+            "rules": rules,
+            "contextual_modifiers": {},
+            "tie_breaker": {"fallback": "signal_score"},
+            "weak_fallback": {
+                "base_threshold": weak_threshold,
+                "fallback_theme": fallback_theme,
+                "max_runs": int((parsed.get("weak_mapping") or {}).get("max_usage_per_chart", 1)),
+            },
+        }
 
     def _stage1_candidate_generation(
         self,
@@ -202,6 +298,17 @@ class ThemeMapper:
                 "resolved_from": "weak_fallback",
             }
         return None
+
+    def _should_force_weak_fallback(self, resolved: Mapping[str, Any]) -> bool:
+        weak_cfg = self.mapping.get("weak_fallback") or {}
+        threshold = weak_cfg.get("base_threshold")
+        if threshold is None:
+            return False
+        try:
+            base_score = float(resolved.get("base_score", 0.0))
+            return base_score <= float(threshold)
+        except (TypeError, ValueError):
+            return False
 
     def _log_resolution_event(
         self,

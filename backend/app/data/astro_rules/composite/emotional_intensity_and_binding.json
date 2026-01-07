@@ -5,5 +5,17 @@
     "moon_conjunction_lilith",
     "moon_trine_venus"
   ],
-  "domains": ["emotional", "relationships"]
+  "domains": [
+    "emotional",
+    "relationships"
+  ],
+  "meaning": {
+    "meaning_id": "cm.emotional_intensity_and_binding.v1",
+    "templates": {
+      "headline": "Duyguların yüzeyde hafif akmıyor; bağ kurunca yoğunlaşıyor olabilir.",
+      "p1_bridge": "Bu yoğunluk seni bazen çok sadık, bazen de çok “her şeyi içerde yaşayan” biri yapabilir.",
+      "p2_bridge": "İçeride bir şey büyüdüğünde hemen anlatmak yerine sindirmeyi seçebilirsin; sonra bir anda çok netleşirsin.",
+      "p3_bridge": "Yakın ilişkide “yarım” hissettiren şeyler zorlayabilir; tamlık ve güven olduğunda ise çok güçlü bir bağlılık çıkar."
+    }
+  }
 }

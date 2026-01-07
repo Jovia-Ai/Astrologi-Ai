@@ -6,6 +6,8 @@ from typing import Any, Dict, List, Mapping
 
 from app.builders.semantic_normalizer import contains_verb_phrase
 from app.helpers.domain_normalizer import canon_domain
+from app.engine.tone_apply import apply_tone
+from app.engine.tone_profile import ToneProfile, compute_tone, load_tone_config
 
 
 SLOT_NAMES: tuple[str, ...] = ("cause", "mechanism", "effect", "shadow", "potential")
@@ -77,6 +79,8 @@ FORBIDDEN_REPLACEMENTS: Dict[str, str] = {
     "attachment": "bağlanma",
 }
 
+CAUSE_SENTENCE_LIMIT = 2
+
 
 class JoviaSemanticNarrativeBuilder:
     """Composite-driven builder that respects the canonical narrative arc."""
@@ -128,9 +132,13 @@ class JoviaSemanticNarrativeBuilder:
         self.quality_actions_applied: List[Dict[str, Any]] = []
         self._current_plan_entry: Dict[str, Any] | None = None
         self._current_plan_selected_slots: List[str] = []
+        self.tone_profiles: Dict[str, Dict[str, float]] = {}
+        self._domain_salience = self._build_domain_salience_map()
+        self.tone_enabled = bool(getattr(engine_result, "tone_enabled", True))
+        self.compressed_domains: Mapping[str, Any] = getattr(engine_result, "compressed_domains", {}) or {}
 
     def build(self) -> Dict[str, str]:
-        golden_path_enabled = True
+        golden_path_enabled = False
         if golden_path_enabled:
             paragraph = self.build_identity_narrative_golden_path(self.fragments)
             if paragraph:
@@ -146,6 +154,9 @@ class JoviaSemanticNarrativeBuilder:
             fallback = self._soft_fail_sentence("identity")
             if fallback:
                 result["identity"] = fallback
+        other_domains = self._build_other_domains_summary()
+        if other_domains:
+            result["other_domains"] = other_domains
         return result
 
     @property
@@ -196,31 +207,14 @@ class JoviaSemanticNarrativeBuilder:
         slots: Mapping[str, Dict[str, Any]],
         regulation: Mapping[str, Any] | None,
     ) -> str | None:
+        bound = self._build_bound_paragraph(domain, slots, regulation)
+        if bound:
+            return bound
         template = DOMAIN_TEMPLATES.get(domain)
         if not template:
             return None
         core_tension = self._core_tension_phrase(regulation)
         header = template["opening"].format(core_tension=core_tension).strip()
-        body_sentences: List[str] = []
-        anchor_sentence = self._anchor_sentence_for_domain(domain, slots)
-        if anchor_sentence:
-            body_sentences.append(anchor_sentence)
-        effect_text = self._slot_fragment_text(slots.get("effect"), "effect")
-        if effect_text:
-            body_sentences.append(template["effect"].format(effect_expression=effect_text))
-        axis_tension = (self.axis_activation or {}).get("axis_tension")
-        include_shadow = axis_tension in {"high", "medium"}
-        shadow_text = self._slot_fragment_text(slots.get("shadow"), "shadow")
-        if include_shadow and shadow_text:
-            body_sentences.append(template["shadow"].format(shadow_risk=shadow_text))
-        potential_text = self._slot_fragment_text(slots.get("potential"), "potential")
-        if potential_text:
-            body_sentences.append(template["potential"].format(potential_gain=potential_text))
-        body = " ".join(segment.strip() for segment in body_sentences if segment and segment.strip()).strip()
-        if header and body:
-            return f"{header}\n{body}"
-        if body:
-            return body
         return header or None
 
     def _anchor_for_domain(self, domain: str) -> Mapping[str, Any] | None:
@@ -243,6 +237,258 @@ class JoviaSemanticNarrativeBuilder:
         mechanism_text = self._slot_fragment_text(slots.get("mechanism"), "mechanism")
         anchor = self._compose_anchor_sentence(cause_text, mechanism_text)
         return self._ensure_sentence(anchor) if anchor else None
+
+    def _build_bound_paragraph(
+        self,
+        domain: str,
+        slots: Mapping[str, Dict[str, Any]],
+        regulation: Mapping[str, Any] | None,
+    ) -> str | None:
+        recognition = self._recognition_sentence(domain, regulation)
+        experienced = self._experienced_reality_sentence(slots)
+        potential = self._potential_sentence(slots)
+        shadow = self._shadow_sentence(slots)
+        upper = self._upper_meaning_sentence(domain)
+
+        tone = self._tone_profile_for_domain(domain, slots, regulation) if self.tone_enabled else None
+        if tone:
+            recognition = self._apply_tone_section(recognition, tone, "recognition")
+            experienced = self._apply_tone_section(experienced, tone, "experienced")
+            potential = self._apply_tone_section(potential, tone, "potential")
+            shadow = self._apply_tone_section(shadow, tone, "shadow")
+            upper = self._apply_tone_section(upper, tone, "upper")
+
+        recognition = self._limit_sentences(recognition, max_count=1)
+        experienced = self._limit_sentences(experienced, max_count=4)
+        potential = self._limit_sentences(potential, max_count=2)
+        shadow = self._limit_sentences(shadow, max_count=1)
+        upper = self._limit_sentences(upper, max_count=1)
+
+        sentences = [
+            sentence
+            for sentence in (recognition, experienced, potential, shadow, upper)
+            if sentence
+        ]
+        if not sentences:
+            return None
+        return " ".join(sentences)
+
+    def _recognition_sentence(self, domain: str, regulation: Mapping[str, Any] | None) -> str | None:
+        primary = str(self.meaning_weighting.get("primary_theme") or "").strip()
+        secondary = str(self.meaning_weighting.get("secondary_theme") or "").strip()
+        label = CATEGORY_LABELS.get(domain, domain.capitalize())
+        if primary and secondary and primary != secondary:
+            theme_summary = f"{primary} ve {secondary}"
+            sentence = f"Bu harita, {label} alaninda {theme_summary} [INTENSITY_OBJ] anlatir."
+        elif primary:
+            sentence = f"Bu harita, {label} alaninda {primary} [INTENSITY_OBJ] anlatir."
+        else:
+            core_tension = self._core_tension_phrase(regulation)
+            sentence = f"Bu harita, {label} alaninda {core_tension} hikayesini anlatir."
+        return self._ensure_sentence(sentence)
+
+    def _experienced_reality_sentence(self, slots: Mapping[str, Dict[str, Any]]) -> str | None:
+        mechanism_text = self._slot_fragment_text(slots.get("mechanism"), "mechanism")
+        if not mechanism_text:
+            return None
+        cause_text = self._slot_fragment_text(slots.get("cause"), "cause")
+        extra_causes = self._supporting_texts(slots.get("cause"), limit=CAUSE_SENTENCE_LIMIT - 1)
+        cause_bits = [text for text in [cause_text, *extra_causes] if text]
+        if cause_bits:
+            joined = " ve ".join(cause_bits[:CAUSE_SENTENCE_LIMIT])
+            sentence = (
+                f"Deneyim duzeyinde, {mechanism_text}; bunun arka planinda {joined} etkisi bulunur."
+            )
+        else:
+            sentence = f"Deneyim duzeyinde, {mechanism_text} baskin bir psikolojik akistir."
+        return self._ensure_sentence(sentence)
+
+    def _potential_sentence(self, slots: Mapping[str, Dict[str, Any]]) -> str | None:
+        effect_text = self._slot_fragment_text(slots.get("effect"), "effect")
+        potential_text = self._slot_fragment_text(slots.get("potential"), "potential")
+        if effect_text and potential_text:
+            sentence = f"Bu, {effect_text} hissini dogururken {potential_text} yonune de acilir."
+        elif effect_text:
+            sentence = f"Bu, {effect_text} yonune dogru akar."
+        elif potential_text:
+            sentence = f"Bu akista {potential_text} kapasitesi belirir."
+        else:
+            return None
+        return self._ensure_sentence(sentence)
+
+    def _shadow_sentence(self, slots: Mapping[str, Dict[str, Any]]) -> str | None:
+        shadow_text = self._slot_fragment_text(slots.get("shadow"), "shadow")
+        if not shadow_text:
+            return None
+        template = (load_tone_config().get("shadow_safety") or {}).get("template")
+        if isinstance(template, str) and "{shadow_text}" in template:
+            sentence = template.format(shadow_text=shadow_text)
+        else:
+            sentence = f"Golge tarafta ise {shadow_text} kisa ama net bir risk olabilir."
+        return self._ensure_sentence(sentence)
+
+    def _upper_meaning_sentence(self, domain: str) -> str | None:
+        if not self._upper_meaning_allowed():
+            return None
+        upper_text = self._upper_meaning_for_domain(domain)
+        if not upper_text:
+            return None
+        cleaned = self._sanitize_upper_text(upper_text)
+        if not cleaned:
+            return None
+        return self._ensure_sentence(f"Ust anlamda ise {cleaned}")
+
+    def _upper_meaning_allowed(self) -> bool:
+        allowed = self.meaning_weighting.get("upper_meaning_allowed")
+        if isinstance(allowed, bool):
+            return allowed
+        strain = ((self.meta_info.get("strain_resilience") or {}).get("strain") or {}).get("score")
+        resilience = ((self.meta_info.get("strain_resilience") or {}).get("resilience") or {}).get("score")
+        try:
+            return float(strain) >= 0.6 and float(resilience) >= 0.6
+        except (TypeError, ValueError):
+            return False
+
+    def _upper_meaning_for_domain(self, domain: str) -> str | None:
+        canonical_domain = canon_domain(domain) or domain
+        domain_composites = []
+        for comp in self.composites:
+            comp_domain = canon_domain(comp.get("domain")) or comp.get("domain")
+            if comp_domain == canonical_domain:
+                domain_composites.append(comp.get("composite_id"))
+        for comp_id in domain_composites:
+            entry = self.upper_map.get(comp_id)
+            if not entry:
+                continue
+            meanings = entry.get("upper_meaning") or []
+            if meanings:
+                return str(meanings[0]).strip()
+        return None
+
+    def _sanitize_upper_text(self, text: str) -> str | None:
+        sanitized = self._sanitize(text)
+        normalized = self._normalize(sanitized)
+        if not normalized:
+            return None
+        filtered = self._apply_forbidden_policy(normalized, None)
+        if filtered is None:
+            return None
+        if contains_verb_phrase(filtered):
+            return None
+        if self._contains_forbidden_language(filtered):
+            return None
+        return filtered
+
+    def _supporting_texts(
+        self,
+        fragment: Mapping[str, Any] | None,
+        *,
+        limit: int,
+    ) -> List[str]:
+        if not fragment or limit <= 0:
+            return []
+        supporting = fragment.get("supporting_facts") or []
+        texts: List[str] = []
+        for entry in supporting:
+            if len(texts) >= limit:
+                break
+            if not isinstance(entry, Mapping):
+                continue
+            text = entry.get("text")
+            cleaned = self._sanitize_upper_text(str(text or ""))
+            if cleaned:
+                texts.append(cleaned)
+        return texts
+
+    def _build_domain_salience_map(self) -> Dict[str, Dict[str, float]]:
+        scores: Dict[str, float] = {}
+        for domain, entry in self.fragments.items():
+            slots = entry.get("slots") if isinstance(entry, Mapping) else {}
+            if not isinstance(slots, Mapping):
+                continue
+            salience_scores = [
+                float(fragment.get("salience_score") or 0.0)
+                for fragment in slots.values()
+                if isinstance(fragment, Mapping)
+            ]
+            if salience_scores:
+                salience_scores.sort(reverse=True)
+                scores[domain] = sum(salience_scores[:2])
+            else:
+                scores[domain] = 0.0
+        max_score = max(scores.values(), default=0.0) or 1.0
+        ranked = sorted(scores.items(), key=lambda item: item[1], reverse=True)
+        result: Dict[str, Dict[str, float]] = {}
+        for idx, (domain, score) in enumerate(ranked, start=1):
+            result[domain] = {
+                "score": round(min(score / max_score, 1.0), 4),
+                "rank": float(idx),
+            }
+        return result
+
+    def _domain_uncertainty(self, slots: Mapping[str, Dict[str, Any]]) -> float:
+        if not slots:
+            return 1.0
+        filled = sum(1 for name in SLOT_NAMES if slots.get(name))
+        total = len(SLOT_NAMES) or 1
+        coverage = filled / total
+        return max(0.0, min(1.0, 1.0 - coverage))
+
+    def _tone_profile_for_domain(
+        self,
+        domain: str,
+        slots: Mapping[str, Dict[str, Any]],
+        regulation: Mapping[str, Any] | None,
+    ) -> ToneProfile | None:
+        domain_key = canon_domain(domain) or domain
+        salience = self._domain_salience.get(domain_key) or {"score": 0.5, "rank": 1.0}
+        uncertainty = self._domain_uncertainty(slots)
+        strain_block = (self.meta_info.get("strain_resilience") or {}).get("strain") or {}
+        resilience_block = (self.meta_info.get("strain_resilience") or {}).get("resilience") or {}
+        upper_used = bool(self._upper_meaning_for_domain(domain) and self._upper_meaning_allowed())
+        data_quality = {
+            "uncertainty": uncertainty,
+            "strain": strain_block.get("score", 0.0),
+            "resilience": resilience_block.get("score", 0.0),
+            "upper_meaning_used": upper_used,
+        }
+        tone = compute_tone(regulation, self.meaning_weighting, salience, data_quality)
+        self.tone_profiles[domain_key] = tone.to_dict()
+        return tone
+
+    def _apply_tone_section(self, text: str | None, tone: ToneProfile, section: str) -> str | None:
+        if not text:
+            return None
+        toned = apply_tone(text, tone, section=section)
+        return toned or None
+
+    def _limit_sentences(self, text: str | None, *, max_count: int) -> str | None:
+        if not text:
+            return None
+        parts = [part.strip() for part in re.split(r"(?<=[.!?])\\s+", text) if part.strip()]
+        if len(parts) <= max_count:
+            return text
+        trimmed = " ".join(parts[:max_count])
+        return trimmed
+
+    def _build_other_domains_summary(self) -> str | None:
+        items = self.compressed_domains.get("items") if isinstance(self.compressed_domains, Mapping) else None
+        if not items:
+            return None
+        summaries: List[str] = []
+        for item in items:
+            if not isinstance(item, Mapping):
+                continue
+            domain = canon_domain(item.get("domain")) or str(item.get("domain") or "").strip().lower()
+            text = item.get("text")
+            if not domain or not text:
+                continue
+            label = CATEGORY_LABELS.get(domain, domain.capitalize())
+            sentence = self._ensure_sentence(f"Diger alanlarda {label} icin {text}")
+            summaries.append(sentence)
+        if not summaries:
+            return None
+        return " ".join(summaries)
 
     def _compose_anchor_sentence(self, cause: str | None, mechanism: str | None) -> str | None:
         cause_text = cause.strip() if cause else ""

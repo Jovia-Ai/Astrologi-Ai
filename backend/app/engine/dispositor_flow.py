@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from collections import Counter
-from typing import Any, Dict, Iterable, List, Mapping, Sequence
+from typing import Any, Dict, List, Mapping, Sequence
+
+from app.helpers.placement_utils import extract_planet_signs
 
 
 class DispositorFlowEngine:
@@ -23,7 +25,7 @@ class DispositorFlowEngine:
     }
 
     def build(self, placements: Sequence[str]) -> Dict[str, Any]:
-        planet_signs = self._extract_planet_signs(placements)
+        planet_signs = extract_planet_signs(placements)
         if not planet_signs:
             return {
                 "final_dispositor": None,
@@ -108,16 +110,6 @@ class DispositorFlowEngine:
             if ruler in planet_signs:
                 return ruler
         return None
-
-    @staticmethod
-    def _extract_planet_signs(placements: Iterable[str]) -> Dict[str, str]:
-        mapping: Dict[str, str] = {}
-        for placement in placements:
-            if "_in_" not in placement or "_house" in placement:
-                continue
-            planet, slug = placement.split("_in_", 1)
-            mapping[planet] = slug
-        return mapping
 
     @classmethod
     def _detect_mutual_receptions(

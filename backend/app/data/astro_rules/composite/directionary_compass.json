@@ -5,5 +5,17 @@
     "jupiter_sextile_mercury",
     "venus_trine_midheaven"
   ],
-  "domains": ["direction", "identity"]
+  "domains": [
+    "direction",
+    "identity"
+  ],
+  "meaning": {
+    "meaning_id": "cm.directionary_compass.v1",
+    "templates": {
+      "headline": "İçinde güçlü bir “yön bulma” ihtiyacı var; boşlukta kalmak seni yorar.",
+      "p1_bridge": "Hayata rastgele değil, bir pusula ile yürümek istersin; bir şeyin anlamı yoksa içine oturmayabilir.",
+      "p2_bridge": "Zihnin bir hedefe bağlanınca açılır; dağınıkken bile bir süre sonra ipuçlarını birleştirip netlik yaratabilirsin.",
+      "p3_bridge": "Yakın ilişkide de benzer: “Nereye gidiyoruz?” sorusunun cevabı varsa daha rahat bağ kurarsın."
+    }
+  }
 }

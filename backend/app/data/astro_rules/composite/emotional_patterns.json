@@ -1,1 +1,16 @@
-[]
+{
+  "composite_id": "emotional_patterns",
+  "sources": [],
+  "domains": [
+    "emotional"
+  ],
+  "meaning": {
+    "meaning_id": "cm.joy_and_drama_duality.v1",
+    "templates": {
+      "headline": "Bir yanın neşe ve ışık taşır; başka bir yanın duyguyu çok derinden yaşar.",
+      "p1_bridge": "İnsanlara moral vermek, ilham olmak sende doğal çalışabilir; ama sonra yalnız kalınca ağırlık da gelebilir.",
+      "p2_bridge": "Bu iki hal çelişmek zorunda değil: biri dışarıya enerji verirken, diğeri seni daha sahici yapar.",
+      "p3_bridge": "Yakın ilişkide “tek mod” bekleyen kişiler zorlayabilir; seni gerçekten anlayan biri bu ritmi taşıyabilir."
+    }
+  }
+}

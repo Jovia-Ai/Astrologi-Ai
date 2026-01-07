@@ -6,7 +6,7 @@ from collections import Counter
 from math import tanh
 from typing import Iterable, Mapping, Sequence
 
-from .ssl_layer import SSLLayer
+from app.builders.ssl_layer import SSLLayer
 
 
 def _clamp(value: float, minimum: float = 0.0, maximum: float = 1.0) -> float:
@@ -49,7 +49,10 @@ class ConflictVectorBuilder:
         raw_support = soft_support + structural_support + domain_support + temporal_support
         pressure_index = _clamp(tanh(raw_pressure))
         support_index = _clamp(tanh(raw_support))
-        pressure_index = self._apply_pressure_guards(pressure_index, hardness, repetition, soft_support)
+        has_hard_tag = any("hard" in self._tags(slot) for slot in phase2_slots)
+        pressure_index = self._apply_pressure_guards(
+            pressure_index, hardness, repetition, soft_support, has_hard_tag
+        )
         support_index = self._apply_support_guards(support_index, soft_support)
         felt_net = pressure_index - support_index
         breakdown = {
@@ -181,6 +184,7 @@ class ConflictVectorBuilder:
         hardness: float,
         repetition: float,
         soft_support: float,
+        has_hard_tag: bool,
     ) -> float:
         if pressure_index > 0.7 and hardness < 0.3:
             pressure_index = max(0.0, pressure_index - 0.1)
@@ -188,6 +192,8 @@ class ConflictVectorBuilder:
             pressure_index = max(0.35, pressure_index)
         if pressure_index > 0.9 and soft_support < 0.1:
             pressure_index = 0.9
+        if has_hard_tag:
+            pressure_index = min(pressure_index, 0.7)
         return _clamp(pressure_index)
 
     def _apply_support_guards(self, support_index: float, soft_support: float) -> float:
@@ -201,51 +207,56 @@ class ConflictVectorBuilder:
         pressure_index: float,
         support_index: float,
     ) -> Mapping[str, object]:
-        domains = Counter(slot.get("domain") or "unknown" for slot in slots)
-        axes = Counter(slot.get("axis") or "unknown" for slot in slots)
-        dominant_domain = domains.most_common(1)[0][0] if domains else ""
-        dominant_axis = axes.most_common(1)[0][0] if axes else ""
-        tier = self._centrality_tier(pressure_index, support_index)
+        dominant_domain = self._dominant_key(slots, "domain")
+        dominant_axis = self._dominant_key(slots, "axis")
+        centrality = self._dominant_key(slots, "focus_object")
+        focus_tier = self._focus_tier(centrality)
         return {
             "dominant_domain": dominant_domain,
             "dominant_axis": dominant_axis,
-            "focus_centrality_tier": tier,
+            "focus_centrality_tier": focus_tier,
+            "pressure_support_state": self._pressure_support_state(pressure_index, support_index),
         }
 
-    def _centrality_tier(self, pressure_index: float, support_index: float) -> str:
-        score = pressure_index + support_index
-        if score >= 1.2:
+    def _dominant_key(self, slots: Sequence[Mapping[str, object]], key: str) -> str:
+        counts: Counter[str] = Counter()
+        for slot in slots:
+            value = slot.get(key)
+            if value:
+                counts[str(value)] += 1
+        if not counts:
+            return "unknown"
+        return counts.most_common(1)[0][0]
+
+    def _focus_tier(self, focus: str) -> str:
+        focus = str(focus or "").lower()
+        if focus in self._CENTRAL_FOCUS_HIGH:
             return "high"
-        if score >= 0.7:
+        if focus:
             return "mid"
         return "low"
-    def _pick_focus(self, slots: Sequence[Mapping[str, object]]) -> object | None:
-        priority = sorted(
-            slots,
-            key=lambda slot: float(slot.get("experienced_weight", 0.0)),
-            reverse=True,
-        )
-        best = priority[0] if priority else None
-        return best.get("focus_object") if best else None
+
+    def _pressure_support_state(self, pressure: float, support: float) -> str:
+        if pressure >= 0.7 and support >= 0.7:
+            return "resilient_pressure"
+        if pressure >= 0.7:
+            return "high_pressure"
+        if support >= 0.7:
+            return "high_support"
+        return "balanced"
+
+    def _pick_focus(self, slots: Sequence[Mapping[str, object]]) -> str:
+        focus = self._dominant_key(slots, "focus_object")
+        return focus if focus != "unknown" else "general"
 
     def _build_provenance_summary(self, slots: Sequence[Mapping[str, object]]) -> list[Mapping[str, object]]:
-        summary: dict[str, dict[str, object]] = {}
-        for slot in slots:
-            weight = float(slot.get("experienced_weight", 0.0))
-            for prov in slot.get("provenance", []):
-                t = prov.get("type")
-                if not t:
-                    continue
-                ref = prov.get("ref_id")
-                entry = summary.setdefault(t, {"weight": 0.0, "ref_ids": []})
-                entry["weight"] += weight
-                if ref and ref not in entry["ref_ids"]:
-                    entry["ref_ids"].append(ref)
-        ordered = sorted(
-            summary.items(),
-            key=lambda item: (-item[1]["weight"], item[0]),
-        )[:3]
-        return [
-            {"type": type_name, "sample_ref": data["ref_ids"][0] if data["ref_ids"] else None}
-            for type_name, data in ordered
-        ]
+        summary: list[Mapping[str, object]] = []
+        for slot in slots[:3]:
+            prov = slot.get("provenance", [])
+            summary.append(
+                {
+                    "signal_id": slot.get("signal_id"),
+                    "provenance": prov[:2] if isinstance(prov, list) else [],
+                }
+            )
+        return summary

@@ -1,0 +1,617 @@
+{
+  "taurus_cancer": {
+    "profile": "user_compact",
+    "domains": [
+      {
+        "domain": "identity",
+        "title": "Identity",
+        "summary": "Kimliğini oluşturan temel yapı istikrar ve güven ihtiyacına dayanır. Bu enerji yavaş ama emin adımlarla ilerleyen haline getirir. Dışarıdan sakin, kararlı ve dayanıklı algılanırsın.",
+        "highlights": [
+          {
+            "label": "Recognition",
+            "text": "Kimliğini oluşturan temel yapı istikrar ve güven ihtiyacına dayanır",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Varlığını güçlü biçimde hissettirme ve görünür olma ihtiyacı kimliğinin merkezindedir."
+              }
+            ]
+          },
+          {
+            "label": "Experienced Reality",
+            "text": "Bu enerji yavaş ama emin adımlarla ilerleyen haline getirir",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Kendini doğrudan ortaya koyar, alan açmak için öne atılırsın."
+              }
+            ]
+          },
+          {
+            "label": "Potential",
+            "text": "Dışarıdan sakin, kararlı ve dayanıklı algılanırsın",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Dışarıdan kararlı, baskın veya lider ruhlu biri olarak algılanırsın."
+              }
+            ]
+          }
+        ],
+        "signals": {
+          "count": 8,
+          "top_axes": [],
+          "top_themes": []
+        }
+      },
+      {
+        "domain": "psychology",
+        "title": "Psychology",
+        "summary": "Psikolojik temelde huzur arayışı baskın. Bu da sabırlı ve dengeli kılar. Rahatlama alanlarını bilinçle kurduğunda sağlam bir iç güven gelişir.",
+        "highlights": [
+          {
+            "label": "Recognition",
+            "text": "Psikolojik temelde huzur arayışı baskın",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Psikolojik temelinde ‘ben kimim ve nasıl görünmeliyim?’ sorusu güçlüdür."
+              }
+            ]
+          },
+          {
+            "label": "Experienced Reality",
+            "text": "Bu da sabırlı ve dengeli kılar",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Kendini tanıdıkça içsel omurgan netleşir ve psikolojin güçlenir."
+              }
+            ]
+          },
+          {
+            "label": "Potential",
+            "text": "Rahatlama alanlarını bilinçle kurduğunda sağlam bir iç güven gelişir",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Kimliğini içten kurduğunda psikolojin sarsılmaz bir öz-güvene kavuşur."
+              }
+            ]
+          },
+          {
+            "label": "Shadow",
+            "text": "Golge tarafinda bu, Aşırı sahiplenme içsel çelişkiler yaratabilir baskisini hissettirebilir; bu bir suc degil, sadece bir yuklenme alanidir.",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Onay bağımlılığı, eleştiriye aşırı hassasiyet."
+              }
+            ],
+            "safety": true
+          }
+        ],
+        "signals": {
+          "count": 10,
+          "top_axes": [],
+          "top_themes": []
+        }
+      },
+      {
+        "domain": "relationships",
+        "title": "Relationships",
+        "summary": "İlişkilerde sadelik ve güven temel ihtiyaç. Bağ kurarken sağlam temeller ararsın. Bu güven veren, bağlılık odaklı bir partner yapar.",
+        "highlights": [
+          {
+            "label": "Recognition",
+            "text": "İlişkilerde sadelik ve güven temel ihtiyaç",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Yakın ilişkilerde görünürlük ve kabul görme teması önemlidir."
+              }
+            ]
+          },
+          {
+            "label": "Experienced Reality",
+            "text": "Bağ kurarken sağlam temeller ararsın",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Bağlarda doğal olarak liderlik rolüne kayabilirsin."
+              }
+            ]
+          },
+          {
+            "label": "Potential",
+            "text": "Bu güven veren, bağlılık odaklı bir partner yapar",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Dürüst ve net olduğunda insanlara yön ve cesaret verirsin."
+              }
+            ]
+          },
+          {
+            "label": "Shadow",
+            "text": "Golge tarafinda bu, Kıskançlık veya inat bağları zorlayabilir baskisini hissettirebilir; bu bir suc degil, sadece bir yuklenme alanidir.",
+            "evidence": [
+              {
+                "ref": "sun_in_house_1",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Partneri gölgede bırakma, her şeyin merkezinde olma ihtiyacı."
+              }
+            ],
+            "safety": true
+          }
+        ],
+        "signals": {
+          "count": 10,
+          "top_axes": [],
+          "top_themes": []
+        }
+      }
+    ],
+    "micro_insights": [
+      {
+        "text": "Kimliğini oluşturan temel yapı istikrar ve güven ihtiyacına dayanır",
+        "domain": "identity",
+        "evidence": [
+          {
+            "ref": "sun_in_house_1",
+            "type": "planet_house",
+            "salience": 0.0,
+            "summary": "Varlığını güçlü biçimde hissettirme ve görünür olma ihtiyacı kimliğinin merkezindedir."
+          }
+        ]
+      },
+      {
+        "text": "Psikolojik temelde huzur arayışı baskın",
+        "domain": "psychology",
+        "evidence": [
+          {
+            "ref": "sun_in_house_1",
+            "type": "planet_house",
+            "salience": 0.0,
+            "summary": "Psikolojik temelinde ‘ben kimim ve nasıl görünmeliyim?’ sorusu güçlüdür."
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "max_domains": 3,
+      "policy_version": "tasnif_v2"
+    }
+  },
+  "gemini_scorpio": {
+    "profile": "user_compact",
+    "domains": [
+      {
+        "domain": "identity",
+        "title": "Identity",
+        "summary": "Kimliğini oluşturan temel enerji merak ve zihinsel hareketlilik. Dışarıdan canlı, sosyal ve konuşkan görünürsün. Odaklandığında çok yönlülüğün güçlü bir kimlik zenginliğine dönüşür.",
+        "highlights": [
+          {
+            "label": "Recognition",
+            "text": "Kimliğini oluşturan temel enerji merak ve zihinsel hareketlilik",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Kimliğin iletişim, öğrenme ve bağlantı kurma üzerinden şekillenir."
+              }
+            ]
+          },
+          {
+            "label": "Experienced Reality",
+            "text": "Dışarıdan canlı, sosyal ve konuşkan görünürsün",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Dışarıdan meraklı, zeki ve konuşkan biri olarak algılanırsın."
+              }
+            ]
+          },
+          {
+            "label": "Potential",
+            "text": "Odaklandığında çok yönlülüğün güçlü bir kimlik zenginliğine dönüşür",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Sesini odakladığında kimliğin güçlü bir anlatıcıya dönüşür."
+              }
+            ]
+          },
+          {
+            "label": "Shadow",
+            "text": "Golge tarafinda bu, Dağınıklık zaman zaman kimlikte kararsızlık yaratabilir baskisini hissettirebilir; bu bir suc degil, sadece bir yuklenme alanidir.",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Yüzeysellik, dağınıklık ve hiç susmayan bir zihin."
+              }
+            ],
+            "safety": true
+          }
+        ],
+        "signals": {
+          "count": 10,
+          "top_axes": [],
+          "top_themes": []
+        }
+      },
+      {
+        "domain": "psychology",
+        "title": "Psychology",
+        "summary": "İçsel dünyanda bilgi ve anlam arayışı belirgin. Bu uyumlu ve hızlı adapte olan yapar. Zihinsel esnekliğini köklendirdiğinde içsel huzur artar.",
+        "highlights": [
+          {
+            "label": "Recognition",
+            "text": "İçsel dünyanda bilgi ve anlam arayışı belirgin",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Psikolojik temelinde anlaşılmama veya ciddiye alınmama korkusu olabilir."
+              }
+            ]
+          },
+          {
+            "label": "Experienced Reality",
+            "text": "Bu uyumlu ve hızlı adapte olan yapar",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Kendini duyduğunda psikolojin güven ve esneklik kazanır."
+              }
+            ]
+          },
+          {
+            "label": "Potential",
+            "text": "Zihinsel esnekliğini köklendirdiğinde içsel huzur artar",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Duygularını da kelimelere katmayı öğrendiğinde içsel bütünleşme artar."
+              }
+            ]
+          },
+          {
+            "label": "Shadow",
+            "text": "Golge tarafinda bu, Aşırı düşünme zihinsel gerginlik yaratabilir baskisini hissettirebilir; bu bir suc degil, sadece bir yuklenme alanidir.",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Aşırı düşünme, zihinsel dağılma."
+              }
+            ],
+            "safety": true
+          }
+        ],
+        "signals": {
+          "count": 10,
+          "top_axes": [],
+          "top_themes": []
+        }
+      },
+      {
+        "domain": "relationships",
+        "title": "Relationships",
+        "summary": "İlişkilerde iletişim için vazgeçilmez. Bu eğlenceli, esprili ve ilgi çekici bir partner yapar. Duygusal netlik kazandığında bağların çok daha derinleşir.",
+        "highlights": [
+          {
+            "label": "Recognition",
+            "text": "İlişkilerde iletişim için vazgeçilmez",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "İlişkilerde zihinsel uyum ve paylaşım senin için kritiktir."
+              }
+            ]
+          },
+          {
+            "label": "Experienced Reality",
+            "text": "Bu eğlenceli, esprili ve ilgi çekici bir partner yapar",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "İlişkilerinde dinamik, esprili ve hareketli bir hava yaratabilirsin."
+              }
+            ]
+          },
+          {
+            "label": "Potential",
+            "text": "Duygusal netlik kazandığında bağların çok daha derinleşir",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Duyguyu ifade ile birleştirdiğinde bağların derinleşir."
+              }
+            ]
+          },
+          {
+            "label": "Shadow",
+            "text": "Golge tarafinda bu, Tutarsızlık ilişkisel güveni zorlayabilir baskisini hissettirebilir; bu bir suc degil, sadece bir yuklenme alanidir.",
+            "evidence": [
+              {
+                "ref": "sun_in_house_3",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Duygudan kaçmak için sürekli konuşma veya her şeyi racionalize etme."
+              }
+            ],
+            "safety": true
+          }
+        ],
+        "signals": {
+          "count": 10,
+          "top_axes": [],
+          "top_themes": []
+        }
+      }
+    ],
+    "micro_insights": [
+      {
+        "text": "Kimliğini oluşturan temel enerji merak ve zihinsel hareketlilik",
+        "domain": "identity",
+        "evidence": [
+          {
+            "ref": "sun_in_house_3",
+            "type": "planet_house",
+            "salience": 0.0,
+            "summary": "Kimliğin iletişim, öğrenme ve bağlantı kurma üzerinden şekillenir."
+          }
+        ]
+      },
+      {
+        "text": "İçsel dünyanda bilgi ve anlam arayışı belirgin",
+        "domain": "psychology",
+        "evidence": [
+          {
+            "ref": "sun_in_house_3",
+            "type": "planet_house",
+            "salience": 0.0,
+            "summary": "Psikolojik temelinde anlaşılmama veya ciddiye alınmama korkusu olabilir."
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "max_domains": 3,
+      "policy_version": "tasnif_v2"
+    }
+  },
+  "capricorn_aries": {
+    "profile": "user_compact",
+    "domains": [
+      {
+        "domain": "identity",
+        "title": "Identity",
+        "summary": "Kimliğinin temelinde güçlenme ve sorumluluk alma ihtiyacı bulunur. Bu ihtiyaç kararlı, yapıcı ve hedef odaklı bir kimliğe yöneltir. Dışarıya disiplinli, ciddi ve güvenilir bir persona yansır.",
+        "highlights": [
+          {
+            "label": "Recognition",
+            "text": "Kimliğinin temelinde güçlenme ve sorumluluk alma ihtiyacı bulunur",
+            "evidence": [
+              {
+                "ref": "sun_in_house_10",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Kimliğin görünür rolün, toplumsal konumun ve iş yaşamdaki duruşun üzerinden şekillenir."
+              }
+            ]
+          },
+          {
+            "label": "Experienced Reality",
+            "text": "Bu ihtiyaç kararlı, yapıcı ve hedef odaklı bir kimliğe yöneltir",
+            "evidence": [
+              {
+                "ref": "sun_in_house_10",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Kendini hedefler, başarı ve sorumluluklar aracılığıyla tanımlama eğilimindesin."
+              }
+            ]
+          },
+          {
+            "label": "Potential",
+            "text": "Dışarıya disiplinli, ciddi ve güvenilir bir persona yansır",
+            "evidence": [
+              {
+                "ref": "sun_in_house_10",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Dışarıdan ciddi, iddialı, sorumluluk sahibi veya otoriter biri olarak algılanırsın."
+              }
+            ]
+          },
+          {
+            "label": "Shadow",
+            "text": "Golge tarafinda bu, Aşırı kontrol ihtiyacı kimlik esnekliğini daraltabilir baskisini hissettirebilir; bu bir suc degil, sadece bir yuklenme alanidir.",
+            "evidence": [
+              {
+                "ref": "sun_in_house_10",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Kendini sadece başarıyla değerleme, düşme korkusu."
+              }
+            ],
+            "safety": true
+          }
+        ],
+        "signals": {
+          "count": 10,
+          "top_axes": [],
+          "top_themes": []
+        }
+      },
+      {
+        "domain": "psychology",
+        "title": "Psychology",
+        "summary": "İçsel dünyanda düzen ve kontrol ihtiyacı baskın. Bu sağlam ve dayanıklı bir psikolojiye taşır. Duygulara güven verdiğinde psikolojik esneklik güçlenir.",
+        "highlights": [
+          {
+            "label": "Recognition",
+            "text": "İçsel dünyanda düzen ve kontrol ihtiyacı baskın",
+            "evidence": [
+              {
+                "ref": "sun_in_house_10",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Psikolojik temelinde başarılı olma, saygı görme ve güçlü durma ihtiyacı bulunabilir."
+              }
+            ]
+          },
+          {
+            "label": "Experienced Reality",
+            "text": "Bu sağlam ve dayanıklı bir psikolojiye taşır",
+            "evidence": [
+              {
+                "ref": "sun_in_house_10",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Duygularla da temas ettiğinde psikolojin daha sağlam, dengeli ve dayanıklı olur."
+              }
+            ]
+          },
+          {
+            "label": "Potential",
+            "text": "Duygulara güven verdiğinde psikolojik esneklik güçlenir",
+            "evidence": [
+              {
+                "ref": "sun_in_house_10",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Kendini sadece sonuçlar üzerinden değil süreç üzerinden de görmeyi öğrendiğinde iç dengeni bulursun."
+              }
+            ]
+          }
+        ],
+        "signals": {
+          "count": 8,
+          "top_axes": [],
+          "top_themes": []
+        }
+      },
+      {
+        "domain": "relationships",
+        "title": "Relationships",
+        "summary": "İlişkilerde güvenilirlik ve sadakat beklersin. Bağ kurarken ciddi, ölçülü ve sorumluluk alan bir tutumla yaklaşırsın. Bu istikrarlı ve dayanıklı bir partner yapar.",
+        "highlights": [
+          {
+            "label": "Recognition",
+            "text": "İlişkilerde güvenilirlik ve sadakat beklersin",
+            "evidence": [
+              {
+                "ref": "sun_in_house_10",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "İlişkilerde sorumluluk, güven ve statü temaları önemli olabilir."
+              }
+            ]
+          },
+          {
+            "label": "Experienced Reality",
+            "text": "Bağ kurarken ciddi, ölçülü ve sorumluluk alan bir tutumla yaklaşırsın",
+            "evidence": [
+              {
+                "ref": "sun_in_house_10",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "Bağlarda ciddiyet, yapı ve hedef odaklılık getirebilirsin."
+              }
+            ]
+          },
+          {
+            "label": "Potential",
+            "text": "Bu istikrarlı ve dayanıklı bir partner yapar",
+            "evidence": [
+              {
+                "ref": "sun_in_house_10",
+                "type": "planet_house",
+                "salience": 0.0,
+                "summary": "İlişkilerinde sağlam, sorumluluk alan ve güvenilir bir figür olursun."
+              }
+            ]
+          }
+        ],
+        "signals": {
+          "count": 8,
+          "top_axes": [],
+          "top_themes": []
+        }
+      }
+    ],
+    "micro_insights": [
+      {
+        "text": "Kimliğinin temelinde güçlenme ve sorumluluk alma ihtiyacı bulunur",
+        "domain": "identity",
+        "evidence": [
+          {
+            "ref": "sun_in_house_10",
+            "type": "planet_house",
+            "salience": 0.0,
+            "summary": "Kimliğin görünür rolün, toplumsal konumun ve iş yaşamdaki duruşun üzerinden şekillenir."
+          }
+        ]
+      },
+      {
+        "text": "İçsel dünyanda düzen ve kontrol ihtiyacı baskın",
+        "domain": "psychology",
+        "evidence": [
+          {
+            "ref": "sun_in_house_10",
+            "type": "planet_house",
+            "salience": 0.0,
+            "summary": "Psikolojik temelinde başarılı olma, saygı görme ve güçlü durma ihtiyacı bulunabilir."
+          }
+        ]
+      }
+    ],
+    "meta": {
+      "max_domains": 3,
+      "policy_version": "tasnif_v2"
+    }
+  }
+}

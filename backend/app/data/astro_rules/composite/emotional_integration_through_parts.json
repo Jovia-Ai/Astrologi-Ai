@@ -5,5 +5,17 @@
     "moon_trine_mercury",
     "venus_sextile_pluto"
   ],
-  "domains": ["emotional", "identity"]
+  "domains": [
+    "emotional",
+    "identity"
+  ],
+  "meaning": {
+    "meaning_id": "cm.emotional_integration_through_parts.v1",
+    "templates": {
+      "headline": "İç dünyanda farklı parçalar var ve onları bir araya getirmeyi öğreniyorsun.",
+      "p1_bridge": "Bir yanın ciddi ve kontrollü; başka bir yanın daha canlı, daha yaratıcı olabilir. İkisini aynı anda taşımaya çalışırsın.",
+      "p2_bridge": "Bazen bu parçalar birbirini bastırır gibi gelir; ama zamanla “ikisi de benim” diyebildiğinde rahatlama artar.",
+      "p3_bridge": "İlişkide de benzer: tek bir role sıkışmak yerine, farklı hallerinle görülmek sana iyi gelebilir."
+    }
+  }
 }

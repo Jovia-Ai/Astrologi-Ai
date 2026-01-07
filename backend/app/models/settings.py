@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class AstroSettingsCreate(BaseModel):
@@ -13,8 +13,7 @@ class AstroSettingsCreate(BaseModel):
 
 
 class AstroSettingsUpdate(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
     house_system: Optional[str] = None
     zodiac_type: Optional[str] = None
-
-    class Config:
-        extra = "forbid"

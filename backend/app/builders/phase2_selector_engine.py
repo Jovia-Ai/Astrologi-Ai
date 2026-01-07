@@ -55,7 +55,9 @@ class Phase2Selector:
         quota_adjusted = self._apply_theme_quota(assigned, staged)
         diversified = self._apply_diversity_check(quota_adjusted, staged)
         anchored = self._apply_anchor_guard(diversified, staged)
-        felt_map = self._build_felt_intensity_map(anchored)
+        if not self._has_anchor_slot(anchored) and len(anchored) == 1:
+            anchored[0]["slot"] = "micro_insight"
+        felt_map = self._build_felt_intensity_map(validated)
         for slot in anchored:
             slot["relaxation_flags"] = list(self._relaxation_flags)
             slot["felt_intensity_map"] = dict(felt_map) if felt_map else {}
@@ -72,7 +74,8 @@ class Phase2Selector:
         for signal in signals:
             theme = signal.get("theme")
             if not theme or theme not in theme_ids:
-                raise Phase2SelectionError("Missing or unknown theme in signal.")
+                theme = "unknown"
+                signal = {**signal, "theme": theme}
             provenance = signal.get("provenance")
             if not (isinstance(provenance, list) and 1 <= len(provenance) <= 3):
                 raise Phase2SelectionError("Signal provenance must be a list of 1-3 items.")
@@ -511,14 +514,25 @@ class Phase2Selector:
             bonus += 0.1
         return base * (1 + min(bonus, 0.25))
 
-    def _build_felt_intensity_map(self, slots: Sequence[Mapping[str, object]]) -> dict[str, float]:
+    def _build_felt_intensity_map(self, signals: Sequence[Mapping[str, object]]) -> dict[str, float]:
         totals: Counter[str] = Counter()
-        for slot in slots:
-            domain = str(slot.get("domain") or "unknown")
-            weight = float(slot.get("experienced_weight", 0.0))
-            if weight > 0:
-                totals[domain] += weight
+        for signal in signals:
+            domain = canon_domain(signal.get("domain"))
+            if not domain:
+                candidates = signal.get("domain_candidates") or []
+                domain = canon_domain(candidates[0]) if candidates else ""
+            if not domain:
+                continue
+            weight = float(signal.get("experienced_weight", signal.get("signal_score", 0.0)) or 0.0)
+            totals[domain] += weight
+        if not totals:
+            return {}
         total = sum(totals.values())
         if total <= 0:
             return {}
-        return {domain: value / total for domain, value in totals.items()}
+        ordered = totals.most_common(3)
+        return {domain: value / total for domain, value in ordered}
+
+    @staticmethod
+    def _has_anchor_slot(slots: Sequence[Mapping[str, object]]) -> bool:
+        return any(slot.get("slot") in {"cause", "mechanism", "recognition"} for slot in slots)

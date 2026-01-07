@@ -5,5 +5,16 @@
     "sun_in_1st_house",
     "sun_square_moon"
   ],
-  "domains": ["identity"]
+  "domains": [
+    "identity"
+  ],
+  "meaning": {
+    "meaning_id": "cm.pressure_to_mastery.v1",
+    "templates": {
+      "headline": "Hayat seni ustalaştıran bir baskıdan geçiriyor olabilir: kolay değil ama güçlü yapar.",
+      "p1_bridge": "Bir şeyleri “doğuştan rahat” yapmak yerine, emekle kazanma teması çalışabilir; bu da sende sağlam bir karakter kurar.",
+      "p2_bridge": "Zaman zaman kendine yüklenme veya “yetmiyor” hissi gelebilir; burada ritmi yumuşatmak denge getirir.",
+      "p3_bridge": "İlişkide de aynı: güven ve saygı yoksa zorlanırsın; varsa çok uzun süre omuz verebilirsin."
+    }
+  }
 }

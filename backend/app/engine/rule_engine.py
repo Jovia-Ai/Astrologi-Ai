@@ -4,6 +4,7 @@ from __future__ import annotations
 import copy
 import json
 import logging
+import hashlib
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Sequence, Set, Tuple
 
@@ -15,6 +16,7 @@ from app.helpers.meta_detectors import (
 from app.engine.aspect_pattern_engine import AspectPatternEngine
 from app.engine.dominance_engine import DominanceEngine
 from app.helpers.domain_normalizer import canon_domain, canonical_domains
+from app.builders.semantic_normalizer import normalize_slot_text
 
 TYPE_NAMES = ("cause", "mechanism", "effect", "shadow", "potential")
 CATEGORIES = canonical_domains()
@@ -408,7 +410,24 @@ class RuleEngine:
         }
         planet_name = trigger.get("planet") or trigger.get("planet1") or ""
         fragment["planet"] = planet_name
+        normalized_text = normalize_slot_text(text, slot)
+        trigger_signature = self._trigger_signature(trigger)
+        base = f"{domain}|{slot}|{rule_id}|{normalized_text}|{trigger_signature}"
+        fragment["fragment_id"] = hashlib.sha256(base.encode("utf-8")).hexdigest()
         return fragment
+
+    def _trigger_signature(self, trigger: Mapping[str, Any]) -> str:
+        trigger_type = str(trigger.get("type") or "").strip().lower()
+        if trigger_type == "aspect":
+            planet1 = str(trigger.get("planet1") or "").strip().lower()
+            planet2 = str(trigger.get("planet2") or "").strip().lower()
+            aspect = str(trigger.get("aspect") or "").strip().lower()
+            return f"aspect|{planet1}|{planet2}|{aspect}"
+        planet = str(trigger.get("planet") or "").strip().lower()
+        sign = str(trigger.get("sign") or "").strip().lower()
+        house = trigger.get("house")
+        house_value = "" if house is None else str(house).strip()
+        return f"planet|{planet}|{sign}|{house_value}"
 
     def _normalize_fragments(
         self,

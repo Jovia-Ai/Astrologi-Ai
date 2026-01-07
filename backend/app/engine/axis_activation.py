@@ -2,13 +2,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
-from app.helpers.meta_detectors import normalize_node_alias, normalize_planet_key
-
-
-def _normalize_planet(value: object | None) -> str:
-    if not value:
-        return ""
-    return normalize_node_alias(normalize_planet_key(value))
+from app.helpers.normalize import normalize_node_alias, normalize_planet_key
+from app.helpers.placement_utils import extract_planet_signs
 
 
 class AxisActivationEngine:
@@ -43,7 +38,13 @@ class AxisActivationEngine:
         *,
         core_aspects: Iterable[Mapping[str, Any]],
     ) -> Dict[str, Any]:
-        sign_map = self._map_planets_to_signs(placements)
+        planet_signs = extract_planet_signs(placements)
+        sign_map: Dict[str, List[str]] = {}
+        for planet, sign in planet_signs.items():
+            normalized_planet = normalize_node_alias(planet)
+            if not normalized_planet:
+                continue
+            sign_map.setdefault(sign, []).append(normalized_planet)
         active_axes = []
         axis_aspect_count = 0
 
@@ -64,25 +65,11 @@ class AxisActivationEngine:
         return {"active_axes": sorted(active_axes), "axis_tension": tension}
 
     @staticmethod
-    def _map_planets_to_signs(placements: Iterable[str]) -> Dict[str, List[str]]:
-        mapping: Dict[str, List[str]] = {}
-        for placement in placements:
-            if "_in_" not in placement or "_house" in placement:
-                continue
-            planet, slug = placement.split("_in_", 1)
-            normalized_planet = normalize_node_alias(normalize_planet_key(planet))
-            if not normalized_planet:
-                continue
-            sign = slug.split("_")[0]
-            mapping.setdefault(sign, []).append(normalized_planet)
-        return mapping
-
-    @staticmethod
     def _normalize_aspects(aspects: Iterable[Mapping[str, Any]]) -> List[Dict[str, Any]]:
         normalized: List[Dict[str, Any]] = []
         for entry in aspects:
-            planet1 = _normalize_planet(entry.get("planet1") or entry.get("planet"))
-            planet2 = _normalize_planet(entry.get("planet2") or entry.get("target"))
+            planet1 = normalize_node_alias(normalize_planet_key(entry.get("planet1") or entry.get("planet")))
+            planet2 = normalize_node_alias(normalize_planet_key(entry.get("planet2") or entry.get("target")))
             aspect_type = str(entry.get("type") or entry.get("aspect") or "").strip().lower()
             if not (planet1 and planet2 and aspect_type):
                 continue

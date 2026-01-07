@@ -1,0 +1,340 @@
+{
+  "planet_house_rules": [
+    {
+      "id": "ascendant_in_house_1",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 1
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Hayata doğrudan katılma ihtiyacı güçlüdür."
+          ],
+          "mechanism": [
+            "Durumları kendi varlığın üzerinden deneyimlersin."
+          ],
+          "effect": [
+            "Kendini net, görünür ve etkili biçimde ortaya koyarsın."
+          ],
+          "shadow": [
+            "Her şeyin senin üzerinden dönmesi yıpratıcı olabilir."
+          ],
+          "potential": [
+            "Varlığını merkezden yönettiğinde doğal bir liderlik oluşur."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_2",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 2
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Güvenlik ve süreklilik ihtiyacı hayata giriş kapını belirler."
+          ],
+          "mechanism": [
+            "Değer üretme ve sahip olma üzerinden denge kurarsın."
+          ],
+          "effect": [
+            "Sağlam, dayanıklı ve güvenilir bir izlenim bırakırsın."
+          ],
+          "shadow": [
+            "Kaybetme korkusu hareket alanını daraltabilir."
+          ],
+          "potential": [
+            "Değeri içsel olarak tanımladığında kalıcı istikrar oluşur."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_3",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 3
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Dünyayı anlamlandırma ve bağlantı kurma ihtiyacı baskındır."
+          ],
+          "mechanism": [
+            "Hayata bilgi alışverişi ve gözlem yoluyla girersin."
+          ],
+          "effect": [
+            "Meraklı, hareketli ve iletişime açık görünürsün."
+          ],
+          "shadow": [
+            "Zihinsel dağılma ve yüzeysellik oluşabilir."
+          ],
+          "potential": [
+            "Odaklandığında güçlü bir anlam köprüsü kurarsın."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_4",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 4
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Duygusal güvenlik ihtiyacı kimliğinin temel referansıdır."
+          ],
+          "mechanism": [
+            "Hayata içsel tepkiler ve sezgisel yönelimle girersin."
+          ],
+          "effect": [
+            "Koruyucu, içe dönük ve temkinli algılanırsın."
+          ],
+          "shadow": [
+            "Geri çekilme veya aşırı savunma görülebilir."
+          ],
+          "potential": [
+            "İç güvenliğini kurduğunda güçlü bir kök etkisi yaratırsın."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_5",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 5
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Kendini ifade etme ve canlılık ihtiyacı hayata girişini belirler."
+          ],
+          "mechanism": [
+            "Dikkat çekerek ve yaratarak varlık hissi kurarsın."
+          ],
+          "effect": [
+            "Neşeli, yaratıcı ve görünür bir izlenim bırakırsın."
+          ],
+          "shadow": [
+            "Onay ihtiyacı yoğunlaşabilir."
+          ],
+          "potential": [
+            "İfadeyi paylaşım alanına taşıdığında ilham üretirsin."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_6",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 6
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Düzeni sağlama ve işe yarama ihtiyacı hayata duruşunu şekillendirir."
+          ],
+          "mechanism": [
+            "Detayları fark ederek kontrol hissi oluşturursun."
+          ],
+          "effect": [
+            "Çalışkan, dikkatli ve ölçülü görünürsün."
+          ],
+          "shadow": [
+            "Aşırı sorumluluk yükü yorgunluk yaratabilir."
+          ],
+          "potential": [
+            "Hizmeti dengeyle sunduğunda ustalık ortaya çıkar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_7",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 7
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Karşılıklı etkileşim ihtiyacı kimliğini dış dünyada kurar."
+          ],
+          "mechanism": [
+            "Hayata ilişkiler üzerinden yönelirsin."
+          ],
+          "effect": [
+            "Uyumlu, diplomatik ve ilişki odaklı algılanırsın."
+          ],
+          "shadow": [
+            "Kendini geri plana atma eğilimi oluşabilir."
+          ],
+          "potential": [
+            "Sınırlarını koruduğunda gerçek ortaklık gelişir."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_8",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 8
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Derinlik ve dönüşüm ihtiyacı hayata girişini belirler."
+          ],
+          "mechanism": [
+            "Gizli dinamikleri sezerek hareket edersin."
+          ],
+          "effect": [
+            "Yoğun, güçlü ve etkileyici bir izlenim bırakırsın."
+          ],
+          "shadow": [
+            "Kontrol ve kayıp temaları zorlayıcı olabilir."
+          ],
+          "potential": [
+            "Gücü bilinçli kullandığında dönüştürücü etki oluşur."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_9",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 9
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Anlam arayışı ve ufku genişletme ihtiyacı baskındır."
+          ],
+          "mechanism": [
+            "Hayata inançlar ve büyük perspektif üzerinden girersin."
+          ],
+          "effect": [
+            "Özgür, vizyoner ve yön gösterici algılanırsın."
+          ],
+          "shadow": [
+            "Gerçeklikten kopma riski oluşabilir."
+          ],
+          "potential": [
+            "Deneyimle birleştiğinde güçlü bir rehberlik ortaya çıkar."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_10",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 10
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Toplumsal konum ve sorumluluk ihtiyacı hayata duruşunu belirler."
+          ],
+          "mechanism": [
+            "Hedefler ve görünürlük üzerinden ilerlersin."
+          ],
+          "effect": [
+            "Ciddi, yetkin ve otoriter bir izlenim bırakırsın."
+          ],
+          "shadow": [
+            "Aşırı kontrol ve baskı hissi oluşabilir."
+          ],
+          "potential": [
+            "Sorumluluğu içselleştirdiğinde sürdürülebilir başarı oluşur."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_11",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 11
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "Aidiyet ve kolektif bağ ihtiyacı hayata girişini belirler."
+          ],
+          "mechanism": [
+            "Gruplar ve ortak idealler üzerinden hareket edersin."
+          ],
+          "effect": [
+            "Özgün, sosyal ve ilerici algılanırsın."
+          ],
+          "shadow": [
+            "Dağılma veya mesafe koyma görülebilir."
+          ],
+          "potential": [
+            "Ortak vizyonu somutladığında güçlü bir bağ kurarsın."
+          ]
+        }
+      }
+    },
+    {
+      "id": "ascendant_in_house_12",
+      "conditions": [
+        {
+          "planet": "Ascendant",
+          "house": 12
+        }
+      ],
+      "output": {
+        "identity": {
+          "cause": [
+            "İçsel dünyayla temas ihtiyacı hayata girişini şekillendirir."
+          ],
+          "mechanism": [
+            "Geri planda kalarak ve sezgisel olarak yönlenirsin."
+          ],
+          "effect": [
+            "Hassas, gözlemci ve derin algılanırsın."
+          ],
+          "shadow": [
+            "Belirsizlik ve kaçış eğilimi oluşabilir."
+          ],
+          "potential": [
+            "Bilinçli farkındalıkla güçlü bir iç rehberlik gelişir."
+          ]
+        }
+      }
+    }
+  ]
+}

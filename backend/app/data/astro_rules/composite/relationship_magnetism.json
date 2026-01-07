@@ -5,5 +5,16 @@
     "mars_trine_venus",
     "moon_sextile_venus"
   ],
-  "domains": ["relationships"]
+  "domains": [
+    "relationships"
+  ],
+  "meaning": {
+    "meaning_id": "cm.relationship_magnetism.v1",
+    "templates": {
+      "headline": "İlişkilerde çekim gücün var; ama bu çekim “gösteriş” değil, derinlikten geliyor olabilir.",
+      "p1_bridge": "Bazı insanlar sana hızlı bağlanabilir; sen ise güven oluşmadan hızlanmak istemeyebilirsin.",
+      "p2_bridge": "İçeride romantik ve idealist bir katman olabilir; bu katman doğru kişide çok şefkatli ve çok sadık çalışır.",
+      "p3_bridge": "Yanlış yerde ise fazla yük alabilir veya fazla tolere edebilirsin; sınır koymak burada ana beceri olur."
+    }
+  }
 }

@@ -79,7 +79,8 @@ class UpperMeaningEngine:
         if planet_trigger:
             planet = str(planet_trigger.get("planet", "")).lower()
             minimum = int(planet_trigger.get("minimum", 0))
-            if not planet or meta.get("planet_load", {}).get(planet, 0) < minimum:
+            planet_counts = meta.get("planet_load_counts") or meta.get("planet_load") or {}
+            if not planet or planet_counts.get(planet, 0) < minimum:
                 return False
         required_aspects = triggers.get("core_aspects", [])
         if required_aspects:

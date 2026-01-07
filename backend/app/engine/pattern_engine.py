@@ -26,6 +26,7 @@ class PatternEmphasisEngine:
         dominance = self._derive_dominance(meta_info)
         ruler_flow = "active" if meta_info.get("house_clusters") else "calm"
         base_planet_load = self._build_base_planet_load(placements, core_aspects)
+        base_planet_level = self._planet_load_level(base_planet_load)
         house_clusters = meta_info.get("house_clusters", {})
 
         for composite in composites:
@@ -34,12 +35,19 @@ class PatternEmphasisEngine:
                 continue
             sources = composite.get("sources", [])
             planet_counts = self._count_planet_contexts(sources)
+            planet_load_counts = planet_counts or base_planet_load
+            planet_load_level = (
+                self._planet_load_level(planet_counts)
+                if planet_counts
+                else base_planet_level
+            )
             aspect_weight = sum(1 for source in sources if source in core_aspects)
             stellium_flag = self._has_stellium(sources, house_clusters)
             bonus = 0.06 if stellium_flag else 0.0
             priority = self._calculate_priority(len(sources), len(planet_counts), aspect_weight) + bonus
             emphasis[comp_id] = {
-                "planet_load": planet_counts or base_planet_load,
+                "planet_load_counts": planet_load_counts,
+                "planet_load_level": planet_load_level,
                 "dominance": dominance,
                 "ruler_flow": ruler_flow,
                 "aspect_weight": aspect_weight,
@@ -89,6 +97,15 @@ class PatternEmphasisEngine:
                 counts[parts[0]] += 1
                 counts[parts[2]] += 1
         return dict(counts)
+
+    @staticmethod
+    def _planet_load_level(counts: Mapping[str, int]) -> str:
+        max_count = max(counts.values(), default=0)
+        if max_count >= 5:
+            return "high"
+        if max_count >= 3:
+            return "med"
+        return "low"
 
     @staticmethod
     def _count_planet_contexts(contexts: Iterable[str]) -> Dict[str, int]:
