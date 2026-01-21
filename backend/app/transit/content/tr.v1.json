@@ -1,0 +1,487 @@
+{
+  "version": "tr.v1",
+  "entries": {
+    "Pluto.conjunction.Uranus": {
+      "headline": [
+        "Radikal yön değişimi",
+        "Eski düzeni kırma dürtüsü",
+        "İçten gelen bir reset"
+      ],
+      "summary": [
+        "Kontrol edemediğin bir değişim değil; daha çok, artık eski formun yetmediğini fark edip yenisini çağırman gibi. Alışkanlıklar ve planlar esneyebilir.",
+        "Bir süredir sıkışan bir alan ‘kırılma noktası’na gelebilir. Yeni bir yaklaşım denemek, daha özgür hissettirebilir.",
+        "Zihninde ‘bunu artık böyle yapmayacağım’ dediğin bir eşik olabilir. Riskleri küçük adımlarla yönetmek önemli."
+      ],
+      "do": [
+        "Hayatında ‘kırmak istediğin’ kalıbı yaz ve bunun yerine koyacağın yeni kuralı netleştir.",
+        "Değişimi tek hamleye sıkıştırma: 2–3 küçük deney tasarla.",
+        "Büyük kararları 24 saat kuralıyla al."
+      ],
+      "watch": [
+        "Aşırı uçlara savrulma (ya hep ya hiç).",
+        "Güç savaşları / inatlaşma.",
+        "Plansız kopuşlar."
+      ]
+    },
+    "Neptune.conjunction.Saturn": {
+      "headline": [
+        "Sınırlar bulanıklaşıyor: yeniden yapı kurma",
+        "Gerçekçilik–hayal arasında denge",
+        "Belirsizlik içinde disiplin"
+      ],
+      "summary": [
+        "Netlik istemen çok doğal; ama bu dönem netlik ‘zorla’ değil, yavaş yavaş gelir. Yapı kurarken sezgiyi de hesaba katmak gerekebilir.",
+        "Sorumluluklar ile iç sesin aynı anda konuşuyor olabilir. İkisini de dinleyip ‘yapılabilir küçük plan’ çıkarmak en iyisi.",
+        "Belirsiz kalan konularda acele kesin karar yerine, sınırları geçici ama net belirlemek daha iyi çalışır."
+      ],
+      "do": [
+        "Her gün 20 dakikalık ‘netleştirme’ rutini (not, plan, öncelik).",
+        "Sınır koy: kapasiteni aşan şeye ‘şimdilik hayır’ de.",
+        "Somut veri topla: varsayım yerine test et."
+      ],
+      "watch": [
+        "Kafada büyütme, belirsizlikten kaçmak için kontrolcülük.",
+        "Kaçışçılık (erteleme, dağılma).",
+        "‘Nasıl olsa olmaz’ karamsarlığı."
+      ]
+    },
+    "Saturn.opposition.Mars": {
+      "headline": [
+        "Enerji–engel testi",
+        "Gaz–fren aynı anda",
+        "Sabırla güç biriktirme"
+      ],
+      "summary": [
+        "İlerlemek isterken dış koşullar yavaşlatıyor gibi gelebilir. Bu, gücünün bittiği değil; ritmini doğru ayarlaman gereken bir dönem.",
+        "Çaba var ama sonuç gecikiyor hissi doğabilir. Küçük ama düzenli efor en iyi sonucu verir.",
+        "Kızgınlık/gerilim birikirse bunu yapıcı kanala almak önemli: spor, plan, disiplin."
+      ],
+      "do": [
+        "Enerjini ‘tek büyük hedef’ yerine 2 küçük hedefe böl.",
+        "Düzenli hareket (kısa yürüyüş/spor) ile gerginliği boşalt.",
+        "Tartışma anında 10 dakika ara ver, sonra konuş."
+      ],
+      "watch": [
+        "Aceleyle zorlamak → sakarlık/öfke.",
+        "Pasif agresif birikim.",
+        "Kendini fazla eleştirme."
+      ]
+    },
+    "Uranus.trine.Mars": {
+      "headline": [
+        "Cesur bir hamle enerjisi",
+        "Alışılmışın dışına çıkma dürtüsü",
+        "Hızlı aksiyon, taze motivasyon"
+      ],
+      "summary": [
+        "Bir şeyi farklı yapma isteği artabilir. İçinden gelen ‘şimdi dene’ sesi güçlenir; küçük ama net bir hamle iyi çalışır.",
+        "Enerjin dalgalı ama yaratıcı olabilir. Rutini kırmak, yeni yöntem denemek fayda verir.",
+        "Kendine alan açtığında daha hızlı ilerlediğini görebilirsin."
+      ],
+      "do": [
+        "Tek bir konuda ‘yeni yöntem’ dene (mini deney).",
+        "Ertelediğin bir adımı bugün başlat.",
+        "Enerjiyi boşalt: kısa spor / yürüyüş."
+      ],
+      "watch": [
+        "Sabırsızlıkla gereksiz risk almak.",
+        "Aynı anda çok şeye atlamak."
+      ]
+    },
+    "Uranus.trine.Neptune": {
+      "headline": [
+        "Sezgiye inovasyon geliyor",
+        "Yeni ilham kanalı",
+        "Yaratıcı açılım"
+      ],
+      "summary": [
+        "Hayal gücü ve sezgiler daha ‘çalışır’ hale gelebilir. Bir şeyler rüyada/tesadüfte netleşebilir.",
+        "Yeni bir yaratıcı kanal, teknoloji/üretim yöntemi veya farklı bir bakış açısı kapı açabilir.",
+        "Belirsizliği sanat/üretim/araştırma gibi bir şeye dönüştürmek iyi gelir."
+      ],
+      "do": [
+        "İlham geldiğinde not al (hemen).",
+        "Yaratıcı bir üretim hedefi koy: 7 gün küçük output.",
+        "Kafanı açan içerik/insanla temas kur."
+      ],
+      "watch": [
+        "Aşırı idealize etmek.",
+        "Gerçek test yapmadan ‘tamamdır’ demek."
+      ]
+    },
+    "Saturn.sextile.Neptune": {
+      "headline": [
+        "Hayali somuta indirme",
+        "Sezgiyi plana çevirme",
+        "Yumuşak disiplin"
+      ],
+      "summary": [
+        "Dağınık görünen şeyleri toparlamak için iyi bir dönem. İlham + plan birleşince ilerleme gelir.",
+        "Sınır koymak zor geliyorsa, ‘yumuşak ama net’ sınırlar kurmak işe yarar.",
+        "Uzun vadeli hedefi küçük rutinlere bölmek en iyi sonuç verir."
+      ],
+      "do": [
+        "Hedef → haftalık rutin: 2 küçük alışkanlık seç.",
+        "Belirsiz konu için ‘ölçülebilir’ bir kriter yaz.",
+        "Günlük 15 dk düzenleme/planlama."
+      ],
+      "watch": [
+        "Mükemmel plan ararken başlamamak.",
+        "Netlik gelmeden kendini suçlamak."
+      ]
+    },
+    "Pluto.trine.North Node": {
+      "headline": [
+        "Kadersel yönle hizalanma",
+        "Derin bir rotaya girme",
+        "Hayat yönünde güçlü itiş"
+      ],
+      "summary": [
+        "Doğru yolda mıyım sorusu güçlenebilir; bazı seçimler ‘daha gerçek’ gelir. Derinden gelen bir evet/hayır hissi oluşabilir.",
+        "Bazı bağlantılar, kararlar veya hedefler uzun vadeli etkili olabilir. Küçük görünen şey ‘rota’ değiştirebilir.",
+        "Gücünü daha bilinçli kullanmak ve eski yükleri bırakmak destekleniyor."
+      ],
+      "do": [
+        "Önümüzdeki 6 ay için tek bir ana yön seç.",
+        "Seni aşağı çeken 1 alışkanlığı bırakma planı yap.",
+        "Güçlü bağ/mentor/ekip desteğini aktive et."
+      ],
+      "watch": [
+        "Kontrol ihtiyacını ‘kader’ diye romantize etmek.",
+        "Gereksiz güç savaşı."
+      ]
+    },
+    "Pluto.sextile.Pluto": {
+      "headline": [
+        "Sessiz ama kalıcı dönüşüm",
+        "Derinden güç toplama",
+        "Yapı güncellemesi"
+      ],
+      "summary": [
+        "Kısa sürede patlama değil; yavaş ve kalıcı bir güçlenme. Eski kalıpları daha rahat fark edebilirsin.",
+        "Uzun vadeli bir dönüşümü ‘yönetilebilir parçalara’ bölmek mümkün.",
+        "Kendini yeniden konumlandırma süreci çalışabilir."
+      ],
+      "do": [
+        "Bir ‘eski kalıp’ seç: yerine yeni kural yaz.",
+        "Uzun vadeli hedefe 30 günlük plan yap.",
+        "Gereksiz yük/borç/taahhüt azalt."
+      ],
+      "watch": [
+        "Her şeyi bir anda değiştirmeye çalışma.",
+        "İçe kapanıp paylaşmamak."
+      ]
+    },
+    "Neptune.square.ASC": {
+      "headline": [
+        "Kimlik algısı bulanıklaşabilir",
+        "Benlik sınırlarını netleştirme",
+        "Görünüş/algı hassasiyeti"
+      ],
+      "summary": [
+        "Kendini nasıl gördüğün ve insanların seni nasıl algıladığı konusunda belirsizlik hissedebilirsin. Bu ‘kötü’ değil; yeniden tanım aşaması.",
+        "Enerji düşüşü/dağılma varsa, sınır ve rutin şart. Netlik yavaş gelir.",
+        "Bu dönem ‘kendin için’ daha net çerçeve kurmak iyi gelir."
+      ],
+      "do": [
+        "Günlük sınır: uyku/iş/telefon için mini kurallar koy.",
+        "Kendinle ilgili tek bir cümle yaz: ‘Şu dönem ben…’",
+        "Vücudu toparla: su, uyku, düzen."
+      ],
+      "watch": [
+        "Kendini başkalarının algısına göre tanımlamak.",
+        "Kaçışçılık (erteleme, dağılma)."
+      ]
+    },
+    "Neptune.square.DSC": {
+      "headline": [
+        "İlişkilerde sis perdesi",
+        "Sınır ve beklenti netliği",
+        "Yanlış anlama riski"
+      ],
+      "summary": [
+        "Karşındakini idealize etmek ya da yanlış okumak kolaylaşabilir. Net iletişim ve sınır iyi gelir.",
+        "‘Ben ne veriyorum, ne alıyorum?’ dengesi görünür olur.",
+        "İlişkide belirsiz kalan konuları yumuşak ama net konuşmak faydalı."
+      ],
+      "do": [
+        "Beklentiyi netleştir: 1–2 madde yazıp konuş.",
+        "Varsayım yerine soru sor.",
+        "Sınır koy: ‘şimdilik’ çerçevesi belirle."
+      ],
+      "watch": [
+        "Kurtarıcı-kurtarılan dinamiği.",
+        "Net olmayan sözlere fazla anlam yüklemek."
+      ]
+    },
+    "Neptune.opposition.Mars": {
+      "headline": [
+        "Enerji dağılabilir: yön bulma",
+        "Motivasyon–belirsizlik çekişmesi",
+        "Gazın nereden geldiğini anlama"
+      ],
+      "summary": [
+        "İstek var ama yön net değilse enerji ‘kaçıyor’ gibi hissedilebilir. Bu dönemde hedefi sadeleştirmek kritik.",
+        "Kızgınlık veya hayal kırıklığı birikirse, bunu sağlıklı kanala almak gerekir.",
+        "Eforu ‘kanıtlı küçük adım’a bağlamak en iyi çözümdür."
+      ],
+      "do": [
+        "Hedefi sadeleştir: 1 ana hedef + 1 destek alışkanlık.",
+        "Enerjiyi boşalt: düzenli hareket.",
+        "Belirsiz kararlarda ‘test haftası’ yap."
+      ],
+      "watch": [
+        "Pasif agresif birikim.",
+        "Yanlış hedefe fazla efor harcamak."
+      ]
+    },
+    "Venus.conjunction.Jupiter": {
+      "headline": [
+        "Tatlı bir şans penceresi",
+        "İlişki/para tarafında genişleme",
+        "Keyif ve fırsat"
+      ],
+      "summary": [
+        "Sosyal destek, hoş haberler veya küçük bir fırsat gelebilir. ‘Büyütme’ enerjisi var.",
+        "İlişkilerde yumuşama, barışma veya daha sıcak bir akış mümkün.",
+        "Para/harcama tarafında da iştah artabilir: keyfi planla."
+      ],
+      "do": [
+        "Bir görüşme/teklif/mesaj adımı at.",
+        "Sosyal bir bağlantıyı canlandır.",
+        "Keyfi bütçeyle yönet: limit koy."
+      ],
+      "watch": [
+        "Abartı, fazla harcama.",
+        "Her şeyi ‘garanti’ sanmak."
+      ]
+    },
+    "Venus.square.IC": {
+      "headline": [
+        "Ev/aile tarafında hassasiyet",
+        "Konfor alanı geriliyor",
+        "Yakın çevrede ayar"
+      ],
+      "summary": [
+        "Ev düzeni, aile beklentileri veya ‘aidiyet’ hissi hassaslaşabilir. Küçük bir ayar büyük rahatlama getirir.",
+        "Konfor ihtiyacı artabilir; ama bunun bedeli/denge noktası görünür olur.",
+        "İç huzur için ortamı düzenlemek iyi gelir."
+      ],
+      "do": [
+        "Ev/oda düzeninde 1 küçük iyileştirme yap.",
+        "Aile/ev içi beklentiyi yumuşakça konuş.",
+        "Konforu ‘rutin’le destekle."
+      ],
+      "watch": [
+        "Alınganlıkla kopmak.",
+        "Konfor için gereksiz harcama."
+      ]
+    },
+    "Venus.square.MC": {
+      "headline": [
+        "İmaj/kariyerde hassas ayar",
+        "Görünürlükte denge",
+        "İş tarafında ilişki testi"
+      ],
+      "summary": [
+        "İş/itibar alanında ‘nasıl görünüyorum?’ sorusu tetiklenebilir. İnce ayar dönemi.",
+        "Patron/ekip/müşteri ilişkilerinde beklentiler netleşmek isteyebilir.",
+        "Tatlı diplomasi işe yarar; aşırı taviz zarar."
+      ],
+      "do": [
+        "Kariyer hedefini 1 cümlede netleştir.",
+        "İletişimde nazik ama net sınır koy.",
+        "İmaj/portföy/LinkedIn gibi görünür alanı güncelle."
+      ],
+      "watch": [
+        "Onay ihtiyacıyla taviz vermek.",
+        "Küçük eleştiriyi büyütmek."
+      ]
+    },
+    "Mercury.conjunction.Mercury": {
+      "headline": [
+        "Zihin netleşiyor: karar zamanı",
+        "Planları güncelleme",
+        "İletişim ve zihin hızlanıyor"
+      ],
+      "summary": [
+        "Karar, yazışma, plan, anlaşma gibi konular hızlanır. Aklındaki şeyleri net cümleye dökmek kolaylaşabilir.",
+        "Eski bir fikir geri gelebilir; bu sefer daha olgun şekilde ele alınabilir.",
+        "Kısa vadeli plan yapıp uygulamak verimli."
+      ],
+      "do": [
+        "3 maddelik plan yaz: bugün/yarın/hafta.",
+        "Görüşme/mesaj/başvuru yap.",
+        "Kararı ‘yazılı’ hale getir."
+      ],
+      "watch": [
+        "Aşırı düşünmek ve detayda kaybolmak.",
+        "Hızla konuşup yanlış anlaşılmak."
+      ]
+    },
+    "Chiron.square.Jupiter": {
+      "headline": [
+        "Büyüme yaraya dokunuyor",
+        "Özgüven–beklenti ayarı",
+        "Abartıdan arınma"
+      ],
+      "summary": [
+        "Daha büyük hedefler isterken ‘yeter miyim?’ yarası tetiklenebilir. Bu, kapasiteyi doğru kurmak için gelir.",
+        "Kendine fazla yüklenmek yerine, sürdürülebilir büyüme iyi gelir.",
+        "İnanç/etik/amaç tarafında bir düzeltme hissi olabilir."
+      ],
+      "do": [
+        "Hedefi ‘gerçekçi basamaklara’ böl.",
+        "Kendine sert konuştuğun yeri yakala ve dili yumuşat.",
+        "Gelişim için destek/mentor iste."
+      ],
+      "watch": [
+        "Abartılı hedef koyup çabuk vazgeçmek.",
+        "Kendini başkalarıyla kıyaslamak."
+      ]
+    },
+    "Moon.square.Moon": {
+      "headline": [
+        "Duygusal sürtünme günü",
+        "Ruh hali dalgalanması",
+        "İç ihtiyaçlar çakışıyor"
+      ],
+      "summary": [
+        "Bugün duygular daha reaktif olabilir. İç ihtiyaçların birbiriyle çakışması (dinlenmek vs. yetişmek) gerilim yaratabilir.",
+        "Bunu ‘karar’ günü değil, ‘ayar’ günü gibi düşünmek iyi gelir.",
+        "İyi bakım ve sakinlik duyguyu hızlı toparlar."
+      ],
+      "do": [
+        "Bugün kendine küçük bir alan aç (15–30 dk).",
+        "Büyük kararları yarına bırak.",
+        "Bedeni sakinleştir: su, yürüyüş, nefes."
+      ],
+      "watch": [
+        "Alınganlıkla keskin konuşmak.",
+        "Duyguyla acele karar almak."
+      ]
+    },
+    "Sun.conjunction.Jupiter": {
+      "headline": [
+        "Özgüven ve görünürlük artışı",
+        "Büyütme enerjisi",
+        "Hedefe ışık tutma"
+      ],
+      "summary": [
+        "Kendini daha görünür koymak isteyebilirsin. Başvuru, sunum, teklif gibi şeyler için iyi bir rüzgâr.",
+        "İyimserlik artar; ama planla desteklersen kalıcı olur.",
+        "Bir hedefi büyütmek veya duyurmak için iyi zaman."
+      ],
+      "do": [
+        "Bir hedefi duyur / bir adım at.",
+        "Kendini gösteren bir iş çıkar (mini portföy/output).",
+        "Fırsatı plana bağla."
+      ],
+      "watch": [
+        "Aşırı iyimserlikle detay kaçırmak.",
+        "‘Hepsini aynı anda’ büyütmek."
+      ]
+    },
+    "Jupiter.opposition.Mercury": {
+      "headline": [
+        "Zihin büyüyor: abartı riski",
+        "Büyük fikir–küçük detay çatışması",
+        "Sözler büyüyebilir"
+      ],
+      "summary": [
+        "Büyük resmi görmek kolay, ama detaylar kaçabilir. Bu dönem ‘iki kez kontrol’ iyi gelir.",
+        "Söz vermek, anlaşma yapmak, iddialı konuşmak isteyebilirsin; ölçüyü koru.",
+        "Öğrenme/seyahat/iletişim gündemi büyüyebilir."
+      ],
+      "do": [
+        "Önemli mesaj/kontrat varsa iki kez kontrol et.",
+        "Büyük fikri 3 maddeye indir.",
+        "Söz verirken sınır koy: ‘şu koşulla’ de."
+      ],
+      "watch": [
+        "Abartı, gereksiz iddia.",
+        "Detayı kaçırıp sonra toparlamak zorunda kalmak."
+      ]
+    },
+    "Pluto.sextile.Saturn": {
+      "headline": [
+        "Güçlü yapı kurma",
+        "Disiplinle dönüşüm",
+        "Dayanıklılık artışı"
+      ],
+      "summary": [
+        "Zor olanı sürdürülebilir hale getirme şansı var. Yavaş ama sağlam ilerleyen bir yapı kurabilirsin.",
+        "Kontrol etmek yerine sistem kurmak daha iyi çalışır.",
+        "Sınır koyma ve uzun vadeli plan desteklenir."
+      ],
+      "do": [
+        "Bir sistemi yaz: rutin/plan/bütçe/iş akışı.",
+        "Küçük ama her gün yapılan adımı seç.",
+        "Eski yükleri azalt: gereksiz taahhütleri kapat."
+      ],
+      "watch": [
+        "Her şeyi tek başına taşıma.",
+        "Sertleşip esnekliği kaybetmek."
+      ]
+    },
+    "polarity.hard.ANY": {
+      "headline": [
+        "Zorlayıcı bir eşik",
+        "Sınır ve gerçeklik testi",
+        "Baskı artıyor: ayar çekme zamanı"
+      ],
+      "summary": [
+        "Bu etki sürtünme yaratabilir; sürtünme de çoğu zaman ayar çekmek için gelir. Neyi değiştirmek gerektiğini gösterebilir.",
+        "Baskı artıyorsa, bir şey ‘yanlış’ değil; sadece düzenleme istiyor olabilirsin. Küçük değişimler büyük rahatlama getirebilir.",
+        "Öncelik belirlemek ve gereksiz yükleri azaltmak bu dönemi kolaylaştırır."
+      ],
+      "do": [
+        "En çok zorlayan şeyi seç ve ‘en küçük adım’ı belirle.",
+        "Sınır koy: zaman/enerji bütçeni koru.",
+        "Kararları aceleye getirmeden veri topla."
+      ],
+      "watch": [
+        "Aşırı yüklenme.",
+        "İnatlaşma.",
+        "Duyguyu bastırıp biriktirme."
+      ]
+    },
+    "polarity.soft.ANY": {
+      "headline": [
+        "Akış açılıyor",
+        "Destek ve kolaylık",
+        "Fırsat penceresi"
+      ],
+      "summary": [
+        "Bu etki işleri daha rahat ilerletebilir. Özellikle niyetini net koyarsan destek görme olasılığı artar.",
+        "Uygun insan/koşul/tesadüfler denk gelebilir. Yine de fırsatı somut plana bağlamak önemli.",
+        "İlişkilerde ve projelerde ‘oluyor’ hissi artabilir."
+      ],
+      "do": [
+        "Kolay akan alanı seç ve oraya yatırım yap.",
+        "Bir görüşme/başvuru/iletişim adımı at.",
+        "Şans geldiğinde planla kilitle."
+      ],
+      "watch": [
+        "Fazla dağılma.",
+        "‘Nasıl olsa olur’ rehaveti."
+      ]
+    },
+    "generic": {
+      "headline": [
+        "Dikkat çeken bir vurgu",
+        "Bir tema öne çıkıyor",
+        "Hareketli bir dönem"
+      ],
+      "summary": [
+        "Bu etki şu an görünür; detaylarda netlik için orb/phase bilgisine bakabilirsin. Küçük ayarlamalar büyük fark yaratır."
+      ],
+      "do": [
+        "Bir adım seç ve bugün uygula."
+      ],
+      "watch": [
+        "Aşırı yüklenme ve dağılma."
+      ]
+    }
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "claim.identity.control": {
+    "domain": "identity",
+    "tags": ["control", "responsibility", "self_definition"],
+    "text_variants": [
+      "Dışarıda kontrollü ve sağlam durma ihtiyacın yüksek olabilir.",
+      "Kendini çoğunlukla sorumluluk alarak ve sınır koyarak kurarsın."
+    ],
+    "weight": 0.8
+  },
+  "claim.identity.visibility": {
+    "domain": "identity",
+    "tags": ["visibility", "image", "self_expression"],
+    "text_variants": [
+      "Başkalarına nasıl göründüğün senin için önemli bir tema.",
+      "Kendini doğru yansıtma ihtiyacı sık sık tetiklenir."
+    ],
+    "weight": 0.7
+  },
+  "claim.rel.boundary": {
+    "domain": "relationships",
+    "tags": ["boundaries", "attachment"],
+    "text_variants": [
+      "Yakın ilişkilerde sınırları netleştirmek senin için kritik olabilir.",
+      "Bazen verirken kendi çizgini geç fark edebilirsin."
+    ],
+    "weight": 0.75
+  },
+  "claim.rel.idealization": {
+    "domain": "relationships",
+    "tags": ["idealization", "projection"],
+    "text_variants": [
+      "İlişkilerde idealize etme eğilimi zaman zaman devreye girebilir."
+    ],
+    "weight": 0.65
+  },
+  "claim.mind.overthinking": {
+    "domain": "mind",
+    "tags": ["overthinking", "analysis"],
+    "text_variants": [
+      "Zihinsel olarak fazla düşünme ve analiz etme eğilimin olabilir."
+    ],
+    "weight": 0.7
+  },
+  "claim.mind.clarity": {
+    "domain": "mind",
+    "tags": ["clarity", "communication"],
+    "text_variants": [
+      "Zihinsel netlik ve açık iletişim ihtiyacın güçlüdür."
+    ],
+    "weight": 0.6
+  },
+  "claim.career.direction": {
+    "domain": "career",
+    "tags": ["direction", "purpose"],
+    "text_variants": [
+      "Kariyerde yön ve anlam arayışı senin için belirleyicidir."
+    ],
+    "weight": 0.7
+  },
+  "claim.career.authority": {
+    "domain": "career",
+    "tags": ["authority", "responsibility"],
+    "text_variants": [
+      "Otorite ve sorumluluk temaları kariyerinde sık çalışır."
+    ],
+    "weight": 0.75
+  },
+  "claim.home.security": {
+    "domain": "home",
+    "tags": ["security", "roots"],
+    "text_variants": [
+      "Güvende hissetmek için sağlam bir iç/dış temel ararsın."
+    ],
+    "weight": 0.65
+  },
+  "claim.inner.escape": {
+    "domain": "inner",
+    "tags": ["escape", "withdrawal"],
+    "text_variants": [
+      "Zorlandığında içe çekilme veya kaçma eğilimi oluşabilir."
+    ],
+    "weight": 0.6
+  },
+  "claim.drive.discipline": {
+    "domain": "drive",
+    "tags": ["discipline", "effort"],
+    "text_variants": [
+      "Enerjini disiplinle yönlendirdiğinde çok verimli olursun."
+    ],
+    "weight": 0.7
+  },
+  "claim.drive.frustration": {
+    "domain": "drive",
+    "tags": ["frustration", "blocked_energy"],
+    "text_variants": [
+      "Engellendiğini hissettiğinde içsel bir gerilim oluşabilir."
+    ],
+    "weight": 0.65
+  }
+}

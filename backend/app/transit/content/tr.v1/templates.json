@@ -1,0 +1,100 @@
+{
+  "neptune.square.asc": {
+    "headline": ["Kimlikte sis", "Netlikte dalgalanma"],
+    "summary": [
+      "Bu dönemde kendini dış dünyaya nasıl koyduğunla ilgili belirsizlikler artabilir."
+    ],
+    "do": [
+      ["Kararları aceleye getirme.", "Somut veri iste ve yazılı netlik ara."]
+    ],
+    "watch": [
+      ["Aşırı idealizasyon.", "Belirsiz sözlere fazla anlam yükleme."]
+    ],
+    "themes": [["identity", "boundaries"]],
+    "tone": "gentle"
+  },
+  "saturn.opposition.mars": {
+    "headline": ["Enerji sınavı", "İlerle–dur ikilemi"],
+    "summary": [
+      "İsteklerinle sorumluluklar arasında gerilim hissedebilirsin."
+    ],
+    "do": [
+      ["Enerjini küçük parçalara böl.", "Önceliği yaz ve tek tek ilerle."]
+    ],
+    "watch": [
+      ["Aşırı zorlanma.", "Öfkeyi bastırıp içe atma."]
+    ],
+    "themes": [["drive", "discipline"]],
+    "tone": "firm"
+  },
+  "pluto.conjunction.any": {
+    "headline": ["Derin dönüşüm", "Kontrolü bırakma zamanı"],
+    "summary": [
+      "Geri dönülmez bir farkındalık veya güçlü bir içsel değişim sürecindesin."
+    ],
+    "do": [
+      ["Direnmek yerine dönüşümü izle.", "Eskiyi bırakmaya gönüllü ol."]
+    ],
+    "watch": [
+      ["Güç savaşları.", "Her şeyi kontrol etmeye çalışma."]
+    ],
+    "themes": [["intensity", "transformation"]],
+    "tone": "deep"
+  },
+  "saturn.square.any": {
+    "headline": ["Gerçeklik testi"],
+    "summary": [
+      "Sorumluluklar artarken sınırlarını yeniden tanımlaman gerekebilir."
+    ],
+    "do": [
+      ["Yükü sadeleştir.", "Hayır demen gereken yeri seç."]
+    ],
+    "watch": [
+      ["Aşırı yüklenme."]
+    ],
+    "themes": [["discipline", "limits"]],
+    "tone": "firm"
+  },
+  "hard.any": {
+    "headline": ["Zorlayıcı temas"],
+    "summary": [
+      "Bu etki baskı hissi yaratabilir; yavaş ve bilinçli ilerlemek faydalı olur."
+    ],
+    "do": [
+      ["Hızını düşür.", "Netlik aramadan karar alma."]
+    ],
+    "watch": [
+      ["Tepkisel davranış."]
+    ],
+    "themes": [["pressure"]],
+    "tone": "neutral"
+  },
+  "soft.any": {
+    "headline": ["Destekleyici akış"],
+    "summary": [
+      "Bu etki ilerlemek için daha yumuşak bir zemin sunar."
+    ],
+    "do": [
+      ["Fırsatı değerlendir.", "İlişkileri besle."]
+    ],
+    "watch": [
+      ["Rahatlıktan dolayı erteleme."]
+    ],
+    "themes": [["support"]],
+    "tone": "positive"
+  },
+  "generic.any": {
+    "headline": ["Geçici etki"],
+    "summary": [
+      "Kısa süreli bir farkındalık veya duygu değişimi getirebilir."
+    ],
+    "do": [
+      ["Gözlemde kal."]
+    ],
+    "watch": [
+      ["Aşırı anlam yükleme."]
+    ],
+    "themes": [["general"]],
+    "tone": "neutral"
+  }
+}

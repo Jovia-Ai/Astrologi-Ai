@@ -1,0 +1,74 @@
+{
+  "housepair.4-8.pressure.any": {
+    "label": "Ic guven - yakinlik hatti",
+    "one_liner": "Ic guven ihtiyaci yukselirken yakinlikta kontrol istegi artabilir; yakinlik arttikca ic guven hassaslasabilir.",
+    "how_it_plays": [
+      "Guven testleri, alinganlik veya kapanma egilimi",
+      "Paylasim ve sinir konularinda gerilim"
+    ],
+    "good_management": [
+      "Net sinir + net sefkat: ikisini ayni anda soyle",
+      "Zor konusmayi kisa ve somut tut"
+    ]
+  },
+  "housepair.2-4.pressure.any": {
+    "label": "Ozdeger - ev duzeni hatti",
+    "one_liner": "Maddi guvenlik ihtiyaci ev duzenini tetikleyebilir; evle ilgili kararlar butceyi zorlayabilir.",
+    "how_it_plays": [
+      "Harcama/planlama stresi",
+      "'Guvende miyim?' sorgusu"
+    ],
+    "good_management": [
+      "Butceyi kucuk parcalara bol",
+      "Ev tarafinda tek bir net oncelik sec"
+    ]
+  },
+  "housepair.3-6.support.any": {
+    "label": "Zihin - rutin hatti",
+    "one_liner": "Planli dusundukce rutin kolaylasabilir; rutin oturdukca zihin sakinlesebilir.",
+    "how_it_plays": [
+      "Verimde artis",
+      "Daha net kararlar"
+    ],
+    "good_management": [
+      "Gun basinda 3 maddelik liste yaz",
+      "Kisa bir tekrar rutini kur"
+    ]
+  },
+  "housepair.generic.pressure.any": {
+    "label": "Iki alan arasinda baski",
+    "one_liner": "Iki farkli ihtiyacin ayni anda yukselmesi gerilim yaratabilir.",
+    "how_it_plays": [
+      "Bir alana giderken digerinin ihmal edilmesi",
+      "Kararsizlik veya ic gerilim"
+    ],
+    "good_management": [
+      "Kucuk ve geri donuslu adimlar sec",
+      "Net bir oncelik belirle"
+    ]
+  },
+  "housepair.generic.support.any": {
+    "label": "Iki alan arasinda destek",
+    "one_liner": "Bir alandaki duzen diger alanin da akisini kolaylastirabilir.",
+    "how_it_plays": [
+      "Toparlanma ve akis hissi",
+      "Daha surdurulebilir planlar"
+    ],
+    "good_management": [
+      "Iki tarafta da kucuk bir iyilestirme yap",
+      "Az ama duzenli ilerle"
+    ]
+  },
+  "housepair.generic.any": {
+    "label": "Iki alan arasinda denge",
+    "one_liner": "Iki alan ayni anda calisiyorsa dengeyi kucuk adimlarla kurmak iyi gelir.",
+    "how_it_plays": [
+      "Karar verirken iki alan arasinda gidip gelme",
+      "Netlik arayisinin artmasi"
+    ],
+    "good_management": [
+      "Kucuk ve geri donuslu adimlar sec",
+      "Varsayim yerine soru sor"
+    ]
+  }
+}

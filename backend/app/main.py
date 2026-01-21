@@ -8,6 +8,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes.natal_interpretation import router as natal_interpretation_router
+from app.api.routes.transits import router as transits_router
 from app.core.config import settings
 from app.core.logging import configure_logging
 from app.routers import charts, chat, health, profile, story, synastry, user
@@ -37,6 +38,7 @@ def create_app() -> FastAPI:
     app.include_router(user.router)
     app.include_router(charts.router)
     app.include_router(natal_interpretation_router)
+    app.include_router(transits_router)
     app.include_router(chat.router)
     app.include_router(profile.router)
     app.include_router(story.router)

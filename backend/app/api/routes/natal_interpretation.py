@@ -743,6 +743,7 @@ def _build_upper_meaning_gate_debug(
 ) -> Dict[str, Any]:
     thresholds = upper_meaning.get("thresholds") or {
         "pressure_min": 0.45,
+        "support_min": 0.45,
         "capacity_min": 0.55,
         "integration_min": 0.55,
     }

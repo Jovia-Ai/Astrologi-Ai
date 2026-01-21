@@ -1,0 +1,74 @@
+{
+  "axis.3-9.pressure.any": {
+    "label": "Zihin - yon hatti",
+    "one_liner": "Fazla dusunmek yon duygusunu bulaniklastirabilir; yon arayisi zihni daha da calistirabilir.",
+    "how_it_plays": [
+      "Karar vermeden once daha cok veri toplama ihtiyaci artabilir.",
+      "'Bunun anlami ne?' sorusu buyuyup zihni yorabilir."
+    ],
+    "good_management": [
+      "Netlik beklerken geri donuslu kucuk adimlar at; her adimi deneme olarak gor.",
+      "Varsayim yerine soru sor; konusmalari kisa ve somut tut."
+    ]
+  },
+  "axis.3-9.support.any": {
+    "label": "Zihin - yon hatti",
+    "one_liner": "Dusunce netlestikce yon secmek kolaylasabilir; yon sectikce zihin sakinlesebilir.",
+    "how_it_plays": [
+      "Plan yapmak ve ogrenmek daha akiskan gelebilir.",
+      "Bir hedefe baglaninca motivasyon artabilir."
+    ],
+    "good_management": [
+      "3 maddelik mini yol haritasi cikar: bugun / hafta / ay.",
+      "Ogrenmeyi kucuk bir rutine bagla."
+    ]
+  },
+  "axis.1-7.pressure.any": {
+    "label": "Ben - biz hatti",
+    "one_liner": "Kendi ihtiyaclarinla iliski dinamikleri ayni anda yukseliyor; denge kurmak zorlasabilir.",
+    "how_it_plays": [
+      "Bagimsiz kalma istegi ile yakinlik ihtiyaci catisabilir.",
+      "Sinirlar belirsizlestiginde gerginlik artabilir."
+    ],
+    "good_management": [
+      "Beklentileri acik soyle, siniri kisa cumleyle koy.",
+      "'Benim alanim / bizim alanimiz' ayrimini netlestir."
+    ]
+  },
+  "axis.generic.pressure.any": {
+    "label": "Iki uc arasinda gerilim",
+    "one_liner": "Iki uc ayni anda cekistiriyorsa, ritim ve sinir kurmak iyi gelebilir.",
+    "how_it_plays": [
+      "Bir tarafa giderken digerinin eksik kalmasi",
+      "Zihnin 'hangisi dogru?' diye donmesi"
+    ],
+    "good_management": [
+      "Kucuk ama net bir karar al",
+      "Zaman bloklariyla iki alani ayir"
+    ]
+  },
+  "axis.generic.support.any": {
+    "label": "Iki uc arasinda uyum",
+    "one_liner": "Iki alan birbirini beslediginde, kucuk adimlar daha hizli sonuc verir.",
+    "how_it_plays": [
+      "Daha kolay karar verme",
+      "Akis ve motivasyon artisi"
+    ],
+    "good_management": [
+      "Kucuk bir plan yap ve uygula",
+      "Ritmi bozmadan ilerle"
+    ]
+  },
+  "axis.generic.any": {
+    "label": "Iki uc arasinda denge",
+    "one_liner": "Iki alan ayni anda calisiyorsa, dengeyi kucuk adimlarla kurmak iyi gelir.",
+    "how_it_plays": [
+      "Karar verirken iki alan arasinda gidip gelme",
+      "Netlik arayisinin artmasi"
+    ],
+    "good_management": [
+      "Kucuk ve geri donuslu adimlar sec",
+      "Varsayim yerine soru sor"
+    ]
+  }
+}

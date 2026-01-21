@@ -1,0 +1,20 @@
+{
+  "planet_tags": {
+    "Neptune": ["fog", "idealization", "boundaries", "dissolve"],
+    "Uranus": ["shock", "freedom", "change"],
+    "Pluto": ["intensity", "power", "transform"],
+    "Saturn": ["limits", "responsibility", "discipline"],
+    "Jupiter": ["growth", "expansion"],
+    "Mars": ["drive", "conflict"],
+    "Venus": ["love", "values"],
+    "Mercury": ["mind", "communication"],
+    "Moon": ["mood", "needs"]
+  },
+  "aspect_tags": {
+    "conjunction": ["amplify"],
+    "square": ["pressure", "friction"],
+    "opposition": ["pressure", "tension"],
+    "trine": ["support", "flow"],
+    "sextile": ["support", "opportunity"]
+  }
+}

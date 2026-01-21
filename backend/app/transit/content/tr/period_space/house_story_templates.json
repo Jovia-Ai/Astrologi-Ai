@@ -1,0 +1,21 @@
+{
+  "primary_opening": [
+    "Bu donemin ana sahnesi {primary_label} tarafinda kuruluyor.",
+    "Bu donemde en cok {primary_label} alaninda yogunlasma hissedebilirsin."
+  ],
+  "primary_body": [
+    "Burada olan sey, eski aliskanliklarin artik ayni sekilde calismamasi ve yeni bir duzen ihtiyacinin buyumesi olabilir.",
+    "Netlik ararken bazi reflekslerin cozuluyor gibi hissedebilirsin; bu bir kaybolus degil, yeniden ayarlama sureci olabilir."
+  ],
+  "secondary_bridge": [
+    "Buna eslik eden ikinci vurgu {secondary_label} tarafinda; ana temayi bazen kolaylastirir, bazen zorlayabilir.",
+    "Ikinci katman {secondary_label} alaninda calisiyor; ana sahneyi buradan yonetmek daha mumkun olabilir."
+  ],
+  "closing": [
+    "Bu donem 'hemen sonuc' degil, daha cok 'yerini saglamlastirma' donemi gibi calisabilir.",
+    "Amac kusursuz olmak degil; daha gercek ve surdurulebilir bir ritim kurmak olabilir."
+  ],
+  "not_about": [
+    "Bu surec daha cok {primary_label} ile ilgili; her seyi dis basariya baglamak yerine iceriyi duzenlemek iyi gelebilir."
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "Pluto.conjunction.Uranus": {
+    "themes": ["identity", "change", "freedom"],
+    "variants": [
+      {
+        "headline": "Kırılma ve özgürleşme dürtüsü",
+        "summary": "Uzun süredir “ben buyum” dediğin bir kalıp güncellenmek ister. Değişim hızlanabilir; kontrollü alan açmak daha sağlıklı sonuç verir.",
+        "do": [
+          "Tek bir kuralı değiştir: rutin, sınır, çalışma şekli.",
+          "Kopuş yerine revizyon: önce dene, sonra karar ver."
+        ],
+        "watch": ["Ani restler", "Her şeyi bir günde bitirme isteği"]
+      },
+      {
+        "headline": "Düzen güncellemesi",
+        "summary": "Sistem yeniden yazılır: eski yöntemler çalışmadığında yenisini kurma ihtiyacı artar. Esneklik kazanmak ana kazançtır.",
+        "do": ["Hayatının bir alanında “v2 planı” çıkar.", "Riskleri küçük parçalara böl."],
+        "watch": ["Sabırsızlık", "Kontrol savaşları"]
+      }
+    ]
+  },
+  "Saturn.opposition.Mars": {
+    "themes": ["drive", "discipline", "health"],
+    "variants": [
+      {
+        "headline": "Gaz-fren dengesi",
+        "summary": "İtmek istediğin yerlerde direnç artabilir. Bu dönem, hızdan çok dayanıklılık ve doğru zamanlama öğretir.",
+        "do": [
+          "Enerjiyi böl: 2 saat odak + mola ritmi kur.",
+          "Sınır koy: yapılacaklar listesine ‘yapmayacaklar’ ekle."
+        ],
+        "watch": ["Öfkeyi içe atma", "Vücutta gerginlik/uyku düzensizliği"]
+      }
+    ]
+  },
+  "Neptune.conjunction.Saturn": {
+    "themes": ["mind", "boundaries", "inner"],
+    "variants": [
+      {
+        "headline": "Belirsizlik içinde yapı kurma",
+        "summary": "Netlik geç gelebilir; ama doğru soru sormak hız kazandırır. Eski planları revize etmek gerekebilir.",
+        "do": ["Belirsiz alanı yaz: ‘bildiklerim/bilmediklerim’.", "Kararları 48 saat kuralıyla ver."],
+        "watch": ["Dağınık ajanda", "‘Hiçbir şey net değil’ hissiyle vazgeçmek"]
+      }
+    ]
+  },
+  "Neptune.square.ASC": {
+    "themes": ["identity", "inner", "boundaries"],
+    "variants": [
+      {
+        "headline": "Kimlik algısında sis",
+        "summary": "Kendini anlatmak veya yönünü netleştirmek zorlaşabilir. Bu, ‘yanlış yoldayım’ değil; ayar dönemi olabilir.",
+        "do": ["Daha az karar, daha çok gözlem.", "Rutin + uyku + su gibi temel düzenleri sabitle."],
+        "watch": ["Kendini fazla eleştirme", "Kaçış davranışları"]
+      }
+    ]
+  },
+  "Neptune.square.DSC": {
+    "themes": ["relationships", "boundaries"],
+    "variants": [
+      {
+        "headline": "İlişkilerde belirsiz sinyaller",
+        "summary": "Karşı tarafı olduğundan farklı görmek kolaylaşır. Net sınır ve net beklenti kurmak denge getirir.",
+        "do": ["Varsayım yerine soru sor.", "‘Bunu netleştirelim’ cümlesini kullan."],
+        "watch": ["Kurtarıcı rolü", "Belirsiz sözlere gereğinden çok anlam yüklemek"]
+      }
+    ]
+  },
+  "Venus.conjunction.Jupiter": {
+    "themes": ["relationships", "joy", "money"],
+    "variants": [
+      {
+        "headline": "Keyif ve genişleme",
+        "summary": "Sosyal alanlar, ilişkiler ve zevkler büyüyebilir. Fazla abartmadan değerlendirirsen çok tatlı bir açılım verir.",
+        "do": ["Bir buluşma/bağ kurma planı yap.", "Küçük bir ödül alanı yarat."],
+        "watch": ["Aşırı harcama", "Her şeye ‘evet’ deme"]
+      }
+    ]
+  },
+  "Mercury.conjunction.Mercury": {
+    "themes": ["mind", "decisions"],
+    "variants": [
+      {
+        "headline": "Zihin netleşiyor",
+        "summary": "Konuşmalar, kararlar, planlar hız kazanır. Yazmak/planlamak verimi yükseltir.",
+        "do": ["3 madde: bugün, bu hafta, bu ay.", "Önemli konuşmaları kısa ve net tut."],
+        "watch": ["Aşırı düşünme", "Gereksiz detayda kaybolma"]
+      }
+    ]
+  },
+  "Moon.square.Moon": {
+    "themes": ["emotions", "inner"],
+    "variants": [
+      {
+        "headline": "Duygusal sürtünme (kısa)",
+        "summary": "Günlük ruh hali dalgalanabilir; eski bir hassasiyet tetiklenebilir. Bu kısa süreli bir gerilimdir.",
+        "do": ["Bugün yükü azalt.", "Tetikleyeni adlandır: ‘Şu yüzden gerildim’."],
+        "watch": ["Ani kırılmalar", "Gereksiz tartışma"]
+      }
+    ]
+  },
+  "Uranus.trine.Mars": {
+    "themes": ["drive", "freedom", "creativity"],
+    "variants": [
+      {
+        "headline": "Cesur hamle enerjisi",
+        "summary": "Hızlı çözüm bulma ve yeni yöntem deneme isteği artar. Doğru kanala girerse müthiş verim verir.",
+        "do": ["Tek bir şeyde yenilik dene.", "Kısa sprint hedefi koy."],
+        "watch": ["Dikkat dağınıklığı", "Çabuk sıkılma"]
+      }
+    ]
+  },
+  "Saturn.sextile.Neptune": {
+    "themes": ["mind", "discipline", "inner"],
+    "variants": [
+      {
+        "headline": "Hayali plana çevirme",
+        "summary": "İlhamı somutlaştırmak kolaylaşır. Yumuşak ama disiplinli ilerleme en iyi sonucu verir.",
+        "do": ["İlhamı 30 dakikalık rutine bağla.", "İlk taslak, mükemmelden iyidir."],
+        "watch": ["Erteleme", "‘Hazır değilim’ bahanesi"]
+      }
+    ]
+  },
+  "Pluto.trine.North Node": {
+    "themes": ["growth", "change"],
+    "variants": [
+      {
+        "headline": "Kader rotası güçleniyor",
+        "summary": "Uzun vadeli yönle uyumlu değişimler daha kolay akar. Doğru seçimler ‘içeriden’ güç verir.",
+        "do": ["Uzun vadeli hedefi bir cümleye indir.", "Bir bağ/alışkanlığı daha sağlıklı hale getir."],
+        "watch": ["Güç oyunları", "Takıntılı kontrol"]
+      }
+    ]
+  }
+}

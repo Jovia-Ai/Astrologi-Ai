@@ -28,6 +28,7 @@ def build_upper_meaning_output(
     _ = (dispositor_flow, latent_potential, potential_count, axis_activation)
     integration_components = dict(integration_components or {})
     pressure_min = _env_float("UPPER_MEANING_PRESSURE_MIN", 0.45)
+    support_min = _env_float("UPPER_MEANING_SUPPORT_MIN", 0.45)
     capacity_min = _env_float("UPPER_MEANING_CAPACITY_MIN", 0.55)
     integration_min = _env_float("UPPER_MEANING_INTEGRATION_MIN", 0.55)
 
@@ -41,7 +42,13 @@ def build_upper_meaning_output(
     gate_ok = capacity_ok and (pressure_ok or integration_ok)
     alt_gate_enabled = _env_flag("UPPER_MEANING_ALT_GATE", False)
     tension_spine_hit = _has_tension_spine(dynamic_insights)
-    alt_gate_ok = alt_gate_enabled and (not gate_ok) and tension_spine_hit and capacity_ok
+    alt_gate_ok = (
+        alt_gate_enabled
+        and (not gate_ok)
+        and tension_spine_hit
+        and support_index >= support_min
+        and capacity_ok
+    )
     mode: str | None = None
     enabled = False
     reason: list[str] = []
@@ -67,6 +74,7 @@ def build_upper_meaning_output(
             "text": None,
             "thresholds": {
                 "pressure_min": pressure_min,
+                "support_min": support_min,
                 "capacity_min": capacity_min,
                 "integration_min": integration_min,
             },
@@ -116,6 +124,7 @@ def build_upper_meaning_output(
         "text": text,
         "thresholds": {
             "pressure_min": pressure_min,
+            "support_min": support_min,
             "capacity_min": capacity_min,
             "integration_min": integration_min,
         },
@@ -132,6 +141,7 @@ def build_upper_meaning_output(
             "pressure_index": round(pressure_index, 3),
             "support_index": round(support_index, 3),
             "pressure_min": round(pressure_min, 3),
+            "support_min": round(support_min, 3),
             "capacity_min": round(capacity_min, 3),
             "integration_min": round(integration_min, 3),
             "mode": mode,
@@ -213,12 +223,16 @@ def _has_tension_spine(dynamic_insights: Mapping[str, Any] | None) -> bool:
     selected = dynamic_insights.get("selected")
     if not isinstance(selected, list):
         return False
+    tensions: list[float] = []
     for entry in selected:
         if not isinstance(entry, Mapping):
             continue
+        if str(entry.get("kind") or "") != "tension_to_mastery":
+            continue
         polarity = entry.get("polarity") or {}
         tension = _safe_float(polarity.get("tension"))
-        strength = _safe_float(entry.get("strength") or entry.get("score"))
-        if tension >= 0.6 and strength >= 0.75:
-            return True
-    return False
+        tensions.append(tension)
+    if len(tensions) < 2:
+        return False
+    avg_tension = sum(tensions) / len(tensions)
+    return avg_tension >= 0.55

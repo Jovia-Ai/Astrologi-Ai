@@ -1,0 +1,35 @@
+{
+  "Saturn.ANY.ANY": {
+    "themes": ["discipline"],
+    "variants": [
+      {
+        "headline": "Ciddiyet ve yapı",
+        "summary": "Sorumluluklar görünür olur; daha sağlam bir düzen kurma ihtiyacı artar.",
+        "do": ["Öncelik sırası yap.", "Az ama düzenli ilerle."],
+        "watch": ["Aşırı yük alma"]
+      }
+    ]
+  },
+  "Neptune.ANY.ANY": {
+    "themes": ["inner", "boundaries"],
+    "variants": [
+      {
+        "headline": "Belirsizlik ve sezgi",
+        "summary": "Netlik azalabilir ama sezgi artar. Sınırları yumuşakça netleştirmek işe yarar.",
+        "do": ["Rutinleri sabitle.", "Varsayım yerine veri topla."],
+        "watch": ["Kaçış", "Belirsiz sözlere fazla anlam yüklemek"]
+      }
+    ]
+  },
+  "generic.ANY": {
+    "themes": [],
+    "variants": [
+      {
+        "headline": "Geçici etki",
+        "summary": "Bu etki dönemsel bir vurgu getirir. Zamanlama ve farkındalıkla yönetilebilir.",
+        "do": ["Aşırıya kaçmadan gözlemle.", "Küçük bir ayar yap."],
+        "watch": ["Acele karar"]
+      }
+    ]
+  }
+}

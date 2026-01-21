@@ -747,32 +747,65 @@ def _cap_connector_usage(sentences: list[str], *, max_per_paragraph: int = 1) ->
 def _soften_shadow(s: str, *, anchor: str | None = None) -> str:
     _ = anchor
     cleaned = s.strip()
-    prefix = "Bu ihtiyaç yükseldiğinde bazen "
+    prefix = "Bu ihtiyaç yükseldiğinde "
     lowered = cleaned.lower()
     if lowered.startswith(("aşırı", "fazla", "ego", "ben-merkez")) or "," in cleaned:
         core = cleaned[0].lower() + cleaned[1:] if cleaned and cleaned[0].isupper() else cleaned
-        return f"{prefix}{core} eğilimi oluşabilir."
-    return f"{prefix}{cleaned} oluşabilir."
+        return f"{prefix}{core} eğilimi ortaya çıkabilir."
+    return f"{prefix}{cleaned} ortaya çıkabilir."
 
 
-def _shadow_clause(s: str, *, anchor: str | None = None) -> str:
-    cleaned = " ".join(str(s or "").split()).strip().strip(".")
-    if "," in cleaned:
-        items = [item.strip() for item in cleaned.split(",") if item.strip()]
-        items = items[:4]
-        if len(items) >= 2:
-            first = items[0]
-            if first[:1].isupper():
-                first = first[0].lower() + first[1:]
-            items = [first] + items[1:]
-            core = " ya da ".join([", ".join(items[:-1]), items[-1]]) if len(items) > 2 else " ya da ".join(items)
-            return (
-                f"Bu ihtiyaç yükseldiğinde bazen {core} hissedebilirsin; "
-                "bu bir kusur değil, sistemin yük bindirdiği alan."
-            )
-    sentence = _soften_shadow(cleaned, anchor=anchor).rstrip(".")
-    return f"{sentence}; bu bir kusur değil, sistemin yük bindirdiği alan."
+def _is_enum_like(text: str) -> bool:
+    if text.count(",") >= 2:
+        return True
+    if re.search(r"\bve\b", text) and text.count(",") >= 1:
+        return True
+    return False
 
+
+def _wrap_shadow(shadow_text: str) -> list[str]:
+    t = shadow_text.strip().rstrip(".")
+    if not t:
+        return []
+    if _is_enum_like(t):
+        return [
+            f"Bu ihtiyaç yükseldiğinde, {t} daha kolay tetiklenebilir.",
+            "Bu bir kusur değil; sistemin yük bindirdiği alan.",
+        ]
+    lowered = t.lower()
+    return [
+        f"Baskı arttığında {lowered} ortaya çıkabilir.",
+        "Bu bir kusur değil; sistemin yük bindirdiği alan.",
+    ]
+
+
+def _fix_duplicate_tokens(s: str) -> str:
+    return re.sub(r"\b(\w+)\s+\1\b", r"\1", s, flags=re.IGNORECASE)
+
+
+def _clean_sentence(s: str) -> str:
+    cleaned = s.strip()
+    cleaned = _fix_duplicate_tokens(cleaned)
+    cleaned = re.sub(r"\s+,", ",", cleaned)
+    cleaned = re.sub(r",\s+\.", ".", cleaned)
+    return cleaned
+
+
+def _bridge_inner_outer(sentences: list[str]) -> list[str]:
+    out: list[str] = []
+    i = 0
+    while i < len(sentences):
+        a = sentences[i].strip()
+        b = sentences[i + 1].strip() if i + 1 < len(sentences) else ""
+        if a.startswith("Bazen içeride") and b.startswith("Kendini tanıdıkça"):
+            merged = a.rstrip(".") + "; bu yüzden " + b[0].lower() + b[1:]
+            merged += " Bu, dışarıya yansıttığın kimliği de destekler."
+            out.append(merged)
+            i += 2
+            continue
+        out.append(a)
+        i += 1
+    return out
 
 def _collapse_repeated_leads(text: str) -> str:
     return re.sub(r"\b(Temelde[, ]+){2,}", "Temelde, ", text, flags=re.I)
@@ -795,7 +828,6 @@ def _needs_connector(prev_role: str, next_role: str) -> bool:
     return (prev_role, next_role) in {
         ("cause", "effect"),
         ("mechanism", "effect"),
-        ("effect", "shadow"),
         ("shadow", "potential"),
         ("effect", "potential"),
         ("cause", "potential"),
@@ -807,7 +839,6 @@ def _pick_connector(prev_role: str, next_role: str, used_connectors: set[str]) -
     mapping = {
         ("cause", "effect"): "Bu yüzden",
         ("mechanism", "effect"): "Böylece",
-        ("effect", "shadow"): "Bazen",
         ("shadow", "potential"): "Ama",
         ("effect", "potential"): "Bu yüzden",
         ("cause", "potential"): "Sonuç olarak",
@@ -901,21 +932,6 @@ def _merge_adjacent_sentences(
     for entry in sentences_with_kind:
         if not merged:
             merged.append(entry)
-            continue
-        role = entry.get("role", "")
-        prev_role = merged[-1].get("role", "")
-        sentence = entry.get("sentence", "")
-        if entry.get("shadow_clause"):
-            target_index = None
-            for idx in range(len(merged) - 1, -1, -1):
-                if merged[idx].get("role") in {"cause", "mechanism"}:
-                    target_index = idx
-                    break
-            if target_index is None:
-                target_index = len(merged) - 1
-            merged[target_index]["sentence"] = _merge_sentence(
-                merged[target_index]["sentence"], sentence, connector=None
-            )
             continue
         merged.append(entry)
     return merged
@@ -1059,9 +1075,9 @@ def _synthesize_paragraph(
     for item in items:
         raw_text = item.get("text", "")
         if item.get("kind") == "shadow" and raw_text:
-            raw_text = _shadow_clause(raw_text, anchor=anchor_need)
+            candidates = _wrap_shadow(raw_text)
             shadow_linked = True
-        if item.get("kind") == "shadow":
+        elif item.get("kind") == "shadow":
             candidates = [raw_text] if raw_text else []
         else:
             candidates = _split_sentences(raw_text)[:1]
@@ -1084,7 +1100,6 @@ def _synthesize_paragraph(
                         "fragment_id": item.get("fragment_id", ""),
                         "slot": item.get("slot", ""),
                         "role": role,
-                        "shadow_clause": item.get("kind") == "shadow",
                     }
                 )
 
@@ -1106,6 +1121,9 @@ def _synthesize_paragraph(
 
     sentences, connector_count = _add_connectors_with_cap(sentences_with_kind, max_connectors=max_connectors)
     sentences, _ = _cap_connector_usage(sentences, max_per_paragraph=max_connectors)
+    sentences = [_clean_sentence(sentence) for sentence in sentences if sentence]
+    sentences = _bridge_inner_outer(sentences)
+    sentences = _dedupe_sentences(sentences)
     sentences = [_ensure_terminal_punctuation(sentence) for sentence in sentences if sentence]
 
     for entry in sentences_with_kind:

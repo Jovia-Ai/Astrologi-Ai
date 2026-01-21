@@ -42,26 +42,15 @@ def build_composite_meanings_v1(
         if not composite_id:
             continue
         template = templates_by_id.get(composite_id)
-        strength = _clamp01(_safe_float(composite.get("priority_score"), fallback=0.5))
-        sources = (template or {}).get("sources") or composite.get("sources") or []
-        domains = _normalize_domains((template or {}).get("domains") or composite.get("domains") or composite.get("domain"))
         if not template:
-            legacy_text = str(composite.get("base_interpretation") or "").strip()
-            if not legacy_text:
-                rejected.append({"composite_id": composite_id, "reason": "no_mapping"})
-                continue
-            meaning_id = f"cm.legacy.{composite_id}.v1"
-            instance_id = _instance_id(meaning_id, composite_id, sources)
-            narrative = {
-                "headline": legacy_text,
-                "p1_bridge": "",
-                "p2_bridge": "",
-                "p3_bridge": "",
-            }
-        else:
-            meaning_id = template.get("meaning_id") or ""
-            instance_id = _instance_id(meaning_id, composite_id, sources)
-            narrative = template.get("templates") or {}
+            rejected.append({"composite_id": composite_id, "reason": "no_mapping"})
+            continue
+        strength = _clamp01(_safe_float(composite.get("priority_score"), fallback=0.5))
+        sources = template.get("sources") or []
+        meaning_id = template.get("meaning_id") or ""
+        domains = _normalize_domains(template.get("domains") or composite.get("domains") or composite.get("domain"))
+        instance_id = _instance_id(meaning_id, composite_id, sources)
+        narrative = template.get("templates") or {}
 
         entry = {
             "meaning_id": meaning_id,

@@ -1,0 +1,1022 @@
+"""API route for transit engine v1."""
+from __future__ import annotations
+
+from pathlib import Path
+import hashlib
+from typing import Any, Dict, List, Mapping, Optional, Tuple
+import json
+
+from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel, ConfigDict, Field
+
+from app.engine.transit_engine import (
+    build_transit_event_timing,
+    build_transit_report,
+    build_transit_window_report,
+)
+from app.transit.interpret.interpretation_engine_v1 import ContentStore, interpret_items
+from app.transit.interpret.promise_builder_v1 import build_promise_model
+
+router = APIRouter(tags=["transits"])
+
+_CONTENT_STORE: ContentStore | None = None
+_PERIOD_SPACE_PACK: Dict[str, Any] | None = None
+
+
+def _load_content_store() -> ContentStore:
+    global _CONTENT_STORE
+    if _CONTENT_STORE is None:
+        base_path = Path(__file__).resolve().parents[2] / "transit" / "content" / "tr"
+        with (base_path / "transit_templates.v1.json").open("r", encoding="utf-8") as handle:
+            templates = json.load(handle)
+        with (base_path / "promise_claims.v1.json").open("r", encoding="utf-8") as handle:
+            claims = json.load(handle)
+        with (base_path / "point_affinity.v1.json").open("r", encoding="utf-8") as handle:
+            point_affinity = json.load(handle)
+        with (base_path / "tag_map.v1.json").open("r", encoding="utf-8") as handle:
+            tag_map = json.load(handle)
+        mapping = {"point_affinity": point_affinity, **tag_map}
+        _CONTENT_STORE = ContentStore(templates, claims, mapping)
+    return _CONTENT_STORE
+
+
+def _load_period_space_pack() -> Dict[str, Any]:
+    global _PERIOD_SPACE_PACK
+    if _PERIOD_SPACE_PACK is None:
+        base_path = (
+            Path(__file__).resolve().parents[2] / "transit" / "content" / "tr" / "period_space"
+        )
+        pack = {}
+        with (base_path / "house_labels.json").open("r", encoding="utf-8") as handle:
+            pack["house_labels"] = json.load(handle)
+        with (base_path / "house_story_templates.json").open("r", encoding="utf-8") as handle:
+            pack["house_story"] = json.load(handle)
+        with (base_path / "axis_pack.json").open("r", encoding="utf-8") as handle:
+            pack["axis_pack"] = json.load(handle)
+        with (base_path / "housepair_interactions.json").open("r", encoding="utf-8") as handle:
+            pack["housepair_pack"] = json.load(handle)
+        _PERIOD_SPACE_PACK = pack
+    return _PERIOD_SPACE_PACK or {}
+
+
+def _default_house_labels() -> Dict[int, str]:
+    return {
+        1: "kimlik ve durus",
+        2: "para ve ozdeger",
+        3: "zihin ve iletisim",
+        4: "ev ve ic guven",
+        5: "yaraticilik ve keyif",
+        6: "ritim ve saglik",
+        7: "iliski ve ortaklik",
+        8: "yakinlik ve guven",
+        9: "yon ve anlam",
+        10: "kariyer ve gorunurluk",
+        11: "cevre ve gelecek plani",
+        12: "ic dunya ve cozunme",
+    }
+
+
+def _house_labels_from_pack(pack: Dict[str, Any]) -> Dict[int, str]:
+    raw = pack.get("house_labels") or {}
+    labels: Dict[int, str] = {}
+    for key, label in raw.items():
+        if not key.startswith("house_"):
+            continue
+        try:
+            house_num = int(key.split("_", 1)[1])
+        except ValueError:
+            continue
+        labels[house_num] = str(label)
+    return labels or _default_house_labels()
+
+
+def _build_content_debug(items: List[Dict[str, Any]], content_store: ContentStore) -> Dict[str, Any]:
+    templates = content_store.templates or {}
+    missing_keys: set[str] = set()
+    resolved_exact = 0
+    resolved_mid = 0
+    resolved_fallback = 0
+
+    resolved_keys_top: list[Dict[str, Any]] = []
+    for item in sorted(items, key=lambda it: -float(it.get("strength") or 0.0))[:10]:
+        wanted = _format_key(item.get("transit_body"), item.get("aspect"), item.get("natal_point"))
+        used = ((item.get("interpretation") or {}).get("content_ref") or {}).get("key")
+        resolved_keys_top.append(
+            {
+                "event_id": item.get("event_id"),
+                "wanted": wanted.lower(),
+                "used": str(used or "").lower(),
+            }
+        )
+
+    for item in items:
+        transit_body = item.get("transit_body")
+        aspect = item.get("aspect")
+        natal_point = item.get("natal_point")
+        wanted = _format_key(transit_body, aspect, natal_point)
+        used = ((item.get("interpretation") or {}).get("content_ref") or {}).get("key")
+        polarity = item.get("polarity")
+
+        if wanted.lower() not in templates:
+            missing_keys.add(wanted.lower())
+
+        if str(used or "").lower() == wanted.lower():
+            resolved_exact += 1
+        elif str(used or "").lower() == _format_key(transit_body, aspect, "ANY").lower():
+            resolved_mid += 1
+        else:
+            resolved_fallback += 1
+
+    return {
+        "resolved_keys_top": resolved_keys_top,
+        "missing_keys": sorted(missing_keys),
+        "coverage": {
+            "items_total": len(items),
+            "resolved_exact": resolved_exact,
+            "resolved_mid": resolved_mid,
+            "resolved_fallback": resolved_fallback,
+        },
+    }
+
+
+def _build_presentable_summary(items: List[Dict[str, Any]], featured: List[Dict[str, Any]]) -> Dict[str, Any]:
+    theme_scores: Dict[str, float] = {}
+    for item in featured or []:
+        themes = ((item.get("interpretation") or {}).get("themes") or []) or []
+        strength = float(item.get("strength") or 0.0)
+        for theme in themes:
+            theme_scores[theme] = theme_scores.get(theme, 0.0) + strength
+
+    sorted_scores = sorted(theme_scores.items(), key=lambda kv: kv[1], reverse=True)
+    max_score = sorted_scores[0][1] if sorted_scores else 1.0
+    theme_scores_list = [
+        {"theme": theme, "score": round(score / max_score, 3)} for theme, score in sorted_scores
+    ]
+    main_theme = sorted_scores[0][0] if sorted_scores else None
+    one_liner = _theme_one_liner(main_theme)
+    top_drivers = [item.get("label") for item in featured[:3] if item.get("label")]
+
+    return {
+        "main_theme": main_theme,
+        "one_liner": one_liner,
+        "top_drivers": top_drivers,
+        "theme_scores": theme_scores_list,
+    }
+
+
+def _build_period_space(
+    items: List[Dict[str, Any]],
+    *,
+    include_axis_focus: bool,
+) -> Dict[str, Any]:
+    pack = _load_period_space_pack()
+    house_labels = _house_labels_from_pack(pack)
+    angle_house = {"ASC": 1, "DSC": 7, "MC": 10, "IC": 4}
+    long_bodies = {
+        "Saturn",
+        "Uranus",
+        "Neptune",
+        "Pluto",
+        "North Node",
+        "South Node",
+        "Chiron",
+    }
+
+    candidates = [
+        item
+        for item in items
+        if item.get("bucket") == "long"
+        and item.get("transit_body") in long_bodies
+        and float(item.get("strength") or 0.0) >= 0.55
+    ]
+    candidates = sorted(
+        candidates, key=lambda item: -float(item.get("strength") or 0.0)
+    )[:15]
+
+    house_scores: Dict[int, float] = {}
+    house_why: Dict[int, List[Dict[str, Any]]] = {}
+
+    for item in candidates:
+        event_id = item.get("event_id")
+        strength = float(item.get("strength") or 0.0)
+        natal_point = item.get("natal_point")
+        houses = item.get("houses") or {}
+        natal_house = houses.get("natal_point_house")
+        overlay_house = houses.get("transit_in_natal_house")
+
+        if natal_point in angle_house:
+            natal_house = angle_house[natal_point]
+
+        if isinstance(natal_house, int):
+            weight = strength * 0.6
+            house_scores[natal_house] = house_scores.get(natal_house, 0.0) + weight
+            house_why.setdefault(natal_house, []).append(
+                {"event_id": event_id, "weight": round(weight, 3)}
+            )
+        if isinstance(overlay_house, int):
+            weight = strength * 0.4
+            house_scores[overlay_house] = house_scores.get(overlay_house, 0.0) + weight
+            house_why.setdefault(overlay_house, []).append(
+                {"event_id": event_id, "weight": round(weight, 3)}
+            )
+
+    if not house_scores:
+        return {
+            "house_weights": [],
+            "house_focus": {"primary": [], "secondary": []},
+            "house_story": "",
+            "axis_focus": [],
+            "interactions": [],
+            "content_ref": {"pack": "tr.period_space.v1"},
+        }
+
+    max_score = max(house_scores.values()) or 1.0
+    ordered = sorted(house_scores.items(), key=lambda kv: (-kv[1], kv[0]))
+    house_weights = []
+    for house, score in ordered:
+        why_entries = house_why.get(house, [])
+        why_total = sum(entry.get("weight", 0.0) for entry in why_entries)
+        house_weights.append(
+            {
+                "house": house,
+                "label": house_labels.get(house, "alan"),
+                "score": round(score / max_score, 3),
+                "why": why_entries,
+                "why_total": round(why_total, 3),
+            }
+        )
+
+    primary_house = ordered[0][0]
+    secondary_houses = [house for house, _ in ordered[1:3]]
+    def _focus_entry(house: int) -> Dict[str, Any]:
+        label = house_labels.get(house, "alan")
+        score = next((entry["score"] for entry in house_weights if entry["house"] == house), 0.0)
+        return {"house": house, "label": label, "score": score}
+
+    house_focus = {
+        "primary": [_focus_entry(primary_house)],
+        "secondary": [_focus_entry(house) for house in secondary_houses],
+    }
+
+    story_pack = pack.get("house_story") or {}
+    opening_templates = story_pack.get("primary_opening") or []
+    body_templates = story_pack.get("primary_body") or []
+    secondary_templates = story_pack.get("secondary_bridge") or []
+    closing_templates = story_pack.get("closing") or []
+    not_about_templates = story_pack.get("not_about") or []
+
+    def _pick_template(templates: List[str], seed: str) -> str:
+        if not templates:
+            return ""
+        idx = int(hashlib.sha1(seed.encode("utf-8")).hexdigest(), 16) % len(templates)
+        return templates[idx]
+
+    primary_label = house_labels.get(primary_house, "alan")
+    opening_sentence = _pick_template(opening_templates, f"{primary_house}:open") or (
+        f"Bu donemin ana sahnesi {primary_label} tarafinda kuruluyor."
+    )
+    body_sentence = _pick_template(body_templates, f"{primary_house}:body") or (
+        "Burada olan sey, eski aliskanliklarin artik ayni sekilde calismamasi ve yeni bir duzen ihtiyacinin buyumesi olabilir."
+    )
+    primary_sentence = " ".join(
+        [
+            opening_sentence.format(primary_label=primary_label, house=primary_house),
+            body_sentence.format(primary_label=primary_label, house=primary_house),
+        ]
+    ).strip()
+
+    secondary_sentences = []
+    for house in secondary_houses:
+        label = house_labels.get(house, "alan")
+        template = _pick_template(secondary_templates, f"{primary_house}:{house}") or (
+            f"Ikinci katman {label} alaninda calisiyor."
+        )
+        secondary_sentences.append(
+            template.format(secondary_label=label, house=house, primary_label=primary_label)
+        )
+
+    closing_sentence = _pick_template(closing_templates, f"{primary_house}:closing") or (
+        "Bu donem 'hemen sonuc' degil, daha cok 'yerini saglamlastirma' donemi gibi calisabilir."
+    )
+    not_about_sentence = _pick_template(not_about_templates, f"{primary_house}:not_about")
+
+    paragraphs = [primary_sentence]
+    if secondary_sentences:
+        paragraphs.append(" ".join(secondary_sentences).strip())
+    closing_block = closing_sentence
+    if not_about_sentence:
+        closing_block = f"{closing_block} {not_about_sentence.format(primary_label=primary_label)}"
+    paragraphs.append(closing_block.strip())
+    house_story = "\n\n".join([p for p in paragraphs if p]).strip()
+
+    axis_pairs = [
+        (1, 7, "1-7", "benlik - iliskiler"),
+        (2, 8, "2-8", "deger - yakinlik"),
+        (3, 9, "3-9", "zihin - yon"),
+        (4, 10, "4-10", "ev - kariyer"),
+        (5, 11, "5-11", "ifade - topluluk"),
+        (6, 12, "6-12", "ritim - ic dunya"),
+    ]
+    axis_focus = []
+    if include_axis_focus:
+        axis_pack = pack.get("axis_pack") or {}
+
+        def _resolve_axis(axis_id: str, mode: str) -> Tuple[str, Dict[str, Any]]:
+            keys = [
+                f"axis.{axis_id}.{mode}.any",
+                f"axis.{axis_id}.any",
+                f"axis.generic.{mode}.any",
+                "axis.generic.any",
+            ]
+            for key in keys:
+                if key in axis_pack:
+                    return key, axis_pack[key]
+            return "axis.generic.any", {}
+
+        axis_stats: Dict[str, Dict[str, Any]] = {}
+        for item in candidates:
+            strength = float(item.get("strength") or 0.0)
+            polarity = str(item.get("polarity") or "")
+            houses = item.get("houses") or {}
+            natal_point = item.get("natal_point")
+            natal_house = houses.get("natal_point_house")
+            overlay_house = houses.get("transit_in_natal_house")
+            if natal_point in angle_house:
+                natal_house = angle_house[natal_point]
+            if natal_house is None and overlay_house is None:
+                continue
+            if natal_house is None:
+                natal_house = overlay_house
+            if overlay_house is None:
+                overlay_house = natal_house
+            if natal_house is None or overlay_house is None:
+                continue
+            pair = tuple(sorted([int(natal_house), int(overlay_house)]))
+            axis_id = f"{pair[0]}-{pair[1]}"
+            stats = axis_stats.setdefault(
+                axis_id,
+                {"total": 0.0, "pressure": 0.0, "support": 0.0, "drivers": []},
+            )
+            stats["total"] += strength
+            if polarity == "hard":
+                stats["pressure"] += strength
+            elif polarity == "soft":
+                stats["support"] += strength
+            stats["drivers"].append(
+                {
+                    "event_id": item.get("event_id"),
+                    "weight": round(strength, 3),
+                    "houses": [natal_house, overlay_house],
+                }
+            )
+
+        for left, right, axis_id, label in axis_pairs:
+            stats = axis_stats.get(axis_id)
+            if not stats:
+                continue
+            total = stats.get("total", 0.0)
+            if total <= 0:
+                continue
+            pressure = stats.get("pressure", 0.0)
+            support = stats.get("support", 0.0)
+            ratio = pressure / (pressure + support + 1e-6)
+            if ratio >= 0.6:
+                mode = "pressure"
+            elif ratio <= 0.4:
+                mode = "support"
+            else:
+                mode = "mixed"
+
+            block_key, block = _resolve_axis(axis_id, mode)
+            left_label = house_labels.get(left, "alan")
+            right_label = house_labels.get(right, "alan")
+            axis_focus.append(
+                {
+                    "axis": axis_id,
+                    "label": block.get("label") or label,
+                    "weight": round(total / max_score, 3),
+                    "experience": [
+                        block.get("one_liner")
+                        or f"{left_label} ile {right_label} arasinda denge kurma ihtiyaci artabilir."
+                    ],
+                    "one_liner": block.get("one_liner")
+                    or f"{left_label} ile {right_label} arasinda denge kurma ihtiyaci artabilir.",
+                    "how_it_plays": (
+                        block.get("how_it_plays")
+                        or [
+                            "Iki alan arasinda gidip gelme hissi",
+                            "Karar vermeden once daha cok dusunme ihtiyaci",
+                        ]
+                    )[:2],
+                    "good_management": (
+                        block.get("good_management")
+                        or [
+                            "Kucuk ve geri donuslu adimlar sec",
+                            "Varsayim yerine soru sormak",
+                        ]
+                    )[:2],
+                    "why": stats.get("drivers", []),
+                    "content_ref": {"lang": "tr", "pack": "period_space.v1", "key": block_key},
+                    "mode_debug": {
+                        "pressure": round(pressure, 3),
+                        "support": round(support, 3),
+                        "ratio": round(ratio, 3),
+                    },
+                }
+            )
+        axis_focus = sorted(axis_focus, key=lambda entry: (-entry["weight"], entry["axis"]))[:2]
+
+    interactions = _build_period_interactions(items, pack)
+    housepair_focus = interactions[:2] if interactions else []
+    return {
+        "house_weights": house_weights,
+        "house_focus": house_focus,
+        "house_story": house_story,
+        "axis_focus": axis_focus,
+        "interactions": interactions,
+        "housepair_focus": housepair_focus,
+        "content_ref": {"lang": "tr", "pack": "period_space.v1"},
+    }
+
+
+def _build_ranking(items: List[Dict[str, Any]]) -> None:
+    body_weight = {
+        "Pluto": 1.70,
+        "Neptune": 1.45,
+        "Uranus": 1.40,
+        "Saturn": 1.65,
+        "Jupiter": 1.25,
+        "Mars": 1.15,
+        "Sun": 1.15,
+        "Venus": 1.10,
+        "Mercury": 1.05,
+        "Moon": 1.10,
+        "North Node": 1.35,
+        "South Node": 1.35,
+        "Chiron": 1.10,
+        "Lilith": 0.85,
+        "Vertex": 0.80,
+        "Fortune": 0.75,
+    }
+    target_weight = {
+        "ASC": 1.35,
+        "MC": 1.35,
+        "DSC": 1.35,
+        "IC": 1.35,
+        "Sun": 1.30,
+        "Moon": 1.30,
+        "Mercury": 1.15,
+        "Venus": 1.15,
+        "Mars": 1.15,
+        "Jupiter": 1.10,
+        "Saturn": 1.10,
+        "Uranus": 1.00,
+        "Neptune": 1.00,
+        "Pluto": 1.00,
+        "North Node": 0.95,
+        "South Node": 0.95,
+        "Chiron": 0.90,
+        "Lilith": 0.80,
+        "Vertex": 0.80,
+        "Fortune": 0.80,
+    }
+    aspect_weight = {
+        "conjunction": 1.25,
+        "opposition": 1.20,
+        "square": 1.20,
+        "trine": 1.05,
+        "sextile": 1.00,
+    }
+    house_weight = {1: 1.18, 4: 1.18, 7: 1.18, 10: 1.18}
+    time_weight = {"long": 1.15, "medium": 1.05, "short": 0.95}
+    phase_weight = {"applying": 1.08, "exact": 1.12, "exactish": 1.12, "separating": 0.98}
+
+    for item in items:
+        strength = float(item.get("strength") or 0.0)
+        transit_body = str(item.get("transit_body") or "")
+        natal_point = str(item.get("natal_point") or "")
+        aspect = str(item.get("aspect") or "").lower()
+        bucket = str(item.get("bucket") or "")
+        phase = str(item.get("phase") or "")
+        context = (item.get("interpretation") or {}).get("context") or {}
+        natal_house = context.get("natal_target_house") or (item.get("houses") or {}).get(
+            "natal_point_house"
+        )
+        house_mul = house_weight.get(int(natal_house), 1.00) if natal_house else 1.00
+
+        weight = (
+            strength
+            * body_weight.get(transit_body, 1.0)
+            * target_weight.get(natal_point, 1.0)
+            * aspect_weight.get(aspect, 1.0)
+            * house_mul
+            * time_weight.get(bucket, 1.0)
+            * phase_weight.get(phase, 1.0)
+        )
+
+        reasons = []
+        if transit_body in {"Pluto", "Neptune", "Uranus", "Saturn"}:
+            reasons.append("outer_planet")
+        if transit_body in {"North Node", "South Node"}:
+            reasons.append("nodes")
+        if natal_point in {"ASC", "MC", "DSC", "IC"}:
+            reasons.append("angular")
+        if aspect in {"square", "opposition", "conjunction"}:
+            reasons.append("hard_aspect")
+        if bucket == "long":
+            reasons.append("long_window")
+
+        tier = "flavor"
+        if weight >= 1.60:
+            tier = "main"
+        elif weight >= 1.20:
+            tier = "support"
+
+        if transit_body in {"Lilith", "Vertex", "Fortune"} or natal_point in {
+            "Lilith",
+            "Vertex",
+            "Fortune",
+        }:
+            tier = "support" if weight >= 1.20 else "flavor"
+            reasons.append("point_body")
+
+        if transit_body in {"Pluto", "Saturn", "North Node", "South Node"} and aspect in {
+            "square",
+            "opposition",
+            "conjunction",
+        }:
+            if tier == "flavor":
+                tier = "support"
+            reasons.append("outer_hard")
+
+        item["ranking"] = {
+            "strength": round(strength, 3),
+            "weight": round(weight, 2),
+            "tier": tier,
+            "reasons": reasons,
+        }
+
+
+def _select_event_tiers(items: List[Dict[str, Any]]) -> Dict[str, List[Dict[str, Any]]]:
+    max_main = 5
+    max_support = 8
+    max_flavor = 6
+    max_per_transit_body = 3
+    max_per_natal_target = 2
+
+    deduped: Dict[Tuple[str, str, str], Dict[str, Any]] = {}
+    for item in items:
+        key = (
+            str(item.get("transit_body") or ""),
+            str(item.get("natal_point") or ""),
+            str(item.get("aspect") or ""),
+        )
+        existing = deduped.get(key)
+        if not existing or float(item.get("ranking", {}).get("weight") or 0.0) > float(
+            existing.get("ranking", {}).get("weight") or 0.0
+        ):
+            deduped[key] = item
+
+    def _filter_by_tier(tier: str) -> List[Dict[str, Any]]:
+        filtered = [item for item in deduped.values() if item.get("ranking", {}).get("tier") == tier]
+        filtered.sort(
+            key=lambda it: (-float(it.get("ranking", {}).get("weight") or 0.0), str(it.get("event_id") or "")),
+        )
+        body_counts: Dict[str, int] = {}
+        target_counts: Dict[str, int] = {}
+        out = []
+        for item in filtered:
+            body = str(item.get("transit_body") or "")
+            target = str(item.get("natal_point") or "")
+            if body_counts.get(body, 0) >= max_per_transit_body:
+                continue
+            if target_counts.get(target, 0) >= max_per_natal_target:
+                continue
+            body_counts[body] = body_counts.get(body, 0) + 1
+            target_counts[target] = target_counts.get(target, 0) + 1
+            out.append(item)
+        return out
+
+    main_events = _filter_by_tier("main")[:max_main]
+    support_events = _filter_by_tier("support")[:max_support]
+    flavor_events = _filter_by_tier("flavor")[:max_flavor]
+    return {
+        "main_events": main_events,
+        "support_events": support_events,
+        "flavor_events": flavor_events,
+    }
+
+
+def _build_period_interactions(items: List[Dict[str, Any]], pack: Dict[str, Any]) -> List[Dict[str, Any]]:
+    house_labels = _house_labels_from_pack(pack)
+    angle_house = {"ASC": 1, "DSC": 7, "MC": 10, "IC": 4}
+    duration_weight = {"long": 1.0, "medium": 0.7, "short": 0.3}
+    polarity_weight = {"hard": 1.0, "soft": 0.7, "neutral": 0.6}
+    preferred_planets = {"Saturn", "Uranus", "Neptune", "Pluto", "Jupiter"}
+
+    scored_events = []
+    for item in items:
+        strength = float(item.get("strength") or 0.0)
+        if strength < 0.70:
+            continue
+        bucket = str(item.get("bucket") or "")
+        if bucket not in {"long", "medium"}:
+            continue
+        if str(item.get("transit_body") or "") not in preferred_planets:
+            continue
+        weight = strength * duration_weight.get(bucket, 0.7)
+        weight *= polarity_weight.get(str(item.get("polarity") or ""), 0.6)
+        scored_events.append((item, weight))
+
+    scored_events = sorted(
+        scored_events,
+        key=lambda pair: (-pair[1], str(pair[0].get("event_id") or "")),
+    )[:15]
+
+    pair_stats: Dict[str, Dict[str, Any]] = {}
+    for item, weight in scored_events:
+        houses = item.get("houses") or {}
+        natal_point = item.get("natal_point")
+        natal_house = houses.get("natal_point_house")
+        overlay_house = houses.get("transit_in_natal_house")
+        if natal_point in angle_house:
+            natal_house = angle_house[natal_point]
+        if natal_house is None and overlay_house is None:
+            continue
+        if natal_house is None:
+            natal_house = overlay_house
+        if overlay_house is None:
+            overlay_house = natal_house
+        if natal_house is None or overlay_house is None:
+            continue
+
+        pair = tuple(sorted([int(natal_house), int(overlay_house)]))
+        key = f"housepair.{pair[0]}-{pair[1]}"
+
+        stats = pair_stats.setdefault(
+            key,
+            {
+                "pair": pair,
+                "total_weight": 0.0,
+                "hard_weight": 0.0,
+                "soft_weight": 0.0,
+                "drivers": [],
+            },
+        )
+        stats["total_weight"] += weight
+        if item.get("polarity") == "hard":
+            stats["hard_weight"] += weight
+        elif item.get("polarity") == "soft":
+            stats["soft_weight"] += weight
+        stats["drivers"].append(
+            {
+                "event_id": item.get("event_id"),
+                "weight": round(weight, 3),
+                "houses": [natal_house, overlay_house],
+            }
+        )
+
+    templates = pack.get("housepair_pack") or {}
+
+    def _resolve_housepair(pair_id: str, mode: str) -> Tuple[str, Dict[str, Any]]:
+        keys = [
+            f"housepair.{pair_id}.{mode}.any",
+            f"housepair.{pair_id}.any",
+            f"housepair.generic.{mode}.any",
+            "housepair.generic.any",
+        ]
+        for key in keys:
+            if key in templates:
+                return key, templates[key]
+        return "housepair.generic.any", {}
+
+    interactions = []
+    for key, stats in sorted(
+        pair_stats.items(), key=lambda kv: (-kv[1]["total_weight"], kv[0])
+    )[:4]:
+        total = stats["total_weight"]
+        if total <= 0:
+            continue
+        hard_ratio = stats["hard_weight"] / total if total else 0.0
+        soft_ratio = stats["soft_weight"] / total if total else 0.0
+        if hard_ratio > 0.6:
+            mode = "pressure"
+        elif soft_ratio > 0.6:
+            mode = "support"
+        else:
+            mode = "mixed"
+
+        pressure = stats["hard_weight"]
+        support = stats["soft_weight"]
+        ratio = pressure / (pressure + support + 1e-6)
+        pair = stats["pair"]
+        pair_id = f"{pair[0]}-{pair[1]}"
+        block_key, block = _resolve_housepair(pair_id, mode)
+        left_label = house_labels.get(pair[0], "alan")
+        right_label = house_labels.get(pair[1], "alan")
+        label = block.get("label") or f"{left_label} - {right_label} hatti"
+
+        one_liner = block.get("one_liner")
+        how_it_plays = block.get("how_it_plays") or []
+        good_management = block.get("good_management") or []
+
+        if not one_liner or not how_it_plays or not good_management:
+            fallback_key, fallback_block = _resolve_housepair("generic", mode)
+            block_key = fallback_key
+            if not one_liner:
+                one_liner = fallback_block.get("one_liner")
+            if not how_it_plays:
+                how_it_plays = fallback_block.get("how_it_plays") or []
+            if not good_management:
+                good_management = fallback_block.get("good_management") or []
+
+        interactions.append(
+            {
+                "id": key,
+                "houses": list(pair),
+                "label": label,
+                "mode": mode,
+                "one_liner": one_liner,
+                "drivers": stats["drivers"][:3],
+                "how_it_plays": how_it_plays[:2],
+                "good_management": good_management[:2],
+                "why": stats["drivers"][:3],
+                "content_ref": {"lang": "tr", "pack": "period_space.v1", "key": block_key},
+                "mode_debug": {
+                    "pressure": round(pressure, 3),
+                    "support": round(support, 3),
+                    "ratio": round(ratio, 3),
+                },
+            }
+        )
+
+    return interactions
+
+
+def _theme_one_liner(theme: str | None) -> str | None:
+    mapping = {
+        "self": "Bu dönem benlik teması daha görünür.",
+        "relationships": "İlişkilerde denge kurma ihtiyacı artar.",
+        "career": "Kariyer ve yön teması öne çıkar.",
+        "home": "Ev ve aidiyet alanında yeniden ayar yapılır.",
+        "inner": "İç dünyada farkındalık artar.",
+        "mind": "Zihin/iletişim teması hızlanır.",
+    }
+    if theme is None:
+        return None
+    return mapping.get(theme, "Bu dönem belirgin bir tema vurgusu getirir.")
+
+
+def _normalize_key(value: Any) -> str:
+    return str(value or "").strip().lower().replace(" ", "_")
+
+
+def _format_key(transit_body: Any, aspect: Any, natal_point: Any) -> str:
+    return f"{_normalize_key(transit_body)}.{_normalize_key(aspect)}.{_normalize_key(natal_point)}"
+
+
+def _build_natal_snapshot(natal: Dict[str, Any]) -> Dict[str, Any]:
+    asc_sign = ((natal.get("angles") or {}).get("ASC") or {}).get("sign")
+    sun_house = None
+    moon_house = None
+    saturn_house = None
+    neptune_house = None
+    pluto_house = None
+    for body in natal.get("bodies") or []:
+        name = body.get("body")
+        house = body.get("house")
+        if name == "Sun":
+            sun_house = house
+        elif name == "Moon":
+            moon_house = house
+        elif name == "Saturn":
+            saturn_house = house
+        elif name == "Neptune":
+            neptune_house = house
+        elif name == "Pluto":
+            pluto_house = house
+    return {
+        "asc_sign": asc_sign,
+        "sun_house": sun_house,
+        "moon_house": moon_house,
+        "saturn_house": saturn_house,
+        "neptune_house": neptune_house,
+        "pluto_house": pluto_house,
+    }
+
+
+class TransitOptions(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    house_system: str = "placidus"
+    zodiac: str = "tropical"
+    include_bodies: List[str] = Field(default_factory=list)
+    include_angles: bool = True
+    include_house_cusps: bool = True
+    aspect_types: List[str] = Field(default_factory=list)
+    orbs: Dict[str, float] = Field(default_factory=dict)
+    max_aspects_per_transit_body: int = 12
+    debug: bool = False
+    interpretation_mode: Optional[str] = None
+    include_axis_focus: bool = False
+
+
+class TransitRequest(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    birth_date: str
+    birth_time: str
+    birth_place: str
+    transit_date: str
+    transit_time: Optional[str] = None
+    transit_place: str
+    options: Optional[TransitOptions] = None
+    context_mode: str = "context-lite"
+
+
+class TransitWindowRequest(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    birth_date: str
+    birth_time: str
+    birth_place: str
+    transit_date: str
+    transit_time: Optional[str] = None
+    transit_place: str
+    options: Optional[TransitOptions] = None
+    window_days: int = 120
+    step_hours: int = 24
+    refine_near_exact: bool = True
+    max_events: int = 20
+    orb_hysteresis_deg: float = 0.2
+
+
+class TransitEventSelector(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    transit_body: str
+    aspect: str
+    natal_point: str
+    scope: str = "transit_to_natal"
+
+
+class TransitEventTimingRequest(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    birth_date: str
+    birth_time: str
+    birth_place: str
+    transit_date: str
+    transit_time: Optional[str] = None
+    transit_place: str
+    options: Optional[TransitOptions] = None
+    selector: TransitEventSelector
+
+
+@router.post("/transits")
+def build_transits(request: TransitRequest) -> Dict[str, Any]:
+    assumptions: list[str] = []
+    transit_time = request.transit_time
+    if not transit_time:
+        transit_time = "12:00"
+        assumptions.append("default_transit_time")
+    try:
+        response = build_transit_report(
+            birth_date=request.birth_date,
+            birth_time=request.birth_time,
+            birth_place=request.birth_place,
+            transit_date=request.transit_date,
+            transit_time=transit_time,
+            transit_place=request.transit_place,
+            options=request.options.model_dump() if request.options else {},
+            assumptions=assumptions,
+        )
+        display = response.get("display") or {}
+        items = display.get("items") or []
+        if items:
+            content_store = _load_content_store()
+            natal_snapshot = _build_natal_snapshot(response.get("natal") or {})
+            promise = build_promise_model(natal_snapshot, content_store.claims)
+            mode = request.context_mode
+            if request.options and request.options.interpretation_mode:
+                mode = request.options.interpretation_mode
+            interpreted_items, summary = interpret_items(
+                items,
+                content=content_store,
+                promise=promise,
+                mode=mode,
+            )
+            featured_ids = {
+                item.get("event_id") for item in (display.get("featured") or [])
+            }
+            for item in interpreted_items:
+                interp = item.get("interpretation") or {}
+                if interp.get("mode") != "B":
+                    continue
+                if item.get("event_id") not in featured_ids:
+                    continue
+                houses = item.get("houses") or {}
+                natal_house = houses.get("natal_point_house")
+                overlay_house = houses.get("transit_in_natal_house")
+                natal_point = item.get("natal_point")
+                angle_house = {"ASC": 1, "DSC": 7, "MC": 10, "IC": 4}
+                if natal_point in angle_house:
+                    natal_house = angle_house[natal_point]
+                if natal_house is None or overlay_house is None:
+                    continue
+                labels = _house_labels_from_pack(_load_period_space_pack())
+                left_label = labels.get(natal_house, "alan")
+                right_label = labels.get(overlay_house, "alan")
+                polarity = item.get("polarity")
+                if polarity == "hard":
+                    mode_label = "gerilim"
+                elif polarity == "soft":
+                    mode_label = "akis"
+                else:
+                    mode_label = "denge"
+                interp["interaction_context"] = (
+                    f"{left_label} ile {right_label} arasinda {mode_label} gibi calisabilir."
+                )
+                item["interpretation"] = interp
+            display["items"] = interpreted_items
+            response["display"] = display
+            _build_ranking(display["items"])
+            summary["pressure_index"] = float(
+                response.get("metrics", {}).get("pressure_index") or 0.0
+            )
+            summary["support_index"] = float(
+                response.get("metrics", {}).get("support_index") or 0.0
+            )
+            presentable = response.get("presentable") or {}
+            presentable["summary"] = summary
+            presentable.update(_select_event_tiers(display["items"]))
+            presentable["natal_promise_catalog"] = promise.get("claims", {}) if promise else {}
+            active_claims = []
+            for item in display["items"]:
+                entry = (item.get("interpretation") or {}).get("natal_promise") or {}
+                if entry.get("used") and entry.get("claim_id"):
+                    active_claims.append(entry.get("claim_id"))
+            if active_claims:
+                summary["active_claims"] = sorted(set(active_claims))
+            include_axis_focus = bool(request.options.include_axis_focus) if request.options else False
+            presentable["period_space"] = _build_period_space(
+                interpreted_items, include_axis_focus=include_axis_focus
+            )
+            response["presentable"] = presentable
+            response["content_debug"] = _build_content_debug(interpreted_items, content_store)
+            response["natal_promise"] = promise
+        return response
+    except Exception as exc:  # pragma: no cover - passthrough for API response
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@router.post("/transits/window")
+def build_transits_window(request: TransitWindowRequest) -> Dict[str, Any]:
+    assumptions: list[str] = []
+    transit_time = request.transit_time
+    if not transit_time:
+        transit_time = "12:00"
+        assumptions.append("default_transit_time")
+    try:
+        return build_transit_window_report(
+            birth_date=request.birth_date,
+            birth_time=request.birth_time,
+            birth_place=request.birth_place,
+            transit_date=request.transit_date,
+            transit_time=transit_time,
+            transit_place=request.transit_place,
+            options=request.options.model_dump() if request.options else {},
+            window_days=request.window_days,
+            step_hours=request.step_hours,
+            refine_near_exact=request.refine_near_exact,
+            max_events=request.max_events,
+            orb_hysteresis_deg=request.orb_hysteresis_deg,
+            assumptions=assumptions,
+        )
+    except Exception as exc:  # pragma: no cover - passthrough for API response
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@router.post("/transits/event_timing")
+def build_transit_event_timing_response(request: TransitEventTimingRequest) -> Dict[str, Any]:
+    assumptions: list[str] = []
+    transit_time = request.transit_time
+    if not transit_time:
+        transit_time = "12:00"
+        assumptions.append("default_transit_time")
+    try:
+        result = build_transit_event_timing(
+            birth_date=request.birth_date,
+            birth_time=request.birth_time,
+            birth_place=request.birth_place,
+            transit_date=request.transit_date,
+            transit_time=transit_time,
+            transit_place=request.transit_place,
+            options=request.options.model_dump() if request.options else {},
+            selector=request.selector.model_dump(),
+        )
+        result["assumptions"] = assumptions
+        result["selector"] = request.selector.model_dump()
+        return result
+    except Exception as exc:  # pragma: no cover - passthrough for API response
+        raise HTTPException(status_code=500, detail=str(exc)) from exc

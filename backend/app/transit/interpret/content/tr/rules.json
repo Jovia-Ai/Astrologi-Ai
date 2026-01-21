@@ -1,0 +1,22 @@
+{
+  "angle_tags": {
+    "ASC": ["identity"],
+    "DSC": ["relationships"],
+    "MC": ["career"],
+    "IC": ["home"]
+  },
+  "house_tags": {
+    "1": ["identity"],
+    "2": ["money"],
+    "3": ["mind"],
+    "4": ["home"],
+    "5": ["creativity"],
+    "6": ["health"],
+    "7": ["relationships"],
+    "8": ["intimacy"],
+    "9": ["growth"],
+    "10": ["career"],
+    "11": ["community"],
+    "12": ["inner"]
+  }
+}

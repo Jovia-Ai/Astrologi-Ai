@@ -1,0 +1,18 @@
+{
+  "ASC": "identity",
+  "DSC": "relationships",
+  "MC": "career",
+  "IC": "home",
+  "Sun": "identity",
+  "Moon": "emotions",
+  "Mercury": "mind",
+  "Venus": "relationships",
+  "Mars": "drive",
+  "Jupiter": "growth",
+  "Saturn": "discipline",
+  "Uranus": "change",
+  "Neptune": "inner",
+  "Pluto": "intensity",
+  "North Node": "direction",
+  "Chiron": "healing"
+}

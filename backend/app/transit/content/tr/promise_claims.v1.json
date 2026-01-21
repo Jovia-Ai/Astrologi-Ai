@@ -1,0 +1,99 @@
+{
+  "claim.identity.core": {
+    "domain": "identity",
+    "tags": ["control", "self_definition", "visibility"],
+    "text_variants": [
+      "Dışarıda daha kontrollü ve hedef odaklı görünme eğilimin var.",
+      "Kendini çoğunlukla ‘sağlam durarak’ ve sorumluluk alarak kurarsın."
+    ],
+    "weight": 0.8
+  },
+  "claim.identity.control_need": {
+    "domain": "identity",
+    "tags": ["control", "responsibility"],
+    "text_variants": [
+      "Dışarıda kontrollü ve sağlam durma ihtiyacın yüksek olabilir."
+    ],
+    "weight": 0.75
+  },
+  "claim.relationships.boundaries": {
+    "domain": "relationships",
+    "tags": ["boundaries", "attachment"],
+    "text_variants": [
+      "Yakın ilişkilerde sınırları netleştirmek senin için kritik olabilir."
+    ],
+    "weight": 0.7
+  },
+  "claim.relationships.idealization": {
+    "domain": "relationships",
+    "tags": ["idealization", "projection"],
+    "text_variants": [
+      "İlişkilerde idealize etme eğilimi zaman zaman devreye girebilir."
+    ],
+    "weight": 0.65
+  },
+  "claim.career.visibility": {
+    "domain": "career",
+    "tags": ["visibility", "status"],
+    "text_variants": [
+      "Kariyerde görünürlük ve itibar teması sık çalışır."
+    ],
+    "weight": 0.7
+  },
+  "claim.career.authority": {
+    "domain": "career",
+    "tags": ["authority", "responsibility"],
+    "text_variants": [
+      "Otorite ve sorumluluk temaları kariyerinde sık çalışır."
+    ],
+    "weight": 0.75
+  },
+  "claim.home.security": {
+    "domain": "home",
+    "tags": ["security", "roots"],
+    "text_variants": [
+      "Güvende hissetmek için sağlam bir iç/dış temel ararsın."
+    ],
+    "weight": 0.65
+  },
+  "claim.inner.escape": {
+    "domain": "inner",
+    "tags": ["escape", "withdrawal"],
+    "text_variants": [
+      "Zorlandığında içe çekilme veya kaçma eğilimi oluşabilir."
+    ],
+    "weight": 0.6
+  },
+  "claim.mind.overthinking": {
+    "domain": "mind",
+    "tags": ["overthinking", "analysis"],
+    "text_variants": [
+      "Zihinsel olarak fazla düşünme ve analiz etme eğilimin olabilir."
+    ],
+    "weight": 0.7
+  },
+  "claim.mind.directness": {
+    "domain": "mind",
+    "tags": ["clarity", "communication"],
+    "text_variants": [
+      "Zihinsel netlik ve açık iletişim ihtiyacın güçlüdür."
+    ],
+    "weight": 0.6
+  },
+  "claim.drive.intensity": {
+    "domain": "drive",
+    "tags": ["drive", "effort"],
+    "text_variants": [
+      "Enerjini disiplinle yönlendirdiğinde çok verimli olursun."
+    ],
+    "weight": 0.7
+  },
+  "claim.change.freedom_need": {
+    "domain": "change",
+    "tags": ["freedom", "change"],
+    "text_variants": [
+      "Değişim ve özgürleşme ihtiyacı zaman zaman güçlenir."
+    ],
+    "weight": 0.6
+  }
+}

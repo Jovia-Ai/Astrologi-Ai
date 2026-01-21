@@ -1,0 +1,197 @@
+{
+  "neptune.square.asc": {
+    "headline_variants": ["Kimlikte sis", "Netlikte dalgalanma"],
+    "summary_variants": [
+      "Bu dönemde kendini dış dünyaya nasıl koyduğunla ilgili belirsizlikler artabilir."
+    ],
+    "do_variants": [
+      ["Kararları aceleye getirme.", "Somut veri iste ve yazılı netlik ara."]
+    ],
+    "watch_variants": [
+      ["Aşırı idealizasyon.", "Belirsiz sözlere fazla anlam yükleme."]
+    ],
+    "themes": ["identity", "boundaries"]
+  },
+  "saturn.opposition.mars": {
+    "headline_variants": ["Enerji sınavı", "İlerle–dur ikilemi"],
+    "summary_variants": [
+      "İsteklerinle sorumluluklar arasında gerilim hissedebilirsin."
+    ],
+    "do_variants": [
+      ["Enerjini küçük parçalara böl.", "Önceliği yaz ve tek tek ilerle."]
+    ],
+    "watch_variants": [
+      ["Aşırı zorlanma.", "Öfkeyi bastırıp içe atma."]
+    ],
+    "themes": ["drive", "discipline"]
+  },
+  "pluto.conjunction.any": {
+    "headline_variants": ["Derin dönüşüm", "Kontrolü bırakma zamanı"],
+    "summary_variants": [
+      "Geri dönülmez bir farkındalık veya güçlü bir içsel değişim sürecindesin."
+    ],
+    "do_variants": [
+      ["Direnmek yerine dönüşümü izle.", "Eskiyi bırakmaya gönüllü ol."]
+    ],
+    "watch_variants": [
+      ["Güç savaşları.", "Her şeyi kontrol etmeye çalışma."]
+    ],
+    "themes": ["intensity", "transformation"]
+  },
+  "saturn.square.any": {
+    "headline_variants": ["Gerçeklik testi"],
+    "summary_variants": [
+      "Sorumluluklar artarken sınırlarını yeniden tanımlaman gerekebilir."
+    ],
+    "do_variants": [
+      ["Yükü sadeleştir.", "Hayır demen gereken yeri seç."]
+    ],
+    "watch_variants": [
+      ["Aşırı yüklenme."]
+    ],
+    "themes": ["discipline", "limits"]
+  },
+  "hard.identity.any": {
+    "headline_variants": ["Kimlikte basınç"],
+    "summary_variants": [
+      "Duruşun ve yönün test edilebilir."
+    ],
+    "do_variants": [
+      ["Ritmi düşür.", "Net sınır koy."]
+    ],
+    "watch_variants": [
+      ["Acele kopuşlar."]
+    ],
+    "themes": ["identity"]
+  },
+  "soft.relationships.any": {
+    "headline_variants": ["Bağ kurmak kolaylaşıyor"],
+    "summary_variants": [
+      "İletişim ve yakınlık daha akıcı olabilir."
+    ],
+    "do_variants": [
+      ["Net bir konuşma yap.", "Küçük bir jest planla."]
+    ],
+    "watch_variants": [
+      ["Her şeye evet demek."]
+    ],
+    "themes": ["relationships"]
+  },
+  "soft.identity.any": {
+    "headline_variants": ["Kimlikte akış"],
+    "summary_variants": [
+      "Duruşunu daha doğal ve net koymak kolaylaşabilir."
+    ],
+    "do_variants": [
+      ["Kendini sade bir cümleyle ifade et.", "Önceliği netleştir."]
+    ],
+    "watch_variants": [
+      ["Rahatlığa fazla kapılmak."]
+    ],
+    "themes": ["identity"]
+  },
+  "soft.career.any": {
+    "headline_variants": ["Kariyerde destek"],
+    "summary_variants": [
+      "Görünürlük ve yön tarafında destekleyici bir zemin oluşabilir."
+    ],
+    "do_variants": [
+      ["Net bir hedef yaz.", "Küçük bir görünürlük adımı at."]
+    ],
+    "watch_variants": [
+      ["Erteleme ve dağılma."]
+    ],
+    "themes": ["career"]
+  },
+  "soft.home.any": {
+    "headline_variants": ["Ev ve iç düzen akıyor"],
+    "summary_variants": [
+      "Ev ve iç güven alanında rahatlatıcı bir etki çalışabilir."
+    ],
+    "do_variants": [
+      ["Mekanda küçük bir düzenleme yap.", "Rutinini sadeleştir."]
+    ],
+    "watch_variants": [
+      ["Konforu fazla büyütmek."]
+    ],
+    "themes": ["home"]
+  },
+  "soft.inner.any": {
+    "headline_variants": ["İç dünyada yumuşama"],
+    "summary_variants": [
+      "Duygusal yüklerin hafiflediğini hissedebilirsin."
+    ],
+    "do_variants": [
+      ["Kısa bir içe dönüş zamanı ayır.", "Duyguyu notla."]
+    ],
+    "watch_variants": [
+      ["Aşırı içe kapanma."]
+    ],
+    "themes": ["inner"]
+  },
+  "hard.career.any": {
+    "headline_variants": ["Sorumluluk ve görünürlük"],
+    "summary_variants": [
+      "Beklentiler netleşebilir; yapı kurma ihtiyacı artar."
+    ],
+    "do_variants": [
+      ["Öncelik sırala.", "Takvim blokla."]
+    ],
+    "watch_variants": [
+      ["Aşırı yük."]
+    ],
+    "themes": ["career"]
+  },
+  "hard.any": {
+    "headline_variants": ["Zorlayıcı temas"],
+    "summary_variants": [
+      "Bu etki baskı hissi yaratabilir; yavaş ve bilinçli ilerlemek faydalı olur."
+    ],
+    "do_variants": [
+      ["Hızını düşür.", "Netlik aramadan karar alma."]
+    ],
+    "watch_variants": [
+      ["Tepkisel davranış."]
+    ],
+    "themes": ["pressure"]
+  },
+  "soft.any": {
+    "headline_variants": ["Destekleyici akış"],
+    "summary_variants": [
+      "Bu etki ilerlemek için daha yumuşak bir zemin sunar."
+    ],
+    "do_variants": [
+      ["Fırsatı değerlendir.", "İlişkileri besle."]
+    ],
+    "watch_variants": [
+      ["Rahatlıktan dolayı erteleme."]
+    ],
+    "themes": ["support"]
+  },
+  "neutral.any": {
+    "headline_variants": ["Nötr vurgu"],
+    "summary_variants": [
+      "Bu etki dikkatini belirli bir temaya yöneltebilir."
+    ],
+    "do_variants": [
+      ["Gözlemde kal."]
+    ],
+    "watch_variants": [
+      ["Aşırı anlam yükleme."]
+    ],
+    "themes": ["general"]
+  },
+  "generic.any": {
+    "headline_variants": ["Geçici etki"],
+    "summary_variants": [
+      "Kısa süreli bir farkındalık veya duygu değişimi getirebilir."
+    ],
+    "do_variants": [
+      ["Gözlemde kal."]
+    ],
+    "watch_variants": [
+      ["Aşırı anlam yükleme."]
+    ],
+    "themes": ["general"]
+  }
+}

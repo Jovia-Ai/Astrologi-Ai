@@ -1,0 +1,103 @@
+{
+  "version": "tr.period_space.v1",
+  "house_story": {
+    "primary": [
+      "Bu donem en cok {label} alaninda belirgin bir vurgu goruluyor.",
+      "Odak noktasi {label} alaninda yogunlasiyor."
+    ],
+    "secondary": [
+      "Ikinci planda {label} tarafinda da dikkat ceken bir hareket var.",
+      "Ikinci bir vurgu {label} alaninda hissedilebilir."
+    ],
+    "closing": [
+      "Bu donem, acele yargilar yerine gozlem ve kucuk adimlarla ilerlemek icin uygun.",
+      "Kucuk ama net ayarlar donemi daha dengeli tasimana yardimci olur."
+    ]
+  },
+  "axis_experience": {
+    "1-7": [
+      "Benlik ile iliskiler arasinda denge kurma ihtiyaci artabilir."
+    ],
+    "3-9": [
+      "Dusunme bicimi ile yon duygusu arasinda yeni bir ayar gerekebilir."
+    ],
+    "4-10": [
+      "Ev ve kariyer arasinda yeni bir denge arayisi belirginlesebilir."
+    ],
+    "default": [
+      "{left} ile {right} arasinda denge kurma ihtiyaci artabilir."
+    ]
+  },
+  "axis_one_liner": {
+    "1-7": [
+      "Benlik ile iliskiler hattinda yeni bir denge arayisi olusabilir."
+    ],
+    "3-9": [
+      "Zihin ile yon arasinda netlik arayisi artabilir."
+    ],
+    "4-10": [
+      "Ev ve kariyer tarafinda onceleme degisebilir."
+    ],
+    "default": [
+      "{left} ile {right} arasinda etkilesim artabilir."
+    ]
+  },
+  "axis_how_it_plays": {
+    "default": [
+      "Karar verirken iki alan arasinda gidip gelme",
+      "Netlik ararken soru sayisinin artmasi"
+    ]
+  },
+  "axis_good_management": {
+    "default": [
+      "Kucuk ve geri donuslu adimlarla ilerlemek",
+      "Varsayim yerine soru sormak"
+    ]
+  },
+  "interaction_templates": {
+    "housepair.default.pressure.any": {
+      "one_liner": "Iki alan arasinda baski artarken kararlar daha zor hissedilebilir.",
+      "how_it_plays": [
+        "Dusunce yukunun artmasi",
+        "Yonu netlestirmede zorlanma"
+      ],
+      "good_management": [
+        "Kucuk ve geri donuslu adimlar secmek",
+        "Varsayim yerine soru sormak"
+      ]
+    },
+    "housepair.default.support.any": {
+      "one_liner": "Iki alan birbirini destekleyebilir ve akis kolaylasabilir.",
+      "how_it_plays": [
+        "Daha akici karar alma",
+        "Daha net hedef belirleme"
+      ],
+      "good_management": [
+        "Firsati somut plana baglamak",
+        "Net bir oncelik belirlemek"
+      ]
+    },
+    "housepair.default.mixed.any": {
+      "one_liner": "Iki alan arasinda hem destek hem de gerilim birlikte hissedilebilir.",
+      "how_it_plays": [
+        "Bir yanda ilerleme istegi, diger yanda temkin",
+        "Netlik artarken baski da gorunur hale gelebilir"
+      ],
+      "good_management": [
+        "Ritmi korumak",
+        "Dengeleyen kucuk ayarlar yapmak"
+      ]
+    },
+    "housefocus.default.intensification.any": {
+      "one_liner": "Tek bir alanda belirgin bir yogunlasma olusabilir.",
+      "how_it_plays": [
+        "Ayni tema tekrar tekrar karsina cikabilir",
+        "Odağin tek bir alanda toplanmasi"
+      ],
+      "good_management": [
+        "Tek bir alanda netlestirme yapmak",
+        "Kucuk ama duzenli ilerlemek"
+      ]
+    }
+  }
+}
