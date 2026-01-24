@@ -1,0 +1,107 @@
+{
+  "pluto.trine.node": [
+    "Bir konuyu tek basina cozmeye calisma; bir kisiyle fikir alisverisi yapmak ve denge aramak yonunu daha hizli netlestirebilir.",
+    "Bakis acini guncelleyecek bir bilgiye ya da cevreye kendini ac; dusunce cercevesi degisince hedeflerin de daha dogal hizalanabilir.",
+    "Kararlarini 'ben ne istiyorum?' kadar 'bu secim beni hangi hayata tasiyor?' sorusuyla da test et."
+  ],
+  "pluto.conjunction.uranus": [
+    "Eski yontemi zorlamak yerine yeni bir yontem dene; kucuk bir deneme bile sana dogru yolu hizla gosterebilir.",
+    "Kontrolu tamamen birakmak zorunda degilsin; sadece denemeyi 'geri donuslu' tasarla ve tepkini gozlemle.",
+    "Bir seyi kokten degistirmek istiyorsan, once sistemi sadelestir; sonra tek hamleyle degil adim adim donustur."
+  ],
+  "pluto.sextile.saturn": [
+    "Kucuk ama net bir yapi kur; duzenli tekrar edildiginde donusum cok daha kalici olur.",
+    "Bir hedefi guclendirmek icin 'az ama surekli' bir plan sec; ritmi degil surdurulebilirligi olc.",
+    "Sorumlulugu buyutmek yerine netlestir; sinirlari daraltmak verimi artirabilir."
+  ],
+  "neptune.square.asc": [
+    "Kendini surekli kontrol etmek yerine, gun icinde kisa gozlem aralari ver; netlik cogu zaman sakinlesince gelir.",
+    "Gorunme bicimini zorlamak yerine daha sade ve dogal bir durus dene; fazlaliklari azalttikca ifade guclenir.",
+    "Varsayim uretmeden once kucuk bir dogrulama yap; bir seyi kesinlestirmek icin acele etme."
+  ],
+  "neptune.conjunction.saturn": [
+    "Plani tas gibi yapmak yerine esnek birak; hedefi koruyup yontemi ayarlamak bu donemi kolaylastirir.",
+    "Kesin cevap aramak yerine, 'simdilik yeterince net' kararlar al ve ilerledikce guncelle.",
+    "Belirsizlik yukselince daha az seye odaklan; oncelikleri sadelestirmek yuku azaltir."
+  ],
+  "neptune.opposition.mars": [
+    "Enerjini bir anda harcamak yerine bol; kisa aralarla ilerlemek daha az yorar.",
+    "Karar verirken sadece motivasyona degil, gercek kapasiteye bak; bugun kucuk adim yarin daha etkili olur.",
+    "Gerginlik yukselirse tartismayi buyutmek yerine fiziksel bir bosaltim sec; beden rahatlayinca zihin de toparlanir."
+  ],
+  "saturn.opposition.mars": [
+    "Hizlanmak yerine enerjini bol; gucunu kucuk ama surdurulebilir adimlarla kullan.",
+    "Her seyi ayni anda yapmak yerine oncelik sirasini netlestir; 'en kritik bir sey' yaklasimi yuku azaltir.",
+    "Zorlandigin yerde daha cok bastirmak yerine yontemi degistir; direnc, cogu zaman farkli bir plan ister."
+  ],
+  "saturn.sextile.neptune": [
+    "Hayal ettigin seyi somut bir plana cevir; kucuk bir rutin, daginik enerjiyi toparlar.",
+    "Ilhami beklemek yerine bir cerceve kur; cerceve olusunca motivasyon daha kolay gelir.",
+    "Belirsiz olani tek seferde cozmeye calisma; bir sonraki adimi netlestirmen yeterli."
+  ],
+  "uranus.trine.mars": [
+    "Yeni bir yontem dene; kucuk bir deneme bile hareket alanini genisletebilir.",
+    "Enerji yukseldiginde acele karar vermek yerine hizli bir prototip yap; once dene, sonra buyut.",
+    "Sikistigin yerde daha fazla zorlamak yerine yaklasimi degistir; esneklik hiz kazandirir."
+  ],
+  "uranus.trine.neptune": [
+    "Sezgini 'tek hamle' yerine 'kucuk isaretler' olarak takip et; kucuk dogrular birikince netlik olusur.",
+    "Yaraticiligi somutlastir; bir fikri not almak, taslak cikarmak ya da denemek belirsizligi azaltir.",
+    "Duygusal dalgalanmada buyuk karar verme; once ortami ve duzeni sadelestir."
+  ],
+  "jupiter.opposition.mercury": [
+    "Bir karari buyutmeden once iki secenekli bir cerceve kur; cok secenek zihni yorabilir.",
+    "Konusurken 'sonuc' yerine 'niyet'i netlestir; yanlis anlasilmayi azaltir.",
+    "Yeni bilgi toplarken bir sinir koy; her seyi bilmeden de ilerlemek mumkun."
+  ],
+  "mars.conjunction.neptune": [
+    "Bugun enerjiyi zorlamak yerine yonlendir; 'az ama dogru' eylem daha cok sonuc getirir.",
+    "Motivasyon dalgalanirsa kendini suclama; basit bir rutin sec ve sadece onu uygula.",
+    "Bir isi bitirmek icin buyuk bir hamle degil, 15 dakikalik net bir blok ac."
+  ],
+  "mercury.conjunction.uranus": [
+    "Aklina gelen fikri hemen buyutme; once tek cumlelik bir ozet yaz ve ardindan kucuk bir deneme yap.",
+    "Surpriz bir bilgi geldiginde tepkiyle karar verme; 1-2 saat bekleyip tekrar degerlendir.",
+    "Zihin hizlanirsa konusmayi kisalt; kisa ve somut cumleler daha iyi calisir."
+  ],
+  "venus.conjunction.uranus": [
+    "Iliskilerde ayni kalibi tekrarlamak yerine kucuk bir yenilik dene; bu, yakinligi daha dogal kurabilir.",
+    "Hosuna giden seyi hemen 'karar'a cevirmek yerine kesfetme suresi tani; acele etmek kaliteyi dusurur.",
+    "Dengeyi korumak icin sinirlari sertlestirme; daha net ama daha yumusak ifade sec."
+  ],
+  "node.square.venus": [
+    "Iliskilerde ve secimlerde 'hos' olana degil 'uzun vadede beni buyutuyor mu?' sorusuna da bak.",
+    "Kararsizlik yukselirse tek bir olcut belirle ve ona gore sec; fazla kriter kafa karistirir.",
+    "Bag kurarken kendini feda etmeye kaydigini fark edersen kucuk bir sinir cumlesi kur."
+  ],
+  "chiron.square.jupiter": [
+    "Buyuk hedefleri savunmak yerine kucuk bir gelisim alani sec; guven, kucuk basarilarla guclenir.",
+    "Kendini kanitlama baskisi geldiginde 'su an ne mumkun?' sorusuna don; gercekcilik rahatlatir.",
+    "Eski bir hassasiyet tetiklenirse buyutmeden not al; konu tekrar ediyorsa o zaman ele al."
+  ],
+  "chiron.opposition.mc": [
+    "Kariyer ve gorunurluk alaninda 'mukemmel' yerine 'tutarli' hedef koy; baski azalinca performans artar.",
+    "Elestiriye karsi savunmaya gecmek yerine once neyin gercekten ise yaradigini ayikla.",
+    "Bir sey seni zorluyorsa tamamen kacmak yerine rolunu kucukce guncelle; ufak revizyon buyuk rahatlama saglar."
+  ],
+  "lilith.conjunction.pluto": [
+    "Tetiklenen duyguyu bastirmak yerine adlandir; isim koymak kontrolu artirir.",
+    "Guc oyunlarina girmeden netlik kur; kisa ve kesin bir sinir cumlesi sec.",
+    "Asiri yogun bir durtu geldiginde hemen karar verme; once bedeni sakinlestir, sonra konus."
+  ],
+  "soft.any": [
+    "Bu etkiyi desteklemek icin daha esnek bir yaklasim sec; tek dogru yerine birkac iyi secenek birak.",
+    "Uygun olani zorlamadan sec; kucuk ayarlamalar buyuk rahatlik getirebilir.",
+    "Konuyu buyutmeden ilerle; duzenli kucuk adimlar daha iyi calisir."
+  ],
+  "hard.any": [
+    "Zorlanan yerde daha cok bastirmak yerine yontemi degistir; direnc cogu zaman yaklasim ister.",
+    "Gerilim yukselince hizlanma; once sinirlari netlestir, sonra adim at.",
+    "Konu buyurse tek bir oncelik sec; ayni anda her seyi cozmeye calisma."
+  ],
+  "generic.any": [
+    "Bu surecte kendine karsi daha gozlemci ve yumusak bir tutum almak destekleyici olabilir.",
+    "Netlik icin acele etme; kucuk denemelerle ilerlemek daha guvenli sonuc verir.",
+    "Karari buyutmeden once bir adim at ve sonucu gor; sonra devam et."
+  ]
+}

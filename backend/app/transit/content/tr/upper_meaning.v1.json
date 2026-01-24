@@ -1,0 +1,157 @@
+{
+  "generic.any": [
+    "Bu surec, daha surdurulebilir ve daha gercek bir tutum gelistirmene alan acabilir.",
+    "Buradaki baski veya yogunluk, daha saglam bir yaklasim kurmani kolaylastirabilir.",
+    "Bu donem, otomatik reflekslerini guncelleyip daha dengeli bir yol bulmana yardimci olabilir."
+  ],
+  "hard.any": [
+    "Zorlayan tarafi, seni daha net sinirlar ve daha dayanikli bir yaklasim kurmaya itebilir.",
+    "Baski yaratan yonu, kisa vadeli cozumler yerine daha saglam bir duzen kurmani destekleyebilir.",
+    "Bu gerilim, alistigin yontemi guncelleyip daha surdurulebilir bir tutum gelistirmene alan acabilir."
+  ],
+  "soft.any": [
+    "Bu akis, kucuk ama istikrali bir iyilesme ve destek duygusu yaratabilir.",
+    "Destekleyen tarafi, bir seyi zorlamadan ilerletmene ve guven tazelemene yardimci olabilir.",
+    "Bu donem, daha kolay akan bir duzen kurmani ve motivasyonu tazelemeni destekleyebilir."
+  ],
+  "neutral.any": [
+    "Bu birlesme, dikkati tek bir noktada toplayip onemli bir temayi gorunur kilabilir.",
+    "Bu temas, bir seyi buyutmekten cok netlestirip odak kazandirabilir.",
+    "Bu yogunlasma, kontrol etmeye calismadan farkindalik gelistirmeni kolaylastirabilir."
+  ],
+  "square.hard.any": [
+    "Zorlayan tarafi, bir aliskanligi surdurmek yerine onu donusturmeyi ogrenmene yardimci olabilir.",
+    "Bu surtunme, ayni seyi daha fazla zorlamak yerine farkli bir yaklasim gelistirmene alan acabilir.",
+    "Bu gerilim, 'calismayani duzeltmek' yerine 'calisani yeniden kurmak' ihtiyacini gorunur kilabilir."
+  ],
+  "opposition.hard.any": [
+    "Bu karsitlik, iki ihtiyaci ayni anda gozetmeyi ve denge kurmayi ogrenmene yardimci olabilir.",
+    "Bu etkilesim, asiriya kactigin tarafi fark edip orta bir cizgi bulmani destekleyebilir.",
+    "Bu karsi karsiya gelis, tek yonlu ilerlemek yerine iliskisel bir denge kurmana alan acabilir."
+  ],
+  "conjunction.neutral.any": [
+    "Bu birlesme, guclu bir odak yaratip yeni bir baslangic ya da yeni bir bakis acisi getirebilir.",
+    "Bu temas, bir konuyu buyutmekten cok 'ana mesele' haline getirerek netlestirebilir.",
+    "Bu yogunlasma, daginik enerjiyi toparlayip daha tek bir yonde ilerlemene yardimci olabilir."
+  ],
+  "trine.soft.any": [
+    "Bu destek, zorlamadan ilerleyen bir kolaylik ve guven duygusu getirebilir.",
+    "Bu akis, dogal yeteneklerini daha rahat kullanmani ve isleri daha az surtunmeyle yurutmeni destekleyebilir.",
+    "Bu uyum, dogru yerde kucuk bir adimla buyuk bir rahatlama yaratabilir."
+  ],
+  "sextile.soft.any": [
+    "Bu destek, dogru secimi yaptiginda firsata donebilecek kucuk bir kapi aralayabilir.",
+    "Bu etki, aktif bir hamleyle kolayliga donebilecek pratik bir destek saglayabilir.",
+    "Bu akis, kucuk bir duzenleme veya net bir karar ile ilerlemeyi hizlandirabilir."
+  ],
+  "neptune.square.any": [
+    "Bu etki, her seyi netlestirme cabasini yumusatip belirsizligi daha sakin tasimana alan acabilir.",
+    "Burada netlik zorlanarak degil, gozlemle ve zamanla sekillenebilir; bu da kontrol ihtiyacini gevsetmene yardimci olabilir.",
+    "Bu surec, varsayimlari azaltip daha sezgisel ve daha gercek bir temas kurmana destek olabilir."
+  ],
+  "neptune.opposition.any": [
+    "Bu karsitlik, bir gercegi 'mantikla cozmek' yerine onu durustce gormek ve kabul etmek ihtiyacini artirabilir.",
+    "Bu etki, idealestirme ile gerceklik arasindaki farki gorunur kilip daha net secimler yapmana yardimci olabilir.",
+    "Bu surec, kacis yerine daha yumusak bir yuzlesme pratigi gelistirmene alan acabilir."
+  ],
+  "neptune.conjunction.any": [
+    "Bu temas, sert sinirlari yumusatip daha sezgisel bir akis gelistirmene yardimci olabilir.",
+    "Bu yogunlasma, 'kesin cevap' ihtiyacini azaltip daha gercek bir ic duyumla hareket etmene alan acabilir.",
+    "Bu donem, kontrol yerine guven ve teslimiyet dengesini yeniden kurmani destekleyebilir."
+  ],
+  "saturn.square.any": [
+    "Bu etki, 'daha cok zorlamak' yerine 'daha dogru yapi kurmak' ihtiyacini ortaya cikarabilir.",
+    "Bu surec, sinirlari netlestirip enerjini daha verimli kullanmana yardimci olabilir.",
+    "Buradaki baski, daginik cabayi toparlayip daha surdurulebilir bir disiplin kurmani destekleyebilir."
+  ],
+  "saturn.opposition.any": [
+    "Bu karsitlik, tek basina yuklenmek yerine denge ve sorumluluk paylasimi kurmani ogretebilir.",
+    "Bu etki, hizla cozmek yerine daha saglam bir ritim ve duzen oturtmana yardimci olabilir.",
+    "Bu surec, 'hemen' degil 'dogru' olani secmeyi destekleyebilir."
+  ],
+  "saturn.conjunction.any": [
+    "Bu temas, uzun vadeli bir yapi kurmak icin sabir ve netlik gerektiren bir donemi baslatabilir.",
+    "Bu yogunlasma, sorumluluklari sadelestirip daha gercekci hedeflerle ilerlemene yardimci olabilir.",
+    "Bu surec, gereksiz yukleri ayiklayip daha saglam bir temel atmani destekleyebilir."
+  ],
+  "pluto.conjunction.any": [
+    "Bu temas, yuzeyde kalan bir seyi derinlestirip daha kokten bir donusum ihtiyaci yaratabilir.",
+    "Bu surec, kontrol etmeye calistigin alani gorunur kilip daha durust bir guc kullanimi gelistirmene yardimci olabilir.",
+    "Buradaki yogunluk, eski bir kalibi birakip daha gercek bir tutum kurmana alan acabilir."
+  ],
+  "pluto.square.any": [
+    "Bu surtunme, guc mucadelesine girmeden sinir ve yon belirlemeyi ogrenmene yardimci olabilir.",
+    "Bu etki, 'tutunma' refleksini gorunur kilip birakmayi daha mumkun hale getirebilir.",
+    "Bu surec, baskiyi yonetme bicimini donusturup daha bilincli bir guc kurmana alan acabilir."
+  ],
+  "pluto.opposition.any": [
+    "Bu karsitlik, iliski ve guc dinamiklerinde daha net, daha durust bir denge kurmani isteyebilir.",
+    "Bu surec, disaridaki etkilerle kendi iradeni ayirmayi ve sinirlarini guclendirmeyi destekleyebilir.",
+    "Buradaki gerilim, yuzlesmekten kactigin bir temayi daha gorunur hale getirebilir."
+  ],
+  "uranus.conjunction.any": [
+    "Bu temas, beklenmedik bir farkindalikla ozgurlesme ihtiyacini artirabilir.",
+    "Bu surec, 'ayni sekilde devam' yerine yeni bir duzen kurmana alan acabilir.",
+    "Bu etki, rutini kirip daha ozgun bir yaklasim gelistirmene destekleyebilir."
+  ],
+  "uranus.square.any": [
+    "Bu surtunme, esnekligi artirip kontrol yerine uyum gelistirmene yardimci olabilir.",
+    "Bu etki, sikistigin bir alanda degisim ihtiyacini netlestirip cesaret verebilir.",
+    "Bu surec, ani tepkiler yerine daha bilincli bir yenilenme pratigi gelistirmene alan acabilir."
+  ],
+  "uranus.opposition.any": [
+    "Bu karsitlik, ozgurluk ihtiyacini iliskisel dengeyle birlikte dusunmeni isteyebilir.",
+    "Bu etki, bagimsizlik ile baglilik arasinda daha gercek bir orta cizgi bulmana yardimci olabilir.",
+    "Bu surec, degisimi kaos yaratmadan yonetmeyi ogrenmene destek olabilir."
+  ],
+  "jupiter.opposition.any": [
+    "Bu karsitlik, 'daha fazlasi' ile 'daha dogru olani' ayirt etmene yardimci olabilir.",
+    "Bu etki, beklentileri buyutmek yerine karsiliklilik ve denge kurmani destekleyebilir.",
+    "Bu surec, abartiya kacmadan buyumeyi daha saglikli yonetmene alan acabilir."
+  ],
+  "jupiter.square.any": [
+    "Bu surtunme, fazla dagilan enerjiyi toparlayip daha hedefli buyumene yardimci olabilir.",
+    "Bu etki, asiri iyimserlik ile gercekci plan arasinda denge kurmani destekleyebilir.",
+    "Bu surec, 'hemen genislemek' yerine dogru zemini kurmani isteyebilir."
+  ],
+  "jupiter.conjunction.any": [
+    "Bu temas, buyume istegini artirabilir; bunu daha bilincli yonetmek kalici fayda saglayabilir.",
+    "Bu yogunlasma, yeni bir kapi acabilir; olcuyu kacirmadan ilerlemek daha destekleyici olur.",
+    "Bu surec, motivasyonu yukseltip yeni bir yon belirlemene yardimci olabilir."
+  ],
+  "mars.opposition.any": [
+    "Bu karsitlik, tepkileri buyutmeden sinir koymayi ve enerjiyi daha dengeli kullanmayi ogretebilir.",
+    "Bu etki, 'hemen hareket' ile 'durup olcmek' arasinda daha olgun bir denge kurmana yardimci olabilir.",
+    "Bu surec, catisma buyutmeden netlik kazanmani destekleyebilir."
+  ],
+  "mars.square.any": [
+    "Bu surtunme, aceleyle yuklenmek yerine enerjiyi dogru kanala yonlendirmeyi ogretir.",
+    "Bu etki, kontrolsuz hiz yerine planli bir hamle gelistirmene yardimci olabilir.",
+    "Bu surec, ofkeyi bastirmak yerine onu daha saglikli ifade etmene alan acabilir."
+  ],
+  "mars.conjunction.any": [
+    "Bu temas, eylem durtusunu artirabilir; bunu net bir hedefle birlestirmek verim saglar.",
+    "Bu yogunlasma, motivasyonu yukseltip cesaret verebilir; fazla zorlamadan ilerlemek daha surdurulebilir olur.",
+    "Bu surec, 'basla' enerjisini getirir; kucuk ama net adimlar daha cok ise yarayabilir."
+  ],
+  "neptune.square.asc": [
+    "Kendini surekli kontrol etmeye alisik oldugun kimlik durusunun yumusamasina alan acabilir.",
+    "Durusunu sabitleme ihtiyacini gevsetip daha gercek bir ifade bicimi bulmana yardimci olabilir.",
+    "Net gorunme baskisini azaltip, daha esnek ve daha durust bir temas kurmani destekleyebilir."
+  ],
+  "neptune.square.mars": [
+    "Enerjiyi zorlamak yerine daha yumusak ve surdurulebilir bir eylem bicimi gelistirmene yardimci olabilir.",
+    "Hizla cozme durtusunu yavaslatip daha sezgisel ve olculu hareket etmene alan acabilir.",
+    "Cabayi dagitan belirsizligi fark edip enerjini daha dogru yere yonlendirmeyi ogretebilir."
+  ],
+  "saturn.opposition.mars": [
+    "Hizla ilerleme durtusunu daha gercekci bir plan ve sinir duygusuyla dengelemene yardimci olabilir.",
+    "Gucu tek seferde harcamak yerine temposu olan bir duzen kurmani destekleyebilir.",
+    "Dayanikliligi artirip 'acele' yerine 'sureklilik' uzerinden sonuc almani kolaylastirabilir."
+  ],
+  "pluto.conjunction.uranus": [
+    "Eski bir kimlik kalibini kirip daha ozgur bir bicimde degismene alan acabilir.",
+    "Kontrol ile ozgurluk arasindaki gerilimi gorunur kilip daha durust bir yenilenme baslatabilir.",
+    "Seni sinirlayan bir tanimi birakip daha gercek bir yon secmene yardimci olabilir."
+  ]
+}

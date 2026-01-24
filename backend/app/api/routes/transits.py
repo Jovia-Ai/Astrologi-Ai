@@ -5,6 +5,7 @@ from pathlib import Path
 import hashlib
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 import json
+from functools import lru_cache
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
@@ -21,6 +22,11 @@ router = APIRouter(tags=["transits"])
 
 _CONTENT_STORE: ContentStore | None = None
 _PERIOD_SPACE_PACK: Dict[str, Any] | None = None
+DEFAULT_PERIOD_DAYS = 120
+DEFAULT_PERIOD_STEP_HOURS = 24
+DEFAULT_PERIOD_MAX_EVENTS = 20
+DEFAULT_PERIOD_REFINE_NEAR_EXACT = True
+DEFAULT_PERIOD_ORB_HYSTERESIS = 0.2
 
 
 def _load_content_store() -> ContentStore:
@@ -35,9 +41,30 @@ def _load_content_store() -> ContentStore:
             point_affinity = json.load(handle)
         with (base_path / "tag_map.v1.json").open("r", encoding="utf-8") as handle:
             tag_map = json.load(handle)
+        upper_meaning = _load_upper_meaning_pack(base_path)
+        style_do = _load_style_do_pack(base_path)
+        approach_pack = _load_approach_pack(base_path)
         mapping = {"point_affinity": point_affinity, **tag_map}
-        _CONTENT_STORE = ContentStore(templates, claims, mapping)
+        _CONTENT_STORE = ContentStore(templates, claims, mapping, upper_meaning, style_do, approach_pack)
     return _CONTENT_STORE
+
+
+@lru_cache(maxsize=1)
+def _load_upper_meaning_pack(base_path: Path) -> Dict[str, Any]:
+    with (base_path / "upper_meaning.v1.json").open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+@lru_cache(maxsize=1)
+def _load_style_do_pack(base_path: Path) -> Dict[str, Any]:
+    with (base_path / "style_do.v1.json").open("r", encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+@lru_cache(maxsize=1)
+def _load_approach_pack(base_path: Path) -> Dict[str, Any]:
+    with (base_path / "approach_pack.v1.json").open("r", encoding="utf-8") as handle:
+        return json.load(handle)
 
 
 def _load_period_space_pack() -> Dict[str, Any]:
@@ -88,6 +115,43 @@ def _house_labels_from_pack(pack: Dict[str, Any]) -> Dict[int, str]:
             continue
         labels[house_num] = str(label)
     return labels or _default_house_labels()
+
+
+def _natal_house_map_from_payload(natal: Mapping[str, Any]) -> Dict[str, int]:
+    mapping: Dict[str, int] = {}
+    for body in natal.get("bodies") or []:
+        name = body.get("body")
+        house = body.get("house")
+        if name and isinstance(house, int):
+            mapping[str(name)] = house
+    return mapping
+
+
+def _window_items_for_period_space(
+    window_report: Mapping[str, Any],
+    *,
+    natal: Mapping[str, Any],
+) -> List[Dict[str, Any]]:
+    events = window_report.get("events") or []
+    natal_house_map = _natal_house_map_from_payload(natal)
+    items: List[Dict[str, Any]] = []
+    for event in events:
+        transit_body = event.get("transit")
+        natal_point = event.get("natal")
+        items.append(
+            {
+                "event_id": event.get("id"),
+                "bucket": event.get("category"),
+                "transit_body": transit_body,
+                "natal_point": natal_point,
+                "strength": event.get("confidence"),
+                "houses": {
+                    "natal_point_house": natal_house_map.get(natal_point),
+                    "transit_in_natal_house": None,
+                },
+            }
+        )
+    return items
 
 
 def _build_content_debug(items: List[Dict[str, Any]], content_store: ContentStore) -> Dict[str, Any]:
@@ -905,6 +969,7 @@ def build_transits(request: TransitRequest) -> Dict[str, Any]:
                 content=content_store,
                 promise=promise,
                 mode=mode,
+                debug=bool(request.options.debug) if request.options else False,
             )
             featured_ids = {
                 item.get("event_id") for item in (display.get("featured") or [])
@@ -959,8 +1024,26 @@ def build_transits(request: TransitRequest) -> Dict[str, Any]:
             if active_claims:
                 summary["active_claims"] = sorted(set(active_claims))
             include_axis_focus = bool(request.options.include_axis_focus) if request.options else False
+            window_report = build_transit_window_report(
+                birth_date=request.birth_date,
+                birth_time=request.birth_time,
+                birth_place=request.birth_place,
+                transit_date=request.transit_date,
+                transit_time=transit_time,
+                transit_place=request.transit_place,
+                options=request.options.model_dump() if request.options else {},
+                window_days=DEFAULT_PERIOD_DAYS,
+                step_hours=DEFAULT_PERIOD_STEP_HOURS,
+                refine_near_exact=DEFAULT_PERIOD_REFINE_NEAR_EXACT,
+                max_events=DEFAULT_PERIOD_MAX_EVENTS,
+                orb_hysteresis_deg=DEFAULT_PERIOD_ORB_HYSTERESIS,
+                assumptions=assumptions,
+            )
+            period_items = _window_items_for_period_space(
+                window_report, natal=response.get("natal") or {}
+            )
             presentable["period_space"] = _build_period_space(
-                interpreted_items, include_axis_focus=include_axis_focus
+                period_items, include_axis_focus=include_axis_focus
             )
             response["presentable"] = presentable
             response["content_debug"] = _build_content_debug(interpreted_items, content_store)

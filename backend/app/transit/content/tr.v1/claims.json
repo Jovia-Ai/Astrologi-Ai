@@ -6,6 +6,10 @@
       "Dışarıda kontrollü ve sağlam durma ihtiyacın yüksek olabilir.",
       "Kendini çoğunlukla sorumluluk alarak ve sınır koyarak kurarsın."
     ],
+    "phrase_variants": [
+      "kontrollu ve saglam durma ihtiyaci",
+      "sorumluluk alip sinir koyma refleksi"
+    ],
     "weight": 0.8
   },
   "claim.identity.visibility": {
@@ -14,6 +18,10 @@
     "text_variants": [
       "Başkalarına nasıl göründüğün senin için önemli bir tema.",
       "Kendini doğru yansıtma ihtiyacı sık sık tetiklenir."
+    ],
+    "phrase_variants": [
+      "gorunurluk ve imaj hassasiyeti",
+      "kendini dogru yansitma ihtiyaci"
     ],
     "weight": 0.7
   },
@@ -24,6 +32,10 @@
       "Yakın ilişkilerde sınırları netleştirmek senin için kritik olabilir.",
       "Bazen verirken kendi çizgini geç fark edebilirsin."
     ],
+    "phrase_variants": [
+      "iliski sinirlarini netlestirme ihtiyaci",
+      "verirken kendi cizgini koruma refleksi"
+    ],
     "weight": 0.75
   },
   "claim.rel.idealization": {
@@ -31,6 +43,10 @@
     "tags": ["idealization", "projection"],
     "text_variants": [
       "İlişkilerde idealize etme eğilimi zaman zaman devreye girebilir."
+    ],
+    "phrase_variants": [
+      "idealize etme ve projeksiyon riski",
+      "iliskide gercegi fazla yukseltme egilimi"
     ],
     "weight": 0.65
   },
@@ -40,6 +56,10 @@
     "text_variants": [
       "Zihinsel olarak fazla düşünme ve analiz etme eğilimin olabilir."
     ],
+    "phrase_variants": [
+      "fazla dusunme ve analiz etme egilimi",
+      "zihni fazla calistirma refleksi"
+    ],
     "weight": 0.7
   },
   "claim.mind.clarity": {
@@ -47,6 +67,10 @@
     "tags": ["clarity", "communication"],
     "text_variants": [
       "Zihinsel netlik ve açık iletişim ihtiyacın güçlüdür."
+    ],
+    "phrase_variants": [
+      "zihinsel netlik ve acik iletisim ihtiyaci",
+      "ifade netligi arayisi"
     ],
     "weight": 0.6
   },
@@ -56,6 +80,10 @@
     "text_variants": [
       "Kariyerde yön ve anlam arayışı senin için belirleyicidir."
     ],
+    "phrase_variants": [
+      "kariyerde yon ve anlam arayisi",
+      "yon duygusunu netlestirme ihtiyaci"
+    ],
     "weight": 0.7
   },
   "claim.career.authority": {
@@ -63,6 +91,10 @@
     "tags": ["authority", "responsibility"],
     "text_variants": [
       "Otorite ve sorumluluk temaları kariyerinde sık çalışır."
+    ],
+    "phrase_variants": [
+      "otorite ve sorumluluk temasi",
+      "yetki alma ve sorumluluk tasima ihtiyaci"
     ],
     "weight": 0.75
   },
@@ -72,6 +104,10 @@
     "text_variants": [
       "Güvende hissetmek için sağlam bir iç/dış temel ararsın."
     ],
+    "phrase_variants": [
+      "guvenli temel arayisi",
+      "ic dis guvenligi saglama ihtiyaci"
+    ],
     "weight": 0.65
   },
   "claim.inner.escape": {
@@ -79,6 +115,10 @@
     "tags": ["escape", "withdrawal"],
     "text_variants": [
       "Zorlandığında içe çekilme veya kaçma eğilimi oluşabilir."
+    ],
+    "phrase_variants": [
+      "ice cekilme veya kacma refleksi",
+      "zorlukta geri cekilme ihtiyaci"
     ],
     "weight": 0.6
   },
@@ -88,6 +128,10 @@
     "text_variants": [
       "Enerjini disiplinle yönlendirdiğinde çok verimli olursun."
     ],
+    "phrase_variants": [
+      "disiplinle ilerleme ihtiyaci",
+      "eforu planli yonetme refleksi"
+    ],
     "weight": 0.7
   },
   "claim.drive.frustration": {
@@ -95,6 +139,10 @@
     "tags": ["frustration", "blocked_energy"],
     "text_variants": [
       "Engellendiğini hissettiğinde içsel bir gerilim oluşabilir."
+    ],
+    "phrase_variants": [
+      "engellenme hissiyle gerilim",
+      "tikaniklikta sabir zorlanmasi"
     ],
     "weight": 0.65
   }

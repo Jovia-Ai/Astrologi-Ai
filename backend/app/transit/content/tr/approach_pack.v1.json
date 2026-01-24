@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "version": "v1",
+    "lang": "tr",
+    "notes": "Burc ismi yok; element+modalite style uzerinden yaklasim uretir."
+  },
+  "approach.neptune.hard.any.any.any.any": [
+    "Netlik zorlamak yerine sadelestir; kucuk gozlemlerle ilerlemek daha iyi calisir.",
+    "Belirsizligi tek seferde cozmeye calisma; sinirlari basit tutup adim adim ilerle."
+  ],
+  "approach.neptune.soft.any.any.any.any": [
+    "Ic sesin guclenebilir; acele etmeden denedikce daha dogru bir cizgi bulursun.",
+    "Akisin destekledigi bir yumusama var; kucuk ayarlamalar buyuk rahatlama getirebilir."
+  ],
+  "approach.neptune.neutral.any.any.any.any": [
+    "Hassasiyet artabilir; kararlari tek seferde kilitlemek yerine surec icinde netlestir."
+  ],
+  "approach.neptune.hard.water.mutable.any.any": [
+    "Zihnin kontrol etmek isteyebilir; bu kez gevsetip sadelestirmek daha cok sonuc verir.",
+    "Kendini surekli denetleme durtusu yumusayabilir; esnek kaldikca daha gercek bir ifade ortaya cikar."
+  ],
+  "approach.neptune.hard.water.mutable.earth.cardinal": [
+    "Yapiyi ayakta tutma istegin artsa da, fazla sikinca zorlasabilir; duzeni basitlestirip esnek ilerle.",
+    "Kontrol etmeye calistikca kayganlasan bir alan var; kucuk, geri donuslu denemelerle ilerlemek daha guvenli."
+  ],
+  "approach.saturn.hard.any.any.any.any": [
+    "Yuku kucult ve ritmi dusur; sinir koymak su an ilerlemenin anahtari.",
+    "Her seyi ayni anda tasimak yerine oncelik sec; duzen kurmak baskiyi azaltir."
+  ],
+  "approach.saturn.soft.any.any.any.any": [
+    "Emek verdigin sey saglamlasabilir; kucuk disiplinler uzun vadeli sonuc uretir.",
+    "Duzen kurmak kolaylasabilir; istikrarli bir adim, buyuk sicrama yerine daha verimli."
+  ],
+  "approach.saturn.neutral.any.any.any.any": [
+    "Sorumluluk temasi buyuyebilir; net bir cerceve koymak kargasayi azaltir."
+  ],
+  "approach.saturn.soft.water.mutable.any.any": [
+    "Duygusal dalgalanma olsa bile duzen kurmak mumkun; kucuk rutinler hizla toparlar.",
+    "Daginik hissettigin yerleri tek hamlede degil, parca parca toparlamak daha iyi calisir."
+  ],
+  "approach.saturn.hard.water.mutable.earth.cardinal": [
+    "Hem duygusal hassasiyet hem kontrol ihtiyaci ayni anda artabilir; sinirlari basit ve uygulanabilir tut.",
+    "Zorlayinca tikanan bir duzen var; daha az hedef, daha net cerceve su an daha verimli."
+  ],
+  "approach.pluto.hard.any.any.any.any": [
+    "Zorlayan sey, yuzeyde degil kokte; bir seyi kokten degistirmek kisa vadede rahatsiz etse de rahatlatir.",
+    "Guc savasina girmeden donus; kontrol etmek yerine yeniden yapilandirmak daha kalici."
+  ],
+  "approach.pluto.soft.any.any.any.any": [
+    "Derin bir yenilenme destekleniyor; cesur bir adim beklediginden daha kolay karsilik bulabilir.",
+    "Guclenme daha dogal akabilir; erteledigin bir donusumu simdi daha az zorlanarak yapabilirsin."
+  ],
+  "approach.pluto.neutral.any.any.any.any": [
+    "Derinlesme artabilir; gereksiz yukleri birakmak daha net bir yon hissi verir."
+  ],
+  "approach.pluto.soft.air.fixed.any.any": [
+    "Zihinsel bir karar netlesebilir; kararli kaldikca donusum hizlanir.",
+    "Bir fikri sahiplenip uygulamak kolaylasabilir; net durus, sureci hizlandirir."
+  ],
+  "approach.pluto.soft.air.fixed.earth.cardinal": [
+    "Icten gelen bir yenilenme, hedeflerini daha dogru hizalayabilir; uygulamaya doktukce guclenirsin.",
+    "Derin bir ic karar, somut adimlara akabilir; kucuk ama kararli hamleler buyuk etki yaratir."
+  ],
+  "approach.hard.any": [
+    "Zorlamak yerine regule et; baskiyi azalttiginda daha iyi ilerlersin."
+  ],
+  "approach.soft.any": [
+    "Destek var; dogru zamanda kucuk bir atilim iyi sonuc verebilir."
+  ],
+  "approach.neutral.any": [
+    "Etki buyuyor olabilir; acele etmeden ayarlamak daha saglikli."
+  ],
+  "approach.generic.any": [
+    "Bu donem, daha surdurulebilir bir yaklasim gelistirmene yardimci olabilir."
+  ]
+}

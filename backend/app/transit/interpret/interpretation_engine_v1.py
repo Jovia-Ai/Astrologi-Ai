@@ -1,10 +1,11 @@
 import hashlib
+import re
 from typing import Any, Dict, List, Tuple
 
 from app.transit.interpret.canonical import canon_aspect, canonical_key
 from app.transit.interpret.mechanism import build_mechanism_sentence
 from app.transit.interpret.themes import pick_primary_theme
-from app.transit.interpret.where import build_where_sentence
+from app.transit.interpret.where import HOUSE_LABELS_TR, build_where_sentence
 
 
 def _hash_int(value: str) -> int:
@@ -23,10 +24,21 @@ def _normalize_key(value: str) -> str:
 
 
 class ContentStore:
-    def __init__(self, templates: Dict, claims: Dict, mapping: Dict):
+    def __init__(
+        self,
+        templates: Dict,
+        claims: Dict,
+        mapping: Dict,
+        upper_meaning: Dict | None = None,
+        style_do: Dict | None = None,
+        approach_pack: Dict | None = None,
+    ):
         self.templates = templates
         self.claims = claims
         self.mapping = mapping
+        self.upper_meaning = upper_meaning or {}
+        self.style_do = style_do or {}
+        self.approach_pack = approach_pack or {}
 
     def resolve_template(
         self,
@@ -72,11 +84,28 @@ class ContentStore:
         return self.templates.get(key.lower(), {})
 
 
+PUNCT_RE = re.compile(r"[.?!;:\s]+$")
+POINT_ALIASES = {
+    "asc": "asc",
+    "ascendant": "asc",
+    "dsc": "dsc",
+    "desc": "dsc",
+    "descendant": "dsc",
+    "mc": "mc",
+    "midheaven": "mc",
+    "ic": "ic",
+    "imumcoeli": "ic",
+    "imum_coeli": "ic",
+}
+
+
 def interpret_items(
     items: List[Dict[str, Any]],
     content: ContentStore,
     promise: Dict[str, Any] | None = None,
     mode: str = "context-lite",
+    *,
+    debug: bool = False,
 ) -> Tuple[List[Dict], Dict]:
     interpreted = []
 
@@ -116,6 +145,10 @@ def interpret_items(
         )
 
         headline = _pick_variant(f"{event_id}:h", template.get("headline_variants", []))
+        short_headline = _pick_variant(
+            f"{event_id}:sh",
+            template.get("short_headline_variants", []),
+        )
         summary = _pick_variant(f"{event_id}:s", template.get("summary_variants", []))
         do_list = _pick_variant(f"{event_id}:d", template.get("do_variants", [])) or []
         watch_list = _pick_variant(f"{event_id}:w", template.get("watch_variants", [])) or []
@@ -151,6 +184,7 @@ def interpret_items(
         interpretation = {
             "mode": mode_label,
             "headline": headline,
+            "short_headline": short_headline or "",
             "summary": summary_text,
             "do": do_list,
             "watch": watch_list,
@@ -185,6 +219,7 @@ def interpret_items(
         if not interpretation.get("time_hint"):
             interpretation["time_hint"] = _build_time_hint(item)
 
+        claim_micro = None
         if mode_label == "B":
             mode_reason = "strength>=0.75" if strength >= 0.75 else "orb<=1.0"
             interpretation["debug"] = {
@@ -193,6 +228,7 @@ def interpret_items(
             }
             context = _inject_context(item, promise, content)
             if context:
+                claim_micro = (context.get("matched_claims") or [{}])[0].get("micro_phrase")
                 interpretation["natal_promise"] = {
                     "claim_id": (context.get("matched_claims") or [{}])[0].get("id"),
                     "claim_score": (context.get("matched_claims") or [{}])[0].get("score"),
@@ -208,6 +244,63 @@ def interpret_items(
                 if context.get("context_claims"):
                     interpretation["debug"]["context_claims"] = context["context_claims"]
 
+        upper_text, upper_ref = _resolve_upper_meaning(
+            event_id=event_id,
+            transit_body=transit,
+            aspect=aspect,
+            natal_point=natal_point,
+            polarity=polarity,
+            content=content,
+            include_debug=debug,
+        )
+        if upper_text:
+            interpretation["upper_meaning"] = upper_text
+        if upper_ref:
+            interpretation["upper_meaning_ref"] = upper_ref
+
+        style_text, style_ref = _resolve_style_do(
+            event_id=event_id,
+            transit_body=transit,
+            aspect=aspect,
+            natal_point=natal_point,
+            polarity=polarity,
+            content=content,
+            include_debug=debug,
+        )
+        if style_text:
+            core_do = do_list[:2]
+            do_items = list(core_do)
+            do_items.append(style_text)
+            interpretation["do"] = do_items[:4]
+        if style_ref:
+            interpretation["style_do_ref"] = style_ref
+
+        approach_text, approach_ref = _resolve_approach_text(
+            event_id=event_id,
+            transit_body=transit,
+            polarity=polarity,
+            transit_style=(item.get("astro_style") or {}).get("transit"),
+            target_style=(item.get("astro_style") or {}).get("target"),
+            content=content,
+            include_debug=debug,
+        )
+        if approach_text:
+            do_items = list(interpretation.get("do") or do_list[:2])
+            if len(do_items) < 2:
+                do_items = do_list[:2]
+            do_items.append(f"Yaklasim: {approach_text}")
+            interpretation["do"] = do_items[:4]
+        if approach_ref:
+            interpretation["approach_ref"] = approach_ref
+
+        interpretation["one_liner"] = _build_event_one_liner(
+            item,
+            interpretation,
+            house_labels=HOUSE_LABELS_TR,
+            claim_phrase=claim_micro,
+            upper_meaning=upper_text,
+            approach_text=approach_text,
+        )
         item["interpretation"] = interpretation
         interpreted.append(item)
 
@@ -243,12 +336,453 @@ def _normalize_sentence(value: Any) -> str:
     return text
 
 
+def _norm(value: Any) -> str:
+    return str(value or "").strip().lower()
+
+
+def _norm_point(value: Any) -> str:
+    key = _norm(value)
+    return POINT_ALIASES.get(key, key)
+
+
+def _norm_polarity(polarity: Any, aspect: Any) -> str:
+    pol = _norm(polarity)
+    if pol in {"hard", "soft", "neutral"}:
+        return pol
+    asp = _norm(aspect)
+    if asp:
+        if asp in {"square", "opposition"}:
+            return "hard"
+        if asp in {"trine", "sextile"}:
+            return "soft"
+        if asp == "conjunction":
+            return "neutral"
+    return "neutral"
+
+
+def _stable_variant_index(event_id: str, n: int) -> int:
+    if n <= 1:
+        return 0
+    seed = (event_id or "evt").encode("utf-8")
+    digest = hashlib.sha256(seed).digest()
+    return int.from_bytes(digest[:4], "big") % n
+
+
+def _clean_trailing_punct(text: str) -> str:
+    return PUNCT_RE.sub("", (text or "").strip())
+
+
+def _dedupe_repeats(text: str) -> str:
+    words = text.split()
+    cleaned = []
+    for word in words:
+        if cleaned and cleaned[-1] == word:
+            continue
+        cleaned.append(word)
+    text = " ".join(cleaned)
+    for phrase in (
+        "yardimci olabilir",
+        "alan acabilir",
+        "kolaylastirabilir",
+        "destek olabilir",
+        "gosterebilir",
+        "olabilir",
+    ):
+        escaped = re.escape(phrase)
+        pattern = re.compile(rf"({escaped})(?:\s+\1)+")
+        text = pattern.sub(phrase, text)
+    return text
+
+
+def _headline_text(interpretation: Dict[str, Any]) -> str:
+    headline = _clean_trailing_punct(str(interpretation.get("headline") or ""))
+    if headline:
+        return headline
+    summary_first = _first_sentence(interpretation.get("summary") or "")
+    cleaned = _clean_trailing_punct(summary_first)
+    return cleaned or "Bu etki"
+
+
+def _short_headline_text(interpretation: Dict[str, Any]) -> str:
+    short_headline = _clean_trailing_punct(str(interpretation.get("short_headline") or ""))
+    if short_headline:
+        return short_headline
+    return _headline_text(interpretation)
+
+
+def _group_where_label(label: str) -> str:
+    lowered = label.lower()
+    if any(key in lowered for key in ("kimlik", "durus", "gorunurluk", "imaj")):
+        return "kimlik ve durus"
+    if any(key in lowered for key in ("zihin", "iletisim", "ogren", "merak")):
+        return "zihin ve iletisim"
+    if any(key in lowered for key in ("iliski", "ortaklik", "yakinlik")):
+        return "iliskiler"
+    if any(key in lowered for key in ("saglik", "ritim", "is akisi", "gunluk")):
+        return "gunluk duzen"
+    if any(key in lowered for key in ("para", "ozdeger", "deger")):
+        return "para ve ozdeger"
+    if any(key in lowered for key in ("yon", "anlam", "uzak")):
+        return "yon ve anlam"
+    if any(key in lowered for key in ("ev", "ic guven", "kok")):
+        return "ev ve ic guven"
+    if any(key in lowered for key in ("cevre", "gelecek")):
+        return "cevre ve gelecek"
+    return label
+
+
+def _where_short_label(
+    item: Dict[str, Any],
+    interpretation: Dict[str, Any],
+    *,
+    house_labels: Dict[int, str],
+) -> str:
+    houses = item.get("houses") or {}
+    context = interpretation.get("context") or {}
+    natal_h = context.get("natal_target_house") or houses.get("natal_point_house")
+    overlay_h = houses.get("transit_in_natal_house")
+
+    natal_label = _house_label(natal_h, house_labels)
+    overlay_label = _house_label(overlay_h, house_labels)
+    if natal_label:
+        return _group_where_label(_clean_trailing_punct(natal_label))
+    if overlay_label:
+        return _group_where_label(_clean_trailing_punct(overlay_label))
+
+    where_text = str(interpretation.get("where") or "")
+    lowered = where_text.lower()
+    for anchor, direct_label in (
+        ("alaninda", None),
+        ("tarafinda", None),
+        ("konusunda", None),
+        ("iliskilerde", "iliskiler"),
+        ("iste", "is"),
+        ("evde", "ev"),
+        ("gunluk", "gunluk duzen"),
+    ):
+        if anchor not in lowered:
+            continue
+        if direct_label:
+            return _group_where_label(direct_label)
+        before = lowered.split(anchor, 1)[0].strip()
+        if not before:
+            continue
+        words = [w for w in before.split() if w]
+        if not words:
+            continue
+        label_words = words[-4:]
+        return _group_where_label(" ".join(label_words))
+
+    return "hayatinin akisi"
+
+
 def _first_sentence(value: Any) -> str:
     text = str(value or "").strip()
     if not text:
         return ""
     split = text.split(".")
     return _normalize_sentence(split[0]) if split else _normalize_sentence(text)
+
+
+def _first_sentence_with_period(value: Any) -> str:
+    sentence = _first_sentence(value)
+    if not sentence:
+        return ""
+    if sentence.endswith("."):
+        return sentence
+    return f"{sentence}."
+
+
+def _timing_band(item: Dict[str, Any], time_hint: str | None = None) -> str:
+    phase = str(item.get("phase") or "").lower()
+    bucket = str(item.get("bucket") or "").lower()
+
+    base = ""
+    if phase == "applying":
+        base = "onumuzdeki haftalarda belirginlesebilir"
+    elif phase in {"exact", "exactish"}:
+        base = "su an en yogun doneminde olabilir"
+    elif phase == "separating":
+        base = "kademeli olarak yumusuyor olabilir"
+    else:
+        base = str(time_hint or "").strip()
+
+    if bucket == "long":
+        if base:
+            return f"{base}; etkisi aylar boyunca hissedilebilir"
+        return "etkisi aylar boyunca hissedilebilir"
+
+    return base
+
+
+def _house_label(house_num: int | None, house_labels: Dict[int, str]) -> str | None:
+    if not house_num:
+        return None
+    return house_labels.get(house_num)
+
+
+def _mechanic_phrase(item: Dict[str, Any]) -> str:
+    body = item.get("transit_body")
+    polarity = str(item.get("polarity") or "").lower()
+
+    if body == "Saturn" and polarity == "hard":
+        return "sinirlari, gecikmeleri ve eforu daha gorunur kilmasi"
+    if body == "Neptune" and polarity == "hard":
+        return "netligi azaltip varsayimlari artirmasi"
+    if body == "Pluto":
+        return "kontrol ve donusum temasini derinlestirmesi"
+    if body == "Uranus":
+        return "ani degisim ve ozgurlesme ihtiyaci yaratmasi"
+    if body == "Jupiter":
+        return "genisleme ve firsat arayisini buyutmesi"
+    if body == "Venus":
+        return "iliski ve deger temasini belirginlestirmesi"
+    if body == "Mercury":
+        return "iletisim ve zihin temposunu belirginlestirmesi"
+    if body == "Mars":
+        return "aksiyon ve gerilim temasini belirginlestirmesi"
+
+    if polarity == "hard":
+        return "baski ve surtunme yaratmasi"
+    if polarity == "soft":
+        return "akisi desteklemesi"
+    return "temayi gorunur kilmasi"
+
+
+def _his_phrase(summary_first: str | None) -> str:
+    cleaned = _normalize_sentence(summary_first or "").lower()
+    if not cleaned:
+        return "bazi seyleri daha hassas hissettirebilir"
+    if len(cleaned.split()) > 12:
+        return "bazi seyleri daha hassas hissettirebilir"
+    return cleaned
+
+
+def _build_event_one_liner(
+    item: Dict[str, Any],
+    interpretation: Dict[str, Any],
+    *,
+    house_labels: Dict[int, str],
+    claim_phrase: str | None,
+    upper_meaning: str | None,
+    approach_text: str | None,
+) -> str:
+    headline = _headline_text(interpretation)
+    short_headline = _short_headline_text(interpretation)
+    where_short = _where_short_label(item, interpretation, house_labels=house_labels)
+    variant = _stable_variant_index(str(item.get("event_id") or ""), 3)
+
+    if variant == 1:
+        first_sentence = f"{headline}; etki en cok {where_short} tarafinda toplanabilir."
+    elif variant == 2:
+        first_sentence = f"{headline}; ozellikle {where_short} tarafinda belirginlesebilir."
+    else:
+        first_sentence = f"{headline}; bunu en cok {where_short} tarafinda hissedebilirsin."
+
+    second_sentence = ""
+    if upper_meaning:
+        normalized = _clean_trailing_punct(upper_meaning)
+        lowered = normalized.lower()
+        keywords = [
+            "alan acabilir",
+            "yardimci olabilir",
+            "kolaylastirabilir",
+            "destekleyebilir",
+            "gosterebilir",
+            "mumkun",
+            "olabilir",
+        ]
+        if any(keyword in lowered for keyword in keywords):
+            second_sentence = f"{normalized[:1].upper()}{normalized[1:]}."
+        else:
+            second_sentence = f"Uzun vadede {normalized}."
+    elif approach_text:
+        normalized = _clean_trailing_punct(approach_text)
+        second_sentence = f"{normalized[:1].upper()}{normalized[1:]}."
+    elif claim_phrase:
+        short_enough = len(claim_phrase.split()) <= 6 and len(claim_phrase) <= 40
+        if short_enough:
+            second_sentence = f"Ozellikle {claim_phrase} refleksini yumusatabilir."
+
+    first_sentence = _clean_trailing_punct(first_sentence) + "."
+    first_sentence = _dedupe_repeats(first_sentence)
+
+    if second_sentence:
+        second_sentence = _clean_trailing_punct(second_sentence) + "."
+        second_sentence = _dedupe_repeats(second_sentence)
+
+    result = " ".join(part for part in [first_sentence, second_sentence] if part).strip()
+
+    if len(result) > 220:
+        if second_sentence and "refleksini yumusatabilir" in second_sentence:
+            result = first_sentence.strip()
+        if len(result) > 220:
+            short_label = " ".join(where_short.split()[:2]) or where_short
+            if variant == 1:
+                first_sentence = f"{headline}; etki en cok {short_label} tarafinda toplanabilir."
+            elif variant == 2:
+                first_sentence = f"{headline}; ozellikle {short_label} tarafinda belirginlesebilir."
+            else:
+                first_sentence = f"{headline}; bunu en cok {short_label} tarafinda hissedebilirsin."
+            first_sentence = _clean_trailing_punct(first_sentence) + "."
+            first_sentence = _dedupe_repeats(first_sentence)
+            result = " ".join(part for part in [first_sentence, second_sentence] if part).strip()
+        if len(result) > 220:
+            short_headline = _clean_trailing_punct(short_headline)
+            if variant == 1:
+                first_sentence = f"{short_headline}; etki en cok {where_short} tarafinda toplanabilir."
+            elif variant == 2:
+                first_sentence = f"{short_headline}; ozellikle {where_short} tarafinda belirginlesebilir."
+            else:
+                first_sentence = f"{short_headline}; bunu en cok {where_short} tarafinda hissedebilirsin."
+            first_sentence = _clean_trailing_punct(first_sentence) + "."
+            first_sentence = _dedupe_repeats(first_sentence)
+            result = " ".join(part for part in [first_sentence, second_sentence] if part).strip()
+        if len(result) > 220:
+            result = first_sentence.strip()
+
+    result = _dedupe_repeats(result)
+    result = _clean_trailing_punct(result) + "."
+    return result
+
+
+def _upper_meaning_keys(
+    transit_body: str,
+    aspect: str,
+    natal_point: str,
+    polarity: str,
+) -> List[str]:
+    body = _norm(transit_body)
+    aspect_key = _norm(aspect)
+    point = _norm_point(natal_point)
+    polarity_key = _norm_polarity(polarity, aspect_key)
+    return [
+        f"{body}.{aspect_key}.{point}",
+        f"{body}.{aspect_key}.any",
+        f"{aspect_key}.{polarity_key}.any",
+        f"{polarity_key}.any",
+        "generic.any",
+    ]
+
+
+def _resolve_upper_meaning(
+    *,
+    event_id: str,
+    transit_body: str,
+    aspect: str,
+    natal_point: str,
+    polarity: str,
+    content: ContentStore,
+    include_debug: bool = False,
+) -> Tuple[str, Dict[str, Any] | None]:
+    pack = content.upper_meaning or {}
+    if not pack:
+        return "", None
+    keys = _upper_meaning_keys(transit_body, aspect, natal_point, polarity)
+    for key in keys:
+        variants = pack.get(key)
+        if not isinstance(variants, list) or not variants:
+            continue
+        variant_index = _stable_variant_index(str(event_id), len(variants))
+        text = str(variants[variant_index]).strip()
+        if not text:
+            continue
+        ref = {
+            "key": key,
+            "variant": variant_index,
+            "lang": "tr",
+            "version": "v1",
+        }
+        if include_debug:
+            ref["resolver_path"] = keys
+            ref["selected_key"] = key
+        return text, ref
+    return "", None
+
+
+def _resolve_style_do(
+    *,
+    event_id: str,
+    transit_body: str,
+    aspect: str,
+    natal_point: str,
+    polarity: str,
+    content: ContentStore,
+    include_debug: bool = False,
+) -> Tuple[str, Dict[str, Any] | None]:
+    pack = content.style_do or {}
+    if not pack:
+        return "", None
+    keys = _upper_meaning_keys(transit_body, aspect, natal_point, polarity)
+    for key in keys:
+        variants = pack.get(key)
+        if not isinstance(variants, list) or not variants:
+            continue
+        variant_index = _stable_variant_index(str(event_id), len(variants))
+        text = str(variants[variant_index]).strip()
+        if not text:
+            continue
+        if not include_debug:
+            return text, None
+        return text, {
+            "key": key,
+            "variant": variant_index,
+            "lang": "tr",
+            "version": "v1",
+            "resolver_path": keys,
+            "selected_key": key,
+        }
+    return "", None
+
+
+def _resolve_approach_text(
+    *,
+    event_id: str,
+    transit_body: str,
+    polarity: str,
+    transit_style: Dict[str, Any] | None,
+    target_style: Dict[str, Any] | None,
+    content: ContentStore,
+    include_debug: bool = False,
+) -> Tuple[str, Dict[str, Any] | None]:
+    pack = content.approach_pack or {}
+    if not pack:
+        return "", None
+    transit_element = _norm((transit_style or {}).get("element") or "any") or "any"
+    transit_modality = _norm((transit_style or {}).get("modality") or "any") or "any"
+    target_element = _norm((target_style or {}).get("element") or "any") or "any"
+    target_modality = _norm((target_style or {}).get("modality") or "any") or "any"
+    body = _norm(transit_body)
+    pol = _norm_polarity(polarity, None)
+
+    keys = [
+        f"approach.{body}.{pol}.{transit_element}.{transit_modality}.{target_element}.{target_modality}",
+        f"approach.{body}.{pol}.{transit_element}.{transit_modality}.any.any",
+        f"approach.{body}.{pol}.{transit_element}.any.any.any",
+        f"approach.{body}.{pol}.any.any.any.any",
+        f"approach.{body}.any.any.any.any.any",
+        f"approach.{pol}.any",
+        "approach.generic.any",
+    ]
+    for key in keys:
+        variants = pack.get(key)
+        if not isinstance(variants, list) or not variants:
+            continue
+        variant_index = _stable_variant_index(str(event_id), len(variants))
+        text = str(variants[variant_index]).strip()
+        if not text:
+            continue
+        if not include_debug:
+            return text, None
+        return text, {
+            "key": key,
+            "variant": variant_index,
+            "lang": "tr",
+            "version": "v1",
+            "resolver_path": keys,
+            "selected_key": key,
+        }
+    return "", None
 
 
 def _ensure_two_sentences(summary: str, mechanism: str) -> str:
@@ -390,13 +924,18 @@ def _inject_context(event: Dict, promise: Dict | None, content: ContentStore) ->
 
     claim_texts: list[str] = []
     for idx, (cid, score) in enumerate(selected):
-        variants = claims[cid].get("text_variants", [])
-        claim_text = _pick_variant(f"{event['event_id']}:{cid}:v1", variants)
+        text_variants = claims[cid].get("text_variants", [])
+        claim_text = _pick_variant(f"{event['event_id']}:{cid}:v1", text_variants)
+        phrase_variants = claims[cid].get("phrase_variants", [])
+        micro_phrase = _pick_variant(f"{event['event_id']}:{cid}:p1", phrase_variants)
+        if not micro_phrase:
+            micro_phrase = _normalize_sentence(claim_text).lower() if claim_text else ""
         matched_claims.append(
             {
                 "id": cid,
                 "score": round(score, 2),
                 "text": claim_text,
+                "micro_phrase": micro_phrase,
                 "used_for_render": idx == 0,
             }
         )

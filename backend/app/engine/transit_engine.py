@@ -11,6 +11,7 @@ import swisseph as swe
 
 from app.astro.chart_engine.builder import fetch_location, julian_day
 from app.astro.chart_engine.positions import PLANET_CODES, get_zodiac_sign
+from app.helpers.meta_detectors import ELEMENT_MAP, MODALITY_MAP
 from app.helpers.transit_normalize import (
     build_angle_position,
     build_body_position,
@@ -910,6 +911,8 @@ def _build_display(
             transit_body = str((entry.get("transit") or {}).get("body") or "")
             natal_point = _normalize_angle_name(str((entry.get("natal") or {}).get("body") or ""))
             aspect_type = str(entry.get("type") or "")
+            transit_sign = _sign_from_lon((entry.get("transit") or {}).get("lon"))
+            target_sign = _sign_from_lon((entry.get("natal") or {}).get("lon"))
             orb_limit = float(options.orbs.get(aspect_type, 6.0))
             orb_value = float(entry.get("orb") or 0.0)
             phase = _display_phase(orb_value, orb_limit, entry.get("phase"))
@@ -932,6 +935,10 @@ def _build_display(
                     "phase": phase,
                     "bucket": _duration_category(transit_body),
                     "tags": tags,
+                    "astro_style": {
+                        "transit": _style_from_sign(transit_sign) or {},
+                        "target": _style_from_sign(target_sign) or {},
+                    },
                     "houses": {
                         "transit_in_natal_house": transit_house_map.get(transit_body),
                         "natal_point_house": natal_house_map.get(natal_point),
@@ -1733,6 +1740,19 @@ def _sign_from_lon(lon: float | None) -> str | None:
     if lon is None:
         return None
     return get_zodiac_sign(float(lon))
+
+
+def _style_from_sign(sign: str | None) -> Dict[str, str] | None:
+    if not sign:
+        return None
+    element = ELEMENT_MAP.get(sign)
+    modality = MODALITY_MAP.get(sign)
+    if not element or not modality:
+        return None
+    return {
+        "element": element.lower(),
+        "modality": modality.lower(),
+    }
 
 
 def _body_lon(body: str, bodies: Sequence[Mapping[str, Any]]) -> float | None:
