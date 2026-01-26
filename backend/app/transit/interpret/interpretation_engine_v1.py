@@ -570,14 +570,7 @@ def _build_event_one_liner(
     headline = _headline_text(interpretation)
     short_headline = _short_headline_text(interpretation)
     where_short = _where_short_label(item, interpretation, house_labels=house_labels)
-    variant = _stable_variant_index(str(item.get("event_id") or ""), 3)
-
-    if variant == 1:
-        first_sentence = f"{headline}; etki en cok {where_short} tarafinda toplanabilir."
-    elif variant == 2:
-        first_sentence = f"{headline}; ozellikle {where_short} tarafinda belirginlesebilir."
-    else:
-        first_sentence = f"{headline}; bunu en cok {where_short} tarafinda hissedebilirsin."
+    first_sentence = f"{headline}; bunu en cok {where_short} tarafinda hissedebilirsin."
 
     second_sentence = ""
     if upper_meaning:
@@ -587,6 +580,7 @@ def _build_event_one_liner(
             "alan acabilir",
             "yardimci olabilir",
             "kolaylastirabilir",
+            "getirebilir",
             "destekleyebilir",
             "gosterebilir",
             "mumkun",
@@ -595,6 +589,9 @@ def _build_event_one_liner(
         if any(keyword in lowered for keyword in keywords):
             second_sentence = f"{normalized[:1].upper()}{normalized[1:]}."
         else:
+            if lowered.startswith(("bu ", "bu dönem", "bu etki")):
+                if lowered.startswith("bu "):
+                    normalized = normalized[3:].lstrip()
             second_sentence = f"Uzun vadede {normalized}."
     elif approach_text:
         normalized = _clean_trailing_punct(approach_text)
@@ -618,23 +615,13 @@ def _build_event_one_liner(
             result = first_sentence.strip()
         if len(result) > 220:
             short_label = " ".join(where_short.split()[:2]) or where_short
-            if variant == 1:
-                first_sentence = f"{headline}; etki en cok {short_label} tarafinda toplanabilir."
-            elif variant == 2:
-                first_sentence = f"{headline}; ozellikle {short_label} tarafinda belirginlesebilir."
-            else:
-                first_sentence = f"{headline}; bunu en cok {short_label} tarafinda hissedebilirsin."
+            first_sentence = f"{headline}; bunu en cok {short_label} tarafinda hissedebilirsin."
             first_sentence = _clean_trailing_punct(first_sentence) + "."
             first_sentence = _dedupe_repeats(first_sentence)
             result = " ".join(part for part in [first_sentence, second_sentence] if part).strip()
         if len(result) > 220:
             short_headline = _clean_trailing_punct(short_headline)
-            if variant == 1:
-                first_sentence = f"{short_headline}; etki en cok {where_short} tarafinda toplanabilir."
-            elif variant == 2:
-                first_sentence = f"{short_headline}; ozellikle {where_short} tarafinda belirginlesebilir."
-            else:
-                first_sentence = f"{short_headline}; bunu en cok {where_short} tarafinda hissedebilirsin."
+            first_sentence = f"{short_headline}; bunu en cok {where_short} tarafinda hissedebilirsin."
             first_sentence = _clean_trailing_punct(first_sentence) + "."
             first_sentence = _dedupe_repeats(first_sentence)
             result = " ".join(part for part in [first_sentence, second_sentence] if part).strip()
@@ -722,16 +709,16 @@ def _resolve_style_do(
         text = str(variants[variant_index]).strip()
         if not text:
             continue
-        if not include_debug:
-            return text, None
-        return text, {
+        ref = {
             "key": key,
             "variant": variant_index,
             "lang": "tr",
             "version": "v1",
-            "resolver_path": keys,
-            "selected_key": key,
         }
+        if include_debug:
+            ref["resolver_path"] = keys
+            ref["selected_key"] = key
+        return text, ref
     return "", None
 
 
@@ -772,16 +759,16 @@ def _resolve_approach_text(
         text = str(variants[variant_index]).strip()
         if not text:
             continue
-        if not include_debug:
-            return text, None
-        return text, {
+        ref = {
             "key": key,
             "variant": variant_index,
             "lang": "tr",
             "version": "v1",
-            "resolver_path": keys,
-            "selected_key": key,
         }
+        if include_debug:
+            ref["resolver_path"] = keys
+            ref["selected_key"] = key
+        return text, ref
     return "", None
 
 
