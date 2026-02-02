@@ -2,12 +2,13 @@
 from __future__ import annotations
 
 from pathlib import Path
+import copy
 import hashlib
-from typing import Any, Dict, List, Mapping, Optional, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Tuple, Literal
 import json
 from functools import lru_cache
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.engine.transit_engine import (
@@ -15,10 +16,36 @@ from app.engine.transit_engine import (
     build_transit_report,
     build_transit_window_report,
 )
-from app.transit.interpret.interpretation_engine_v1 import ContentStore, interpret_items
+from app.transit.interpret.interpretation_engine_v1 import (
+    ContentStore,
+    diversify_where_short,
+    interpret_items,
+)
+from app.transit.present.public_builder import build_public_response
+from app.transit.calendar_builder import build_transit_calendar_public
+from app.transit.calendar.best_times import best_times_from_calendar_payload
+from app.transit.serialize.calendar_serializers import to_ui_day_detail
 from app.transit.interpret.promise_builder_v1 import build_promise_model
 
 router = APIRouter(tags=["transits"])
+
+def _normalize_calendar_view(view: str) -> Literal["public", "internal", "both"]:
+    """
+    Backward-compatible view mapper.
+    Old:
+      - ui   => public
+      - full => internal
+    New:
+      - public | internal | both
+    """
+    v = (view or "").strip().lower()
+    if v == "ui":
+        return "public"
+    if v == "full":
+        return "internal"
+    if v in {"public", "internal", "both"}:
+        return v
+    return "public"
 
 _CONTENT_STORE: ContentStore | None = None
 _PERIOD_SPACE_PACK: Dict[str, Any] | None = None
@@ -937,8 +964,7 @@ class TransitEventTimingRequest(BaseModel):
     selector: TransitEventSelector
 
 
-@router.post("/transits")
-def build_transits(request: TransitRequest) -> Dict[str, Any]:
+def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
     assumptions: list[str] = []
     transit_time = request.transit_time
     if not transit_time:
@@ -1003,6 +1029,7 @@ def build_transits(request: TransitRequest) -> Dict[str, Any]:
                     f"{left_label} ile {right_label} arasinda {mode_label} gibi calisabilir."
                 )
                 item["interpretation"] = interp
+            diversify_where_short(interpreted_items)
             display["items"] = interpreted_items
             response["display"] = display
             _build_ranking(display["items"])
@@ -1051,6 +1078,165 @@ def build_transits(request: TransitRequest) -> Dict[str, Any]:
         return response
     except Exception as exc:  # pragma: no cover - passthrough for API response
         raise HTTPException(status_code=500, detail=str(exc)) from exc
+
+
+@router.post("/transits")
+def build_transits(request: TransitRequest) -> Dict[str, Any]:
+    response = _build_transits_engine_response(request)
+    return build_public_response(response)
+
+
+@router.post("/transits/debug")
+def build_transits_debug(request: TransitRequest) -> Dict[str, Any]:
+    return _build_transits_engine_response(request)
+
+
+@router.get("/transit/calendar")
+def build_transit_calendar(
+    birth_date: str,
+    birth_time: str,
+    birth_place: str,
+    start: str,
+    end: str,
+    tz: str,
+    transit_place: str | None = None,
+    lens: str = "general",
+    view: str = Query("public", description="public | internal | both (ui/full are accepted aliases)"),
+    include: str | None = Query(None, description="markers,items_map,items_map_raw,themes,intent_summary,calendar_internal"),
+) -> Dict[str, Any]:
+    payload = build_transit_calendar_public(
+        birth_date=birth_date,
+        birth_time=birth_time,
+        birth_place=birth_place,
+        transit_place=transit_place or birth_place,
+        start=start,
+        end=end,
+        tz=tz,
+        lens=lens,
+        options=None,
+    )
+    v = _normalize_calendar_view(view)
+    internal = payload.get("calendar_internal") or payload
+    public = payload.get("calendar_public") or {}
+    if v == "internal":
+        return internal
+    if v == "both":
+        return {"calendar_internal": internal, "calendar_public": public}
+
+    # public + optional include (never mutate public in-place)
+    out = copy.deepcopy(public)
+    if include:
+        inc = {p.strip().lower() for p in include.split(",") if p.strip()}
+        if "markers" in inc:
+            out["markers"] = internal.get("markers", [])
+        if "items_map" in inc:
+            out["items_map"] = internal.get("items_map", {})
+        if "items_map_raw" in inc:
+            out["items_map_raw"] = internal.get("items_map_raw", {})
+        if "themes" in inc:
+            out["themes"] = internal.get("themes", [])
+        if "intent_summary" in inc:
+            out["intent_summary"] = internal.get("intent_summary", {})
+        if "calendar_internal" in inc:
+            out["calendar_internal"] = internal
+    return out
+
+
+@router.get("/transit/calendar/best-times")
+def transit_calendar_best_times(
+    intent: str = Query(..., description="beauty_care | business | marriage_window | ..."),
+    sub_intent: str | None = Query(None, description="nourish | reduce | procedure (for beauty_care)"),
+    body_area: str | None = Query(None),
+    birth_date: str = Query(..., description="YYYY-MM-DD"),
+    birth_time: str = Query(..., description="HH:MM"),
+    birth_place: str = Query(..., description="City, Country (or your place id)"),
+    start: str | None = Query(None, description="YYYY-MM-DD"),
+    end: str | None = Query(None, description="YYYY-MM-DD"),
+    tz: str = Query("Europe/Istanbul"),
+    top: int = Query(10, ge=1, le=50),
+    window: int = Query(3, ge=2, le=14),
+    debug: int = Query(0, description="1 => evidence/rules döndür"),
+    transit_place: str | None = None,
+    lens: str = Query("general", description="general | relationship | marriage | business | career | money | health | home"),
+) -> Dict[str, Any]:
+    if not start or not end:
+        from datetime import date, timedelta
+
+        today = date.today()
+        start = start or today.isoformat()
+        end = end or (today + timedelta(days=30)).isoformat()
+
+    payload = build_transit_calendar_public(
+        birth_date=birth_date,
+        birth_time=birth_time,
+        birth_place=birth_place,
+        transit_place=transit_place or birth_place,
+        start=start,
+        end=end,
+        tz=tz,
+        lens=lens,
+        options=None,
+    )
+
+    result = best_times_from_calendar_payload(
+        payload=payload.get("calendar_internal") or payload,
+        intent=intent,
+        sub_intent=sub_intent,
+        body_area=body_area,
+        top=top,
+        window=window,
+        debug=bool(debug),
+    )
+    if debug:
+        if "_debug_calendar" not in result:
+            internal = payload.get("calendar_internal") or payload
+            days = internal.get("days") or []
+            sample = days[0] if days else {}
+            result["_debug_calendar"] = {
+                "internal_has_days": bool(days),
+                "days_count": len(days),
+                "sample_day_keys": sorted(list(sample.keys()))[:50] if isinstance(sample, dict) else [],
+                "sample_moon_phase": sample.get("moon_phase") if isinstance(sample, dict) else None,
+                "sample_moon_sign": sample.get("moon_sign") if isinstance(sample, dict) else None,
+                "has_markers": bool(internal.get("markers")) if isinstance(internal, dict) else False,
+                "has_items_map_raw": bool(internal.get("items_map_raw")) if isinstance(internal, dict) else False,
+            }
+    return result
+
+
+@router.get("/transit/calendar/day")
+def build_transit_calendar_day(
+    birth_date: str,
+    birth_time: str,
+    birth_place: str,
+    date: str,
+    tz: str,
+    transit_place: str | None = None,
+    view: str = Query("internal", description="public | internal | both (ui/full are accepted aliases)"),
+) -> Dict[str, Any]:
+    v = _normalize_calendar_view(view)
+    payload = build_transit_calendar_public(
+        birth_date=birth_date,
+        birth_time=birth_time,
+        birth_place=birth_place,
+        transit_place=transit_place or birth_place,
+        start=date,
+        end=date,
+        tz=tz,
+        lens="general",
+        options=None,
+    )
+    internal = payload.get("calendar_internal") or payload
+    public = payload.get("calendar_public") or {}
+    if v == "public":
+        return to_ui_day_detail(internal, date=date, top_n=7)
+    if v == "both":
+        return {
+            "calendar_internal": internal,
+            "calendar_public": public,
+            "day_ui": to_ui_day_detail(internal, date=date, top_n=7),
+        }
+    return internal
 
 
 @router.post("/transits/window")

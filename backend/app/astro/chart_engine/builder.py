@@ -2,8 +2,10 @@
 from __future__ import annotations
 
 import logging
+import time
 from dataclasses import dataclass
 from datetime import datetime
+from functools import lru_cache
 from typing import Any, Dict, Mapping
 
 import requests
@@ -27,13 +29,39 @@ class LocationData:
     label: str
 
 
+_LOCAL_LOCATION_FALLBACKS: Dict[str, LocationData] = {
+    "istanbul": LocationData(41.0082, 28.9784, "Europe/Istanbul", "Istanbul, TR"),
+    "istanbul tr": LocationData(41.0082, 28.9784, "Europe/Istanbul", "Istanbul, TR"),
+    "ankara": LocationData(39.9334, 32.8597, "Europe/Istanbul", "Ankara, TR"),
+    "ankara tr": LocationData(39.9334, 32.8597, "Europe/Istanbul", "Ankara, TR"),
+    "izmir": LocationData(38.4237, 27.1428, "Europe/Istanbul", "Izmir, TR"),
+    "izmir tr": LocationData(38.4237, 27.1428, "Europe/Istanbul", "Izmir, TR"),
+}
+
+
+def _normalize_city_key(city: str) -> str:
+    return " ".join(city.lower().replace(",", " ").split())
+
+
+def _fallback_location(city: str) -> LocationData | None:
+    key = _normalize_city_key(city)
+    return _LOCAL_LOCATION_FALLBACKS.get(key)
+
+
 def julian_day(utc_dt: datetime) -> float:
     ut = utc_dt.hour + utc_dt.minute / 60 + utc_dt.second / 3600
     return swe.julday(utc_dt.year, utc_dt.month, utc_dt.day, ut, swe.GREG_CAL)
 
 
+@lru_cache(maxsize=256)
 def fetch_location(city: str) -> LocationData:
+    if not city:
+        raise ApiError("City is required for location lookup.")
     if not settings.opencage_api_key:
+        fallback = _fallback_location(city)
+        if fallback:
+            logger.warning("OpenCage key missing; using fallback location for %s", city)
+            return fallback
         raise ApiError("OPENCAGE_API_KEY not configured. Check your .env file.")
     params = {
         "q": city,
@@ -42,28 +70,45 @@ def fetch_location(city: str) -> LocationData:
         "limit": 1,
         "no_annotations": 0,
     }
-    try:
-        response = requests.get("https://api.opencagedata.com/geocode/v1/json", params=params, timeout=10)
-    except requests.RequestException as exc:
-        raise ApiError("OpenCage request failed.") from exc
-    if response.status_code >= 400:
-        raise ApiError(f"OpenCage request failed ({response.status_code}).")
-    data = response.json()
-    results = data.get("results", [])
-    if not results:
-        raise ApiError("City not found via OpenCage.")
-    first = results[0]
-    geometry = first.get("geometry", {})
-    timezone_info = first.get("annotations", {}).get("timezone", {})
-    timezone = timezone_info.get("name")
-    if not timezone:
-        raise ApiError("Timezone information missing from OpenCage response.")
-    return LocationData(
-        latitude=float(geometry.get("lat")),
-        longitude=float(geometry.get("lng")),
-        timezone=str(timezone),
-        label=first.get("formatted") or city,
-    )
+    last_exc: Exception | None = None
+    for attempt in range(3):
+        try:
+            response = requests.get(
+                "https://api.opencagedata.com/geocode/v1/json",
+                params=params,
+                timeout=10,
+            )
+            if response.status_code >= 400:
+                raise ApiError(f"OpenCage request failed ({response.status_code}).")
+            data = response.json()
+            results = data.get("results", [])
+            if not results:
+                fallback = _fallback_location(city)
+                if fallback:
+                    logger.warning("OpenCage returned no results; using fallback for %s", city)
+                    return fallback
+                raise ApiError("City not found via OpenCage.")
+            first = results[0]
+            geometry = first.get("geometry", {})
+            timezone_info = first.get("annotations", {}).get("timezone", {})
+            timezone = timezone_info.get("name")
+            if not timezone:
+                raise ApiError("Timezone information missing from OpenCage response.")
+            return LocationData(
+                latitude=float(geometry.get("lat")),
+                longitude=float(geometry.get("lng")),
+                timezone=str(timezone),
+                label=first.get("formatted") or city,
+            )
+        except requests.RequestException as exc:
+            last_exc = exc
+            time.sleep(0.5 * (attempt + 1))
+
+    fallback = _fallback_location(city)
+    if fallback:
+        logger.warning("OpenCage request failed; using fallback for %s", city)
+        return fallback
+    raise ApiError("OpenCage request failed.") from last_exc
 
 
 def extract_birth_inputs(payload: Mapping[str, Any]) -> tuple[str, str, str] | tuple[str, str, None]:

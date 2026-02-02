@@ -3,7 +3,16 @@ import re
 from typing import Any, Dict, List, Tuple
 
 from app.transit.interpret.canonical import canon_aspect, canonical_key
+from app.transit.interpret.day_serializer import build_label_pack_top, split_phase_vs_transit
+from app.transit.interpret.event_models import EventMeta
+from app.transit.interpret.event_registry import build_event_registry
+import os
+
 from app.transit.interpret.mechanism import build_mechanism_sentence
+from app.transit.lens.mapper import apply_rules_to_event_id
+from app.transit.lens.rulebook import load_domain_rules
+from app.transit.lens.scoring import base_marker_score, score_for_intent, score_for_lens
+from app.transit.interpret.top_selector import CooldownState, pick_top_with_cooldown
 from app.transit.interpret.themes import pick_primary_theme
 from app.transit.interpret.where import HOUSE_LABELS_TR, build_where_sentence
 
@@ -96,6 +105,12 @@ POINT_ALIASES = {
     "ic": "ic",
     "imumcoeli": "ic",
     "imum_coeli": "ic",
+}
+WHERE_SHORT_ALLOWED = {
+    "kimlik ve gorunurluk",
+    "zihin ve iletisim",
+    "iliskiler",
+    "gunluk duzen",
 }
 
 
@@ -212,6 +227,16 @@ def interpret_items(
                 "primary_theme": primary_theme,
             },
         }
+        interpretation["headline_short"] = _shorten_headline(
+            interpretation.get("short_headline") or interpretation["headline"]
+        )
+        where_short = ""
+        if transit_house is not None:
+            try:
+                where_short = _where_short_from_house(int(transit_house))
+            except (TypeError, ValueError):
+                where_short = ""
+        interpretation["where_short"] = _enforce_where_short_set(where_short)
 
         interpretation["summary"] = _ensure_two_sentences(interpretation["summary"], mechanism)
         if not interpretation.get("where"):
@@ -288,15 +313,15 @@ def interpret_items(
             do_items = list(interpretation.get("do") or do_list[:2])
             if len(do_items) < 2:
                 do_items = do_list[:2]
-            do_items.append(f"Yaklasim: {approach_text}")
+            do_items.append(f"Uygulama: {approach_text}")
             interpretation["do"] = do_items[:4]
-        if approach_ref:
+        if approach_ref and debug:
             interpretation["approach_ref"] = approach_ref
 
         interpretation["one_liner"] = _build_event_one_liner(
             item,
             interpretation,
-            house_labels=HOUSE_LABELS_TR,
+            where_short=interpretation.get("where_short"),
             claim_phrase=claim_micro,
             upper_meaning=upper_text,
             approach_text=approach_text,
@@ -338,6 +363,91 @@ def _normalize_sentence(value: Any) -> str:
 
 def _norm(value: Any) -> str:
     return str(value or "").strip().lower()
+
+
+def _shorten_headline(text: str) -> str:
+    cleaned = _clean_trailing_punct(text or "")
+    words = [w for w in cleaned.split() if w]
+    if len(words) <= 5:
+        return cleaned
+    return " ".join(words[:5])
+
+
+def _sentence_cap(text: str) -> str:
+    cleaned = _clean_trailing_punct(text or "")
+    if not cleaned:
+        return ""
+    return f"{cleaned[:1].upper()}{cleaned[1:]}"
+
+
+def _enforce_where_short_set(label: str) -> str:
+    w = _norm(label)
+    mapping = {
+        "kimlik ve durus": "kimlik ve gorunurluk",
+        "kimlik": "kimlik ve gorunurluk",
+        "gorunurluk": "kimlik ve gorunurluk",
+        "zihin": "zihin ve iletisim",
+        "iletisim": "zihin ve iletisim",
+        "ortakliklar": "iliskiler",
+        "iliskiler ve ortakliklar": "iliskiler",
+        "rutinler": "gunluk duzen",
+        "is ve saglik": "gunluk duzen",
+        "cevre ve gelecek plani": "gunluk duzen",
+    }
+    w = mapping.get(w, w)
+    if w in WHERE_SHORT_ALLOWED:
+        return w
+    return "kimlik ve gorunurluk"
+
+
+def _where_short_from_house(house: int | None) -> str:
+    if house in (1, 10):
+        return "kimlik ve gorunurluk"
+    if house in (3, 9):
+        return "zihin ve iletisim"
+    if house == 7:
+        return "iliskiler"
+    return "gunluk duzen"
+
+
+def _where_sentence_variant(event_id: str, where_short: str) -> str:
+    variant = _stable_variant_index(str(event_id or ""), 3)
+    if variant == 1:
+        return f"etkiyi en cok {where_short} tarafinda toplar"
+    if variant == 2:
+        return f"ozellikle {where_short} tarafinda belirginlesebilir"
+    return f"bunu en cok {where_short} tarafinda hissedebilirsin"
+
+
+def _ensure_two_sentences_line(first: str, second: str) -> str:
+    first_clean = _clean_trailing_punct(first)
+    second_clean = _clean_trailing_punct(_first_sentence(second))
+    if not second_clean:
+        return f"{first_clean}."
+    return f"{first_clean}. {second_clean}."
+
+
+def _ensure_one_sentence(value: str) -> str:
+    cleaned = _clean_trailing_punct(value)
+    if not cleaned:
+        return ""
+    return f"{cleaned}."
+
+
+def _replace_first_sentence(text: str, first_sentence: str) -> str:
+    parts = [p.strip() for p in str(text or "").split(".") if p.strip()]
+    second_sentence = parts[1] if len(parts) > 1 else ""
+    if second_sentence:
+        return _ensure_two_sentences_line(first_sentence, second_sentence)
+    return _ensure_one_sentence(first_sentence)
+
+
+def _build_first_sentence(item: Dict[str, Any], interpretation: Dict[str, Any], where_short: str) -> str:
+    headline_short = _shorten_headline(
+        str(interpretation.get("headline_short") or interpretation.get("headline") or "")
+    )
+    where_sentence = _where_sentence_variant(str(item.get("event_id") or ""), where_short)
+    return f"{headline_short}; {where_sentence}"
 
 
 def _norm_point(value: Any) -> str:
@@ -413,7 +523,7 @@ def _short_headline_text(interpretation: Dict[str, Any]) -> str:
 def _group_where_label(label: str) -> str:
     lowered = label.lower()
     if any(key in lowered for key in ("kimlik", "durus", "gorunurluk", "imaj")):
-        return "kimlik ve durus"
+        return "kimlik ve gorunurluk"
     if any(key in lowered for key in ("zihin", "iletisim", "ogren", "merak")):
         return "zihin ve iletisim"
     if any(key in lowered for key in ("iliski", "ortaklik", "yakinlik")):
@@ -431,6 +541,13 @@ def _group_where_label(label: str) -> str:
     return label
 
 
+def _shorten_where_label(label: str) -> str:
+    words = [w for w in label.split() if w]
+    if len(words) <= 5:
+        return label
+    return " ".join(words[:5])
+
+
 def _where_short_label(
     item: Dict[str, Any],
     interpretation: Dict[str, Any],
@@ -445,9 +562,9 @@ def _where_short_label(
     natal_label = _house_label(natal_h, house_labels)
     overlay_label = _house_label(overlay_h, house_labels)
     if natal_label:
-        return _group_where_label(_clean_trailing_punct(natal_label))
+        return _shorten_where_label(_group_where_label(_clean_trailing_punct(natal_label)))
     if overlay_label:
-        return _group_where_label(_clean_trailing_punct(overlay_label))
+        return _shorten_where_label(_group_where_label(_clean_trailing_punct(overlay_label)))
 
     where_text = str(interpretation.get("where") or "")
     lowered = where_text.lower()
@@ -463,15 +580,15 @@ def _where_short_label(
         if anchor not in lowered:
             continue
         if direct_label:
-            return _group_where_label(direct_label)
+            return _shorten_where_label(_group_where_label(direct_label))
         before = lowered.split(anchor, 1)[0].strip()
         if not before:
             continue
         words = [w for w in before.split() if w]
         if not words:
             continue
-        label_words = words[-4:]
-        return _group_where_label(" ".join(label_words))
+        label_words = words[-5:]
+        return _shorten_where_label(_group_where_label(" ".join(label_words)))
 
     return "hayatinin akisi"
 
@@ -558,79 +675,57 @@ def _his_phrase(summary_first: str | None) -> str:
     return cleaned
 
 
+def _format_upper_meaning(text: str, *, allow_long_term: bool = False) -> str:
+    cleaned = _sentence_cap(text)
+    if not cleaned:
+        return ""
+    if not allow_long_term:
+        return cleaned
+    lowered = _norm(cleaned)
+    has_prob = any(
+        token in lowered
+        for token in ("alan ac", "yardimci ol", "kolaylastir", "destekle", "imkan ver")
+    )
+    if has_prob:
+        return cleaned
+    lowered_first = f"{cleaned[:1].lower()}{cleaned[1:]}" if cleaned else cleaned
+    if lowered.startswith(("bu ", "bu dönem", "bu etki")):
+        return f"Uzun vadede, {lowered_first}"
+    return f"Uzun vadede {lowered_first}"
+
+
 def _build_event_one_liner(
     item: Dict[str, Any],
     interpretation: Dict[str, Any],
     *,
-    house_labels: Dict[int, str],
+    where_short: str | None = None,
     claim_phrase: str | None,
     upper_meaning: str | None,
     approach_text: str | None,
 ) -> str:
-    headline = _headline_text(interpretation)
-    short_headline = _short_headline_text(interpretation)
-    where_short = _where_short_label(item, interpretation, house_labels=house_labels)
-    first_sentence = f"{headline}; bunu en cok {where_short} tarafinda hissedebilirsin."
+    headline_short = _shorten_headline(
+        str(interpretation.get("headline_short") or interpretation.get("headline") or "")
+    )
+    ws = (where_short or interpretation.get("where_short") or "").strip()
+    if not ws:
+        ws = "hayatinin akisinda"
+    ws = _enforce_where_short_set(ws)
+    where_sentence = _where_sentence_variant(str(item.get("event_id") or ""), ws)
 
     second_sentence = ""
     if upper_meaning:
-        normalized = _clean_trailing_punct(upper_meaning)
-        lowered = normalized.lower()
-        keywords = [
-            "alan acabilir",
-            "yardimci olabilir",
-            "kolaylastirabilir",
-            "getirebilir",
-            "destekleyebilir",
-            "gosterebilir",
-            "mumkun",
-            "olabilir",
-        ]
-        if any(keyword in lowered for keyword in keywords):
-            second_sentence = f"{normalized[:1].upper()}{normalized[1:]}."
-        else:
-            if lowered.startswith(("bu ", "bu dönem", "bu etki")):
-                if lowered.startswith("bu "):
-                    normalized = normalized[3:].lstrip()
-            second_sentence = f"Uzun vadede {normalized}."
+        allow_long_term = bool(item.get("long_term_flag") or interpretation.get("long_term_flag"))
+        second_sentence = _format_upper_meaning(upper_meaning, allow_long_term=allow_long_term)
     elif approach_text:
-        normalized = _clean_trailing_punct(approach_text)
-        second_sentence = f"{normalized[:1].upper()}{normalized[1:]}."
+        second_sentence = _sentence_cap(approach_text)
     elif claim_phrase:
-        short_enough = len(claim_phrase.split()) <= 6 and len(claim_phrase) <= 40
-        if short_enough:
-            second_sentence = f"Ozellikle {claim_phrase} refleksini yumusatabilir."
+        second_sentence = _sentence_cap(claim_phrase)
 
-    first_sentence = _clean_trailing_punct(first_sentence) + "."
-    first_sentence = _dedupe_repeats(first_sentence)
+    if not second_sentence:
+        second_sentence = f"Bunu {ws} tarafinda daha belirgin hissedebilirsin"
 
-    if second_sentence:
-        second_sentence = _clean_trailing_punct(second_sentence) + "."
-        second_sentence = _dedupe_repeats(second_sentence)
-
-    result = " ".join(part for part in [first_sentence, second_sentence] if part).strip()
-
-    if len(result) > 220:
-        if second_sentence and "refleksini yumusatabilir" in second_sentence:
-            result = first_sentence.strip()
-        if len(result) > 220:
-            short_label = " ".join(where_short.split()[:2]) or where_short
-            first_sentence = f"{headline}; bunu en cok {short_label} tarafinda hissedebilirsin."
-            first_sentence = _clean_trailing_punct(first_sentence) + "."
-            first_sentence = _dedupe_repeats(first_sentence)
-            result = " ".join(part for part in [first_sentence, second_sentence] if part).strip()
-        if len(result) > 220:
-            short_headline = _clean_trailing_punct(short_headline)
-            first_sentence = f"{short_headline}; bunu en cok {where_short} tarafinda hissedebilirsin."
-            first_sentence = _clean_trailing_punct(first_sentence) + "."
-            first_sentence = _dedupe_repeats(first_sentence)
-            result = " ".join(part for part in [first_sentence, second_sentence] if part).strip()
-        if len(result) > 220:
-            result = first_sentence.strip()
-
-    result = _dedupe_repeats(result)
-    result = _clean_trailing_punct(result) + "."
-    return result
+    first_sentence = f"{headline_short}; {where_sentence}"
+    return _ensure_two_sentences_line(first_sentence, second_sentence)
 
 
 def _upper_meaning_keys(
@@ -770,6 +865,54 @@ def _resolve_approach_text(
             ref["selected_key"] = key
         return text, ref
     return "", None
+
+
+def _pick_alt_where_short(item: Dict[str, Any], current: str) -> str | None:
+    houses = item.get("houses") or {}
+    natal_house = houses.get("natal_point_house")
+    overlay_house = houses.get("transit_in_natal_house")
+    candidates: List[str] = []
+    for house in (overlay_house, natal_house):
+        try:
+            candidates.append(_where_short_from_house(int(house)))
+        except (TypeError, ValueError):
+            continue
+    for candidate in candidates:
+        normalized = _enforce_where_short_set(candidate)
+        if _norm(normalized) != _norm(current):
+            return normalized
+    rotation = [
+        "kimlik ve gorunurluk",
+        "zihin ve iletisim",
+        "iliskiler",
+        "gunluk duzen",
+    ]
+    if current in rotation:
+        return rotation[(rotation.index(current) + 1) % len(rotation)]
+    return None
+
+
+def diversify_where_short(items: List[Dict[str, Any]]) -> None:
+    last_ws = None
+    streak = 0
+    for item in items:
+        interp = item.get("interpretation") or {}
+        ws = _norm(interp.get("where_short") or "")
+        if not ws:
+            continue
+        if ws == last_ws:
+            streak += 1
+        else:
+            streak = 0
+        last_ws = ws
+        if streak < 1:
+            continue
+        alt = _pick_alt_where_short(item, ws)
+        if not alt or _norm(alt) == _norm(ws):
+            continue
+        interp["where_short"] = alt
+        first_sentence = _build_first_sentence(item, interp, alt)
+        interp["one_liner"] = _replace_first_sentence(interp.get("one_liner") or "", first_sentence)
 
 
 def _ensure_two_sentences(summary: str, mechanism: str) -> str:
@@ -995,3 +1138,100 @@ def _build_summary(items: List[Dict]) -> Dict:
         "top_themes": top_theme_list,
         "featured_ids": featured_ids,
     }
+
+
+def run_calendar_engine(
+    items_map_raw: Dict[str, List[str]],
+    raw_event_metas: List[EventMeta],
+    score_map: Dict[str, Dict[str, float]],
+) -> Dict[str, Any]:
+    registry = build_event_registry(raw_event_metas)
+    cooldown_state = CooldownState()
+    days_out: List[Dict[str, Any]] = []
+
+    for day in sorted(items_map_raw.keys()):
+        ids = items_map_raw[day]
+        split = split_phase_vs_transit(ids)
+        phase_ids = split["phase"]
+        transit_ids = split["transit"]
+
+        candidates: List[Tuple[str, float]] = []
+        day_scores = score_map.get(day, {})
+        for eid in transit_ids:
+            candidates.append((eid, float(day_scores.get(eid, 0.0))))
+
+        top_event_ids = pick_top_with_cooldown(
+            day=day,
+            candidates=candidates,
+            registry=registry,
+            state=cooldown_state,
+            top_k=5,
+            max_nonpeak_streak=2,
+        )
+
+        label_pack = {
+            "phase": [],
+            "top": build_label_pack_top(top_event_ids, registry),
+        }
+
+        days_out.append(
+            {
+                "date": day,
+                "top_event_ids": top_event_ids,
+                "phase_event_ids": phase_ids,
+                "label_pack": label_pack,
+            }
+        )
+
+    return {"days": days_out}
+
+
+def enrich_markers_with_lens(markers: List[Any]) -> List[Any]:
+    rules_path = os.path.join(os.path.dirname(__file__), "..", "lens", "domain_rules.yaml")
+    rules_path = os.path.normpath(rules_path)
+    rules = load_domain_rules(rules_path)
+
+    lens_keys = [
+        "general",
+        "relationship",
+        "marriage",
+        "business",
+        "career",
+        "money",
+        "health",
+        "home",
+    ]
+
+    for mk in markers:
+        eid = getattr(mk, "event_id", None) or getattr(mk, "id", "")
+        enrich = apply_rules_to_event_id(str(eid), rules)
+
+        mk.domains = enrich.domains
+        mk.intents = enrich.intents
+        mk.tags = enrich.tags
+        mk.evidence = {
+            "event_ids": enrich.evidence.event_ids,
+            "rules": enrich.evidence.rules,
+            "weight_sum": enrich.weight_sum,
+            "priority": enrich.priority,
+        }
+
+        confidence = getattr(mk, "confidence", 0.7)
+        is_peak = bool(getattr(mk, "is_peak", False))
+        orb_deg = getattr(mk, "orb_deg", None)
+
+        severity_val = getattr(mk, "severity", 0.6)
+        if isinstance(severity_val, str):
+            severity_val = {"low": 0.3, "medium": 0.6, "high": 0.9}.get(severity_val, 0.6)
+
+        base = base_marker_score(float(severity_val), float(confidence), is_peak, orb_deg)
+
+        mk.score_by_lens = {}
+        for lens in lens_keys:
+            mk.score_by_lens[lens] = score_for_lens(base, lens, enrich.weight_sum, enrich.priority)
+
+        mk.score_by_intent = {}
+        for intent in mk.intents:
+            mk.score_by_intent[intent] = score_for_intent(base, enrich.weight_sum, enrich.priority)
+
+    return markers

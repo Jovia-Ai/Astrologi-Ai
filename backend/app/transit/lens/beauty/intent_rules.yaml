@@ -1,0 +1,71 @@
+beauty_care_nourish:
+  label: "Besleme & Yenileme"
+  phase:
+    waxing: 1.0
+    waning: 0.4
+    full: 0.6
+    new: 0.3
+
+  moon_sign_bonus:
+    water: 1.0
+    earth: 0.8
+    air: 0.5
+    fire: 0.4
+
+  hard_blocks:
+    venus_retro: false
+    mars_retro: false
+    eclipse_window: false
+
+  penalties:
+    moon_voc: 0.5
+    hard_aspect_moon_mars: 0.4
+    hard_aspect_moon_saturn: 0.4
+
+beauty_care_reduce:
+  label: "Azaltma & Arındırma"
+  phase:
+    waning: 1.0
+    waxing: 0.5
+    full: 0.3
+    new: 0.4
+
+  moon_sign_bonus:
+    earth: 1.0
+    air: 0.7
+    water: 0.6
+    fire: 0.4
+
+  hard_blocks:
+    venus_retro: false
+    mars_retro: false
+    eclipse_window: false
+
+  penalties:
+    moon_voc: 0.4
+    hard_aspect_moon_mars: 0.3
+    hard_aspect_moon_saturn: 0.3
+
+beauty_care_procedure:
+  label: "İşlem / Cerrahi"
+  phase:
+    waning: 1.0
+    waxing: 0.4
+    full: 0.1
+    new: 0.3
+
+  moon_sign_bonus:
+    earth: 0.8
+    water: 0.6
+    air: 0.4
+    fire: 0.2
+
+  hard_blocks:
+    venus_retro: true
+    mars_retro: true
+    eclipse_window: true
+
+  penalties:
+    moon_voc: 0.7
+    hard_aspect_moon_mars: 0.6
+    hard_aspect_moon_saturn: 0.6

@@ -1,0 +1,35 @@
+head_face:
+  ruled_by: ["Aries"]
+  opposite: ["Libra"]
+
+neck_jaw:
+  ruled_by: ["Taurus"]
+  opposite: ["Scorpio"]
+
+arms_hands:
+  ruled_by: ["Gemini"]
+  opposite: ["Sagittarius"]
+
+chest_breast:
+  ruled_by: ["Cancer"]
+  opposite: ["Capricorn"]
+
+back_spine:
+  ruled_by: ["Leo"]
+  opposite: ["Aquarius"]
+
+digestive:
+  ruled_by: ["Virgo"]
+  opposite: ["Pisces"]
+
+hips_thighs:
+  ruled_by: ["Sagittarius"]
+  opposite: ["Gemini"]
+
+knees_bones_teeth:
+  ruled_by: ["Capricorn"]
+  opposite: ["Cancer"]
+
+feet_lymph:
+  ruled_by: ["Pisces"]
+  opposite: ["Virgo"]

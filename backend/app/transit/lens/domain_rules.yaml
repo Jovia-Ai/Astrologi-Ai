@@ -1,0 +1,76 @@
+rules:
+  # Relationship (general)
+  - match: "^tr\\.venus\\."
+    add:
+      domains: ["relationship"]
+      intents: ["attraction_window", "bonding"]
+      tags: ["love", "value"]
+      weight: 0.18
+      priority: 2
+
+  - match: "^tr\\.moon\\."
+    add:
+      domains: ["relationship"]
+      intents: ["talk_window", "bonding"]
+      tags: ["emotion"]
+      weight: 0.06
+      priority: 1
+
+  # Marriage / commitment focus (Venus-Saturn, Jupiter supportive)
+  - match: "^tr\\.venus\\.(trine|sextile|conjunction)\\.saturn"
+    add:
+      domains: ["relationship", "marriage"]
+      intents: ["marriage_window", "commitment"]
+      tags: ["stability"]
+      weight: 0.40
+      priority: 4
+
+  - match: "^tr\\.jupiter\\."
+    add:
+      domains: ["relationship", "business", "career"]
+      intents: ["growth_window", "visibility"]
+      tags: ["growth"]
+      weight: 0.10
+      priority: 1
+
+  # Business / contract (Mercury, Saturn, Jupiter - risk: Mars hard)
+  - match: "^tr\\.mercury\\."
+    add:
+      domains: ["business"]
+      intents: ["contract_sign", "negotiation"]
+      tags: ["communication"]
+      weight: 0.18
+      priority: 3
+
+  - match: "^tr\\.saturn\\."
+    add:
+      domains: ["business", "career", "marriage"]
+      intents: ["contract_sign", "commitment"]
+      tags: ["structure"]
+      weight: 0.14
+      priority: 2
+
+  - match: "^tr\\.mars\\.(square|opposition)\\."
+    add:
+      domains: ["business", "relationship"]
+      intents: ["avoid_escalation"]
+      tags: ["conflict"]
+      weight: -0.25
+      priority: 1
+
+  # Phases: retro/station/ingress marker'ları da domain'e bağlayalım
+  - match: "^phase\\.(station|retro)\\."
+    add:
+      domains: ["business", "relationship", "career", "money"]
+      intents: ["caution_window"]
+      tags: ["review"]
+      weight: -0.12
+      priority: 2
+
+  - match: "^phase\\.ingress\\.(Venus|Mars|Mercury)"
+    add:
+      domains: ["relationship", "business"]
+      intents: ["shift_window"]
+      tags: ["new_phase"]
+      weight: 0.08
+      priority: 1

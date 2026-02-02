@@ -1,0 +1,48 @@
+beauty_care:
+  type: day_based
+  phase_preference: waning
+  support:
+    - venus
+    - moon
+    - neptune
+  avoid:
+    - mars
+    - saturn
+  penalties:
+    moon_voc: -0.6
+    moon_square_mars: -0.4
+    moon_square_saturn: -0.5
+
+diet_start:
+  type: day_based
+  phase_preference: waning
+  support: [moon, saturn]
+  avoid: [venus]
+  penalties:
+    moon_voc: -0.7
+
+business:
+  type: day_based
+  phase_preference: waxing
+  support:
+    - jupiter
+    - sun
+    - mercury
+  avoid:
+    - neptune
+  penalties:
+    mercury_retro: -0.6
+    moon_voc: -0.3
+
+contract_sign:
+  type: time_sensitive
+  phase_preference: waxing
+  support:
+    - mercury
+    - saturn
+    - jupiter
+  avoid:
+    - mars
+    - neptune
+  penalties:
+    mercury_retro: -0.8

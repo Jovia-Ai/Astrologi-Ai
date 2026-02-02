@@ -59,6 +59,7 @@ from app.helpers.narrative_context import derive_core_aspects, derive_placements
 from app.helpers.domain_normalizer import canon_domain
 from app.helpers.normalize import normalize_node_alias, normalize_planet_key, normalize_aspect_type
 from app.engine.astro_normalize import aspect_strength, clamp01
+from app.natal.public_builder import build_public_natal_view
 
 logger = logging.getLogger(__name__)
 
@@ -74,6 +75,7 @@ class NatalInterpretationRequest(BaseModel):
     birth_date: str = Field(..., description="Birth date in YYYY-MM-DD format.")
     birth_time: str = Field(..., description="Birth time in HH:MM format.")
     birth_place: str = Field(..., description="City + country or recognizable location label.")
+    locale: str | None = None
 
 
 @router.post("/interpret")
@@ -93,6 +95,45 @@ def interpret_natal_chart(
     )
 
 
+@router.post("/interpret/ui")
+def interpret_natal_chart_ui(
+    request: NatalInterpretationRequest,
+    debug: bool = False,
+) -> Dict[str, Any]:
+    base_payload = _prepare_payload(request, premium_mode=False, debug_mode=debug)
+    response = _finalize_response(
+        base_payload,
+        premium_mode=False,
+        debug_mode=debug,
+        output_profile="user_compact",
+    )
+    public = build_public_natal_view(response, locale=request.locale or "tr")
+    return {"public": public}
+
+
+@router.post("/interpret/debug")
+def interpret_natal_chart_debug(
+    request: NatalInterpretationRequest,
+    debug: bool = False,
+) -> Dict[str, Any]:
+    if os.getenv("ENABLE_NATAL_DEBUG_ENDPOINTS", "false").strip().lower() not in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }:
+        raise HTTPException(status_code=403, detail="Debug endpoint disabled")
+    base_payload = _prepare_payload(request, premium_mode=False, debug_mode=True)
+    response = _finalize_response(
+        base_payload,
+        premium_mode=False,
+        debug_mode=True,
+        output_profile="user_compact",
+    )
+    public = build_public_natal_view(response, locale=request.locale or "tr")
+    return {"public": public, "debug": response}
+
+
 @router.post("/interpret/premium")
 def interpret_natal_chart_premium(
     request: NatalInterpretationRequest,
@@ -108,6 +149,45 @@ def interpret_natal_chart_premium(
         debug_mode=debug,
         output_profile=output_profile,
     )
+
+
+@router.post("/interpret/premium/ui")
+def interpret_natal_chart_premium_ui(
+    request: NatalInterpretationRequest,
+    debug: bool = False,
+) -> Dict[str, Any]:
+    base_payload = _prepare_payload(request, premium_mode=True, debug_mode=debug)
+    response = _finalize_response(
+        base_payload,
+        premium_mode=True,
+        debug_mode=debug,
+        output_profile="user_compact",
+    )
+    public = build_public_natal_view(response, locale=request.locale or "tr")
+    return {"public": public}
+
+
+@router.post("/interpret/premium/debug")
+def interpret_natal_chart_premium_debug(
+    request: NatalInterpretationRequest,
+    debug: bool = False,
+) -> Dict[str, Any]:
+    if os.getenv("ENABLE_NATAL_DEBUG_ENDPOINTS", "false").strip().lower() not in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }:
+        raise HTTPException(status_code=403, detail="Debug endpoint disabled")
+    base_payload = _prepare_payload(request, premium_mode=True, debug_mode=True)
+    response = _finalize_response(
+        base_payload,
+        premium_mode=True,
+        debug_mode=True,
+        output_profile="user_compact",
+    )
+    public = build_public_natal_view(response, locale=request.locale or "tr")
+    return {"public": public, "debug": response}
 
 
 def _build_metadata(request: NatalInterpretationRequest, chart_data: Mapping[str, Any]) -> Dict[str, Any]:
