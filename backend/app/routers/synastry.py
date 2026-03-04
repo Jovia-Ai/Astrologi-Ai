@@ -5,6 +5,7 @@ from fastapi import APIRouter
 
 from app.models.synastry import SynastryPairSchema
 from app.services.synastry import create_synastry_pair, get_synastry_pairs
+from app.services.synastry_analysis import analyze_synastry
 
 router = APIRouter(prefix="/api", tags=["synastry"])
 
@@ -18,3 +19,8 @@ def add_synastry_pair(payload: SynastryPairSchema):
 @router.get("/synastry/{user_id}")
 def list_synastry_for_user(user_id: str):
     return get_synastry_pairs(user_id)
+
+
+@router.post("/v1/relationship/synastry/analyze")
+def synastry_analyze(payload: dict):
+    return analyze_synastry(payload)
