@@ -7,8 +7,11 @@ from typing import Any, Dict, List, Mapping
 from app.transit.narrative.archetype_engine import build_insight_pack
 from app.transit.narrative.astrolog_narrative_engine import (
     PeriodStoryContext,
+    build_story_track_copy,
     build_period_story,
+    infer_story_track_id,
 )
+from app.transit.narrative.chain_explainer_tr import build_chain_explainer_tr
 from app.transit.narrative.hybrid_context import build_hybrid_event_context
 from app.transit.narrative.natal_promise import build_natal_promise, build_section_injections
 from app.transit.narrative.point_policy import is_public_event
@@ -136,7 +139,7 @@ ASPECT_DYNAMICS_TR = {
     "opposition": "denge ve karşılaşma",
     "trine": "akış ve destek",
     "sextile": "fırsat ve açılan kapı",
-    "quincunx": "ince ayar ihtiyacı",
+    "quincunx": "uyum arayışı",
 }
 
 PLANET_TR = {
@@ -189,7 +192,7 @@ TITLE_POOL_TR = [
     "Netliğin Yeni Tanımı",
     "Sözün Altındaki Niyet",
     "Çerçeve Yenileniyor",
-    "İnce Ayar Dönemi",
+    "Yöntem Sıçraması",
     "Gerçeklik Testi: Dil",
     "İmajın Buharı",
     "Aynada Bulanıklık",
@@ -478,12 +481,14 @@ def _signature_tr(event: Mapping[str, Any], *, time_hint: str | None = None) -> 
 
 def _title_pool_for_event(event: Mapping[str, Any]) -> List[str]:
     natal_point = str(event.get("natal_point") or "").strip().upper()
-    if natal_point in ANGLE_POINTS:
-        return TITLE_POOL_AXIS_TR
     transit = str(event.get("transit_body") or "").strip().lower()
     aspect = str(event.get("aspect") or "").strip().lower()
-    target = str(event.get("natal_point") or "").strip().lower()
     house = _house_num(event)
+    if transit == "neptune" and aspect == "square" and natal_point == "ASC" and house == 3:
+        return ["Sözün Sınırı"]
+    if natal_point in ANGLE_POINTS:
+        return TITLE_POOL_AXIS_TR
+    target = str(event.get("natal_point") or "").strip().lower()
     if house == 9 and transit in {"uranus", "mars"}:
         return TITLE_POOL_9_URANUS_MARS_TR
     if house == 3 and transit in {"neptune", "saturn"}:
@@ -552,7 +557,7 @@ def _teaser_for_event(event: Mapping[str, Any], *, horizon: str, why_now: str, c
         if horizon == "period":
             teaser = f"Bu dönem ana sahnede ritim değişiyor; {planet_effect}."
         else:
-            teaser = f"Bugün tempoda ince bir ayar var; {planet_effect}."
+            teaser = f"Bugün tempoda yön güncellemesi var; {planet_effect}."
     return teaser
 
 
@@ -620,7 +625,7 @@ def build_combined_meaning(event: Mapping[str, Any]) -> Dict[str, Any]:
     planet_pack = PLANET_ARCHETYPE_TR.get(planet, PLANET_ARCHETYPE_TR["Saturn"])
     house_text = HOUSE_ARCHETYPE_TR.get(house, "gunluk alan")
     sign_text = SIGN_STYLE_TR.get(sign, "denge arayan")
-    aspect_text = ASPECT_DYNAMICS_TR.get(aspect, "ince bir gerilim")
+    aspect_text = ASPECT_DYNAMICS_TR.get(aspect, "denge sınaması")
     cue = _pick_variant(BEHAVIORAL_CUES, seed=seed, key="cue")
 
     conflict = (
@@ -716,7 +721,7 @@ def build_event_card(event: Mapping[str, Any], context: Mapping[str, Any] | None
             "exact_in_days": exact_in_days,
         },
     }
-    chain_line = _chain_explainer_tr(derived_context if isinstance(derived_context, Mapping) else {})
+    chain_line = build_chain_explainer_tr(event, derived_context if isinstance(derived_context, Mapping) else {})
     if chain_line:
         existing_why = str(card.get("why_now") or "").strip()
         card["why_now"] = f"{chain_line} {existing_why}".strip()
@@ -773,10 +778,25 @@ def build_period_core(
     selected_ids = [str(card.get("event_id") or "") for card in cards if str(card.get("event_id") or "").strip()]
     selected = [item_by_id[eid] for eid in selected_ids if eid in item_by_id]
     selected.sort(key=lambda item: selected_ids.index(str(item.get("event_id") or "")))
+    card_by_id = {
+        str(card.get("event_id") or ""): card
+        for card in cards
+        if isinstance(card, Mapping) and str(card.get("event_id") or "").strip()
+    }
+    selected_enriched: List[Dict[str, Any]] = []
+    for item in selected:
+        event_id = str(item.get("event_id") or "")
+        merged = dict(item)
+        card_ctx = card_by_id.get(event_id)
+        if isinstance(card_ctx, Mapping):
+            derived_context = card_ctx.get("derived_context")
+            if isinstance(derived_context, Mapping):
+                merged["derived_context"] = dict(derived_context)
+        selected_enriched.append(merged)
 
     house_counter: Counter[int] = Counter()
     domain_counter: Counter[str] = Counter()
-    for item in selected:
+    for item in selected_enriched:
         house = _house_num(item)
         if house is not None:
             house_counter[house] += 1
@@ -824,7 +844,22 @@ def build_period_core(
             }
         )
 
-    dominant_planet = str(selected[0].get("transit_body") or "Saturn") if selected else "Saturn"
+    story_tracks: Dict[str, Dict[str, Any]] = {}
+    event_story_map: Dict[str, str] = {}
+    cards_with_tracks: List[Dict[str, Any]] = []
+    for raw_card in cards:
+        card = dict(raw_card)
+        event_id = str(card.get("event_id") or "").strip()
+        track_id = infer_story_track_id(card, root_causes)
+        card["story_track_id"] = track_id
+        event_story_map[event_id] = track_id
+        if track_id not in story_tracks:
+            story_tracks[track_id] = build_story_track_copy(track_id, card)
+        card["period_story"] = dict(story_tracks.get(track_id) or {})
+        cards_with_tracks.append(card)
+    cards = cards_with_tracks
+
+    dominant_planet = str(selected_enriched[0].get("transit_body") or "Saturn") if selected_enriched else "Saturn"
     tags = [
         {"type": "dominant_house", "value": str(dominant_house or "3")},
         {"type": "dominant_planet", "value": dominant_planet},
@@ -852,7 +887,7 @@ def build_period_core(
         "core_story": story,
         "upper_meaning": upper,
         "tags": tags,
-        "featured_events": selected,
+        "featured_events": selected_enriched,
     }
 
     try:
@@ -879,6 +914,10 @@ def build_period_core(
 
     if root_causes:
         result["_debug_root_causes"] = root_causes
+    if story_tracks:
+        result["story_tracks"] = story_tracks
+    if event_story_map:
+        result["_event_story_map"] = event_story_map
     return result
 
 
@@ -944,15 +983,17 @@ def _inject_cofeatured_links(
             for peer_id, peer in event_by_id.items():
                 if peer_id == eid:
                     continue
+                peer_body = str(peer.get("transit_body") or "").strip().lower()
                 peer_target = str(peer.get("natal_point") or "").strip().lower()
-                if peer_target == angle_ruler:
+                if peer_body == current_body and peer_target == angle_ruler:
                     key = ("cofeatured_hit", peer_id, "")
                     if key not in existing:
                         links.append(
                             {
                                 "type": "cofeatured_hit",
                                 "event_id": peer_id,
-                                "because": f"{_point_label_tr(angle_ruler)} aynı dönemde tekrar tetikleniyor",
+                                "target_event_id": peer_id,
+                                "because": "same transit hits ASC and ASC ruler",
                             }
                         )
                         existing.add(key)
@@ -971,6 +1012,7 @@ def _inject_cofeatured_links(
                             {
                                 "type": "cofeatured_hit",
                                 "event_id": peer_id,
+                                "target_event_id": peer_id,
                                 "because": f"{_point_label_tr(current_body)} aynı ev odağında ikinci vurgu",
                             }
                         )

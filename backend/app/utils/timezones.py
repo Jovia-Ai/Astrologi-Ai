@@ -21,11 +21,13 @@ def parse_birth_datetime_components(date_value: str, time_value: str | None, tim
     minute = 0
     if time_value:
         try:
-            hour_str, minute_str = time_value.strip().split(":", 1)
-            hour = int(hour_str)
-            minute = int(minute_str)
+            parts = time_value.strip().split(":")
+            if len(parts) < 2:
+                raise ValueError
+            hour = int(parts[0])
+            minute = int(parts[1])
         except ValueError as exc:
-            raise ValueError("birth time must be in HH:MM format.") from exc
+            raise ValueError("birth time must be in HH:MM or HH:MM:SS format.") from exc
 
     try:
         tz = ZoneInfo(timezone_name)

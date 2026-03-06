@@ -2,9 +2,13 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Mapping
+import os
+from dataclasses import asdict
+from typing import Any, Dict, Mapping, Optional
 
 from fastapi import APIRouter, Body, HTTPException
+from fastapi import Header
+from pydantic import BaseModel
 
 from app.ai.narrative.formatter import (
     build_formatted_aspects,
@@ -18,13 +22,67 @@ from app.ai.narrative.groq_client import (
 )
 from app.astro.chart_engine.builder import build_natal_chart
 from app.astro.synastry.cross_aspects import calculate_synastry_aspects
-from app.core.config import settings
 from app.core.errors import AIError, ApiError
 from app.models.user import BirthDataSchema
 from app.services.profiles import save_birth_data
+from app.charts.factory import build_chart
+from app.models.chart_request import ChartInputRef, ChartRequest
 
 router = APIRouter(prefix="/api", tags=["charts"])
 logger = logging.getLogger(__name__)
+
+
+class ChartInputRefModel(BaseModel):
+    name: str
+    data: Dict[str, Any]
+
+
+class ChartRequestModel(BaseModel):
+    kind: str
+    tz: str
+    date: Optional[str] = None
+    technique: Optional[str] = None
+    a: Optional[ChartInputRefModel] = None
+    b: Optional[ChartInputRefModel] = None
+    options: Optional[Dict[str, Any]] = None
+
+
+def _firebase_enabled() -> bool:
+    return os.getenv("ENABLE_FIREBASE_AUTH", "").strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _maybe_verify_firebase_token(authorization: Optional[str]) -> None:
+    # Firebase auth is optional.
+    # Only enforce when ENABLE_FIREBASE_AUTH=true
+    if not _firebase_enabled():
+        return
+
+    if not authorization or not authorization.lower().startswith("bearer "):
+        raise HTTPException(
+            status_code=401,
+            detail="Missing Authorization bearer token.",
+        )
+
+    token = authorization.split(" ", 1)[1].strip()
+    if not token:
+        raise HTTPException(status_code=401, detail="Missing Firebase token.")
+
+    try:
+        import firebase_admin
+        from firebase_admin import auth as firebase_auth
+    except Exception as exc:
+        raise HTTPException(
+            status_code=501,
+            detail="Firebase admin SDK not installed/configured.",
+        ) from exc
+
+    if not firebase_admin._apps:
+        firebase_admin.initialize_app()
+
+    try:
+        firebase_auth.verify_id_token(token)
+    except Exception as exc:
+        raise HTTPException(status_code=401, detail="Invalid Firebase token.") from exc
 
 
 def _calculate_chart(payload: Mapping[str, Any]) -> Dict[str, Any]:
@@ -93,3 +151,25 @@ def save_birth_data_route(payload: BirthDataSchema):
         lon=payload.longitude,
     )
     return {"status": "ok", "saved": result}
+
+
+@router.post("/v1/charts/build")
+def build_chart_route(payload: ChartRequestModel, authorization: Optional[str] = Header(default=None)):
+    _maybe_verify_firebase_token(authorization)
+    try:
+        req = ChartRequest(
+            kind=payload.kind,
+            tz=payload.tz,
+            date=payload.date,
+            technique=payload.technique,
+            a=ChartInputRef(name=payload.a.name, data=payload.a.data) if payload.a else None,
+            b=ChartInputRef(name=payload.b.name, data=payload.b.data) if payload.b else None,
+            options=payload.options,
+        )
+        chart = build_chart(req)
+        return {"chart": asdict(chart)}
+    except HTTPException:
+        raise
+    except Exception as exc:  # pylint: disable=broad-except
+        logger.exception("Failed to build chart")
+        raise HTTPException(status_code=400, detail=str(exc)) from exc

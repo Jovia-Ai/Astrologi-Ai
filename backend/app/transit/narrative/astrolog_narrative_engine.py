@@ -7,6 +7,15 @@ import hashlib
 from app.transit.narrative import phrase_lib_tr
 from app.transit.narrative import text_quality_tr
 
+TRACK_IDS = {
+    "identity_spine",
+    "method_shift_9_virgo",
+    "network_transform_11",
+    "mirror_axis_1_7",
+    "default",
+}
+ANGLE_POINTS = {"ASC", "DSC", "MC", "IC"}
+
 RULERS = {
     "Aries": "Mars",
     "Taurus": "Venus",
@@ -55,6 +64,74 @@ class PeriodNarrative:
     mechanism: str
     upper_meaning: str
     debug: Dict[str, Any]
+
+
+def infer_story_track_id(
+    card: Mapping[str, Any],
+    period_root_causes: Optional[Sequence[Mapping[str, Any]]] = None,
+) -> str:
+    event_id = str(card.get("event_id") or "").strip()
+    if period_root_causes and event_id:
+        best_key = ""
+        best_score = -1.0
+        for rc in period_root_causes:
+            key = str(rc.get("key") or "").strip()
+            if key not in TRACK_IDS:
+                continue
+            score = _safe_float(rc.get("score"), 0.0)
+            evidence = rc.get("evidence") if isinstance(rc.get("evidence"), Sequence) else []
+            evidence_tokens = {str(x).strip() for x in evidence}
+            if event_id in evidence_tokens and score > best_score:
+                best_key = key
+                best_score = score
+        if best_key:
+            return best_key
+
+    transit_body = str(card.get("transit_body") or "").strip().lower()
+    aspect = str(card.get("aspect") or "").strip().lower()
+    target = str(card.get("natal_point") or "").strip().upper()
+
+    if target == "DSC":
+        return "mirror_axis_1_7"
+    if transit_body == "neptune" and target in ANGLE_POINTS and aspect in {"square", "opposition"}:
+        return "identity_spine" if target == "ASC" else "mirror_axis_1_7"
+    if transit_body == "uranus":
+        return "method_shift_9_virgo"
+    if transit_body == "pluto" or target == "PLUTO":
+        return "network_transform_11"
+    return "default"
+
+
+def build_story_track_copy(track_id: str, card: Mapping[str, Any]) -> Dict[str, Any]:
+    packs = getattr(phrase_lib_tr, "PERIOD_TRACK_COPY_TR", {})
+    pack = packs.get(track_id) or packs.get("default") or {}
+    seed = str(card.get("event_id") or track_id)
+
+    vars_map = {
+        "planet_hook": _build_planet_hook_tr(
+            transit_body=str(card.get("transit_body") or ""),
+            aspect=str(card.get("aspect") or ""),
+            target=str(card.get("natal_point") or ""),
+        ),
+        "spine_label": str(card.get("signature_tr") or card.get("signature") or "").strip(),
+        "start_house_tr": HOUSE_THEME_TR.get(_safe_int((card.get("scene") or {}).get("start_house")) or 3, ""),
+        "outcome_house_tr": HOUSE_THEME_TR.get(_safe_int((card.get("scene") or {}).get("outcome_house")) or 1, ""),
+    }
+
+    lead = _render_track_variant(pack.get("lead"), seed, "lead", vars_map)
+    big = _render_track_variant(pack.get("big_picture"), seed, "big", vars_map)
+    mech = _render_track_variant(pack.get("mechanism"), seed, "mech", vars_map)
+    cont = _render_track_variant(pack.get("contribution"), seed, "cont", vars_map)
+
+    return {
+        "track_id": track_id,
+        "version": str(pack.get("version") or "period_story_v1"),
+        "lead": _final_polish_tr(lead),
+        "big_picture": _final_polish_tr(big),
+        "mechanism": _final_polish_tr(mech),
+        "contribution": _final_polish_tr(cont),
+        "upper_meaning": _final_polish_tr(cont),
+    }
 
 
 def build_period_story(ctx: PeriodStoryContext) -> PeriodNarrative:
@@ -126,12 +203,12 @@ def _build_chain_paragraph(
     start_theme = HOUSE_THEME_TR.get(start_house, "günlük hayat")
     end_theme = HOUSE_THEME_TR.get(end_house, "hayat yönü")
 
-    angle_chain = None
-    target_chain = None
+    angle_chain = _angle_chain_from_event(spine)
+    target_chain = _target_chain_from_event(spine)
     if natal_point in ANGLE_TO_CUSP_HOUSE:
-        angle_chain = _angle_ruler_chain(ctx.chart_snapshot, natal_point)
+        angle_chain = angle_chain or _angle_ruler_chain(ctx.chart_snapshot, natal_point)
     elif natal_point:
-        target_chain = _planet_target_chain(ctx.chart_snapshot, natal_point)
+        target_chain = target_chain or _planet_target_chain(ctx.chart_snapshot, natal_point)
 
     seed = _seed_for(str(spine.get("event_id") or "chain"))
 
@@ -188,6 +265,25 @@ def _angle_ruler_chain(snapshot: Mapping[str, Any], angle: str) -> Optional[Dict
     }
 
 
+def _angle_chain_from_event(event: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+    derived = event.get("derived_context") if isinstance(event.get("derived_context"), Mapping) else {}
+    angle = derived.get("angle") if isinstance(derived.get("angle"), Mapping) else {}
+    angle_name = str(angle.get("name") or event.get("natal_point") or "").strip().upper()
+    if angle_name not in ANGLE_TO_CUSP_HOUSE:
+        return None
+    sign = str(angle.get("sign") or "").strip()
+    ruler = str(angle.get("ruler") or "").strip()
+    if not (sign and ruler):
+        return None
+    return {
+        "angle": angle_name,
+        "sign": sign,
+        "ruler": ruler,
+        "ruler_house": _safe_int(angle.get("ruler_house")),
+        "ruler_sign": str(angle.get("ruler_sign") or "").strip(),
+    }
+
+
 def _planet_target_chain(snapshot: Mapping[str, Any], planet: str) -> Optional[Dict[str, Any]]:
     bodies_map = _snapshot_bodies_map(snapshot)
     pb = bodies_map.get(planet.lower())
@@ -200,6 +296,23 @@ def _planet_target_chain(snapshot: Mapping[str, Any], planet: str) -> Optional[D
         "sign": sign,
         "house": _safe_int(pb.get("house")),
         "dispositor": RULERS.get(sign),
+    }
+
+
+def _target_chain_from_event(event: Mapping[str, Any]) -> Optional[Dict[str, Any]]:
+    derived = event.get("derived_context") if isinstance(event.get("derived_context"), Mapping) else {}
+    target = derived.get("natal_target") if isinstance(derived.get("natal_target"), Mapping) else {}
+    planet = str(target.get("name") or event.get("natal_point") or "").strip()
+    if not planet or planet.upper() in ANGLE_TO_CUSP_HOUSE:
+        return None
+    sign = str(target.get("sign") or "").strip()
+    if not sign:
+        return None
+    return {
+        "planet": planet,
+        "sign": sign,
+        "house": _safe_int(target.get("house")),
+        "dispositor": str(target.get("dispositor") or RULERS.get(sign) or "").strip() or None,
     }
 
 
@@ -309,6 +422,40 @@ def _safe_float(value: Any, default: float = 0.0) -> float:
         return float(value)
     except (TypeError, ValueError):
         return default
+
+
+def _render_track_variant(raw_pool: Any, seed: str, slot: str, vars_map: Mapping[str, str]) -> str:
+    if not isinstance(raw_pool, Sequence) or isinstance(raw_pool, (str, bytes)):
+        return ""
+    pool = [str(x).strip() for x in raw_pool if str(x).strip()]
+    if not pool:
+        return ""
+    idx = _seed_for(f"{seed}|{slot}") % len(pool)
+    out = pool[idx]
+    for key, value in vars_map.items():
+        out = out.replace("{{" + key + "}}", str(value or ""))
+    return out.strip()
+
+
+def _build_planet_hook_tr(transit_body: str, aspect: str, target: str) -> str:
+    planets = getattr(phrase_lib_tr, "PLANET_NATURE_TR", {})
+    aspects = getattr(phrase_lib_tr, "ASPECT_FLAVOR_TR", {})
+    targets = getattr(phrase_lib_tr, "TARGET_TONE_TR", {})
+
+    p = planets.get(str(transit_body).strip(), {})
+    a = aspects.get(str(aspect).strip().lower(), {})
+    t_words = targets.get(str(target).strip().upper(), [str(target).strip() or "teması"])
+
+    noun = (p.get("nouns") or ["tema"])[0]
+    averb = (a.get("verbs") or ["çalışır"])[0]
+    target_word = t_words[0]
+    body = str(transit_body).strip() or "Bu etki"
+
+    if str(aspect).strip().lower() in {"square", "opposition"}:
+        return f"{body} {target_word} hattına {noun} getirir; bu açı {target_word} tarafını {averb}."
+    if str(aspect).strip().lower() in {"trine", "sextile"}:
+        return f"{body} {target_word} tarafında {noun} açar; bu açı süreci {averb}."
+    return f"{body} {target_word} tarafında {noun} ile çalışır."
 
 
 def _final_polish_tr(text: str) -> str:

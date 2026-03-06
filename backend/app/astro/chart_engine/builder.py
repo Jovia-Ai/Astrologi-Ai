@@ -116,6 +116,9 @@ def extract_birth_inputs(payload: Mapping[str, Any]) -> tuple[str, str, str] | t
 
     city_candidate = (
         payload.get("city")
+        or payload.get("birth_place")
+        or payload.get("birthPlace")
+        or payload.get("place")
         or payload.get("birthCity")
         or payload.get("birth_location")
         or payload.get("birthLocation")

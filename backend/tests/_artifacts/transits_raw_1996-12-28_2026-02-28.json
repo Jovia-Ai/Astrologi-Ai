@@ -1,0 +1,3340 @@
+{
+  "transit_date": "2026-02-28",
+  "birth": {
+    "date": "1996-12-28",
+    "time": "07:10",
+    "place": "Istanbul, TR"
+  },
+  "item_count": 81,
+  "items_raw_unscored": [
+    {
+      "event_id": "670393c4e15f691716ef926e9dfe50aeb24f223c",
+      "scope": "transit_to_natal",
+      "label": "Neptune conjunction Saturn (orb 0.14°)",
+      "transit_body": "Neptune",
+      "aspect": "conjunction",
+      "natal_point": "Saturn",
+      "polarity": "neutral",
+      "strength": 0.977,
+      "orb_deg": 0.14,
+      "phase": "exactish",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "amplify",
+        "fog",
+        "idealization",
+        "boundaries",
+        "dissolve"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 3
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2026-03-04T09:00:00+00:00",
+        "exit_date_utc": null,
+        "confidence": 0.6,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": "exit_not_found_in_window"
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 0
+      }
+    },
+    {
+      "event_id": "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87",
+      "scope": "transit_to_angles",
+      "label": "Neptune square ASC (orb 0.17°)",
+      "transit_body": "Neptune",
+      "aspect": "square",
+      "natal_point": "ASC",
+      "polarity": "hard",
+      "strength": 0.972,
+      "orb_deg": 0.17,
+      "phase": "exactish",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "pressure",
+        "friction",
+        "fog",
+        "idealization",
+        "boundaries",
+        "dissolve"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": null
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2025-09-08T09:00:00+00:00",
+        "exit_date_utc": null,
+        "confidence": 0.6,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": "exit_not_found_in_window"
+      },
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 0
+      }
+    },
+    {
+      "event_id": "4f022aff91a1e6ad15cdb8962a6fd660338d94bc",
+      "scope": "transit_to_angles",
+      "label": "Neptune square DSC (orb 0.17°)",
+      "transit_body": "Neptune",
+      "aspect": "square",
+      "natal_point": "DSC",
+      "polarity": "hard",
+      "strength": 0.972,
+      "orb_deg": 0.17,
+      "phase": "exactish",
+      "bucket": "long",
+      "tags": [
+        "relationships",
+        "pressure",
+        "friction",
+        "fog",
+        "idealization",
+        "boundaries",
+        "dissolve"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "water",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": null
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2025-09-08T09:00:00+00:00",
+        "exit_date_utc": null,
+        "confidence": 0.6,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": "exit_not_found_in_window"
+      },
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 1
+      }
+    },
+    {
+      "event_id": "0a40de18772071d6e2ca06709fe0e4437c0a0071",
+      "scope": "transit_to_natal",
+      "label": "Uranus trine Mars (orb 0.21°)",
+      "transit_body": "Uranus",
+      "aspect": "trine",
+      "natal_point": "Mars",
+      "polarity": "soft",
+      "strength": 0.965,
+      "orb_deg": 0.21,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "support",
+        "flow",
+        "shock",
+        "freedom",
+        "change"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "earth",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 5,
+        "natal_point_house": 9
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2025-05-29T09:00:00+00:00",
+        "exit_date_utc": "2026-07-08T09:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 1
+      }
+    },
+    {
+      "event_id": "b5a7004a12be4474d70579de2dbe14deef2dc3e6",
+      "scope": "transit_to_natal",
+      "label": "Chiron square Jupiter (orb 0.28°)",
+      "transit_body": "Chiron",
+      "aspect": "square",
+      "natal_point": "Jupiter",
+      "polarity": "hard",
+      "strength": 0.953,
+      "orb_deg": 0.28,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 1
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2025-05-05T09:00:00+00:00",
+        "exit_date_utc": "2026-06-29T09:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 2
+      }
+    },
+    {
+      "event_id": "00367b9186db3623c54d603685ae71d30bbe4894",
+      "scope": "transit_to_natal",
+      "label": "Pluto sextile Pluto (orb 0.26°)",
+      "transit_body": "Pluto",
+      "aspect": "sextile",
+      "natal_point": "Pluto",
+      "polarity": "soft",
+      "strength": 0.935,
+      "orb_deg": 0.26,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "support",
+        "opportunity",
+        "intensity",
+        "power",
+        "transform"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 1,
+        "natal_point_house": 11
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2026-12-29T09:00:00+00:00",
+        "exit_date_utc": null,
+        "confidence": 0.6,
+        "orb_limit_deg": 4.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": "exit_not_found_in_window"
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 3
+      }
+    },
+    {
+      "event_id": "8fda7250e063a60c06cf6aa9cc81250bc8ffe4a2",
+      "scope": "transit_to_angles",
+      "label": "Saturn square ASC (orb 0.46°)",
+      "transit_body": "Saturn",
+      "aspect": "square",
+      "natal_point": "ASC",
+      "polarity": "hard",
+      "strength": 0.923,
+      "orb_deg": 0.46,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "pressure",
+        "friction",
+        "limits",
+        "responsibility",
+        "discipline"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": null
+      },
+      "timing": {
+        "entry_date_utc": "2025-04-08T09:00:00+00:00",
+        "peak_date_utc": "2025-08-12T09:00:00+00:00",
+        "exit_date_utc": "2025-11-25T09:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 2
+      }
+    },
+    {
+      "event_id": "f5e5e90860c7fb95136cc668eb62e45340bca24c",
+      "scope": "transit_to_angles",
+      "label": "Saturn square DSC (orb 0.46°)",
+      "transit_body": "Saturn",
+      "aspect": "square",
+      "natal_point": "DSC",
+      "polarity": "hard",
+      "strength": 0.923,
+      "orb_deg": 0.46,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "relationships",
+        "pressure",
+        "friction",
+        "limits",
+        "responsibility",
+        "discipline"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "water",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": null
+      },
+      "timing": {
+        "entry_date_utc": "2025-04-08T09:00:00+00:00",
+        "peak_date_utc": "2025-08-12T09:00:00+00:00",
+        "exit_date_utc": "2025-11-25T09:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 3
+      }
+    },
+    {
+      "event_id": "2f670fd78997782f24d7b04e3c79f787768295f9",
+      "scope": "transit_to_natal",
+      "label": "Saturn conjunction Saturn (orb 0.49°)",
+      "transit_body": "Saturn",
+      "aspect": "conjunction",
+      "natal_point": "Saturn",
+      "polarity": "neutral",
+      "strength": 0.918,
+      "orb_deg": 0.49,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "amplify",
+        "limits",
+        "responsibility",
+        "discipline"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 3
+      },
+      "timing": {
+        "entry_date_utc": "2025-04-08T09:00:00+00:00",
+        "peak_date_utc": "2025-08-12T09:00:00+00:00",
+        "exit_date_utc": "2025-11-28T09:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 4
+      }
+    },
+    {
+      "event_id": "000d44829c7464411c233a240dd0bbed0a32e149",
+      "scope": "transit_to_natal",
+      "label": "Moon square Chiron (orb 0.53°)",
+      "transit_body": "Moon",
+      "aspect": "square",
+      "natal_point": "Chiron",
+      "polarity": "hard",
+      "strength": 0.912,
+      "orb_deg": 0.53,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "career",
+        "pressure",
+        "friction",
+        "mood",
+        "needs"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": 10
+      },
+      "timing": {
+        "entry_date_utc": "2026-02-14T21:00:00+00:00",
+        "peak_date_utc": "2026-02-15T09:00:00+00:00",
+        "exit_date_utc": "2026-02-15T21:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 6,
+        "window_days": 14,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 5
+      }
+    },
+    {
+      "event_id": "a2b383aedbc9565686fe40c58443f4e7f2b0e3db",
+      "scope": "transit_to_natal",
+      "label": "Lilith trine Fortune (orb 0.59°)",
+      "transit_body": "Lilith",
+      "aspect": "trine",
+      "natal_point": "Fortune",
+      "polarity": "soft",
+      "strength": 0.902,
+      "orb_deg": 0.59,
+      "phase": "applying",
+      "bucket": "short",
+      "tags": [
+        "relationships",
+        "support",
+        "flow"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "fixed"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 11,
+        "natal_point_house": 7
+      },
+      "timing": {
+        "entry_date_utc": "2026-02-14T09:00:00+00:00",
+        "peak_date_utc": "2026-03-05T15:00:00+00:00",
+        "exit_date_utc": null,
+        "confidence": 0.6,
+        "orb_limit_deg": 6.0,
+        "step_hours": 6,
+        "window_days": 14,
+        "peaks": [],
+        "timing_note": "exit_not_found_in_window"
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 6
+      }
+    },
+    {
+      "event_id": "f331c043ca99474688982f52bdedfc269d826628",
+      "scope": "transit_to_natal",
+      "label": "Moon trine Saturn (orb 0.74°)",
+      "transit_body": "Moon",
+      "aspect": "trine",
+      "natal_point": "Saturn",
+      "polarity": "soft",
+      "strength": 0.877,
+      "orb_deg": 0.74,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "self",
+        "support",
+        "flow",
+        "mood",
+        "needs"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": 3
+      },
+      "timing": {
+        "entry_date_utc": "2026-02-28T03:00:00+00:00",
+        "peak_date_utc": "2026-02-28T09:00:00+00:00",
+        "exit_date_utc": "2026-02-28T21:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 6,
+        "window_days": 14,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 7
+      }
+    },
+    {
+      "event_id": "6d348040a74b96fe0049e71a4dc5ef02064a0bb5",
+      "scope": "transit_to_natal",
+      "label": "Uranus trine Neptune (orb 1.03°)",
+      "transit_body": "Uranus",
+      "aspect": "trine",
+      "natal_point": "Neptune",
+      "polarity": "soft",
+      "strength": 0.829,
+      "orb_deg": 1.03,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "support",
+        "flow",
+        "shock",
+        "freedom",
+        "change"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "earth",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 5,
+        "natal_point_house": 1
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2025-05-08T09:00:00+00:00",
+        "exit_date_utc": "2026-06-14T09:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 8
+      }
+    },
+    {
+      "event_id": "9b6fecfb8196fc62cae30d83c99358ab3efa9efd",
+      "scope": "transit_to_natal",
+      "label": "Saturn conjunction South Node (orb 1.04°)",
+      "transit_body": "Saturn",
+      "aspect": "conjunction",
+      "natal_point": "South Node",
+      "polarity": "neutral",
+      "strength": 0.826,
+      "orb_deg": 1.04,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "amplify",
+        "limits",
+        "responsibility",
+        "discipline"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 3
+      },
+      "timing": {
+        "entry_date_utc": "2025-04-20T09:00:00+00:00",
+        "peak_date_utc": "2025-07-13T09:00:00+00:00",
+        "exit_date_utc": "2025-10-17T09:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 10
+      }
+    },
+    {
+      "event_id": "b1bed45a782860bfb3ea5b832ba41f84e3faf40d",
+      "scope": "transit_to_natal",
+      "label": "Saturn opposition North Node (orb 1.04°)",
+      "transit_body": "Saturn",
+      "aspect": "opposition",
+      "natal_point": "North Node",
+      "polarity": "hard",
+      "strength": 0.826,
+      "orb_deg": 1.04,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "pressure",
+        "tension",
+        "limits",
+        "responsibility",
+        "discipline"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 9
+      },
+      "timing": {
+        "entry_date_utc": "2025-04-20T09:00:00+00:00",
+        "peak_date_utc": "2025-07-13T09:00:00+00:00",
+        "exit_date_utc": "2025-10-17T09:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 9
+      }
+    },
+    {
+      "event_id": "fed3b6c3dec4ab34040d7b35f27e6dc4ad08095b",
+      "scope": "transit_to_angles",
+      "label": "Chiron conjunction IC (orb 1.27°)",
+      "transit_body": "Chiron",
+      "aspect": "conjunction",
+      "natal_point": "IC",
+      "polarity": "neutral",
+      "strength": 0.788,
+      "orb_deg": 1.27,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "home",
+        "amplify"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": null
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2025-05-23T09:00:00+00:00",
+        "exit_date_utc": null,
+        "confidence": 0.6,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": "exit_not_found_in_window"
+      },
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 4
+      }
+    },
+    {
+      "event_id": "f9d9b153a2d06d51a15dfff9268ceedbacc292f6",
+      "scope": "transit_to_angles",
+      "label": "Chiron opposition MC (orb 1.27°)",
+      "transit_body": "Chiron",
+      "aspect": "opposition",
+      "natal_point": "MC",
+      "polarity": "hard",
+      "strength": 0.788,
+      "orb_deg": 1.27,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "pressure",
+        "tension"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": null
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2025-05-23T09:00:00+00:00",
+        "exit_date_utc": null,
+        "confidence": 0.6,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": "exit_not_found_in_window"
+      },
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 5
+      }
+    },
+    {
+      "event_id": "5d6806883dbdddb3513c218d2903043b66fbb07e",
+      "scope": "transit_to_natal",
+      "label": "Pluto conjunction Uranus (orb 1.45°)",
+      "transit_body": "Pluto",
+      "aspect": "conjunction",
+      "natal_point": "Uranus",
+      "polarity": "neutral",
+      "strength": 0.758,
+      "orb_deg": 1.45,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "amplify",
+        "intensity",
+        "power",
+        "transform"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "fixed"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 1,
+        "natal_point_house": 1
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2026-10-15T09:00:00+00:00",
+        "exit_date_utc": null,
+        "confidence": 0.6,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": "exit_not_found_in_window"
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 11
+      }
+    },
+    {
+      "event_id": "cfdcb616fd4090dc1441153e78ea240e4f627890",
+      "scope": "transit_to_natal",
+      "label": "Mars trine Chiron (orb 1.64°)",
+      "transit_body": "Mars",
+      "aspect": "trine",
+      "natal_point": "Chiron",
+      "polarity": "soft",
+      "strength": 0.727,
+      "orb_deg": 1.64,
+      "phase": "applying",
+      "bucket": "medium",
+      "tags": [
+        "career",
+        "support",
+        "flow",
+        "drive",
+        "conflict"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": 10
+      },
+      "timing": {
+        "entry_date_utc": "2026-02-23T09:00:00+00:00",
+        "peak_date_utc": "2026-03-02T09:00:00+00:00",
+        "exit_date_utc": "2026-03-10T09:00:00+00:00",
+        "confidence": 0.9,
+        "orb_limit_deg": 6.0,
+        "step_hours": 24,
+        "window_days": 60,
+        "peaks": [],
+        "timing_note": null
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 12
+      }
+    },
+    {
+      "event_id": "3524602af4a83f7706ce11f68af15d86ddae3032",
+      "scope": "transit_to_natal",
+      "label": "Neptune conjunction South Node (orb 1.67°)",
+      "transit_body": "Neptune",
+      "aspect": "conjunction",
+      "natal_point": "South Node",
+      "polarity": "neutral",
+      "strength": 0.722,
+      "orb_deg": 1.67,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "amplify",
+        "fog",
+        "idealization",
+        "boundaries",
+        "dissolve"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 3
+      },
+      "timing": {
+        "entry_date_utc": "2025-02-28T09:00:00+00:00",
+        "peak_date_utc": "2026-10-06T09:00:00+00:00",
+        "exit_date_utc": null,
+        "confidence": 0.6,
+        "orb_limit_deg": 6.0,
+        "step_hours": 72,
+        "window_days": 365,
+        "peaks": [],
+        "timing_note": "exit_not_found_in_window"
+      },
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 14
+      }
+    },
+    {
+      "event_id": "3fc916eef475ed4c95b6b72dd612c8a115680b9f",
+      "scope": "transit_to_natal",
+      "label": "Neptune opposition North Node (orb 1.67°)",
+      "transit_body": "Neptune",
+      "aspect": "opposition",
+      "natal_point": "North Node",
+      "polarity": "hard",
+      "strength": 0.722,
+      "orb_deg": 1.67,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "pressure",
+        "tension",
+        "fog",
+        "idealization",
+        "boundaries",
+        "dissolve"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 9
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 13
+      }
+    },
+    {
+      "event_id": "926016b593ba4126af3d179acc9b977486bb6f02",
+      "scope": "transit_to_natal",
+      "label": "Pluto trine North Node (orb 1.83°)",
+      "transit_body": "Pluto",
+      "aspect": "trine",
+      "natal_point": "North Node",
+      "polarity": "soft",
+      "strength": 0.696,
+      "orb_deg": 1.83,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "support",
+        "flow",
+        "intensity",
+        "power",
+        "transform"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 1,
+        "natal_point_house": 9
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 15
+      }
+    },
+    {
+      "event_id": "f4cd0951699b6a9df2c8891b60813b6cfc0c30d3",
+      "scope": "transit_to_natal",
+      "label": "Jupiter opposition Mercury (orb 2.09°)",
+      "transit_body": "Jupiter",
+      "aspect": "opposition",
+      "natal_point": "Mercury",
+      "polarity": "hard",
+      "strength": 0.652,
+      "orb_deg": 2.09,
+      "phase": "separating",
+      "bucket": "medium",
+      "tags": [
+        "self",
+        "pressure",
+        "tension",
+        "growth",
+        "expansion"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 16
+      }
+    },
+    {
+      "event_id": "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+      "scope": "transit_to_natal",
+      "label": "Saturn sextile Uranus (orb 1.41°)",
+      "transit_body": "Saturn",
+      "aspect": "sextile",
+      "natal_point": "Uranus",
+      "polarity": "soft",
+      "strength": 0.647,
+      "orb_deg": 1.41,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "support",
+        "opportunity",
+        "limits",
+        "responsibility",
+        "discipline"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "air",
+          "modality": "fixed"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 17
+      }
+    },
+    {
+      "event_id": "054015c35ee0cc08522720b44be62c56edf26f6e",
+      "scope": "transit_to_natal",
+      "label": "Fortune sextile Sun (orb 1.45°)",
+      "transit_body": "Fortune",
+      "aspect": "sextile",
+      "natal_point": "Sun",
+      "polarity": "soft",
+      "strength": 0.637,
+      "orb_deg": 1.45,
+      "phase": "applying",
+      "bucket": "short",
+      "tags": [
+        "self",
+        "support",
+        "opportunity"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 10,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 18
+      }
+    },
+    {
+      "event_id": "8bf82e9173dc5c2e675550cfab260988300ee9d7",
+      "scope": "transit_to_natal",
+      "label": "South Node trine Sun (orb 2.23°)",
+      "transit_body": "South Node",
+      "aspect": "trine",
+      "natal_point": "Sun",
+      "polarity": "soft",
+      "strength": 0.629,
+      "orb_deg": 2.23,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "support",
+        "flow"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "earth",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 8,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 19
+      }
+    },
+    {
+      "event_id": "2415c8fdf289676a098aecfccf50875b542428e0",
+      "scope": "transit_to_natal",
+      "label": "Fortune square Uranus (orb 2.24°)",
+      "transit_body": "Fortune",
+      "aspect": "square",
+      "natal_point": "Uranus",
+      "polarity": "hard",
+      "strength": 0.627,
+      "orb_deg": 2.24,
+      "phase": "applying",
+      "bucket": "short",
+      "tags": [
+        "self",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "fixed"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 10,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 20
+      }
+    },
+    {
+      "event_id": "89cc8bfcb64717a7219cbb2f0cf3258186d2be63",
+      "scope": "transit_to_natal",
+      "label": "Moon trine South Node (orb 2.27°)",
+      "transit_body": "Moon",
+      "aspect": "trine",
+      "natal_point": "South Node",
+      "polarity": "soft",
+      "strength": 0.621,
+      "orb_deg": 2.27,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "self",
+        "support",
+        "flow",
+        "mood",
+        "needs"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": 3
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 21
+      }
+    },
+    {
+      "event_id": "de881ae4042dba5f87b821a0befa31b03d1674e4",
+      "scope": "transit_to_natal",
+      "label": "Saturn trine Pluto (orb 2.61°)",
+      "transit_body": "Saturn",
+      "aspect": "trine",
+      "natal_point": "Pluto",
+      "polarity": "soft",
+      "strength": 0.565,
+      "orb_deg": 2.61,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "support",
+        "flow",
+        "limits",
+        "responsibility",
+        "discipline"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 11
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 22
+      }
+    },
+    {
+      "event_id": "dfb2ba2285bfce5088c0fbbd0768a0f1f685dc48",
+      "scope": "transit_to_natal",
+      "label": "Moon opposition Uranus (orb 2.64°)",
+      "transit_body": "Moon",
+      "aspect": "opposition",
+      "natal_point": "Uranus",
+      "polarity": "hard",
+      "strength": 0.56,
+      "orb_deg": 2.64,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "self",
+        "pressure",
+        "tension",
+        "mood",
+        "needs"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "fixed"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 23
+      }
+    },
+    {
+      "event_id": "254e183d13228b2952e4b5ee8a61abc7e721bef7",
+      "scope": "transit_to_natal",
+      "label": "Chiron square Neptune (orb 2.68°)",
+      "transit_body": "Chiron",
+      "aspect": "square",
+      "natal_point": "Neptune",
+      "polarity": "hard",
+      "strength": 0.554,
+      "orb_deg": 2.68,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 24
+      }
+    },
+    {
+      "event_id": "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+      "scope": "transit_to_natal",
+      "label": "Pluto sextile South Node (orb 1.83°)",
+      "transit_body": "Pluto",
+      "aspect": "sextile",
+      "natal_point": "South Node",
+      "polarity": "soft",
+      "strength": 0.544,
+      "orb_deg": 1.83,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "support",
+        "opportunity",
+        "intensity",
+        "power",
+        "transform"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 1,
+        "natal_point_house": 3
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 25
+      }
+    },
+    {
+      "event_id": "9be729a71af37922b48bc6abeaf0480092e5fca6",
+      "scope": "transit_to_natal",
+      "label": "Venus sextile Jupiter (orb 1.86°)",
+      "transit_body": "Venus",
+      "aspect": "sextile",
+      "natal_point": "Jupiter",
+      "polarity": "soft",
+      "strength": 0.534,
+      "orb_deg": 1.86,
+      "phase": "applying",
+      "bucket": "medium",
+      "tags": [
+        "self",
+        "support",
+        "opportunity",
+        "love",
+        "values"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 26
+      }
+    },
+    {
+      "event_id": "dfd197cfe5517797ceaa8a026b9eaecf49e794ab",
+      "scope": "transit_to_natal",
+      "label": "Vertex sextile Jupiter (orb 1.86°)",
+      "transit_body": "Vertex",
+      "aspect": "sextile",
+      "natal_point": "Jupiter",
+      "polarity": "soft",
+      "strength": 0.534,
+      "orb_deg": 1.86,
+      "phase": "applying",
+      "bucket": "short",
+      "tags": [
+        "self",
+        "support",
+        "opportunity"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 27
+      }
+    },
+    {
+      "event_id": "fe5072718f70c529dd23ab908e579387ee7ee8cc",
+      "scope": "transit_to_angles",
+      "label": "Mars trine DSC (orb 2.94°)",
+      "transit_body": "Mars",
+      "aspect": "trine",
+      "natal_point": "DSC",
+      "polarity": "soft",
+      "strength": 0.511,
+      "orb_deg": 2.94,
+      "phase": "applying",
+      "bucket": "medium",
+      "tags": [
+        "relationships",
+        "support",
+        "flow",
+        "drive",
+        "conflict"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "water",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": null
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 6
+      }
+    },
+    {
+      "event_id": "719ab512f625a3b3f9f12aa1680828407cecc40c",
+      "scope": "transit_to_angles",
+      "label": "Mars trine MC (orb 2.97°)",
+      "transit_body": "Mars",
+      "aspect": "trine",
+      "natal_point": "MC",
+      "polarity": "soft",
+      "strength": 0.506,
+      "orb_deg": 2.97,
+      "phase": "separating",
+      "bucket": "medium",
+      "tags": [
+        "career",
+        "support",
+        "flow",
+        "drive",
+        "conflict"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": null
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 7
+      }
+    },
+    {
+      "event_id": "63b8df134b61a07fd58a6a860f89358382ab9282",
+      "scope": "transit_to_natal",
+      "label": "Chiron trine Lilith (orb 3.01°)",
+      "transit_body": "Chiron",
+      "aspect": "trine",
+      "natal_point": "Lilith",
+      "polarity": "soft",
+      "strength": 0.498,
+      "orb_deg": 3.01,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "relationships",
+        "support",
+        "flow"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "fixed"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 8
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 28
+      }
+    },
+    {
+      "event_id": "4acb15849c62b153ce070571acef2f3a284a2f0b",
+      "scope": "transit_to_natal",
+      "label": "Neptune sextile Uranus (orb 2.04°)",
+      "transit_body": "Neptune",
+      "aspect": "sextile",
+      "natal_point": "Uranus",
+      "polarity": "soft",
+      "strength": 0.49,
+      "orb_deg": 2.04,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "support",
+        "opportunity",
+        "fog",
+        "idealization",
+        "boundaries",
+        "dissolve"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "air",
+          "modality": "fixed"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 29
+      }
+    },
+    {
+      "event_id": "126acd8e5314e979b220187ef3025fa3d734224a",
+      "scope": "transit_to_natal",
+      "label": "Fortune square Fortune (orb 3.09°)",
+      "transit_body": "Fortune",
+      "aspect": "square",
+      "natal_point": "Fortune",
+      "polarity": "hard",
+      "strength": 0.486,
+      "orb_deg": 3.09,
+      "phase": "applying",
+      "bucket": "short",
+      "tags": [
+        "relationships",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "fixed"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 10,
+        "natal_point_house": 7
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 30
+      }
+    },
+    {
+      "event_id": "10bd9eefb0f22bb8862af76a4e297b64b464dc7e",
+      "scope": "transit_to_natal",
+      "label": "Neptune opposition Mars (orb 3.09°)",
+      "transit_body": "Neptune",
+      "aspect": "opposition",
+      "natal_point": "Mars",
+      "polarity": "hard",
+      "strength": 0.485,
+      "orb_deg": 3.09,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "pressure",
+        "tension",
+        "fog",
+        "idealization",
+        "boundaries",
+        "dissolve"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 9
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 31
+      }
+    },
+    {
+      "event_id": "f6ba789bfc0db3681519bd64e551992429a560ad",
+      "scope": "transit_to_natal",
+      "label": "Mercury sextile Jupiter (orb 2.09°)",
+      "transit_body": "Mercury",
+      "aspect": "sextile",
+      "natal_point": "Jupiter",
+      "polarity": "soft",
+      "strength": 0.478,
+      "orb_deg": 2.09,
+      "phase": "separating",
+      "bucket": "medium",
+      "tags": [
+        "self",
+        "support",
+        "opportunity",
+        "mind",
+        "communication"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 32
+      }
+    },
+    {
+      "event_id": "6643f6b522a944afdaa02253a4af02ee80c732c0",
+      "scope": "transit_to_natal",
+      "label": "Neptune trine Pluto (orb 3.24°)",
+      "transit_body": "Neptune",
+      "aspect": "trine",
+      "natal_point": "Pluto",
+      "polarity": "soft",
+      "strength": 0.461,
+      "orb_deg": 3.24,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "support",
+        "flow",
+        "fog",
+        "idealization",
+        "boundaries",
+        "dissolve"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 11
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 33
+      }
+    },
+    {
+      "event_id": "f20ef9eb9742c7eb0940794301fee6ab2a171965",
+      "scope": "transit_to_natal",
+      "label": "North Node sextile Sun (orb 2.23°)",
+      "transit_body": "North Node",
+      "aspect": "sextile",
+      "natal_point": "Sun",
+      "polarity": "soft",
+      "strength": 0.443,
+      "orb_deg": 2.23,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "support",
+        "opportunity"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 34
+      }
+    },
+    {
+      "event_id": "a7837028502fdb41fb02fab44a56581f24fd4f89",
+      "scope": "transit_to_natal",
+      "label": "Moon sextile North Node (orb 2.27°)",
+      "transit_body": "Moon",
+      "aspect": "sextile",
+      "natal_point": "North Node",
+      "polarity": "soft",
+      "strength": 0.432,
+      "orb_deg": 2.27,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "career",
+        "support",
+        "opportunity",
+        "mood",
+        "needs"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": 9
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 35
+      }
+    },
+    {
+      "event_id": "4fa1b188d05b259e6d02c6005ab8a875ec152184",
+      "scope": "transit_to_natal",
+      "label": "Uranus trine Jupiter (orb 3.42°)",
+      "transit_body": "Uranus",
+      "aspect": "trine",
+      "natal_point": "Jupiter",
+      "polarity": "soft",
+      "strength": 0.43,
+      "orb_deg": 3.42,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "support",
+        "flow",
+        "shock",
+        "freedom",
+        "change"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "earth",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 5,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 36
+      }
+    },
+    {
+      "event_id": "e566f975244dc7dbd78ba861f35a58bc09233c46",
+      "scope": "transit_to_natal",
+      "label": "Lilith conjunction Pluto (orb 3.54°)",
+      "transit_body": "Lilith",
+      "aspect": "conjunction",
+      "natal_point": "Pluto",
+      "polarity": "neutral",
+      "strength": 0.41,
+      "orb_deg": 3.54,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "career",
+        "amplify"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 11,
+        "natal_point_house": 11
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 37
+      }
+    },
+    {
+      "event_id": "a0b59014241735f94212dfdd507711911864b716",
+      "scope": "transit_to_natal",
+      "label": "Saturn opposition Mars (orb 3.72°)",
+      "transit_body": "Saturn",
+      "aspect": "opposition",
+      "natal_point": "Mars",
+      "polarity": "hard",
+      "strength": 0.38,
+      "orb_deg": 3.72,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "pressure",
+        "tension",
+        "limits",
+        "responsibility",
+        "discipline"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 9
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 38
+      }
+    },
+    {
+      "event_id": "2a3da7dc997e7d96ac60fd46795e58775cabf4d3",
+      "scope": "transit_to_natal",
+      "label": "Moon sextile Mars (orb 2.49°)",
+      "transit_body": "Moon",
+      "aspect": "sextile",
+      "natal_point": "Mars",
+      "polarity": "soft",
+      "strength": 0.378,
+      "orb_deg": 2.49,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "career",
+        "support",
+        "opportunity",
+        "mood",
+        "needs"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": 9
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 39
+      }
+    },
+    {
+      "event_id": "04ad1b71613a17075382927bf3ecf3c0d0fbbc73",
+      "scope": "transit_to_natal",
+      "label": "Moon opposition Neptune (orb 3.73°)",
+      "transit_body": "Moon",
+      "aspect": "opposition",
+      "natal_point": "Neptune",
+      "polarity": "hard",
+      "strength": 0.378,
+      "orb_deg": 3.73,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "self",
+        "pressure",
+        "tension",
+        "mood",
+        "needs"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 40
+      }
+    },
+    {
+      "event_id": "06158cbaa086a355fb4bd90e55a3b68636dfb742",
+      "scope": "transit_to_natal",
+      "label": "Moon trine Pluto (orb 3.84°)",
+      "transit_body": "Moon",
+      "aspect": "trine",
+      "natal_point": "Pluto",
+      "polarity": "soft",
+      "strength": 0.361,
+      "orb_deg": 3.84,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "career",
+        "support",
+        "flow",
+        "mood",
+        "needs"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": 11
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 41
+      }
+    },
+    {
+      "event_id": "68302974894ca11b9b8cdfae2423f237a0fadc76",
+      "scope": "transit_to_natal",
+      "label": "Pluto opposition Fortune (orb 3.87°)",
+      "transit_body": "Pluto",
+      "aspect": "opposition",
+      "natal_point": "Fortune",
+      "polarity": "hard",
+      "strength": 0.355,
+      "orb_deg": 3.87,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "relationships",
+        "pressure",
+        "tension",
+        "intensity",
+        "power",
+        "transform"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "fixed"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 1,
+        "natal_point_house": 7
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 42
+      }
+    },
+    {
+      "event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+      "scope": "transit_to_natal",
+      "label": "Sun square Venus (orb 3.94°)",
+      "transit_body": "Sun",
+      "aspect": "square",
+      "natal_point": "Venus",
+      "polarity": "hard",
+      "strength": 0.344,
+      "orb_deg": 3.94,
+      "phase": "applying",
+      "bucket": "medium",
+      "tags": [
+        "inner",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": 12
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 43
+      }
+    },
+    {
+      "event_id": "db86b0ffbedecd69cb2ee894b2212a0eeb6d0460",
+      "scope": "transit_to_natal",
+      "label": "Sun square Vertex (orb 3.94°)",
+      "transit_body": "Sun",
+      "aspect": "square",
+      "natal_point": "Vertex",
+      "polarity": "hard",
+      "strength": 0.344,
+      "orb_deg": 3.94,
+      "phase": "applying",
+      "bucket": "medium",
+      "tags": [
+        "inner",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": 12
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 44
+      }
+    },
+    {
+      "event_id": "c744beab8b760c1109368a07e274e9757c33573b",
+      "scope": "transit_to_angles",
+      "label": "Fortune trine DSC (orb 4.11°)",
+      "transit_body": "Fortune",
+      "aspect": "trine",
+      "natal_point": "DSC",
+      "polarity": "soft",
+      "strength": 0.315,
+      "orb_deg": 4.11,
+      "phase": "applying",
+      "bucket": "short",
+      "tags": [
+        "relationships",
+        "support",
+        "flow"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "water",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 10,
+        "natal_point_house": null
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 8
+      }
+    },
+    {
+      "event_id": "96d22a719b91e2ee6ffcb26f6b884000bf32a74f",
+      "scope": "transit_to_angles",
+      "label": "Mars sextile ASC (orb 2.94°)",
+      "transit_body": "Mars",
+      "aspect": "sextile",
+      "natal_point": "ASC",
+      "polarity": "soft",
+      "strength": 0.266,
+      "orb_deg": 2.94,
+      "phase": "applying",
+      "bucket": "medium",
+      "tags": [
+        "self",
+        "support",
+        "opportunity",
+        "drive",
+        "conflict"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": null
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 9
+      }
+    },
+    {
+      "event_id": "d1023fd46ee7867b4eef2dc6a89ad4227b76aa66",
+      "scope": "transit_to_angles",
+      "label": "Mars sextile IC (orb 2.97°)",
+      "transit_body": "Mars",
+      "aspect": "sextile",
+      "natal_point": "IC",
+      "polarity": "soft",
+      "strength": 0.258,
+      "orb_deg": 2.97,
+      "phase": "separating",
+      "bucket": "medium",
+      "tags": [
+        "home",
+        "support",
+        "opportunity",
+        "drive",
+        "conflict"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": null
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 10
+      }
+    },
+    {
+      "event_id": "e200231221208fefe65a17758ec15b28a2c1dac7",
+      "scope": "transit_to_natal",
+      "label": "Sun sextile Sun (orb 3.03°)",
+      "transit_body": "Sun",
+      "aspect": "sextile",
+      "natal_point": "Sun",
+      "polarity": "soft",
+      "strength": 0.243,
+      "orb_deg": 3.03,
+      "phase": "separating",
+      "bucket": "medium",
+      "tags": [
+        "self",
+        "support",
+        "opportunity"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 45
+      }
+    },
+    {
+      "event_id": "ac0ef32998cf21d07f6e0583da3ece07828b7118",
+      "scope": "transit_to_natal",
+      "label": "Pluto square Chiron (orb 4.63°)",
+      "transit_body": "Pluto",
+      "aspect": "square",
+      "natal_point": "Chiron",
+      "polarity": "hard",
+      "strength": 0.229,
+      "orb_deg": 4.63,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "pressure",
+        "friction",
+        "intensity",
+        "power",
+        "transform"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 1,
+        "natal_point_house": 10
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 46
+      }
+    },
+    {
+      "event_id": "05cef74b9adbcf62265d1ff4dde5293fc471c7ce",
+      "scope": "transit_to_natal",
+      "label": "North Node square Pluto (orb 4.72°)",
+      "transit_body": "North Node",
+      "aspect": "square",
+      "natal_point": "Pluto",
+      "polarity": "hard",
+      "strength": 0.213,
+      "orb_deg": 4.72,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": 11
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 47
+      }
+    },
+    {
+      "event_id": "4c7a04f64eb9e79e80c1319b186f0bd700a13c24",
+      "scope": "transit_to_natal",
+      "label": "South Node square Pluto (orb 4.72°)",
+      "transit_body": "South Node",
+      "aspect": "square",
+      "natal_point": "Pluto",
+      "polarity": "hard",
+      "strength": 0.213,
+      "orb_deg": 4.72,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "earth",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 8,
+        "natal_point_house": 11
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 48
+      }
+    },
+    {
+      "event_id": "07ec6fbfb13a44c3f53b85b24c7321ee403d1799",
+      "scope": "transit_to_natal",
+      "label": "North Node square Venus (orb 4.73°)",
+      "transit_body": "North Node",
+      "aspect": "square",
+      "natal_point": "Venus",
+      "polarity": "hard",
+      "strength": 0.211,
+      "orb_deg": 4.73,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "inner",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": 12
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 49
+      }
+    },
+    {
+      "event_id": "912cde3a05fdb1c6950ad085be4b4df8055fafc2",
+      "scope": "transit_to_natal",
+      "label": "North Node square Vertex (orb 4.73°)",
+      "transit_body": "North Node",
+      "aspect": "square",
+      "natal_point": "Vertex",
+      "polarity": "hard",
+      "strength": 0.211,
+      "orb_deg": 4.73,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "inner",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": 12
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 50
+      }
+    },
+    {
+      "event_id": "48834949c004a08474ee0320d80350ab00656f3b",
+      "scope": "transit_to_natal",
+      "label": "South Node square Venus (orb 4.73°)",
+      "transit_body": "South Node",
+      "aspect": "square",
+      "natal_point": "Venus",
+      "polarity": "hard",
+      "strength": 0.211,
+      "orb_deg": 4.73,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "inner",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "earth",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 8,
+        "natal_point_house": 12
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 51
+      }
+    },
+    {
+      "event_id": "2236be7588520dbde38a1b870b014451d002efe1",
+      "scope": "transit_to_natal",
+      "label": "South Node square Vertex (orb 4.73°)",
+      "transit_body": "South Node",
+      "aspect": "square",
+      "natal_point": "Vertex",
+      "polarity": "hard",
+      "strength": 0.211,
+      "orb_deg": 4.73,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "inner",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "earth",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 8,
+        "natal_point_house": 12
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 52
+      }
+    },
+    {
+      "event_id": "aa705b5443fb7b4dee1f1afae4b057bc0bb3fe32",
+      "scope": "transit_to_natal",
+      "label": "Uranus trine North Node (orb 4.97°)",
+      "transit_body": "Uranus",
+      "aspect": "trine",
+      "natal_point": "North Node",
+      "polarity": "soft",
+      "strength": 0.171,
+      "orb_deg": 4.97,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "support",
+        "flow",
+        "shock",
+        "freedom",
+        "change"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "earth",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 5,
+        "natal_point_house": 9
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 53
+      }
+    },
+    {
+      "event_id": "6170880164e340a91c80fe4d9143e3b71fb44ce8",
+      "scope": "transit_to_natal",
+      "label": "Pluto sextile Saturn (orb 3.36°)",
+      "transit_body": "Pluto",
+      "aspect": "sextile",
+      "natal_point": "Saturn",
+      "polarity": "soft",
+      "strength": 0.16,
+      "orb_deg": 3.36,
+      "phase": "separating",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "support",
+        "opportunity",
+        "intensity",
+        "power",
+        "transform"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "air",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 1,
+        "natal_point_house": 3
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 54
+      }
+    },
+    {
+      "event_id": "951f361525d540a90a9fd72f5d1e05dbdc7155f6",
+      "scope": "transit_to_natal",
+      "label": "Saturn square Sun (orb 5.10°)",
+      "transit_body": "Saturn",
+      "aspect": "square",
+      "natal_point": "Sun",
+      "polarity": "hard",
+      "strength": 0.15,
+      "orb_deg": 5.1,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "pressure",
+        "friction",
+        "limits",
+        "responsibility",
+        "discipline"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 55
+      }
+    },
+    {
+      "event_id": "0c13df91ad5b9876fc50f44a2b971090cd3aa6e0",
+      "scope": "transit_to_natal",
+      "label": "Lilith trine South Node (orb 5.10°)",
+      "transit_body": "Lilith",
+      "aspect": "trine",
+      "natal_point": "South Node",
+      "polarity": "soft",
+      "strength": 0.149,
+      "orb_deg": 5.1,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "self",
+        "support",
+        "flow"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 11,
+        "natal_point_house": 3
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 56
+      }
+    },
+    {
+      "event_id": "f665c4ba5f34b6f08dc4a217c603aac11fbaa159",
+      "scope": "transit_to_angles",
+      "label": "Moon square IC (orb 5.13°)",
+      "transit_body": "Moon",
+      "aspect": "square",
+      "natal_point": "IC",
+      "polarity": "hard",
+      "strength": 0.144,
+      "orb_deg": 5.13,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "home",
+        "pressure",
+        "friction",
+        "mood",
+        "needs"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": null
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 11
+      }
+    },
+    {
+      "event_id": "ebad17ad2d34dabfb43807125d37be0ba6975a7d",
+      "scope": "transit_to_angles",
+      "label": "Moon square MC (orb 5.14°)",
+      "transit_body": "Moon",
+      "aspect": "square",
+      "natal_point": "MC",
+      "polarity": "hard",
+      "strength": 0.144,
+      "orb_deg": 5.14,
+      "phase": "separating",
+      "bucket": "short",
+      "tags": [
+        "career",
+        "pressure",
+        "friction",
+        "mood",
+        "needs"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 7,
+        "natal_point_house": null
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_angles",
+        "index": 12
+      }
+    },
+    {
+      "event_id": "2413a54cce08948db730f9bbdecab1038ba8e6e8",
+      "scope": "transit_to_natal",
+      "label": "Uranus sextile Saturn (orb 3.44°)",
+      "transit_body": "Uranus",
+      "aspect": "sextile",
+      "natal_point": "Saturn",
+      "polarity": "soft",
+      "strength": 0.14,
+      "orb_deg": 3.44,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "support",
+        "opportunity",
+        "shock",
+        "freedom",
+        "change"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "earth",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 5,
+        "natal_point_house": 3
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 57
+      }
+    },
+    {
+      "event_id": "879f35176368408710b6b9239e0ec777eb1d1190",
+      "scope": "transit_to_natal",
+      "label": "Uranus trine Uranus (orb 5.34°)",
+      "transit_body": "Uranus",
+      "aspect": "trine",
+      "natal_point": "Uranus",
+      "polarity": "soft",
+      "strength": 0.109,
+      "orb_deg": 5.34,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "support",
+        "flow",
+        "shock",
+        "freedom",
+        "change"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "earth",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "fixed"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 5,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 58
+      }
+    },
+    {
+      "event_id": "d37fa1102a15384f7e2170c7bc1dbb11d93ce479",
+      "scope": "transit_to_natal",
+      "label": "Fortune conjunction Chiron (orb 5.41°)",
+      "transit_body": "Fortune",
+      "aspect": "conjunction",
+      "natal_point": "Chiron",
+      "polarity": "neutral",
+      "strength": 0.099,
+      "orb_deg": 5.41,
+      "phase": "applying",
+      "bucket": "short",
+      "tags": [
+        "career",
+        "amplify"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "fixed"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 10,
+        "natal_point_house": 10
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 59
+      }
+    },
+    {
+      "event_id": "2818df04cd1c62b742fd6439436d6a996518826a",
+      "scope": "transit_to_natal",
+      "label": "Venus opposition Mars (orb 5.50°)",
+      "transit_body": "Venus",
+      "aspect": "opposition",
+      "natal_point": "Mars",
+      "polarity": "hard",
+      "strength": 0.084,
+      "orb_deg": 5.5,
+      "phase": "applying",
+      "bucket": "medium",
+      "tags": [
+        "career",
+        "pressure",
+        "tension",
+        "love",
+        "values"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 9
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 60
+      }
+    },
+    {
+      "event_id": "34f0320ff436d76d3112157b8fa34d91dc0b5c27",
+      "scope": "transit_to_natal",
+      "label": "Vertex opposition Mars (orb 5.50°)",
+      "transit_body": "Vertex",
+      "aspect": "opposition",
+      "natal_point": "Mars",
+      "polarity": "hard",
+      "strength": 0.084,
+      "orb_deg": 5.5,
+      "phase": "applying",
+      "bucket": "short",
+      "tags": [
+        "career",
+        "pressure",
+        "tension"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 9
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 61
+      }
+    },
+    {
+      "event_id": "d339eb05e7feeb799982cd745049676b1edd917e",
+      "scope": "transit_to_natal",
+      "label": "Sun square Pluto (orb 5.52°)",
+      "transit_body": "Sun",
+      "aspect": "square",
+      "natal_point": "Pluto",
+      "polarity": "hard",
+      "strength": 0.08,
+      "orb_deg": 5.52,
+      "phase": "separating",
+      "bucket": "medium",
+      "tags": [
+        "career",
+        "pressure",
+        "friction"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": 11
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 62
+      }
+    },
+    {
+      "event_id": "0b8ce42e9251de690a38592cba94c53522b4e696",
+      "scope": "transit_to_natal",
+      "label": "Mercury opposition Mars (orb 5.72°)",
+      "transit_body": "Mercury",
+      "aspect": "opposition",
+      "natal_point": "Mars",
+      "polarity": "hard",
+      "strength": 0.047,
+      "orb_deg": 5.72,
+      "phase": "separating",
+      "bucket": "medium",
+      "tags": [
+        "career",
+        "pressure",
+        "tension",
+        "mind",
+        "communication"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "water",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 9
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 63
+      }
+    },
+    {
+      "event_id": "88bc98188b2f7931360493237881969004d50662",
+      "scope": "transit_to_natal",
+      "label": "Neptune square Sun (orb 5.73°)",
+      "transit_body": "Neptune",
+      "aspect": "square",
+      "natal_point": "Sun",
+      "polarity": "hard",
+      "strength": 0.045,
+      "orb_deg": 5.73,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "self",
+        "pressure",
+        "friction",
+        "fog",
+        "idealization",
+        "boundaries",
+        "dissolve"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "earth",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 1
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 64
+      }
+    },
+    {
+      "event_id": "393d48951089b376678795667de74396c3b22413",
+      "scope": "transit_to_natal",
+      "label": "Chiron opposition Chiron (orb 5.88°)",
+      "transit_body": "Chiron",
+      "aspect": "opposition",
+      "natal_point": "Chiron",
+      "polarity": "hard",
+      "strength": 0.021,
+      "orb_deg": 5.88,
+      "phase": "applying",
+      "bucket": "long",
+      "tags": [
+        "career",
+        "pressure",
+        "tension"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "cardinal"
+        },
+        "target": {
+          "element": "air",
+          "modality": "cardinal"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 10
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 65
+      }
+    },
+    {
+      "event_id": "ef85a99f2f73fac20e416c3b40cc3a10046322df",
+      "scope": "transit_to_natal",
+      "label": "Lilith conjunction Venus (orb 5.92°)",
+      "transit_body": "Lilith",
+      "aspect": "conjunction",
+      "natal_point": "Venus",
+      "polarity": "neutral",
+      "strength": 0.014,
+      "orb_deg": 5.92,
+      "phase": "applying",
+      "bucket": "short",
+      "tags": [
+        "inner",
+        "amplify"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 11,
+        "natal_point_house": 12
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 66
+      }
+    },
+    {
+      "event_id": "2034c2c4c98f8048f0748b1b479bb32ef090e3cc",
+      "scope": "transit_to_natal",
+      "label": "Lilith conjunction Vertex (orb 5.92°)",
+      "transit_body": "Lilith",
+      "aspect": "conjunction",
+      "natal_point": "Vertex",
+      "polarity": "neutral",
+      "strength": 0.014,
+      "orb_deg": 5.92,
+      "phase": "applying",
+      "bucket": "short",
+      "tags": [
+        "inner",
+        "amplify"
+      ],
+      "astro_style": {
+        "transit": {
+          "element": "fire",
+          "modality": "mutable"
+        },
+        "target": {
+          "element": "fire",
+          "modality": "mutable"
+        }
+      },
+      "houses": {
+        "transit_in_natal_house": 11,
+        "natal_point_house": 12
+      },
+      "timing": null,
+      "raw_ref": {
+        "scope": "transit_to_natal",
+        "index": 67
+      }
+    }
+  ]
+}

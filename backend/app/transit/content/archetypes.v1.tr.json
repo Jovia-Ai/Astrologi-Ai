@@ -1,0 +1,144 @@
+{
+  "planets": {
+    "Saturn": {
+      "conflict": [
+        "icindeki otorite hizli tepkiyi durdurur ve kendini sertce denetlemene yol acar",
+        "sorumluluk duygusu spontanligi baskilar ve ifadeni kisitlayabilir"
+      ],
+      "shadow": [
+        "yanlis anlasilma korkusu kendini asiri savunma ya da tamamen susma tepkisi dogurabilir",
+        "hata yapmama baskisi zihinsel yorgunlugu buyutup mesafe yaratabilir"
+      ],
+      "growth": [
+        "az ama net bir ifade ritmi kurmak guvenilir bir etki yaratir",
+        "duzenli tekrar ve sabirla sesini olgun bir guce donusturebilirsin"
+      ]
+    },
+    "Venus": {
+      "conflict": [
+        "uyum istegi ile gercek ihtiyaclarin arasinda kararsizlik dogabilir",
+        "begenilme arzusu net sinir koymayi zorlastirabilir"
+      ],
+      "shadow": [
+        "onay arayisi kendi degerini dis geri bildirime baglayabilir",
+        "sessiz kirginlik birikip acik iletisimden uzaklastirabilir"
+      ],
+      "growth": [
+        "degerini netlestirdikce iliskilerde daha sade ve guvenli bir denge kurarsin",
+        "nazik ama acik dil bag kurma kalitesini artirir"
+      ]
+    },
+    "Mars": {
+      "conflict": [
+        "hizli hareket istegi sabri zorlayip acele hamlelere itebilir",
+        "kontrol etme arzusu yumusak iletisimi zorlastirabilir"
+      ],
+      "shadow": [
+        "tepkiyi geciktirmeden verme aliskanligi gereksiz gerilim yaratabilir",
+        "rekabet modu isbirligini ikinci plana atabilir"
+      ],
+      "growth": [
+        "enerjiyi net hedefe yoneltmek gucunu dagitmadan ilerlemeni saglar",
+        "durup nefes almak hareket kalitesini belirgin sekilde iyilestirir"
+      ]
+    },
+    "Moon": {
+      "conflict": [
+        "duygusal dalgalanma karar aninda netligi azaltabilir",
+        "ic guven ihtiyaci dis taleplerle catismaya girebilir"
+      ],
+      "shadow": [
+        "ani alingalik gereksiz uzaklasma tepkisi dogurabilir",
+        "duyguyu bastirma denemesi yorgunluk ve kirginlik biriktirebilir"
+      ],
+      "growth": [
+        "duyguyu adlandirip ritim kurmak gunu daha dengeli tasir",
+        "ihtiyacini acikca istemek iliskide guven alanini buyutur"
+      ]
+    }
+  },
+  "signs": {
+    "Aries": {
+      "drive": [
+        "hizli baslama ve dogrudan davranma istegi artar",
+        "sonuca cabuk ulasma motivasyonu yukselir"
+      ],
+      "risk": [
+        "sabirsizlik ufak gerilimleri buyutebilir",
+        "hiz baskisi gereksiz sertlesmeye yol acabilir"
+      ],
+      "growth": [
+        "cesareti olculu disiplinle birlestirmek kalici guc verir",
+        "hizi dogru ana yaymak sureklilik kazandirir"
+      ]
+    },
+    "Taurus": {
+      "drive": ["istikrar ve guven arayisi one cikar"],
+      "risk": ["esneklik kaybi karar surecini yavaslatabilir"],
+      "growth": ["sade ama istikrarli adimlar somut sonuc getirir"]
+    },
+    "Gemini": {
+      "drive": ["merak ve bilgi akisi hizlanir"],
+      "risk": ["dikkat daginikligi onceligi bulandirabilir"],
+      "growth": ["bilgiyi sadeleyip odaklamak netlik yaratir"]
+    },
+    "Cancer": {
+      "drive": ["guven ve aidiyet ihtiyaci belirginlesir"],
+      "risk": ["duygusal savunma iletisim kanalini daraltabilir"],
+      "growth": ["sakin paylasim guveni ve yakinligi guclendirir"]
+    },
+    "Libra": {
+      "drive": ["denge ve uyum istegi artar"],
+      "risk": ["kararsizlik net adimi geciktirebilir"],
+      "growth": ["adaletli ama net sinirlar iliskiyi tasir"]
+    },
+    "Capricorn": {
+      "drive": ["sorumluluk ve sonuc odagi yukselir"],
+      "risk": ["asiri kontrol esnekligi azaltabilir"],
+      "growth": ["yapi kurup adimlari bolmek dayaniklilik getirir"]
+    },
+    "generic": {
+      "drive": ["gundemin hizi fark edilir bicimde degisiyor"],
+      "risk": ["dengeyi korumak icin tempo ayari gerekebilir"],
+      "growth": ["ritim ve netlik bir araya geldiginde daha guclu ilerlersin"]
+    }
+  },
+  "houses": {
+    "1": {
+      "arena": "benlik ve durus alaninda",
+      "shadow": "imaj baskisi kendini gereksiz kasmana neden olabilir",
+      "upper": "otantik ama olculu durus guvenli bir etki yaratir"
+    },
+    "3": {
+      "arena": "zihin ve iletisim alaninda",
+      "shadow": "yanlis anlasilma korkusu dili ya sertlestirir ya da kisar",
+      "upper": "dusunceyi sadeleyip netlestirmek sesini guclu kilir"
+    },
+    "5": {
+      "arena": "yaraticilik ve keyif alaninda",
+      "shadow": "performans kaygisi dogal akisi dondurebilir",
+      "upper": "oyun ve ifade cesareti canliligi geri getirir"
+    },
+    "7": {
+      "arena": "iliski ve ortaklik alaninda",
+      "shadow": "aynalanma etkisi gereksiz savunmayi tetikleyebilir",
+      "upper": "karsilikli netlik bagin kalitesini belirginlestirir"
+    },
+    "10": {
+      "arena": "kariyer ve gorunurluk alaninda",
+      "shadow": "dis beklenti baskisi kendini sert yargilamana yol acabilir",
+      "upper": "oncelikleri netlestirmek emegi sonuca tasir"
+    },
+    "generic": {
+      "arena": "gunluk yasam akisi icinde",
+      "shadow": "fazla yuklenme ritmi zorlayabilir",
+      "upper": "olculu tempo ve net sinirlar dengeyi korur"
+    }
+  },
+  "templates": {
+    "conflict_short": [
+      "{arena} hiz ile kontrol ayni anda calisiyor; once netlik secmek iyi olur.",
+      "{arena} tepkiyi hizlandiriyor ama ic denetim frene basiyor."
+    ]
+  }
+}

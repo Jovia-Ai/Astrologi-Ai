@@ -2,7 +2,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import hashlib
 from typing import Any, Dict, Iterable, Mapping, Sequence
 import time
@@ -28,6 +28,9 @@ ASPECT_ANGLES = {
     "trine": 120,
     "sextile": 60,
 }
+
+_TIMING_CACHE: dict[str, Dict[str, Any] | None] = {}
+_TIMING_CACHE_MAX = 4096
 
 
 @dataclass(frozen=True)
@@ -223,6 +226,9 @@ def build_transit_event_timing(
         location=location,
         options=cfg,
         bucket=_duration_category(str((matched.get("transit") or {}).get("body") or "")),
+        transit_date_utc_day=transit_utc_dt.date().isoformat(),
+        natal_birth_signature=_natal_birth_signature(natal),
+        house_system=cfg.house_system,
     )
     return {"timing": timing}
 
@@ -896,6 +902,8 @@ def _build_display(
     natal_house_map = _natal_house_map(natal_snapshot)
     transit_house_map = _transit_house_map(house_overlays)
     transit_dt = datetime.fromisoformat(transit_datetime_utc)
+    transit_date_utc_day = transit_dt.date().isoformat()
+    natal_birth_signature = _natal_birth_signature(natal_snapshot)
     location = fetch_location(transit_place)
     try:
         swe.set_topo(location.longitude, location.latitude, 0.0)
@@ -974,6 +982,9 @@ def _build_display(
             location=location,
             options=options,
             bucket=str(entry.get("bucket") or ""),
+            transit_date_utc_day=transit_date_utc_day,
+            natal_birth_signature=natal_birth_signature,
+            house_system=options.house_system,
         )
         entry["timing"] = timing
 
@@ -1618,6 +1629,9 @@ def _sample_display_timing(
     location: Any,
     options: TransitOptions,
     bucket: str,
+    transit_date_utc_day: str,
+    natal_birth_signature: str,
+    house_system: str,
 ) -> Dict[str, Any] | None:
     transit_body = str((aspect_entry.get("transit") or {}).get("body") or "")
     natal_lon = (aspect_entry.get("natal") or {}).get("lon")
@@ -1628,6 +1642,23 @@ def _sample_display_timing(
 
     window_days, step_hours = _timing_window(bucket)
     window_days = min(365, window_days)
+    timing_cache_key = _build_timing_cache_key(
+        transit_date_utc_day=transit_date_utc_day,
+        house_system=house_system,
+        natal_birth_signature=natal_birth_signature,
+        transit_body=transit_body,
+        aspect_type=aspect_type,
+        natal_lon=float(natal_lon),
+        bucket=bucket,
+        step_hours=step_hours,
+        window_days=window_days,
+    )
+    if timing_cache_key in _TIMING_CACHE:
+        cached = _TIMING_CACHE[timing_cache_key]
+        if cached is None:
+            return None
+        return dict(cached)
+
     start = transit_dt - timedelta(days=window_days)
     end = transit_dt + timedelta(days=window_days)
 
@@ -1657,6 +1688,7 @@ def _sample_display_timing(
         current += timedelta(hours=step_hours)
 
     if entry_time is None and peak_time is None:
+        _timing_cache_set(timing_cache_key, None)
         return None
 
     confidence = 0.3
@@ -1672,7 +1704,40 @@ def _sample_display_timing(
     if entry_time and exit_time is None and timing_note is None:
         timing_note = "exit_not_found_in_window"
 
-    return {
+    peaks: list[str] = []
+    if peak_time is not None:
+        peaks.append(peak_time.isoformat())
+    if not peaks:
+        timing_note = _append_timing_note(timing_note, "missing_peaks")
+
+    if exit_time is not None and exit_time < transit_dt:
+        result = {
+            "entry_date_utc": None,
+            "peak_date_utc": None,
+            "exit_date_utc": None,
+            "confidence": round(confidence, 2),
+            "orb_limit_deg": orb_limit,
+            "step_hours": step_hours,
+            "window_days": window_days,
+            "peaks": peaks,
+            "timing_note": "timing_out_of_range_for_transit_date",
+            "debug": {
+                "transit_date_used_for_orb": transit_dt.isoformat(),
+                "transit_date_used_for_timing": transit_dt.isoformat(),
+                "timing_cache_key": timing_cache_key,
+                "timing_computed_at_utc": datetime.now(timezone.utc).isoformat(),
+            },
+        }
+        _timing_cache_set(timing_cache_key, result)
+        return result
+
+    phase = _display_phase(float(aspect_entry.get("orb") or 9.9), orb_limit, aspect_entry.get("phase"))
+    if peak_time is not None and phase in {"exact", "exactish"}:
+        delta_sec = abs((peak_time - transit_dt).total_seconds())
+        if delta_sec > (7 * 24 * 3600):
+            timing_note = _append_timing_note(timing_note, "peak_far_from_transit_date")
+
+    result = {
         "entry_date_utc": entry_time.isoformat() if entry_time else None,
         "peak_date_utc": peak_time.isoformat() if peak_time else None,
         "exit_date_utc": exit_time.isoformat() if exit_time else None,
@@ -1680,9 +1745,17 @@ def _sample_display_timing(
         "orb_limit_deg": orb_limit,
         "step_hours": step_hours,
         "window_days": window_days,
-        "peaks": [],
+        "peaks": peaks,
         "timing_note": timing_note,
+        "debug": {
+            "transit_date_used_for_orb": transit_dt.isoformat(),
+            "transit_date_used_for_timing": transit_dt.isoformat(),
+            "timing_cache_key": timing_cache_key,
+            "timing_computed_at_utc": datetime.now(timezone.utc).isoformat(),
+        },
     }
+    _timing_cache_set(timing_cache_key, result)
+    return result
 
 
 def _timing_window(bucket: str) -> tuple[int, int]:
@@ -1691,6 +1764,62 @@ def _timing_window(bucket: str) -> tuple[int, int]:
     if bucket == "medium":
         return 60, 24
     return 14, 6
+
+
+def _build_timing_cache_key(
+    *,
+    transit_date_utc_day: str,
+    house_system: str,
+    natal_birth_signature: str,
+    transit_body: str,
+    aspect_type: str,
+    natal_lon: float,
+    bucket: str,
+    step_hours: int,
+    window_days: int,
+) -> str:
+    raw = "|".join(
+        [
+            transit_date_utc_day,
+            str(house_system or "").lower(),
+            natal_birth_signature,
+            str(transit_body or "").lower(),
+            str(aspect_type or "").lower(),
+            f"{float(natal_lon):.6f}",
+            str(bucket or "").lower(),
+            str(step_hours),
+            str(window_days),
+        ]
+    )
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()
+
+
+def _timing_cache_set(key: str, value: Dict[str, Any] | None) -> None:
+    if len(_TIMING_CACHE) >= _TIMING_CACHE_MAX:
+        _TIMING_CACHE.pop(next(iter(_TIMING_CACHE)), None)
+    _TIMING_CACHE[key] = dict(value) if isinstance(value, dict) else None
+
+
+def _natal_birth_signature(natal_snapshot: Mapping[str, Any]) -> str:
+    payload = {
+        "datetime_utc": natal_snapshot.get("datetime_utc"),
+        "timezone": natal_snapshot.get("timezone"),
+        "angles": natal_snapshot.get("angles"),
+        "house_cusps": natal_snapshot.get("house_cusps"),
+    }
+    raw = str(payload)
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
+
+
+def _append_timing_note(base: str | None, token: str) -> str:
+    seed = str(base or "").strip()
+    if not seed:
+        return token
+    parts = [p.strip() for p in seed.split(";") if p.strip()]
+    if token in parts:
+        return seed
+    parts.append(token)
+    return ";".join(parts)
 
 
 def _aspect_phase(

@@ -12,7 +12,8 @@ BLOCKED_TOKENS: set[str] = set()
 # Teknik kelimeler public metne sızmasın.
 _TECH_TOKENS_RE = re.compile(
     r"\b("
-    r"orb|orb_deg|exactish|exact|applying|separating|square|trine|sextile|opposition|conjunction|"
+    r"orb|orb_deg|exactish|exact|applying|separating|phase|bucket|period|raw|marker|"
+    r"square|trine|sextile|opposition|conjunction|"
     r"asc|dsc|mc|ic|t:\d+->n:\d+|n:\d+|t:\d+"
     r")\b",
     flags=re.IGNORECASE,
@@ -207,6 +208,130 @@ DISPOSITOR_HINTS_TR: Dict[str, Dict[str, Sequence[str]]] = {
     },
 }
 
+PLANET_NATURE_TR: Dict[str, Dict[str, Sequence[str]]] = {
+    "Neptune": {
+        "nouns": ("sis", "buğu", "çözülme", "sezgi"),
+        "verbs": ("bulanıklaştırır", "yumuşatır", "hassaslaştırır"),
+    },
+    "Uranus": {
+        "nouns": ("kıvılcım", "sıçrama", "yeni yöntem", "özgürleşme"),
+        "verbs": ("uyandırır", "hızlandırır", "alışkanlığı kırar"),
+    },
+    "Pluto": {
+        "nouns": ("derin dönüşüm", "arınma", "güç", "konum değişimi"),
+        "verbs": ("derinleştirir", "dönüştürür", "eleyip seçtirir"),
+    },
+    "Mars": {
+        "nouns": ("hamle", "cesaret", "somut adım", "netlik"),
+        "verbs": ("hız verir", "somutlaştırır", "harekete geçirir"),
+    },
+    "Saturn": {
+        "nouns": ("çerçeve", "sorumluluk", "yapı", "dayanıklılık"),
+        "verbs": ("test eder", "yavaşlatır", "olgunlaştırır"),
+    },
+}
+
+ASPECT_FLAVOR_TR: Dict[str, Dict[str, Sequence[str]]] = {
+    "square": {"verbs": ("sınar", "gerer", "test eder")},
+    "opposition": {"verbs": ("ayna tutar", "dengeye zorlar", "müzakereye iter")},
+    "conjunction": {"verbs": ("yoğunlaştırır", "tek hatta toplar", "odaklar")},
+    "trine": {"verbs": ("kolaylaştırır", "akıtıp büyütür", "destekler")},
+    "sextile": {"verbs": ("kapı aralar", "fırsat üretir", "alan açar")},
+}
+
+TARGET_TONE_TR: Dict[str, Sequence[str]] = {
+    "ASC": ("duruş", "kimlik", "ilk izlenim"),
+    "DSC": ("ilişki aynası", "bağ", "ortaklık"),
+    "MC": ("kariyer yönü", "itibar", "hedef"),
+    "IC": ("kökler", "ev", "iç güven"),
+}
+
+PERIOD_TRACK_COPY_TR: Dict[str, Dict[str, Any]] = {
+    "identity_spine": {
+        "version": "v1",
+        "lead": (
+            "{{planet_hook}} Aynı cümleyi kurup farklı duyulduğunu fark edebilirsin.",
+            "{{planet_hook}} Bu dönem sesin ve duruşun daha sahici bir çizgiye çağrılıyor.",
+        ),
+        "big_picture": (
+            "Dışarıda güçlü görünme refleksi yüksekken bu etki fazlalıkları çözer ve daha güvenilir bir ifade hattı açar.",
+            "Kimlik katılaştığında sürtünme artar; esnediğinde netlik güçlenir.",
+        ),
+        "mechanism": (
+            "Etki önce iletişim ritminde başlar, sonra kimliğe yansır. Önce dil netleşir, sonra duruş.",
+            "Mesaj trafiğinde başlayan bulanıklık, sınır cümlesi kurdukça dağılır.",
+        ),
+        "contribution": (
+            "Nazik ama net sınır kurma kasın güçlenir; sezgi bulanıklık değil zamanlama üretir.",
+            "Bu dönem sonunda daha az kelimeyle daha net anlaşılmayı öğrenirsin.",
+        ),
+    },
+    "method_shift_9_virgo": {
+        "version": "v1",
+        "lead": (
+            "{{planet_hook}} Kıvılcım, doğru yöntemle kalıcı ritme dönüşebilir.",
+            "{{planet_hook}} Hız var; asıl kazanç bunu sürdürülebilir kılmak.",
+        ),
+        "big_picture": (
+            "Bu hat heves değil sistem üretir; küçük yöntem değişikliği rota etkisi yaratır.",
+            "Yaratıcı açılım, uzmanlaşma ve öğrenme kanalına bağlandığında büyüme kalıcı olur.",
+        ),
+        "mechanism": (
+            "Akış yaratıcı denemeden başlar, sonra planlı sprint ve çıktı düzenine oturur.",
+            "Tek hedef ve ölçülebilir adım, bu açının en verimli kullanım şeklidir.",
+        ),
+        "contribution": (
+            "Kendine ait bir çalışma sistemi kurarsın; hız dağılmadan sonuç üretir.",
+            "Yöntem netleşince karar kalitesi ve yön duygusu birlikte güçlenir.",
+        ),
+    },
+    "network_transform_11": {
+        "version": "v1",
+        "lead": (
+            "{{planet_hook}} Küçük bir görünürlük hamlesi uzun vadeli kapı açabilir.",
+            "{{planet_hook}} Burada mesele çok kişi değil, doğru topluluk.",
+        ),
+        "big_picture": (
+            "Kimlik duruşu netleştikçe network kendini eler; doğru çevreye hizalanma başlar.",
+            "Rolün güncellenir: neyi temsil ettiğin ve nereye çağrıldığın netleşir.",
+        ),
+        "mechanism": (
+            "Dönüşüm içeride duruşta başlar, dışarıda topluluk ve hedef alanında yankı bulur.",
+            "Düzenli ve sade paylaşım, bu etkinin ivmesini kalıcı hale getirir.",
+        ),
+        "contribution": (
+            "Doğru yerde doğru cümleyi kurma becerin artar; fırsatlar daha seçici gelir.",
+            "Pasif kalmazsan küçük kapılar orta vadede güçlü bir konum değişimine döner.",
+        ),
+    },
+    "mirror_axis_1_7": {
+        "version": "v1",
+        "lead": (
+            "{{planet_hook}} Yakınlık bu dönemde belirsizlikle değil çerçeveyle büyür.",
+            "{{planet_hook}} İlişki dilinde net tanım altın değerinde.",
+        ),
+        "big_picture": (
+            "İdealizasyon ve projeksiyon arttığında yol; net beklenti, net sınır ve net teyitten geçer.",
+            "Ayna etkisi büyüdükçe hız değil sıra önemlidir: önce niyet, sonra adım.",
+        ),
+        "mechanism": (
+            "Etki önce iletişim tonunda belirir, sonra ilişki dinamiğine taşınır.",
+            "Yazılı netlik ve tekrar eden çerçeve, bu hatta sisin dağılmasını hızlandırır.",
+        ),
+        "contribution": (
+            "Kendini kaybetmeden bağ kurma kasın güçlenir: nazik ama net sınır.",
+            "İlişki dilin olgunlaşır; güven belirsizlikten değil anlaşmadan büyür.",
+        ),
+    },
+    "default": {
+        "version": "v1",
+        "lead": ("{{planet_hook}} Bu dönem ritim kurdukça netleşir.",),
+        "big_picture": ("Gökyüzü belirli bir alanı görünür kılıyor; küçük ve düzenli adım en iyi çalışır.",),
+        "mechanism": ("Etki önce gündelik ritimde başlar, sonra davranış kalıbına yerleşir.",),
+        "contribution": ("Bu dönem daha net seçim ve daha sağlam ritim kurma fırsatı verir.",),
+    },
+}
+
 ROLE_VOICES_TR: Dict[str, Dict[str, str]] = {
     "north_node": {
         "conflict": "Yön hattı açılırken eski ivmeyle yeni rota arasında sürtünme olabilir.",
@@ -396,14 +521,11 @@ def compose_phrase_pack(
 
 def _build_scene_line(transit_house: int | None, target_house: int | None) -> str:
     if transit_house and target_house and transit_house != target_house:
-        return (
-            f"Sahne {transit_house}. Ev ({HOUSE_LABEL_TR.get(transit_house, 'genel')}); "
-            f"vurduğu yer {target_house}. Ev ({HOUSE_LABEL_TR.get(target_house, 'genel')})."
-        )
+        return f"Etki {transit_house}. Evde başlar; {target_house}. Ev temasına yansır."
     if target_house:
-        return f"Sahne {target_house}. Ev ({HOUSE_LABEL_TR.get(target_house, 'genel')}); vurduğu yer aynı ev hattı."
+        return f"Etki {target_house}. Ev hattında görünür olur."
     if transit_house:
-        return f"Sahne {transit_house}. Ev ({HOUSE_LABEL_TR.get(transit_house, 'genel')}); vurduğu yer henüz dağınık."
+        return f"Etki {transit_house}. Ev hattında toparlanma ister."
     return ""
 
 

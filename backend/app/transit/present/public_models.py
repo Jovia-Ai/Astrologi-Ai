@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -10,7 +10,7 @@ class Block(BaseModel):
 
     type: str
     text: Optional[str] = None
-    items: Optional[List[str]] = None
+    items: Optional[Any] = None
     phase: Optional[str] = None
     duration: Optional[str] = None
 
@@ -52,4 +52,7 @@ class PublicTransitResponse(BaseModel):
 
     locale: str = "tr"
     period: PublicPeriod
-    events: List[PublicEvent]
+    events: Optional[List[PublicEvent]] = None
+    period_core: Optional[dict] = None
+    event_cards: Optional[List[dict]] = None
+    timeline: Optional[dict] = None

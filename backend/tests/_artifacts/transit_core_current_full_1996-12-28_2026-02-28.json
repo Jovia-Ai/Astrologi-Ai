@@ -1,0 +1,479 @@
+{
+  "transit_date": "2026-02-28",
+  "event_cards": [
+    {
+      "event_id": "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87",
+      "title": "Sınır Kalibrasyonu.",
+      "signature": "Transit Neptune (3. Ev) □ Natal ASC • exact • months",
+      "conflict": "Neptün, ASC ile kare açı kuruyor; kimlik hattında sis artar. Dış imaj ile iç niyet kolay ayrışır, sınırı baştan yazmak gerekir. Sahne 3. Ev (zihin/iletişim); vurduğu yer henüz dağınık.",
+      "shadow": "Belirsiz sözler yanlış anlaşılmayı büyütebilir. Savunma refleksi açık veriyi kişisel baskı gibi okutabilir.",
+      "upper": "Nazik ama net sınır koyduğunda sezgi netliğe döner. Sürtünmeyi metoda çevirdiğinde net güç açılır. Elektrik burada yön bulursa üretim kalitesi sıçrar.?.",
+      "extra_line": "zihin ve iletişim alaninda tepkiyi hizlandiriyor ama iç denetim frene basiyor Bunu gun icinde daha net hissedebilirsin.",
+      "time_hint": "en yoğun.",
+      "guidance": [
+        "Soruyu tek cümlede netleştir.",
+        "Tepki yerine kısa yazılı netlik seç.",
+        "Çıkar taslak, sonra gönder."
+      ],
+      "watch_out": [
+        "Acele karar.",
+        "Tepkisellik."
+      ],
+      "hook_tags": [
+        "neptune",
+        "house_3",
+        "aries",
+        "square"
+      ],
+      "connected_points": [],
+      "natal_context_pack": {},
+      "natal_promise": {
+        "score": 0.0,
+        "verdict": "low",
+        "drivers": [
+          {
+            "type": "house_ruler_link",
+            "text": "not available",
+            "score": 0.0
+          },
+          {
+            "type": "resonance",
+            "text": "not available",
+            "score": 0.0
+          },
+          {
+            "type": "timers",
+            "text": "not available",
+            "score": 0.0
+          }
+        ],
+        "connected_points": [
+          {
+            "kind": "status",
+            "value": "not available",
+            "score": 0.0
+          },
+          {
+            "kind": "house",
+            "value": "not available",
+            "score": 0.0
+          },
+          {
+            "kind": "sign",
+            "value": "not available",
+            "score": 0.0
+          }
+        ],
+        "gate": {
+          "condition": "Natal context not available.",
+          "how_to_use": "Use low-risk pacing until natal context is available."
+        }
+      },
+      "tags": {
+        "duration": "months",
+        "phase": "exact",
+        "domain": "general",
+        "intensity": 0.0,
+        "exact_in_days": null
+      },
+      "conflict_label": "Sürtünme",
+      "conflict_tone": "pressure",
+      "tone": "friction",
+      "section_labels": {
+        "conflict": "Sürtünme",
+        "shadow": "Refleks",
+        "upper": "Ustalık"
+      },
+      "why_now": "Orb çok yakın + aylar süren etki + angle tetikleniyor + exact."
+    },
+    {
+      "event_id": "0a40de18772071d6e2ca06709fe0e4437c0a0071",
+      "title": "Yöntem Sıçraması.",
+      "signature": "Transit Uranus (5. Ev) △ Natal Mars • applying • months",
+      "conflict": "Bir anda yöntem değiştirip hız kazanırsın; yaratıcı sıçrama burada kolay. Başak tarafında metod kurdukça akış büyür. Sahne 5. Ev (yaratıcılık/ifade); vurduğu yer henüz dağınık.",
+      "shadow": "Aşırı overclock odak kaydırır; aynı anda üç plan açmak kısa devre yaratır. Konfor artınca bitmemiş iş ertelenebilir.",
+      "upper": "Yeni yöntem + yapılandırılmış sprint sıçraması burada çalışır; öğrenme ve yayın hattı hızlanır. Ölç, not al, sprint ritmi kur; sonra yayına al. Doğal akışı ritimle birleştirirsen kalıcı ivme gelir.",
+      "extra_line": "yaraticilik ve keyif alaninda hız ile kontrol ayni anda calisiyor; once netlik secmek iyi olur Ozellikle bu temayi daha kolay fark edebilirsin.",
+      "time_hint": "yaklaşıyor.",
+      "guidance": [
+        "14 gün sprint seç; bir çıktı tanımla.",
+        "Tek hedefte kal, ritmi koru.",
+        "Yaz tek cümle niyet."
+      ],
+      "watch_out": [
+        "Aşırı rahatlama.",
+        "Dağılma."
+      ],
+      "hook_tags": [
+        "uranus",
+        "house_5",
+        "aries",
+        "trine"
+      ],
+      "connected_points": [],
+      "natal_context_pack": {},
+      "natal_promise": {
+        "score": 0.0,
+        "verdict": "low",
+        "drivers": [
+          {
+            "type": "house_ruler_link",
+            "text": "not available",
+            "score": 0.0
+          },
+          {
+            "type": "resonance",
+            "text": "not available",
+            "score": 0.0
+          },
+          {
+            "type": "timers",
+            "text": "not available",
+            "score": 0.0
+          }
+        ],
+        "connected_points": [
+          {
+            "kind": "status",
+            "value": "not available",
+            "score": 0.0
+          },
+          {
+            "kind": "house",
+            "value": "not available",
+            "score": 0.0
+          },
+          {
+            "kind": "sign",
+            "value": "not available",
+            "score": 0.0
+          }
+        ],
+        "gate": {
+          "condition": "Natal context not available.",
+          "how_to_use": "Use low-risk pacing until natal context is available."
+        }
+      },
+      "tags": {
+        "duration": "months",
+        "phase": "applying",
+        "domain": "general",
+        "intensity": 0.0,
+        "exact_in_days": null
+      },
+      "conflict_label": "Akış",
+      "conflict_tone": "flow",
+      "tone": "flow",
+      "section_labels": {
+        "conflict": "Akış",
+        "shadow": "Abartırsan",
+        "upper": "Potansiyel"
+      },
+      "why_now": "Orb çok yakın + aylar süren etki + açı hattı aktif + yaklaşıyor."
+    },
+    {
+      "event_id": "00367b9186db3623c54d603685ae71d30bbe4894",
+      "title": "Küçük Hamle.",
+      "signature": "Transit Pluto (1. Ev) ✶ Natal Pluto • separating • months",
+      "conflict": "Fırsat var; küçük hamleyle açılır. Mikro adım atarsan destek büyür. Sahne 1. Ev (kimlik/benlik); vurduğu yer henüz dağınık.",
+      "shadow": "Pasif kalmak bu açının hızını söndürür. Erteleme küçük fırsatları kaçırabilir.",
+      "upper": "Küçük adım + düzenli tekrar büyük kazanca döner. Mikro hamleleri zincirlediğinde sonuç büyür. Mikro hamleleri zincirlediğinde sonuç beklenenden büyük olur.",
+      "extra_line": "benlik ve durus alaninda hız ile kontrol ayni anda calisiyor; once netlik secmek iyi olur Ozellikle bu temayi daha kolay fark edebilirsin.",
+      "time_hint": "çözülüyor.",
+      "guidance": [
+        "Paylaşım planı çıkar.",
+        "Küçük hamleyi bugün başlat.",
+        "Bağla ritmi mini-rutine."
+      ],
+      "watch_out": [
+        "Erteleme.",
+        "Pasif kalma."
+      ],
+      "hook_tags": [
+        "pluto",
+        "house_1",
+        "aries",
+        "sextile"
+      ],
+      "connected_points": [],
+      "natal_context_pack": {},
+      "natal_promise": {
+        "score": 0.0,
+        "verdict": "low",
+        "drivers": [
+          {
+            "type": "house_ruler_link",
+            "text": "not available",
+            "score": 0.0
+          },
+          {
+            "type": "resonance",
+            "text": "not available",
+            "score": 0.0
+          },
+          {
+            "type": "timers",
+            "text": "not available",
+            "score": 0.0
+          }
+        ],
+        "connected_points": [
+          {
+            "kind": "status",
+            "value": "not available",
+            "score": 0.0
+          },
+          {
+            "kind": "house",
+            "value": "not available",
+            "score": 0.0
+          },
+          {
+            "kind": "sign",
+            "value": "not available",
+            "score": 0.0
+          }
+        ],
+        "gate": {
+          "condition": "Natal context not available.",
+          "how_to_use": "Use low-risk pacing until natal context is available."
+        }
+      },
+      "tags": {
+        "duration": "months",
+        "phase": "separating",
+        "domain": "general",
+        "intensity": 0.0,
+        "exact_in_days": null
+      },
+      "conflict_label": "Fırsat",
+      "conflict_tone": "opportunity",
+      "tone": "chance",
+      "section_labels": {
+        "conflict": "Fırsat",
+        "shadow": "Kaçırma riski",
+        "upper": "Kazanca çevir"
+      },
+      "why_now": "Orb çok yakın + aylar süren etki + açı hattı aktif + çözülüyor."
+    },
+    {
+      "event_id": "f5e5e90860c7fb95136cc668eb62e45340bca24c",
+      "title": "Sınır Testi.",
+      "signature": "Transit Saturn (3. Ev) □ Natal DSC • separating • months",
+      "conflict": "Sürtünme davranışı test eder; tonu yanlış ayarlama riski artar. Baskı anında hızlanmak yerine çerçeve kurmak gerekir. Sahne 3. Ev (zihin/iletişim); vurduğu yer henüz dağınık.",
+      "shadow": "Savunma refleksi veriyi kişisel saldırı gibi okutabilir. Acele yanıt kısa rahatlık verir, uzun maliyet çıkarır.",
+      "upper": "Gerilimi metoda çevirdiğinde net güç açılır. Sınır netliği bu açıda oyunu lehine çevirir. Sürtünmeyi metoda çevirdiğinde net güç açılır.",
+      "extra_line": "zihin ve iletişim alaninda hız ile kontrol ayni anda calisiyor; once netlik secmek iyi olur Bazen bu etki dusundugunden daha belirgin olabilir.",
+      "time_hint": "çözülüyor.",
+      "guidance": [
+        "Kısa yazılı özet çıkar.",
+        "Açma aynı anda iki kanal."
+      ],
+      "watch_out": [
+        "Açma aynı anda iki kanal.",
+        "Sabitle önce niyeti, sonra hız ver."
+      ],
+      "hook_tags": [
+        "saturn",
+        "house_3",
+        "aries",
+        "square"
+      ],
+      "connected_points": [],
+      "natal_context_pack": {},
+      "natal_promise": {
+        "score": 0.0,
+        "verdict": "low",
+        "drivers": [
+          {
+            "type": "house_ruler_link",
+            "text": "not available",
+            "score": 0.0
+          },
+          {
+            "type": "resonance",
+            "text": "not available",
+            "score": 0.0
+          },
+          {
+            "type": "timers",
+            "text": "not available",
+            "score": 0.0
+          }
+        ],
+        "connected_points": [
+          {
+            "kind": "status",
+            "value": "not available",
+            "score": 0.0
+          },
+          {
+            "kind": "house",
+            "value": "not available",
+            "score": 0.0
+          },
+          {
+            "kind": "sign",
+            "value": "not available",
+            "score": 0.0
+          }
+        ],
+        "gate": {
+          "condition": "Natal context not available.",
+          "how_to_use": "Use low-risk pacing until natal context is available."
+        }
+      },
+      "tags": {
+        "duration": "months",
+        "phase": "separating",
+        "domain": "general",
+        "intensity": 0.0,
+        "exact_in_days": null
+      },
+      "conflict_label": "Sürtünme",
+      "conflict_tone": "pressure",
+      "tone": "friction",
+      "section_labels": {
+        "conflict": "Sürtünme",
+        "shadow": "Refleks",
+        "upper": "Ustalık"
+      },
+      "why_now": "Orb çok yakın + aylar süren etki + angle tetikleniyor + çözülüyor."
+    },
+    {
+      "event_id": "670393c4e15f691716ef926e9dfe50aeb24f223c",
+      "title": "Tek Kanal.",
+      "signature": "Transit Neptune (3. Ev) ☌ Natal Saturn • exact • months",
+      "conflict": "Eski yapı çözülürken kontrol refleksi sertleşebilir. Sahne 3. Ev (zihin/iletişim); vurduğu yer henüz dağınık. Neptün, SATURN ile kavuşum açı kuruyor; sahne?",
+      "shadow": "Katı planı bırakmadan yeni akış kurulmaz. Yoğunlaşma kontrol takıntısına dönebilir.",
+      "upper": "Çerçeveyi sadeleştirip sınırı güncellediğinde sağlam bir yeniden kurulum gelir. Tek hedefte kaldığında bu açı ciddi ustalık üretir. Baskıyı sıraya koyduğunda netlik hızdan öne geçer.?.",
+      "extra_line": "zihin ve iletişim alaninda tepkiyi hizlandiriyor ama iç denetim frene basiyor Bazen bu etki dusundugunden daha belirgin olabilir.",
+      "time_hint": "en yoğun.",
+      "guidance": [
+        "Tonu test et: gönderme, taslağa al.",
+        "Tek kanal seç ve tamamlamaya odaklan.",
+        "Çıkar önce taslak, sonra gönder."
+      ],
+      "watch_out": [
+        "Kontrol takıntısı.",
+        "Taşma."
+      ],
+      "hook_tags": [
+        "neptune",
+        "house_3",
+        "aries",
+        "conjunction"
+      ],
+      "connected_points": [],
+      "natal_context_pack": {},
+      "natal_promise": {
+        "score": 0.0,
+        "verdict": "low",
+        "drivers": [
+          {
+            "type": "house_ruler_link",
+            "text": "not available",
+            "score": 0.0
+          },
+          {
+            "type": "resonance",
+            "text": "not available",
+            "score": 0.0
+          },
+          {
+            "type": "timers",
+            "text": "not available",
+            "score": 0.0
+          }
+        ],
+        "connected_points": [
+          {
+            "kind": "status",
+            "value": "not available",
+            "score": 0.0
+          },
+          {
+            "kind": "house",
+            "value": "not available",
+            "score": 0.0
+          },
+          {
+            "kind": "sign",
+            "value": "not available",
+            "score": 0.0
+          }
+        ],
+        "gate": {
+          "condition": "Natal context not available.",
+          "how_to_use": "Use low-risk pacing until natal context is available."
+        }
+      },
+      "tags": {
+        "duration": "months",
+        "phase": "exact",
+        "domain": "general",
+        "intensity": 0.0,
+        "exact_in_days": null
+      },
+      "conflict_label": "Yoğunlaşma",
+      "conflict_tone": "focus",
+      "tone": "focus",
+      "section_labels": {
+        "conflict": "Yoğunluk",
+        "shadow": "Taşma",
+        "upper": "Tek hedef"
+      },
+      "why_now": "Orb çok yakın + aylar süren etki + açı hattı aktif + exact."
+    }
+  ],
+  "period_core": {
+    "title": "Zihinsel Otoriteni Insa Ediyorsun",
+    "core_story": "Genel iklim: Bu dönem zihinsel omurgayı zorluyor çünkü 3/9 hattı tekrar eden şekilde aktif: Neptune square ASC, Uranus trine Mars.\n\nYöntem tarafı bu yüzden kritik; dağınık hız yerine düzenli deneme ritmi kazandırır: Uranus trine Mars (9th Başak).\n\nBu dönem 'nasıl'ı değiştiriyor: 3. Evde mesajlar-konuşmalar ve yazma-not alma ritmi sahnesi yöntem ve ritim güncellemesi istiyor. Üst potansiyel, mikro sprintleri ölçümle birleştirip kalıcı öğrenme ivmesine çevirmek.",
+    "upper_meaning": "Üst potansiyel: nedeni gördüğünde davranış daha hızlı hizalanır. Kimlik omurgası netleştikçe dış geri bildirim daha az savurur. 3/9 hattı canlıyken öğrenme ritmini yönteme bağlamak ivmeyi kalıcı kılar. İkinci potansiyel: süreç kalitesi artınca sonuç daha az gürültüyle gelir.",
+    "tags": [
+      {
+        "type": "dominant_house",
+        "value": "3"
+      },
+      {
+        "type": "dominant_planet",
+        "value": "Neptune"
+      }
+    ],
+    "_debug_root_causes": [
+      {
+        "key": "mind_axis_3_9",
+        "score": 0.75,
+        "evidence": [
+          "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87",
+          "0a40de18772071d6e2ca06709fe0e4437c0a0071",
+          "f5e5e90860c7fb95136cc668eb62e45340bca24c"
+        ]
+      },
+      {
+        "key": "method_shift_9_virgo",
+        "score": 0.7,
+        "evidence": [
+          "0a40de18772071d6e2ca06709fe0e4437c0a0071"
+        ]
+      },
+      {
+        "key": "mirror_axis_1_7",
+        "score": 0.602,
+        "evidence": [
+          "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87",
+          "f5e5e90860c7fb95136cc668eb62e45340bca24c"
+        ]
+      },
+      {
+        "key": "identity_spine",
+        "score": 0.5,
+        "evidence": [
+          "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87",
+          "00367b9186db3623c54d603685ae71d30bbe4894",
+          "f5e5e90860c7fb95136cc668eb62e45340bca24c"
+        ]
+      }
+    ]
+  }
+}

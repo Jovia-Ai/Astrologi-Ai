@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, date
 from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List
+from zoneinfo import ZoneInfo
 
 import yaml
 
@@ -16,6 +17,28 @@ INTENT_RULES = yaml.safe_load(
 BODY_MAP = yaml.safe_load(
     open(BASE_DIR / "lens/beauty/body_area_map.yaml", "r", encoding="utf-8")
 ) or {}
+
+
+def _get_tz_from_payload(payload: dict) -> str:
+    """
+    Best-effort tz extraction. Never raises.
+    Accepts common keys: tz, timezone, birth.tz, profile.tz.
+    """
+    if not isinstance(payload, dict):
+        return "UTC"
+    tz = (
+        payload.get("tz")
+        or payload.get("timezone")
+        or (payload.get("birth") or {}).get("tz")
+        or (payload.get("profile") or {}).get("tz")
+    )
+    if not tz:
+        return "UTC"
+    try:
+        ZoneInfo(tz)
+        return tz
+    except Exception:
+        return "UTC"
 
 
 def normalize(v, min_v=0.0, max_v=1.0):

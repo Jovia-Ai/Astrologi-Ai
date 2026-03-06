@@ -1,0 +1,3632 @@
+{
+  "transit_date": "2026-03-04",
+  "birth": {
+    "date": "1996-07-27",
+    "time": "12:20",
+    "place": "Mardin, TR"
+  },
+  "transit_place": "Istanbul, TR",
+  "public": {
+    "period_core": {
+      "title": "Denge ve Yapi Temasi Derinlesiyor",
+      "core_story": "Dönemin havası: Bu dönem kimlik omurgasına dokunuyor çünkü açıların ağırlığı ASC/1. Ev eksenine biniyor: Pluto karşıtlık MC, Pluto kavuşum iç.\n\nZihin ve ifade hattı bu yüzden devrede; zihin, ilişki tarafında karar kalitesi kullanılan metoda bağlı: Neptune zorlayan açı Mars, Saturn destekleyici etki Uranus.\n\nBu dönem 'nasıl'ı fırsat seçimiyle değiştiriyor; 5. Evde mesajlar-konuşmalar ve yazma-not alma ritmi hattı dağılmadan büyümeyi çağırıyor. Üst potansiyel, küçük ama tekrarlı hamlelerle verimi görünür biçimde artırmak.",
+      "upper_meaning": "Bu transitin amacı bir şeyi bozmak değil, az kelimeyle net çerçeve kurma kasını büyütmek. Sende bunun karşılığı yön ve görünürlük temasıyla birleşiyor. netlik arttıkça hem kendini hem ilişkilerini daha az yorarak taşırsın. İyi kullanırsan bu dönem bittiğinde sende kalan şey daha az kelimeyle daha çok güven olur.",
+      "tags": [
+        {
+          "type": "dominant_house",
+          "value": "5"
+        },
+        {
+          "type": "dominant_planet",
+          "value": "Pluto"
+        }
+      ],
+      "featured_events": [
+        {
+          "event_id": "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540",
+          "scope": "transit_to_angles",
+          "label": "Pluto opposition MC (orb 0.87°)",
+          "transit_body": "Pluto",
+          "aspect": "opposition",
+          "natal_point": "MC",
+          "polarity": "hard",
+          "strength": 0.856,
+          "orb_deg": 0.87,
+          "phase": "separating",
+          "bucket": "long",
+          "tags": [
+            "career",
+            "pressure",
+            "tension",
+            "intensity",
+            "power",
+            "transform"
+          ],
+          "astro_style": {
+            "transit": {
+              "element": "air",
+              "modality": "fixed"
+            },
+            "target": {
+              "element": "fire",
+              "modality": "fixed"
+            }
+          },
+          "houses": {
+            "transit_in_natal_house": 4,
+            "natal_point_house": null
+          },
+          "timing": {
+            "entry_date_utc": "2025-03-04T09:00:00+00:00",
+            "peak_date_utc": "2025-04-18T09:00:00+00:00",
+            "exit_date_utc": null,
+            "confidence": 0.6,
+            "orb_limit_deg": 6.0,
+            "step_hours": 72,
+            "window_days": 365,
+            "peaks": [
+              "2025-04-18T09:00:00+00:00"
+            ],
+            "timing_note": "exit_not_found_in_window",
+            "debug": {
+              "transit_date_used_for_orb": "2026-03-04T09:00:00+00:00",
+              "transit_date_used_for_timing": "2026-03-04T09:00:00+00:00",
+              "timing_cache_key": "ea753bdcefe514c5bc282bf23be211a4daaf1227",
+              "timing_computed_at_utc": "2026-03-04T12:25:12.479537+00:00"
+            }
+          },
+          "raw_ref": {
+            "scope": "transit_to_angles",
+            "index": 3
+          },
+          "interpretation": {
+            "mode": "B",
+            "headline": "Sorumluluk ve görünürlük",
+            "short_headline": "",
+            "summary": "Beklentiler netleşebilir; yapı kurma ihtiyacı artar. Kontrol edilemeyen bir dönüşüm tetiklenir; eski stratejiler çalışmaz hale gelir.",
+            "do": [
+              "Öncelik sırala.",
+              "Takvim blokla.",
+              "Konu buyurse tek bir oncelik sec; ayni anda her seyi cozmeye calisma.",
+              "Uygulama: Guc savasina girmeden donus; kontrol etmek yerine yeniden yapilandirmak daha kalici."
+            ],
+            "watch": [
+              "Aşırı yük.",
+              "Acele karar."
+            ],
+            "themes": [
+              "career"
+            ],
+            "time_status": "çözülüyor",
+            "confidence": 0.94,
+            "where": "Bunu en cok kariyer ve yon tarafinda hissedebilirsin.",
+            "time_hint": "çözülüyor — aylar süren ana tema",
+            "context": {
+              "natal_target_house": 10,
+              "transit_house": 4,
+              "axis": "4-10"
+            },
+            "content_ref": {
+              "pack": "tr.transit.v1",
+              "key": "hard.career.any",
+              "fallbacks": [
+                "pluto.opposition.mc",
+                "pluto.opposition.any",
+                "hard.career.any",
+                "opposition.hard.any",
+                "hard.any",
+                "generic.any"
+              ]
+            },
+            "resolver_debug": {
+              "top_candidates": [
+                {
+                  "id": "claim.identity.control_need",
+                  "score": 0.0
+                }
+              ],
+              "picked": [],
+              "tie_break": "hash",
+              "threshold": 0.15,
+              "best_score": 0.0,
+              "threshold_applied": true
+            },
+            "headline_short": "Sorumluluk ve görünürlük",
+            "where_short": "kimlik ve gorunurluk",
+            "debug": {
+              "mode_reason": [
+                "strength>=0.75"
+              ],
+              "rule_version": "mode_gate.v1"
+            },
+            "natal_promise": {
+              "claim_id": null,
+              "claim_score": null,
+              "used": false,
+              "fit": "indirect",
+              "why_this_claim": [
+                "below_threshold"
+              ]
+            },
+            "context_sentence": null,
+            "promise_refs": [],
+            "promise_debug": {
+              "selected_claim_id": null,
+              "dropped_claim_ids": [],
+              "tie_breaker": "hash(event_id, claim_id)",
+              "why": [
+                "below_threshold"
+              ]
+            },
+            "upper_meaning": "Buradaki gerilim, yuzlesmekten kactigin bir temayi daha gorunur hale getirebilir.",
+            "upper_meaning_ref": {
+              "key": "pluto.opposition.any",
+              "variant": 2,
+              "lang": "tr",
+              "version": "v1"
+            },
+            "style_do_ref": {
+              "key": "hard.any",
+              "variant": 2,
+              "lang": "tr",
+              "version": "v1"
+            },
+            "one_liner": "Sorumluluk ve görünürlük; ozellikle kimlik ve gorunurluk tarafinda belirginlesebilir. Buradaki gerilim, yuzlesmekten kactigin bir temayi daha gorunur hale getirebilir."
+          },
+          "ranking": {
+            "strength": 0.856,
+            "weight": 3.14,
+            "tier": "main",
+            "reasons": [
+              "outer_planet",
+              "angular",
+              "hard_aspect",
+              "long_window",
+              "outer_hard"
+            ]
+          }
+        },
+        {
+          "event_id": "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+          "scope": "transit_to_natal",
+          "label": "Neptune square Mars (orb 0.08°)",
+          "transit_body": "Neptune",
+          "aspect": "square",
+          "natal_point": "Mars",
+          "polarity": "hard",
+          "strength": 0.987,
+          "orb_deg": 0.08,
+          "phase": "exactish",
+          "bucket": "long",
+          "tags": [
+            "career",
+            "pressure",
+            "friction",
+            "fog",
+            "idealization",
+            "boundaries",
+            "dissolve"
+          ],
+          "astro_style": {
+            "transit": {
+              "element": "fire",
+              "modality": "cardinal"
+            },
+            "target": {
+              "element": "water",
+              "modality": "cardinal"
+            }
+          },
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 9
+          },
+          "timing": {
+            "entry_date_utc": "2025-03-04T09:00:00+00:00",
+            "peak_date_utc": "2026-03-02T09:00:00+00:00",
+            "exit_date_utc": null,
+            "confidence": 0.6,
+            "orb_limit_deg": 6.0,
+            "step_hours": 72,
+            "window_days": 365,
+            "peaks": [
+              "2026-03-02T09:00:00+00:00"
+            ],
+            "timing_note": "exit_not_found_in_window",
+            "debug": {
+              "transit_date_used_for_orb": "2026-03-04T09:00:00+00:00",
+              "transit_date_used_for_timing": "2026-03-04T09:00:00+00:00",
+              "timing_cache_key": "7db7504fc81a4a173147c3ee56c99289332707f0",
+              "timing_computed_at_utc": "2026-03-04T12:25:12.463605+00:00"
+            }
+          },
+          "raw_ref": {
+            "scope": "transit_to_natal",
+            "index": 1
+          },
+          "interpretation": {
+            "mode": "B",
+            "headline": "Sorumluluk ve görünürlük",
+            "short_headline": "",
+            "summary": "Beklentiler netleşebilir; yapı kurma ihtiyacı artar. Belirsizlik çözüldükçe, sınırlar ve beklentiler daha gerçekçi hale gelir.",
+            "do": [
+              "Öncelik sırala.",
+              "Takvim blokla.",
+              "Gerilim yukselince hizlanma; once sinirlari netlestir, sonra adim at.",
+              "Uygulama: Netlik zorlamak yerine sadelestir; kucuk gozlemlerle ilerlemek daha iyi calisir."
+            ],
+            "watch": [
+              "Aşırı yük.",
+              "Acele karar."
+            ],
+            "themes": [
+              "career"
+            ],
+            "time_status": "zirvede",
+            "confidence": 0.99,
+            "where": "Bunu en cok yon ve anlam alaninda hissedebilirsin; etkisi yaraticilik ve keyif tarafina da tasabilir.",
+            "time_hint": "en yoğun — aylar süren ana tema",
+            "context": {
+              "natal_target_house": 9,
+              "transit_house": 5,
+              "axis": "5-9"
+            },
+            "content_ref": {
+              "pack": "tr.transit.v1",
+              "key": "hard.career.any",
+              "fallbacks": [
+                "neptune.square.mars",
+                "neptune.square.any",
+                "hard.career.any",
+                "square.hard.any",
+                "hard.any",
+                "generic.any"
+              ]
+            },
+            "resolver_debug": {
+              "top_candidates": [
+                {
+                  "id": "claim.identity.control_need",
+                  "score": 0.0
+                }
+              ],
+              "picked": [],
+              "tie_break": "hash",
+              "threshold": 0.15,
+              "best_score": 0.0,
+              "threshold_applied": true
+            },
+            "headline_short": "Sorumluluk ve görünürlük",
+            "where_short": "zihin ve iletisim",
+            "debug": {
+              "mode_reason": [
+                "strength>=0.75"
+              ],
+              "rule_version": "mode_gate.v1"
+            },
+            "natal_promise": {
+              "claim_id": null,
+              "claim_score": null,
+              "used": false,
+              "fit": "indirect",
+              "why_this_claim": [
+                "below_threshold"
+              ]
+            },
+            "context_sentence": null,
+            "promise_refs": [],
+            "promise_debug": {
+              "selected_claim_id": null,
+              "dropped_claim_ids": [],
+              "tie_breaker": "hash(event_id, claim_id)",
+              "why": [
+                "below_threshold"
+              ]
+            },
+            "upper_meaning": "Hizla cozme durtusunu yavaslatip daha sezgisel ve olculu hareket etmene alan acabilir.",
+            "upper_meaning_ref": {
+              "key": "neptune.square.mars",
+              "variant": 1,
+              "lang": "tr",
+              "version": "v1"
+            },
+            "style_do_ref": {
+              "key": "hard.any",
+              "variant": 1,
+              "lang": "tr",
+              "version": "v1"
+            },
+            "one_liner": "Sorumluluk ve görünürlük; etkiyi en cok zihin ve iletisim tarafinda toplar. Hizla cozme durtusunu yavaslatip daha sezgisel ve olculu hareket etmene alan acabilir.",
+            "interaction_context": "yon ve anlam ile yaraticilik ve keyif arasinda gerilim gibi calisabilir."
+          },
+          "ranking": {
+            "strength": 0.987,
+            "weight": 2.54,
+            "tier": "main",
+            "reasons": [
+              "outer_planet",
+              "hard_aspect",
+              "long_window"
+            ]
+          }
+        },
+        {
+          "event_id": "e225cde9ba1d85bfd25255f0ba880ef233ad8430",
+          "scope": "transit_to_angles",
+          "label": "Pluto conjunction IC (orb 0.87°)",
+          "transit_body": "Pluto",
+          "aspect": "conjunction",
+          "natal_point": "IC",
+          "polarity": "neutral",
+          "strength": 0.856,
+          "orb_deg": 0.87,
+          "phase": "separating",
+          "bucket": "long",
+          "tags": [
+            "home",
+            "amplify",
+            "intensity",
+            "power",
+            "transform"
+          ],
+          "astro_style": {
+            "transit": {
+              "element": "air",
+              "modality": "fixed"
+            },
+            "target": {
+              "element": "air",
+              "modality": "fixed"
+            }
+          },
+          "houses": {
+            "transit_in_natal_house": 4,
+            "natal_point_house": null
+          },
+          "timing": {
+            "entry_date_utc": "2025-03-04T09:00:00+00:00",
+            "peak_date_utc": "2025-04-18T09:00:00+00:00",
+            "exit_date_utc": null,
+            "confidence": 0.6,
+            "orb_limit_deg": 6.0,
+            "step_hours": 72,
+            "window_days": 365,
+            "peaks": [
+              "2025-04-18T09:00:00+00:00"
+            ],
+            "timing_note": "exit_not_found_in_window",
+            "debug": {
+              "transit_date_used_for_orb": "2026-03-04T09:00:00+00:00",
+              "transit_date_used_for_timing": "2026-03-04T09:00:00+00:00",
+              "timing_cache_key": "253e3021657d2fa9769267a984fee521e1a8444b",
+              "timing_computed_at_utc": "2026-03-04T12:25:12.476262+00:00"
+            }
+          },
+          "raw_ref": {
+            "scope": "transit_to_angles",
+            "index": 2
+          },
+          "interpretation": {
+            "mode": "B",
+            "headline": "Kontrolü bırakma zamanı",
+            "short_headline": "",
+            "summary": "Geri dönülmez bir farkındalık veya güçlü bir içsel değişim sürecindesin. Bu etki farkındalıkla yönetildiğinde nötr bir ayar gibi çalışır.",
+            "do": [
+              "Direnmek yerine dönüşümü izle.",
+              "Eskiyi bırakmaya gönüllü ol.",
+              "Bu surecte kendine karsi daha gozlemci ve yumusak bir tutum almak destekleyici olabilir.",
+              "Uygulama: Derinlesme artabilir; gereksiz yukleri birakmak daha net bir yon hissi verir."
+            ],
+            "watch": [
+              "Güç savaşları.",
+              "Her şeyi kontrol etmeye çalışma."
+            ],
+            "themes": [
+              "intensity",
+              "transformation"
+            ],
+            "time_status": "çözülüyor",
+            "confidence": 0.94,
+            "where": "Bunu en cok ev, kokler ve ic guven tarafinda hissedebilirsin.",
+            "time_hint": "çözülüyor — aylar süren ana tema",
+            "context": {
+              "natal_target_house": 4,
+              "transit_house": 4,
+              "axis": null
+            },
+            "content_ref": {
+              "pack": "tr.transit.v1",
+              "key": "pluto.conjunction.any",
+              "fallbacks": [
+                "pluto.conjunction.ic",
+                "pluto.conjunction.any",
+                "neutral.home.any",
+                "conjunction.neutral.any",
+                "neutral.any",
+                "generic.any"
+              ]
+            },
+            "resolver_debug": {
+              "top_candidates": [
+                {
+                  "id": "claim.identity.control_need",
+                  "score": 0.0
+                }
+              ],
+              "picked": [],
+              "tie_break": "hash",
+              "threshold": 0.15,
+              "best_score": 0.0,
+              "threshold_applied": true
+            },
+            "headline_short": "Kontrolü bırakma zamanı",
+            "where_short": "kimlik ve gorunurluk",
+            "debug": {
+              "mode_reason": [
+                "strength>=0.75"
+              ],
+              "rule_version": "mode_gate.v1"
+            },
+            "natal_promise": {
+              "claim_id": null,
+              "claim_score": null,
+              "used": false,
+              "fit": "indirect",
+              "why_this_claim": [
+                "below_threshold"
+              ]
+            },
+            "context_sentence": null,
+            "promise_refs": [],
+            "promise_debug": {
+              "selected_claim_id": null,
+              "dropped_claim_ids": [],
+              "tie_breaker": "hash(event_id, claim_id)",
+              "why": [
+                "below_threshold"
+              ]
+            },
+            "upper_meaning": "Bu temas, yuzeyde kalan bir seyi derinlestirip daha kokten bir donusum ihtiyaci yaratabilir.",
+            "upper_meaning_ref": {
+              "key": "pluto.conjunction.any",
+              "variant": 0,
+              "lang": "tr",
+              "version": "v1"
+            },
+            "style_do_ref": {
+              "key": "generic.any",
+              "variant": 0,
+              "lang": "tr",
+              "version": "v1"
+            },
+            "one_liner": "Kontrolü bırakma zamanı; bunu en cok kimlik ve gorunurluk tarafinda hissedebilirsin. Bu temas, yuzeyde kalan bir seyi derinlestirip daha kokten bir donusum ihtiyaci yaratabilir."
+          },
+          "ranking": {
+            "strength": 0.856,
+            "weight": 3.27,
+            "tier": "main",
+            "reasons": [
+              "outer_planet",
+              "angular",
+              "hard_aspect",
+              "long_window",
+              "outer_hard"
+            ]
+          }
+        },
+        {
+          "event_id": "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+          "scope": "transit_to_natal",
+          "label": "Saturn sextile Uranus (orb 0.39°)",
+          "transit_body": "Saturn",
+          "aspect": "sextile",
+          "natal_point": "Uranus",
+          "polarity": "soft",
+          "strength": 0.902,
+          "orb_deg": 0.39,
+          "phase": "applying",
+          "bucket": "long",
+          "tags": [
+            "self",
+            "support",
+            "opportunity",
+            "limits",
+            "responsibility",
+            "discipline"
+          ],
+          "astro_style": {
+            "transit": {
+              "element": "fire",
+              "modality": "cardinal"
+            },
+            "target": {
+              "element": "air",
+              "modality": "fixed"
+            }
+          },
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 3
+          },
+          "timing": {
+            "entry_date_utc": null,
+            "peak_date_utc": null,
+            "exit_date_utc": null,
+            "confidence": 0.9,
+            "orb_limit_deg": 4.0,
+            "step_hours": 72,
+            "window_days": 365,
+            "peaks": [
+              "2025-07-14T09:00:00+00:00"
+            ],
+            "timing_note": "timing_out_of_range_for_transit_date",
+            "debug": {
+              "transit_date_used_for_orb": "2026-03-04T09:00:00+00:00",
+              "transit_date_used_for_timing": "2026-03-04T09:00:00+00:00",
+              "timing_cache_key": "79f93bff909b9d4484144ffce7313684ef8cd25f",
+              "timing_computed_at_utc": "2026-03-04T12:25:12.466242+00:00"
+            }
+          },
+          "raw_ref": {
+            "scope": "transit_to_natal",
+            "index": 3
+          },
+          "interpretation": {
+            "mode": "B",
+            "headline": "Kimlikte akış",
+            "short_headline": "",
+            "summary": "Duruşunu daha doğal ve net koymak kolaylaşabilir. Akış açıldığında doğru kanala girerse hızlı ilerleme sağlayabilir.",
+            "do": [
+              "Kendini sade bir cümleyle ifade et.",
+              "Önceliği netleştir.",
+              "Konuyu buyutmeden ilerle; duzenli kucuk adimlar daha iyi calisir.",
+              "Uygulama: Duzen kurmak kolaylasabilir; istikrarli bir adim, buyuk sicrama yerine daha verimli."
+            ],
+            "watch": [
+              "Rahatlığa fazla kapılmak.",
+              "Rahatliga kapilma."
+            ],
+            "themes": [
+              "identity"
+            ],
+            "time_status": "yaklaşıyor",
+            "confidence": 0.96,
+            "where": "Bunu en cok zihin ve iletisim alaninda hissedebilirsin; etkisi yaraticilik ve keyif tarafina da tasabilir.",
+            "time_hint": "yaklaşıyor — aylar süren ana tema",
+            "context": {
+              "natal_target_house": 3,
+              "transit_house": 5,
+              "axis": "3-5"
+            },
+            "content_ref": {
+              "pack": "tr.transit.v1",
+              "key": "soft.identity.any",
+              "fallbacks": [
+                "saturn.sextile.uranus",
+                "saturn.sextile.any",
+                "soft.identity.any",
+                "sextile.soft.any",
+                "soft.any",
+                "generic.any"
+              ]
+            },
+            "resolver_debug": {
+              "top_candidates": [
+                {
+                  "id": "claim.identity.control_need",
+                  "score": 0.229
+                }
+              ],
+              "picked": [
+                "claim.identity.control_need"
+              ],
+              "tie_break": "hash"
+            },
+            "headline_short": "Kimlikte akış",
+            "where_short": "zihin ve iletisim",
+            "debug": {
+              "mode_reason": [
+                "strength>=0.75"
+              ],
+              "rule_version": "mode_gate.v1",
+              "context_claims": [
+                {
+                  "id": "claim.identity.control_need",
+                  "score": 0.23,
+                  "text": "Dışarıda kontrollü ve sağlam durma ihtiyacın yüksek olabilir.",
+                  "micro_phrase": "kontrollu ve saglam durma ihtiyaci",
+                  "used_for_render": true
+                }
+              ]
+            },
+            "natal_promise": {
+              "claim_id": "claim.identity.control_need",
+              "claim_score": 0.23,
+              "used": true,
+              "fit": "direct",
+              "why_this_claim": [
+                "theme_match:identity",
+                "tags:overlap"
+              ]
+            },
+            "context_sentence": "Bu etki sende özellikle Dışarıda kontrollü ve sağlam durma ihtiyacın yüksek olabilir temasını daha görünür kılabilir.",
+            "promise_refs": [
+              {
+                "id": "claim.identity.control_need",
+                "score": 0.23,
+                "text": "Dışarıda kontrollü ve sağlam durma ihtiyacın yüksek olabilir.",
+                "micro_phrase": "kontrollu ve saglam durma ihtiyaci",
+                "used_for_render": true
+              }
+            ],
+            "promise_debug": {
+              "selected_claim_id": "claim.identity.control_need",
+              "dropped_claim_ids": [],
+              "tie_breaker": "hash(event_id, claim_id)",
+              "why": [
+                "theme_match:identity",
+                "tags:overlap"
+              ]
+            },
+            "upper_meaning": "Bu akis, kucuk bir duzenleme veya net bir karar ile ilerlemeyi hizlandirabilir.",
+            "upper_meaning_ref": {
+              "key": "sextile.soft.any",
+              "variant": 2,
+              "lang": "tr",
+              "version": "v1"
+            },
+            "style_do_ref": {
+              "key": "soft.any",
+              "variant": 2,
+              "lang": "tr",
+              "version": "v1"
+            },
+            "one_liner": "Kimlikte akış; ozellikle zihin ve iletisim tarafinda belirginlesebilir. Bu akis, kucuk bir duzenleme veya net bir karar ile ilerlemeyi hizlandirabilir.",
+            "interaction_context": "zihin ve iletisim ile yaraticilik ve keyif arasinda akis gibi calisabilir."
+          },
+          "ranking": {
+            "strength": 0.902,
+            "weight": 1.85,
+            "tier": "main",
+            "reasons": [
+              "outer_planet",
+              "long_window"
+            ]
+          }
+        },
+        {
+          "event_id": "6643f6b522a944afdaa02253a4af02ee80c732c0",
+          "scope": "transit_to_natal",
+          "label": "Neptune trine Pluto (orb 0.78°)",
+          "transit_body": "Neptune",
+          "aspect": "trine",
+          "natal_point": "Pluto",
+          "polarity": "soft",
+          "strength": 0.87,
+          "orb_deg": 0.78,
+          "phase": "separating",
+          "bucket": "long",
+          "tags": [
+            "self",
+            "support",
+            "flow",
+            "fog",
+            "idealization",
+            "boundaries",
+            "dissolve"
+          ],
+          "astro_style": {
+            "transit": {
+              "element": "fire",
+              "modality": "cardinal"
+            },
+            "target": {
+              "element": "fire",
+              "modality": "mutable"
+            }
+          },
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 2
+          },
+          "timing": {
+            "entry_date_utc": "2025-03-04T09:00:00+00:00",
+            "peak_date_utc": "2026-02-09T09:00:00+00:00",
+            "exit_date_utc": null,
+            "confidence": 0.6,
+            "orb_limit_deg": 6.0,
+            "step_hours": 72,
+            "window_days": 365,
+            "peaks": [
+              "2026-02-09T09:00:00+00:00"
+            ],
+            "timing_note": "exit_not_found_in_window",
+            "debug": {
+              "transit_date_used_for_orb": "2026-03-04T09:00:00+00:00",
+              "transit_date_used_for_timing": "2026-03-04T09:00:00+00:00",
+              "timing_cache_key": "75122a7d52b39b3f01bc25374aeede7a29798ce4",
+              "timing_computed_at_utc": "2026-03-04T12:25:12.469526+00:00"
+            }
+          },
+          "raw_ref": {
+            "scope": "transit_to_natal",
+            "index": 4
+          },
+          "interpretation": {
+            "mode": "B",
+            "headline": "Kimlikte akış",
+            "short_headline": "",
+            "summary": "Duruşunu daha doğal ve net koymak kolaylaşabilir. Bu destek kimlik ve duruş tarafında daha net bir akış sağlayabilir.",
+            "do": [
+              "Kendini sade bir cümleyle ifade et.",
+              "Önceliği netleştir.",
+              "Konuyu buyutmeden ilerle; duzenli kucuk adimlar daha iyi calisir.",
+              "Uygulama: Akisin destekledigi bir yumusama var; kucuk ayarlamalar buyuk rahatlama getirebilir."
+            ],
+            "watch": [
+              "Rahatlığa fazla kapılmak.",
+              "Rahatliga kapilma."
+            ],
+            "themes": [
+              "identity"
+            ],
+            "time_status": "çözülüyor",
+            "confidence": 0.95,
+            "where": "Bunu en cok para ve ozdeger alaninda hissedebilirsin; etkisi yaraticilik ve keyif tarafina da tasabilir.",
+            "time_hint": "çözülüyor — aylar süren ana tema",
+            "context": {
+              "natal_target_house": 2,
+              "transit_house": 5,
+              "axis": "2-5"
+            },
+            "content_ref": {
+              "pack": "tr.transit.v1",
+              "key": "soft.identity.any",
+              "fallbacks": [
+                "neptune.trine.pluto",
+                "neptune.trine.any",
+                "soft.identity.any",
+                "trine.soft.any",
+                "soft.any",
+                "generic.any"
+              ]
+            },
+            "resolver_debug": {
+              "top_candidates": [
+                {
+                  "id": "claim.identity.control_need",
+                  "score": 0.15
+                }
+              ],
+              "picked": [
+                "claim.identity.control_need"
+              ],
+              "tie_break": "hash"
+            },
+            "headline_short": "Kimlikte akış",
+            "where_short": "kimlik ve gorunurluk",
+            "debug": {
+              "mode_reason": [
+                "strength>=0.75"
+              ],
+              "rule_version": "mode_gate.v1",
+              "context_claims": [
+                {
+                  "id": "claim.identity.control_need",
+                  "score": 0.15,
+                  "text": "Dışarıda kontrollü ve sağlam durma ihtiyacın yüksek olabilir.",
+                  "micro_phrase": "kontrollu ve saglam durma ihtiyaci",
+                  "used_for_render": true
+                }
+              ]
+            },
+            "natal_promise": {
+              "claim_id": "claim.identity.control_need",
+              "claim_score": 0.15,
+              "used": true,
+              "fit": "direct",
+              "why_this_claim": [
+                "theme_match:identity",
+                "tags:overlap"
+              ]
+            },
+            "context_sentence": "Bu etki sende özellikle Dışarıda kontrollü ve sağlam durma ihtiyacın yüksek olabilir temasını daha görünür kılabilir.",
+            "promise_refs": [
+              {
+                "id": "claim.identity.control_need",
+                "score": 0.15,
+                "text": "Dışarıda kontrollü ve sağlam durma ihtiyacın yüksek olabilir.",
+                "micro_phrase": "kontrollu ve saglam durma ihtiyaci",
+                "used_for_render": true
+              }
+            ],
+            "promise_debug": {
+              "selected_claim_id": "claim.identity.control_need",
+              "dropped_claim_ids": [],
+              "tie_breaker": "hash(event_id, claim_id)",
+              "why": [
+                "theme_match:identity",
+                "tags:overlap"
+              ]
+            },
+            "upper_meaning": "Bu uyum, dogru yerde kucuk bir adimla buyuk bir rahatlama yaratabilir.",
+            "upper_meaning_ref": {
+              "key": "trine.soft.any",
+              "variant": 2,
+              "lang": "tr",
+              "version": "v1"
+            },
+            "style_do_ref": {
+              "key": "soft.any",
+              "variant": 2,
+              "lang": "tr",
+              "version": "v1"
+            },
+            "one_liner": "Kimlikte akış; ozellikle kimlik ve gorunurluk tarafinda belirginlesebilir. Bu uyum, dogru yerde kucuk bir adimla buyuk bir rahatlama yaratabilir.",
+            "interaction_context": "para ve ozdeger ile yaraticilik ve keyif arasinda akis gibi calisabilir."
+          },
+          "ranking": {
+            "strength": 0.87,
+            "weight": 1.49,
+            "tier": "support",
+            "reasons": [
+              "outer_planet",
+              "long_window"
+            ]
+          }
+        }
+      ],
+      "big_picture": "Bu dönem yön ve görünürlük tarafında bir güncelleme var. Önce sistem ağırlaşıyor gibi görünür, sonra yeni ritim yerine oturur. Kafa karışıklığı gibi görünen şey aslında yeniden yön bulma süreci.",
+      "mechanism": "Mars haritanda 9. evde çalıştığı için bu dönem hikâye ufuk, öğrenme ve yön alanına bağlanıyor. Yengeç vurgusu yöntemi ve detayları büyütür, Moon tarafı bunu zihinsel bir çerçeveye oturtma ihtiyacını artırır. Neptune etkisi yaratıcılık ve ifade tarafında başlar ve ufuk, öğrenme ve yön tarafında kalıcı bir ayara döner.",
+      "narrative_version": "period_story_v1",
+      "_period_story_debug": {
+        "spine_event_id": "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+        "support_event_ids": [
+          "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+          "6643f6b522a944afdaa02253a4af02ee80c732c0"
+        ]
+      }
+    },
+    "event_cards": [
+      {
+        "event_id": "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540",
+        "title": "Sözün Sınırı",
+        "signature": "Plüton ☍ Tepe Noktası • Geri çekiliyor; izi kalır",
+        "conflict": "Ayna etkisi kutupları büyütür; denge hızla bozulabilir. Karşı taraf ritmi değiştirirken iç merkez test edilir. Sahne 4. Ev (ev/kök); vurduğu yer 10. Ev (kariyer/görünürlük).",
+        "shadow": "Projeksiyon arttığında ihtiyaç görünmez kalır. Onay arayışı yön kaymasına yol açabilir.",
+        "upper": "Bu tema sende ev/kök; iç düzen, güven duygusu ve temel ritim kasını güçlendiriyor: daha net seçim, daha iyi ritim. Net soru ve net sınır kutupları ortak dile taşır.",
+        "extra_line": "gunluk yasam akisi icinde hız ile kontrol ayni anda calisiyor; once netlik secmek iyi olur Bazen bu etki dusundugunden d…",
+        "time_hint": "Geri çekiliyor; izi kalır.",
+        "time_hint_tr": "Geri çekiliyor; izi kalır",
+        "horizon": "period",
+        "guidance": [
+          "Önce beklentini açık yaz, sonra konuş.",
+          "Yaz tek cümle niyet.",
+          "Çıkar taslak, sonra gönder."
+        ],
+        "watch_out": [
+          "Yanlış okuma.",
+          "Projeksiyon."
+        ],
+        "hook_tags": [
+          "pluto",
+          "house_4",
+          "aries",
+          "opposition",
+          "home"
+        ],
+        "connected_points": [
+          {
+            "kind": "house",
+            "value": 10,
+            "label_tr": "kariyer/gorunurluk",
+            "score": 0.774
+          },
+          {
+            "kind": "sign",
+            "value": "leo",
+            "label_tr": "Aslan",
+            "score": 0.716
+          },
+          {
+            "kind": "angle_ruler",
+            "value": "Sun",
+            "label_tr": "MC yöneticisi: Güneş",
+            "score": 0.602
+          }
+        ],
+        "natal_context_pack": {
+          "target": {
+            "planet": "MC",
+            "sign": "Leo",
+            "sign_tr": "Aslan",
+            "house": 10
+          },
+          "dispositor": {},
+          "rulership_houses": [],
+          "natal_aspects_focus": [],
+          "angle_ruler": "Sun"
+        },
+        "derived_context": {
+          "angle": {
+            "name": "MC",
+            "sign": "Leo",
+            "ruler": "Sun",
+            "ruler_house": 10,
+            "ruler_sign": "Leo"
+          },
+          "natal_target": {
+            "name": "MC",
+            "house": 10,
+            "sign": "Leo",
+            "dispositor": null,
+            "rulership_houses": []
+          },
+          "connected_points": [
+            {
+              "type": "target_house",
+              "label_tr": "kariyer/gorunurluk",
+              "score": 0.774
+            },
+            {
+              "type": "target_sign",
+              "label_tr": "Aslan",
+              "score": 0.716
+            },
+            {
+              "type": "rulership",
+              "label_tr": "MC yöneticisi: Güneş",
+              "score": 0.602
+            }
+          ],
+          "links": [
+            {
+              "type": "angle_ruler_resonance",
+              "target": "Sun",
+              "because": "MC ruler"
+            },
+            {
+              "type": "cofeatured_hit",
+              "event_id": "e225cde9ba1d85bfd25255f0ba880ef233ad8430",
+              "because": "Plüton aynı ev odağında ikinci vurgu"
+            }
+          ],
+          "motifs": [],
+          "derived_domains": [
+            {
+              "domain": "career",
+              "score": 0.58
+            }
+          ]
+        },
+        "scene": {
+          "start_house": 4,
+          "outcome_house": null
+        },
+        "natal_promise": {
+          "score": 1.0,
+          "verdict": "high",
+          "drivers": [
+            {
+              "type": "angle_activation",
+              "text": "MC aktivasyonu bu olayi dis dunyada daha gorunur kilar.",
+              "score": 1.0
+            },
+            {
+              "type": "resonance",
+              "text": "Natal aci rezonansi sun temasini tekrar aktive ediyor.",
+              "score": 0.902
+            },
+            {
+              "type": "natal_emphasis",
+              "text": "10. evde natal yigilim bu temayi buyutur.",
+              "score": 0.85
+            },
+            {
+              "type": "house_ruler_link",
+              "text": "10. ev yonetici bagi olay etkisini natal zemine bagliyor.",
+              "score": 0.75
+            },
+            {
+              "type": "orb_phase",
+              "text": "Orb ve faz etkisi olay gucunu belirginlestiriyor.",
+              "score": 0.7
+            },
+            {
+              "type": "impact_breakdown",
+              "text": "impact=0.85, receptivity=0.25, graph=0.25",
+              "score": 0.85
+            }
+          ],
+          "connected_points": [
+            {
+              "kind": "house",
+              "value": 10,
+              "score": 1.0
+            },
+            {
+              "kind": "sign",
+              "value": "leo",
+              "score": 0.634
+            },
+            {
+              "kind": "dispositor_chain",
+              "value": "sun",
+              "score": 0.6
+            },
+            {
+              "kind": "planet",
+              "value": "lilith",
+              "score": 0.931
+            },
+            {
+              "kind": "planet",
+              "value": "uranus",
+              "score": 0.862
+            },
+            {
+              "kind": "planet",
+              "value": "mercury",
+              "score": 0.824
+            }
+          ],
+          "gate": {
+            "condition": "Tutundugun kalip zorlandiginda etki daha belirgin olur. Bagli nokta: house=10.",
+            "how_to_use": "Direnci azaltip adim boyunu kucultmek etkiyi yararli hale getirir. Alan odagi: career."
+          }
+        },
+        "tags": {
+          "duration": "months",
+          "phase": "separating",
+          "domain": "general",
+          "intensity": 1.0,
+          "exact_in_days": null
+        },
+        "why_now": "yakın + aylar süren etki + angle tetikleniyor + çözülüyor.",
+        "conflict_label": "Ayna",
+        "conflict_tone": "mirror",
+        "tone": "mirror",
+        "section_labels": {
+          "conflict": "Ayna",
+          "shadow": "Projeksiyon",
+          "upper": "Denge"
+        },
+        "signature_tr": "Plüton ☍ Tepe Noktası • Geri çekiliyor; izi kalır",
+        "teaser": "Bu dönem ev/kök; iç düzen, güven duygusu ve temel ritim alanında ince ayar var: tepe noktası leo çizgisinde; yönetici güneş 10."
+      },
+      {
+        "event_id": "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+        "title": "Büyük Resim Çağrısı",
+        "signature": "Neptün □ Mars • Şu an güçlü, dalga dalga birkaç ay",
+        "conflict": "Sürtünme davranışı test eder; tonu yanlış ayarlama riski artar. Baskı anında hızlanmak yerine çerçeve kurmak gerekir. Sahne 5. Ev (yaratıcılık/ifade); vurduğu yer 9. Ev (anlam/ufuk/genişleme).",
+        "shadow": "Savunma refleksi veriyi kişisel saldırı gibi okutabilir. Acele yanıt kısa rahatlık verir, uzun maliyet çıkarır.",
+        "upper": "Arka bağlantı: 2.",
+        "extra_line": "yaraticilik ve keyif alaninda hız ile kontrol ayni anda calisiyor; once netlik secmek iyi olur Bazen bu etki dusundugund…",
+        "time_hint": "Şu an güçlü, dalga dalga birkaç ay.",
+        "time_hint_tr": "Şu an güçlü, dalga dalga birkaç ay",
+        "horizon": "period",
+        "guidance": [
+          "Öğrenmeyi yayına bağla: kısa paylaşım.",
+          "Tepki yerine kısa yazılı netlik seç.",
+          "Bağla ritmi mini-rutine."
+        ],
+        "watch_out": [
+          "Acele karar.",
+          "Tepkisellik."
+        ],
+        "hook_tags": [
+          "neptune",
+          "house_5",
+          "aries",
+          "square"
+        ],
+        "connected_points": [
+          {
+            "kind": "house",
+            "value": 9,
+            "label_tr": "anlam/ufuk/genisleme",
+            "score": 0.9
+          },
+          {
+            "kind": "sign",
+            "value": "cancer",
+            "label_tr": "Yengeç",
+            "score": 0.75
+          },
+          {
+            "kind": "dispositor",
+            "value": "Moon",
+            "label_tr": "Ay",
+            "score": 0.72
+          },
+          {
+            "kind": "rulership_house",
+            "value": 2,
+            "label_tr": "2. Ev / Akrep",
+            "score": 0.62
+          },
+          {
+            "kind": "rulership_house",
+            "value": 6,
+            "label_tr": "6. Ev / Koç",
+            "score": 0.62
+          },
+          {
+            "kind": "natal_aspect",
+            "value": "Mars square Saturn",
+            "label_tr": "kare",
+            "score": 0.442
+          }
+        ],
+        "natal_context_pack": {
+          "target": {
+            "planet": "Mars",
+            "sign": "Cancer",
+            "sign_tr": "Yengeç",
+            "house": 9
+          },
+          "dispositor": {
+            "planet": "Moon",
+            "sign": "Sagittarius",
+            "house": 2,
+            "rx": false
+          },
+          "rulership_houses": [
+            {
+              "sign": "scorpio",
+              "house": 2
+            },
+            {
+              "sign": "aries",
+              "house": 6
+            },
+            {
+              "sign": "aries",
+              "house": 7
+            }
+          ],
+          "natal_aspects_focus": [
+            {
+              "aspect": "square",
+              "with": "Saturn",
+              "orb_deg": 6.25,
+              "tone": "friction"
+            }
+          ]
+        },
+        "derived_context": {
+          "natal_target": {
+            "name": "Mars",
+            "house": 9,
+            "sign": "Cancer",
+            "dispositor": "Moon",
+            "rulership_houses": [
+              2,
+              6,
+              7
+            ]
+          },
+          "connected_points": [
+            {
+              "type": "target_house",
+              "label_tr": "anlam/ufuk/genisleme",
+              "score": 0.9
+            },
+            {
+              "type": "target_sign",
+              "label_tr": "Yengeç",
+              "score": 0.75
+            },
+            {
+              "type": "rulership",
+              "label_tr": "Ay",
+              "score": 0.72
+            },
+            {
+              "type": "rulership",
+              "label_tr": "2. Ev / Akrep",
+              "score": 0.62
+            }
+          ],
+          "links": [
+            {
+              "type": "cofeatured_hit",
+              "event_id": "6643f6b522a944afdaa02253a4af02ee80c732c0",
+              "because": "Neptün aynı ev odağında ikinci vurgu"
+            }
+          ],
+          "motifs": [
+            "tek sprint",
+            "yeni yöntem"
+          ],
+          "derived_domains": [
+            {
+              "domain": "meaning",
+              "score": 0.55
+            }
+          ]
+        },
+        "scene": {
+          "start_house": 5,
+          "outcome_house": 9
+        },
+        "natal_promise": {
+          "score": 1.0,
+          "verdict": "high",
+          "drivers": [
+            {
+              "type": "orb_phase",
+              "text": "Orb ve faz etkisi olay gucunu belirginlestiriyor.",
+              "score": 1.0
+            },
+            {
+              "type": "dispositor_chain",
+              "text": "Dispositor zinciri: mars -> moon -> jupiter -> saturn -> mars.",
+              "score": 0.9
+            },
+            {
+              "type": "house_ruler_link",
+              "text": "9. ev yonetici bagi olay etkisini natal zemine bagliyor.",
+              "score": 0.75
+            },
+            {
+              "type": "resonance",
+              "text": "Natal aci rezonansi Mars temasini tekrar aktive ediyor.",
+              "score": 0.219
+            },
+            {
+              "type": "timers",
+              "text": "not available",
+              "score": 0.0
+            },
+            {
+              "type": "impact_breakdown",
+              "text": "impact=0.75, receptivity=0.05, graph=0.25",
+              "score": 0.75
+            }
+          ],
+          "connected_points": [
+            {
+              "kind": "house",
+              "value": 9,
+              "score": 1.0
+            },
+            {
+              "kind": "sign",
+              "value": "cancer",
+              "score": 0.636
+            },
+            {
+              "kind": "dispositor_chain",
+              "value": "mars->moon->jupiter->saturn->mars",
+              "score": 0.9
+            },
+            {
+              "kind": "house",
+              "value": 6,
+              "score": 0.899
+            },
+            {
+              "kind": "house",
+              "value": 7,
+              "score": 0.899
+            },
+            {
+              "kind": "planet",
+              "value": "mercury",
+              "score": 0.899
+            }
+          ],
+          "gate": {
+            "condition": "Baslangic hamlesi dis baski ile carpistiginda konu disa tasar. Bagli nokta: house=9.",
+            "how_to_use": "Hizi degil sirayi yonet; once sinir sonra adim sec. Alan odagi: mind."
+          }
+        },
+        "tags": {
+          "duration": "months",
+          "phase": "exact",
+          "domain": "general",
+          "intensity": 1.0,
+          "exact_in_days": null
+        },
+        "why_now": "çok yakın + aylar süren etki + açı hattı aktif +.",
+        "conflict_label": "Sürtünme",
+        "conflict_tone": "pressure",
+        "tone": "friction",
+        "section_labels": {
+          "conflict": "Sürtünme",
+          "shadow": "Refleks",
+          "upper": "Ustalık"
+        },
+        "signature_tr": "Neptün □ Mars • Şu an güçlü, dalga dalga birkaç ay",
+        "teaser": "Etkinin omurgası 9."
+      },
+      {
+        "event_id": "e225cde9ba1d85bfd25255f0ba880ef233ad8430",
+        "title": "Sözün Sınırı",
+        "signature": "Plüton ☌ Dip Noktası • Geri çekiliyor; izi kalır",
+        "conflict": "Enerji tek hatta toplanınca yük hissi artar. Aynı anda çok hedef açmak odağı kırar. Sahne 4. Ev (ev/kök); vurduğu yer aynı ev hattı.",
+        "shadow": "Yoğunlaşma kontrol takıntısına kayabilir. Hızlı sonuç isteği yöntemi daraltabilir.",
+        "upper": "Bu tema sende ev/kök; iç düzen, güven duygusu ve temel ritim kasını güçlendiriyor: daha net seçim, daha iyi ritim. Tek hedefte kalırsan bu açı ustalık üretir.",
+        "extra_line": "gunluk yasam akisi icinde tepkiyi hizlandiriyor ama iç denetim frene basiyor Ozellikle bu temayi daha kolay fark edebili…",
+        "time_hint": "Geri çekiliyor; izi kalır.",
+        "time_hint_tr": "Geri çekiliyor; izi kalır",
+        "horizon": "period",
+        "guidance": [
+          "Tek kanal seç ve tamamlamaya odaklan.",
+          "Açma aynı anda iki kanal."
+        ],
+        "watch_out": [
+          "Kontrol takıntısı.",
+          "Taşma."
+        ],
+        "hook_tags": [
+          "pluto",
+          "house_4",
+          "aries",
+          "conjunction",
+          "home"
+        ],
+        "connected_points": [
+          {
+            "kind": "house",
+            "value": 4,
+            "label_tr": "ev/kok",
+            "score": 0.774
+          },
+          {
+            "kind": "sign",
+            "value": "aquarius",
+            "label_tr": "Kova",
+            "score": 0.716
+          },
+          {
+            "kind": "angle_ruler",
+            "value": "Uranus",
+            "label_tr": "IC yöneticisi: Uranüs",
+            "score": 0.602
+          }
+        ],
+        "natal_context_pack": {
+          "target": {
+            "planet": "IC",
+            "sign": "Aquarius",
+            "sign_tr": "Kova",
+            "house": 4
+          },
+          "dispositor": {},
+          "rulership_houses": [],
+          "natal_aspects_focus": [],
+          "angle_ruler": "Uranus"
+        },
+        "derived_context": {
+          "angle": {
+            "name": "IC",
+            "sign": "Aquarius",
+            "ruler": "Uranus",
+            "ruler_house": 3,
+            "ruler_sign": "Aquarius"
+          },
+          "natal_target": {
+            "name": "IC",
+            "house": 4,
+            "sign": "Aquarius",
+            "dispositor": null,
+            "rulership_houses": []
+          },
+          "connected_points": [
+            {
+              "type": "target_house",
+              "label_tr": "ev/kok",
+              "score": 0.774
+            },
+            {
+              "type": "target_sign",
+              "label_tr": "Kova",
+              "score": 0.716
+            },
+            {
+              "type": "rulership",
+              "label_tr": "IC yöneticisi: Uranüs",
+              "score": 0.602
+            }
+          ],
+          "links": [
+            {
+              "type": "angle_ruler_resonance",
+              "target": "Uranus",
+              "because": "IC ruler"
+            },
+            {
+              "type": "cofeatured_hit",
+              "event_id": "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+              "because": "Uranüs aynı dönemde tekrar tetikleniyor"
+            },
+            {
+              "type": "cofeatured_hit",
+              "event_id": "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540",
+              "because": "Plüton aynı ev odağında ikinci vurgu"
+            }
+          ],
+          "motifs": [],
+          "derived_domains": [
+            {
+              "domain": "home",
+              "score": 0.5
+            }
+          ]
+        },
+        "scene": {
+          "start_house": 4,
+          "outcome_house": null
+        },
+        "natal_promise": {
+          "score": 1.0,
+          "verdict": "high",
+          "drivers": [
+            {
+              "type": "angle_activation",
+              "text": "IC aktivasyonu bu olayi dis dunyada daha gorunur kilar.",
+              "score": 1.0
+            },
+            {
+              "type": "resonance",
+              "text": "Natal aci rezonansi uranus temasini tekrar aktive ediyor.",
+              "score": 0.836
+            },
+            {
+              "type": "house_ruler_link",
+              "text": "4. ev yonetici bagi olay etkisini natal zemine bagliyor.",
+              "score": 0.75
+            },
+            {
+              "type": "orb_phase",
+              "text": "Orb ve faz etkisi olay gucunu belirginlestiriyor.",
+              "score": 0.7
+            },
+            {
+              "type": "dispositor_chain",
+              "text": "Dispositor zinciri: uranus.",
+              "score": 0.6
+            },
+            {
+              "type": "impact_breakdown",
+              "text": "impact=0.85, receptivity=0.15, graph=0.25",
+              "score": 0.85
+            }
+          ],
+          "connected_points": [
+            {
+              "kind": "house",
+              "value": 4,
+              "score": 1.0
+            },
+            {
+              "kind": "sign",
+              "value": "aquarius",
+              "score": 0.634
+            },
+            {
+              "kind": "dispositor_chain",
+              "value": "uranus",
+              "score": 0.6
+            },
+            {
+              "kind": "planet",
+              "value": "lilith",
+              "score": 0.903
+            },
+            {
+              "kind": "planet",
+              "value": "sun",
+              "score": 0.862
+            },
+            {
+              "kind": "planet",
+              "value": "pluto",
+              "score": 0.792
+            }
+          ],
+          "gate": {
+            "condition": "Biriken enerji sabit bir yone baglaninca dis sonuc verir. Bagli nokta: house=4.",
+            "how_to_use": "Surdurulebilir bir tempo kur ve kararlari sade tut. Alan odagi: home."
+          }
+        },
+        "tags": {
+          "duration": "months",
+          "phase": "separating",
+          "domain": "general",
+          "intensity": 1.0,
+          "exact_in_days": null
+        },
+        "why_now": "yakın + aylar süren etki + angle tetikleniyor + çözülüyor.",
+        "conflict_label": "Yoğunlaşma",
+        "conflict_tone": "focus",
+        "tone": "focus",
+        "section_labels": {
+          "conflict": "Yoğunluk",
+          "shadow": "Taşma",
+          "upper": "Tek hedef"
+        },
+        "signature_tr": "Plüton ☌ Dip Noktası • Geri çekiliyor; izi kalır",
+        "teaser": "Bu dönem ev/kök; iç düzen, güven duygusu ve temel ritim alanında ince ayar var: dip noktası aquarius çizgisinde; yönetici uranüs 3."
+      },
+      {
+        "event_id": "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+        "title": "Özgürleşme Hamlesi",
+        "signature": "Satürn ✶ Uranüs • Yaklaşıyor; etkisi artıyor",
+        "conflict": "Fırsat var; küçük hamleyle açılır. Mikro adım atarsan destek büyür. Sahne 5. Ev (yaratıcılık/ifade); vurduğu yer 3. Ev (iletişim tarzı/öğrenme ritmi/yakın çevre).",
+        "shadow": "Pasif kalmak bu açının hızını söndürür. Erteleme küçük fırsatları kaçırabilir.",
+        "upper": "Arka bağlantı: 4.",
+        "extra_line": "yaraticilik ve keyif alaninda tepkiyi hizlandiriyor ama iç denetim frene basiyor Ozellikle bu temayi daha kolay fark ede…",
+        "time_hint": "Yaklaşıyor; etkisi artıyor.",
+        "time_hint_tr": "Yaklaşıyor; etkisi artıyor",
+        "horizon": "period",
+        "guidance": [
+          "Soruyu tek cümlede netleştir.",
+          "Küçük hamleyi bugün başlat."
+        ],
+        "watch_out": [
+          "Pasif kalma.",
+          "Erteleme."
+        ],
+        "hook_tags": [
+          "saturn",
+          "house_5",
+          "aries",
+          "sextile"
+        ],
+        "connected_points": [
+          {
+            "kind": "house",
+            "value": 3,
+            "label_tr": "zihin/iletisim",
+            "score": 0.9
+          },
+          {
+            "kind": "sign",
+            "value": "aquarius",
+            "label_tr": "Kova",
+            "score": 0.75
+          },
+          {
+            "kind": "dispositor",
+            "value": "Uranus",
+            "label_tr": "Uranüs",
+            "score": 0.72
+          },
+          {
+            "kind": "rulership_house",
+            "value": 4,
+            "label_tr": "4. Ev / Kova",
+            "score": 0.62
+          },
+          {
+            "kind": "natal_aspect",
+            "value": "Uranus opposition Sun",
+            "label_tr": "karsit",
+            "score": 0.544
+          }
+        ],
+        "natal_context_pack": {
+          "target": {
+            "planet": "Uranus",
+            "sign": "Aquarius",
+            "sign_tr": "Kova",
+            "house": 3
+          },
+          "dispositor": {
+            "planet": "Uranus",
+            "sign": "Aquarius",
+            "house": 3,
+            "rx": true
+          },
+          "rulership_houses": [
+            {
+              "sign": "aquarius",
+              "house": 4
+            }
+          ],
+          "natal_aspects_focus": [
+            {
+              "aspect": "opposition",
+              "with": "Lilith",
+              "orb_deg": 1.31,
+              "tone": "friction"
+            },
+            {
+              "aspect": "opposition",
+              "with": "Sun",
+              "orb_deg": 2.1,
+              "tone": "friction"
+            }
+          ]
+        },
+        "derived_context": {
+          "natal_target": {
+            "name": "Uranus",
+            "house": 3,
+            "sign": "Aquarius",
+            "dispositor": "Uranus",
+            "rulership_houses": [
+              4
+            ]
+          },
+          "connected_points": [
+            {
+              "type": "target_house",
+              "label_tr": "zihin/iletisim",
+              "score": 0.9
+            },
+            {
+              "type": "target_sign",
+              "label_tr": "Kova",
+              "score": 0.75
+            },
+            {
+              "type": "rulership",
+              "label_tr": "Uranüs",
+              "score": 0.72
+            },
+            {
+              "type": "rulership",
+              "label_tr": "4. Ev / Kova",
+              "score": 0.62
+            }
+          ],
+          "links": [],
+          "motifs": [
+            "yazılı netlik",
+            "ton ayarı"
+          ],
+          "derived_domains": [
+            {
+              "domain": "mind",
+              "score": 0.52
+            }
+          ]
+        },
+        "scene": {
+          "start_house": 5,
+          "outcome_house": 3
+        },
+        "natal_promise": {
+          "score": 1.0,
+          "verdict": "high",
+          "drivers": [
+            {
+              "type": "orb_phase",
+              "text": "Orb ve faz etkisi olay gucunu belirginlestiriyor.",
+              "score": 1.0
+            },
+            {
+              "type": "natal_emphasis",
+              "text": "3. evde natal yigilim bu temayi buyutur.",
+              "score": 0.85
+            },
+            {
+              "type": "resonance",
+              "text": "Natal aci rezonansi Uranus temasini tekrar aktive ediyor.",
+              "score": 0.836
+            },
+            {
+              "type": "house_ruler_link",
+              "text": "3. ev yonetici bagi olay etkisini natal zemine bagliyor.",
+              "score": 0.75
+            },
+            {
+              "type": "dispositor_chain",
+              "text": "Dispositor zinciri: uranus.",
+              "score": 0.6
+            },
+            {
+              "type": "impact_breakdown",
+              "text": "impact=0.75, receptivity=0.15, graph=0.25",
+              "score": 0.75
+            }
+          ],
+          "connected_points": [
+            {
+              "kind": "house",
+              "value": 3,
+              "score": 1.0
+            },
+            {
+              "kind": "sign",
+              "value": "aquarius",
+              "score": 0.621
+            },
+            {
+              "kind": "dispositor_chain",
+              "value": "uranus",
+              "score": 0.6
+            },
+            {
+              "kind": "planet",
+              "value": "lilith",
+              "score": 0.915
+            },
+            {
+              "kind": "house",
+              "value": 4,
+              "score": 0.878
+            },
+            {
+              "kind": "planet",
+              "value": "jupiter",
+              "score": 0.878
+            }
+          ],
+          "gate": {
+            "condition": "Duzene giren ritim etkiyi gorunur sonuca cevirir. Bagli nokta: house=3.",
+            "how_to_use": "Istikrari koru ve kazanimi tekrar eden rutine bagla. Alan odagi: mind."
+          }
+        },
+        "tags": {
+          "duration": "months",
+          "phase": "applying",
+          "domain": "general",
+          "intensity": 1.0,
+          "exact_in_days": null
+        },
+        "why_now": "çok yakın + aylar süren etki + açı hattı aktif + yaklaşıyor.",
+        "conflict_label": "Fırsat",
+        "conflict_tone": "opportunity",
+        "tone": "chance",
+        "section_labels": {
+          "conflict": "Fırsat",
+          "shadow": "Kaçırma riski",
+          "upper": "Kazanca çevir"
+        },
+        "signature_tr": "Satürn ✶ Uranüs • Yaklaşıyor; etkisi artıyor",
+        "teaser": "Etkinin omurgası 3."
+      },
+      {
+        "event_id": "6643f6b522a944afdaa02253a4af02ee80c732c0",
+        "title": "Yol Haritası Yazılıyor",
+        "signature": "Neptün △ Plüton • Geri çekiliyor; izi kalır",
+        "conflict": "Akış açık; doğal ilerleyen bir hat var. Yetenek devrede; kapı açılıyor ve sen girersen büyür. Sahne 5. Ev (yaratıcılık/ifade); vurduğu yer 2. Ev (değer/gelir).",
+        "shadow": "Fazla kanal açmak hızı dağıtır. Konfor alanı ölçümü gevşetebilir.",
+        "upper": "Arka bağlantı: 2.",
+        "extra_line": "yaraticilik ve keyif alaninda tepkiyi hizlandiriyor ama iç denetim frene basiyor Bu ritim tepkilerini farkli sekilde tet…",
+        "time_hint": "Geri çekiliyor; izi kalır.",
+        "time_hint_tr": "Geri çekiliyor; izi kalır",
+        "horizon": "period",
+        "guidance": [
+          "Tek hedefte kal, ritmi koru.",
+          "Açma aynı anda iki kanal."
+        ],
+        "watch_out": [
+          "Dağılma.",
+          "Aşırı rahatlama."
+        ],
+        "hook_tags": [
+          "neptune",
+          "house_5",
+          "aries",
+          "trine"
+        ],
+        "connected_points": [
+          {
+            "kind": "house",
+            "value": 2,
+            "label_tr": "deger/gelir",
+            "score": 0.845
+          },
+          {
+            "kind": "sign",
+            "value": "sagittarius",
+            "label_tr": "Yay",
+            "score": 0.704
+          },
+          {
+            "kind": "dispositor",
+            "value": "Jupiter",
+            "label_tr": "Jüpiter",
+            "score": 0.676
+          },
+          {
+            "kind": "rulership_house",
+            "value": 2,
+            "label_tr": "2. Ev / Akrep",
+            "score": 0.582
+          },
+          {
+            "kind": "natal_aspect",
+            "value": "Pluto sextile Uranus",
+            "label_tr": "altmislik",
+            "score": 0.511
+          }
+        ],
+        "natal_context_pack": {
+          "target": {
+            "planet": "Pluto",
+            "sign": "Sagittarius",
+            "sign_tr": "Yay",
+            "house": 2
+          },
+          "dispositor": {
+            "planet": "Jupiter",
+            "sign": "Capricorn",
+            "house": 3,
+            "rx": true
+          },
+          "rulership_houses": [
+            {
+              "sign": "scorpio",
+              "house": 2
+            }
+          ],
+          "natal_aspects_focus": [
+            {
+              "aspect": "sextile",
+              "with": "Uranus",
+              "orb_deg": 2.13,
+              "tone": "electric"
+            },
+            {
+              "aspect": "trine",
+              "with": "Lilith",
+              "orb_deg": 3.45,
+              "tone": "flow"
+            }
+          ]
+        },
+        "derived_context": {
+          "natal_target": {
+            "name": "Pluto",
+            "house": 2,
+            "sign": "Sagittarius",
+            "dispositor": "Jupiter",
+            "rulership_houses": [
+              2
+            ]
+          },
+          "connected_points": [
+            {
+              "type": "target_house",
+              "label_tr": "deger/gelir",
+              "score": 0.845
+            },
+            {
+              "type": "target_sign",
+              "label_tr": "Yay",
+              "score": 0.704
+            },
+            {
+              "type": "rulership",
+              "label_tr": "Jüpiter",
+              "score": 0.676
+            },
+            {
+              "type": "rulership",
+              "label_tr": "2. Ev / Akrep",
+              "score": 0.582
+            }
+          ],
+          "links": [
+            {
+              "type": "cofeatured_hit",
+              "event_id": "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+              "because": "Neptün aynı ev odağında ikinci vurgu"
+            }
+          ],
+          "motifs": [],
+          "derived_domains": [
+            {
+              "domain": "identity",
+              "score": 0.35
+            }
+          ]
+        },
+        "scene": {
+          "start_house": 5,
+          "outcome_house": 2
+        },
+        "natal_promise": {
+          "score": 0.8,
+          "verdict": "high",
+          "drivers": [
+            {
+              "type": "dispositor_chain",
+              "text": "Dispositor zinciri: pluto -> jupiter -> saturn -> mars -> moon -> jupiter.",
+              "score": 0.9
+            },
+            {
+              "type": "house_ruler_link",
+              "text": "2. ev yonetici bagi olay etkisini natal zemine bagliyor.",
+              "score": 0.75
+            },
+            {
+              "type": "resonance",
+              "text": "Natal aci rezonansi Pluto temasini tekrar aktive ediyor.",
+              "score": 0.733
+            },
+            {
+              "type": "orb_phase",
+              "text": "Orb ve faz etkisi olay gucunu belirginlestiriyor.",
+              "score": 0.7
+            },
+            {
+              "type": "timers",
+              "text": "not available",
+              "score": 0.0
+            },
+            {
+              "type": "impact_breakdown",
+              "text": "impact=0.55, receptivity=0.00, graph=0.25",
+              "score": 0.55
+            }
+          ],
+          "connected_points": [
+            {
+              "kind": "house",
+              "value": 2,
+              "score": 1.0
+            },
+            {
+              "kind": "sign",
+              "value": "sagittarius",
+              "score": 0.615
+            },
+            {
+              "kind": "dispositor_chain",
+              "value": "pluto->jupiter->saturn->mars->moon->jupiter",
+              "score": 0.9
+            },
+            {
+              "kind": "planet",
+              "value": "jupiter",
+              "score": 0.828
+            },
+            {
+              "kind": "planet",
+              "value": "uranus",
+              "score": 0.795
+            },
+            {
+              "kind": "planet",
+              "value": "lilith",
+              "score": 0.767
+            }
+          ],
+          "gate": {
+            "condition": "Akis dogru kanala girerse etki hizli ogrenmeye doner. Bagli nokta: house=2.",
+            "how_to_use": "Secenekleri azalt ve tek odaga enerji ver. Alan odagi: general."
+          }
+        },
+        "tags": {
+          "duration": "months",
+          "phase": "separating",
+          "domain": "general",
+          "intensity": 0.9312499999999999,
+          "exact_in_days": null
+        },
+        "why_now": "yakın + aylar süren etki + açı hattı aktif + çözülüyor.",
+        "conflict_label": "Akış",
+        "conflict_tone": "flow",
+        "tone": "flow",
+        "section_labels": {
+          "conflict": "Akış",
+          "shadow": "Abartırsan",
+          "upper": "Potansiyel"
+        },
+        "signature_tr": "Neptün △ Plüton • Geri çekiliyor; izi kalır",
+        "teaser": "Etkinin omurgası 2."
+      }
+    ],
+    "timeline": {
+      "date": "",
+      "summary": "Ayna etkisi kutupları büyütür; denge hızla bozulabilir. Tepki vermeden once ritmi yavaslatmak bugun daha iyi calisir. Netlik aceleden daha guclu bir sonuc uretebilir.",
+      "lines": [
+        "Ayna etkisi kutupları büyütür; denge hızla bozulabilir.",
+        "Tepki vermeden once ritmi yavaslatmak bugun daha iyi calisir.",
+        "Netlik aceleden daha guclu bir sonuc uretebilir."
+      ],
+      "dot_intensity": 1
+    },
+    "_period_coverage": {
+      "counts": {
+        "total": 77,
+        "long": 38,
+        "medium": 20,
+        "short": 19
+      },
+      "top_long": [
+        {
+          "event_id": "4a74b4ce8bc974804792ec91fddfacc2e6d7094d",
+          "label": "Pluto opposition Sun (orb 0.01°)",
+          "strength": 0.999,
+          "orb_deg": 0.01,
+          "phase": "exactish",
+          "transit_body": "Pluto",
+          "aspect": "opposition",
+          "natal_point": "Sun",
+          "houses": {
+            "transit_in_natal_house": 4,
+            "natal_point_house": 10
+          },
+          "bucket": "long"
+        },
+        {
+          "event_id": "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+          "label": "Neptune square Mars (orb 0.08°)",
+          "strength": 0.987,
+          "orb_deg": 0.08,
+          "phase": "exactish",
+          "transit_body": "Neptune",
+          "aspect": "square",
+          "natal_point": "Mars",
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 9
+          },
+          "bucket": "long"
+        },
+        {
+          "event_id": "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+          "label": "Saturn sextile Uranus (orb 0.39°)",
+          "strength": 0.902,
+          "orb_deg": 0.39,
+          "phase": "applying",
+          "transit_body": "Saturn",
+          "aspect": "sextile",
+          "natal_point": "Uranus",
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 3
+          },
+          "bucket": "long"
+        },
+        {
+          "event_id": "6643f6b522a944afdaa02253a4af02ee80c732c0",
+          "label": "Neptune trine Pluto (orb 0.78°)",
+          "strength": 0.87,
+          "orb_deg": 0.78,
+          "phase": "separating",
+          "transit_body": "Neptune",
+          "aspect": "trine",
+          "natal_point": "Pluto",
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 2
+          },
+          "bucket": "long"
+        },
+        {
+          "event_id": "e0938ce8a5fb1b082e386c3c610d10345ab341e1",
+          "label": "Pluto opposition Lilith (orb 0.79°)",
+          "strength": 0.869,
+          "orb_deg": 0.79,
+          "phase": "separating",
+          "transit_body": "Pluto",
+          "aspect": "opposition",
+          "natal_point": "Lilith",
+          "houses": {
+            "transit_in_natal_house": 4,
+            "natal_point_house": 10
+          },
+          "bucket": "long"
+        },
+        {
+          "event_id": "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540",
+          "label": "Pluto opposition MC (orb 0.87°)",
+          "strength": 0.856,
+          "orb_deg": 0.87,
+          "phase": "separating",
+          "transit_body": "Pluto",
+          "aspect": "opposition",
+          "natal_point": "MC",
+          "houses": {
+            "transit_in_natal_house": 4,
+            "natal_point_house": null
+          },
+          "bucket": "long"
+        },
+        {
+          "event_id": "e225cde9ba1d85bfd25255f0ba880ef233ad8430",
+          "label": "Pluto conjunction IC (orb 0.87°)",
+          "strength": 0.856,
+          "orb_deg": 0.87,
+          "phase": "separating",
+          "transit_body": "Pluto",
+          "aspect": "conjunction",
+          "natal_point": "IC",
+          "houses": {
+            "transit_in_natal_house": 4,
+            "natal_point_house": null
+          },
+          "bucket": "long"
+        },
+        {
+          "event_id": "f33ea1f985be7bcb0bb687bae29c803b95623807",
+          "label": "South Node trine Jupiter (orb 1.01°)",
+          "strength": 0.831,
+          "orb_deg": 1.01,
+          "phase": "separating",
+          "transit_body": "South Node",
+          "aspect": "trine",
+          "natal_point": "Jupiter",
+          "houses": {
+            "transit_in_natal_house": 11,
+            "natal_point_house": 3
+          },
+          "bucket": "long"
+        }
+      ],
+      "top_medium": [
+        {
+          "event_id": "74185d5cfff43fd7f2696a8d1babcbf3f6685492",
+          "label": "Mars trine Mars (orb 0.31°)",
+          "strength": 0.948,
+          "orb_deg": 0.31,
+          "phase": "separating",
+          "transit_body": "Mars",
+          "aspect": "trine",
+          "natal_point": "Mars",
+          "houses": {
+            "transit_in_natal_house": 4,
+            "natal_point_house": 9
+          },
+          "bucket": "medium"
+        },
+        {
+          "event_id": "ebbca6cd0e8a421d7e7ff9b7f04edc6ac40ed140",
+          "label": "Mars square Pluto (orb 1.01°)",
+          "strength": 0.831,
+          "orb_deg": 1.01,
+          "phase": "separating",
+          "transit_body": "Mars",
+          "aspect": "square",
+          "natal_point": "Pluto",
+          "houses": {
+            "transit_in_natal_house": 4,
+            "natal_point_house": 2
+          },
+          "bucket": "medium"
+        },
+        {
+          "event_id": "42d1b2f57d9e889bf4f2de87f8a6fa7f2020ba99",
+          "label": "Jupiter trine Fortune (orb 1.04°)",
+          "strength": 0.827,
+          "orb_deg": 1.04,
+          "phase": "separating",
+          "transit_body": "Jupiter",
+          "aspect": "trine",
+          "natal_point": "Fortune",
+          "houses": {
+            "transit_in_natal_house": 9,
+            "natal_point_house": 5
+          },
+          "bucket": "medium"
+        },
+        {
+          "event_id": "e622eabac5effbd11aa086c15c83adb9308726f2",
+          "label": "Mercury square Moon (orb 1.63°)",
+          "strength": 0.728,
+          "orb_deg": 1.63,
+          "phase": "separating",
+          "transit_body": "Mercury",
+          "aspect": "square",
+          "natal_point": "Moon",
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 2
+          },
+          "bucket": "medium"
+        },
+        {
+          "event_id": "823dcf46fe194e9fb45260ad9fb2d5e1131c6f18",
+          "label": "Mercury square Venus (orb 1.85°)",
+          "strength": 0.691,
+          "orb_deg": 1.85,
+          "phase": "separating",
+          "transit_body": "Mercury",
+          "aspect": "square",
+          "natal_point": "Venus",
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 8
+          },
+          "bucket": "medium"
+        },
+        {
+          "event_id": "ba62e6b0a118e6af9e013f8ee86d213050b08566",
+          "label": "Mercury square Vertex (orb 1.85°)",
+          "strength": 0.691,
+          "orb_deg": 1.85,
+          "phase": "separating",
+          "transit_body": "Mercury",
+          "aspect": "square",
+          "natal_point": "Vertex",
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 8
+          },
+          "bucket": "medium"
+        }
+      ],
+      "top_short": [
+        {
+          "event_id": "c744beab8b760c1109368a07e274e9757c33573b",
+          "label": "Fortune trine DSC (orb 0.15°)",
+          "strength": 0.975,
+          "orb_deg": 0.15,
+          "phase": "exactish",
+          "transit_body": "Fortune",
+          "aspect": "trine",
+          "natal_point": "DSC",
+          "houses": {
+            "transit_in_natal_house": 2,
+            "natal_point_house": null
+          },
+          "bucket": "short"
+        },
+        {
+          "event_id": "be448717fb7bcf943afd8a304687624ed007f821",
+          "label": "Fortune sextile ASC (orb 0.15°)",
+          "strength": 0.962,
+          "orb_deg": 0.15,
+          "phase": "exactish",
+          "transit_body": "Fortune",
+          "aspect": "sextile",
+          "natal_point": "ASC",
+          "houses": {
+            "transit_in_natal_house": 2,
+            "natal_point_house": null
+          },
+          "bucket": "short"
+        },
+        {
+          "event_id": "20783e621d6e21c84475442ea27cf1b48985b2f6",
+          "label": "Lilith trine Saturn (orb 0.91°)",
+          "strength": 0.849,
+          "orb_deg": 0.91,
+          "phase": "separating",
+          "transit_body": "Lilith",
+          "aspect": "trine",
+          "natal_point": "Saturn",
+          "houses": {
+            "transit_in_natal_house": 2,
+            "natal_point_house": 6
+          },
+          "bucket": "short"
+        },
+        {
+          "event_id": "5ee5ee99a5ae5c5a61312d6e440acdcb80d0c522",
+          "label": "Moon trine Neptune (orb 1.51°)",
+          "strength": 0.749,
+          "orb_deg": 1.51,
+          "phase": "separating",
+          "transit_body": "Moon",
+          "aspect": "trine",
+          "natal_point": "Neptune",
+          "houses": {
+            "transit_in_natal_house": 11,
+            "natal_point_house": 3
+          },
+          "bucket": "short"
+        },
+        {
+          "event_id": "9295f99c7133f5e747e97a574c32eba0fb154971",
+          "label": "Fortune opposition Mars (orb 1.53°)",
+          "strength": 0.745,
+          "orb_deg": 1.53,
+          "phase": "applying",
+          "transit_body": "Fortune",
+          "aspect": "opposition",
+          "natal_point": "Mars",
+          "houses": {
+            "transit_in_natal_house": 2,
+            "natal_point_house": 9
+          },
+          "bucket": "short"
+        },
+        {
+          "event_id": "e71e574c6eded2d9be19888f2841bd0689e535e9",
+          "label": "Vertex sextile Neptune (orb 1.29°)",
+          "strength": 0.678,
+          "orb_deg": 1.29,
+          "phase": "separating",
+          "transit_body": "Vertex",
+          "aspect": "sextile",
+          "natal_point": "Neptune",
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 3
+          },
+          "bucket": "short"
+        },
+        {
+          "event_id": "0c13df91ad5b9876fc50f44a2b971090cd3aa6e0",
+          "label": "Lilith trine South Node (orb 2.18°)",
+          "strength": 0.636,
+          "orb_deg": 2.18,
+          "phase": "applying",
+          "transit_body": "Lilith",
+          "aspect": "trine",
+          "natal_point": "South Node",
+          "houses": {
+            "transit_in_natal_house": 2,
+            "natal_point_house": 6
+          },
+          "bucket": "short"
+        },
+        {
+          "event_id": "f63a138c9357668d276b9fcb76a82d1d8f58dbc5",
+          "label": "Vertex trine Pluto (orb 2.97°)",
+          "strength": 0.505,
+          "orb_deg": 2.97,
+          "phase": "applying",
+          "transit_body": "Vertex",
+          "aspect": "trine",
+          "natal_point": "Pluto",
+          "houses": {
+            "transit_in_natal_house": 5,
+            "natal_point_house": 2
+          },
+          "bucket": "short"
+        },
+        {
+          "event_id": "2f8588cc8db201f4827377b88f1b9828bae3565f",
+          "label": "Moon square Venus (orb 2.99°)",
+          "strength": 0.502,
+          "orb_deg": 2.99,
+          "phase": "separating",
+          "transit_body": "Moon",
+          "aspect": "square",
+          "natal_point": "Venus",
+          "houses": {
+            "transit_in_natal_house": 11,
+            "natal_point_house": 8
+          },
+          "bucket": "short"
+        },
+        {
+          "event_id": "d0de9dfba8dd03f425558ef2cc7b5b2804ca8f1f",
+          "label": "Moon square Vertex (orb 2.99°)",
+          "strength": 0.502,
+          "orb_deg": 2.99,
+          "phase": "separating",
+          "transit_body": "Moon",
+          "aspect": "square",
+          "natal_point": "Vertex",
+          "houses": {
+            "transit_in_natal_house": 11,
+            "natal_point_house": 8
+          },
+          "bucket": "short"
+        }
+      ],
+      "domain_coverage": {
+        "identity": {
+          "hits": 16,
+          "top_event_ids": [
+            "be448717fb7bcf943afd8a304687624ed007f821",
+            "6643f6b522a944afdaa02253a4af02ee80c732c0",
+            "ebbca6cd0e8a421d7e7ff9b7f04edc6ac40ed140",
+            "42d1b2f57d9e889bf4f2de87f8a6fa7f2020ba99",
+            "e622eabac5effbd11aa086c15c83adb9308726f2"
+          ]
+        },
+        "relationships": {
+          "hits": 4,
+          "top_event_ids": [
+            "c744beab8b760c1109368a07e274e9757c33573b",
+            "36e072aa70646b073b9ea6326489c1b04c9d92b4",
+            "4aa0da28bae0560539ecaff2908ca5557cd424b5",
+            "88367fb4a7c76d6f50b814db65c72d65904cd546"
+          ]
+        },
+        "mind": {
+          "hits": 24,
+          "top_event_ids": [
+            "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+            "74185d5cfff43fd7f2696a8d1babcbf3f6685492",
+            "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+            "20783e621d6e21c84475442ea27cf1b48985b2f6",
+            "f33ea1f985be7bcb0bb687bae29c803b95623807"
+          ]
+        },
+        "career": {
+          "hits": 13,
+          "top_event_ids": [
+            "4a74b4ce8bc974804792ec91fddfacc2e6d7094d",
+            "e0938ce8a5fb1b082e386c3c610d10345ab341e1",
+            "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540",
+            "690dd0c508922cc745c5297090e31e963f3e03c4",
+            "5ee539a58ae5d398b1ee017a5669b1c6f74c596c"
+          ]
+        },
+        "home": {
+          "hits": 4,
+          "top_event_ids": [
+            "e225cde9ba1d85bfd25255f0ba880ef233ad8430",
+            "fc4f7b02094ed4d9a0483176afb2c4ef5e8dbe57",
+            "cdbf61bc870069b488227f2767953c7c087b3efd",
+            "c75a0e6bb61f885ee09f98e171b16451ffd24b78"
+          ]
+        },
+        "inner": {
+          "hits": 16,
+          "top_event_ids": [
+            "823dcf46fe194e9fb45260ad9fb2d5e1131c6f18",
+            "ba62e6b0a118e6af9e013f8ee86d213050b08566",
+            "2f8588cc8db201f4827377b88f1b9828bae3565f",
+            "d0de9dfba8dd03f425558ef2cc7b5b2804ca8f1f",
+            "3415d617a092be5b8610b87a2d34e6cfd4e20568"
+          ]
+        }
+      },
+      "skipped_due_to_dedup": [
+        {
+          "event_id": "4a74b4ce8bc974804792ec91fddfacc2e6d7094d",
+          "reason": "same_transit_stack",
+          "dupe_of": null
+        },
+        {
+          "event_id": "c744beab8b760c1109368a07e274e9757c33573b",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "be448717fb7bcf943afd8a304687624ed007f821",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "74185d5cfff43fd7f2696a8d1babcbf3f6685492",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "e0938ce8a5fb1b082e386c3c610d10345ab341e1",
+          "reason": "same_transit_stack",
+          "dupe_of": null
+        },
+        {
+          "event_id": "20783e621d6e21c84475442ea27cf1b48985b2f6",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "ebbca6cd0e8a421d7e7ff9b7f04edc6ac40ed140",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "f33ea1f985be7bcb0bb687bae29c803b95623807",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "42d1b2f57d9e889bf4f2de87f8a6fa7f2020ba99",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "fb906990a66076045ca4987695b8b26c97795dfe",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "5ee5ee99a5ae5c5a61312d6e440acdcb80d0c522",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "8be191ec06accbc7e0084f9fb71e7ffa9f9d0f85",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "9295f99c7133f5e747e97a574c32eba0fb154971",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "690dd0c508922cc745c5297090e31e963f3e03c4",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "e622eabac5effbd11aa086c15c83adb9308726f2",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "6d348040a74b96fe0049e71a4dc5ef02064a0bb5",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "5ee539a58ae5d398b1ee017a5669b1c6f74c596c",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "de881ae4042dba5f87b821a0befa31b03d1674e4",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "823dcf46fe194e9fb45260ad9fb2d5e1131c6f18",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "ba62e6b0a118e6af9e013f8ee86d213050b08566",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "254e183d13228b2952e4b5ee8a61abc7e721bef7",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "2ac27473a666ba271b3e4409f3942e4a1a87795d",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "e71e574c6eded2d9be19888f2841bd0689e535e9",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "5b8efa494d8fb373ca175043ae6fbfb8c77ec080",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "4acb15849c62b153ce070571acef2f3a284a2f0b",
+          "reason": "same_transit_stack",
+          "dupe_of": null
+        },
+        {
+          "event_id": "5d6806883dbdddb3513c218d2903043b66fbb07e",
+          "reason": "same_transit_stack",
+          "dupe_of": null
+        },
+        {
+          "event_id": "0c13df91ad5b9876fc50f44a2b971090cd3aa6e0",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "77d1b8b9888aec0f93a3d45ca554fcac126677e1",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "fc4f7b02094ed4d9a0483176afb2c4ef5e8dbe57",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "c020fd9efc9c878a99a45fa8f7fdc83b64b23cce",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "27f5d1b445f8a47198294de04cb57ccc2391fb8b",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "4338fca7e343651a39d5161911e7ee2269a06b13",
+          "reason": "same_transit_stack",
+          "dupe_of": null
+        },
+        {
+          "event_id": "4f85434224e927a2ce3669ddf8860cf9a110ae71",
+          "reason": "same_transit_stack",
+          "dupe_of": null
+        },
+        {
+          "event_id": "ffdd841e259b52fa4602ede0278485ad0c11d80b",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "6db7c7ec97c33051f149043ccf743f4fb777276e",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "f63a138c9357668d276b9fcb76a82d1d8f58dbc5",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "2f8588cc8db201f4827377b88f1b9828bae3565f",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "d0de9dfba8dd03f425558ef2cc7b5b2804ca8f1f",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "36e072aa70646b073b9ea6326489c1b04c9d92b4",
+          "reason": "low_strength",
+          "dupe_of": null
+        },
+        {
+          "event_id": "f1705a40b170c4d05994f959ebc69bf69b5da45a",
+          "reason": "low_strength",
+          "dupe_of": null
+        }
+      ],
+      "notes": [
+        "selection_mode=coverage_first_v1",
+        "now_date=2026-03-04",
+        "tz=Europe/Istanbul",
+        "max_cards=5"
+      ]
+    },
+    "_period_selection": {
+      "selection_mode": "coverage_first_v1",
+      "selected_ids": [
+        "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540",
+        "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+        "e225cde9ba1d85bfd25255f0ba880ef233ad8430",
+        "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+        "6643f6b522a944afdaa02253a4af02ee80c732c0"
+      ],
+      "reasons": {
+        "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540": [
+          "coverage:angles"
+        ],
+        "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e": [
+          "coverage:mind_3_9"
+        ],
+        "e225cde9ba1d85bfd25255f0ba880ef233ad8430": [
+          "fill:home"
+        ],
+        "161ec34605e090dffcc4ebf8f610d818058e3ab8": [
+          "fill:mind"
+        ],
+        "6643f6b522a944afdaa02253a4af02ee80c732c0": [
+          "fill:identity"
+        ]
+      },
+      "salience": {
+        "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540": 0.8455,
+        "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e": 0.9049,
+        "e225cde9ba1d85bfd25255f0ba880ef233ad8430": 0.8455,
+        "161ec34605e090dffcc4ebf8f610d818058e3ab8": 0.8444,
+        "6643f6b522a944afdaa02253a4af02ee80c732c0": 0.7754
+      },
+      "cluster_keys": {
+        "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540": "pluto|opposition|h10",
+        "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e": "neptune|square|h9",
+        "e225cde9ba1d85bfd25255f0ba880ef233ad8430": "pluto|conjunction|hna",
+        "161ec34605e090dffcc4ebf8f610d818058e3ab8": "saturn|sextile|h3",
+        "6643f6b522a944afdaa02253a4af02ee80c732c0": "neptune|trine|h2"
+      },
+      "skipped_due_to_dedup": [
+        {
+          "event_id": "4a74b4ce8bc974804792ec91fddfacc2e6d7094d",
+          "reason": "cluster_collision",
+          "dupe_of": "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540"
+        },
+        {
+          "event_id": "4a74b4ce8bc974804792ec91fddfacc2e6d7094d",
+          "reason": "cluster_collision",
+          "dupe_of": "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540"
+        }
+      ]
+    },
+    "_period_root_causes": [
+      {
+        "key": "identity_spine",
+        "score": 0.72,
+        "evidence": [
+          "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540",
+          "e225cde9ba1d85bfd25255f0ba880ef233ad8430"
+        ]
+      },
+      {
+        "key": "mind_axis_3_9",
+        "score": 0.54,
+        "evidence": [
+          "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+          "161ec34605e090dffcc4ebf8f610d818058e3ab8"
+        ]
+      }
+    ],
+    "_events_debug": [
+      {
+        "event_id": "4a74b4ce8bc974804792ec91fddfacc2e6d7094d",
+        "tier": "main",
+        "severity_tag": "high",
+        "blocks": [
+          {
+            "type": "headline",
+            "text": "Sorumluluk ve görünürlük",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "signature",
+            "text": "Transit Pluto — — — 4. Ev (ev/ic guven) • ☍ Natal Sun — — • orb 0.0° • exact • months",
+            "items": {
+              "source": {
+                "frame": "transit",
+                "body": "Pluto",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "house": {
+                "num": 4,
+                "label_tr": "ev/ic guven"
+              },
+              "aspect": {
+                "code": "opposition",
+                "symbol": "☍"
+              },
+              "target": {
+                "frame": "natal",
+                "body_or_angle": "Sun",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "orb": 0.0,
+              "phase": "exact",
+              "duration": "months"
+            },
+            "phase": "exact",
+            "duration": "months"
+          },
+          {
+            "type": "summary",
+            "text": "Pluto kontrol ihtiyacini test ediyor; kimlik ve yon algin uzerinde iki uc arasinda gidis gelis yaratabilir. Gunluk yasam akisi icinde gundemin hizi fark edilir bicimde degisiyor; icindeki otorite hizli tepkiyi durdurur ve kendini sertce denetlemene yol acar Ozellikle bu temayi daha kolay fark edebilirsin.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "upper_meaning",
+            "text": "duzenli tekrar ve sabirla sesini olgun bir guce donusturebilirsin; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. olculu tempo ve net sinirlar dengeyi korur Bu ritim tepkilerini farkli sekilde tetikleyebilir.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "insight_pack",
+            "text": null,
+            "items": [
+              {
+                "key": "conflict",
+                "text": "Gunluk yasam akisi icinde gundemin hizi fark edilir bicimde degisiyor; sorumluluk duygusu spontanligi baskilar ve ifadeni kisitlayabilir Ozellikle bu temayi daha kolay fark edebilirsin."
+              },
+              {
+                "key": "shadow",
+                "text": "hata yapmama baskisi zihinsel yorgunlugu buyutup mesafe yaratabilir; dengeyi korumak icin tempo ayari gerekebilir. fazla yuklenme ritmi zorlayabilir Bunu gun icinde daha net hissedebilirsin."
+              },
+              {
+                "key": "upper",
+                "text": "az ama net bir ifade ritmi kurmak guvenilir bir etki yaratir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. olculu tempo ve net sinirlar dengeyi korur Ozellikle bu temayi daha kolay fark edebilirsin."
+              }
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "time_hint",
+            "text": "en yoğun — aylar süren ana tema",
+            "items": null,
+            "phase": "exactish",
+            "duration": "long"
+          },
+          {
+            "type": "guidance",
+            "text": null,
+            "items": [
+              "Öncelik sırala.",
+              "Takvim blokla.",
+              "Konu buyurse tek bir oncelik sec; ayni anda her seyi cozmeye calisma."
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "watch_out",
+            "text": null,
+            "items": [
+              "Aşırı yük.",
+              "Acele karar."
+            ],
+            "phase": null,
+            "duration": null
+          }
+        ],
+        "cta": {
+          "label": "Detaya in",
+          "action": "open_event_detail"
+        }
+      },
+      {
+        "event_id": "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+        "tier": "main",
+        "severity_tag": "high",
+        "blocks": [
+          {
+            "type": "headline",
+            "text": "Sorumluluk ve görünürlük",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "signature",
+            "text": "Transit Neptune — — — 5. Ev (yaraticilik/keyif) • □ Natal Mars — — • orb 0.1° • exact • months",
+            "items": {
+              "source": {
+                "frame": "transit",
+                "body": "Neptune",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "house": {
+                "num": 5,
+                "label_tr": "yaraticilik/keyif"
+              },
+              "aspect": {
+                "code": "square",
+                "symbol": "□"
+              },
+              "target": {
+                "frame": "natal",
+                "body_or_angle": "Mars",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "orb": 0.1,
+              "phase": "exact",
+              "duration": "months"
+            },
+            "phase": "exact",
+            "duration": "months"
+          },
+          {
+            "type": "summary",
+            "text": "Neptune belirsizlige karsi hassaslastiriyor; eylem ve tepki tarzin uzerinde gerilimli bir itilim yaratabilir. Yaraticilik ve keyif alaninda gundemin hizi fark edilir bicimde degisiyor; sorumluluk duygusu spontanligi baskilar ve ifadeni kisitlayabilir Bu ritim tepkilerini farkli sekilde tetikleyebilir ve bunu daha net hissedebilirsin.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "upper_meaning",
+            "text": "az ama net bir ifade ritmi kurmak guvenilir bir etki yaratir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. oyun ve ifade cesareti canliligi geri getirir Bu ritim tepkilerini farkli sekilde tetikleyebilir.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "insight_pack",
+            "text": null,
+            "items": [
+              {
+                "key": "conflict",
+                "text": "Yaraticilik ve keyif alaninda gundemin hizi fark edilir bicimde degisiyor; icindeki otorite hizli tepkiyi durdurur ve kendini sertce denetlemene yol acar Ozellikle bu temayi daha kolay fark edebilirsin."
+              },
+              {
+                "key": "shadow",
+                "text": "hata yapmama baskisi zihinsel yorgunlugu buyutup mesafe yaratabilir; dengeyi korumak icin tempo ayari gerekebilir. performans kaygisi dogal akisi dondurebilir Bu ritim tepkilerini farkli sekilde tetikleyebilir."
+              },
+              {
+                "key": "upper",
+                "text": "duzenli tekrar ve sabirla sesini olgun bir guce donusturebilirsin; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. oyun ve ifade cesareti canliligi geri getirir Bunu gun icinde daha net hissedebilirsin."
+              }
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "time_hint",
+            "text": "en yoğun — aylar süren ana tema",
+            "items": null,
+            "phase": "exactish",
+            "duration": "long"
+          },
+          {
+            "type": "guidance",
+            "text": null,
+            "items": [
+              "Öncelik sırala.",
+              "Takvim blokla.",
+              "Gerilim yukselince hizlanma; once sinirlari netlestir, sonra adim at."
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "watch_out",
+            "text": null,
+            "items": [
+              "Aşırı yük.",
+              "Acele karar."
+            ],
+            "phase": null,
+            "duration": null
+          }
+        ],
+        "cta": {
+          "label": "Detaya in",
+          "action": "open_event_detail"
+        }
+      },
+      {
+        "event_id": "74185d5cfff43fd7f2696a8d1babcbf3f6685492",
+        "tier": "support",
+        "severity_tag": "high",
+        "blocks": [
+          {
+            "type": "headline",
+            "text": "Kariyerde destek",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "signature",
+            "text": "Transit Mars — — — 4. Ev (ev/ic guven) • △ Natal Mars — — • orb 0.3° • separating • weeks",
+            "items": {
+              "source": {
+                "frame": "transit",
+                "body": "Mars",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "house": {
+                "num": 4,
+                "label_tr": "ev/ic guven"
+              },
+              "aspect": {
+                "code": "trine",
+                "symbol": "△"
+              },
+              "target": {
+                "frame": "natal",
+                "body_or_angle": "Mars",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "orb": 0.3,
+              "phase": "separating",
+              "duration": "weeks"
+            },
+            "phase": "separating",
+            "duration": "weeks"
+          },
+          {
+            "type": "summary",
+            "text": "Mars adimlarini netlestirmeye zorluyor; eylem ve tepki tarzin uzerinde dogal bir uyum hissi verebilir. durup nefes almak hareket kalitesini belirgin sekilde iyilestirir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin ve bunu daha net hissedebilirsin.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "upper_meaning",
+            "text": "durup nefes almak hareket kalitesini belirgin sekilde iyilestirir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. olculu tempo ve net sinirlar dengeyi korur Bazen bu etki dusundugunden daha belirgin olabilir.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "insight_pack",
+            "text": null,
+            "items": [
+              {
+                "key": "conflict",
+                "text": "Gunluk yasam akisi icinde gundemin hizi fark edilir bicimde degisiyor; kontrol etme arzusu yumusak iletisimi zorlastirabilir Ozellikle bu temayi daha kolay fark edebilirsin."
+              },
+              {
+                "key": "shadow",
+                "text": "tepkiyi geciktirmeden verme aliskanligi gereksiz gerilim yaratabilir; dengeyi korumak icin tempo ayari gerekebilir. fazla yuklenme ritmi zorlayabilir Bazen bu etki dusundugunden daha belirgin olabilir."
+              },
+              {
+                "key": "upper",
+                "text": "durup nefes almak hareket kalitesini belirgin sekilde iyilestirir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. olculu tempo ve net sinirlar dengeyi korur Bu ritim tepkilerini farkli sekilde tetikleyebilir."
+              }
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "time_hint",
+            "text": "çözülüyor — haftalar süren vurgu",
+            "items": null,
+            "phase": "separating",
+            "duration": "medium"
+          },
+          {
+            "type": "guidance",
+            "text": null,
+            "items": [
+              "Net bir hedef yaz.",
+              "Küçük bir görünürlük adımı at.",
+              "Uygun olani zorlamadan sec; kucuk ayarlamalar buyuk rahatlik getirebilir."
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "watch_out",
+            "text": null,
+            "items": [
+              "Erteleme ve dağılma.",
+              "Rahatliga kapilma."
+            ],
+            "phase": null,
+            "duration": null
+          }
+        ],
+        "cta": {
+          "label": "Detaya in",
+          "action": "open_event_detail"
+        }
+      },
+      {
+        "event_id": "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+        "tier": "main",
+        "severity_tag": "high",
+        "blocks": [
+          {
+            "type": "headline",
+            "text": "Kimlikte akış",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "signature",
+            "text": "Transit Saturn — — — 5. Ev (yaraticilik/keyif) • ✶ Natal Uranus — — • orb 0.4° • applying • months",
+            "items": {
+              "source": {
+                "frame": "transit",
+                "body": "Saturn",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "house": {
+                "num": 5,
+                "label_tr": "yaraticilik/keyif"
+              },
+              "aspect": {
+                "code": "sextile",
+                "symbol": "✶"
+              },
+              "target": {
+                "frame": "natal",
+                "body_or_angle": "Uranus",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "orb": 0.4,
+              "phase": "applying",
+              "duration": "months"
+            },
+            "phase": "applying",
+            "duration": "months"
+          },
+          {
+            "type": "summary",
+            "text": "Saturn sinirlarini belirginlestiriyor; ozgurluk arayisin uzerinde kucuk adimlarla ilerlemeyi destekleyebilir. az ama net bir ifade ritmi kurmak guvenilir bir etki yaratir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin ve bunu daha net hissedebilirsin.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "upper_meaning",
+            "text": "duzenli tekrar ve sabirla sesini olgun bir guce donusturebilirsin; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. oyun ve ifade cesareti canliligi geri getirir Bu ritim tepkilerini farkli sekilde tetikleyebilir.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "insight_pack",
+            "text": null,
+            "items": [
+              {
+                "key": "conflict",
+                "text": "Yaraticilik ve keyif alaninda gundemin hizi fark edilir bicimde degisiyor; sorumluluk duygusu spontanligi baskilar ve ifadeni kisitlayabilir Bazen bu etki dusundugunden daha belirgin olabilir."
+              },
+              {
+                "key": "shadow",
+                "text": "yanlis anlasilma korkusu kendini asiri savunma ya da tamamen susma tepkisi dogurabilir; dengeyi korumak icin tempo ayari gerekebilir. performans kaygisi dogal akisi dondurebilir Ozellikle bu temayi daha kolay fark edebilirsin."
+              },
+              {
+                "key": "upper",
+                "text": "az ama net bir ifade ritmi kurmak guvenilir bir etki yaratir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. oyun ve ifade cesareti canliligi geri getirir Ozellikle bu temayi daha kolay fark edebilirsin."
+              }
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "time_hint",
+            "text": "yaklaşıyor — aylar süren ana tema",
+            "items": null,
+            "phase": "applying",
+            "duration": "long"
+          },
+          {
+            "type": "guidance",
+            "text": null,
+            "items": [
+              "Kendini sade bir cümleyle ifade et.",
+              "Önceliği netleştir.",
+              "Konuyu buyutmeden ilerle; duzenli kucuk adimlar daha iyi calisir."
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "watch_out",
+            "text": null,
+            "items": [
+              "Rahatlığa fazla kapılmak.",
+              "Rahatliga kapilma."
+            ],
+            "phase": null,
+            "duration": null
+          }
+        ],
+        "cta": {
+          "label": "Detaya in",
+          "action": "open_event_detail"
+        }
+      },
+      {
+        "event_id": "6643f6b522a944afdaa02253a4af02ee80c732c0",
+        "tier": "support",
+        "severity_tag": "high",
+        "blocks": [
+          {
+            "type": "headline",
+            "text": "Kimlikte akış",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "signature",
+            "text": "Transit Neptune — — — 5. Ev (yaraticilik/keyif) • △ Natal Pluto — — • orb 0.8° • separating • months",
+            "items": {
+              "source": {
+                "frame": "transit",
+                "body": "Neptune",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "house": {
+                "num": 5,
+                "label_tr": "yaraticilik/keyif"
+              },
+              "aspect": {
+                "code": "trine",
+                "symbol": "△"
+              },
+              "target": {
+                "frame": "natal",
+                "body_or_angle": "Pluto",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "orb": 0.8,
+              "phase": "separating",
+              "duration": "months"
+            },
+            "phase": "separating",
+            "duration": "months"
+          },
+          {
+            "type": "summary",
+            "text": "Neptune sezgiyi yukseltiyor; guc ve donusum tema uzerinde dogal bir uyum hissi verebilir. az ama net bir ifade ritmi kurmak guvenilir bir etki yaratir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin ve bunu daha net hissedebilirsin.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "upper_meaning",
+            "text": "duzenli tekrar ve sabirla sesini olgun bir guce donusturebilirsin; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. oyun ve ifade cesareti canliligi geri getirir Ozellikle bu temayi daha kolay fark edebilirsin.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "insight_pack",
+            "text": null,
+            "items": [
+              {
+                "key": "conflict",
+                "text": "Yaraticilik ve keyif alaninda gundemin hizi fark edilir bicimde degisiyor; sorumluluk duygusu spontanligi baskilar ve ifadeni kisitlayabilir Ozellikle bu temayi daha kolay fark edebilirsin."
+              },
+              {
+                "key": "shadow",
+                "text": "yanlis anlasilma korkusu kendini asiri savunma ya da tamamen susma tepkisi dogurabilir; dengeyi korumak icin tempo ayari gerekebilir. performans kaygisi dogal akisi dondurebilir Bazen bu etki dusundugunden daha belirgin olabilir."
+              },
+              {
+                "key": "upper",
+                "text": "duzenli tekrar ve sabirla sesini olgun bir guce donusturebilirsin; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. oyun ve ifade cesareti canliligi geri getirir Ozellikle bu temayi daha kolay fark edebilirsin."
+              }
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "time_hint",
+            "text": "çözülüyor — aylar süren ana tema",
+            "items": null,
+            "phase": "separating",
+            "duration": "long"
+          },
+          {
+            "type": "guidance",
+            "text": null,
+            "items": [
+              "Kendini sade bir cümleyle ifade et.",
+              "Önceliği netleştir.",
+              "Konuyu buyutmeden ilerle; duzenli kucuk adimlar daha iyi calisir."
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "watch_out",
+            "text": null,
+            "items": [
+              "Rahatlığa fazla kapılmak.",
+              "Rahatliga kapilma."
+            ],
+            "phase": null,
+            "duration": null
+          }
+        ],
+        "cta": {
+          "label": "Detaya in",
+          "action": "open_event_detail"
+        }
+      },
+      {
+        "event_id": "e225cde9ba1d85bfd25255f0ba880ef233ad8430",
+        "tier": "main",
+        "severity_tag": "high",
+        "blocks": [
+          {
+            "type": "headline",
+            "text": "Kontrolü bırakma zamanı",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "signature",
+            "text": "Transit Pluto — — — 4. Ev (ev/ic guven) • ☌ IC — — • orb 0.9° • separating • months",
+            "items": {
+              "source": {
+                "frame": "transit",
+                "body": "Pluto",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "house": {
+                "num": 4,
+                "label_tr": "ev/ic guven"
+              },
+              "aspect": {
+                "code": "conjunction",
+                "symbol": "☌"
+              },
+              "target": {
+                "frame": null,
+                "body_or_angle": "IC",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "orb": 0.9,
+              "phase": "separating",
+              "duration": "months"
+            },
+            "phase": "separating",
+            "duration": "months"
+          },
+          {
+            "type": "summary",
+            "text": "Pluto derin donusumu calistiriyor; ic guven ve aidiyet alanin uzerinde temayi guclu sekilde one cikarabilir. Gunluk yasam akisi icinde gundemin hizi fark edilir bicimde degisiyor; icindeki otorite hizli tepkiyi durdurur ve kendini sertce denetlemene yol acar Bunu gun icinde daha net hissedebilirsin.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "upper_meaning",
+            "text": "az ama net bir ifade ritmi kurmak guvenilir bir etki yaratir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. olculu tempo ve net sinirlar dengeyi korur Bazen bu etki dusundugunden daha belirgin olabilir.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "insight_pack",
+            "text": null,
+            "items": [
+              {
+                "key": "conflict",
+                "text": "Gunluk yasam akisi icinde gundemin hizi fark edilir bicimde degisiyor; sorumluluk duygusu spontanligi baskilar ve ifadeni kisitlayabilir Bunu gun icinde daha net hissedebilirsin."
+              },
+              {
+                "key": "shadow",
+                "text": "yanlis anlasilma korkusu kendini asiri savunma ya da tamamen susma tepkisi dogurabilir; dengeyi korumak icin tempo ayari gerekebilir. fazla yuklenme ritmi zorlayabilir Bu ritim tepkilerini farkli sekilde tetikleyebilir."
+              },
+              {
+                "key": "upper",
+                "text": "duzenli tekrar ve sabirla sesini olgun bir guce donusturebilirsin; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. olculu tempo ve net sinirlar dengeyi korur Bunu gun icinde daha net hissedebilirsin."
+              }
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "time_hint",
+            "text": "çözülüyor — aylar süren ana tema",
+            "items": null,
+            "phase": "separating",
+            "duration": "long"
+          },
+          {
+            "type": "guidance",
+            "text": null,
+            "items": [
+              "Direnmek yerine dönüşümü izle.",
+              "Eskiyi bırakmaya gönüllü ol.",
+              "Bu surecte kendine karsi daha gozlemci ve yumusak bir tutum almak destekleyici olabilir."
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "watch_out",
+            "text": null,
+            "items": [
+              "Güç savaşları.",
+              "Her şeyi kontrol etmeye çalışma."
+            ],
+            "phase": null,
+            "duration": null
+          }
+        ],
+        "cta": {
+          "label": "Detaya in",
+          "action": "open_event_detail"
+        }
+      },
+      {
+        "event_id": "1ab35dd16767eaa98b2c01e9bb5fc16a8f28f540",
+        "tier": "main",
+        "severity_tag": "high",
+        "blocks": [
+          {
+            "type": "headline",
+            "text": "Sorumluluk ve görünürlük",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "signature",
+            "text": "Transit Pluto — — — 4. Ev (ev/ic guven) • ☍ MC — — • orb 0.9° • separating • months",
+            "items": {
+              "source": {
+                "frame": "transit",
+                "body": "Pluto",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "house": {
+                "num": 4,
+                "label_tr": "ev/ic guven"
+              },
+              "aspect": {
+                "code": "opposition",
+                "symbol": "☍"
+              },
+              "target": {
+                "frame": null,
+                "body_or_angle": "MC",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "orb": 0.9,
+              "phase": "separating",
+              "duration": "months"
+            },
+            "phase": "separating",
+            "duration": "months"
+          },
+          {
+            "type": "summary",
+            "text": "Pluto derin donusumu calistiriyor; yon ve hedef algin uzerinde denge kurma ihtiyacini arttirabilir. Gunluk yasam akisi icinde gundemin hizi fark edilir bicimde degisiyor; icindeki otorite hizli tepkiyi durdurur ve kendini sertce denetlemene yol acar Ozellikle bu temayi daha kolay fark edebilirsin.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "upper_meaning",
+            "text": "az ama net bir ifade ritmi kurmak guvenilir bir etki yaratir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. olculu tempo ve net sinirlar dengeyi korur Ozellikle bu temayi daha kolay fark edebilirsin.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "insight_pack",
+            "text": null,
+            "items": [
+              {
+                "key": "conflict",
+                "text": "Gunluk yasam akisi icinde gundemin hizi fark edilir bicimde degisiyor; sorumluluk duygusu spontanligi baskilar ve ifadeni kisitlayabilir Bu ritim tepkilerini farkli sekilde tetikleyebilir."
+              },
+              {
+                "key": "shadow",
+                "text": "yanlis anlasilma korkusu kendini asiri savunma ya da tamamen susma tepkisi dogurabilir; dengeyi korumak icin tempo ayari gerekebilir. fazla yuklenme ritmi zorlayabilir Bazen bu etki dusundugunden daha belirgin olabilir."
+              },
+              {
+                "key": "upper",
+                "text": "duzenli tekrar ve sabirla sesini olgun bir guce donusturebilirsin; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. olculu tempo ve net sinirlar dengeyi korur Bu ritim tepkilerini farkli sekilde tetikleyebilir."
+              }
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "time_hint",
+            "text": "çözülüyor — aylar süren ana tema",
+            "items": null,
+            "phase": "separating",
+            "duration": "long"
+          },
+          {
+            "type": "guidance",
+            "text": null,
+            "items": [
+              "Öncelik sırala.",
+              "Takvim blokla.",
+              "Konu buyurse tek bir oncelik sec; ayni anda her seyi cozmeye calisma."
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "watch_out",
+            "text": null,
+            "items": [
+              "Aşırı yük.",
+              "Acele karar."
+            ],
+            "phase": null,
+            "duration": null
+          }
+        ],
+        "cta": {
+          "label": "Detaya in",
+          "action": "open_event_detail"
+        }
+      },
+      {
+        "event_id": "ebbca6cd0e8a421d7e7ff9b7f04edc6ac40ed140",
+        "tier": "flavor",
+        "severity_tag": "medium",
+        "blocks": [
+          {
+            "type": "headline",
+            "text": "Kimlikte basınç",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "signature",
+            "text": "Transit Mars — — — 4. Ev (ev/ic guven) • □ Natal Pluto — — • orb 1.0° • separating • weeks",
+            "items": {
+              "source": {
+                "frame": "transit",
+                "body": "Mars",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "house": {
+                "num": 4,
+                "label_tr": "ev/ic guven"
+              },
+              "aspect": {
+                "code": "square",
+                "symbol": "□"
+              },
+              "target": {
+                "frame": "natal",
+                "body_or_angle": "Pluto",
+                "sign_tr": "—",
+                "deg": null
+              },
+              "orb": 1.0,
+              "phase": "separating",
+              "duration": "weeks"
+            },
+            "phase": "separating",
+            "duration": "weeks"
+          },
+          {
+            "type": "summary",
+            "text": "Mars adimlarini netlestirmeye zorluyor; guc ve donusum tema uzerinde sabri zorlayip karar baskisi dogurabilir. Gunluk yasam akisi icinde gundemin hizi fark edilir bicimde degisiyor; hizli hareket istegi sabri zorlayip acele hamlelere itebilir Ozellikle bu temayi daha kolay fark edebilirsin.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "upper_meaning",
+            "text": "durup nefes almak hareket kalitesini belirgin sekilde iyilestirir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. olculu tempo ve net sinirlar dengeyi korur Bazen bu etki dusundugunden daha belirgin olabilir.",
+            "items": null,
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "insight_pack",
+            "text": null,
+            "items": [
+              {
+                "key": "conflict",
+                "text": "Gunluk yasam akisi icinde gundemin hizi fark edilir bicimde degisiyor; kontrol etme arzusu yumusak iletisimi zorlastirabilir Bu ritim tepkilerini farkli sekilde tetikleyebilir."
+              },
+              {
+                "key": "shadow",
+                "text": "rekabet modu isbirligini ikinci plana atabilir; dengeyi korumak icin tempo ayari gerekebilir. fazla yuklenme ritmi zorlayabilir Bazen bu etki dusundugunden daha belirgin olabilir."
+              },
+              {
+                "key": "upper",
+                "text": "durup nefes almak hareket kalitesini belirgin sekilde iyilestirir; ritim ve netlik bir araya geldiginde daha guclu ilerlersin. olculu tempo ve net sinirlar dengeyi korur Ozellikle bu temayi daha kolay fark edebilirsin."
+              }
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "time_hint",
+            "text": "çözülüyor — haftalar süren vurgu",
+            "items": null,
+            "phase": "separating",
+            "duration": "medium"
+          },
+          {
+            "type": "guidance",
+            "text": null,
+            "items": [
+              "Ritmi düşür.",
+              "Net sınır koy.",
+              "Zorlanan yerde daha cok bastirmak yerine yontemi degistir; direnc cogu zaman yaklasim ister."
+            ],
+            "phase": null,
+            "duration": null
+          },
+          {
+            "type": "watch_out",
+            "text": null,
+            "items": [
+              "Acele kopuşlar.",
+              "Acele karar."
+            ],
+            "phase": null,
+            "duration": null
+          }
+        ],
+        "cta": {
+          "label": "Detaya in",
+          "action": "open_event_detail"
+        }
+      }
+    ]
+  }
+}

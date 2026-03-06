@@ -4,8 +4,11 @@ from __future__ import annotations
 from pathlib import Path
 import copy
 import hashlib
+import os
+from datetime import date as date_type, time as time_type
 from typing import Any, Dict, List, Mapping, Optional, Tuple, Literal
 import json
+import logging
 from functools import lru_cache
 
 from fastapi import APIRouter, HTTPException, Query
@@ -24,10 +27,21 @@ from app.transit.interpret.interpretation_engine_v1 import (
 from app.transit.present.public_builder import build_public_response
 from app.transit.calendar_builder import build_transit_calendar_public
 from app.transit.calendar.best_times import best_times_from_calendar_payload
-from app.transit.serialize.calendar_serializers import to_ui_day_detail
+from app.transit.serialize.calendar_serializers import to_ui_day_detail, to_ui_calendar
 from app.transit.interpret.promise_builder_v1 import build_promise_model
+from app.transit.narrative import (
+    assemble_blocks,
+    build_calendar_day,
+    build_feed_snippet,
+    build_personal_transit,
+    build_space_hub,
+)
+from app.transit.narrative.coverage import build_period_coverage
+from app.transit.narrative.selection import select_event_ids
+from app.transit.narrative.generator import make_birth_fingerprint
 
 router = APIRouter(tags=["transits"])
+logger = logging.getLogger(__name__)
 
 def _normalize_calendar_view(view: str) -> Literal["public", "internal", "both"]:
     """
@@ -46,6 +60,174 @@ def _normalize_calendar_view(view: str) -> Literal["public", "internal", "both"]
     if v in {"public", "internal", "both"}:
         return v
     return "public"
+
+
+def _parse_iso_date(value: str, *, field_name: str) -> date_type:
+    try:
+        return date_type.fromisoformat(value)
+    except ValueError as exc:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error": "validation_error",
+                "message": f"{field_name} must be in YYYY-MM-DD format.",
+            },
+        ) from exc
+
+
+def _parse_best_times_intent(
+    intent_raw: str,
+    sub_intent_raw: str | None,
+) -> tuple[str, str | None, str]:
+    intent_value = (intent_raw or "").strip().lower()
+    sub_value = (sub_intent_raw or "").strip().lower() or None
+
+    # Accept both:
+    # - beauty_care + sub_intent=nourish
+    # - beauty_care_nourish (single intent key)
+    if intent_value.startswith("beauty_care_"):
+        suffix = intent_value.removeprefix("beauty_care_")
+        if suffix in {"nourish", "reduce", "procedure"}:
+            return "beauty_care", suffix, f"beauty_care_{suffix}"
+        return "beauty_care", None, "beauty_care_nourish"
+
+    if intent_value == "beauty_care":
+        if sub_value in {"nourish", "reduce", "procedure"}:
+            return "beauty_care", sub_value, f"beauty_care_{sub_value}"
+        return "beauty_care", None, "beauty_care_nourish"
+
+    if not intent_value:
+        return "beauty_care", "nourish", "beauty_care_nourish"
+
+    return intent_value, sub_value, intent_value
+
+
+def _normalize_best_times_public_payload(
+    *,
+    raw: Mapping[str, Any],
+    start: str,
+    end: str,
+    tz: str,
+    intent: str,
+) -> Dict[str, Any]:
+    def _intent_label(value: str) -> str:
+        mapping = {
+            "general": "Genel",
+            "beauty_care_nourish": "Besle",
+            "beauty_care_reduce": "Azalt",
+            "beauty_care_procedure": "Islem",
+        }
+        return mapping.get(value, value.replace("_", " ").title())
+
+    def _sort_key_date(value: Any) -> tuple[int, str]:
+        text = str(value or "")
+        return (0 if text else 1, text)
+
+    def _normalize_caution_tags(item: Mapping[str, Any]) -> list[str]:
+        tags = item.get("caution_tags")
+        if isinstance(tags, list):
+            return [str(tag) for tag in tags if str(tag).strip()]
+        gates = item.get("gates")
+        if isinstance(gates, list):
+            return [str(tag) for tag in gates if str(tag).strip()]
+        critical_reason = item.get("critical_reason")
+        if isinstance(critical_reason, list):
+            return [str(tag) for tag in critical_reason if str(tag).strip()]
+        return []
+
+    def _normalize_reason(item: Mapping[str, Any]) -> str:
+        for key in ("reason", "summary", "recommendation_user", "rating_reason_user"):
+            value = item.get(key)
+            if isinstance(value, str) and value.strip():
+                return value.strip()
+        why = item.get("why_support")
+        if isinstance(why, list):
+            compact = [str(v).strip() for v in why if str(v).strip()]
+            if compact:
+                return " ".join(compact[:2])
+        return ""
+
+    normalized_candidates: list[Dict[str, Any]] = []
+    for candidate in raw.get("candidates") or []:
+        if not isinstance(candidate, Mapping):
+            continue
+        date_value = str(candidate.get("date") or "").strip()
+        if not date_value:
+            continue
+        score_value = candidate.get("score")
+        try:
+            score = max(0.0, min(1.0, float(score_value)))
+        except (TypeError, ValueError):
+            score = 0.0
+        label = candidate.get("label")
+        if not isinstance(label, str) or not label.strip():
+            rating = candidate.get("final_rating") or candidate.get("rating")
+            label = "Best day" if isinstance(rating, int) and rating >= 3 else None
+        top_event_ids = candidate.get("top_event_ids")
+        if not isinstance(top_event_ids, list):
+            top_event_ids = candidate.get("event_ids")
+        normalized_candidates.append(
+            {
+                "date": date_value,
+                "score": round(score, 3),
+                "label": label.strip() if isinstance(label, str) and label.strip() else None,
+                "reason": _normalize_reason(candidate),
+                "caution_tags": _normalize_caution_tags(candidate),
+                "top_event_ids": [
+                    str(event_id)
+                    for event_id in (top_event_ids or [])
+                    if str(event_id).strip()
+                ][:5],
+            }
+        )
+
+    normalized_candidates.sort(
+        key=lambda item: (-float(item.get("score") or 0.0), _sort_key_date(item.get("date"))),
+    )
+
+    normalized_windows: list[Dict[str, Any]] = []
+    for window in raw.get("windows") or []:
+        if not isinstance(window, Mapping):
+            continue
+        start_value = str(window.get("start") or "").strip()
+        end_value = str(window.get("end") or "").strip()
+        if not start_value or not end_value:
+            continue
+        score_value = window.get("score")
+        if score_value is None:
+            score_value = window.get("avg_score")
+        try:
+            score = max(0.0, min(1.0, float(score_value)))
+        except (TypeError, ValueError):
+            score = 0.0
+        label = window.get("label")
+        if not isinstance(label, str) or not label.strip():
+            label = window.get("action_type")
+        normalized_windows.append(
+            {
+                "start": start_value,
+                "end": end_value,
+                "score": round(score, 3),
+                "label": label.strip() if isinstance(label, str) and label.strip() else None,
+                "reason": _normalize_reason(window),
+                "caution_tags": _normalize_caution_tags(window),
+            }
+        )
+
+    normalized_windows.sort(
+        key=lambda item: (
+            -float(item.get("score") or 0.0),
+            _sort_key_date(item.get("start")),
+        ),
+    )
+
+    return {
+        "range": {"start": start, "end": end, "tz": tz},
+        "intent": intent,
+        "intent_label": _intent_label(intent),
+        "candidates": normalized_candidates,
+        "windows": normalized_windows,
+    }
 
 _CONTENT_STORE: ContentStore | None = None
 _PERIOD_SPACE_PACK: Dict[str, Any] | None = None
@@ -964,6 +1146,74 @@ class TransitEventTimingRequest(BaseModel):
     selector: TransitEventSelector
 
 
+class TransitNarrativeRequest(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    birth_date: str
+    birth_time: str
+    birth_place: str
+    start: str
+    end: str
+    tz: str
+    transit_place: str | None = None
+    lens: str = "general"
+    intent: str | None = "beauty_care_nourish"
+    sub_intent: str | None = None
+    selected_date: str | None = None
+    include_best_times: bool = True
+    top: int = 10
+    window: int = 3
+    debug: bool = False
+
+
+def _build_narrative_public_payload(request: TransitNarrativeRequest, start_date: date_type) -> Dict[str, Any]:
+    transit_date = request.selected_date or start_date.isoformat()
+    core_request = TransitRequest(
+        birth_date=request.birth_date,
+        birth_time=request.birth_time,
+        birth_place=request.birth_place,
+        transit_date=transit_date,
+        transit_time="12:00",
+        transit_place=request.transit_place or request.birth_place,
+        options=None,
+        context_mode="context-lite",
+    )
+    core_response = _build_transits_engine_response(core_request)
+    public_payload = build_public_response(core_response)
+    period_core_raw = public_payload.get("period_core") if isinstance(public_payload.get("period_core"), Mapping) else {}
+    period_core = dict(period_core_raw)
+    period_root_causes = period_core.pop("_debug_root_causes", [])
+    events_debug = public_payload.get("_events_debug") if isinstance(public_payload.get("_events_debug"), list) else []
+    items_unscored = (core_response.get("display") or {}).get("items") or []
+    selected_events, period_selection = select_event_ids(
+        [item for item in items_unscored if isinstance(item, Mapping)],
+        max_cards=5,
+        natal=core_response.get("natal") if isinstance(core_response, Mapping) else None,
+    )
+    selected_ids = {
+        str(item.get("event_id") or "")
+        for item in selected_events
+        if isinstance(item, Mapping)
+    }
+    coverage = build_period_coverage(
+        items_unscored,
+        selected_ids=selected_ids,
+        now_date=transit_date,
+        tz=request.tz,
+    )
+    include_public_coverage = str(os.getenv("PERIOD_COVERAGE_PUBLIC", "0")).strip().lower() in {"1", "true", "yes", "on"}
+    return {
+        "period_core": period_core,
+        "event_cards": public_payload.get("event_cards") or [],
+        "timeline": public_payload.get("timeline") or {},
+        "_period_coverage": coverage,
+        "_period_selection": period_selection,
+        "_period_root_causes": period_root_causes,
+        "_events_debug": events_debug,
+        **({"period_coverage": coverage} if include_public_coverage else {}),
+    }
+
+
 def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
     assumptions: list[str] = []
     transit_time = request.transit_time
@@ -1144,99 +1394,386 @@ def build_transit_calendar(
 
 @router.get("/transit/calendar/best-times")
 def transit_calendar_best_times(
-    intent: str = Query(..., description="beauty_care | business | marriage_window | ..."),
+    intent: str = Query(
+        "beauty_care_nourish",
+        description="beauty_care_nourish | beauty_care_reduce | beauty_care_procedure | ...",
+    ),
     sub_intent: str | None = Query(None, description="nourish | reduce | procedure (for beauty_care)"),
     body_area: str | None = Query(None),
     birth_date: str = Query(..., description="YYYY-MM-DD"),
     birth_time: str = Query(..., description="HH:MM"),
     birth_place: str = Query(..., description="City, Country (or your place id)"),
-    start: str | None = Query(None, description="YYYY-MM-DD"),
-    end: str | None = Query(None, description="YYYY-MM-DD"),
+    start: str = Query(..., description="YYYY-MM-DD"),
+    end: str = Query(..., description="YYYY-MM-DD"),
     tz: str = Query("Europe/Istanbul"),
+    view: str = Query("public", description="public | internal | both (ui/full are accepted aliases)"),
     top: int = Query(10, ge=1, le=50),
     window: int = Query(3, ge=2, le=14),
     debug: int = Query(0, description="1 => evidence/rules döndür"),
     transit_place: str | None = None,
     lens: str = Query("general", description="general | relationship | marriage | business | career | money | health | home"),
 ) -> Dict[str, Any]:
-    if not start or not end:
-        from datetime import date, timedelta
+    try:
+        start_date = _parse_iso_date(start, field_name="start")
+        end_date = _parse_iso_date(end, field_name="end")
+        if start_date > end_date:
+            raise HTTPException(
+                status_code=422,
+                detail={
+                    "error": "validation_error",
+                    "message": "start must be earlier than or equal to end.",
+                },
+            )
 
-        today = date.today()
-        start = start or today.isoformat()
-        end = end or (today + timedelta(days=30)).isoformat()
+        normalized_intent, normalized_sub_intent, public_intent = _parse_best_times_intent(
+            intent,
+            sub_intent,
+        )
+        v = _normalize_calendar_view(view)
 
-    payload = build_transit_calendar_public(
-        birth_date=birth_date,
-        birth_time=birth_time,
-        birth_place=birth_place,
-        transit_place=transit_place or birth_place,
-        start=start,
-        end=end,
-        tz=tz,
-        lens=lens,
-        options=None,
-    )
+        payload = build_transit_calendar_public(
+            birth_date=birth_date,
+            birth_time=birth_time,
+            birth_place=birth_place,
+            transit_place=transit_place or birth_place,
+            start=start_date.isoformat(),
+            end=end_date.isoformat(),
+            tz=tz,
+            lens=lens,
+            options=None,
+        )
 
-    result = best_times_from_calendar_payload(
-        payload=payload.get("calendar_internal") or payload,
-        intent=intent,
-        sub_intent=sub_intent,
-        body_area=body_area,
-        top=top,
-        window=window,
-        debug=bool(debug),
-    )
-    if debug:
-        if "_debug_calendar" not in result:
-            internal = payload.get("calendar_internal") or payload
-            days = internal.get("days") or []
-            sample = days[0] if days else {}
-            result["_debug_calendar"] = {
-                "internal_has_days": bool(days),
-                "days_count": len(days),
-                "sample_day_keys": sorted(list(sample.keys()))[:50] if isinstance(sample, dict) else [],
-                "sample_moon_phase": sample.get("moon_phase") if isinstance(sample, dict) else None,
-                "sample_moon_sign": sample.get("moon_sign") if isinstance(sample, dict) else None,
-                "has_markers": bool(internal.get("markers")) if isinstance(internal, dict) else False,
-                "has_items_map_raw": bool(internal.get("items_map_raw")) if isinstance(internal, dict) else False,
+        internal_payload = payload.get("calendar_internal") or payload
+        internal_result = best_times_from_calendar_payload(
+            payload=payload.get("calendar_internal") or payload,
+            intent=normalized_intent,
+            sub_intent=normalized_sub_intent,
+            body_area=body_area,
+            top=top,
+            window=window,
+            debug=bool(debug),
+        )
+        public_result = _normalize_best_times_public_payload(
+            raw=internal_result,
+            start=start_date.isoformat(),
+            end=end_date.isoformat(),
+            tz=tz,
+            intent=public_intent,
+        )
+
+        if v == "internal":
+            return internal_result
+        if v == "both":
+            return {"public": public_result, "internal": internal_result}
+
+        if debug:
+            if "_debug_calendar" not in internal_result:
+                days = internal_payload.get("days") or []
+                sample = days[0] if days else {}
+                internal_result["_debug_calendar"] = {
+                    "internal_has_days": bool(days),
+                    "days_count": len(days),
+                    "sample_day_keys": sorted(list(sample.keys()))[:50] if isinstance(sample, dict) else [],
+                    "sample_moon_phase": sample.get("moon_phase") if isinstance(sample, dict) else None,
+                    "sample_moon_sign": sample.get("moon_sign") if isinstance(sample, dict) else None,
+                    "has_markers": bool(internal_payload.get("markers")) if isinstance(internal_payload, dict) else False,
+                    "has_items_map_raw": bool(internal_payload.get("items_map_raw")) if isinstance(internal_payload, dict) else False,
+                }
+            public_result["_debug"] = {
+                "calendar": internal_result.get("_debug_calendar") or {},
             }
-    return result
+
+        return public_result
+    except ValueError as exc:
+        logger.warning("best-times validation error: %s", exc)
+        raise HTTPException(
+            status_code=422,
+            detail={"error": "validation_error", "message": str(exc)},
+        ) from exc
+    except Exception as exc:  # pragma: no cover - defensive guard for UI
+        logger.exception("best-times failed")
+        raise HTTPException(
+            status_code=500,
+            detail={"error": "best_times_failed", "message": str(exc)},
+        ) from exc
 
 
 @router.get("/transit/calendar/day")
 def build_transit_calendar_day(
-    birth_date: str,
-    birth_time: str,
+    birth_date: date_type,
+    birth_time: time_type,
     birth_place: str,
-    date: str,
     tz: str,
+    date: date_type | None = None,
+    start: date_type | None = None,
+    end: date_type | None = None,
     transit_place: str | None = None,
     view: str = Query("internal", description="public | internal | both (ui/full are accepted aliases)"),
 ) -> Dict[str, Any]:
     v = _normalize_calendar_view(view)
+    birth_date_str = birth_date.isoformat()
+    birth_time_str = birth_time.strftime("%H:%M")
+
+    try:
+        if date:
+            date_str = date.isoformat()
+            payload = build_transit_calendar_public(
+                birth_date=birth_date_str,
+                birth_time=birth_time_str,
+                birth_place=birth_place,
+                transit_place=transit_place or birth_place,
+                start=date_str,
+                end=date_str,
+                tz=tz,
+                lens="general",
+                options=None,
+            )
+            internal = payload.get("calendar_internal") or payload
+            public = payload.get("calendar_public") or {}
+            if v == "public":
+                return to_ui_day_detail(internal, date=date_str, top_n=7)
+            if v == "both":
+                return {
+                    "calendar_internal": internal,
+                    "calendar_public": public,
+                    "day_ui": to_ui_day_detail(internal, date=date_str, top_n=7),
+                }
+            return internal
+
+        if not start or not end:
+            raise HTTPException(
+                status_code=422,
+                detail={
+                    "error": "validation_error",
+                    "message": "Provide either 'date' or both 'start' and 'end'.",
+                },
+            )
+        start_str = start.isoformat()
+        end_str = end.isoformat()
+
+        payload = build_transit_calendar_public(
+            birth_date=birth_date_str,
+            birth_time=birth_time_str,
+            birth_place=birth_place,
+            transit_place=transit_place or birth_place,
+            start=start_str,
+            end=end_str,
+            tz=tz,
+            lens="general",
+            options=None,
+        )
+        internal = payload.get("calendar_internal") or payload
+        public = payload.get("calendar_public") or {}
+        ui = to_ui_calendar(internal, lens="general")
+
+        if v == "public":
+            return ui
+        if v == "both":
+            return {
+                "calendar_internal": internal,
+                "calendar_public": public,
+                "calendar_ui": ui,
+            }
+        return internal
+    except HTTPException:
+        raise
+    except ValueError as exc:
+        logger.warning("calendar/day validation error: %s", exc)
+        raise HTTPException(
+            status_code=422,
+            detail={"error": "validation_error", "message": str(exc)},
+        ) from exc
+    except Exception as exc:  # pragma: no cover - defensive guard for UI
+        logger.exception("calendar/day failed")
+        raise HTTPException(
+            status_code=500,
+            detail={"error": "calendar_day_failed", "message": str(exc)},
+        ) from exc
+
+
+@router.post("/transit/narrative")
+def build_transit_narrative(request: TransitNarrativeRequest) -> Dict[str, Any]:
+    start_date = _parse_iso_date(request.start, field_name="start")
+    end_date = _parse_iso_date(request.end, field_name="end")
+    if start_date > end_date:
+        raise HTTPException(
+            status_code=422,
+            detail={
+                "error": "validation_error",
+                "message": "start must be earlier than or equal to end.",
+            },
+        )
+
     payload = build_transit_calendar_public(
-        birth_date=birth_date,
-        birth_time=birth_time,
-        birth_place=birth_place,
-        transit_place=transit_place or birth_place,
-        start=date,
-        end=date,
-        tz=tz,
-        lens="general",
+        birth_date=request.birth_date,
+        birth_time=request.birth_time,
+        birth_place=request.birth_place,
+        transit_place=request.transit_place or request.birth_place,
+        start=start_date.isoformat(),
+        end=end_date.isoformat(),
+        tz=request.tz,
+        lens=request.lens,
         options=None,
     )
     internal = payload.get("calendar_internal") or payload
-    public = payload.get("calendar_public") or {}
-    if v == "public":
-        return to_ui_day_detail(internal, date=date, top_n=7)
-    if v == "both":
-        return {
-            "calendar_internal": internal,
-            "calendar_public": public,
-            "day_ui": to_ui_day_detail(internal, date=date, top_n=7),
+    calendar_public = to_ui_calendar(internal, lens=request.lens)
+
+    best_times_public: Dict[str, Any] | None = None
+    best_times_internal: Dict[str, Any] | None = None
+    if request.include_best_times:
+        normalized_intent, normalized_sub_intent, public_intent = _parse_best_times_intent(
+            request.intent or "",
+            request.sub_intent,
+        )
+        best_times_internal = best_times_from_calendar_payload(
+            payload=internal,
+            intent=normalized_intent,
+            sub_intent=normalized_sub_intent,
+            body_area=None,
+            top=request.top,
+            window=request.window,
+            debug=request.debug,
+        )
+        best_times_public = _normalize_best_times_public_payload(
+            raw=best_times_internal,
+            start=start_date.isoformat(),
+            end=end_date.isoformat(),
+            tz=request.tz,
+            intent=public_intent,
+        )
+
+    blocks = assemble_blocks(
+        calendar_public=calendar_public,
+        calendar_internal=internal,
+        best_times=best_times_public,
+        year_summary=calendar_public.get("year_summary") or {},
+        selected_date=request.selected_date,
+        seed_context={
+            "birth_fingerprint": make_birth_fingerprint(
+                birth_date=request.birth_date,
+                birth_time=request.birth_time,
+                birth_place=request.birth_place,
+                tz=request.tz,
+            ),
+            "intent": request.intent or "general",
+            "lens": request.lens,
+        },
+    )
+
+    screens = {
+        "space_hub": build_space_hub(blocks),
+        "personal_transit": build_personal_transit(blocks),
+        "calendar_day": build_calendar_day(blocks, request.selected_date),
+        "feed_snippet": build_feed_snippet(blocks),
+    }
+    internal_days_by_date: Dict[str, Mapping[str, Any]] = {}
+    for day in internal.get("days") or []:
+        if isinstance(day, Mapping):
+            key = str(day.get("date") or "")
+            if key:
+                internal_days_by_date[key] = day
+
+    calendar_days: list[Dict[str, Any]] = []
+    for day in calendar_public.get("days") or []:
+        if not isinstance(day, Mapping):
+            continue
+        day_date = str(day.get("date") or "")
+        internal_day = internal_days_by_date.get(day_date) or {}
+        labels = [str(label) for label in (day.get("labels") or []) if str(label).strip()]
+        top_events = day.get("top_events") or []
+        if not isinstance(top_events, list):
+            top_events = []
+        event_count = int(day.get("event_count") or len(top_events) or 0)
+        signals_count = max(event_count, len(labels), len(top_events))
+        rating = day.get("rating")
+        if not isinstance(rating, int):
+            rating = int(internal_day.get("rating") or 0)
+        heat = day.get("heat")
+        if not isinstance(heat, int):
+            heat = int(internal_day.get("heat") or 0)
+        critical_reasons_raw = internal_day.get("critical_reason") or day.get("critical_reason") or []
+        critical_reasons = [
+            str(reason)
+            for reason in critical_reasons_raw
+            if str(reason).strip()
+        ]
+        calendar_days.append(
+            {
+                "date": day_date,
+                "signals_count": signals_count,
+                "is_critical": bool(day.get("is_critical")),
+                "labels": labels[:3],
+                "critical_reasons": critical_reasons,
+            }
+        )
+
+    response: Dict[str, Any] = {
+        "range": calendar_public.get("range", {}),
+        "blocks": [block.to_dict() for block in blocks],
+        "screens": screens,
+        "calendar": {
+            "days": calendar_days,
+        },
+    }
+    period_coverage_debug: Dict[str, Any] = {}
+    period_selection_debug: Dict[str, Any] = {}
+    period_root_causes_debug: List[Dict[str, Any]] = []
+    public_events_debug: List[Dict[str, Any]] = []
+    try:
+        response["public"] = _build_narrative_public_payload(request, start_date)
+        if isinstance(response.get("public"), Mapping):
+            period_coverage_debug = dict(response["public"].get("_period_coverage") or {})
+            response["public"].pop("_period_coverage", None)
+            period_selection_debug = dict(response["public"].get("_period_selection") or {})
+            response["public"].pop("_period_selection", None)
+            period_root_causes_debug = [
+                dict(item)
+                for item in (response["public"].get("_period_root_causes") or [])
+                if isinstance(item, Mapping)
+            ]
+            response["public"].pop("_period_root_causes", None)
+            public_events_debug = [
+                dict(item)
+                for item in (response["public"].get("_events_debug") or [])
+                if isinstance(item, Mapping)
+            ]
+            response["public"].pop("_events_debug", None)
+    except Exception:  # pragma: no cover - defensive; do not fail narrative screen due to public cards
+        logger.exception("transit narrative public payload failed")
+        response["public"] = {
+            "period_core": {},
+            "event_cards": [],
+            "timeline": {},
         }
-    return internal
+    if best_times_public is not None:
+        response["best_times"] = best_times_public
+    if request.debug:
+        response["debug"] = {
+            "calendar_public_keys": sorted(list(calendar_public.keys())),
+            "calendar_days_count": len(calendar_public.get("days") or []),
+            "best_times_enabled": bool(request.include_best_times),
+            "best_times_candidates": len((best_times_public or {}).get("candidates") or []),
+            "best_times_windows": len((best_times_public or {}).get("windows") or []),
+            "calendar_numeric": {
+                day["date"]: {
+                    "signals_count": int(day.get("signals_count") or 0),
+                    "rating": int((internal_days_by_date.get(day["date"]) or {}).get("rating") or 0),
+                    "heat": int((internal_days_by_date.get(day["date"]) or {}).get("heat") or 0),
+                    "event_count": int((internal_days_by_date.get(day["date"]) or {}).get("event_count") or 0),
+                }
+                for day in calendar_days
+                if day.get("date")
+            },
+            "period_coverage": period_coverage_debug,
+            "period_selection": period_selection_debug,
+            "period_root_causes": period_root_causes_debug,
+            "events_debug": public_events_debug,
+        }
+        if best_times_public is not None:
+            response["best_times"] = best_times_public
+        if best_times_internal is not None:
+            response["best_times_internal"] = best_times_internal
+    return response
 
 
 @router.post("/transits/window")

@@ -60,6 +60,10 @@ from app.helpers.domain_normalizer import canon_domain
 from app.helpers.normalize import normalize_node_alias, normalize_planet_key, normalize_aspect_type
 from app.engine.astro_normalize import aspect_strength, clamp01
 from app.natal.public_builder import build_public_natal_view
+from app.natal.natal_graph import build_natal_graph
+from app.natal.narrative.core_story_tr_natal import build_core_story_ui
+from app.natal.narrative.profile_narrative_engine import build_profile_narrative
+from app.natal.supporting_threads_builder import build_sections_v2, build_supporting_threads
 
 logger = logging.getLogger(__name__)
 
@@ -83,10 +87,16 @@ def interpret_natal_chart(
     request: NatalInterpretationRequest,
     debug: bool = False,
     output_profile: str = "user_compact",
+    profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     """Free deterministic interpretation endpoint (JoviaWeighted narratives)."""
 
-    base_payload = _prepare_payload(request, premium_mode=False, debug_mode=debug)
+    base_payload = _prepare_payload(
+        request,
+        premium_mode=False,
+        debug_mode=debug,
+        profile_engine=profile_engine,
+    )
     return _finalize_response(
         base_payload,
         premium_mode=False,
@@ -99,15 +109,22 @@ def interpret_natal_chart(
 def interpret_natal_chart_ui(
     request: NatalInterpretationRequest,
     debug: bool = False,
+    include_debug: bool = False,
+    profile_engine: str | None = None,
 ) -> Dict[str, Any]:
-    base_payload = _prepare_payload(request, premium_mode=False, debug_mode=debug)
+    base_payload = _prepare_payload(
+        request,
+        premium_mode=False,
+        debug_mode=debug,
+        profile_engine=profile_engine,
+    )
     response = _finalize_response(
         base_payload,
         premium_mode=False,
         debug_mode=debug,
         output_profile="user_compact",
     )
-    public = build_public_natal_view(response, locale=request.locale or "tr")
+    public = build_public_natal_view(response, locale=request.locale or "tr", include_debug=include_debug)
     return {"public": public}
 
 
@@ -115,6 +132,7 @@ def interpret_natal_chart_ui(
 def interpret_natal_chart_debug(
     request: NatalInterpretationRequest,
     debug: bool = False,
+    profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     if os.getenv("ENABLE_NATAL_DEBUG_ENDPOINTS", "false").strip().lower() not in {
         "1",
@@ -123,14 +141,19 @@ def interpret_natal_chart_debug(
         "on",
     }:
         raise HTTPException(status_code=403, detail="Debug endpoint disabled")
-    base_payload = _prepare_payload(request, premium_mode=False, debug_mode=True)
+    base_payload = _prepare_payload(
+        request,
+        premium_mode=False,
+        debug_mode=True,
+        profile_engine=profile_engine,
+    )
     response = _finalize_response(
         base_payload,
         premium_mode=False,
         debug_mode=True,
         output_profile="user_compact",
     )
-    public = build_public_natal_view(response, locale=request.locale or "tr")
+    public = build_public_natal_view(response, locale=request.locale or "tr", include_debug=True)
     return {"public": public, "debug": response}
 
 
@@ -139,10 +162,16 @@ def interpret_natal_chart_premium(
     request: NatalInterpretationRequest,
     debug: bool = False,
     output_profile: str = "user_compact",
+    profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     """Premium endpoint (PRO Jovia narratives)."""
 
-    base_payload = _prepare_payload(request, premium_mode=True, debug_mode=debug)
+    base_payload = _prepare_payload(
+        request,
+        premium_mode=True,
+        debug_mode=debug,
+        profile_engine=profile_engine,
+    )
     return _finalize_response(
         base_payload,
         premium_mode=True,
@@ -155,15 +184,22 @@ def interpret_natal_chart_premium(
 def interpret_natal_chart_premium_ui(
     request: NatalInterpretationRequest,
     debug: bool = False,
+    include_debug: bool = False,
+    profile_engine: str | None = None,
 ) -> Dict[str, Any]:
-    base_payload = _prepare_payload(request, premium_mode=True, debug_mode=debug)
+    base_payload = _prepare_payload(
+        request,
+        premium_mode=True,
+        debug_mode=debug,
+        profile_engine=profile_engine,
+    )
     response = _finalize_response(
         base_payload,
         premium_mode=True,
         debug_mode=debug,
         output_profile="user_compact",
     )
-    public = build_public_natal_view(response, locale=request.locale or "tr")
+    public = build_public_natal_view(response, locale=request.locale or "tr", include_debug=include_debug)
     return {"public": public}
 
 
@@ -171,6 +207,7 @@ def interpret_natal_chart_premium_ui(
 def interpret_natal_chart_premium_debug(
     request: NatalInterpretationRequest,
     debug: bool = False,
+    profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     if os.getenv("ENABLE_NATAL_DEBUG_ENDPOINTS", "false").strip().lower() not in {
         "1",
@@ -179,14 +216,19 @@ def interpret_natal_chart_premium_debug(
         "on",
     }:
         raise HTTPException(status_code=403, detail="Debug endpoint disabled")
-    base_payload = _prepare_payload(request, premium_mode=True, debug_mode=True)
+    base_payload = _prepare_payload(
+        request,
+        premium_mode=True,
+        debug_mode=True,
+        profile_engine=profile_engine,
+    )
     response = _finalize_response(
         base_payload,
         premium_mode=True,
         debug_mode=True,
         output_profile="user_compact",
     )
-    public = build_public_natal_view(response, locale=request.locale or "tr")
+    public = build_public_natal_view(response, locale=request.locale or "tr", include_debug=True)
     return {"public": public, "debug": response}
 
 
@@ -207,6 +249,7 @@ def _prepare_payload(
     premium_mode: bool,
     debug_mode: bool = False,
     tone_enabled: bool = True,
+    profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     try:
         chart_data = compute_natal_chart(request.birth_date, request.birth_time, request.birth_place)
@@ -219,6 +262,7 @@ def _prepare_payload(
         debug_mode=debug_mode,
         tone_enabled=tone_enabled,
         request=request,
+        profile_engine=profile_engine,
     )
 
 
@@ -229,6 +273,7 @@ def _prepare_payload_from_chart(
     debug_mode: bool = False,
     tone_enabled: bool = True,
     request: NatalInterpretationRequest | None = None,
+    profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     snapshots: Dict[str, Any] | None = {} if debug_mode else None
 
@@ -251,6 +296,7 @@ def _prepare_payload_from_chart(
                 }
             )
     aspects = serialize_aspects(chart_data.get("aspects", []))
+    natal_graph = build_natal_graph(chart_data=chart_data, planets=planets, aspects=aspects)
     interpretation, meta_info = rule_engine.interpret(planets=planets, aspects=aspects, return_meta=True)
     if snapshots is not None:
         snapshots["rule_engine_output_summary"] = _summarize_rule_engine(interpretation, meta_info)
@@ -503,12 +549,32 @@ def _prepare_payload_from_chart(
         "narrative_debug_active_domains_source": builder.narrative_debug_active_domains_source,
         "tone_profile": builder.tone_profiles,
         "routing": routing_info,
+        "natal_graph_compact": natal_graph.get("compact"),
     }
     if debug_mode:
         debug_info["warnings"] = warnings
         if snapshots:
             debug_info["snapshots"] = snapshots
+    sections_v2 = build_sections_v2(
+        chart_data=chart_data,
+        planets=planets,
+        natal_graph=natal_graph,
+    )
+    supporting_threads = build_supporting_threads(
+        chart_data=chart_data,
+        planets=planets,
+        natal_graph=natal_graph,
+        max_threads=4,
+    )
+    profile_narrative = build_profile_narrative(
+        chart_data,
+        natal_graph,
+        locale=(request.locale if request else "tr") or "tr",
+        include_debug=debug_mode,
+        engine_override=(profile_engine or "").strip().lower() or None,
+    )
     return {
+        "chart_data": chart_data,
         "metadata": _build_metadata(request, chart_data) if request else _build_metadata_from_chart(chart_data),
         "planets": planets,
         "aspects": aspects,
@@ -534,6 +600,11 @@ def _prepare_payload_from_chart(
         "composite_guidance": composite_guidance,
         "meaning_weighting": meaning_weighting,
         "narrative_anchor": narrative_anchor,
+        "natal_graph": natal_graph,
+        "natal_graph_compact": natal_graph.get("compact"),
+        "profile_narrative": profile_narrative,
+        "sections_v2": sections_v2,
+        "supporting_threads": supporting_threads,
         "debug": debug_info,
         "local_pressure": local_pressure,
         "__narrative_fragments": narrative_fragments,
@@ -609,6 +680,10 @@ def _finalize_response(
         "composite_guidance": base_payload["composite_guidance"],
         "meaning_weighting": base_payload["meaning_weighting"],
         "narrative_anchor": base_payload["narrative_anchor"],
+        "natal_graph_compact": base_payload.get("natal_graph_compact"),
+        "profile_narrative": base_payload.get("profile_narrative") or {},
+        "sections_v2": base_payload.get("sections_v2") or [],
+        "supporting_threads": base_payload.get("supporting_threads") or [],
         "debug": base_payload["debug"],
         "phase2_snapshot": phase2_snapshot,
         "narrative_interpretation": base_payload["narrative_interpretation"] if legacy_enabled else "",
@@ -758,6 +833,11 @@ def _finalize_response(
         upper_meaning_selected=base_payload.get("upper_meaning_selected"),
         debug=debug_mode,
         debug_payload=response.get("debug") if debug_mode else None,
+    )
+    response["core_story_ui"] = build_core_story_ui(
+        chart_data=base_payload.get("chart_data") or {},
+        planets=base_payload.get("planets") or [],
+        natal_graph=base_payload.get("natal_graph") or {},
     )
     response["data_quality"] = _build_data_quality_payload(
         response.get("core_story_plan") or {},

@@ -1,0 +1,680 @@
+{
+  "location": {
+    "city": "Istanbul, TR",
+    "latitude": 41.0082,
+    "longitude": 28.9784,
+    "timezone": "Europe/Istanbul"
+  },
+  "birth_datetime": "1996-12-28T07:10:00+02:00",
+  "timezone": "Europe/Istanbul",
+  "planets": {
+    "Sun": {
+      "longitude": 276.75,
+      "latitude": -0.0,
+      "distance": 0.9833,
+      "speed": 1.0189,
+      "sign": "Capricorn",
+      "house": 1,
+      "retrograde": false,
+      "degree": 6,
+      "minute": 45
+    },
+    "Moon": {
+      "longitude": 133.95,
+      "latitude": -3.77,
+      "distance": 0.0027,
+      "speed": 11.8774,
+      "sign": "Leo",
+      "house": 8,
+      "retrograde": false,
+      "degree": 13,
+      "minute": 57
+    },
+    "Mercury": {
+      "longitude": 287.37,
+      "latitude": 1.18,
+      "distance": 0.7183,
+      "speed": -0.8456,
+      "sign": "Capricorn",
+      "house": 1,
+      "retrograde": true,
+      "degree": 17,
+      "minute": 22
+    },
+    "Venus": {
+      "longitude": 253.71,
+      "latitude": 0.93,
+      "distance": 1.517,
+      "speed": 1.25,
+      "sign": "Sagittarius",
+      "house": 12,
+      "retrograde": false,
+      "degree": 13,
+      "minute": 43
+    },
+    "Mars": {
+      "longitude": 177.93,
+      "latitude": 2.57,
+      "distance": 1.1962,
+      "speed": 0.3562,
+      "sign": "Virgo",
+      "house": 9,
+      "retrograde": false,
+      "degree": 27,
+      "minute": 56
+    },
+    "Jupiter": {
+      "longitude": 294.3,
+      "latitude": -0.33,
+      "distance": 6.0677,
+      "speed": 0.2292,
+      "sign": "Capricorn",
+      "house": 1,
+      "retrograde": false,
+      "degree": 24,
+      "minute": 18
+    },
+    "Saturn": {
+      "longitude": 1.16,
+      "latitude": -2.37,
+      "distance": 9.5172,
+      "speed": 0.0438,
+      "sign": "Aries",
+      "house": 3,
+      "retrograde": false,
+      "degree": 1,
+      "minute": 9
+    },
+    "Uranus": {
+      "longitude": 303.06,
+      "latitude": -0.57,
+      "distance": 20.6734,
+      "speed": 0.0541,
+      "sign": "Aquarius",
+      "house": 1,
+      "retrograde": false,
+      "degree": 3,
+      "minute": 4
+    },
+    "Neptune": {
+      "longitude": 296.69,
+      "latitude": 0.43,
+      "distance": 31.0786,
+      "speed": 0.0361,
+      "sign": "Capricorn",
+      "house": 1,
+      "retrograde": false,
+      "degree": 26,
+      "minute": 41
+    },
+    "Pluto": {
+      "longitude": 244.26,
+      "latitude": 12.38,
+      "distance": 30.7517,
+      "speed": 0.0347,
+      "sign": "Sagittarius",
+      "house": 11,
+      "retrograde": false,
+      "degree": 4,
+      "minute": 15
+    },
+    "North Node": {
+      "longitude": 182.69,
+      "latitude": 0.0,
+      "distance": 0.0027,
+      "speed": -0.1579,
+      "sign": "Libra",
+      "house": 9,
+      "retrograde": true,
+      "degree": 2,
+      "minute": 42
+    },
+    "Lilith": {
+      "longitude": 141.0,
+      "latitude": -3.46,
+      "distance": 0.0027,
+      "speed": 0.1113,
+      "sign": "Leo",
+      "house": 8,
+      "retrograde": false,
+      "degree": 21,
+      "minute": 0
+    },
+    "Vertex": {
+      "longitude": 253.71,
+      "latitude": 0.93,
+      "distance": 1.517,
+      "speed": 1.25,
+      "sign": "Sagittarius",
+      "house": 12,
+      "retrograde": false,
+      "degree": 13,
+      "minute": 43
+    },
+    "Fortune": {
+      "longitude": 53.99,
+      "latitude": null,
+      "distance": null,
+      "speed": null,
+      "sign": "Taurus",
+      "house": 5,
+      "retrograde": false,
+      "degree": 23,
+      "minute": 59
+    }
+  },
+  "houses": {
+    "1": 271.1868,
+    "2": 310.2653,
+    "3": 351.8247,
+    "4": 25.2852,
+    "5": 50.4481,
+    "6": 71.1931,
+    "7": 91.1868,
+    "8": 130.2653,
+    "9": 171.8247,
+    "10": 205.2852,
+    "11": 230.4481,
+    "12": 251.1931
+  },
+  "house_positions": {
+    "1": {
+      "longitude": 271.1868,
+      "sign": "Capricorn",
+      "degree": 1,
+      "minute": 11
+    },
+    "2": {
+      "longitude": 310.2653,
+      "sign": "Aquarius",
+      "degree": 10,
+      "minute": 16
+    },
+    "3": {
+      "longitude": 351.8247,
+      "sign": "Pisces",
+      "degree": 21,
+      "minute": 49
+    },
+    "4": {
+      "longitude": 25.2852,
+      "sign": "Aries",
+      "degree": 25,
+      "minute": 17
+    },
+    "5": {
+      "longitude": 50.4481,
+      "sign": "Taurus",
+      "degree": 20,
+      "minute": 27
+    },
+    "6": {
+      "longitude": 71.1931,
+      "sign": "Gemini",
+      "degree": 11,
+      "minute": 12
+    },
+    "7": {
+      "longitude": 91.1868,
+      "sign": "Cancer",
+      "degree": 1,
+      "minute": 11
+    },
+    "8": {
+      "longitude": 130.2653,
+      "sign": "Leo",
+      "degree": 10,
+      "minute": 16
+    },
+    "9": {
+      "longitude": 171.8247,
+      "sign": "Virgo",
+      "degree": 21,
+      "minute": 49
+    },
+    "10": {
+      "longitude": 205.2852,
+      "sign": "Libra",
+      "degree": 25,
+      "minute": 17
+    },
+    "11": {
+      "longitude": 230.4481,
+      "sign": "Scorpio",
+      "degree": 20,
+      "minute": 27
+    },
+    "12": {
+      "longitude": 251.1931,
+      "sign": "Sagittarius",
+      "degree": 11,
+      "minute": 12
+    }
+  },
+  "angles": {
+    "ascendant": 271.1868,
+    "midheaven": 205.2851,
+    "ascendant_sign": "Capricorn",
+    "midheaven_sign": "Libra",
+    "descendant": 91.1868,
+    "imum_coeli": 25.2851,
+    "descendant_sign": "Cancer",
+    "imum_coeli_sign": "Aries"
+  },
+  "aspects": [
+    {
+      "planet1": "Sun",
+      "planet2": "Saturn",
+      "aspect": "Square",
+      "angle": 84.41,
+      "aspect_angle": 90,
+      "exact_angle": 84.41,
+      "orb": 5.59
+    },
+    {
+      "planet1": "Sun",
+      "planet2": "North Node",
+      "aspect": "Square",
+      "angle": 94.06,
+      "aspect_angle": 90,
+      "exact_angle": 94.06,
+      "orb": 4.06
+    },
+    {
+      "planet1": "Sun",
+      "planet2": "Ascendant",
+      "aspect": "Conjunction",
+      "angle": 5.56,
+      "aspect_angle": 0,
+      "exact_angle": 5.56,
+      "orb": 5.56
+    },
+    {
+      "planet1": "Sun",
+      "planet2": "Descendant",
+      "aspect": "Opposition",
+      "angle": 174.44,
+      "aspect_angle": 180,
+      "exact_angle": 174.44,
+      "orb": 5.56
+    },
+    {
+      "planet1": "Moon",
+      "planet2": "Venus",
+      "aspect": "Trine",
+      "angle": 119.76,
+      "aspect_angle": 120,
+      "exact_angle": 119.76,
+      "orb": 0.24
+    },
+    {
+      "planet1": "Moon",
+      "planet2": "Lilith",
+      "aspect": "Conjunction",
+      "angle": 7.05,
+      "aspect_angle": 0,
+      "exact_angle": 7.05,
+      "orb": 7.05
+    },
+    {
+      "planet1": "Moon",
+      "planet2": "Vertex",
+      "aspect": "Trine",
+      "angle": 119.76,
+      "aspect_angle": 120,
+      "exact_angle": 119.76,
+      "orb": 0.24
+    },
+    {
+      "planet1": "Mercury",
+      "planet2": "Jupiter",
+      "aspect": "Conjunction",
+      "angle": 6.93,
+      "aspect_angle": 0,
+      "exact_angle": 6.93,
+      "orb": 6.93
+    },
+    {
+      "planet1": "Venus",
+      "planet2": "Vertex",
+      "aspect": "Conjunction",
+      "angle": 0.0,
+      "aspect_angle": 0,
+      "exact_angle": 0.0,
+      "orb": 0.0
+    },
+    {
+      "planet1": "Mars",
+      "planet2": "Jupiter",
+      "aspect": "Trine",
+      "angle": 116.37,
+      "aspect_angle": 120,
+      "exact_angle": 116.37,
+      "orb": 3.63
+    },
+    {
+      "planet1": "Mars",
+      "planet2": "Saturn",
+      "aspect": "Opposition",
+      "angle": 176.77,
+      "aspect_angle": 180,
+      "exact_angle": 176.77,
+      "orb": 3.23
+    },
+    {
+      "planet1": "Mars",
+      "planet2": "Uranus",
+      "aspect": "Trine",
+      "angle": 125.13,
+      "aspect_angle": 120,
+      "exact_angle": 125.13,
+      "orb": 5.13
+    },
+    {
+      "planet1": "Mars",
+      "planet2": "Neptune",
+      "aspect": "Trine",
+      "angle": 118.76,
+      "aspect_angle": 120,
+      "exact_angle": 118.76,
+      "orb": 1.24
+    },
+    {
+      "planet1": "Mars",
+      "planet2": "North Node",
+      "aspect": "Conjunction",
+      "angle": 4.76,
+      "aspect_angle": 0,
+      "exact_angle": 4.76,
+      "orb": 4.76
+    },
+    {
+      "planet1": "Mars",
+      "planet2": "Fortune",
+      "aspect": "Trine",
+      "angle": 123.94,
+      "aspect_angle": 120,
+      "exact_angle": 123.94,
+      "orb": 3.94
+    },
+    {
+      "planet1": "Mars",
+      "planet2": "Ascendant",
+      "aspect": "Square",
+      "angle": 93.26,
+      "aspect_angle": 90,
+      "exact_angle": 93.26,
+      "orb": 3.26
+    },
+    {
+      "planet1": "Mars",
+      "planet2": "Descendant",
+      "aspect": "Square",
+      "angle": 86.74,
+      "aspect_angle": 90,
+      "exact_angle": 86.74,
+      "orb": 3.26
+    },
+    {
+      "planet1": "Jupiter",
+      "planet2": "Neptune",
+      "aspect": "Conjunction",
+      "angle": 2.39,
+      "aspect_angle": 0,
+      "exact_angle": 2.39,
+      "orb": 2.39
+    },
+    {
+      "planet1": "Jupiter",
+      "planet2": "Fortune",
+      "aspect": "Trine",
+      "angle": 119.69,
+      "aspect_angle": 120,
+      "exact_angle": 119.69,
+      "orb": 0.31
+    },
+    {
+      "planet1": "Jupiter",
+      "planet2": "Midheaven",
+      "aspect": "Square",
+      "angle": 89.01,
+      "aspect_angle": 90,
+      "exact_angle": 89.01,
+      "orb": 0.99
+    },
+    {
+      "planet1": "Jupiter",
+      "planet2": "Imum Coeli",
+      "aspect": "Square",
+      "angle": 90.99,
+      "aspect_angle": 90,
+      "exact_angle": 90.99,
+      "orb": 0.99
+    },
+    {
+      "planet1": "Saturn",
+      "planet2": "Uranus",
+      "aspect": "Sextile",
+      "angle": 58.1,
+      "aspect_angle": 60,
+      "exact_angle": 58.1,
+      "orb": 1.9
+    },
+    {
+      "planet1": "Saturn",
+      "planet2": "Neptune",
+      "aspect": "Sextile",
+      "angle": 64.47,
+      "aspect_angle": 60,
+      "exact_angle": 64.47,
+      "orb": 4.47
+    },
+    {
+      "planet1": "Saturn",
+      "planet2": "Pluto",
+      "aspect": "Trine",
+      "angle": 116.9,
+      "aspect_angle": 120,
+      "exact_angle": 116.9,
+      "orb": 3.1
+    },
+    {
+      "planet1": "Saturn",
+      "planet2": "North Node",
+      "aspect": "Opposition",
+      "angle": 178.47,
+      "aspect_angle": 180,
+      "exact_angle": 178.47,
+      "orb": 1.53
+    },
+    {
+      "planet1": "Saturn",
+      "planet2": "Ascendant",
+      "aspect": "Square",
+      "angle": 89.97,
+      "aspect_angle": 90,
+      "exact_angle": 89.97,
+      "orb": 0.03
+    },
+    {
+      "planet1": "Saturn",
+      "planet2": "Descendant",
+      "aspect": "Square",
+      "angle": 90.03,
+      "aspect_angle": 90,
+      "exact_angle": 90.03,
+      "orb": 0.03
+    },
+    {
+      "planet1": "Uranus",
+      "planet2": "Neptune",
+      "aspect": "Conjunction",
+      "angle": 6.37,
+      "aspect_angle": 0,
+      "exact_angle": 6.37,
+      "orb": 6.37
+    },
+    {
+      "planet1": "Uranus",
+      "planet2": "Pluto",
+      "aspect": "Sextile",
+      "angle": 58.8,
+      "aspect_angle": 60,
+      "exact_angle": 58.8,
+      "orb": 1.2
+    },
+    {
+      "planet1": "Uranus",
+      "planet2": "North Node",
+      "aspect": "Trine",
+      "angle": 120.37,
+      "aspect_angle": 120,
+      "exact_angle": 120.37,
+      "orb": 0.37
+    },
+    {
+      "planet1": "Neptune",
+      "planet2": "North Node",
+      "aspect": "Trine",
+      "angle": 114.0,
+      "aspect_angle": 120,
+      "exact_angle": 114.0,
+      "orb": 6.0
+    },
+    {
+      "planet1": "Neptune",
+      "planet2": "Fortune",
+      "aspect": "Trine",
+      "angle": 117.3,
+      "aspect_angle": 120,
+      "exact_angle": 117.3,
+      "orb": 2.7
+    },
+    {
+      "planet1": "Neptune",
+      "planet2": "Midheaven",
+      "aspect": "Square",
+      "angle": 91.4,
+      "aspect_angle": 90,
+      "exact_angle": 91.4,
+      "orb": 1.4
+    },
+    {
+      "planet1": "Neptune",
+      "planet2": "Imum Coeli",
+      "aspect": "Square",
+      "angle": 88.6,
+      "aspect_angle": 90,
+      "exact_angle": 88.6,
+      "orb": 1.4
+    },
+    {
+      "planet1": "Pluto",
+      "planet2": "North Node",
+      "aspect": "Sextile",
+      "angle": 61.57,
+      "aspect_angle": 60,
+      "exact_angle": 61.57,
+      "orb": 1.57
+    },
+    {
+      "planet1": "North Node",
+      "planet2": "Ascendant",
+      "aspect": "Square",
+      "angle": 88.5,
+      "aspect_angle": 90,
+      "exact_angle": 88.5,
+      "orb": 1.5
+    },
+    {
+      "planet1": "North Node",
+      "planet2": "Descendant",
+      "aspect": "Square",
+      "angle": 91.5,
+      "aspect_angle": 90,
+      "exact_angle": 91.5,
+      "orb": 1.5
+    },
+    {
+      "planet1": "Lilith",
+      "planet2": "Fortune",
+      "aspect": "Square",
+      "angle": 87.01,
+      "aspect_angle": 90,
+      "exact_angle": 87.01,
+      "orb": 2.99
+    },
+    {
+      "planet1": "Lilith",
+      "planet2": "Midheaven",
+      "aspect": "Sextile",
+      "angle": 64.29,
+      "aspect_angle": 60,
+      "exact_angle": 64.29,
+      "orb": 4.29
+    },
+    {
+      "planet1": "Lilith",
+      "planet2": "Imum Coeli",
+      "aspect": "Trine",
+      "angle": 115.71,
+      "aspect_angle": 120,
+      "exact_angle": 115.71,
+      "orb": 4.29
+    },
+    {
+      "planet1": "Ascendant",
+      "planet2": "Descendant",
+      "aspect": "Opposition",
+      "angle": 180.0,
+      "aspect_angle": 180,
+      "exact_angle": 180.0,
+      "orb": 0.0
+    },
+    {
+      "planet1": "Ascendant",
+      "planet2": "Midheaven",
+      "aspect": "Sextile",
+      "angle": 65.9,
+      "aspect_angle": 60,
+      "exact_angle": 65.9,
+      "orb": 5.9
+    },
+    {
+      "planet1": "Ascendant",
+      "planet2": "Imum Coeli",
+      "aspect": "Trine",
+      "angle": 114.1,
+      "aspect_angle": 120,
+      "exact_angle": 114.1,
+      "orb": 5.9
+    },
+    {
+      "planet1": "Descendant",
+      "planet2": "Midheaven",
+      "aspect": "Trine",
+      "angle": 114.1,
+      "aspect_angle": 120,
+      "exact_angle": 114.1,
+      "orb": 5.9
+    },
+    {
+      "planet1": "Descendant",
+      "planet2": "Imum Coeli",
+      "aspect": "Sextile",
+      "angle": 65.9,
+      "aspect_angle": 60,
+      "exact_angle": 65.9,
+      "orb": 5.9
+    },
+    {
+      "planet1": "Midheaven",
+      "planet2": "Imum Coeli",
+      "aspect": "Opposition",
+      "angle": 180.0,
+      "aspect_angle": 180,
+      "exact_angle": 180.0,
+      "orb": 0.0
+    }
+  ]
+}

@@ -24,3 +24,8 @@ def list_synastry_for_user(user_id: str):
 @router.post("/v1/relationship/synastry/analyze")
 def synastry_analyze(payload: dict):
     return analyze_synastry(payload)
+
+
+@router.post("/synastry/analyze")
+def synastry_analyze_alias(payload: dict):
+    return analyze_synastry(payload)
