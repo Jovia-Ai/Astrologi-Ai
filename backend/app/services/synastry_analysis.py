@@ -1,9 +1,33 @@
+from dataclasses import asdict
 from typing import Any, Dict, List, Optional, Tuple
 import math
 
 from app.astro.chart_engine.builder import build_natal_chart
 from app.astro.synastry.engine_v1 import SynastryEngineV1
+from app.natal.natal_graph_v2 import build_natal_graph_v2
+from app.synastry.activation_engine import synastry_hit_to_partner_activation
+from app.synastry.narrative.synastry_imprint_engine import build_synastry_imprint
+from app.synastry.narrative.synastry_narrative_engine import build_synastry_narrative
 from app.synastry.public_builder import build_synastry_public
+from app.synastry.resonance_engine import (
+    bridge_bonus_for_public_scores,
+    build_activation_bundles,
+    build_asymmetry_notes,
+    build_narrative_ready_summary,
+    build_overlay_cluster_summary,
+    build_relationship_calibration,
+    build_relational_modes,
+    compute_directional_asymmetry,
+    compute_familiarity_resonance,
+    compute_growth_tension,
+    compute_magnetic_intensity,
+    compute_mutuality,
+    compute_promise_alignment_breakdown,
+    compute_sustainable_bond,
+    compute_trigger_load,
+    expand_activation_records,
+    rank_partner_domains,
+)
 
 DEFAULT_BODIES = [
     "sun",
@@ -15,6 +39,7 @@ DEFAULT_BODIES = [
     "uranus",
     "neptune",
     "pluto",
+    "juno",
     "node",
     "vertex",
     "asc",
@@ -26,6 +51,7 @@ engine = SynastryEngineV1()
 PLANET_KEY_MAP = {
     "north node": "node",
     "vertex": "vertex",
+    "juno": "juno",
 }
 
 SIGNS = [
@@ -315,6 +341,58 @@ def _extract_partner_name(payload: Dict[str, Any], partner: Dict[str, Any], key:
     )
 
 
+def _build_partner_activation_records(
+    for_partner: str,
+    overlay_table: List[Dict[str, Any]],
+    overlay_by_body: Dict[str, Any],
+    aspect_hits: List[Dict[str, Any]],
+    natal_graph_v2: Dict[str, Any],
+) -> List[Dict[str, Any]]:
+    records: List[Dict[str, Any]] = []
+    overlay_lookup = {str(item.get("body") or ""): item for item in overlay_table if isinstance(item, dict)}
+
+    for row in overlay_table:
+        record = synastry_hit_to_partner_activation(None, row, natal_graph_v2)
+        if record:
+            records.append(record)
+
+    for hit in aspect_hits:
+        if for_partner == "a":
+            incoming_body = str(hit.get("b_body") or "")
+            native_body = str(hit.get("a_body") or "")
+        else:
+            incoming_body = str(hit.get("a_body") or "")
+            native_body = str(hit.get("b_body") or "")
+        house = overlay_by_body.get(incoming_body)
+        overlay_info = dict(overlay_lookup.get(incoming_body) or {})
+        overlay_info["incoming_body"] = incoming_body
+        overlay_info["native_body"] = native_body
+        overlay_info["in_house"] = house if house is not None else overlay_info.get("in_house")
+        hit_payload = dict(hit)
+        hit_payload["incoming_body"] = incoming_body
+        hit_payload["native_body"] = native_body
+        record = synastry_hit_to_partner_activation(hit_payload, overlay_info, natal_graph_v2)
+        if record:
+            records.append(record)
+
+    return records
+
+
+def _normalize_base_relationship_scores(res: Any) -> Dict[str, float]:
+    return {
+        "bond": float(res.categories["bond"].total or 0.0),
+        "depth": float(res.categories["depth"].total or 0.0),
+        "spark": float(res.categories["spark"].total or 0.0),
+        "freedom": float(res.categories["freedom"].total or 0.0),
+        "risk_index": float(res.risk_index or 0.0),
+        "confidence": float(res.confidence or 0.0),
+    }
+
+
+def _to_percent_map(scores: Dict[str, float]) -> Dict[str, int]:
+    return {key: round(float(value or 0.0) * 100) for key, value in scores.items()}
+
+
 def analyze_synastry(payload: Dict[str, Any]) -> Dict[str, Any]:
     partner_a = payload.get("partner_a") or {}
     partner_b = payload.get("partner_b") or {}
@@ -330,6 +408,7 @@ def analyze_synastry(payload: Dict[str, Any]) -> Dict[str, Any]:
     if bodies:
         bodies = [str(b).strip().lower() for b in bodies]
 
+    aspect_hits = [asdict(hit) for hit in engine.scan_aspects(A_pos=A_pos, B_pos=B_pos, bodies=bodies)]
     res = engine.score(
         A_pos=A_pos,
         B_pos=B_pos,
@@ -338,31 +417,215 @@ def analyze_synastry(payload: Dict[str, Any]) -> Dict[str, Any]:
         include_debug=include_debug,
         bodies=bodies,
     )
+    overlays = _build_overlays(chart_a, chart_b)
+    natal_graph_a = build_natal_graph_v2(chart_a)
+    natal_graph_b = build_natal_graph_v2(chart_b)
+
+    partner_a_name = _extract_partner_name(payload, partner_a, "partner_a") or "Partner A"
+    partner_b_name = _extract_partner_name(payload, partner_b, "partner_b") or "Partner B"
+
+    partner_a_records = _build_partner_activation_records(
+        for_partner="a",
+        overlay_table=list((overlays.get("b_in_a") or {}).get("table") or []),
+        overlay_by_body=dict((overlays.get("b_in_a") or {}).get("by_body") or {}),
+        aspect_hits=aspect_hits,
+        natal_graph_v2=natal_graph_a,
+    )
+    partner_b_records = _build_partner_activation_records(
+        for_partner="b",
+        overlay_table=list((overlays.get("a_in_b") or {}).get("table") or []),
+        overlay_by_body=dict((overlays.get("a_in_b") or {}).get("by_body") or {}),
+        aspect_hits=aspect_hits,
+        natal_graph_v2=natal_graph_b,
+    )
+
+    partner_a_hits = expand_activation_records(partner_a_records, natal_graph_a, for_partner="a")
+    partner_b_hits = expand_activation_records(partner_b_records, natal_graph_b, for_partner="b")
+    promise_alignment_breakdown = {
+        "partner_a": compute_promise_alignment_breakdown(partner_a_hits, natal_graph_a),
+        "partner_b": compute_promise_alignment_breakdown(partner_b_hits, natal_graph_b),
+    }
+    base_scores = _normalize_base_relationship_scores(res)
+    overlay_cluster_summary = build_overlay_cluster_summary(overlays)
+    activation_bundles = build_activation_bundles(
+        resonance_hits={
+            "partner_a": partner_a_hits,
+            "partner_b": partner_b_hits,
+        },
+        overlay_cluster_summary=overlay_cluster_summary,
+        natal_graph_v2={
+            "partner_a": natal_graph_a,
+            "partner_b": natal_graph_b,
+        },
+    )
+    domain_rankings = rank_partner_domains(activation_bundles)
+
+    partner_a_resonance = {
+        "familiarity_resonance": compute_familiarity_resonance(partner_a_hits, natal_graph_a),
+        "promise_alignment": promise_alignment_breakdown["partner_a"]["score"],
+        "growth_tension": compute_growth_tension(partner_a_hits, natal_graph_a),
+        "trigger_load": compute_trigger_load(partner_a_hits, natal_graph_a),
+    }
+    partner_b_resonance = {
+        "familiarity_resonance": compute_familiarity_resonance(partner_b_hits, natal_graph_b),
+        "promise_alignment": promise_alignment_breakdown["partner_b"]["score"],
+        "growth_tension": compute_growth_tension(partner_b_hits, natal_graph_b),
+        "trigger_load": compute_trigger_load(partner_b_hits, natal_graph_b),
+    }
+    partner_a_context = [
+        {
+            "domain": row["domain"],
+            "score": row["score"],
+            "because": list(row.get("because") or [])[:5],
+        }
+        for row in list(domain_rankings.get("partner_a") or [])[:3]
+    ]
+    partner_b_context = [
+        {
+            "domain": row["domain"],
+            "score": row["score"],
+            "because": list(row.get("because") or [])[:5],
+        }
+        for row in list(domain_rankings.get("partner_b") or [])[:3]
+    ]
+    relationship_resonance = {
+        "mutuality": compute_mutuality(partner_a_resonance, partner_b_resonance),
+        "asymmetry": 0.0,
+        "magnetic_intensity": compute_magnetic_intensity(
+            base_scores,
+            partner_a_resonance,
+            partner_b_resonance,
+        ),
+    }
+    resonance_scores = {
+        "partner_a": partner_a_resonance,
+        "partner_b": partner_b_resonance,
+        "relationship": relationship_resonance,
+    }
+    resonance_scores["relationship"]["sustainable_bond"] = compute_sustainable_bond(
+        base_scores,
+        resonance_scores,
+    )
+    relational_modes = build_relational_modes(resonance_scores, promise_alignment_breakdown)
+    resonance_scores["relationship"]["asymmetry"] = compute_directional_asymmetry(
+        resonance_scores=resonance_scores,
+        overlay_cluster_summary=overlay_cluster_summary,
+        domain_rankings=domain_rankings,
+    )
+    public_score_bridge = bridge_bonus_for_public_scores(
+        base_scores=base_scores,
+        resonance_scores=resonance_scores,
+        partner_hits={
+            "a": partner_a_hits,
+            "b": partner_b_hits,
+        },
+        overlays=overlays,
+        aspect_hits=aspect_hits,
+        bundles_by_partner=activation_bundles,
+    )
+    corrected_score_context = dict(public_score_bridge["scores"])
+    corrected_score_context["mutuality"] = resonance_scores["relationship"]["mutuality"]
+    corrected_score_context["sustainable_bond"] = resonance_scores["relationship"]["sustainable_bond"]
+    relationship_calibration = build_relationship_calibration(
+        corrected_scores=corrected_score_context,
+        resonance_scores=resonance_scores,
+        relational_modes=relational_modes,
+        asymmetry=resonance_scores["relationship"]["asymmetry"],
+    )
+    narrative_ready = build_narrative_ready_summary(
+        bundles_by_partner=activation_bundles,
+        domain_rankings=domain_rankings,
+        relational_modes=relational_modes,
+        corrected_scores=corrected_score_context,
+        asymmetry=resonance_scores["relationship"]["asymmetry"],
+        overlay_cluster_summary=overlay_cluster_summary,
+    )
+    narrative_payload = build_synastry_narrative(
+        partner_a_name=partner_a_name,
+        partner_b_name=partner_b_name,
+        activation_bundles=activation_bundles,
+        domain_rankings=domain_rankings,
+        relational_modes=relational_modes,
+        resonance_scores=resonance_scores,
+        corrected_scores=public_score_bridge["scores"],
+        narrative_ready=narrative_ready,
+    )
+    imprint_payload = build_synastry_imprint(
+        partner_a_name=partner_a_name,
+        partner_b_name=partner_b_name,
+        aspect_hits=aspect_hits,
+        overlays=overlays,
+        domain_rankings=domain_rankings,
+        activation_bundles=activation_bundles,
+        corrected_scores=public_score_bridge["scores"],
+        relationship_calibration=relationship_calibration,
+    )
 
     public = {
-        "scores": {
-            "bond": round(res.categories["bond"].total * 100),
-            "depth": round(res.categories["depth"].total * 100),
-            "spark": round(res.categories["spark"].total * 100),
-            "freedom": round(res.categories["freedom"].total * 100),
-            "risk_index": round(res.risk_index * 100),
-            "confidence": round(res.confidence * 100),
-        },
+        "scores": _to_percent_map(public_score_bridge["scores"]),
+        "raw_scores": _to_percent_map(public_score_bridge["public_score_bridge_debug"]["base_scores"]),
+        "contextual_scores": _to_percent_map(public_score_bridge["scores"]),
         "drivers": {
-            c: res.categories[c].top_drivers for c in ("bond", "depth", "spark", "freedom")
+            "bond": list(public_score_bridge.get("drivers", {}).get("bond") or []),
+            "depth": list(public_score_bridge.get("drivers", {}).get("depth") or []),
+            "risk_index": list(public_score_bridge.get("drivers", {}).get("risk_index") or []),
+            "spark": res.categories["spark"].top_drivers,
+            "freedom": res.categories["freedom"].top_drivers,
         },
         "formatted": {
             "partner_a": _build_formatted_partner(chart_a),
             "partner_b": _build_formatted_partner(chart_b),
         },
-        "overlays": _build_overlays(chart_a, chart_b),
+        "overlays": overlays,
+        "resonance_scores": {
+            "partner_a": _to_percent_map(partner_a_resonance),
+            "partner_b": _to_percent_map(partner_b_resonance),
+            "relationship": _to_percent_map(resonance_scores["relationship"]),
+        },
+        "domain_rankings": domain_rankings,
+        "relational_modes": relational_modes,
+        "derived_context": {
+            "partner_a_activated": partner_a_context,
+            "partner_b_activated": partner_b_context,
+            "asymmetry_notes": build_asymmetry_notes(
+                partner_a_context,
+                partner_b_context,
+                partner_a_name,
+                partner_b_name,
+                resonance_scores["relationship"]["asymmetry"],
+            ),
+            "meaning_summaries": {
+                "partner_a": str((narrative_ready.get("partner_a_story") or {}).get("summary_line") or ""),
+                "partner_b": str((narrative_ready.get("partner_b_story") or {}).get("summary_line") or ""),
+                "relationship": str((narrative_ready.get("relationship_shape") or {}).get("summary_line") or ""),
+            },
+        },
+        "narrative_ready": narrative_ready,
+        "narrative": narrative_payload["public"],
     }
+    if isinstance(imprint_payload.get("public"), dict):
+        public["synastry_imprint"] = imprint_payload["public"]
 
     out: Dict[str, Any] = {"engine_version": res.meta["engine"], "public": public}
 
     if include_debug:
-        out["debug"] = res.debug
+        debug_payload = dict(res.debug or {})
+        debug_payload["natal_graph_v2"] = {
+            "partner_a": natal_graph_a,
+            "partner_b": natal_graph_b,
+        }
+        debug_payload["resonance_hits"] = (partner_a_hits + partner_b_hits)[:160]
+        debug_payload["overlay_cluster_summary"] = overlay_cluster_summary
+        debug_payload["activation_bundles"] = activation_bundles
+        debug_payload["domain_rankings"] = domain_rankings
+        debug_payload["relational_modes"] = relational_modes
+        debug_payload["relationship_calibration"] = relationship_calibration
+        debug_payload["narrative_ready"] = narrative_ready
+        debug_payload["narrative_debug"] = narrative_payload["debug"]
+        debug_payload["public_score_bridge_debug"] = public_score_bridge["public_score_bridge_debug"]
+        debug_payload["promise_alignment_breakdown"] = promise_alignment_breakdown
+        if isinstance(imprint_payload.get("internal"), dict):
+            debug_payload["synastry_imprint_internal"] = imprint_payload["internal"]
+        out["debug"] = debug_payload
 
-    partner_a_name = _extract_partner_name(payload, partner_a, "partner_a")
-    partner_b_name = _extract_partner_name(payload, partner_b, "partner_b")
     return build_synastry_public(out, partner_a_name, partner_b_name)

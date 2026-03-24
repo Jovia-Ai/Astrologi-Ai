@@ -1,0 +1,410 @@
+[
+  {
+    "id": "grounded_structured_earth_heavy",
+    "backend_visible_payloads": {
+      "profile": {
+        "core_story": "You move through life by reducing complexity into clean structure.",
+        "angles": { "ascendant_sign": "Capricorn" },
+        "planets": [
+          { "planet": "Sun", "sign": "Capricorn", "house": 1 },
+          { "planet": "Moon", "sign": "Virgo", "house": 8 },
+          { "planet": "Saturn", "sign": "Capricorn", "house": 3 }
+        ],
+        "narrative_v2": {
+          "aspect_bundle_selector": {
+            "selected_bundles": [
+              {
+                "bundle_id": "saturn_identity",
+                "bundle_type": "angle_identity_bundle",
+                "score": 0.82,
+                "domains": ["identity", "mind_communication"],
+                "recognition_tags": ["measured self-presentation"],
+                "gift_tags": ["clarity under pressure"],
+                "reflex_tags": ["holding too much"]
+              },
+              {
+                "bundle_id": "saturn_mercury",
+                "bundle_type": "mental_style_bundle",
+                "score": 0.84,
+                "domains": ["mind_communication", "career_visibility"],
+                "recognition_tags": ["slow precision"],
+                "gift_tags": ["structured thinking"],
+                "reflex_tags": ["over-editing"]
+              },
+              {
+                "bundle_id": "pressure_growth",
+                "bundle_type": "pressure_growth_bundle",
+                "score": 0.76,
+                "domains": ["identity"],
+                "recognition_tags": ["self-demand"],
+                "gift_tags": ["discipline"],
+                "reflex_tags": ["self-hardening"]
+              }
+            ]
+          }
+        },
+        "personality_imprint": {
+          "headline": "Personality Signature",
+          "entries": [
+            {
+              "key": "saturn_third",
+              "kind": "house_placement",
+              "label_tr": "Saturn vurgusu",
+              "tags": ["discipline", "focus"],
+              "aura": "Controlled outside presence.",
+              "trait": "Builds clarity before speaking.",
+              "drive": "Needs order and coherence.",
+              "shadow": "Can hide inner complexity behind control.",
+              "gift": "Turns complexity into clear language."
+            }
+          ],
+          "bundles": [
+            {
+              "dominant_key": "saturn_third",
+              "dominant_kind": "house_placement",
+              "related_planets": ["Saturn"]
+            }
+          ]
+        }
+      },
+      "timing": {
+        "public": {
+          "period_core": {
+            "title": "Structural Reset",
+            "core_story": "This period refines what deserves long-term commitment.",
+            "upper_meaning": "Long-range focus becomes more selective.",
+            "big_picture": "Less expansion, more intentional structure.",
+            "mechanism": "You are narrowing attention toward what can hold weight."
+          },
+          "event_cards": [
+            {
+              "event_id": "evt_1",
+              "headline": "Refining Long-Term Focus",
+              "opening": "You are setting firmer filters around what deserves effort.",
+              "essence": "The core movement is not doing more, but choosing more carefully.",
+              "mechanism": "Attention narrows toward durable priorities.",
+              "asks": "Name what matters and remove excess commitments.",
+              "watchout": "Over-control can shrink possibility too early.",
+              "what_it_builds": "Stronger internal architecture.",
+              "tags": {
+                "phase": "applying",
+                "duration": "months",
+                "domain": "identity",
+                "intensity": 0.61
+              }
+            }
+          ]
+        }
+      }
+    },
+    "visual_adapter_output": {
+      "normalizedTags": {
+        "energyType": "earth",
+        "moodType": "structured",
+        "behavioralPattern": "distiller",
+        "mentalPattern": "analytical",
+        "emotionalPattern": "guarded",
+        "expressionPattern": "measured",
+        "relationalPattern": "autonomy_seeking",
+        "tensionPattern": "overcontrol",
+        "archetype": "distiller",
+        "dominantDomains": ["identity", "mind_communication", "career_visibility"],
+        "activeDomains": ["identity", "mind_communication", "career_visibility"],
+        "bundleTypes": [
+          "angle_identity_bundle",
+          "mental_style_bundle",
+          "pressure_growth_bundle"
+        ],
+        "intensityBand": "medium",
+        "timingPhase": "applying",
+        "collectiveActivation": "none"
+      },
+      "visualTokens": {
+        "densityLevel": "medium",
+        "contrastLevel": "medium",
+        "structureLevel": "structured",
+        "directionality": "inward",
+        "speed": "steady",
+        "cohesion": "cohesive",
+        "clarity": "clear",
+        "weight": "grounded",
+        "whitespaceMode": "balanced",
+        "typographyMode": "technical",
+        "ornamentLevel": "low",
+        "socialDensity": "quiet"
+      }
+    }
+  },
+  {
+    "id": "expressive_high_contrast_fire_heavy",
+    "backend_visible_payloads": {
+      "profile": {
+        "angles": { "ascendant_sign": "Aries" },
+        "planets": [
+          { "planet": "Sun", "sign": "Leo", "house": 10 },
+          { "planet": "Moon", "sign": "Sagittarius", "house": 5 },
+          { "planet": "Mars", "sign": "Aries", "house": 1 }
+        ],
+        "narrative_v2": {
+          "aspect_bundle_selector": {
+            "selected_bundles": [
+              {
+                "bundle_id": "fire_expression",
+                "bundle_type": "angle_identity_bundle",
+                "score": 0.88,
+                "domains": ["career_visibility", "creativity_talent"],
+                "recognition_tags": ["visible intensity"],
+                "gift_tags": ["magnetic presence"],
+                "reflex_tags": ["too much too fast"]
+              },
+              {
+                "bundle_id": "relational_heat",
+                "bundle_type": "relational_pattern_bundle",
+                "score": 0.73,
+                "domains": ["relationships", "creativity_talent"],
+                "recognition_tags": ["quick ignition"],
+                "gift_tags": ["enthusiasm"],
+                "reflex_tags": ["reactive escalation"]
+              },
+              {
+                "bundle_id": "split_drive",
+                "bundle_type": "contradiction_bundle",
+                "score": 0.71,
+                "domains": ["identity"],
+                "recognition_tags": ["push and prove"],
+                "gift_tags": ["courage"],
+                "reflex_tags": ["overextension"]
+              }
+            ]
+          }
+        },
+        "personality_imprint": {
+          "headline": "Visible Heat",
+          "entries": [
+            {
+              "key": "leo_stage",
+              "kind": "sign_placement",
+              "label_tr": "Alevli ifade",
+              "tags": ["visibility", "performance"],
+              "aura": "Warm and impossible to miss.",
+              "trait": "Expresses before hesitating.",
+              "drive": "Wants impact, immediacy, response.",
+              "shadow": "Can outrun nuance.",
+              "gift": "Animates a room."
+            }
+          ],
+          "bundles": [
+            {
+              "dominant_key": "leo_stage",
+              "dominant_kind": "sign_placement",
+              "related_planets": ["Sun", "Mars"]
+            }
+          ]
+        }
+      },
+      "timing": {
+        "public": {
+          "event_cards": [
+            {
+              "event_id": "evt_peak",
+              "headline": "A Visibility Spike",
+              "opening": "Attention gathers around your output quickly.",
+              "essence": "Momentum is rising faster than your filters.",
+              "mechanism": "External response is accelerating your pace.",
+              "asks": "Channel energy into one visible priority.",
+              "watchout": "Reactivity can outrun precision.",
+              "what_it_builds": "Creative confidence under pressure.",
+              "tags": {
+                "phase": "peak",
+                "duration": "weeks",
+                "domain": "career_visibility",
+                "intensity": 0.89
+              }
+            }
+          ]
+        }
+      },
+      "collective": {
+        "summary_tr": "The social field is loud and accelerating.",
+        "items": [
+          {
+            "id": "sky_1",
+            "short_title_tr": "Urgent attention",
+            "summary_tr": "People are responding quickly and publicly.",
+            "badge_tr": "Rising",
+            "relative_timing_tr": "Right now",
+            "tags": ["career_visibility", "social_future"]
+          }
+        ]
+      }
+    },
+    "visual_adapter_output": {
+      "normalizedTags": {
+        "energyType": "fire",
+        "moodType": "intense",
+        "behavioralPattern": "initiator",
+        "mentalPattern": "anticipatory",
+        "emotionalPattern": "expressive",
+        "expressionPattern": "performative",
+        "relationalPattern": "testing",
+        "tensionPattern": "inner_split",
+        "archetype": "amplifier",
+        "dominantDomains": ["career_visibility", "creativity_talent", "relationships"],
+        "activeDomains": ["career_visibility", "creativity_talent", "relationships", "identity"],
+        "bundleTypes": [
+          "angle_identity_bundle",
+          "relational_pattern_bundle",
+          "contradiction_bundle"
+        ],
+        "intensityBand": "high",
+        "timingPhase": "peak",
+        "collectiveActivation": "active"
+      },
+      "visualTokens": {
+        "densityLevel": "high",
+        "contrastLevel": "high",
+        "structureLevel": "balanced",
+        "directionality": "outward",
+        "speed": "fast",
+        "cohesion": "tensioned",
+        "clarity": "mixed",
+        "weight": "heavy",
+        "whitespaceMode": "compressed",
+        "typographyMode": "editorial",
+        "ornamentLevel": "medium",
+        "socialDensity": "active"
+      }
+    }
+  },
+  {
+    "id": "reflective_diffuse_water_heavy",
+    "backend_visible_payloads": {
+      "profile": {
+        "angles": { "ascendant_sign": "Pisces" },
+        "planets": [
+          { "planet": "Sun", "sign": "Cancer", "house": 4 },
+          { "planet": "Moon", "sign": "Pisces", "house": 12 },
+          { "planet": "Neptune", "sign": "Pisces", "house": 1 }
+        ],
+        "narrative_v2": {
+          "aspect_bundle_selector": {
+            "selected_bundles": [
+              {
+                "bundle_id": "emotional_depth",
+                "bundle_type": "emotional_regulation_bundle",
+                "score": 0.83,
+                "domains": ["private_inner_world", "intimacy_depth"],
+                "recognition_tags": ["absorbs atmosphere"],
+                "gift_tags": ["empathic depth"],
+                "reflex_tags": ["emotional flooding"]
+              },
+              {
+                "bundle_id": "soft_capacity",
+                "bundle_type": "soft_capacity_bundle",
+                "score": 0.74,
+                "domains": ["home_roots", "identity"],
+                "recognition_tags": ["quiet intuition"],
+                "gift_tags": ["subtle sensing"],
+                "reflex_tags": ["withdrawing"]
+              }
+            ]
+          }
+        },
+        "personality_imprint": {
+          "headline": "Permeable Interior",
+          "entries": [
+            {
+              "key": "pisces_moon",
+              "kind": "sign_placement",
+              "label_tr": "Akiskan sezgi",
+              "tags": ["sensitivity", "interiority"],
+              "aura": "Soft, absorptive, reflective.",
+              "trait": "Feels before sorting.",
+              "drive": "Needs space to sense what is real.",
+              "shadow": "Can blur boundaries when overstimulated.",
+              "gift": "Registers subtle emotional undercurrents."
+            }
+          ],
+          "bundles": [
+            {
+              "dominant_key": "pisces_moon",
+              "dominant_kind": "sign_placement",
+              "related_planets": ["Moon", "Neptune"]
+            }
+          ]
+        }
+      },
+      "timing": {
+        "public": {
+          "event_cards": [
+            {
+              "event_id": "evt_water",
+              "headline": "A Soft Permeable Window",
+              "opening": "Your inner field is picking up more than usual.",
+              "essence": "This is a period of heightened emotional absorption.",
+              "mechanism": "External noise enters the system before you filter it.",
+              "asks": "Reduce noise and name what is actually yours.",
+              "watchout": "Unclear boundaries can create fatigue.",
+              "what_it_builds": "Inner discernment.",
+              "tags": {
+                "phase": "waning",
+                "duration": "months",
+                "domain": "private_inner_world",
+                "intensity": 0.58
+              }
+            }
+          ]
+        }
+      },
+      "collective": {
+        "summary_tr": "The collective tone is quieter but emotionally saturated.",
+        "items": [
+          {
+            "id": "sky_water",
+            "short_title_tr": "Quiet sensitivity",
+            "summary_tr": "People are noticing subtle atmosphere shifts.",
+            "badge_tr": "Lingering",
+            "relative_timing_tr": "This week",
+            "tags": ["private_inner_world", "intimacy_depth"]
+          }
+        ]
+      }
+    },
+    "visual_adapter_output": {
+      "normalizedTags": {
+        "energyType": "water",
+        "moodType": "diffuse",
+        "behavioralPattern": "container",
+        "mentalPattern": "reflective",
+        "emotionalPattern": "deepening",
+        "expressionPattern": "quiet",
+        "relationalPattern": "mirroring",
+        "tensionPattern": "diffusion",
+        "archetype": "mirror",
+        "dominantDomains": ["private_inner_world", "intimacy_depth", "home_roots"],
+        "activeDomains": ["private_inner_world", "intimacy_depth", "home_roots", "identity"],
+        "bundleTypes": [
+          "emotional_regulation_bundle",
+          "soft_capacity_bundle"
+        ],
+        "intensityBand": "medium",
+        "timingPhase": "waning",
+        "collectiveActivation": "active"
+      },
+      "visualTokens": {
+        "densityLevel": "medium",
+        "contrastLevel": "soft",
+        "structureLevel": "fluid",
+        "directionality": "inward",
+        "speed": "slow",
+        "cohesion": "cohesive",
+        "clarity": "ambiguous",
+        "weight": "light",
+        "whitespaceMode": "breathing",
+        "typographyMode": "balanced",
+        "ornamentLevel": "medium",
+        "socialDensity": "active"
+      }
+    }
+  }
+]

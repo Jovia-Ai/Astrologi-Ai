@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/design/theme/profile_theme_extension.dart';
 
 import '../profile/profile_providers.dart';
 import 'people_providers.dart';
@@ -66,13 +67,20 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final spacing = profile.spacing;
     return Scaffold(
-      appBar: AppBar(title: Text(_isEditMode ? 'Kişiyi Düzenle' : 'Kişi Ekle')),
+      appBar: AppBar(
+        title: Text(
+          _isEditMode ? 'KISIYI DUZENLE' : 'KISI EKLE',
+          style: profile.typography.navigationLabel(color: profile.colors.text),
+        ),
+      ),
       body: SafeArea(
         child: Form(
           key: _formKey,
           child: ListView(
-            padding: const EdgeInsets.all(16),
+            padding: EdgeInsets.all(spacing.s16),
             children: [
               TextFormField(
                 controller: _nameController,
@@ -85,7 +93,7 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: spacing.s12),
               TextFormField(
                 controller: _birthDateController,
                 readOnly: true,
@@ -98,7 +106,7 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: spacing.s12),
               TextFormField(
                 controller: _birthTimeController,
                 readOnly: true,
@@ -107,7 +115,7 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
                 ),
                 onTap: _pickBirthTime,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: spacing.s12),
               TextFormField(
                 controller: _cityController,
                 textCapitalization: TextCapitalization.words,
@@ -119,7 +127,7 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: spacing.s12),
               TextFormField(
                 controller: _countryController,
                 textCapitalization: TextCapitalization.characters,
@@ -131,12 +139,14 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
                   return null;
                 },
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: spacing.s8),
               Text(
                 'Doğum saati boş bırakılırsa varsayılan 12:00 kullanılır.',
-                style: Theme.of(context).textTheme.bodySmall,
+                style: profile.typography.meta.copyWith(
+                  color: profile.colors.textLight,
+                ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: spacing.s20),
               ElevatedButton.icon(
                 onPressed: _saving ? null : _save,
                 icon: _saving

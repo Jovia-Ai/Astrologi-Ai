@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/app/tabs/tabs_shell.dart';
+import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 import '../profile/profile_providers.dart';
 
@@ -135,69 +137,103 @@ class _OnboardingProfilePageState extends ConsumerState<OnboardingProfilePage> {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final profile = context.profileTheme;
+    final spacing = profile.spacing;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile Setup')),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SafeArea(
               child: SingleChildScrollView(
                 keyboardDismissBehavior:
                     ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottomInset),
+                padding: EdgeInsets.fromLTRB(
+                  spacing.s24,
+                  spacing.s20,
+                  spacing.s24,
+                  spacing.s20 + bottomInset,
+                ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    if (_error != null) ...[
-                      Text(
-                        _error!,
-                        style: TextStyle(
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                    ],
-                    TextField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(labelText: 'Name'),
+                    const JoviaProfileTopBar(
+                      label: 'Profil',
+                      centerText: 'kurulum',
+                      reserveTrailingSpace: true,
                     ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _birthDateController,
-                      decoration: const InputDecoration(
-                        labelText: 'Birth date (YYYY-MM-DD)',
-                      ),
+                    SizedBox(height: spacing.s24),
+                    const JoviaSectionHeader(
+                      label: 'Onboarding',
+                      title: 'Kimlik ve dogum alanini ayni yerde kur',
+                      body:
+                          'Form mantigi ayni, sadece tipografik omurga artik profil sayfasiyla daha uyumlu.',
+                      variant: JoviaSectionHeaderVariant.editorial,
                     ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _birthTimeController,
-                      decoration: const InputDecoration(
-                        labelText: 'Birth time (HH:mm)',
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _cityController,
-                      decoration: const InputDecoration(labelText: 'City'),
-                    ),
-                    const SizedBox(height: 12),
-                    TextField(
-                      controller: _countryController,
-                      decoration: const InputDecoration(labelText: 'Country'),
-                    ),
-                    const SizedBox(height: 20),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: _isSaving ? null : _save,
-                        child: _isSaving
-                            ? const SizedBox(
-                                height: 18,
-                                width: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
-                              )
-                            : const Text('Save'),
+                    SizedBox(height: spacing.s24),
+                    JoviaSurfaceCard(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          if (_error != null) ...[
+                            Text(
+                              _error!,
+                              style: profile.typography.meta.copyWith(
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                            ),
+                            SizedBox(height: spacing.s12),
+                          ],
+                          TextField(
+                            controller: _nameController,
+                            decoration: const InputDecoration(
+                              labelText: 'Name',
+                            ),
+                          ),
+                          SizedBox(height: spacing.s12),
+                          TextField(
+                            controller: _birthDateController,
+                            decoration: const InputDecoration(
+                              labelText: 'Birth date (YYYY-MM-DD)',
+                            ),
+                          ),
+                          SizedBox(height: spacing.s12),
+                          TextField(
+                            controller: _birthTimeController,
+                            decoration: const InputDecoration(
+                              labelText: 'Birth time (HH:mm)',
+                            ),
+                          ),
+                          SizedBox(height: spacing.s12),
+                          TextField(
+                            controller: _cityController,
+                            decoration: const InputDecoration(
+                              labelText: 'City',
+                            ),
+                          ),
+                          SizedBox(height: spacing.s12),
+                          TextField(
+                            controller: _countryController,
+                            decoration: const InputDecoration(
+                              labelText: 'Country',
+                            ),
+                          ),
+                          SizedBox(height: spacing.s20),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: _isSaving ? null : _save,
+                              child: _isSaving
+                                  ? const SizedBox(
+                                      height: 18,
+                                      width: 18,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                  : const Text('Save'),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],

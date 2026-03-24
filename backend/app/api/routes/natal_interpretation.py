@@ -6,6 +6,7 @@ import hashlib
 import json
 import logging
 import os
+from time import perf_counter
 from types import SimpleNamespace
 from typing import Any, Dict, List, Mapping, Sequence
 
@@ -61,11 +62,31 @@ from app.helpers.normalize import normalize_node_alias, normalize_planet_key, no
 from app.engine.astro_normalize import aspect_strength, clamp01
 from app.natal.public_builder import build_public_natal_view
 from app.natal.natal_graph import build_natal_graph
+from app.natal.natal_graph_v2 import build_natal_graph_v2
 from app.natal.narrative.core_story_tr_natal import build_core_story_ui
+from app.natal.personality_imprint import build_personality_imprint
 from app.natal.narrative.profile_narrative_engine import build_profile_narrative
 from app.natal.supporting_threads_builder import build_sections_v2, build_supporting_threads
+from app.services.performance.cache_store import default_cache_store, utc_now
 
 logger = logging.getLogger(__name__)
+
+
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, set):
+        return sorted(value)
+    return str(value)
+
+
+def _payload_size_bytes(payload: Any) -> int:
+    return len(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            default=_json_safe,
+        ).encode("utf-8")
+    )
 
 router = APIRouter(tags=["natal"])
 rule_engine = RuleEngine()
@@ -82,6 +103,234 @@ class NatalInterpretationRequest(BaseModel):
     locale: str | None = None
 
 
+def _log_natal_timing(
+    *,
+    endpoint: str,
+    request: NatalInterpretationRequest,
+    response: Mapping[str, Any],
+    duration_ms: float,
+) -> None:
+    if not os.getenv("ENABLE_TIMING_LOGS", "true").strip().lower() in {"1", "true", "yes", "on"}:
+        return
+    logger.info(
+        "natal_timing %s",
+        json.dumps(
+            {
+                "endpoint": endpoint,
+                "cache_status": "not_cached",
+                "birth_place": request.birth_place,
+                "locale": request.locale or "tr",
+                "duration_ms": round(duration_ms, 3),
+                "payload_bytes": _payload_size_bytes(response),
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        ),
+    )
+
+
+def _profile_fast_cache_key(request: NatalInterpretationRequest) -> str:
+    digest = hashlib.sha1(
+        "|".join(
+            [
+                request.birth_date.strip(),
+                request.birth_time.strip(),
+                request.birth_place.strip().lower(),
+                (request.locale or "tr").strip().lower(),
+            ]
+        ).encode("utf-8")
+    ).hexdigest()
+    return f"profile_fast:v1:{digest}"
+
+
+def _extract_fast_sign(planets: Sequence[Mapping[str, Any]], body: str) -> str:
+    target = body.strip().lower()
+    for item in planets:
+        name = str(item.get("planet") or item.get("name") or "").strip().lower()
+        if name != target:
+            continue
+        sign = str(item.get("sign") or item.get("zodiac_sign") or "").strip()
+        if sign:
+            return sign
+    return ""
+
+
+def _profile_fast_ruler_for_sign(sign: str) -> str:
+    normalized = sign.strip().lower()
+    if normalized in {"aries"}:
+        return "Mars"
+    if normalized in {"taurus"}:
+        return "Venus"
+    if normalized in {"gemini", "virgo"}:
+        return "Mercury"
+    if normalized in {"cancer"}:
+        return "Moon"
+    if normalized in {"leo"}:
+        return "Sun"
+    if normalized in {"libra"}:
+        return "Venus"
+    if normalized in {"scorpio"}:
+        return "Mars"
+    if normalized in {"sagittarius", "pisces"}:
+        return "Jupiter"
+    if normalized in {"capricorn", "aquarius"}:
+        return "Saturn"
+    return ""
+
+
+def _build_profile_fast_payload(
+    request: NatalInterpretationRequest,
+) -> tuple[dict[str, Any], dict[str, float]]:
+    chart_started = perf_counter()
+    chart_data = compute_natal_chart(
+        request.birth_date,
+        request.birth_time,
+        request.birth_place,
+    )
+    chart_compute_ms = (perf_counter() - chart_started) * 1000.0
+
+    serialize_started = perf_counter()
+    planets = serialize_planets(chart_data.get("planets", {}))
+    angles = chart_data.get("angles") if isinstance(chart_data, Mapping) else None
+    asc_sign = ""
+    asc_degree = None
+    if isinstance(angles, Mapping):
+        asc_sign = str(angles.get("ascendant_sign") or "").strip()
+        asc_degree = angles.get("ascendant")
+        if asc_sign and not any(
+            str(entry.get("planet") or "").strip().lower() == "ascendant"
+            for entry in planets
+            if isinstance(entry, Mapping)
+        ):
+            planets.append(
+                {
+                    "planet": "Ascendant",
+                    "sign": asc_sign,
+                    "house": 1,
+                    "degree": asc_degree,
+                    "is_point": True,
+                }
+            )
+
+    sun_sign = _extract_fast_sign(planets, "Sun")
+    moon_sign = _extract_fast_sign(planets, "Moon")
+    rising_sign = _extract_fast_sign(planets, "Ascendant") or asc_sign
+    chart_ruler = _profile_fast_ruler_for_sign(rising_sign)
+    chart_ruler_house = None
+    placements: list[dict[str, Any]] = []
+    for item in planets:
+        label = str(item.get("planet") or item.get("name") or "").strip()
+        sign = str(item.get("sign") or item.get("zodiac_sign") or "").strip()
+        house = item.get("house")
+        if not label or not sign or house in (None, ""):
+            continue
+        if chart_ruler and label.lower() == chart_ruler.lower() and chart_ruler_house is None:
+            try:
+                chart_ruler_house = int(house)
+            except (TypeError, ValueError):
+                chart_ruler_house = None
+        placements.append(
+            {
+                "label": label,
+                "sign": sign,
+                "house": house,
+            }
+        )
+
+    payload = {
+        "profile_fast": {
+            "sun_sign": sun_sign,
+            "moon_sign": moon_sign,
+            "rising_sign": rising_sign,
+            "chart_ruler": chart_ruler,
+            "chart_ruler_house": chart_ruler_house,
+            "placements": placements,
+        }
+    }
+    serialization_ms = (perf_counter() - serialize_started) * 1000.0
+    return payload, {
+        "chart_compute_ms": round(chart_compute_ms, 3),
+        "serialization_ms": round(serialization_ms, 3),
+    }
+
+
+def _log_profile_fast_timing(
+    *,
+    request: NatalInterpretationRequest,
+    response: Mapping[str, Any],
+    duration_ms: float,
+    cache_status: str,
+    cache_key: str,
+    chart_compute_ms: float,
+    serialization_ms: float,
+) -> None:
+    if not os.getenv("ENABLE_TIMING_LOGS", "true").strip().lower() in {"1", "true", "yes", "on"}:
+        return
+    logger.info(
+        "profile_fast_timing %s",
+        json.dumps(
+            {
+                "endpoint": "/profile/fast",
+                "cache_status": cache_status,
+                "cache_key": cache_key,
+                "birth_place": request.birth_place,
+                "locale": request.locale or "tr",
+                "duration_ms": round(duration_ms, 3),
+                "chart_compute_ms": round(chart_compute_ms, 3),
+                "serialization_ms": round(serialization_ms, 3),
+                "payload_bytes": _payload_size_bytes(response),
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        ),
+    )
+
+
+@router.post("/profile/fast")
+def profile_fast(
+    request: NatalInterpretationRequest,
+) -> Dict[str, Any]:
+    started = perf_counter()
+    cache_key = _profile_fast_cache_key(request)
+    lookup = default_cache_store.get(cache_key, now=utc_now())
+    if lookup.status == "hit" and lookup.entry is not None:
+        payload = dict(lookup.entry.value)
+        payload["cache_status"] = "hit"
+        _log_profile_fast_timing(
+            request=request,
+            response=payload,
+            duration_ms=(perf_counter() - started) * 1000.0,
+            cache_status="hit",
+            cache_key=cache_key,
+            chart_compute_ms=0.0,
+            serialization_ms=0.0,
+        )
+        return payload
+
+    payload, timing = _build_profile_fast_payload(request)
+    response = {
+        **payload,
+        "cache_status": "miss",
+    }
+    default_cache_store.set(
+        cache_key,
+        {key: value for key, value in response.items() if key != "cache_status"},
+        ttl_seconds=60 * 60,
+        stale_ttl_seconds=5 * 60,
+        now=utc_now(),
+    )
+    _log_profile_fast_timing(
+        request=request,
+        response=response,
+        duration_ms=(perf_counter() - started) * 1000.0,
+        cache_status="miss",
+        cache_key=cache_key,
+        chart_compute_ms=timing["chart_compute_ms"],
+        serialization_ms=timing["serialization_ms"],
+    )
+    return response
+
+
 @router.post("/interpret")
 def interpret_natal_chart(
     request: NatalInterpretationRequest,
@@ -90,19 +339,26 @@ def interpret_natal_chart(
     profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     """Free deterministic interpretation endpoint (JoviaWeighted narratives)."""
-
+    started = perf_counter()
     base_payload = _prepare_payload(
         request,
         premium_mode=False,
         debug_mode=debug,
         profile_engine=profile_engine,
     )
-    return _finalize_response(
+    response = _finalize_response(
         base_payload,
         premium_mode=False,
         debug_mode=debug,
         output_profile=output_profile,
     )
+    _log_natal_timing(
+        endpoint="/interpret",
+        request=request,
+        response=response,
+        duration_ms=(perf_counter() - started) * 1000.0,
+    )
+    return response
 
 
 @router.post("/interpret/ui")
@@ -112,6 +368,7 @@ def interpret_natal_chart_ui(
     include_debug: bool = False,
     profile_engine: str | None = None,
 ) -> Dict[str, Any]:
+    started = perf_counter()
     base_payload = _prepare_payload(
         request,
         premium_mode=False,
@@ -125,7 +382,14 @@ def interpret_natal_chart_ui(
         output_profile="user_compact",
     )
     public = build_public_natal_view(response, locale=request.locale or "tr", include_debug=include_debug)
-    return {"public": public}
+    payload = {"public": public}
+    _log_natal_timing(
+        endpoint="/interpret/ui",
+        request=request,
+        response=payload,
+        duration_ms=(perf_counter() - started) * 1000.0,
+    )
+    return payload
 
 
 @router.post("/interpret/debug")
@@ -573,6 +837,13 @@ def _prepare_payload_from_chart(
         include_debug=debug_mode,
         engine_override=(profile_engine or "").strip().lower() or None,
     )
+    personality_imprint = build_personality_imprint(
+        planets=planets,
+        aspects=aspects,
+        natal_graph=natal_graph,
+        locale=(request.locale if request else "tr") or "tr",
+        include_debug=debug_mode,
+    )
     return {
         "chart_data": chart_data,
         "metadata": _build_metadata(request, chart_data) if request else _build_metadata_from_chart(chart_data),
@@ -602,6 +873,7 @@ def _prepare_payload_from_chart(
         "narrative_anchor": narrative_anchor,
         "natal_graph": natal_graph,
         "natal_graph_compact": natal_graph.get("compact"),
+        "personality_imprint": personality_imprint,
         "profile_narrative": profile_narrative,
         "sections_v2": sections_v2,
         "supporting_threads": supporting_threads,
@@ -681,6 +953,7 @@ def _finalize_response(
         "meaning_weighting": base_payload["meaning_weighting"],
         "narrative_anchor": base_payload["narrative_anchor"],
         "natal_graph_compact": base_payload.get("natal_graph_compact"),
+        "personality_imprint": base_payload.get("personality_imprint") or {},
         "profile_narrative": base_payload.get("profile_narrative") or {},
         "sections_v2": base_payload.get("sections_v2") or [],
         "supporting_threads": base_payload.get("supporting_threads") or [],
@@ -845,6 +1118,18 @@ def _finalize_response(
         base_payload.get("upper_meaning_selected") or {},
         debug_mode=debug_mode,
     )
+    if debug_mode:
+        debug_entry = response.get("debug")
+        if isinstance(debug_entry, dict):
+            chart_for_v2 = {
+                **dict(base_payload.get("chart_data") or {}),
+                "planets": list(base_payload.get("planets") or []),
+                "aspects": list(base_payload.get("aspects") or []),
+            }
+            debug_entry["natal_graph_v2"] = build_natal_graph_v2(
+                chart_for_v2,
+                natal_graph=base_payload.get("natal_graph") or {},
+            )
     meta_entry = response.get("meta")
     if isinstance(meta_entry, dict):
         meta_entry["deprecated_fields"] = ["narrative_interpretation", "narrative_text"]

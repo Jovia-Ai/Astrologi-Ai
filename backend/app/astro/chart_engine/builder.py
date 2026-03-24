@@ -36,6 +36,14 @@ _LOCAL_LOCATION_FALLBACKS: Dict[str, LocationData] = {
     "ankara tr": LocationData(39.9334, 32.8597, "Europe/Istanbul", "Ankara, TR"),
     "izmir": LocationData(38.4237, 27.1428, "Europe/Istanbul", "Izmir, TR"),
     "izmir tr": LocationData(38.4237, 27.1428, "Europe/Istanbul", "Izmir, TR"),
+    "sanliurfa": LocationData(37.1674, 38.7955, "Europe/Istanbul", "Sanliurfa, TR"),
+    "sanliurfa tr": LocationData(37.1674, 38.7955, "Europe/Istanbul", "Sanliurfa, TR"),
+    "sanliurfa turkey": LocationData(37.1674, 38.7955, "Europe/Istanbul", "Sanliurfa, TR"),
+    "şanlıurfa": LocationData(37.1674, 38.7955, "Europe/Istanbul", "Sanliurfa, TR"),
+    "şanlıurfa tr": LocationData(37.1674, 38.7955, "Europe/Istanbul", "Sanliurfa, TR"),
+    "şanlıurfa turkey": LocationData(37.1674, 38.7955, "Europe/Istanbul", "Sanliurfa, TR"),
+    "urfa": LocationData(37.1674, 38.7955, "Europe/Istanbul", "Sanliurfa, TR"),
+    "urfa tr": LocationData(37.1674, 38.7955, "Europe/Istanbul", "Sanliurfa, TR"),
 }
 
 

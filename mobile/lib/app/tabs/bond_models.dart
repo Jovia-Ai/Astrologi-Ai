@@ -1,7 +1,7 @@
 enum BondType {
-  romantic('Romantic Connection', 'romantic'),
+  romantic('Romantic', 'romantic'),
   friendship('Friendship', 'friendship'),
-  work('Work / Collaboration', 'work');
+  work('Work', 'work');
 
   const BondType(this.label, this.backendValue);
 

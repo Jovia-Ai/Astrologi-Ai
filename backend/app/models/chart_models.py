@@ -14,6 +14,7 @@ Body = Literal[
     "uranus",
     "neptune",
     "pluto",
+    "juno",
     "node",
     "lilith",
     "chiron",

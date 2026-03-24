@@ -159,14 +159,11 @@ def build_card_copy(
     style = SIGN_STYLE_TR.get(sign, "net ritim")
     aspect_essence = ASPECT_ESSENCE_TR.get(aspect, ASPECT_ESSENCE_TR["square"])
     flavor = _flavor_line(aspects)
-    rulership_line = _rulership_line(rulership)
     lead = _lead_sentence(event, target_planet, house, scene)
 
     conflict_lines = [lead]
-    if rulership_line:
-        conflict_lines.append(rulership_line)
     conflict_lines.extend(aspect_essence["conflict_core"][:2])
-    conflict_lines.append(f"{sign_tr} çizgisinde odak {style} üzerinden kuruluyor.")
+    conflict_lines.append(f"Bu tema {sign_tr} tonunda daha çok {style} ihtiyacı doğuruyor.")
     conflict_lines = _dedupe_lines(conflict_lines)
 
     shadow_lines = list(aspect_essence["shadow_core"][:2])
@@ -232,9 +229,7 @@ def _guidance_fallback(house: int | None) -> List[str]:
 def _lead_sentence(event: Mapping[str, Any], target_planet: str, house: int | None, scene: str) -> str:
     transit = _planet_tr(str(event.get("transit_body") or "Transit"))
     natal_point = str(event.get("natal_point") or target_planet or "natal nokta").upper()
-    aspect = str(event.get("aspect") or "").lower().strip()
-    aspect_label = ASPECT_LABEL_TR.get(aspect, "temas")
-    return f"{transit}, {natal_point} ile {aspect_label} açı kuruyor; etki {house or '?'}. Evde {scene} tarafında belirgin."
+    return f"{transit} bu sıralar {scene} tarafını hareketlendiriyor; etkisi zamanla {natal_point} hattında daha görünür hale geliyor."
 
 
 def _is_neptune_square_asc(event: Mapping[str, Any]) -> bool:
@@ -320,11 +315,11 @@ def _rulership_line(rulership_houses: Sequence[Mapping[str, Any]]) -> str:
         return ""
     if len(houses) == 1:
         h = houses[0]
-        return f"Bu tema en çok {h}. Ev ({HOUSE_LABEL_TR.get(h, 'genel')}) alanına iner."
+        return f"İkincil yankı {h}. Ev ({HOUSE_LABEL_TR.get(h, 'genel')}) alanına uzanabilir."
     first, second = houses[0], houses[1]
     return (
-        f"Bu tema en çok {first}. Ev ({HOUSE_LABEL_TR.get(first, 'genel')}) ve "
-        f"{second}. Ev ({HOUSE_LABEL_TR.get(second, 'genel')}) alanlarına iner."
+        f"İkincil yankı {first}. Ev ({HOUSE_LABEL_TR.get(first, 'genel')}) ve "
+        f"{second}. Ev ({HOUSE_LABEL_TR.get(second, 'genel')}) alanlarına uzanabilir."
     )
 
 

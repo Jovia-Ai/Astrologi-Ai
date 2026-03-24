@@ -27,6 +27,7 @@ BODY_LABEL_TR = {
     "uranus": "Uranüs",
     "neptune": "Neptün",
     "pluto": "Plüton",
+    "juno": "Juno",
     "node": "Ay Düğümü",
     "lilith": "Lilith",
     "chiron": "Chiron",

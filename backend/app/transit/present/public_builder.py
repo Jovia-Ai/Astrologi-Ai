@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Tuple
 import unicodedata
 
 from app.transit.narrative.archetype_engine import build_insight_pack
@@ -8,6 +8,7 @@ from app.transit.narrative.composer import compose_event_summary_from_item, comp
 from app.transit.narrative.deep_archetype_engine import (
     build_active_event_cards,
     build_daily_line,
+    build_event_card,
     build_period_core,
     pick_top_event,
 )
@@ -71,6 +72,23 @@ DURATION_MAP = {
 }
 
 PUBLIC_BLOCKED_POINTS = {"fortune", "lilith", "south node", "north node", "vertex"}
+PUBLIC_EVENT_V2_FIELDS = (
+    "event_family",
+    "event_subtype",
+    "audience",
+    "event_kind",
+    "importance_tier",
+    "planet_class",
+    "time_scale",
+    "significance_score",
+    "lasting_change_score",
+    "chapter_opening",
+    "repeat_pass_count",
+    "is_structural",
+    "recognition_intensity",
+    "importance_label_tr",
+    "copy_mode",
+)
 
 
 def _split_sentences(text: str) -> List[str]:
@@ -458,6 +476,183 @@ def _is_public_allowed(item: Dict[str, Any]) -> bool:
     return transit_body not in PUBLIC_BLOCKED_POINTS and natal_point not in PUBLIC_BLOCKED_POINTS
 
 
+def _event_v2_index(response: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
+    payload = response.get("event_engine_v2") if isinstance(response.get("event_engine_v2"), Mapping) else {}
+    events_by_id = payload.get("events_by_id") if isinstance(payload.get("events_by_id"), Mapping) else {}
+    out: Dict[str, Dict[str, Any]] = {}
+    for event_id, raw in events_by_id.items():
+        if not str(event_id).strip() or not isinstance(raw, Mapping):
+            continue
+        out[str(event_id)] = dict(raw)
+    return out
+
+
+def _merge_event_v2(card: Mapping[str, Any], event_meta: Mapping[str, Any] | None) -> Dict[str, Any]:
+    card_out = dict(card)
+    if not isinstance(event_meta, Mapping):
+        return card_out
+    astro_event = dict(event_meta)
+    for key in PUBLIC_EVENT_V2_FIELDS:
+        if key in astro_event:
+            card_out[key] = astro_event.get(key)
+    card_out["astro_event"] = astro_event
+    return card_out
+
+
+def _merge_period_peak_timeline_v2(
+    items: List[Dict[str, Any]],
+    event_v2_by_id: Mapping[str, Mapping[str, Any]],
+) -> List[Dict[str, Any]]:
+    if not items or not event_v2_by_id:
+        return items
+    out: List[Dict[str, Any]] = []
+    for entry in items:
+        event_id = str(entry.get("event_id") or "").strip()
+        event_meta = event_v2_by_id.get(event_id)
+        if not event_meta:
+            out.append(entry)
+            continue
+        merged = dict(entry)
+        merged["astro_event"] = dict(event_meta)
+        if isinstance(merged.get("event_card"), Mapping):
+            merged["event_card"] = _merge_event_v2(merged["event_card"], event_meta)
+        out.append(merged)
+    return out
+
+
+def _global_period_story(period_core: Mapping[str, Any]) -> Dict[str, str]:
+    return {
+        "title": str(period_core.get("title") or ""),
+        "lead": str(period_core.get("period_opening") or period_core.get("big_picture") or ""),
+        "period_opening": str(period_core.get("period_opening") or ""),
+        "big_picture": str(period_core.get("big_picture") or ""),
+        "mechanism": str(period_core.get("mechanism") or ""),
+        "growth_edge": str(period_core.get("growth_edge") or ""),
+        "relational_or_life_expression": str(period_core.get("relational_or_life_expression") or ""),
+        "what_it_builds": str(period_core.get("what_it_builds") or period_core.get("upper_meaning") or ""),
+        "contribution": str(period_core.get("what_it_builds") or period_core.get("upper_meaning") or ""),
+        "upper_meaning": str(period_core.get("upper_meaning") or ""),
+    }
+
+
+def _enrich_period_story(
+    card: Mapping[str, Any],
+    *,
+    period_core: Mapping[str, Any],
+    global_period_story: Mapping[str, Any],
+    story_tracks: Mapping[str, Any],
+    event_story_map: Mapping[str, Any],
+) -> Dict[str, Any]:
+    card_out = dict(card)
+    if str(card_out.get("horizon") or "").strip().lower() != "period":
+        return card_out
+    event_id = str(card_out.get("event_id") or "").strip()
+    track_id = str(card_out.get("story_track_id") or event_story_map.get(event_id) or "").strip()
+    if track_id:
+        card_out["story_track_id"] = track_id
+    track_story = story_tracks.get(track_id) if track_id else None
+    if isinstance(track_story, dict) and any(str(v).strip() for v in track_story.values()):
+        card_out["period_story"] = dict(track_story)
+    elif any(str(v).strip() for v in global_period_story.values()):
+        card_out["period_story"] = dict(global_period_story)
+    provenance = card_out.get("narrative_provenance")
+    if isinstance(provenance, Mapping):
+        updated = dict(provenance)
+        updated["story_track_id"] = track_id
+        updated["period_track_used"] = "period_story" in card_out
+        card_out["narrative_provenance"] = updated
+    return card_out
+
+
+def _event_peak_date_utc(item: Mapping[str, Any]) -> str:
+    timing = item.get("timing") if isinstance(item.get("timing"), Mapping) else {}
+    return str(timing.get("peak_date_utc") or "").strip()
+
+
+def _event_weight(item: Mapping[str, Any]) -> float:
+    ranking = item.get("ranking") if isinstance(item.get("ranking"), Mapping) else {}
+    try:
+        return float(ranking.get("weight") or ranking.get("strength") or item.get("strength") or 0.0)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def _build_period_peak_timeline(
+    response: Mapping[str, Any],
+    *,
+    filtered_items: List[Dict[str, Any]],
+    period_core: Mapping[str, Any],
+    max_items: Optional[int] = None,
+) -> List[Dict[str, Any]]:
+    global_period_story = _global_period_story(period_core)
+    story_tracks = period_core.get("story_tracks") if isinstance(period_core.get("story_tracks"), dict) else {}
+    event_story_map = (
+        period_core.get("_event_story_map")
+        if isinstance(period_core.get("_event_story_map"), dict)
+        else {}
+    )
+    natal = response.get("natal") if isinstance(response.get("natal"), Mapping) else {}
+    candidates = [
+        item
+        for item in filtered_items
+        if str(item.get("bucket") or "").strip().lower() in {"medium", "long"}
+        and _event_peak_date_utc(item)
+    ]
+    candidates.sort(
+        key=lambda item: (
+            _event_peak_date_utc(item),
+            -_event_weight(item),
+            str(item.get("event_id") or ""),
+        )
+    )
+
+    used_ids: set[str] = set()
+    used_titles: set[str] = set()
+    out: List[Dict[str, Any]] = []
+    for item in candidates:
+        event_id = str(item.get("event_id") or "").strip()
+        if not event_id or event_id in used_ids:
+            continue
+        card = build_event_card(item, context={"natal": natal})
+        card = _enrich_period_story(
+            card,
+            period_core=period_core,
+            global_period_story=global_period_story,
+            story_tracks=story_tracks,
+            event_story_map=event_story_map,
+        )
+        if str(card.get("horizon") or "").strip().lower() != "period":
+            continue
+
+        timing = card.get("timing") if isinstance(card.get("timing"), Mapping) else {}
+        title = str(card.get("title") or "").strip()
+        if title in used_titles:
+            signature = str(card.get("signature_tr") or card.get("signature") or "").strip()
+            if signature:
+                title = signature
+        used_ids.add(event_id)
+        if title:
+            used_titles.add(title)
+
+        out.append(
+            {
+                "event_id": event_id,
+                "title": title,
+                "signature_tr": str(card.get("signature_tr") or card.get("signature") or "").strip(),
+                "peak_date_utc": str(timing.get("peak_date_utc") or "").strip(),
+                "entry_date_utc": str(timing.get("entry_date_utc") or "").strip(),
+                "exit_date_utc": str(timing.get("exit_date_utc") or "").strip(),
+                "bucket": str(card.get("bucket") or item.get("bucket") or "").strip(),
+                "phase": str(card.get("phase") or item.get("phase") or "").strip(),
+                "time_hint_tr": str(card.get("time_hint_tr") or card.get("time_hint") or "").strip(),
+                "event_card": card,
+            }
+        )
+        if max_items is not None and len(out) >= max_items:
+            break
+    return out
+
+
 def build_public_period(response: Dict[str, Any]) -> PublicPeriod:
     presentable = response.get("presentable") or {}
     summary = presentable.get("summary") or {}
@@ -502,16 +697,15 @@ def build_public_response(response: Dict[str, Any]) -> Dict[str, Any]:
     display = response.get("display") or {}
     items = display.get("items") or []
     filtered_items = [item for item in items if isinstance(item, dict) and _is_public_allowed(item)]
+    multi_event_payload = (
+        dict(response.get("event_engine_v2"))
+        if isinstance(response.get("event_engine_v2"), Mapping)
+        else {}
+    )
+    event_v2_by_id = _event_v2_index(response)
     event_cards = build_active_event_cards(response, max_cards=5)
     period_core = build_period_core(response, event_cards=event_cards)
-    global_period_story = {
-        "title": str(period_core.get("title") or ""),
-        "lead": str(period_core.get("big_picture") or ""),
-        "big_picture": str(period_core.get("big_picture") or ""),
-        "mechanism": str(period_core.get("mechanism") or ""),
-        "contribution": str(period_core.get("upper_meaning") or ""),
-        "upper_meaning": str(period_core.get("upper_meaning") or ""),
-    }
+    global_period_story = _global_period_story(period_core)
     story_tracks = period_core.get("story_tracks") if isinstance(period_core.get("story_tracks"), dict) else {}
     event_story_map = (
         period_core.get("_event_story_map")
@@ -521,19 +715,27 @@ def build_public_response(response: Dict[str, Any]) -> Dict[str, Any]:
     if event_cards:
         enriched_cards: List[Dict[str, Any]] = []
         for card in event_cards:
-            card_out = dict(card)
-            if str(card_out.get("horizon") or "").strip().lower() == "period":
-                event_id = str(card_out.get("event_id") or "").strip()
-                track_id = str(card_out.get("story_track_id") or event_story_map.get(event_id) or "").strip()
-                if track_id:
-                    card_out["story_track_id"] = track_id
-                track_story = story_tracks.get(track_id) if track_id else None
-                if isinstance(track_story, dict) and any(str(v).strip() for v in track_story.values()):
-                    card_out["period_story"] = dict(track_story)
-                elif any(str(v).strip() for v in global_period_story.values()):
-                    card_out["period_story"] = dict(global_period_story)
-            enriched_cards.append(card_out)
+            enriched_cards.append(
+                _enrich_period_story(
+                    card,
+                    period_core=period_core,
+                    global_period_story=global_period_story,
+                    story_tracks=story_tracks,
+                    event_story_map=event_story_map,
+                )
+            )
         event_cards = enriched_cards
+    if event_v2_by_id and event_cards:
+        event_cards = [
+            _merge_event_v2(card, event_v2_by_id.get(str(card.get("event_id") or "").strip()))
+            for card in event_cards
+        ]
+    period_peak_timeline = _build_period_peak_timeline(
+        response,
+        filtered_items=filtered_items,
+        period_core=period_core,
+    )
+    period_peak_timeline = _merge_period_peak_timeline_v2(period_peak_timeline, event_v2_by_id)
     timeline = build_daily_line(
         str(response.get("transit_date") or ""),
         pick_top_event(response),
@@ -551,7 +753,16 @@ def build_public_response(response: Dict[str, Any]) -> Dict[str, Any]:
         period=build_public_period(response),
         period_core=period_core,
         event_cards=event_cards,
+        period_peak_timeline=period_peak_timeline,
         timeline=timeline,
+        multi_event=multi_event_payload or None,
+        personal_transit_rail=multi_event_payload.get("personal_transit_rail") if multi_event_payload else None,
+        structural_chapter_rail=multi_event_payload.get("structural_chapter_rail") if multi_event_payload else None,
+        solar_year_frame=(
+            response.get("solar_year_frame")
+            if isinstance(response.get("solar_year_frame"), Mapping)
+            else (multi_event_payload.get("solar_year_frame") if multi_event_payload else None)
+        ),
     )
     out = public.model_dump(exclude_none=True)
     if debug_events:

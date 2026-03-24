@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/app/profile/profile_repository.dart';
 import 'package:mobile/app/tabs/tabs_shell.dart';
+import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 class OnboardingBirthPage extends StatefulWidget {
   const OnboardingBirthPage({super.key});
@@ -129,56 +131,85 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
     }
 
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final profile = context.profileTheme;
+    final spacing = profile.spacing;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Onboarding - Birth Data')),
       body: SafeArea(
         child: SingleChildScrollView(
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-          padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottomInset),
+          padding: EdgeInsets.fromLTRB(
+            spacing.s24,
+            spacing.s20,
+            spacing.s24,
+            spacing.s20 + bottomInset,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (_error != null) ...[
-                Text(
-                  _error!,
-                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+              const JoviaProfileTopBar(
+                label: 'Dogum',
+                centerText: 'temel veriler',
+                reserveTrailingSpace: true,
+              ),
+              SizedBox(height: spacing.s24),
+              const JoviaSectionHeader(
+                label: 'Onboarding',
+                title: 'Haritanin dogum eksenini tamamla',
+                body:
+                    'Bu bilgiler backend akisina aynen gider; burada sadece tipografik omurga profile yaklasti.',
+                variant: JoviaSectionHeaderVariant.editorial,
+              ),
+              SizedBox(height: spacing.s24),
+              JoviaSurfaceCard(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    if (_error != null) ...[
+                      Text(
+                        _error!,
+                        style: profile.typography.meta.copyWith(
+                          color: Theme.of(context).colorScheme.error,
+                        ),
+                      ),
+                      SizedBox(height: spacing.s12),
+                    ],
+                    TextField(
+                      controller: _birthDateController,
+                      decoration: const InputDecoration(
+                        labelText: 'Birth date (YYYY-MM-DD)',
+                      ),
+                    ),
+                    SizedBox(height: spacing.s12),
+                    TextField(
+                      controller: _birthTimeController,
+                      decoration: const InputDecoration(
+                        labelText: 'Birth time (HH:mm)',
+                      ),
+                    ),
+                    SizedBox(height: spacing.s12),
+                    TextField(
+                      controller: _cityController,
+                      decoration: const InputDecoration(labelText: 'City'),
+                    ),
+                    SizedBox(height: spacing.s12),
+                    TextField(
+                      controller: _countryController,
+                      decoration: const InputDecoration(labelText: 'Country'),
+                    ),
+                    SizedBox(height: spacing.s24),
+                    ElevatedButton(
+                      onPressed: _isSaving ? null : _save,
+                      child: _isSaving
+                          ? const SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Text('Continue'),
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 12),
-              ],
-              TextField(
-                controller: _birthDateController,
-                decoration: const InputDecoration(
-                  labelText: 'Birth date (YYYY-MM-DD)',
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _birthTimeController,
-                decoration: const InputDecoration(
-                  labelText: 'Birth time (HH:mm)',
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _cityController,
-                decoration: const InputDecoration(labelText: 'City'),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _countryController,
-                decoration: const InputDecoration(labelText: 'Country'),
-              ),
-              const SizedBox(height: 24),
-              ElevatedButton(
-                onPressed: _isSaving ? null : _save,
-                child: _isSaving
-                    ? const SizedBox(
-                        height: 18,
-                        width: 18,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Continue'),
               ),
             ],
           ),

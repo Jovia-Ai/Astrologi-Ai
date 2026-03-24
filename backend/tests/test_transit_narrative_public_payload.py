@@ -49,6 +49,13 @@ def test_transit_narrative_includes_public_event_cards(monkeypatch) -> None:
         lambda _request, _start_date: {
             "period_core": {"title": "Core"},
             "event_cards": [{"event_id": "evt_1", "natal_promise": {"score": 0.7}}],
+            "period_peak_timeline": [
+                {
+                    "event_id": "evt_1",
+                    "peak_date_utc": "2026-03-05T09:00:00+00:00",
+                    "event_card": {"event_id": "evt_1"},
+                }
+            ],
             "timeline": {"summary": "line"},
         },
     )
@@ -57,6 +64,7 @@ def test_transit_narrative_includes_public_event_cards(monkeypatch) -> None:
     assert "public" in response
     assert isinstance(response["public"]["event_cards"], list)
     assert response["public"]["event_cards"][0]["natal_promise"]["score"] == 0.7
+    assert response["public"]["period_peak_timeline"][0]["peak_date_utc"] == "2026-03-05T09:00:00+00:00"
 
 
 def test_transit_narrative_public_payload_fallback_on_error(monkeypatch) -> None:
@@ -96,6 +104,7 @@ def test_transit_narrative_public_payload_fallback_on_error(monkeypatch) -> None
     response = transits.build_transit_narrative(_request())
     assert "public" in response
     assert response["public"]["event_cards"] == []
+    assert response["public"]["period_peak_timeline"] == []
     assert response["public"]["period_core"] == {}
     assert response["public"]["timeline"] == {}
 
@@ -126,6 +135,7 @@ def test_transit_narrative_debug_includes_period_selection(monkeypatch) -> None:
         lambda _request, _start_date: {
             "period_core": {"title": "Core"},
             "event_cards": [{"event_id": "evt_1"}],
+            "period_peak_timeline": [{"event_id": "evt_1"}],
             "timeline": {"summary": "line"},
             "_period_coverage": {"counts": {"total": 1}},
             "_period_selection": {"selection_mode": "coverage_first_v1", "selected_ids": ["evt_1"]},

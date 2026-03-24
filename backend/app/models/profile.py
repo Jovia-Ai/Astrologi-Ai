@@ -10,10 +10,12 @@ from pydantic import BaseModel, ConfigDict, EmailStr, Field
 class ProfileCreate(BaseModel):
     email: EmailStr
     full_name: str = Field(..., min_length=1)
+    avatar_path: Optional[str] = None
 
 
 class ProfileUpdate(BaseModel):
     email: Optional[EmailStr] = None
     full_name: Optional[str] = None
+    avatar_path: Optional[str] = None
 
     model_config = ConfigDict(extra="forbid")

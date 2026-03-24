@@ -80,7 +80,7 @@ def _build_core_text(asc_sign: str, asc_ruler: str, asc_ruler_house: int) -> str
     if asc_ruler_house == 12:
         return (
             f"Netlik sende kontrol değil güven meselesi; Yükselen {sign_label} dışarıda ölçülü bir duruş verirken "
-            f"yöneticin {ruler_label}'ün {asc_ruler_house}. ev vurgusu kararlarını önce içeride pişirmene neden "
+            f"yöneticin {ruler_label}'ün {asc_ruler_house}. ev vurgusu kararlarını önce içeride olgunlaştırmana neden "
             "olur, bu yüzden hızlı cevap vermek yerine geri çekilip toparlanman kaçınma değil, iç kalite "
             "standardını koruma biçimidir."
         )

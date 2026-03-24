@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/app/onboarding/onboarding_birth_page.dart';
+import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 import 'auth_debug_state.dart';
 import 'user_bootstrap.dart';
@@ -87,65 +89,101 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
+    final profile = context.profileTheme;
+    final spacing = profile.spacing;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Register')),
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) => SingleChildScrollView(
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 16 + bottomInset),
+            padding: EdgeInsets.fromLTRB(
+              spacing.s24,
+              spacing.s20,
+              spacing.s24,
+              spacing.s20 + bottomInset,
+            ),
             child: ConstrainedBox(
               constraints: BoxConstraints(
-                minHeight: constraints.maxHeight - 32,
+                minHeight: constraints.maxHeight - spacing.s40,
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextField(
-                    controller: _emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(labelText: 'Email'),
+                  const JoviaProfileTopBar(
+                    label: 'Kayit',
+                    centerText: 'yeni hesap',
+                    reserveTrailingSpace: true,
                   ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(labelText: 'Password'),
+                  SizedBox(height: spacing.s24),
+                  const JoviaSectionHeader(
+                    label: 'Baslangic',
+                    title: 'Profil ritmine giris yap',
+                    body:
+                        'Hesabini olustur, sonra profil ve dogum katmanlarini ayni tipografik sistemde tamamla.',
+                    variant: JoviaSectionHeaderVariant.editorial,
                   ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: _confirmController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Confirm password',
+                  SizedBox(height: spacing.s24),
+                  JoviaSurfaceCard(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        TextField(
+                          controller: _emailController,
+                          keyboardType: TextInputType.emailAddress,
+                          decoration: const InputDecoration(labelText: 'Email'),
+                        ),
+                        SizedBox(height: spacing.s12),
+                        TextField(
+                          controller: _passwordController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Password',
+                          ),
+                        ),
+                        SizedBox(height: spacing.s12),
+                        TextField(
+                          controller: _confirmController,
+                          obscureText: true,
+                          decoration: const InputDecoration(
+                            labelText: 'Confirm password',
+                          ),
+                        ),
+                        if (_error != null) ...[
+                          SizedBox(height: spacing.s16),
+                          Text(
+                            _error!,
+                            style: profile.typography.meta.copyWith(
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                          ),
+                        ],
+                        SizedBox(height: spacing.s16),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: _isLoading ? null : _register,
+                            child: _isLoading
+                                ? const SizedBox(
+                                    height: 18,
+                                    width: 18,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : const Text('Create account'),
+                          ),
+                        ),
+                        SizedBox(height: spacing.s8),
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('Back to login'),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  if (_error != null)
-                    Text(
-                      _error!,
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
-                    ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _register,
-                      child: _isLoading
-                          ? const SizedBox(
-                              height: 18,
-                              width: 18,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('Create account'),
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('Back to login'),
                   ),
                 ],
               ),

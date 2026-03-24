@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_assets.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 import 'add_person_page.dart';
 import 'friend_profile_page.dart';
@@ -13,10 +16,15 @@ class PeopleListPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final peopleAsync = ref.watch(peopleListProvider);
+    final profile = context.profileTheme;
+    final spacing = profile.spacing;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Arkadaşlar'),
+        title: Text(
+          'KISILER',
+          style: profile.typography.navigationLabel(color: profile.colors.text),
+        ),
         actions: [
           IconButton(
             tooltip: 'Kişi ekle',
@@ -41,17 +49,18 @@ class PeopleListPage extends ConsumerWidget {
           data: (items) {
             if (items.isEmpty) {
               return ListView(
-                padding: const EdgeInsets.all(24),
+                padding: EdgeInsets.all(spacing.s24),
                 children: [
-                  const Card(
-                    child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text('Henüz kayıtlı kişi yok.'),
-                    ),
+                  JoviaReadingPanel(
+                    label: 'People',
+                    title: 'Henuz kayitli kisi yok',
+                    body:
+                        'Bond ve diger iliski akislari icin kisi alanini buradan kuracaksin.',
                   ),
-                  const SizedBox(height: 12),
-                  OutlinedButton.icon(
-                    onPressed: () async {
+                  SizedBox(height: spacing.s12),
+                  JoviaPrimaryButton(
+                    label: 'Kisi ekle',
+                    onTap: () async {
                       final created = await Navigator.of(context).push<bool>(
                         MaterialPageRoute<bool>(
                           builder: (_) => const AddPersonPage(),
@@ -61,42 +70,40 @@ class PeopleListPage extends ConsumerWidget {
                         ref.invalidate(peopleListProvider);
                       }
                     },
-                    icon: const Icon(Icons.add),
-                    label: const Text('Kişi Ekle'),
                   ),
                 ],
               );
             }
 
-            return ListView.separated(
-              padding: const EdgeInsets.all(16),
-              itemCount: items.length,
-              separatorBuilder: (_, _) => const SizedBox(height: 10),
-              itemBuilder: (context, index) {
-                final person = items[index];
-                return Card(
-                  child: ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 8,
-                    ),
-                    leading: const CircleAvatar(
-                      child: Icon(Icons.person_outline),
-                    ),
-                    title: Text(person.name),
-                    subtitle: Text(_subtitle(person)),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          tooltip: 'Düzenle',
-                          icon: const Icon(Icons.edit_outlined),
-                          onPressed: () async {
+            return ListView(
+              padding: EdgeInsets.all(spacing.s16),
+              children: [
+                JoviaReadingPanel(
+                  label: 'People',
+                  title: 'Kisi alanin',
+                  body:
+                      'Kaydettigin insanlar burada tek bir utility listede durur.',
+                  child: Column(
+                    children: [
+                      for (var index = 0; index < items.length; index++) ...[
+                        _PeopleListItem(
+                          person: items[index],
+                          onTap: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => FriendProfilePage(
+                                  personId: items[index].id,
+                                ),
+                              ),
+                            );
+                          },
+                          onEdit: () async {
                             final updated = await Navigator.of(context)
                                 .push<bool>(
                                   MaterialPageRoute<bool>(
-                                    builder: (_) =>
-                                        AddPersonPage(initialPerson: person),
+                                    builder: (_) => AddPersonPage(
+                                      initialPerson: items[index],
+                                    ),
                                   ),
                                 );
                             if (updated == true) {
@@ -104,25 +111,17 @@ class PeopleListPage extends ConsumerWidget {
                             }
                           },
                         ),
-                        const Icon(Icons.chevron_right),
+                        if (index != items.length - 1) const ThinDivider(),
                       ],
-                    ),
-                    onTap: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute<void>(
-                          builder: (_) =>
-                              FriendProfilePage(personId: person.id),
-                        ),
-                      );
-                    },
+                    ],
                   ),
-                );
-              },
+                ),
+              ],
             );
           },
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (error, _) => ListView(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(spacing.s24),
             children: [
               Builder(
                 builder: (context) {
@@ -137,15 +136,12 @@ class PeopleListPage extends ConsumerWidget {
                   return const SizedBox.shrink();
                 },
               ),
-              Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Text(
-                    error is PeopleQueryException
-                        ? error.userMessage
-                        : 'Arkadaş listesi yüklenemedi: $error',
-                  ),
-                ),
+              JoviaReadingPanel(
+                label: 'People',
+                title: 'Kisi listesi yuklenemedi',
+                body: error is PeopleQueryException
+                    ? error.userMessage
+                    : 'Arkadaş listesi yüklenemedi: $error',
               ),
             ],
           ),
@@ -153,10 +149,44 @@ class PeopleListPage extends ConsumerWidget {
       ),
     );
   }
+}
 
-  String _subtitle(PersonProfile person) {
-    final birthTime = (person.birthTime ?? '').trim();
-    final timePart = birthTime.isEmpty ? 'saat yok' : birthTime;
-    return '${person.birthDate} • $timePart • ${person.city}, ${person.country}';
+class _PeopleListItem extends StatelessWidget {
+  const _PeopleListItem({
+    required this.person,
+    required this.onTap,
+    required this.onEdit,
+  });
+
+  final PersonProfile person;
+  final VoidCallback onTap;
+  final VoidCallback onEdit;
+
+  @override
+  Widget build(BuildContext context) {
+    return JoviaUtilityRow(
+      label: 'Kisi',
+      title: person.name,
+      body:
+          '${person.birthDate} • ${((person.birthTime ?? '').trim().isEmpty ? 'saat yok' : person.birthTime!.trim())} • ${person.city}, ${person.country}',
+      leading: CircleAvatar(
+        radius: 18,
+        backgroundColor: context.profileTheme.colors.lavender,
+        child: const JoviaUiIcon(asset: JoviaUiAsset.profileComet, size: 16),
+      ),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            tooltip: 'Duzenle',
+            icon: const Icon(Icons.edit_outlined, size: 18),
+            onPressed: onEdit,
+          ),
+          const SizedBox(width: 2),
+          const JoviaUiIcon(asset: JoviaUiAsset.chevronRight, size: 16),
+        ],
+      ),
+      onTap: onTap,
+    );
   }
 }

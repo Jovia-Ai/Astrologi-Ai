@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 
 import 'ai_page.dart';
 import 'bond_page.dart';
-import 'calendar_hub_page.dart';
 import 'chart_lab_page.dart';
 import 'home_page.dart';
 import 'profile_page.dart';
+import 'story_studio_page.dart';
+import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_assets.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 class TabsShell extends StatefulWidget {
   const TabsShell({super.key});
@@ -21,63 +24,55 @@ class _TabsShellState extends State<TabsShell> {
   late final List<_TabItem> _tabs = <_TabItem>[
     const _TabItem(
       page: HomePage(),
-      item: BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+      item: JoviaBottomNavItem(
+        icon: JoviaUiIcon(asset: JoviaUiAsset.homePortal),
+        label: 'Home',
+      ),
     ),
     const _TabItem(
       page: BondPage(),
-      item: BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Bond'),
+      item: JoviaBottomNavItem(
+        icon: JoviaUiIcon(asset: JoviaUiAsset.heartOrbit),
+        label: 'Bond',
+      ),
     ),
     const _TabItem(
       page: AiPage(),
-      item: BottomNavigationBarItem(icon: _AiTabIcon(), label: 'AI'),
+      item: JoviaBottomNavItem(icon: _AiTabIcon(), label: 'AI'),
+    ),
+    const _TabItem(
+      page: StoryStudioPage(),
+      item: JoviaBottomNavItem(
+        icon: JoviaUiIcon(asset: JoviaUiAsset.menuStack),
+        label: 'Studio',
+      ),
     ),
     const _TabItem(
       page: ProfilePage(),
-      item: BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+      item: JoviaBottomNavItem(
+        icon: JoviaUiIcon(asset: JoviaUiAsset.profileComet),
+        label: 'Profile',
+      ),
     ),
   ];
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
     final activeIndex = _index.clamp(0, _tabs.length - 1);
-    final activeTitle = _tabs[activeIndex].item.label ?? 'Tabs';
-    final showCalendarAction = activeIndex == 0 || activeIndex == 3;
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text(activeTitle),
-        backgroundColor: Colors.white,
-        actions: showCalendarAction
-            ? <Widget>[
-                IconButton(
-                  tooltip: 'Calendar',
-                  onPressed: () => _openTiming(context),
-                  icon: const Icon(Icons.calendar_month),
-                ),
-              ]
-            : null,
-      ),
+      backgroundColor: profile.colors.bg,
       body: SafeArea(
         child: IndexedStack(
           index: activeIndex,
           children: _tabs.map((entry) => entry.page).toList(),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
+      bottomNavigationBar: JoviaBottomNavBar(
         currentIndex: activeIndex,
         onTap: (value) => setState(() => _index = value),
         items: _tabs.map((entry) => entry.item).toList(),
-      ),
-    );
-  }
-
-  void _openTiming(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => const CalendarHubPage(),
       ),
     );
   }
@@ -87,7 +82,7 @@ class _TabItem {
   const _TabItem({required this.page, required this.item});
 
   final Widget page;
-  final BottomNavigationBarItem item;
+  final JoviaBottomNavItem item;
 }
 
 class _AiTabIcon extends StatelessWidget {
@@ -103,7 +98,7 @@ class _AiTabIcon extends StatelessWidget {
               );
             }
           : null,
-      child: const Icon(Icons.auto_awesome),
+      child: const JoviaUiIcon(asset: JoviaUiAsset.chatOrbit),
     );
   }
 }

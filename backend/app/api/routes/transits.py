@@ -10,6 +10,7 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple, Literal
 import json
 import logging
 from functools import lru_cache
+from time import perf_counter
 
 from fastapi import APIRouter, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, Field
@@ -29,6 +30,11 @@ from app.transit.calendar_builder import build_transit_calendar_public
 from app.transit.calendar.best_times import best_times_from_calendar_payload
 from app.transit.serialize.calendar_serializers import to_ui_day_detail, to_ui_calendar
 from app.transit.interpret.promise_builder_v1 import build_promise_model
+from app.transit.astro_event_v2 import (
+    build_personal_multi_event_payload,
+    build_solar_year_theme,
+    enrich_legacy_aspect_item,
+)
 from app.transit.narrative import (
     assemble_blocks,
     build_calendar_day,
@@ -42,6 +48,62 @@ from app.transit.narrative.generator import make_birth_fingerprint
 
 router = APIRouter(tags=["transits"])
 logger = logging.getLogger(__name__)
+
+
+def _json_safe(value: Any) -> Any:
+    if isinstance(value, set):
+        return sorted(value)
+    return str(value)
+
+
+def _payload_size_bytes(payload: Any) -> int:
+    return len(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            default=_json_safe,
+        ).encode("utf-8")
+    )
+
+
+def _log_transit_timing(
+    *,
+    endpoint: str,
+    request: "TransitNarrativeRequest",
+    response: Mapping[str, Any],
+    duration_ms: float,
+) -> None:
+    if not os.getenv("ENABLE_TIMING_LOGS", "true").strip().lower() in {"1", "true", "yes", "on"}:
+        return
+    start_date = _parse_iso_date(request.start, field_name="start")
+    end_date = _parse_iso_date(request.end, field_name="end")
+    range_days = (end_date - start_date).days + 1
+    logger.info(
+        "transit_timing %s",
+        json.dumps(
+            {
+                "endpoint": endpoint,
+                "cache_status": "not_cached",
+                "duration_ms": round(duration_ms, 3),
+                "range_start": start_date.isoformat(),
+                "range_end": end_date.isoformat(),
+                "range_days": range_days,
+                "selected_date": request.selected_date,
+                "transit_window": "monthly_range_with_selected_day"
+                if request.selected_date and range_days > 1
+                else "single_day"
+                if range_days == 1
+                else "range_only",
+                "include_best_times": bool(request.include_best_times),
+                "top": int(request.top),
+                "window": int(request.window),
+                "payload_bytes": _payload_size_bytes(response),
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+        ),
+    )
 
 def _normalize_calendar_view(view: str) -> Literal["public", "internal", "both"]:
     """
@@ -1166,6 +1228,16 @@ class TransitNarrativeRequest(BaseModel):
     debug: bool = False
 
 
+class SolarYearFrameRequest(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    birth_date: str
+    birth_time: str
+    birth_place: str
+    transit_date: str
+    transit_place: str
+
+
 def _build_narrative_public_payload(request: TransitNarrativeRequest, start_date: date_type) -> Dict[str, Any]:
     transit_date = request.selected_date or start_date.isoformat()
     core_request = TransitRequest(
@@ -1205,7 +1277,12 @@ def _build_narrative_public_payload(request: TransitNarrativeRequest, start_date
     return {
         "period_core": period_core,
         "event_cards": public_payload.get("event_cards") or [],
+        "period_peak_timeline": public_payload.get("period_peak_timeline") or [],
         "timeline": public_payload.get("timeline") or {},
+        "multi_event": public_payload.get("multi_event") or {},
+        "personal_transit_rail": public_payload.get("personal_transit_rail") or [],
+        "structural_chapter_rail": public_payload.get("structural_chapter_rail") or [],
+        "solar_year_frame": public_payload.get("solar_year_frame") or {},
         "_period_coverage": coverage,
         "_period_selection": period_selection,
         "_period_root_causes": period_root_causes,
@@ -1221,6 +1298,7 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
         transit_time = "12:00"
         assumptions.append("default_transit_time")
     try:
+        options_payload = request.options.model_dump() if request.options else {}
         response = build_transit_report(
             birth_date=request.birth_date,
             birth_time=request.birth_time,
@@ -1228,8 +1306,31 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             transit_date=request.transit_date,
             transit_time=transit_time,
             transit_place=request.transit_place,
-            options=request.options.model_dump() if request.options else {},
+            options=options_payload,
             assumptions=assumptions,
+        )
+        window_report = build_transit_window_report(
+            birth_date=request.birth_date,
+            birth_time=request.birth_time,
+            birth_place=request.birth_place,
+            transit_date=request.transit_date,
+            transit_time=transit_time,
+            transit_place=request.transit_place,
+            options=options_payload,
+            window_days=DEFAULT_PERIOD_DAYS,
+            step_hours=DEFAULT_PERIOD_STEP_HOURS,
+            refine_near_exact=DEFAULT_PERIOD_REFINE_NEAR_EXACT,
+            max_events=DEFAULT_PERIOD_MAX_EVENTS,
+            orb_hysteresis_deg=DEFAULT_PERIOD_ORB_HYSTERESIS,
+            assumptions=assumptions,
+        )
+        solar_year_frame = build_solar_year_theme(
+            birth_date=request.birth_date,
+            birth_time=request.birth_time,
+            birth_place=request.birth_place,
+            transit_date=request.transit_date,
+            transit_place=request.transit_place,
+            natal_snapshot=response.get("natal") if isinstance(response, Mapping) else None,
         )
         display = response.get("display") or {}
         items = display.get("items") or []
@@ -1283,6 +1384,16 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             display["items"] = interpreted_items
             response["display"] = display
             _build_ranking(display["items"])
+            display["items"] = [
+                enrich_legacy_aspect_item(
+                    dict(item),
+                    natal_snapshot=response.get("natal") if isinstance(response, Mapping) else None,
+                    solar_year=solar_year_frame,
+                )
+                for item in display["items"]
+                if isinstance(item, Mapping)
+            ]
+            response["display"] = display
             summary["pressure_index"] = float(
                 response.get("metrics", {}).get("pressure_index") or 0.0
             )
@@ -1301,21 +1412,6 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             if active_claims:
                 summary["active_claims"] = sorted(set(active_claims))
             include_axis_focus = bool(request.options.include_axis_focus) if request.options else False
-            window_report = build_transit_window_report(
-                birth_date=request.birth_date,
-                birth_time=request.birth_time,
-                birth_place=request.birth_place,
-                transit_date=request.transit_date,
-                transit_time=transit_time,
-                transit_place=request.transit_place,
-                options=request.options.model_dump() if request.options else {},
-                window_days=DEFAULT_PERIOD_DAYS,
-                step_hours=DEFAULT_PERIOD_STEP_HOURS,
-                refine_near_exact=DEFAULT_PERIOD_REFINE_NEAR_EXACT,
-                max_events=DEFAULT_PERIOD_MAX_EVENTS,
-                orb_hysteresis_deg=DEFAULT_PERIOD_ORB_HYSTERESIS,
-                assumptions=assumptions,
-            )
             period_items = _window_items_for_period_space(
                 window_report, natal=response.get("natal") or {}
             )
@@ -1325,6 +1421,15 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             response["presentable"] = presentable
             response["content_debug"] = _build_content_debug(interpreted_items, content_store)
             response["natal_promise"] = promise
+        response["window_report"] = window_report
+        response["solar_year_frame"] = solar_year_frame
+        response["event_engine_v2"] = build_personal_multi_event_payload(
+            report=response,
+            transit_date=request.transit_date,
+            transit_place=request.transit_place,
+            window_report=window_report,
+            solar_year=solar_year_frame,
+        )
         return response
     except Exception as exc:  # pragma: no cover - passthrough for API response
         raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -1339,6 +1444,21 @@ def build_transits(request: TransitRequest) -> Dict[str, Any]:
 @router.post("/transits/debug")
 def build_transits_debug(request: TransitRequest) -> Dict[str, Any]:
     return _build_transits_engine_response(request)
+
+
+@router.post("/solar/year-frame")
+def build_solar_year_frame(request: SolarYearFrameRequest) -> Dict[str, Any]:
+    frame = build_solar_year_theme(
+        birth_date=request.birth_date,
+        birth_time=request.birth_time,
+        birth_place=request.birth_place,
+        transit_date=request.transit_date,
+        transit_place=request.transit_place,
+    )
+    return {
+        "schema_version": "astro_event.v2",
+        "solar_year_frame": frame,
+    }
 
 
 @router.get("/transit/calendar")
@@ -1593,6 +1713,7 @@ def build_transit_calendar_day(
 
 @router.post("/transit/narrative")
 def build_transit_narrative(request: TransitNarrativeRequest) -> Dict[str, Any]:
+    started = perf_counter()
     start_date = _parse_iso_date(request.start, field_name="start")
     end_date = _parse_iso_date(request.end, field_name="end")
     if start_date > end_date:
@@ -1743,7 +1864,18 @@ def build_transit_narrative(request: TransitNarrativeRequest) -> Dict[str, Any]:
         response["public"] = {
             "period_core": {},
             "event_cards": [],
+            "period_peak_timeline": [],
             "timeline": {},
+            "multi_event": {
+                "schema_version": "astro_event.v2",
+                "personal_transit_rail": [],
+                "structural_chapter_rail": [],
+                "solar_year_frame": {},
+                "events_by_id": {},
+            },
+            "personal_transit_rail": [],
+            "structural_chapter_rail": [],
+            "solar_year_frame": {},
         }
     if best_times_public is not None:
         response["best_times"] = best_times_public
@@ -1773,6 +1905,12 @@ def build_transit_narrative(request: TransitNarrativeRequest) -> Dict[str, Any]:
             response["best_times"] = best_times_public
         if best_times_internal is not None:
             response["best_times_internal"] = best_times_internal
+    _log_transit_timing(
+        endpoint="/transit/narrative",
+        request=request,
+        response=response,
+        duration_ms=(perf_counter() - started) * 1000.0,
+    )
     return response
 
 

@@ -74,3 +74,8 @@ def test_supporting_threads_builder_returns_ui_threads() -> None:
     assert all(t.get("paragraph") for t in threads)
     assert all(t.get("body") for t in threads)
     assert all(t.get("micro") for t in threads)
+    assert all("ritim hızın çarpanı" not in str(t.get("one_liner") or "").lower() for t in threads)
+    assert all("yayınlanabilir iyi seviyesi" not in str(t.get("paragraph") or "").lower() for t in threads)
+    assert all("görünürlük adımları" not in str(t.get("paragraph") or "").lower() for t in threads)
+    assert all(" senden" not in str(t.get("micro") or "").lower() for t in threads)
+    assert all("çok tipik" not in str(t.get("micro") or "").lower() for t in threads)

@@ -4,6 +4,11 @@ import hashlib
 from collections import Counter
 from typing import Any, Dict, List, Mapping, Sequence
 
+from app.narrative.editorial_render_policy import semantic_overlap
+from app.natal.narrative.primitive_engine import build_primitives
+from app.natal.narrative.primitive_taxonomy_tr import TAXONOMY_V1_TR
+from app.natal.narrative.signature_taxonomy_tr import BLOCK_ALIAS_TO_TAXONOMY
+
 
 BLOCK_ORDER = [
     "identity_aura",
@@ -15,6 +20,11 @@ BLOCK_ORDER = [
     "luck_creation",
 ]
 
+TAXONOMY_BY_BLOCK_ID_TR: Dict[str, Dict[str, Any]] = {
+    str(block_id): dict(payload)
+    for block_id, payload in TAXONOMY_V1_TR.items()
+}
+
 ANGLE_ALIASES = {
     "ASC": {"ASC", "Ascendant"},
     "MC": {"MC", "Midheaven"},
@@ -25,6 +35,24 @@ ANGLE_ALIASES = {
 BENEFICS = {"Jupiter", "Venus"}
 PERSONAL_PLANETS = {"Sun", "Moon", "Mercury", "Venus", "Mars"}
 POINTS = {"Ascendant", "Midheaven", "Descendant", "Imum Coeli", "Fortune", "Lilith", "Chiron", "Vertex"}
+
+_SIGNATURE_PRIMITIVE_HINTS = {
+    "identity_1st_stellium": ["self_definition", "visible_presence", "inner_structure"],
+    "identity_uranus_angular": ["originality_drive", "self_definition"],
+    "identity_jupiter_neptune_vision": ["big_picture_vision", "meaningful_expansion"],
+    "identity_sun_angular": ["visible_presence", "self_definition"],
+    "mind_saturn_3rd_boundary": ["tone_sensitivity", "inner_structure"],
+    "mind_mercury_1st": ["mental_structuring", "systems_thinking"],
+    "mind_mercury_rx_refine": ["mental_structuring", "systems_thinking"],
+    "mind_sun_square_saturn_standard": ["inner_critic", "inner_structure"],
+    "drive_mars_9th_method": ["methodical_drive", "meaningful_expansion"],
+    "drive_mars_opp_saturn_push_pull": ["push_pull_drive", "inner_critic"],
+    "drive_mars_trine_neptune_inspired_action": ["creative_synthesis", "meaningful_expansion"],
+    "drive_saturn_sextile_uranus_structured_change": ["systems_thinking", "originality_drive"],
+    "love_7th_ruler_in_8th": ["relational_security", "intimacy_depth"],
+    "love_7th_ruler_in_11th_friends_to_love": ["relational_security", "network_luck"],
+    "love_moon_in_8_intimacy_threshold": ["intimacy_depth", "emotional_threshold"],
+}
 
 
 def _safe_house(value: Any) -> int | None:
@@ -582,6 +610,7 @@ def eval_signature(signature: Mapping[str, Any], facts: Mapping[str, Any]) -> Di
         "copy_tr": dict(signature.get("copy_tr") or {}),
         "chips": list(signature.get("chips") or []),
         "astro_tokens": list(signature.get("astro_tokens") or []),
+        "primitive_ids": list(_SIGNATURE_PRIMITIVE_HINTS.get(str(signature.get("id") or ""), [])),
     }
 
 
@@ -598,7 +627,107 @@ def _tie_break(seed: str, block_id: str, signature_id: str) -> str:
     return hashlib.sha256(f"{seed}|{block_id}|{signature_id}".encode("utf-8")).hexdigest()
 
 
-def select_by_block(candidates: Sequence[Mapping[str, Any]], facts: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
+def _candidate_primitive_ids(candidate: Mapping[str, Any], taxonomy_block_id: str) -> list[str]:
+    primitive_ids = [str(item) for item in candidate.get("primitive_ids") or [] if str(item).strip()]
+    if primitive_ids:
+        return primitive_ids
+    fallback_by_taxonomy = {
+        "identity_aura": ["self_definition", "inner_structure"],
+        "inner_system": ["tone_sensitivity", "systems_thinking"],
+        "talent_gifts": ["methodical_drive", "systems_thinking"],
+        "love_depth": ["relational_security", "intimacy_depth"],
+        "career_visibility": ["public_refinement", "visibility_sensitivity"],
+        "home_roots": ["recharge_through_home", "family_self_reliance"],
+        "luck_flow": ["creation_luck", "meaningful_expansion"],
+    }
+    return fallback_by_taxonomy.get(taxonomy_block_id, [])
+
+
+def _slot_bonus(
+    candidate: Mapping[str, Any],
+    primitive_scores: Mapping[str, float],
+    taxonomy: Mapping[str, Any],
+    slot: str,
+) -> float:
+    priority = taxonomy.get("priority_order") if isinstance(taxonomy.get("priority_order"), Mapping) else {}
+    wanted = [str(item) for item in priority.get(slot) or []]
+    candidate_primitive_ids = _candidate_primitive_ids(candidate, str(taxonomy.get("block_id") or ""))
+    score = 0.0
+    for primitive_id in candidate_primitive_ids:
+        if primitive_id in wanted:
+            score += 0.16 + float(primitive_scores.get(primitive_id) or 0.0) * 0.18
+        elif primitive_id in (taxonomy.get("primitive_clusters") or []):
+            score += 0.08 + float(primitive_scores.get(primitive_id) or 0.0) * 0.12
+    if slot == "spark" and candidate.get("spark"):
+        score += 0.12
+    if slot == "tone" and not candidate.get("spark"):
+        score += 0.05
+    return score
+
+
+def _candidate_source_keys(candidate: Mapping[str, Any]) -> set[str]:
+    keys: set[str] = set()
+    for item in list(candidate.get("evidence") or []) + list(candidate.get("astro_tokens") or []):
+        if not isinstance(item, Mapping):
+            continue
+        for name in ("planet", "planet1", "planet2", "ruler", "a", "b"):
+            value = str(item.get(name) or "").strip()
+            if value:
+                keys.add(f"planet:{value}")
+        for name in ("house", "ruler_house", "target_house"):
+            value = item.get(name)
+            if value is not None:
+                keys.add(f"house:{value}")
+        angle = str(item.get("angle") or "").strip()
+        if angle:
+            keys.add(f"angle:{angle}")
+    return keys
+
+
+def _candidate_surface_text(candidate: Mapping[str, Any]) -> str:
+    copy_tr = candidate.get("copy_tr") if isinstance(candidate.get("copy_tr"), Mapping) else {}
+    parts = [
+        str(copy_tr.get("teaser") or "").strip(),
+        str(copy_tr.get("core") or "").strip(),
+        str(copy_tr.get("spark") or "").strip(),
+    ]
+    return " ".join(part for part in parts if part).strip()
+
+
+def _diversity_penalty(
+    candidate: Mapping[str, Any],
+    *,
+    selected_source_counts: Counter[str],
+    selected_surfaces: Sequence[str],
+    block: str,
+) -> float:
+    penalty = 0.0
+    candidate_keys = _candidate_source_keys(candidate)
+    if candidate_keys:
+        for key in candidate_keys:
+            reuse = selected_source_counts.get(key, 0)
+            if reuse <= 0:
+                continue
+            if key.startswith("planet:"):
+                penalty += 0.04 * min(reuse, 2)
+            elif key.startswith("house:"):
+                penalty += 0.03 * min(reuse, 2)
+            else:
+                penalty += 0.02 * min(reuse, 2)
+    surface = _candidate_surface_text(candidate)
+    if block != "identity_aura" and surface:
+        for prior in selected_surfaces:
+            overlap = semantic_overlap(surface, prior)
+            if overlap >= 0.52:
+                penalty += min(0.12, overlap * 0.14)
+    return min(0.18, penalty)
+
+
+def select_by_block(
+    candidates: Sequence[Mapping[str, Any]],
+    facts: Mapping[str, Any],
+    primitive_hits: Sequence[Mapping[str, Any]] | None = None,
+) -> Dict[str, Dict[str, Any]]:
     by_block: Dict[str, List[Mapping[str, Any]]] = {block: [] for block in BLOCK_ORDER}
     for candidate in candidates:
         for block in candidate.get("block_affinity") or []:
@@ -608,43 +737,73 @@ def select_by_block(candidates: Sequence[Mapping[str, Any]], facts: Mapping[str,
     selected: Dict[str, Dict[str, Any]] = {}
     used_ids: set[str] = set()
     chip_counts: Counter[str] = Counter()
+    selected_source_counts: Counter[str] = Counter()
+    selected_surfaces: list[str] = []
     seed = str(facts.get("seed") or "")
+    primitive_scores = {str(hit.get("primitive_id") or ""): float(hit.get("score") or 0.0) for hit in (primitive_hits or []) if isinstance(hit, Mapping)}
 
     for block in BLOCK_ORDER:
+        taxonomy_block_id = BLOCK_ALIAS_TO_TAXONOMY.get(block, block)
+        taxonomy = TAXONOMY_BY_BLOCK_ID_TR.get(taxonomy_block_id, {})
         ranked = sorted(
             by_block.get(block) or [],
-            key=lambda item: (-float(item.get("score") or 0.0), _tie_break(seed, block, str(item.get("signature_id") or ""))),
+            key=lambda item: (
+                -float(item.get("score") or 0.0),
+                -_slot_bonus(item, primitive_scores, taxonomy, "spine"),
+                _tie_break(seed, block, str(item.get("signature_id") or "")),
+            ),
         )
-        primary = None
-        for candidate in ranked:
-            signature_id = str(candidate.get("signature_id") or "")
-            if signature_id in used_ids:
-                continue
-            if any(chip_counts.get(str(chip), 0) >= 2 for chip in candidate.get("chips") or []):
-                continue
-            primary = dict(candidate)
-            used_ids.add(signature_id)
-            for chip in primary.get("chips") or []:
-                chip_counts[str(chip)] += 1
-            break
 
-        color = None
-        if primary:
+        def choose(slot: str, *, min_score: float = 0.0) -> Dict[str, Any] | None:
+            best: Dict[str, Any] | None = None
+            best_score = -999.0
             for candidate in ranked:
                 signature_id = str(candidate.get("signature_id") or "")
                 if signature_id in used_ids:
                     continue
-                if float(candidate.get("score") or 0.0) < 0.55:
+                if float(candidate.get("score") or 0.0) < min_score:
                     continue
                 if any(chip_counts.get(str(chip), 0) >= 2 for chip in candidate.get("chips") or []):
                     continue
-                color = dict(candidate)
-                used_ids.add(signature_id)
-                for chip in color.get("chips") or []:
+                slot_score = float(candidate.get("score") or 0.0) + _slot_bonus(candidate, primitive_scores, taxonomy, slot)
+                if slot == "spine" and "identity_" in signature_id and block != "identity_aura":
+                    slot_score -= 0.05
+                slot_score -= _diversity_penalty(
+                    candidate,
+                    selected_source_counts=selected_source_counts,
+                    selected_surfaces=selected_surfaces,
+                    block=block,
+                )
+                if slot_score > best_score:
+                    best = dict(candidate)
+                    best_score = slot_score
+            if best is not None:
+                used_ids.add(str(best.get("signature_id") or ""))
+                for chip in best.get("chips") or []:
                     chip_counts[str(chip)] += 1
-                break
+                for key in _candidate_source_keys(best):
+                    selected_source_counts[key] += 1
+                surface = _candidate_surface_text(best)
+                if surface:
+                    selected_surfaces.append(surface)
+            return best
 
+        spine = choose("spine")
+        spark = choose("spark", min_score=0.45) if ranked else None
+        area = choose("spine", min_score=0.35) if ranked else None
+        tone = choose("tone", min_score=0.3) if ranked else None
+
+        primary = spine or spark or area
+        color = spark or area or tone
         if primary:
-            selected[block] = {"primary": primary, "color": color}
+            selected[block] = {
+                "primary": primary,
+                "color": color,
+                "spine_signature": spine,
+                "spark_signature": spark,
+                "area_signature": area,
+                "tone_modifier": tone,
+                "taxonomy_block_id": taxonomy_block_id,
+            }
 
     return selected

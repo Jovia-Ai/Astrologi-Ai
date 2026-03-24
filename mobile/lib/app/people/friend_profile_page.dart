@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mobile/design/theme/profile_theme_extension.dart';
 
 import 'add_person_page.dart';
 import '../tabs/profile_page.dart';
@@ -19,8 +20,22 @@ class FriendProfilePage extends ConsumerWidget {
       data: (person) {
         if (person == null) {
           return Scaffold(
-            appBar: AppBar(title: const Text('Kişi Profili')),
-            body: const Center(child: Text('Kişi bulunamadı.')),
+            appBar: AppBar(
+              title: Text(
+                'KISI PROFILI',
+                style: context.profileTheme.typography.navigationLabel(
+                  color: context.profileTheme.colors.text,
+                ),
+              ),
+            ),
+            body: Center(
+              child: Text(
+                'Kişi bulunamadı.',
+                style: context.profileTheme.typography.bodyCompact.copyWith(
+                  color: context.profileTheme.colors.text,
+                ),
+              ),
+            ),
           );
         }
 
@@ -56,12 +71,22 @@ class FriendProfilePage extends ConsumerWidget {
       loading: () =>
           const Scaffold(body: Center(child: CircularProgressIndicator())),
       error: (error, _) => Scaffold(
-        appBar: AppBar(title: const Text('Kişi Profili')),
+        appBar: AppBar(
+          title: Text(
+            'KISI PROFILI',
+            style: context.profileTheme.typography.navigationLabel(
+              color: context.profileTheme.colors.text,
+            ),
+          ),
+        ),
         body: Center(
           child: Text(
             error is PeopleQueryException
                 ? error.userMessage
                 : 'Kişi yüklenemedi: $error',
+            style: context.profileTheme.typography.bodyCompact.copyWith(
+              color: context.profileTheme.colors.text,
+            ),
           ),
         ),
       ),

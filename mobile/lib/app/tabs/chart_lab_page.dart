@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../api/api_client.dart';
+import '../api/api_environment.dart';
 import '../chart_lab/chart_templates.dart';
 import '../chart_lab/endpoint_catalog.dart';
 import '../chart_lab/event_story_screen.dart';
@@ -22,7 +23,7 @@ class ChartLabPage extends ConsumerStatefulWidget {
 
 class _ChartLabPageState extends ConsumerState<ChartLabPage> {
   final _baseUrlController = TextEditingController(
-    text: 'http://127.0.0.1:5000',
+    text: ApiEnvironment.apiBaseUrl,
   );
   final _pathController = TextEditingController(text: '/api/v1/charts/build');
   final _requestController = TextEditingController();
@@ -1015,9 +1016,11 @@ class _ChartLabPageState extends ConsumerState<ChartLabPage> {
             decoration: const InputDecoration(labelText: 'Backend Base URL'),
           ),
           const SizedBox(height: 6),
-          const Text(
-            'iOS Simulator: http://127.0.0.1:5000',
-            style: TextStyle(fontSize: 12, color: Colors.black54),
+          Text(
+            ApiEnvironment.usesLoopbackHost
+                ? 'Fiziksel iPhone icin API_BASE_URL degerini LAN IP, tunnel veya hosted URL olarak verin.'
+                : 'Aktif API base URL: ${ApiEnvironment.apiBaseUrl}',
+            style: const TextStyle(fontSize: 12, color: Colors.black54),
           ),
           const SizedBox(height: 12),
           TextField(

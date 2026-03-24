@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import re
 from collections import Counter
 from typing import Any, Dict, List, Mapping
 
@@ -14,11 +15,13 @@ from app.transit.narrative.astrolog_narrative_engine import (
 from app.transit.narrative.chain_explainer_tr import build_chain_explainer_tr
 from app.transit.narrative.hybrid_context import build_hybrid_event_context
 from app.transit.narrative.natal_promise import build_natal_promise, build_section_injections
+from app.transit.narrative.phrase_lib_tr import render_signature_tr
 from app.transit.narrative.point_policy import is_public_event
 from app.transit.narrative.selection import select_event_ids
 from app.transit.narrative.text_quality_tr import (
     apply_copy_quality_layer,
     build_period_copy,
+    rewrite_event_card_tr,
     rewrite_period_card_tr,
 )
 from app.transit.narrative.voice_engine_tr import build_card_copy
@@ -471,12 +474,8 @@ def _signature(event: Mapping[str, Any], *, time_hint: str | None = None) -> str
 
 
 def _signature_tr(event: Mapping[str, Any], *, time_hint: str | None = None) -> str:
-    body = _point_label_tr(str(event.get("transit_body") or "Transit"))
-    natal = _point_label_tr(str(event.get("natal_point") or "Nokta"))
-    aspect = str(event.get("aspect") or "").lower()
-    symbol = _aspect_symbol(aspect)
-    resolved_time = _time_hint_for_signature(event, existing=time_hint)
-    return f"{body} {symbol} {natal} • {resolved_time}"
+    _ = time_hint
+    return render_signature_tr(event)
 
 
 def _title_pool_for_event(event: Mapping[str, Any]) -> List[str]:
@@ -680,6 +679,7 @@ def build_event_card(event: Mapping[str, Any], context: Mapping[str, Any] | None
     ranking = event.get("ranking") if isinstance(event.get("ranking"), Mapping) else {}
     exact_in_days = ranking.get("exact_in_days")
     houses = event.get("houses") if isinstance(event.get("houses"), Mapping) else {}
+    timing = event.get("timing") if isinstance(event.get("timing"), Mapping) else {}
 
     guidance = _dedupe_text_list(
         [injections["guidance"]] + [str(x).strip() for x in guidance_raw if str(x).strip()],
@@ -693,6 +693,14 @@ def build_event_card(event: Mapping[str, Any], context: Mapping[str, Any] | None
 
     card = {
         "event_id": str(event.get("event_id") or ""),
+        "transit_body": str(event.get("transit_body") or ""),
+        "natal_point": str(event.get("natal_point") or ""),
+        "aspect": str(event.get("aspect") or ""),
+        "phase": str(event.get("phase") or ""),
+        "bucket": str(event.get("bucket") or ""),
+        "orb_deg": event.get("orb_deg"),
+        "houses": dict(houses),
+        "timing": dict(timing),
         "title": str((interp.get("headline_short") or interp.get("headline") or "Aktif Transit")).strip(),
         "signature": _signature(event, time_hint=time_hint),
         "conflict": f"{combined['conflict']} {injections['conflict']}".strip(),
@@ -744,23 +752,30 @@ def build_event_card(event: Mapping[str, Any], context: Mapping[str, Any] | None
     if not connected:
         connected = natal_promise.get("connected_points") if isinstance(natal_promise, Mapping) else []
     out = apply_copy_quality_layer(card, connected, context=quality_context)
+    out = rewrite_event_card_tr(out, event=event, horizon=horizon)
 
     # Deterministic title/signature/teaser are set after quality layer to avoid drift.
     out["horizon"] = horizon
-    out["title"] = _deterministic_title(event, fallback=str(out.get("title") or "Aktif Transit"))
+    out["title"] = str(out.get("headline") or out.get("title") or "").strip() or _deterministic_title(event, fallback="Aktif Transit")
+    out["headline"] = str(out.get("headline") or out.get("title") or "").strip()
     resolved_time_hint = str(out.get("time_hint_tr") or out.get("time_hint") or time_hint or "").strip()
     out["signature"] = _signature(event, time_hint=resolved_time_hint)
     out["signature_tr"] = _signature_tr(event, time_hint=resolved_time_hint)
     out["signature"] = out["signature_tr"]
     out["time_hint_tr"] = resolved_time_hint
-    out["teaser"] = _teaser_for_event(
-        event,
-        horizon=horizon,
-        why_now=str(out.get("why_now") or ""),
-        conflict=str(out.get("conflict") or ""),
-    )
-    if chain_line and chain_line.lower() not in str(out.get("teaser") or "").lower():
-        out["teaser"] = f"{chain_line} {str(out.get('teaser') or '').strip()}".strip()
+    out["narrative_provenance"] = {
+        "headline_source": "event.headline",
+        "opening_source": "event.opening",
+        "essence_source": "event.essence",
+        "mechanism_source": "event.mechanism",
+        "asks_source": "event.asks",
+        "watchout_source": "event.watchout",
+        "what_it_builds_source": "event.what_it_builds",
+        "technical_note_source": "event.technical_note",
+        "story_track_id": str(out.get("story_track_id") or ""),
+        "period_track_used": False,
+        "fallback_keys_used": [],
+    }
     if horizon == "period":
         out = rewrite_period_card_tr(out, event=event)
     return out
@@ -850,11 +865,14 @@ def build_period_core(
     for raw_card in cards:
         card = dict(raw_card)
         event_id = str(card.get("event_id") or "").strip()
-        track_id = infer_story_track_id(card, root_causes)
+        event_source = item_by_id.get(event_id) if event_id else None
+        story_source = dict(event_source) if isinstance(event_source, Mapping) else {}
+        story_source.update(card)
+        track_id = infer_story_track_id(story_source, root_causes)
         card["story_track_id"] = track_id
         event_story_map[event_id] = track_id
         if track_id not in story_tracks:
-            story_tracks[track_id] = build_story_track_copy(track_id, card)
+            story_tracks[track_id] = build_story_track_copy(track_id, story_source)
         card["period_story"] = dict(story_tracks.get(track_id) or {})
         cards_with_tracks.append(card)
     cards = cards_with_tracks
@@ -902,11 +920,28 @@ def build_period_core(
         )
         if narr.big_picture:
             result["big_picture"] = narr.big_picture
+        if narr.period_opening:
+            result["period_opening"] = narr.period_opening
         if narr.mechanism:
             result["mechanism"] = narr.mechanism
+        if narr.growth_edge:
+            result["growth_edge"] = narr.growth_edge
+        if narr.relational_or_life_expression:
+            result["relational_or_life_expression"] = narr.relational_or_life_expression
+        if narr.what_it_builds:
+            result["what_it_builds"] = narr.what_it_builds
         if narr.upper_meaning:
             result["upper_meaning"] = narr.upper_meaning
-        result["narrative_version"] = "period_story_v1"
+        result["core_story"] = "\n\n".join(
+            part
+            for part in (
+                narr.period_opening,
+                narr.big_picture,
+                narr.relational_or_life_expression,
+            )
+            if str(part).strip()
+        ) or result["core_story"]
+        result["narrative_version"] = "period_story_v2"
         result["_period_story_debug"] = narr.debug
     except Exception:
         # Narrative layer must stay non-blocking.
@@ -954,7 +989,59 @@ def build_active_event_cards(report: Mapping[str, Any], *, max_cards: int = 5) -
         card = build_event_card(event, context=context)
         cards.append(card)
     cards = _inject_cofeatured_links(cards, selected)
-    return _apply_global_guidance_diversity(cards, selected)
+    cards = _apply_global_guidance_diversity(cards, selected)
+    return _ensure_unique_titles(cards, selected)
+
+
+def _title_key(value: str) -> str:
+    return re.sub(r"[\W_]+", "", str(value or "").lower()).strip()
+
+
+def _ensure_unique_titles(
+    cards: List[Dict[str, Any]],
+    selected_events: List[Dict[str, Any]],
+) -> List[Dict[str, Any]]:
+    used: set[str] = set()
+    event_by_id = {
+        str(event.get("event_id") or ""): event
+        for event in selected_events
+        if isinstance(event, Mapping) and str(event.get("event_id") or "").strip()
+    }
+    out: List[Dict[str, Any]] = []
+
+    for index, raw_card in enumerate(cards):
+        card = dict(raw_card)
+        title = str(card.get("title") or "").strip()
+        key = _title_key(title)
+        if key and key not in used:
+            used.add(key)
+            out.append(card)
+            continue
+
+        event = event_by_id.get(str(card.get("event_id") or "").strip()) or {}
+        replacement = ""
+        for candidate in _title_pool_for_event(event):
+            candidate_key = _title_key(candidate)
+            if candidate_key and candidate_key not in used:
+                replacement = str(candidate).strip()
+                break
+
+        if not replacement:
+            target = _point_label_tr(str(event.get("natal_point") or "")).strip()
+            if title and target:
+                replacement = f"{title.rstrip('.')} / {target}"
+            elif title:
+                replacement = f"{title.rstrip('.')} {index + 1}"
+            else:
+                replacement = f"Aktif Transit {index + 1}"
+
+        if replacement and replacement[-1] not in ".!?":
+            replacement = f"{replacement}."
+        card["title"] = replacement
+        used.add(_title_key(replacement))
+        out.append(card)
+
+    return out
 
 
 def _inject_cofeatured_links(
@@ -1080,6 +1167,8 @@ def _apply_global_guidance_diversity(
         watch_out: List[str] = []
         existing_guidance = [str(x) for x in (card_out.get("guidance") or []) if str(x).strip()]
         existing_watch = [str(x) for x in (card_out.get("watch_out") or []) if str(x).strip()]
+        if not existing_watch:
+            existing_watch = _watch_bullets_from_text(str(card_out.get("watchout") or ""), limit=2)
 
         house_pool = HOUSE_GUIDANCE_POOL_TR.get(house, [])
         _append_from_rotated_pool(guidance, house_pool, seen_guidance, seed=seed, cap=1)
@@ -1091,24 +1180,27 @@ def _apply_global_guidance_diversity(
             _append_from_rotated_pool(guidance, FALLBACK_GUIDANCE_TR, seen_guidance, seed=seed + 47, cap=2, ignore_seen=True)
         card_out["guidance"] = guidance[:3]
 
-        _append_from_rotated_pool(watch_out, TONE_WATCH_POOL_TR.get(tone, []), seen_watch, seed=seed + 3, cap=2)
-        _append_from_rotated_pool(watch_out, existing_watch, seen_watch, seed=seed + 13, cap=2)
-        _append_from_rotated_pool(
-            watch_out,
-            ["Aşırı yüklenme.", "Odak kaybı.", "Acele karar."],
-            seen_watch,
-            seed=seed + 19,
-            cap=2,
-        )
-        if len(watch_out) < 2:
-            _append_from_rotated_pool(
-                watch_out,
-                ["Aşırı yüklenme.", "Odak kaybı.", "Acele karar."],
-                seen_watch,
-                seed=seed + 29,
-                cap=2,
-                ignore_seen=True,
-            )
+        if existing_watch:
+            _append_from_rotated_pool(watch_out, existing_watch, seen_watch, seed=seed + 13, cap=2)
+        else:
+            _append_from_rotated_pool(watch_out, TONE_WATCH_POOL_TR.get(tone, []), seen_watch, seed=seed + 3, cap=2)
+            if not watch_out:
+                _append_from_rotated_pool(
+                    watch_out,
+                    ["Aşırı yüklenme.", "Odak kaybı.", "Acele karar."],
+                    seen_watch,
+                    seed=seed + 19,
+                    cap=2,
+                )
+            if len(watch_out) < 2:
+                _append_from_rotated_pool(
+                    watch_out,
+                    ["Aşırı yüklenme.", "Odak kaybı.", "Acele karar."],
+                    seen_watch,
+                    seed=seed + 29,
+                    cap=2,
+                    ignore_seen=True,
+                )
         card_out["watch_out"] = watch_out[:2]
         out.append(card_out)
     return out
@@ -1140,6 +1232,19 @@ def _append_from_rotated_pool(
             continue
         seen.add(key)
         target.append(raw)
+
+
+def _watch_bullets_from_text(text: str, *, limit: int = 2) -> List[str]:
+    raw = str(text or "").replace("!", ".").replace("?", ".")
+    parts = [part.strip() for part in raw.split(".") if part.strip()]
+    out: List[str] = []
+    for part in parts:
+        sentence = part if part.endswith(".") else f"{part}."
+        if sentence not in out:
+            out.append(sentence)
+        if len(out) >= limit:
+            break
+    return out
 
 
 def _card_target_house(card: Mapping[str, Any], event: Mapping[str, Any]) -> int | None:

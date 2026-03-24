@@ -4,6 +4,7 @@ import hashlib
 import re
 from typing import Any, Dict, List, Mapping
 
+from app.narrative.editorial_render_policy import editorialize_micro, select_rhythm_family
 from app.natal.natal_graph import TRADITIONAL_RULERS
 
 SIGN_VIBE_TR = {
@@ -65,21 +66,21 @@ HOUSE_ARENA_TR = {
 }
 
 _MIND_MICROS = [
-    "Mesajı yazıp silip sonra iki cümleyle niyeti netleştirmen, uzatmadan anlaşılmayı seçtiğinin en somut hali.",
-    "Bir konuşmadan sonra cümleyi zihninde yeniden toparlaman, kendini gereksiz yere yorman değil; netlik aradığının açık işareti.",
-    "Az cümleyle sınır koyduğunda hem zihnin hem ritmin rahatlıyor; sende hız çoğu zaman bu sadeleşmeden geliyor.",
+    "Bir cümleyi göndermeden önce içinden bir kez daha tartarsın.",
+    "Bir konuşmanın ardından tonu daha da sadeleştirmek istersin.",
+    "Yanlış anlaşılma ihtimali doğduğunda kelimeleri içeride hemen yeniden dizersin.",
 ]
 
 _REL_MICROS = [
-    "Bir cümleyle temas kurman, duyguyu sade ama açık biçimde koyman, ilişkideki en güçlü anahtarın.",
-    "Küçük ama dürüst bir sinyal verdiğinde hem senin iç güvenin hem karşı tarafın zemini aynı anda toparlanıyor.",
-    "Yakınlıkta en çok işe yarayan şey, büyük açıklamalar değil; doğru anda gelen temiz bir netlik cümlesi.",
+    "Yakınlık ciddileştiğinde önce içini yoklar, sonra açılırsın.",
+    "Güven geldiğinde sıcaklığın bir anda daha görünür olur.",
+    "Belirsizlik uzadığında kalbin çabuk yorulur.",
 ]
 
 _CAREER_MICROS = [
-    "Taslağı önce içeride olgunlaştırıp sonra paylaşman, performansını en hızlı yükselten ritim.",
-    "Tek paylaşım, tek sunum ya da tek toplantıyla görünür olman, sende baskıyı azaltırken etkiyi büyütüyor.",
-    "Bir işi pişirip sonra dışarı alman, yavaşlık değil; kalite eşiğini doğru kurma biçimin.",
+    "Bir şeyi tam sahiplenmeden ortaya koymak istemezsin.",
+    "Görünür olmadan önce içerden bir kez daha ölçüp tartarsın.",
+    "İçinde olgunlaşan şeyi doğru anda dışarı çıkarırsın.",
 ]
 
 
@@ -151,6 +152,70 @@ def _join_body_micro(body: str, micro: str) -> str:
     return _cleanup_text(f"{body} {micro}")
 
 
+def _split_sentences(text: str) -> List[str]:
+    raw = str(text or "").strip()
+    if not raw:
+        return []
+    protected = re.sub(r"(\b\d{1,2})\.\s*(ev\w*)\b", r"\1__EV_DOT__ \2", raw, flags=re.IGNORECASE)
+    parts = [part.strip() for part in re.split(r"(?<=[.!?])\s+", protected) if part.strip()]
+    return [part.replace("__EV_DOT__", ".").strip() for part in parts]
+
+
+def _semantic_tokens(text: str) -> set[str]:
+    stopwords = {
+        "ve",
+        "ile",
+        "bu",
+        "bir",
+        "da",
+        "de",
+        "için",
+        "gibi",
+        "ama",
+        "daha",
+        "çok",
+        "sen",
+        "sende",
+        "senin",
+        "şey",
+        "olan",
+    }
+    return {
+        token
+        for token in re.findall(r"[a-zA-ZçğıöşüÇĞİÖŞÜ]+", str(text or "").lower())
+        if len(token) >= 3 and token not in stopwords
+    }
+
+
+def _semantic_overlap(a: str, b: str) -> float:
+    left = _semantic_tokens(a)
+    right = _semantic_tokens(b)
+    if not left or not right:
+        return 0.0
+    return len(left & right) / len(left | right)
+
+
+def _build_thread_paragraph(one_liner: str, body: str, micro: str) -> str:
+    sentences: List[str] = []
+    lead = str(one_liner or "").strip()
+    body_sentences = _split_sentences(body)
+    if lead and (not body_sentences or _semantic_overlap(lead, body_sentences[0]) < 0.7):
+        sentences.append(lead)
+    for sentence in body_sentences:
+        if any(_semantic_overlap(sentence, prior) >= 0.78 for prior in sentences):
+            continue
+        sentences.append(sentence)
+        if len(sentences) >= 3:
+            break
+    if micro and all(_semantic_overlap(micro, prior) < 0.74 for prior in sentences):
+        sentences.append(micro)
+    return _cleanup_text(" ".join(sentences[:4]))
+
+
+def _family_line(options: Mapping[str, str], family: str, fallback: str) -> str:
+    return str(options.get(family) or fallback).strip()
+
+
 def _sign_label(sign: str) -> str:
     return SIGN_LABEL_TR.get(str(sign or "").strip(), str(sign or "").strip())
 
@@ -190,7 +255,7 @@ def _core_mind_body(
     if asc_house == 12:
         return _cleanup_text(
             f"Netlik sende kontrol değil güven meselesi; Yükselen {sign_label} dışarıda ölçülü dururken "
-            f"yöneticin {ruler_label}'ün {_house_phrase(asc_house)} vurgusu kararlarını önce içeride pişirmene "
+            f"yöneticin {ruler_label}'ün {_house_phrase(asc_house)} vurgusu kararlarını önce içeride olgunlaştırmana "
             f"neden olur, bu yüzden hızlı cevap vermek yerine içinden toparlayıp sonra konuşmak senin için "
             f"kaçınma değil kalite filtresidir."
         )
@@ -216,34 +281,39 @@ def _mind_section(
     asc_ruler: str,
     asc_house: int,
     loop_signature: str,
+    family: str,
 ) -> Dict[str, Any]:
-    micro = _pick_variant(_MIND_MICROS, seed + ":mind_micro")
+    micro = editorialize_micro(_pick_variant(_MIND_MICROS, seed + ":mind_micro"), family)
     body = (
-        "Sende zihin bir düşünce üretmekten çok daha fazlasını yapıyor; kararın, duruşun ve hareketin aynı "
-        "sistemin içinde çalışıyor, bu yüzden bir şeyi anlatmadan önce içinden tartıp biçmen ya da konuşma "
-        "bittikten sonra cümleyi yeniden toparlamak istemen aslında en doğru ifadeyi bulma çabası değil, "
-        "kendini güvene alma biçimin. "
+        "Zihin sende yalnızca düşünce üretmiyor; duruşunla ve hareketinle aynı sistemde çalışıyor. "
+        "Bu yüzden bir şeyi anlatmadan önce içinden tartman ya da konuşma bittikten sonra cümleyi yeniden toplaman, "
+        "kararsızlıktan çok iç netlik arayışı. "
         f"Yükselen {_sign_label(asc_sign)} ve yöneticin {_planet_label(asc_ruler)}'ün {_house_phrase(asc_house)} "
-        "vurgusu, belirsizliği en çok söz, ton ve karar anlarında görünür kıldığı için, iyi gününde az "
-        "cümleyle netlik verip hızlanırken zor gününde fazla kontrol ve kendine baskı devreye girebiliyor. "
-        "Burada ustalık daha çok düşünmek değil, sınırı daha iyi çizmek ve ritmini korumak; çünkü ritim "
-        "bozulduğunda sistem yoruluyor, ritim oturduğunda ise çok hızlı toparlanıyorsun."
+        "vurgusu belirsizliği özellikle söz, ton ve karar anlarında büyüttüğü için, iyi gününde kısa cümleyle çok net "
+        "çıkarken zor gününde kendine gereğinden fazla yük binebilir. "
+        "Asıl fark, sınır netleştiğinde hem zihninin hem bedeninin aynı anda gevşemesinde."
     )
     if asc_house == 12:
         body = (
-            "Sende zihin bir düşünce üretmekten çok daha fazlasını yapıyor; kararın, duruşun ve hareketin aynı "
-            "sistemin içinde çalışıyor ama cevap vermeden önce içinden toplamak istemen seni yavaşlatmaktan çok "
-            "merkezine döndürüyor. "
+            "Zihin sende yalnızca düşünce üretmiyor; cevap vermeden önce içerde toparlayan bir merkez gibi çalışıyor. "
             f"Yükselen {_sign_label(asc_sign)} ve yöneticin {_planet_label(asc_ruler)}'ün {_house_phrase(asc_house)} "
-            "vurgusu, belirsizliği dışarıdan çok içeride görünür kıldığı için, iyi gününde sakin bir hazırlıkla "
-            "çok temiz çıkarken zor gününde gereğinden fazla bekleyip kendini tutabiliyorsun. "
-            "Burada ustalık daha çok düşünmek değil, küçük çıkışlarla ritim kurmak; çünkü ritim oturduğunda "
-            "zihin de beden de gereksiz baskıyı bırakıyor."
+            "vurgusu, belirsizliği dışarıdan çok içeride büyüttüğü için, iyi gününde sakin bir hazırlıkla çok temiz "
+            "çıkarken zor gününde gereğinden fazla bekleyip kendini tutabiliyorsun. "
+            "Burada asıl mesele daha çok düşünmek değil; içeride toparladığın şeyi doğru anda dışarı bırakabilmek."
         )
     return {
         "id": "mind_system",
         "title": "Zihin–eylem–kontrol",
-        "subtitle": "Netleşince hızlanıyorsun; ritim hızın çarpanı.",
+        "subtitle": _family_line(
+            {
+                "direct": "Ne yapacağını bildiğin an tempo kendiliğinden yükselir.",
+                "observational": "İnsanlar sende önce kontrollü zihni, sonra hızlanan tempoyu görür.",
+                "cinematic": "Cümle yerine oturduğu anda iç ritmin de hızlanır.",
+                "intimate": "İçeride netleştiğin an dışarıdaki tempo da rahatlar.",
+            },
+            family,
+            "Ne yapacağını bildiğin an tempo kendiliğinden yükselir.",
+        ),
         "body": _cleanup_text(body),
         "micro": micro,
         "chips": [f"Yükselen {_sign_label(asc_sign)}", f"{_planet_label(asc_ruler)} {_house_phrase(asc_house)}"],
@@ -258,46 +328,52 @@ def _relationship_section(
     r7: str,
     r7_house: int,
     moon_house: int,
+    family: str,
 ) -> Dict[str, Any]:
-    micro = _pick_variant(_REL_MICROS, seed + ":rel_micro")
+    micro = editorialize_micro(_pick_variant(_REL_MICROS, seed + ":rel_micro"), family)
     sign_label = _sign_label(dsc_sign)
     ruler_label = _planet_label(r7)
     moon_ref = "Ay"
     body = (
-        "Senin ilişkide aradığın şey yalnızca yakınlık değil, yakınlığın güvene oturması ve sözle davranışın "
-        "aynı çizgide yürümesi; bu yüzden belirsiz kalan bağlar seni yorar, netlik geldiğinde ise bağ çok daha "
-        "doğal akar. "
+        "İlişkide aradığın şey yalnızca yakınlık değil; yakınlığın güvene oturması ve sözle davranışın aynı "
+        "çizgide yürümesi. Belirsiz kalan bağlar bu yüzden çabuk yorar; netlik geldiğinde ise akış hemen değişir. "
         f"7. evin {sign_label} olduğu için ilişki dilin şefkat ve korunma üzerinden açılıyor, yöneticisi "
         f"{moon_ref if r7 == 'Moon' else ruler_label} {_house_phrase(r7_house)} vurgusu yüzünden de bağlar "
-        "yüzeyde kalmıyor; güven, paylaşım ve gerçek temas üzerinden büyüyor ve bu büyüme bir anda her şeyi "
-        "anlatmakla değil, adım adım açılmakla daha sağlıklı ilerliyor. "
-        "Zorlandığında ya tamamen içine kapanmak ya da ya hep ya hiç çizgisine kaymak kolay olabilir, ama küçük "
-        "ve temiz bir sinyal verdiğinde hem senin iç güvenin hem karşı tarafın zemini aynı anda toparlanıyor."
+        "yüzeyde kalmıyor; güven, paylaşım ve gerçek temas üzerinden ağırlaşıyor. "
+        "Zorlandığında ya tamamen içine kapanmak ya da ya hep ya hiç çizgisine kaymak kolay olabilir; buna rağmen "
+        "dürüst bir işaret geldiğinde hem senin iç güvenin hem karşı tarafın zemini aynı anda toparlanıyor."
     )
     if r7_house == 11:
         body = (
-            "Senin ilişkide aradığın şey yalnızca yakınlık değil, aynı tarafta olma hissi; bu yüzden bağın hangi "
-            "çevrede ve hangi ritimde büyüdüğü senin için en az duygunun kendisi kadar belirleyici oluyor. "
+            "İlişkide aradığın şey yalnızca yakınlık değil, aynı tarafta olma hissi. Bu yüzden bağın hangi çevrede "
+            "ve hangi ritimde büyüdüğü, duygunun kendisi kadar belirleyici. "
             f"7. evin {sign_label} olduğu için ilişki dilin şefkatli ve koruyucu, yöneticisi {ruler_label}'ın "
             f"{_house_phrase(r7_house)} vurgusu ise güveni en çok arkadaşlık, ekip ve ortak hedef içinde görünür "
-            "kılıyor; bağlar çoğu zaman önce sosyal zeminde rahatlayıp sonra derinleşiyor. "
-            "Zorlandığında ilişkiyi belirsiz bir alanda tutmak yorucu geliyor, ama rolü küçük bir cümleyle "
-            "netleştirdiğinde hem kalbin hem zihnin rahatlıyor."
+            "kılıyor; bağ çoğu zaman önce sosyal zeminde rahatlayıp sonra derinleşiyor. "
+            "Zorlandığında ilişkiyi belirsiz bir alanda tutmak yorucu geliyor; rol netleştiğinde hem kalbin hem zihnin rahatlıyor."
         )
     elif r7_house == 3:
         body = (
-            "Senin ilişkide aradığın şey yalnızca yakınlık değil, yakınlığın konuşulabilir olması; bu yüzden belirsiz "
-            "kalan tonlar, yarım cümleler ve açık bırakılmış meseleler sende gereğinden fazla yük yaratabiliyor. "
+            "İlişkide aradığın şey yalnızca yakınlık değil, yakınlığın konuşulabilir olması. Belirsiz kalan tonlar, "
+            "yarım cümleler ve açık bırakılmış meseleler bu yüzden gereğinden fazla yük yaratabiliyor. "
             f"7. evin {sign_label} olduğu için ilişki dilin şefkatli, yöneticisi {ruler_label}'ın "
             f"{_house_phrase(r7_house)} vurgusu ise güveni en çok söz, ton ve mesaj trafiği üzerinden görünür "
             "kılıyor; bir bağın ritmi çoğu zaman nasıl konuştuğunuzla kuruluyor. "
-            "Burada ustalık büyük açıklamalar yapmak değil, doğru anda gelen temiz bir netlik cümlesiyle zemini "
-            "sağlamlaştırmak."
+            "Burada belirleyici olan büyük açıklamalar değil, doğru anda gelen temiz bir netlik cümlesi."
         )
     return {
         "id": "relationships",
         "title": "Duygusal derinlik" if r7_house == 8 else "İlişkiler ve yakınlık",
-        "subtitle": "Sende sevgi yüzey değil; kök ister." if r7_house == 8 else "Yakınlık sende netlik ve güvenle büyüyor.",
+        "subtitle": _family_line(
+            {
+                "direct": "Güven geldiğinde bağ hızla derinleşir.",
+                "observational": "İnsanlar sende sıcaklıktan önce güven eşiğini hisseder.",
+                "cinematic": "Yakınlık burada hafif ilerlemez; bir anda derine çekilir.",
+                "intimate": "Kalbin, güven olmadan yarım açılmaz.",
+            },
+            family,
+            "Güven geldiğinde bağ hızla derinleşir.",
+        ),
         "body": _cleanup_text(body),
         "micro": micro,
         "chips": [f"7. ev {_sign_label(dsc_sign)}", f"{_planet_label(r7)} {_house_phrase(r7_house)}"],
@@ -311,39 +387,48 @@ def _career_section(
     mc_sign: str,
     mc_ruler: str,
     mc_house: int,
+    family: str,
 ) -> Dict[str, Any]:
-    micro = _pick_variant(_CAREER_MICROS, seed + ":career_micro")
+    micro = editorialize_micro(_pick_variant(_CAREER_MICROS, seed + ":career_micro"), family)
     body = (
-        "Kariyerde senin gücün yalnızca iyi yapmak değil, doğru bağlamı kurup işi rafine etmek; bu yüzden görünür "
-        "olma anları geldiğinde hazır mıyım eşiği yükselse bile bunun altında zayıflık değil, kalite standardı var. "
+        "Kariyerde gücün yalnızca iyi yapmak değil, doğru bağlamı kurup işi rafine etmek. Görünür olma anı geldiğinde "
+        "hazır mıyım eşiğinin yükselmesi bu yüzden zayıflık değil, kalite standardı. "
         f"MC'nin {_sign_label(mc_sign)} olması insan ilişkileri, denge ve sunum becerisi tarafında doğal bir avantaj "
         f"veriyor, yöneticisi {_planet_label(mc_ruler)}'ün {_house_phrase(mc_house)} vurgusu ise üretiminin bir "
-        "kısmının içeride olgunlaşmasını istiyor; sen taslağı önce pişirince daha sağlam ve etkileyici çıkıyorsun. "
-        "Bu yüzden en iyi stratejin büyük bir çıkış yapmaya zorlamak değil, küçük ama düzenli görünürlük adımlarıyla "
-        "ritim kurmak; tek paylaşım, tek sunum ya da tek toplantı gibi küçük dozlar hem baskıyı azaltır hem etkini büyütür."
+        "kısmının içeride olgunlaşmasını istiyor; taslağı önce derlediğinde dışarıya daha sağlam çıkıyorsun. "
+        "Büyüme burada büyük çıkışlardan çok görünürlüğü kendi hızında taşıyabildiğinde belirginleşiyor; o zaman etki de daha temiz hissediliyor."
     )
     if mc_house == 11:
         body = (
-            "Kariyerde senin gücün yalnızca iyi yapmak değil, doğru insanları ve doğru bağlamı birbirine bağlamak; "
-            "bu yüzden görünürlük sende çoğu zaman tek başına parlamaktan çok doğru ağ içinde büyüyor. "
+            "Kariyerde gücün yalnızca iyi yapmak değil, doğru insanları ve doğru bağlamı birbirine bağlamak. "
+            "Bu yüzden görünürlük burada tek başına parlamaktan çok doğru ağ içinde büyüyor. "
             f"MC'nin {_sign_label(mc_sign)} olması denge ve ilişki yönetimi tarafında doğal bir avantaj verirken, "
-            f"yöneticisi {_planet_label(mc_ruler)}'ün {_house_phrase(mc_house)} vurgusu işi ekip, network ve ortak "
-            "hedef üzerinden hızlandırıyor; doğru çevre kurulduğunda performansın da çok daha rahat akıyor. "
+            f"yöneticisi {_planet_label(mc_ruler)}'ün {_house_phrase(mc_house)} vurgusu işi ekip, çevre ve ortak "
+            "hedef üzerinden hızlandırıyor; doğru çevre kurulduğunda performansın da rahat akıyor. "
             "Burada ustalık herkese yetişmek değil, doğru bağlantıyı doğru dozda görünür kılmak."
         )
     elif mc_house == 10:
         body = (
-            "Kariyerde senin gücün yalnızca iyi yapmak değil, doğru zamanda görünür olup çıktıyı dışarı alabilmek; "
-            "bu yüzden hazırlık kadar sahne anı da senin gelişim alanın. "
+            "Kariyerde gücün yalnızca iyi yapmak değil, doğru zamanda görünür olup ürettiğini dışarı taşıyabilmek. "
+            "Bu yüzden hazırlık kadar sahne anı da burada belirleyici. "
             f"MC'nin {_sign_label(mc_sign)} olması denge ve sunum becerisi getirirken, yöneticisi "
             f"{_planet_label(mc_ruler)}'ün {_house_phrase(mc_house)} vurgusu işi doğrudan görünürlükle büyütüyor; "
             "senin için üretmek ve bunu dolaşıma sokmak aynı zincirin parçası. "
-            "Burada hız, mükemmeli beklemekten değil yayınlanabilir iyi seviyesini tutarlı biçimde çoğaltmaktan geliyor."
+            "Burada asıl fark, her şeyi kusursuzlaştırmayı beklemeden görünür kılabildiğinde ortaya çıkıyor."
         )
     return {
         "id": "career_visibility",
         "title": "Görünür olma ritmin",
-        "subtitle": "Sahneye çıkınca etkilisin; ama önce içeride pişiyorsun.",
+        "subtitle": _family_line(
+            {
+                "direct": "Hazır hissettiğin an görünürlüğün de ağırlık kazanır.",
+                "observational": "İnsanlar önce kalite çıtasını, sonra etkini görür.",
+                "cinematic": "Perde açılmadan önce içeride uzun bir son prova olur.",
+                "intimate": "İçinde yerine oturmayan şeyi dışarı taşımak istemezsin.",
+            },
+            family,
+            "Hazır hissettiğin an görünürlüğün de ağırlık kazanır.",
+        ),
         "body": _cleanup_text(body),
         "micro": micro,
         "chips": [f"MC {_sign_label(mc_sign)}", f"{_planet_label(mc_ruler)} {_house_phrase(mc_house)}"],
@@ -382,6 +467,12 @@ def build_sections_v2(
 
     loops = natal_graph.get("dominant_loops") if isinstance(natal_graph.get("dominant_loops"), list) else []
     loop_signature = str(((loops or [{}])[0] or {}).get("signature") or "").strip()
+    used_families: list[str] = []
+    mind_family = select_rhythm_family(base_seed, "sections_v2", "mind_system", used_families)
+    used_families.append(mind_family)
+    rel_family = select_rhythm_family(base_seed, "sections_v2", "relationships", used_families)
+    used_families.append(rel_family)
+    career_family = select_rhythm_family(base_seed, "sections_v2", "career_visibility", used_families)
 
     return [
         _mind_section(
@@ -390,6 +481,7 @@ def build_sections_v2(
             asc_ruler=asc_ruler,
             asc_house=asc_house,
             loop_signature=loop_signature,
+            family=mind_family,
         ),
         _relationship_section(
             seed=base_seed,
@@ -397,12 +489,14 @@ def build_sections_v2(
             r7=r7,
             r7_house=r7_house,
             moon_house=moon_house,
+            family=rel_family,
         ),
         _career_section(
             seed=base_seed,
             mc_sign=mc_sign,
             mc_ruler=mc_ruler,
             mc_house=mc_house,
+            family=career_family,
         ),
     ]
 
@@ -428,7 +522,7 @@ def build_supporting_threads(
                 "id": section.get("legacy_id") or section.get("id"),
                 "title": section.get("title", ""),
                 "one_liner": section.get("subtitle", ""),
-                "paragraph": _join_body_micro(body, micro),
+                "paragraph": _build_thread_paragraph(str(section.get("subtitle") or ""), body, micro),
                 "body": body,
                 "micro": micro,
                 "chips": list(section.get("chips") or []),

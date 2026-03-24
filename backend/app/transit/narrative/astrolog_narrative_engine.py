@@ -60,8 +60,12 @@ class PeriodStoryContext:
 
 @dataclass(frozen=True)
 class PeriodNarrative:
+    period_opening: str
     big_picture: str
     mechanism: str
+    growth_edge: str
+    relational_or_life_expression: str
+    what_it_builds: str
     upper_meaning: str
     debug: Dict[str, Any]
 
@@ -118,36 +122,54 @@ def build_story_track_copy(track_id: str, card: Mapping[str, Any]) -> Dict[str, 
         "outcome_house_tr": HOUSE_THEME_TR.get(_safe_int((card.get("scene") or {}).get("outcome_house")) or 1, ""),
     }
 
-    lead = _render_track_variant(pack.get("lead"), seed, "lead", vars_map)
+    opening = _render_track_variant(pack.get("period_opening") or pack.get("lead"), seed, "opening", vars_map)
     big = _render_track_variant(pack.get("big_picture"), seed, "big", vars_map)
     mech = _render_track_variant(pack.get("mechanism"), seed, "mech", vars_map)
-    cont = _render_track_variant(pack.get("contribution"), seed, "cont", vars_map)
+    growth = _render_track_variant(pack.get("growth_edge") or pack.get("contribution"), seed, "growth", vars_map)
+    life = _render_track_variant(pack.get("relational_or_life_expression") or pack.get("mechanism"), seed, "life", vars_map)
+    builds = _render_track_variant(pack.get("what_it_builds") or pack.get("contribution"), seed, "builds", vars_map)
 
     return {
         "track_id": track_id,
-        "version": str(pack.get("version") or "period_story_v1"),
-        "lead": _final_polish_tr(lead),
+        "version": str(pack.get("version") or "period_story_v2"),
+        "lead": _final_polish_tr(opening),
+        "period_opening": _final_polish_tr(opening),
         "big_picture": _final_polish_tr(big),
         "mechanism": _final_polish_tr(mech),
-        "contribution": _final_polish_tr(cont),
-        "upper_meaning": _final_polish_tr(cont),
+        "growth_edge": _final_polish_tr(growth),
+        "relational_or_life_expression": _final_polish_tr(life),
+        "what_it_builds": _final_polish_tr(builds),
+        "contribution": _final_polish_tr(builds),
+        "upper_meaning": _final_polish_tr(builds),
     }
 
 
 def build_period_story(ctx: PeriodStoryContext) -> PeriodNarrative:
     spine, supports = _select_spine_and_supports(ctx.period_core)
+    root_causes = ctx.period_core.get("_debug_root_causes") if isinstance(ctx.period_core.get("_debug_root_causes"), list) else []
+    track_id = infer_story_track_id(spine, root_causes)
+    track_story = build_story_track_copy(track_id, spine)
 
-    big_picture = _build_big_picture(ctx, spine, supports)
+    opening = track_story.get("period_opening") or _build_period_opening(ctx, spine, supports)
+    big_picture = track_story.get("big_picture") or _build_big_picture(ctx, spine, supports)
     mechanism = _build_chain_paragraph(ctx, spine, supports)
-    upper = _build_upper_meaning(ctx, spine, supports)
+    growth_edge = track_story.get("growth_edge") or _build_growth_edge(ctx, spine, supports)
+    life_expression = track_story.get("relational_or_life_expression") or _build_life_expression(ctx, spine, supports)
+    what_it_builds = track_story.get("what_it_builds") or _build_what_it_builds(ctx, spine, supports)
+    upper = what_it_builds
 
     return PeriodNarrative(
+        period_opening=_final_polish_tr(opening),
         big_picture=_final_polish_tr(big_picture),
         mechanism=_final_polish_tr(mechanism),
+        growth_edge=_final_polish_tr(growth_edge),
+        relational_or_life_expression=_final_polish_tr(life_expression),
+        what_it_builds=_final_polish_tr(what_it_builds),
         upper_meaning=_final_polish_tr(upper),
         debug={
             "spine_event_id": str(spine.get("event_id") or ""),
             "support_event_ids": [str(e.get("event_id") or "") for e in supports],
+            "track_id": track_id,
         },
     )
 
@@ -188,6 +210,79 @@ def _build_big_picture(
         seed=seed,
         enable_fun=ctx.enable_fun,
     )
+
+
+def _period_life_scene(house: int | None, detail: str = "short") -> str:
+    if not house:
+        return "hayatının bu alanı"
+    pack = getattr(text_quality_tr, "HOUSE_LIFE_TRANSLATIONS_TR", {})
+    return str(pack.get(int(house), {}).get(detail) or "hayatının bu alanı")
+
+
+def _build_period_opening(
+    ctx: PeriodStoryContext,
+    spine: Mapping[str, Any],
+    supports: Sequence[Mapping[str, Any]],
+) -> str:
+    start_house, end_house = _infer_start_end_houses(spine)
+    start_scene = _period_life_scene(start_house, "full")
+    end_scene = _period_life_scene(end_house, "short")
+    support_line = ""
+    if supports:
+        support_house, support_target = _infer_start_end_houses(supports[0])
+        support_line = (
+            f" Arkadaki destek hattı {_period_life_scene(support_house, 'short')} tarafından açılıp "
+            f"{_period_life_scene(support_target, 'short')} alanına güç taşıyor."
+        )
+    return (
+        f"Bu dönem önce {start_scene} tarafını hassaslaştırıyor, sonra bunun etkisi {end_scene} alanında belirginleşiyor."
+        f"{support_line}"
+    ).strip()
+
+
+def _build_growth_edge(
+    ctx: PeriodStoryContext,
+    spine: Mapping[str, Any],
+    supports: Sequence[Mapping[str, Any]],
+) -> str:
+    _ = ctx
+    aspect = str(spine.get("aspect") or "").strip().lower()
+    transit_body = str(spine.get("transit_body") or "").strip().lower()
+    start_house, _ = _infer_start_end_houses(spine)
+    start_scene = _period_life_scene(start_house, "short")
+    if transit_body == "neptune" and aspect in {"square", "opposition", "conjunction"}:
+        return f"En kritik eşik, {start_scene} tarafındaki muğlaklığı yalnızca hisle yönetmeye çalışmak. Netleşmeyen kısım bir süre sonra seni gereksiz açıklama ve yorgunluğa itebilir."
+    if transit_body == "uranus" and aspect in {"trine", "sextile"}:
+        return f"En büyük risk, {start_scene} tarafında açılan hevesi aynı anda çok yere dağıtmak. Hız arttıkça ölçü kayarsa kazanç derinleşmeden sönebilir."
+    if transit_body == "pluto":
+        return "Buradaki eşik, seçiciliği kontrol etme ihtiyacına çevirmemek. Gücü toplamak isterken yakınlığı ve işbirliğini kurutma riski var."
+    return f"Bu dönemde asıl dikkat edilmesi gereken şey, {start_scene} tarafındaki ilk tepkiyi sonuç sanmak. Süreç senden biraz daha sabır ve netlik istiyor."
+
+
+def _build_life_expression(
+    ctx: PeriodStoryContext,
+    spine: Mapping[str, Any],
+    supports: Sequence[Mapping[str, Any]],
+) -> str:
+    _ = ctx
+    start_house, end_house = _infer_start_end_houses(spine)
+    start_scene = _period_life_scene(start_house, "short")
+    end_scene = _period_life_scene(end_house, "short")
+    if end_house == 7:
+        return f"Günlük hayatta bu etki en çok {start_scene} tarafındaki açıklık ihtiyacı üzerinden çalışır; karşılığını ise ilişkilerde daha net beklenti ve daha temiz sınır olarak görürsün."
+    if end_house == 11:
+        return f"Günlük hayatta önce {start_scene} alanında seçicilik artar; sonra bu durum arkadaş çevresi, ekipler ve gelecek planları içinde yeni bir eleme yaratır."
+    return f"Günlük hayatta bu süreci en çok {start_scene} ile {end_scene} arasındaki bağlantıda hissedersin. Biri kıpırdar, diğeri yön değiştirir."
+
+
+def _build_what_it_builds(
+    ctx: PeriodStoryContext,
+    spine: Mapping[str, Any],
+    supports: Sequence[Mapping[str, Any]],
+) -> str:
+    promise_theme = _select_promise_theme(ctx.natal_promise, spine)
+    skill_gain = _infer_skill_gain_tr(spine, promise_theme)
+    return f"Bu dönem sende {skill_gain} kasını geliştiriyor."
 
 
 def _build_chain_paragraph(
@@ -447,15 +542,15 @@ def _build_planet_hook_tr(transit_body: str, aspect: str, target: str) -> str:
     t_words = targets.get(str(target).strip().upper(), [str(target).strip() or "teması"])
 
     noun = (p.get("nouns") or ["tema"])[0]
-    averb = (a.get("verbs") or ["çalışır"])[0]
+    averb = (a.get("verbs") or ["açar"])[0]
     target_word = t_words[0]
     body = str(transit_body).strip() or "Bu etki"
 
     if str(aspect).strip().lower() in {"square", "opposition"}:
-        return f"{body} {target_word} hattına {noun} getirir; bu açı {target_word} tarafını {averb}."
+        return f"{body} bu dönemde {target_word} tarafında {noun} teması açıyor; o yüzden bu alan daha hassas ve daha görünür."
     if str(aspect).strip().lower() in {"trine", "sextile"}:
-        return f"{body} {target_word} tarafında {noun} açar; bu açı süreci {averb}."
-    return f"{body} {target_word} tarafında {noun} ile çalışır."
+        return f"{body} {target_word} tarafında {noun} açıyor; bu da süreci daha akışkan ve daha kullanılabilir kılıyor."
+    return f"{body} {target_word} tarafında {noun} temasını belirginleştiriyor."
 
 
 def _final_polish_tr(text: str) -> str:

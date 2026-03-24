@@ -151,7 +151,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Görünürlük ritmin",
-            "one_liner": "Sahneye çıkınca etkilisin; ama önce içeride pişiyorsun.",
+            "one_liner": "Sahneye çıkınca etkilisin; ama önce içeride olgunlaştırıyorsun.",
             "paragraph": (
                 "{mc_sign} MC sosyal zekayı ve doğru an hissini güçlendirir. "
                 "{mc_ruler}'ün {mc_ruler_house}. evde olması seni perde arkasında derinleştirir: fikir, taslak, plan. "
@@ -173,7 +173,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
             "paragraph": (
                 "{mc_ruler}'ün {mc_ruler_house}. ev yerleşimi görünür başarıdan önce görünmez emek ister. "
                 "Herkesin hızına değil, kendi ritmine göre büyüdüğünde daha sağlam ilerlersin. "
-                "Küçük plan ve küçük çıktı senin güçlü formülün olabilir. {micro}"
+                "Küçük ama somut adımlar senin güçlü ritmini kurabilir. {micro}"
             ),
         },
         {
@@ -190,7 +190,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
             "one_liner": "Görünürlük geldiğinde içeriden hazır mıyım sesi yükselebilir.",
             "paragraph": (
                 "Bu sesin kaynağı çoğu zaman {mc_ruler_house}. ev vurgusudur: önce iç güven ister. "
-                "Çözüm büyük bir çıkış değil, küçük bir görünürlük adımı: tek paylaşım, tek sunum, tek toplantı. {micro}"
+                "Çözüm büyük bir çıkış değil, küçük ve düzenli bir görünürlük adımı. {micro}"
             ),
         },
     ],
@@ -199,13 +199,13 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
             "title": "Yön ve öğrenme teması",
             "one_liner": "Hareket enerjin ufuk genişletme ve öğrenme üzerinden çalışıyor.",
             "paragraph": (
-                "Mars'ın {mars_house}. evde olması hedef koyduğunda öğrenme ve rota üzerinden hızlandığını gösterir. "
+                "Mars'ın {mars_house}. evde olması hedef koyduğunda öğrenme ve yön duygusu üzerinden hızlandığını gösterir. "
                 "Ana risk dağılmak, ana güç tek bir hat seçip derinleşmek. "
-                "Rota netleşince motivasyon kendiliğinden artar. {micro}"
+                "Yön netleşince motivasyon kendiliğinden artar. {micro}"
             ),
         },
         {
-            "title": "Rota kasın",
+            "title": "Yön kasın",
             "one_liner": "Nedenini bulunca çok hızlı ilerliyorsun.",
             "paragraph": (
                 "{mars_house}. ev vurgusu seni anlam ve yönle besler. "
@@ -223,10 +223,10 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Tek hat stratejisi",
-            "one_liner": "Aynı anda üç rota açmak yorar; tek rota büyütür.",
+            "one_liner": "Aynı anda çok fazla yön açmak yorar; tek bir hat büyütür.",
             "paragraph": (
                 "{mars_house}. ev ufuk demektir ama seçenek de artar. "
-                "Sende en iyi formül tek rota, küçük sprint, somut çıktıdır. {micro}"
+                "Sende en iyi çalışan şey tek bir hatta kalıp onu somutlaştırmaktır. {micro}"
             ),
         },
         {
@@ -344,7 +344,7 @@ THREAD_SKELETONS_TR.update(
                     "Yükselenin {asc_sign}; dışarıya {asc_vibe} çıkarsın. "
                     "Ama yöneticin {asc_ruler} {asc_ruler_house}. evde: 'ben' tarafın en çok {arena} içinde güçlenir. "
                     "Bu geri çekilme değil; hazırlık alanı. "
-                    "Dışarı çıkmadan önce içerde pişmen, sende kaliteyi artırır. "
+                    "Dışarı çıkmadan önce içerde olgunlaşman, sende kaliteyi artırır. "
                     "{micro}"
                 ),
             },
@@ -588,17 +588,17 @@ THREAD_SKELETONS_TR.update(
                 "one_liner": "En güçlü üretimin çoğu zaman içeride olgunlaşıyor.",
                 "paragraph": (
                     "MC'nin {mc_sign}: işte denge/ilişki yönetimi ve doğru bağlamı seçme yeteneğini güçlendirir. "
-                    "Yöneticisi {mc_ruler} {mc_ruler_house}. evde olduğunda, üretimin bir kısmı {arena} içinde pişer. "
+                    "Yöneticisi {mc_ruler} {mc_ruler_house}. evde olduğunda, üretimin bir kısmı {arena} içinde olgunlaşır. "
                     "Bu geri çekilme değil; hazırlık alanı. "
                     "{micro}"
                 ),
             },
             {
                 "title": "Görünür olma ritmin",
-                "one_liner": "Sahneye çıkınca etkilisin; ama önce içerde pişiyorsun.",
+                "one_liner": "Sahneye çıkınca etkilisin; ama önce içerde olgunlaştırıyorsun.",
                 "paragraph": (
                     "{mc_ruler_house}. ev vurgusu, 'hazır mıyım?' eşiğini yükseltebilir. "
-                    "Çözüm büyük bir çıkış değil; küçük bir görünürlük adımı: tek paylaşım, tek sunum, tek toplantı. "
+                    "Çözüm büyük bir çıkış değil; küçük ve düzenli bir görünürlük adımı. "
                     "{micro}"
                 ),
             },
@@ -645,11 +645,11 @@ THREAD_SKELETONS_TR.update(
         "career_visibility:h10": [
             {
                 "title": "Doğrudan sahne",
-                "one_liner": "Görünürlük sende 'ana sahne'; çıktın konuşur.",
+                "one_liner": "Görünürlük sende ana sahne; ortaya koyduğun iş konuşur.",
                 "paragraph": (
                     "MC'nin {mc_sign} yön duygunu güçlendirir. "
                     "Yöneticisi {mc_ruler} {mc_ruler_house}. evde olduğunda, kariyer sahnen doğrudan {arena}. "
-                    "Bu yüzden işte en büyük büyüme, çıktıyı 'dışarı' almakla gelir. "
+                    "Bu yüzden işte en büyük büyüme, yaptığın işi dışarı taşımakla gelir. "
                     "{micro}"
                 ),
             },

@@ -1,0 +1,6885 @@
+{
+  "engine_version": "synastry_v1",
+  "public": {
+    "scores": {
+      "bond": 26,
+      "depth": 36,
+      "spark": 0,
+      "freedom": 0,
+      "risk_index": 16,
+      "confidence": 79
+    },
+    "drivers": {
+      "bond": [
+        {
+          "a": "venus",
+          "b": "moon",
+          "aspect": "trine",
+          "orb": 3.7,
+          "tightness": 0.383,
+          "contrib": 0.2829
+        }
+      ],
+      "depth": [
+        {
+          "a": "pluto",
+          "b": "moon",
+          "aspect": "opposition",
+          "orb": 0.97,
+          "tightness": 0.677,
+          "contrib": 0.5062
+        }
+      ],
+      "spark": [],
+      "freedom": []
+    },
+    "formatted": {
+      "partner_a": {
+        "planets": [
+          {
+            "body": "sun",
+            "longitude": 276.5,
+            "sign": "Capricorn",
+            "deg_in_sign": 6.5,
+            "formatted": "Capricorn 6°30′",
+            "house": 1
+          },
+          {
+            "body": "moon",
+            "longitude": 257.93,
+            "sign": "Sagittarius",
+            "deg_in_sign": 17.930000000000007,
+            "formatted": "Sagittarius 17°56′",
+            "house": 12
+          },
+          {
+            "body": "mercury",
+            "longitude": 257.1,
+            "sign": "Sagittarius",
+            "deg_in_sign": 17.100000000000023,
+            "formatted": "Sagittarius 17°06′",
+            "house": 12
+          },
+          {
+            "body": "venus",
+            "longitude": 303.9,
+            "sign": "Aquarius",
+            "deg_in_sign": 3.8999999999999773,
+            "formatted": "Aquarius 3°54′",
+            "house": 1
+          },
+          {
+            "body": "mars",
+            "longitude": 307.79,
+            "sign": "Aquarius",
+            "deg_in_sign": 7.7900000000000205,
+            "formatted": "Aquarius 7°47′",
+            "house": 1
+          },
+          {
+            "body": "jupiter",
+            "longitude": 321.47,
+            "sign": "Aquarius",
+            "deg_in_sign": 21.470000000000027,
+            "formatted": "Aquarius 21°28′",
+            "house": 2
+          },
+          {
+            "body": "saturn",
+            "longitude": 13.66,
+            "sign": "Aries",
+            "deg_in_sign": 13.66,
+            "formatted": "Aries 13°40′",
+            "house": 3
+          },
+          {
+            "body": "uranus",
+            "longitude": 306.92,
+            "sign": "Aquarius",
+            "deg_in_sign": 6.920000000000016,
+            "formatted": "Aquarius 6°55′",
+            "house": 1
+          },
+          {
+            "body": "neptune",
+            "longitude": 298.81,
+            "sign": "Capricorn",
+            "deg_in_sign": 28.810000000000002,
+            "formatted": "Capricorn 28°49′",
+            "house": 1
+          },
+          {
+            "body": "pluto",
+            "longitude": 246.63,
+            "sign": "Sagittarius",
+            "deg_in_sign": 6.6299999999999955,
+            "formatted": "Sagittarius 6°38′",
+            "house": 11
+          },
+          {
+            "body": "node",
+            "longitude": 162.95,
+            "sign": "Virgo",
+            "deg_in_sign": 12.949999999999989,
+            "formatted": "Virgo 12°57′",
+            "house": 8
+          },
+          {
+            "body": "lilith",
+            "longitude": 181.48,
+            "sign": "Libra",
+            "deg_in_sign": 1.4799999999999898,
+            "formatted": "Libra 1°29′",
+            "house": 9
+          },
+          {
+            "body": "chiron",
+            "longitude": 225.12,
+            "sign": "Scorpio",
+            "deg_in_sign": 15.120000000000005,
+            "formatted": "Scorpio 15°07′",
+            "house": 10
+          },
+          {
+            "body": "vertex",
+            "longitude": 303.9,
+            "sign": "Aquarius",
+            "deg_in_sign": 3.8999999999999773,
+            "formatted": "Aquarius 3°54′",
+            "house": 1
+          },
+          {
+            "body": "fortune",
+            "longitude": 289.53,
+            "sign": "Capricorn",
+            "deg_in_sign": 19.529999999999973,
+            "formatted": "Capricorn 19°32′",
+            "house": 1
+          }
+        ],
+        "angles": [
+          {
+            "body": "asc",
+            "longitude": 270.9645,
+            "formatted": "Capricorn 0°58′"
+          },
+          {
+            "body": "mc",
+            "longitude": 205.0307,
+            "formatted": "Libra 25°02′"
+          }
+        ],
+        "houses": [
+          {
+            "house": 1,
+            "longitude": 270.9645,
+            "formatted": "Capricorn 0°58′"
+          },
+          {
+            "house": 2,
+            "longitude": 309.9766,
+            "formatted": "Aquarius 9°59′"
+          },
+          {
+            "house": 3,
+            "longitude": 351.5265,
+            "formatted": "Pisces 21°32′"
+          },
+          {
+            "house": 4,
+            "longitude": 25.0307,
+            "formatted": "Aries 25°02′"
+          },
+          {
+            "house": 5,
+            "longitude": 50.2298,
+            "formatted": "Taurus 20°14′"
+          },
+          {
+            "house": 6,
+            "longitude": 70.9876,
+            "formatted": "Gemini 10°59′"
+          },
+          {
+            "house": 7,
+            "longitude": 90.9645,
+            "formatted": "Cancer 0°58′"
+          },
+          {
+            "house": 8,
+            "longitude": 129.9766,
+            "formatted": "Leo 9°59′"
+          },
+          {
+            "house": 9,
+            "longitude": 171.5265,
+            "formatted": "Virgo 21°32′"
+          },
+          {
+            "house": 10,
+            "longitude": 205.0307,
+            "formatted": "Libra 25°02′"
+          },
+          {
+            "house": 11,
+            "longitude": 230.2298,
+            "formatted": "Scorpio 20°14′"
+          },
+          {
+            "house": 12,
+            "longitude": 250.9876,
+            "formatted": "Sagittarius 10°59′"
+          }
+        ]
+      },
+      "partner_b": {
+        "planets": [
+          {
+            "body": "sun",
+            "longitude": 169.22,
+            "sign": "Virgo",
+            "deg_in_sign": 19.22,
+            "formatted": "Virgo 19°13′",
+            "house": 12
+          },
+          {
+            "body": "moon",
+            "longitude": 67.6,
+            "sign": "Gemini",
+            "deg_in_sign": 7.599999999999994,
+            "formatted": "Gemini 7°36′",
+            "house": 9
+          },
+          {
+            "body": "mercury",
+            "longitude": 157.2,
+            "sign": "Virgo",
+            "deg_in_sign": 7.199999999999989,
+            "formatted": "Virgo 7°12′",
+            "house": 12
+          },
+          {
+            "body": "venus",
+            "longitude": 156.65,
+            "sign": "Virgo",
+            "deg_in_sign": 6.650000000000006,
+            "formatted": "Virgo 6°39′",
+            "house": 11
+          },
+          {
+            "body": "mars",
+            "longitude": 134.26,
+            "sign": "Leo",
+            "deg_in_sign": 14.259999999999991,
+            "formatted": "Leo 14°16′",
+            "house": 11
+          },
+          {
+            "body": "jupiter",
+            "longitude": 353.58,
+            "sign": "Pisces",
+            "deg_in_sign": 23.579999999999984,
+            "formatted": "Pisces 23°35′",
+            "house": 6
+          },
+          {
+            "body": "saturn",
+            "longitude": 32.99,
+            "sign": "Taurus",
+            "deg_in_sign": 2.990000000000002,
+            "formatted": "Taurus 2°59′",
+            "house": 8
+          },
+          {
+            "body": "uranus",
+            "longitude": 309.34,
+            "sign": "Aquarius",
+            "deg_in_sign": 9.339999999999975,
+            "formatted": "Aquarius 9°20′",
+            "house": 5
+          },
+          {
+            "body": "neptune",
+            "longitude": 299.61,
+            "sign": "Capricorn",
+            "deg_in_sign": 29.610000000000014,
+            "formatted": "Capricorn 29°37′",
+            "house": 4
+          },
+          {
+            "body": "pluto",
+            "longitude": 245.5,
+            "sign": "Sagittarius",
+            "deg_in_sign": 5.5,
+            "formatted": "Sagittarius 5°30′",
+            "house": 3
+          },
+          {
+            "body": "node",
+            "longitude": 151.36,
+            "sign": "Virgo",
+            "deg_in_sign": 1.3600000000000136,
+            "formatted": "Virgo 1°22′",
+            "house": 11
+          },
+          {
+            "body": "lilith",
+            "longitude": 210.19,
+            "sign": "Scorpio",
+            "deg_in_sign": 0.18999999999999773,
+            "formatted": "Scorpio 0°11′",
+            "house": 2
+          },
+          {
+            "body": "chiron",
+            "longitude": 225.61,
+            "sign": "Scorpio",
+            "deg_in_sign": 15.610000000000014,
+            "formatted": "Scorpio 15°37′",
+            "house": 2
+          },
+          {
+            "body": "vertex",
+            "longitude": 156.65,
+            "sign": "Virgo",
+            "deg_in_sign": 6.650000000000006,
+            "formatted": "Virgo 6°39′",
+            "house": 11
+          },
+          {
+            "body": "fortune",
+            "longitude": 81.5,
+            "sign": "Gemini",
+            "deg_in_sign": 21.5,
+            "formatted": "Gemini 21°30′",
+            "house": 9
+          }
+        ],
+        "angles": [
+          {
+            "body": "asc",
+            "longitude": 183.1246,
+            "formatted": "Libra 3°07′"
+          },
+          {
+            "body": "mc",
+            "longitude": 93.4906,
+            "formatted": "Cancer 3°29′"
+          }
+        ],
+        "houses": [
+          {
+            "house": 1,
+            "longitude": 183.1246,
+            "formatted": "Libra 3°07′"
+          },
+          {
+            "house": 2,
+            "longitude": 210.0251,
+            "formatted": "Scorpio 0°02′"
+          },
+          {
+            "house": 3,
+            "longitude": 240.5744,
+            "formatted": "Sagittarius 0°34′"
+          },
+          {
+            "house": 4,
+            "longitude": 273.4906,
+            "formatted": "Capricorn 3°29′"
+          },
+          {
+            "house": 5,
+            "longitude": 306.3426,
+            "formatted": "Aquarius 6°21′"
+          },
+          {
+            "house": 6,
+            "longitude": 336.6655,
+            "formatted": "Pisces 6°40′"
+          },
+          {
+            "house": 7,
+            "longitude": 3.1246,
+            "formatted": "Aries 3°07′"
+          },
+          {
+            "house": 8,
+            "longitude": 30.0251,
+            "formatted": "Taurus 0°02′"
+          },
+          {
+            "house": 9,
+            "longitude": 60.5744,
+            "formatted": "Gemini 0°34′"
+          },
+          {
+            "house": 10,
+            "longitude": 93.4906,
+            "formatted": "Cancer 3°29′"
+          },
+          {
+            "house": 11,
+            "longitude": 126.3426,
+            "formatted": "Leo 6°21′"
+          },
+          {
+            "house": 12,
+            "longitude": 156.6655,
+            "formatted": "Virgo 6°40′"
+          }
+        ]
+      }
+    },
+    "overlays": {
+      "a_in_b": {
+        "by_body": {
+          "sun": 4,
+          "moon": 3,
+          "mercury": 3,
+          "venus": 4,
+          "mars": 5,
+          "jupiter": 5,
+          "saturn": 7,
+          "uranus": 5,
+          "neptune": 4,
+          "pluto": 3,
+          "node": 12,
+          "lilith": 12,
+          "chiron": 2,
+          "vertex": 4,
+          "fortune": 4,
+          "asc": 3,
+          "mc": 1
+        },
+        "table": [
+          {
+            "body": "sun",
+            "longitude": 276.5,
+            "formatted": "Capricorn 6°30′",
+            "in_house": 4
+          },
+          {
+            "body": "moon",
+            "longitude": 257.93,
+            "formatted": "Sagittarius 17°56′",
+            "in_house": 3
+          },
+          {
+            "body": "mercury",
+            "longitude": 257.1,
+            "formatted": "Sagittarius 17°06′",
+            "in_house": 3
+          },
+          {
+            "body": "venus",
+            "longitude": 303.9,
+            "formatted": "Aquarius 3°54′",
+            "in_house": 4
+          },
+          {
+            "body": "mars",
+            "longitude": 307.79,
+            "formatted": "Aquarius 7°47′",
+            "in_house": 5
+          },
+          {
+            "body": "jupiter",
+            "longitude": 321.47,
+            "formatted": "Aquarius 21°28′",
+            "in_house": 5
+          },
+          {
+            "body": "saturn",
+            "longitude": 13.66,
+            "formatted": "Aries 13°40′",
+            "in_house": 7
+          },
+          {
+            "body": "uranus",
+            "longitude": 306.92,
+            "formatted": "Aquarius 6°55′",
+            "in_house": 5
+          },
+          {
+            "body": "neptune",
+            "longitude": 298.81,
+            "formatted": "Capricorn 28°49′",
+            "in_house": 4
+          },
+          {
+            "body": "pluto",
+            "longitude": 246.63,
+            "formatted": "Sagittarius 6°38′",
+            "in_house": 3
+          },
+          {
+            "body": "node",
+            "longitude": 162.95,
+            "formatted": "Virgo 12°57′",
+            "in_house": 12
+          },
+          {
+            "body": "lilith",
+            "longitude": 181.48,
+            "formatted": "Libra 1°29′",
+            "in_house": 12
+          },
+          {
+            "body": "chiron",
+            "longitude": 225.12,
+            "formatted": "Scorpio 15°07′",
+            "in_house": 2
+          },
+          {
+            "body": "vertex",
+            "longitude": 303.9,
+            "formatted": "Aquarius 3°54′",
+            "in_house": 4
+          },
+          {
+            "body": "fortune",
+            "longitude": 289.53,
+            "formatted": "Capricorn 19°32′",
+            "in_house": 4
+          },
+          {
+            "body": "asc",
+            "longitude": 270.9645,
+            "formatted": "Capricorn 0°58′",
+            "in_house": 3
+          },
+          {
+            "body": "mc",
+            "longitude": 205.0307,
+            "formatted": "Libra 25°02′",
+            "in_house": 1
+          }
+        ]
+      },
+      "b_in_a": {
+        "by_body": {
+          "sun": 8,
+          "moon": 5,
+          "mercury": 8,
+          "venus": 8,
+          "mars": 8,
+          "jupiter": 3,
+          "saturn": 4,
+          "uranus": 1,
+          "neptune": 1,
+          "pluto": 11,
+          "node": 8,
+          "lilith": 10,
+          "chiron": 10,
+          "vertex": 8,
+          "fortune": 6,
+          "asc": 9,
+          "mc": 7
+        },
+        "table": [
+          {
+            "body": "sun",
+            "longitude": 169.22,
+            "formatted": "Virgo 19°13′",
+            "in_house": 8
+          },
+          {
+            "body": "moon",
+            "longitude": 67.6,
+            "formatted": "Gemini 7°36′",
+            "in_house": 5
+          },
+          {
+            "body": "mercury",
+            "longitude": 157.2,
+            "formatted": "Virgo 7°12′",
+            "in_house": 8
+          },
+          {
+            "body": "venus",
+            "longitude": 156.65,
+            "formatted": "Virgo 6°39′",
+            "in_house": 8
+          },
+          {
+            "body": "mars",
+            "longitude": 134.26,
+            "formatted": "Leo 14°16′",
+            "in_house": 8
+          },
+          {
+            "body": "jupiter",
+            "longitude": 353.58,
+            "formatted": "Pisces 23°35′",
+            "in_house": 3
+          },
+          {
+            "body": "saturn",
+            "longitude": 32.99,
+            "formatted": "Taurus 2°59′",
+            "in_house": 4
+          },
+          {
+            "body": "uranus",
+            "longitude": 309.34,
+            "formatted": "Aquarius 9°20′",
+            "in_house": 1
+          },
+          {
+            "body": "neptune",
+            "longitude": 299.61,
+            "formatted": "Capricorn 29°37′",
+            "in_house": 1
+          },
+          {
+            "body": "pluto",
+            "longitude": 245.5,
+            "formatted": "Sagittarius 5°30′",
+            "in_house": 11
+          },
+          {
+            "body": "node",
+            "longitude": 151.36,
+            "formatted": "Virgo 1°22′",
+            "in_house": 8
+          },
+          {
+            "body": "lilith",
+            "longitude": 210.19,
+            "formatted": "Scorpio 0°11′",
+            "in_house": 10
+          },
+          {
+            "body": "chiron",
+            "longitude": 225.61,
+            "formatted": "Scorpio 15°37′",
+            "in_house": 10
+          },
+          {
+            "body": "vertex",
+            "longitude": 156.65,
+            "formatted": "Virgo 6°39′",
+            "in_house": 8
+          },
+          {
+            "body": "fortune",
+            "longitude": 81.5,
+            "formatted": "Gemini 21°30′",
+            "in_house": 6
+          },
+          {
+            "body": "asc",
+            "longitude": 183.1246,
+            "formatted": "Libra 3°07′",
+            "in_house": 9
+          },
+          {
+            "body": "mc",
+            "longitude": 93.4906,
+            "formatted": "Cancer 3°29′",
+            "in_house": 7
+          }
+        ]
+      },
+      "midpoints": {
+        "partner_a": {
+          "asc_mc": {
+            "longitude": 237.99759999999998,
+            "formatted": "Scorpio 28°00′"
+          },
+          "sun_moon": {
+            "longitude": 267.21500000000003,
+            "formatted": "Sagittarius 27°13′"
+          }
+        },
+        "partner_b": {
+          "asc_mc": {
+            "longitude": 138.30759999999998,
+            "formatted": "Leo 18°18′"
+          },
+          "sun_moon": {
+            "longitude": 118.41,
+            "formatted": "Cancer 28°25′"
+          }
+        }
+      }
+    },
+    "resonance_scores": {
+      "partner_a": {
+        "familiarity_resonance": 51,
+        "promise_alignment": 44,
+        "growth_tension": 47,
+        "trigger_load": 42
+      },
+      "partner_b": {
+        "familiarity_resonance": 31,
+        "promise_alignment": 26,
+        "growth_tension": 37,
+        "trigger_load": 37
+      },
+      "relationship": {
+        "mutuality": 86,
+        "asymmetry": 0,
+        "magnetic_intensity": 23,
+        "sustainable_bond": 36
+      }
+    },
+    "derived_context": {
+      "partner_a_activated": [
+        {
+          "domain": "creativity_talent",
+          "score": 1.0,
+          "because": [
+            "moon in 5th",
+            "5th ruler Venus in 1th",
+            "mars-moon trine",
+            "uranus-moon trine",
+            "pluto-moon opposition"
+          ]
+        },
+        {
+          "domain": "home_roots",
+          "score": 1.0,
+          "because": [
+            "saturn in 4th",
+            "4th ruler Mars in 1th",
+            "venus-saturn square",
+            "vertex-saturn square",
+            "asc-saturn trine"
+          ]
+        },
+        {
+          "domain": "identity",
+          "score": 1.0,
+          "because": [
+            "uranus in 1th",
+            "1th ruler Saturn in 3th",
+            "mars-uranus conjunction",
+            "neptune in 1th",
+            "neptune-neptune conjunction"
+          ]
+        }
+      ],
+      "partner_b_activated": [
+        {
+          "domain": "creativity_talent",
+          "score": 1.0,
+          "because": [
+            "mars in 5th",
+            "5th ruler Saturn in 8th",
+            "mars-uranus conjunction",
+            "mars-moon trine",
+            "uranus in 5th"
+          ]
+        },
+        {
+          "domain": "home_roots",
+          "score": 1.0,
+          "because": [
+            "neptune in 4th",
+            "4th ruler Saturn in 8th",
+            "neptune-neptune conjunction",
+            "venus in 4th",
+            "venus-saturn square"
+          ]
+        },
+        {
+          "domain": "identity",
+          "score": 1.0,
+          "because": [
+            "mc in 1th",
+            "1th ruler Venus in 11th",
+            "sun in 4th",
+            "4th ruler Saturn in 8th",
+            "sun-asc square"
+          ]
+        }
+      ],
+      "asymmetry_notes": [
+        "Both partners are most activated through creativity_talent."
+      ]
+    },
+    "meta": {
+      "partner_a_name": "Person A",
+      "partner_b_name": "Person B"
+    },
+    "tables": {
+      "overlays": {
+        "a_in_b": [
+          {
+            "body": "sun",
+            "longitude": 276.5,
+            "formatted": "Capricorn 6°30′",
+            "in_house": 4
+          },
+          {
+            "body": "moon",
+            "longitude": 257.93,
+            "formatted": "Sagittarius 17°56′",
+            "in_house": 3
+          },
+          {
+            "body": "mercury",
+            "longitude": 257.1,
+            "formatted": "Sagittarius 17°06′",
+            "in_house": 3
+          },
+          {
+            "body": "venus",
+            "longitude": 303.9,
+            "formatted": "Aquarius 3°54′",
+            "in_house": 4
+          },
+          {
+            "body": "mars",
+            "longitude": 307.79,
+            "formatted": "Aquarius 7°47′",
+            "in_house": 5
+          },
+          {
+            "body": "jupiter",
+            "longitude": 321.47,
+            "formatted": "Aquarius 21°28′",
+            "in_house": 5
+          },
+          {
+            "body": "saturn",
+            "longitude": 13.66,
+            "formatted": "Aries 13°40′",
+            "in_house": 7
+          },
+          {
+            "body": "uranus",
+            "longitude": 306.92,
+            "formatted": "Aquarius 6°55′",
+            "in_house": 5
+          },
+          {
+            "body": "neptune",
+            "longitude": 298.81,
+            "formatted": "Capricorn 28°49′",
+            "in_house": 4
+          },
+          {
+            "body": "pluto",
+            "longitude": 246.63,
+            "formatted": "Sagittarius 6°38′",
+            "in_house": 3
+          },
+          {
+            "body": "node",
+            "longitude": 162.95,
+            "formatted": "Virgo 12°57′",
+            "in_house": 12
+          },
+          {
+            "body": "lilith",
+            "longitude": 181.48,
+            "formatted": "Libra 1°29′",
+            "in_house": 12
+          },
+          {
+            "body": "chiron",
+            "longitude": 225.12,
+            "formatted": "Scorpio 15°07′",
+            "in_house": 2
+          },
+          {
+            "body": "vertex",
+            "longitude": 303.9,
+            "formatted": "Aquarius 3°54′",
+            "in_house": 4
+          },
+          {
+            "body": "fortune",
+            "longitude": 289.53,
+            "formatted": "Capricorn 19°32′",
+            "in_house": 4
+          },
+          {
+            "body": "asc",
+            "longitude": 270.9645,
+            "formatted": "Capricorn 0°58′",
+            "in_house": 3
+          },
+          {
+            "body": "mc",
+            "longitude": 205.0307,
+            "formatted": "Libra 25°02′",
+            "in_house": 1
+          }
+        ],
+        "b_in_a": [
+          {
+            "body": "sun",
+            "longitude": 169.22,
+            "formatted": "Virgo 19°13′",
+            "in_house": 8
+          },
+          {
+            "body": "moon",
+            "longitude": 67.6,
+            "formatted": "Gemini 7°36′",
+            "in_house": 5
+          },
+          {
+            "body": "mercury",
+            "longitude": 157.2,
+            "formatted": "Virgo 7°12′",
+            "in_house": 8
+          },
+          {
+            "body": "venus",
+            "longitude": 156.65,
+            "formatted": "Virgo 6°39′",
+            "in_house": 8
+          },
+          {
+            "body": "mars",
+            "longitude": 134.26,
+            "formatted": "Leo 14°16′",
+            "in_house": 8
+          },
+          {
+            "body": "jupiter",
+            "longitude": 353.58,
+            "formatted": "Pisces 23°35′",
+            "in_house": 3
+          },
+          {
+            "body": "saturn",
+            "longitude": 32.99,
+            "formatted": "Taurus 2°59′",
+            "in_house": 4
+          },
+          {
+            "body": "uranus",
+            "longitude": 309.34,
+            "formatted": "Aquarius 9°20′",
+            "in_house": 1
+          },
+          {
+            "body": "neptune",
+            "longitude": 299.61,
+            "formatted": "Capricorn 29°37′",
+            "in_house": 1
+          },
+          {
+            "body": "pluto",
+            "longitude": 245.5,
+            "formatted": "Sagittarius 5°30′",
+            "in_house": 11
+          },
+          {
+            "body": "node",
+            "longitude": 151.36,
+            "formatted": "Virgo 1°22′",
+            "in_house": 8
+          },
+          {
+            "body": "lilith",
+            "longitude": 210.19,
+            "formatted": "Scorpio 0°11′",
+            "in_house": 10
+          },
+          {
+            "body": "chiron",
+            "longitude": 225.61,
+            "formatted": "Scorpio 15°37′",
+            "in_house": 10
+          },
+          {
+            "body": "vertex",
+            "longitude": 156.65,
+            "formatted": "Virgo 6°39′",
+            "in_house": 8
+          },
+          {
+            "body": "fortune",
+            "longitude": 81.5,
+            "formatted": "Gemini 21°30′",
+            "in_house": 6
+          },
+          {
+            "body": "asc",
+            "longitude": 183.1246,
+            "formatted": "Libra 3°07′",
+            "in_house": 9
+          },
+          {
+            "body": "mc",
+            "longitude": 93.4906,
+            "formatted": "Cancer 3°29′",
+            "in_house": 7
+          }
+        ],
+        "a_in_b_by_house": {
+          "1": [
+            "mc"
+          ],
+          "2": [
+            "chiron"
+          ],
+          "3": [
+            "asc",
+            "mercury",
+            "moon",
+            "pluto"
+          ],
+          "4": [
+            "fortune",
+            "neptune",
+            "sun",
+            "venus",
+            "vertex"
+          ],
+          "5": [
+            "jupiter",
+            "mars",
+            "uranus"
+          ],
+          "7": [
+            "saturn"
+          ],
+          "12": [
+            "lilith",
+            "node"
+          ]
+        },
+        "b_in_a_by_house": {
+          "1": [
+            "neptune",
+            "uranus"
+          ],
+          "3": [
+            "jupiter"
+          ],
+          "4": [
+            "saturn"
+          ],
+          "5": [
+            "moon"
+          ],
+          "6": [
+            "fortune"
+          ],
+          "7": [
+            "mc"
+          ],
+          "8": [
+            "mars",
+            "mercury",
+            "node",
+            "sun",
+            "venus",
+            "vertex"
+          ],
+          "9": [
+            "asc"
+          ],
+          "10": [
+            "chiron",
+            "lilith"
+          ],
+          "11": [
+            "pluto"
+          ]
+        }
+      },
+      "aspects": {
+        "top": [
+          {
+            "a_body": "pluto",
+            "b_body": "venus",
+            "aspect": "square",
+            "orb_deg": 0.020000000000010232,
+            "orb_text": "0°01′"
+          },
+          {
+            "a_body": "pluto",
+            "b_body": "vertex",
+            "aspect": "square",
+            "orb_deg": 0.020000000000010232,
+            "orb_text": "0°01′"
+          },
+          {
+            "a_body": "sun",
+            "b_body": "venus",
+            "aspect": "trine",
+            "orb_deg": 0.15000000000000568,
+            "orb_text": "0°09′"
+          },
+          {
+            "a_body": "sun",
+            "b_body": "vertex",
+            "aspect": "trine",
+            "orb_deg": 0.15000000000000568,
+            "orb_text": "0°09′"
+          },
+          {
+            "a_body": "mars",
+            "b_body": "moon",
+            "aspect": "trine",
+            "orb_deg": 0.19000000000002615,
+            "orb_text": "0°11′"
+          },
+          {
+            "a_body": "asc",
+            "b_body": "node",
+            "aspect": "trine",
+            "orb_deg": 0.39550000000002683,
+            "orb_text": "0°24′"
+          },
+          {
+            "a_body": "pluto",
+            "b_body": "mercury",
+            "aspect": "square",
+            "orb_deg": 0.5699999999999932,
+            "orb_text": "0°34′"
+          },
+          {
+            "a_body": "saturn",
+            "b_body": "mars",
+            "aspect": "trine",
+            "orb_deg": 0.5999999999999943,
+            "orb_text": "0°36′"
+          },
+          {
+            "a_body": "uranus",
+            "b_body": "moon",
+            "aspect": "trine",
+            "orb_deg": 0.6799999999999784,
+            "orb_text": "0°41′"
+          },
+          {
+            "a_body": "sun",
+            "b_body": "mercury",
+            "aspect": "trine",
+            "orb_deg": 0.6999999999999886,
+            "orb_text": "0°42′"
+          },
+          {
+            "a_body": "venus",
+            "b_body": "asc",
+            "aspect": "trine",
+            "orb_deg": 0.7753999999999905,
+            "orb_text": "0°47′"
+          },
+          {
+            "a_body": "vertex",
+            "b_body": "asc",
+            "aspect": "trine",
+            "orb_deg": 0.7753999999999905,
+            "orb_text": "0°47′"
+          },
+          {
+            "a_body": "neptune",
+            "b_body": "neptune",
+            "aspect": "conjunction",
+            "orb_deg": 0.8000000000000114,
+            "orb_text": "0°48′"
+          },
+          {
+            "a_body": "venus",
+            "b_body": "saturn",
+            "aspect": "square",
+            "orb_deg": 0.9099999999999682,
+            "orb_text": "0°55′"
+          },
+          {
+            "a_body": "vertex",
+            "b_body": "saturn",
+            "aspect": "square",
+            "orb_deg": 0.9099999999999682,
+            "orb_text": "0°55′"
+          },
+          {
+            "a_body": "pluto",
+            "b_body": "moon",
+            "aspect": "opposition",
+            "orb_deg": 0.9699999999999989,
+            "orb_text": "0°58′"
+          },
+          {
+            "a_body": "pluto",
+            "b_body": "pluto",
+            "aspect": "conjunction",
+            "orb_deg": 1.1299999999999955,
+            "orb_text": "1°08′"
+          },
+          {
+            "a_body": "moon",
+            "b_body": "sun",
+            "aspect": "square",
+            "orb_deg": 1.289999999999992,
+            "orb_text": "1°17′"
+          },
+          {
+            "a_body": "uranus",
+            "b_body": "pluto",
+            "aspect": "sextile",
+            "orb_deg": 1.420000000000016,
+            "orb_text": "1°25′"
+          },
+          {
+            "a_body": "mars",
+            "b_body": "uranus",
+            "aspect": "conjunction",
+            "orb_deg": 1.5499999999999545,
+            "orb_text": "1°33′"
+          },
+          {
+            "a_body": "venus",
+            "b_body": "pluto",
+            "aspect": "sextile",
+            "orb_deg": 1.6000000000000227,
+            "orb_text": "1°36′"
+          },
+          {
+            "a_body": "vertex",
+            "b_body": "pluto",
+            "aspect": "sextile",
+            "orb_deg": 1.6000000000000227,
+            "orb_text": "1°36′"
+          },
+          {
+            "a_body": "asc",
+            "b_body": "saturn",
+            "aspect": "trine",
+            "orb_deg": 2.0255000000000223,
+            "orb_text": "2°02′"
+          },
+          {
+            "a_body": "mercury",
+            "b_body": "sun",
+            "aspect": "square",
+            "orb_deg": 2.119999999999976,
+            "orb_text": "2°07′"
+          },
+          {
+            "a_body": "asc",
+            "b_body": "asc",
+            "aspect": "square",
+            "orb_deg": 2.1601,
+            "orb_text": "2°10′"
+          },
+          {
+            "a_body": "mars",
+            "b_body": "pluto",
+            "aspect": "sextile",
+            "orb_deg": 2.2900000000000205,
+            "orb_text": "2°17′"
+          },
+          {
+            "a_body": "asc",
+            "b_body": "mc",
+            "aspect": "opposition",
+            "orb_deg": 2.526100000000014,
+            "orb_text": "2°32′"
+          },
+          {
+            "a_body": "mercury",
+            "b_body": "mars",
+            "aspect": "trine",
+            "orb_deg": 2.840000000000032,
+            "orb_text": "2°50′"
+          },
+          {
+            "a_body": "sun",
+            "b_body": "mc",
+            "aspect": "opposition",
+            "orb_deg": 3.0093999999999994,
+            "orb_text": "3°01′"
+          },
+          {
+            "a_body": "sun",
+            "b_body": "asc",
+            "aspect": "square",
+            "orb_deg": 3.3754000000000133,
+            "orb_text": "3°23′"
+          },
+          {
+            "a_body": "sun",
+            "b_body": "saturn",
+            "aspect": "trine",
+            "orb_deg": 3.509999999999991,
+            "orb_text": "3°31′"
+          },
+          {
+            "a_body": "moon",
+            "b_body": "mars",
+            "aspect": "trine",
+            "orb_deg": 3.670000000000016,
+            "orb_text": "3°40′"
+          },
+          {
+            "a_body": "venus",
+            "b_body": "moon",
+            "aspect": "trine",
+            "orb_deg": 3.700000000000017,
+            "orb_text": "3°42′"
+          },
+          {
+            "a_body": "vertex",
+            "b_body": "moon",
+            "aspect": "trine",
+            "orb_deg": 3.700000000000017,
+            "orb_text": "3°42′"
+          },
+          {
+            "a_body": "uranus",
+            "b_body": "saturn",
+            "aspect": "square",
+            "orb_deg": 3.930000000000007,
+            "orb_text": "3°56′"
+          }
+        ]
+      },
+      "touchpoints": [
+        {
+          "a_body": "pluto",
+          "b_body": "venus",
+          "aspect": "square",
+          "orb_deg": 0.020000000000010232,
+          "orb_text": "0°01′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "pluto",
+          "b_body": "vertex",
+          "aspect": "square",
+          "orb_deg": 0.020000000000010232,
+          "orb_text": "0°01′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "sun",
+          "b_body": "venus",
+          "aspect": "trine",
+          "orb_deg": 0.15000000000000568,
+          "orb_text": "0°09′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "sun",
+          "b_body": "vertex",
+          "aspect": "trine",
+          "orb_deg": 0.15000000000000568,
+          "orb_text": "0°09′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "mars",
+          "b_body": "moon",
+          "aspect": "trine",
+          "orb_deg": 0.19000000000002615,
+          "orb_text": "0°11′",
+          "a_in_b_house": 5,
+          "b_in_a_house": 5
+        },
+        {
+          "a_body": "asc",
+          "b_body": "node",
+          "aspect": "trine",
+          "orb_deg": 0.39550000000002683,
+          "orb_text": "0°24′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "pluto",
+          "b_body": "mercury",
+          "aspect": "square",
+          "orb_deg": 0.5699999999999932,
+          "orb_text": "0°34′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "saturn",
+          "b_body": "mars",
+          "aspect": "trine",
+          "orb_deg": 0.5999999999999943,
+          "orb_text": "0°36′",
+          "a_in_b_house": 7,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "uranus",
+          "b_body": "moon",
+          "aspect": "trine",
+          "orb_deg": 0.6799999999999784,
+          "orb_text": "0°41′",
+          "a_in_b_house": 5,
+          "b_in_a_house": 5
+        },
+        {
+          "a_body": "sun",
+          "b_body": "mercury",
+          "aspect": "trine",
+          "orb_deg": 0.6999999999999886,
+          "orb_text": "0°42′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "venus",
+          "b_body": "asc",
+          "aspect": "trine",
+          "orb_deg": 0.7753999999999905,
+          "orb_text": "0°47′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 9
+        },
+        {
+          "a_body": "vertex",
+          "b_body": "asc",
+          "aspect": "trine",
+          "orb_deg": 0.7753999999999905,
+          "orb_text": "0°47′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 9
+        },
+        {
+          "a_body": "neptune",
+          "b_body": "neptune",
+          "aspect": "conjunction",
+          "orb_deg": 0.8000000000000114,
+          "orb_text": "0°48′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 1
+        },
+        {
+          "a_body": "venus",
+          "b_body": "saturn",
+          "aspect": "square",
+          "orb_deg": 0.9099999999999682,
+          "orb_text": "0°55′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 4
+        },
+        {
+          "a_body": "vertex",
+          "b_body": "saturn",
+          "aspect": "square",
+          "orb_deg": 0.9099999999999682,
+          "orb_text": "0°55′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 4
+        },
+        {
+          "a_body": "pluto",
+          "b_body": "moon",
+          "aspect": "opposition",
+          "orb_deg": 0.9699999999999989,
+          "orb_text": "0°58′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 5
+        },
+        {
+          "a_body": "pluto",
+          "b_body": "pluto",
+          "aspect": "conjunction",
+          "orb_deg": 1.1299999999999955,
+          "orb_text": "1°08′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 11
+        },
+        {
+          "a_body": "moon",
+          "b_body": "sun",
+          "aspect": "square",
+          "orb_deg": 1.289999999999992,
+          "orb_text": "1°17′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "uranus",
+          "b_body": "pluto",
+          "aspect": "sextile",
+          "orb_deg": 1.420000000000016,
+          "orb_text": "1°25′",
+          "a_in_b_house": 5,
+          "b_in_a_house": 11
+        },
+        {
+          "a_body": "mars",
+          "b_body": "uranus",
+          "aspect": "conjunction",
+          "orb_deg": 1.5499999999999545,
+          "orb_text": "1°33′",
+          "a_in_b_house": 5,
+          "b_in_a_house": 1
+        },
+        {
+          "a_body": "venus",
+          "b_body": "pluto",
+          "aspect": "sextile",
+          "orb_deg": 1.6000000000000227,
+          "orb_text": "1°36′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 11
+        },
+        {
+          "a_body": "vertex",
+          "b_body": "pluto",
+          "aspect": "sextile",
+          "orb_deg": 1.6000000000000227,
+          "orb_text": "1°36′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 11
+        },
+        {
+          "a_body": "asc",
+          "b_body": "saturn",
+          "aspect": "trine",
+          "orb_deg": 2.0255000000000223,
+          "orb_text": "2°02′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 4
+        },
+        {
+          "a_body": "mercury",
+          "b_body": "sun",
+          "aspect": "square",
+          "orb_deg": 2.119999999999976,
+          "orb_text": "2°07′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "asc",
+          "b_body": "asc",
+          "aspect": "square",
+          "orb_deg": 2.1601,
+          "orb_text": "2°10′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 9
+        },
+        {
+          "a_body": "mars",
+          "b_body": "pluto",
+          "aspect": "sextile",
+          "orb_deg": 2.2900000000000205,
+          "orb_text": "2°17′",
+          "a_in_b_house": 5,
+          "b_in_a_house": 11
+        },
+        {
+          "a_body": "asc",
+          "b_body": "mc",
+          "aspect": "opposition",
+          "orb_deg": 2.526100000000014,
+          "orb_text": "2°32′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 7
+        },
+        {
+          "a_body": "mercury",
+          "b_body": "mars",
+          "aspect": "trine",
+          "orb_deg": 2.840000000000032,
+          "orb_text": "2°50′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "sun",
+          "b_body": "mc",
+          "aspect": "opposition",
+          "orb_deg": 3.0093999999999994,
+          "orb_text": "3°01′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 7
+        },
+        {
+          "a_body": "sun",
+          "b_body": "asc",
+          "aspect": "square",
+          "orb_deg": 3.3754000000000133,
+          "orb_text": "3°23′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 9
+        },
+        {
+          "a_body": "sun",
+          "b_body": "saturn",
+          "aspect": "trine",
+          "orb_deg": 3.509999999999991,
+          "orb_text": "3°31′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 4
+        },
+        {
+          "a_body": "moon",
+          "b_body": "mars",
+          "aspect": "trine",
+          "orb_deg": 3.670000000000016,
+          "orb_text": "3°40′",
+          "a_in_b_house": 3,
+          "b_in_a_house": 8
+        },
+        {
+          "a_body": "venus",
+          "b_body": "moon",
+          "aspect": "trine",
+          "orb_deg": 3.700000000000017,
+          "orb_text": "3°42′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 5
+        },
+        {
+          "a_body": "vertex",
+          "b_body": "moon",
+          "aspect": "trine",
+          "orb_deg": 3.700000000000017,
+          "orb_text": "3°42′",
+          "a_in_b_house": 4,
+          "b_in_a_house": 5
+        },
+        {
+          "a_body": "uranus",
+          "b_body": "saturn",
+          "aspect": "square",
+          "orb_deg": 3.930000000000007,
+          "orb_text": "3°56′",
+          "a_in_b_house": 5,
+          "b_in_a_house": 4
+        }
+      ]
+    },
+    "display": {
+      "overlays_lines": {
+        "a_in_b": [
+          "A→B | Person A Güneş → Person B 4.ev (Capricorn 6°30′)",
+          "A→B | Person A Ay → Person B 3.ev (Sagittarius 17°56′)",
+          "A→B | Person A Merkür → Person B 3.ev (Sagittarius 17°06′)",
+          "A→B | Person A Venüs → Person B 4.ev (Aquarius 3°54′)",
+          "A→B | Person A Mars → Person B 5.ev (Aquarius 7°47′)",
+          "A→B | Person A Jüpiter → Person B 5.ev (Aquarius 21°28′)",
+          "A→B | Person A Satürn → Person B 7.ev (Aries 13°40′)",
+          "A→B | Person A Uranüs → Person B 5.ev (Aquarius 6°55′)",
+          "A→B | Person A Neptün → Person B 4.ev (Capricorn 28°49′)",
+          "A→B | Person A Plüton → Person B 3.ev (Sagittarius 6°38′)",
+          "A→B | Person A Ay Düğümü → Person B 12.ev (Virgo 12°57′)",
+          "A→B | Person A Lilith → Person B 12.ev (Libra 1°29′)",
+          "A→B | Person A Chiron → Person B 2.ev (Scorpio 15°07′)",
+          "A→B | Person A Vertex → Person B 4.ev (Aquarius 3°54′)",
+          "A→B | Person A Fortuna → Person B 4.ev (Capricorn 19°32′)",
+          "A→B | Person A ASC → Person B 3.ev (Capricorn 0°58′)",
+          "A→B | Person A MC → Person B 1.ev (Libra 25°02′)"
+        ],
+        "b_in_a": [
+          "B→A | Person B Güneş → Person A 8.ev (Virgo 19°13′)",
+          "B→A | Person B Ay → Person A 5.ev (Gemini 7°36′)",
+          "B→A | Person B Merkür → Person A 8.ev (Virgo 7°12′)",
+          "B→A | Person B Venüs → Person A 8.ev (Virgo 6°39′)",
+          "B→A | Person B Mars → Person A 8.ev (Leo 14°16′)",
+          "B→A | Person B Jüpiter → Person A 3.ev (Pisces 23°35′)",
+          "B→A | Person B Satürn → Person A 4.ev (Taurus 2°59′)",
+          "B→A | Person B Uranüs → Person A 1.ev (Aquarius 9°20′)",
+          "B→A | Person B Neptün → Person A 1.ev (Capricorn 29°37′)",
+          "B→A | Person B Plüton → Person A 11.ev (Sagittarius 5°30′)",
+          "B→A | Person B Ay Düğümü → Person A 8.ev (Virgo 1°22′)",
+          "B→A | Person B Lilith → Person A 10.ev (Scorpio 0°11′)",
+          "B→A | Person B Chiron → Person A 10.ev (Scorpio 15°37′)",
+          "B→A | Person B Vertex → Person A 8.ev (Virgo 6°39′)",
+          "B→A | Person B Fortuna → Person A 6.ev (Gemini 21°30′)",
+          "B→A | Person B ASC → Person A 9.ev (Libra 3°07′)",
+          "B→A | Person B MC → Person A 7.ev (Cancer 3°29′)"
+        ],
+        "by_house_a_in_b": [
+          "Ev Özeti | Person B 1.ev: Person A MC",
+          "Ev Özeti | Person B 2.ev: Person A Chiron",
+          "Ev Özeti | Person B 3.ev: Person A ASC, Merkür, Ay, Plüton",
+          "Ev Özeti | Person B 4.ev: Person A Fortuna, Neptün, Güneş, Venüs, Vertex",
+          "Ev Özeti | Person B 5.ev: Person A Jüpiter, Mars, Uranüs",
+          "Ev Özeti | Person B 7.ev: Person A Satürn",
+          "Ev Özeti | Person B 12.ev: Person A Lilith, Ay Düğümü"
+        ],
+        "by_house_b_in_a": [
+          "Ev Özeti | Person A 1.ev: Person B Neptün, Uranüs",
+          "Ev Özeti | Person A 3.ev: Person B Jüpiter",
+          "Ev Özeti | Person A 4.ev: Person B Satürn",
+          "Ev Özeti | Person A 5.ev: Person B Ay",
+          "Ev Özeti | Person A 6.ev: Person B Fortuna",
+          "Ev Özeti | Person A 7.ev: Person B MC",
+          "Ev Özeti | Person A 8.ev: Person B Mars, Merkür, Ay Düğümü, Güneş, Venüs, Vertex",
+          "Ev Özeti | Person A 9.ev: Person B ASC",
+          "Ev Özeti | Person A 10.ev: Person B Chiron, Lilith",
+          "Ev Özeti | Person A 11.ev: Person B Plüton"
+        ]
+      },
+      "aspects_lines": {
+        "top": [
+          "Açı: Plüton □ kare Venüs • orb 0°01′",
+          "Açı: Plüton □ kare Vertex • orb 0°01′",
+          "Açı: Güneş △ üçgen Venüs • orb 0°09′",
+          "Açı: Güneş △ üçgen Vertex • orb 0°09′",
+          "Açı: Mars △ üçgen Ay • orb 0°11′",
+          "Açı: ASC △ üçgen Ay Düğümü • orb 0°24′",
+          "Açı: Plüton □ kare Merkür • orb 0°34′",
+          "Açı: Satürn △ üçgen Mars • orb 0°36′",
+          "Açı: Uranüs △ üçgen Ay • orb 0°41′",
+          "Açı: Güneş △ üçgen Merkür • orb 0°42′",
+          "Açı: Venüs △ üçgen ASC • orb 0°47′",
+          "Açı: Vertex △ üçgen ASC • orb 0°47′",
+          "Açı: Neptün ☌ kavuşum Neptün • orb 0°48′",
+          "Açı: Venüs □ kare Satürn • orb 0°55′",
+          "Açı: Vertex □ kare Satürn • orb 0°55′",
+          "Açı: Plüton ☍ karşıt Ay • orb 0°58′",
+          "Açı: Plüton ☌ kavuşum Plüton • orb 1°08′",
+          "Açı: Ay □ kare Güneş • orb 1°17′",
+          "Açı: Uranüs ✶ sekstil Plüton • orb 1°25′",
+          "Açı: Mars ☌ kavuşum Uranüs • orb 1°33′",
+          "Açı: Venüs ✶ sekstil Plüton • orb 1°36′",
+          "Açı: Vertex ✶ sekstil Plüton • orb 1°36′",
+          "Açı: ASC △ üçgen Satürn • orb 2°02′",
+          "Açı: Merkür □ kare Güneş • orb 2°07′",
+          "Açı: ASC □ kare ASC • orb 2°10′",
+          "Açı: Mars ✶ sekstil Plüton • orb 2°17′",
+          "Açı: ASC ☍ karşıt MC • orb 2°32′",
+          "Açı: Merkür △ üçgen Mars • orb 2°50′",
+          "Açı: Güneş ☍ karşıt MC • orb 3°01′",
+          "Açı: Güneş □ kare ASC • orb 3°23′",
+          "Açı: Güneş △ üçgen Satürn • orb 3°31′",
+          "Açı: Ay △ üçgen Mars • orb 3°40′",
+          "Açı: Venüs △ üçgen Ay • orb 3°42′",
+          "Açı: Vertex △ üçgen Ay • orb 3°42′",
+          "Açı: Uranüs □ kare Satürn • orb 3°56′"
+        ]
+      },
+      "touchpoints_lines": [
+        "TP | Konum: Person A Plüton → Person B 3.ev | Person B Venüs → Person A 8.ev | Açı: Plüton □ kare Venüs • orb 0°01′",
+        "TP | Konum: Person A Plüton → Person B 3.ev | Person B Vertex → Person A 8.ev | Açı: Plüton □ kare Vertex • orb 0°01′",
+        "TP | Konum: Person A Güneş → Person B 4.ev | Person B Venüs → Person A 8.ev | Açı: Güneş △ üçgen Venüs • orb 0°09′",
+        "TP | Konum: Person A Güneş → Person B 4.ev | Person B Vertex → Person A 8.ev | Açı: Güneş △ üçgen Vertex • orb 0°09′",
+        "TP | Konum: Person A Mars → Person B 5.ev | Person B Ay → Person A 5.ev | Açı: Mars △ üçgen Ay • orb 0°11′",
+        "TP | Konum: Person A ASC → Person B 3.ev | Person B Ay Düğümü → Person A 8.ev | Açı: ASC △ üçgen Ay Düğümü • orb 0°24′",
+        "TP | Konum: Person A Plüton → Person B 3.ev | Person B Merkür → Person A 8.ev | Açı: Plüton □ kare Merkür • orb 0°34′",
+        "TP | Konum: Person A Satürn → Person B 7.ev | Person B Mars → Person A 8.ev | Açı: Satürn △ üçgen Mars • orb 0°36′",
+        "TP | Konum: Person A Uranüs → Person B 5.ev | Person B Ay → Person A 5.ev | Açı: Uranüs △ üçgen Ay • orb 0°41′",
+        "TP | Konum: Person A Güneş → Person B 4.ev | Person B Merkür → Person A 8.ev | Açı: Güneş △ üçgen Merkür • orb 0°42′",
+        "TP | Konum: Person A Venüs → Person B 4.ev | Person B ASC → Person A 9.ev | Açı: Venüs △ üçgen ASC • orb 0°47′",
+        "TP | Konum: Person A Vertex → Person B 4.ev | Person B ASC → Person A 9.ev | Açı: Vertex △ üçgen ASC • orb 0°47′",
+        "TP | Konum: Person A Neptün → Person B 4.ev | Person B Neptün → Person A 1.ev | Açı: Neptün ☌ kavuşum Neptün • orb 0°48′",
+        "TP | Konum: Person A Venüs → Person B 4.ev | Person B Satürn → Person A 4.ev | Açı: Venüs □ kare Satürn • orb 0°55′",
+        "TP | Konum: Person A Vertex → Person B 4.ev | Person B Satürn → Person A 4.ev | Açı: Vertex □ kare Satürn • orb 0°55′",
+        "TP | Konum: Person A Plüton → Person B 3.ev | Person B Ay → Person A 5.ev | Açı: Plüton ☍ karşıt Ay • orb 0°58′",
+        "TP | Konum: Person A Plüton → Person B 3.ev | Person B Plüton → Person A 11.ev | Açı: Plüton ☌ kavuşum Plüton • orb 1°08′",
+        "TP | Konum: Person A Ay → Person B 3.ev | Person B Güneş → Person A 8.ev | Açı: Ay □ kare Güneş • orb 1°17′",
+        "TP | Konum: Person A Uranüs → Person B 5.ev | Person B Plüton → Person A 11.ev | Açı: Uranüs ✶ sekstil Plüton • orb 1°25′",
+        "TP | Konum: Person A Mars → Person B 5.ev | Person B Uranüs → Person A 1.ev | Açı: Mars ☌ kavuşum Uranüs • orb 1°33′",
+        "TP | Konum: Person A Venüs → Person B 4.ev | Person B Plüton → Person A 11.ev | Açı: Venüs ✶ sekstil Plüton • orb 1°36′",
+        "TP | Konum: Person A Vertex → Person B 4.ev | Person B Plüton → Person A 11.ev | Açı: Vertex ✶ sekstil Plüton • orb 1°36′",
+        "TP | Konum: Person A ASC → Person B 3.ev | Person B Satürn → Person A 4.ev | Açı: ASC △ üçgen Satürn • orb 2°02′",
+        "TP | Konum: Person A Merkür → Person B 3.ev | Person B Güneş → Person A 8.ev | Açı: Merkür □ kare Güneş • orb 2°07′",
+        "TP | Konum: Person A ASC → Person B 3.ev | Person B ASC → Person A 9.ev | Açı: ASC □ kare ASC • orb 2°10′",
+        "TP | Konum: Person A Mars → Person B 5.ev | Person B Plüton → Person A 11.ev | Açı: Mars ✶ sekstil Plüton • orb 2°17′",
+        "TP | Konum: Person A ASC → Person B 3.ev | Person B MC → Person A 7.ev | Açı: ASC ☍ karşıt MC • orb 2°32′",
+        "TP | Konum: Person A Merkür → Person B 3.ev | Person B Mars → Person A 8.ev | Açı: Merkür △ üçgen Mars • orb 2°50′",
+        "TP | Konum: Person A Güneş → Person B 4.ev | Person B MC → Person A 7.ev | Açı: Güneş ☍ karşıt MC • orb 3°01′",
+        "TP | Konum: Person A Güneş → Person B 4.ev | Person B ASC → Person A 9.ev | Açı: Güneş □ kare ASC • orb 3°23′",
+        "TP | Konum: Person A Güneş → Person B 4.ev | Person B Satürn → Person A 4.ev | Açı: Güneş △ üçgen Satürn • orb 3°31′",
+        "TP | Konum: Person A Ay → Person B 3.ev | Person B Mars → Person A 8.ev | Açı: Ay △ üçgen Mars • orb 3°40′",
+        "TP | Konum: Person A Venüs → Person B 4.ev | Person B Ay → Person A 5.ev | Açı: Venüs △ üçgen Ay • orb 3°42′",
+        "TP | Konum: Person A Vertex → Person B 4.ev | Person B Ay → Person A 5.ev | Açı: Vertex △ üçgen Ay • orb 3°42′",
+        "TP | Konum: Person A Uranüs → Person B 5.ev | Person B Satürn → Person A 4.ev | Açı: Uranüs □ kare Satürn • orb 3°56′"
+      ]
+    }
+  },
+  "debug": {
+    "sum_contrib": {
+      "bond": 0.28289999999999793,
+      "depth": 0.5062312500000002,
+      "spark": 0.0,
+      "freedom": 0.0
+    },
+    "sum_risk_raw": {
+      "depth_control": 0.44406250000000025,
+      "spark_irrit": 0.0,
+      "freedom_instab": 0.0
+    },
+    "hits": [
+      {
+        "a_body": "sun",
+        "b_body": "mercury",
+        "aspect": "trine",
+        "orb_deg": 0.6999999999999886,
+        "tightness": 0.8833333333333352,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.8,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "sun",
+        "b_body": "venus",
+        "aspect": "trine",
+        "orb_deg": 0.15000000000000568,
+        "tightness": 0.9749999999999991,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.925,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "sun",
+        "b_body": "saturn",
+        "aspect": "trine",
+        "orb_deg": 3.509999999999991,
+        "tightness": 0.2980000000000018,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.9,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "sun",
+        "b_body": "vertex",
+        "aspect": "trine",
+        "orb_deg": 0.15000000000000568,
+        "tightness": 0.9624999999999986,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.65,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "sun",
+        "b_body": "asc",
+        "aspect": "square",
+        "orb_deg": 3.3754000000000133,
+        "tightness": 0.2499111111111082,
+        "intensity": 0.95,
+        "friction": 0.85,
+        "flow": 0.2,
+        "weight": 0.875,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "sun",
+        "b_body": "mc",
+        "aspect": "opposition",
+        "orb_deg": 3.0093999999999994,
+        "tightness": 0.33124444444444456,
+        "intensity": 0.9,
+        "friction": 0.75,
+        "flow": 0.25,
+        "weight": 0.775,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "moon",
+        "b_body": "sun",
+        "aspect": "square",
+        "orb_deg": 1.289999999999992,
+        "tightness": 0.677500000000002,
+        "intensity": 0.95,
+        "friction": 0.85,
+        "flow": 0.2,
+        "weight": 1.0,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "moon",
+        "b_body": "mars",
+        "aspect": "trine",
+        "orb_deg": 3.670000000000016,
+        "tightness": 0.38833333333333064,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 1.05,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "mercury",
+        "b_body": "sun",
+        "aspect": "square",
+        "orb_deg": 2.119999999999976,
+        "tightness": 0.6466666666666707,
+        "intensity": 0.95,
+        "friction": 0.85,
+        "flow": 0.2,
+        "weight": 0.8,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "mercury",
+        "b_body": "mars",
+        "aspect": "trine",
+        "orb_deg": 2.840000000000032,
+        "tightness": 0.4319999999999936,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.85,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "venus",
+        "b_body": "moon",
+        "aspect": "trine",
+        "orb_deg": 3.700000000000017,
+        "tightness": 0.38333333333333053,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 1.025,
+        "contrib": {
+          "bond": 0.28289999999999793,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "venus",
+        "b_body": "saturn",
+        "aspect": "square",
+        "orb_deg": 0.9099999999999682,
+        "tightness": 0.7977777777777848,
+        "intensity": 0.95,
+        "friction": 0.85,
+        "flow": 0.2,
+        "weight": 0.925,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "venus",
+        "b_body": "pluto",
+        "aspect": "sextile",
+        "orb_deg": 1.6000000000000227,
+        "tightness": 0.5999999999999943,
+        "intensity": 0.7,
+        "friction": 0.2,
+        "flow": 0.6,
+        "weight": 0.8,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "venus",
+        "b_body": "asc",
+        "aspect": "trine",
+        "orb_deg": 0.7753999999999905,
+        "tightness": 0.8061500000000024,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.8999999999999999,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "mars",
+        "b_body": "moon",
+        "aspect": "trine",
+        "orb_deg": 0.19000000000002615,
+        "tightness": 0.9683333333333289,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 1.05,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "mars",
+        "b_body": "uranus",
+        "aspect": "conjunction",
+        "orb_deg": 1.5499999999999545,
+        "tightness": 0.6125000000000114,
+        "intensity": 1.0,
+        "friction": 0.4,
+        "flow": 0.4,
+        "weight": 0.775,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "mars",
+        "b_body": "pluto",
+        "aspect": "sextile",
+        "orb_deg": 2.2900000000000205,
+        "tightness": 0.4274999999999949,
+        "intensity": 0.7,
+        "friction": 0.2,
+        "flow": 0.6,
+        "weight": 0.825,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "saturn",
+        "b_body": "mars",
+        "aspect": "trine",
+        "orb_deg": 0.5999999999999943,
+        "tightness": 0.8666666666666679,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.95,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "uranus",
+        "b_body": "moon",
+        "aspect": "trine",
+        "orb_deg": 0.6799999999999784,
+        "tightness": 0.7733333333333405,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.8250000000000001,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "uranus",
+        "b_body": "saturn",
+        "aspect": "square",
+        "orb_deg": 3.930000000000007,
+        "tightness": 0.017499999999998295,
+        "intensity": 0.95,
+        "friction": 0.85,
+        "flow": 0.2,
+        "weight": 0.7250000000000001,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "uranus",
+        "b_body": "pluto",
+        "aspect": "sextile",
+        "orb_deg": 1.420000000000016,
+        "tightness": 0.28999999999999204,
+        "intensity": 0.7,
+        "friction": 0.2,
+        "flow": 0.6,
+        "weight": 0.09000000000000001,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "neptune",
+        "b_body": "neptune",
+        "aspect": "conjunction",
+        "orb_deg": 0.8000000000000114,
+        "tightness": 0.5999999999999943,
+        "intensity": 1.0,
+        "friction": 0.4,
+        "flow": 0.4,
+        "weight": 0.0825,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "pluto",
+        "b_body": "moon",
+        "aspect": "opposition",
+        "orb_deg": 0.9699999999999989,
+        "tightness": 0.676666666666667,
+        "intensity": 0.9,
+        "friction": 0.75,
+        "flow": 0.25,
+        "weight": 0.875,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.5062312500000002,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.44406250000000025,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "pluto",
+        "b_body": "mercury",
+        "aspect": "square",
+        "orb_deg": 0.5699999999999932,
+        "tightness": 0.8575000000000017,
+        "intensity": 0.95,
+        "friction": 0.85,
+        "flow": 0.2,
+        "weight": 0.675,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "pluto",
+        "b_body": "venus",
+        "aspect": "square",
+        "orb_deg": 0.020000000000010232,
+        "tightness": 0.9949999999999974,
+        "intensity": 0.95,
+        "friction": 0.85,
+        "flow": 0.2,
+        "weight": 0.8,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "pluto",
+        "b_body": "pluto",
+        "aspect": "conjunction",
+        "orb_deg": 1.1299999999999955,
+        "tightness": 0.4350000000000023,
+        "intensity": 1.0,
+        "friction": 0.4,
+        "flow": 0.4,
+        "weight": 0.0975,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "pluto",
+        "b_body": "vertex",
+        "aspect": "square",
+        "orb_deg": 0.020000000000010232,
+        "tightness": 0.9949999999999974,
+        "intensity": 0.95,
+        "friction": 0.85,
+        "flow": 0.2,
+        "weight": 0.525,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "vertex",
+        "b_body": "moon",
+        "aspect": "trine",
+        "orb_deg": 3.700000000000017,
+        "tightness": 0.07499999999999574,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.75,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "vertex",
+        "b_body": "saturn",
+        "aspect": "square",
+        "orb_deg": 0.9099999999999682,
+        "tightness": 0.772500000000008,
+        "intensity": 0.95,
+        "friction": 0.85,
+        "flow": 0.2,
+        "weight": 0.65,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "vertex",
+        "b_body": "pluto",
+        "aspect": "sextile",
+        "orb_deg": 1.6000000000000227,
+        "tightness": 0.5999999999999943,
+        "intensity": 0.7,
+        "friction": 0.2,
+        "flow": 0.6,
+        "weight": 0.525,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "vertex",
+        "b_body": "asc",
+        "aspect": "trine",
+        "orb_deg": 0.7753999999999905,
+        "tightness": 0.8061500000000024,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.625,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "asc",
+        "b_body": "saturn",
+        "aspect": "trine",
+        "orb_deg": 2.0255000000000223,
+        "tightness": 0.49362499999999443,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.875,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "asc",
+        "b_body": "node",
+        "aspect": "trine",
+        "orb_deg": 0.39550000000002683,
+        "tightness": 0.9011249999999933,
+        "intensity": 0.8,
+        "friction": 0.15,
+        "flow": 0.75,
+        "weight": 0.65,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "asc",
+        "b_body": "asc",
+        "aspect": "square",
+        "orb_deg": 2.1601,
+        "tightness": 0.459975,
+        "intensity": 0.95,
+        "friction": 0.85,
+        "flow": 0.2,
+        "weight": 0.85,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      },
+      {
+        "a_body": "asc",
+        "b_body": "mc",
+        "aspect": "opposition",
+        "orb_deg": 2.526100000000014,
+        "tightness": 0.36847499999999656,
+        "intensity": 0.9,
+        "friction": 0.75,
+        "flow": 0.25,
+        "weight": 0.75,
+        "contrib": {
+          "bond": 0.0,
+          "depth": 0.0,
+          "spark": 0.0,
+          "freedom": 0.0
+        },
+        "risk": {
+          "depth_control": 0.0,
+          "spark_irrit": 0.0,
+          "freedom_instab": 0.0
+        }
+      }
+    ],
+    "natal_graph_v2": {
+      "partner_a": {
+        "engine_version": "natal_graph_v2",
+        "chart_rulers": {
+          "asc_sign": "Capricorn",
+          "asc_ruler_primary": "Saturn",
+          "asc_ruler_secondary": null,
+          "asc_ruler_placement": {
+            "planet": "Saturn",
+            "sign": "Aries",
+            "house": 3,
+            "longitude": 13.66,
+            "degree": 13,
+            "retrograde": false
+          },
+          "mc_sign": "Libra",
+          "mc_ruler_primary": "Venus",
+          "mc_ruler_secondary": null,
+          "mc_ruler_placement": {
+            "planet": "Venus",
+            "sign": "Aquarius",
+            "house": 1,
+            "longitude": 303.9,
+            "degree": 3,
+            "retrograde": true
+          },
+          "house_rulers": {
+            "1": {
+              "sign": "Capricorn",
+              "primary": "Saturn",
+              "secondary": null,
+              "placement": {
+                "planet": "Saturn",
+                "sign": "Aries",
+                "house": 3,
+                "longitude": 13.66,
+                "degree": 13,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "2": {
+              "sign": "Aquarius",
+              "primary": "Saturn",
+              "secondary": "Uranus",
+              "placement": {
+                "planet": "Saturn",
+                "sign": "Aries",
+                "house": 3,
+                "longitude": 13.66,
+                "degree": 13,
+                "retrograde": false
+              },
+              "secondary_placement": {
+                "planet": "Uranus",
+                "sign": "Aquarius",
+                "house": 1,
+                "longitude": 306.92,
+                "degree": 6,
+                "retrograde": false
+              }
+            },
+            "3": {
+              "sign": "Pisces",
+              "primary": "Jupiter",
+              "secondary": "Neptune",
+              "placement": {
+                "planet": "Jupiter",
+                "sign": "Aquarius",
+                "house": 2,
+                "longitude": 321.47,
+                "degree": 21,
+                "retrograde": false
+              },
+              "secondary_placement": {
+                "planet": "Neptune",
+                "sign": "Capricorn",
+                "house": 1,
+                "longitude": 298.81,
+                "degree": 28,
+                "retrograde": false
+              }
+            },
+            "4": {
+              "sign": "Aries",
+              "primary": "Mars",
+              "secondary": null,
+              "placement": {
+                "planet": "Mars",
+                "sign": "Aquarius",
+                "house": 1,
+                "longitude": 307.79,
+                "degree": 7,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "5": {
+              "sign": "Taurus",
+              "primary": "Venus",
+              "secondary": null,
+              "placement": {
+                "planet": "Venus",
+                "sign": "Aquarius",
+                "house": 1,
+                "longitude": 303.9,
+                "degree": 3,
+                "retrograde": true
+              },
+              "secondary_placement": null
+            },
+            "6": {
+              "sign": "Gemini",
+              "primary": "Mercury",
+              "secondary": null,
+              "placement": {
+                "planet": "Mercury",
+                "sign": "Sagittarius",
+                "house": 12,
+                "longitude": 257.1,
+                "degree": 17,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "7": {
+              "sign": "Cancer",
+              "primary": "Moon",
+              "secondary": null,
+              "placement": {
+                "planet": "Moon",
+                "sign": "Sagittarius",
+                "house": 12,
+                "longitude": 257.93,
+                "degree": 17,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "8": {
+              "sign": "Leo",
+              "primary": "Sun",
+              "secondary": null,
+              "placement": {
+                "planet": "Sun",
+                "sign": "Capricorn",
+                "house": 1,
+                "longitude": 276.5,
+                "degree": 6,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "9": {
+              "sign": "Virgo",
+              "primary": "Mercury",
+              "secondary": null,
+              "placement": {
+                "planet": "Mercury",
+                "sign": "Sagittarius",
+                "house": 12,
+                "longitude": 257.1,
+                "degree": 17,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "10": {
+              "sign": "Libra",
+              "primary": "Venus",
+              "secondary": null,
+              "placement": {
+                "planet": "Venus",
+                "sign": "Aquarius",
+                "house": 1,
+                "longitude": 303.9,
+                "degree": 3,
+                "retrograde": true
+              },
+              "secondary_placement": null
+            },
+            "11": {
+              "sign": "Scorpio",
+              "primary": "Mars",
+              "secondary": "Pluto",
+              "placement": {
+                "planet": "Mars",
+                "sign": "Aquarius",
+                "house": 1,
+                "longitude": 307.79,
+                "degree": 7,
+                "retrograde": false
+              },
+              "secondary_placement": {
+                "planet": "Pluto",
+                "sign": "Sagittarius",
+                "house": 11,
+                "longitude": 246.63,
+                "degree": 6,
+                "retrograde": false
+              }
+            },
+            "12": {
+              "sign": "Sagittarius",
+              "primary": "Jupiter",
+              "secondary": null,
+              "placement": {
+                "planet": "Jupiter",
+                "sign": "Aquarius",
+                "house": 2,
+                "longitude": 321.47,
+                "degree": 21,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            }
+          }
+        },
+        "dispositor_chains": {
+          "Sun": {
+            "start_sign": "Capricorn",
+            "primary_chain": [
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Moon": {
+            "start_sign": "Sagittarius",
+            "primary_chain": [
+              "Jupiter",
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Mercury": {
+            "start_sign": "Sagittarius",
+            "primary_chain": [
+              "Jupiter",
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Venus": {
+            "start_sign": "Aquarius",
+            "primary_chain": [
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Mars": {
+            "start_sign": "Aquarius",
+            "primary_chain": [
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Jupiter": {
+            "start_sign": "Aquarius",
+            "primary_chain": [
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Saturn": {
+            "start_sign": "Aries",
+            "primary_chain": [
+              "Mars",
+              "Saturn",
+              "Mars"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Uranus": {
+            "start_sign": "Aquarius",
+            "primary_chain": [
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Neptune": {
+            "start_sign": "Capricorn",
+            "primary_chain": [
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Pluto": {
+            "start_sign": "Sagittarius",
+            "primary_chain": [
+              "Jupiter",
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Node": {
+            "start_sign": "Virgo",
+            "primary_chain": [
+              "Mercury",
+              "Jupiter",
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Lilith": {
+            "start_sign": "Libra",
+            "primary_chain": [
+              "Venus",
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Chiron": {
+            "start_sign": "Scorpio",
+            "primary_chain": [
+              "Mars",
+              "Saturn",
+              "Mars"
+            ],
+            "secondary_echoes": [
+              "Pluto",
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Vertex": {
+            "start_sign": "Aquarius",
+            "primary_chain": [
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          },
+          "Fortune": {
+            "start_sign": "Capricorn",
+            "primary_chain": [
+              "Saturn",
+              "Mars",
+              "Saturn"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "loop_detected"
+          }
+        },
+        "signature_motifs": [
+          {
+            "id": "identity_structure",
+            "score": 1.0,
+            "evidence": [
+              "asc_capricorn",
+              "sun_1st",
+              "asc_ruler_saturn_3rd"
+            ]
+          },
+          {
+            "id": "language_boundary",
+            "score": 1.0,
+            "evidence": [
+              "saturn_3rd",
+              "mercury_saturn",
+              "asc_ruler_in_3rd"
+            ]
+          },
+          {
+            "id": "independent_roots",
+            "score": 0.7429,
+            "evidence": [
+              "ic_aries",
+              "4r_in_1st"
+            ]
+          },
+          {
+            "id": "visibility_sensitivity",
+            "score": 0.7143,
+            "evidence": [
+              "chiron_10th",
+              "mc_sensitivity_aspects"
+            ]
+          },
+          {
+            "id": "system_builder",
+            "score": 0.6571,
+            "evidence": [
+              "saturn_3rd",
+              "mercury_saturn"
+            ]
+          },
+          {
+            "id": "visionary_originality",
+            "score": 0.4286,
+            "evidence": [
+              "uranus_1st"
+            ]
+          },
+          {
+            "id": "soft_bonding",
+            "score": 0.2571,
+            "evidence": [
+              "7r_moon"
+            ]
+          }
+        ],
+        "domain_vectors": {
+          "identity": 1.0,
+          "mind_communication": 0.7894,
+          "relationships": 0.295,
+          "intimacy_depth": 0.0,
+          "career_visibility": 0.875,
+          "home_roots": 0.3736,
+          "creativity_talent": 0.0,
+          "meaning_learning": 0.2893
+        },
+        "familiarity_vectors": {
+          "structure_control": 0.8571,
+          "intensity_depth": 0.0,
+          "novelty_freedom": 0.3714,
+          "soft_affection": 0.28,
+          "mental_precision": 0.1308,
+          "visibility_sensitivity": 0.7633
+        },
+        "sensitivity_vectors": {
+          "criticism_pressure": 0.2462,
+          "overwhelm_by_intensity": 0.0,
+          "fear_of_misalignment": 0.0,
+          "instability_overload": 0.1846,
+          "visibility_exposure": 0.712,
+          "rejection_or_distance": 0.0
+        },
+        "promise_vectors": {
+          "learn_clear_expression": 0.8533,
+          "build_safe_intimacy": 0.0,
+          "integrate_vision_with_structure": 0.3535,
+          "mature_visibility": 0.7467,
+          "embody_originality": 0.3962,
+          "turn_depth_into_wisdom": 0.0
+        },
+        "debug": {
+          "vector_evidence": {
+            "identity": [
+              "Sun in 1st",
+              "Uranus in 1st",
+              "Neptune in 1st",
+              "ASC Capricorn",
+              "Saturn chart ruler",
+              "identity_structure motif"
+            ],
+            "mind_communication": [
+              "Saturn in 3rd",
+              "ASC ruler in 3rd",
+              "Mercury-Saturn trine",
+              "language_boundary motif"
+            ],
+            "relationships": [
+              "7th ruler Moon",
+              "soft_bonding motif"
+            ],
+            "intimacy_depth": [
+              "intimacy_depth_fallback"
+            ],
+            "career_visibility": [
+              "MC Libra",
+              "Chiron in 10th",
+              "MC ruler emphasized",
+              "visibility_sensitivity motif"
+            ],
+            "home_roots": [
+              "IC Aries",
+              "independent_roots motif"
+            ],
+            "creativity_talent": [
+              "creativity_talent_fallback"
+            ],
+            "meaning_learning": [
+              "9th ruler Mercury",
+              "visionary_originality motif"
+            ],
+            "structure_control": [
+              "ASC Capricorn",
+              "Saturn chart ruler",
+              "Saturn in 3rd"
+            ],
+            "intensity_depth": [
+              "intensity_depth_fallback"
+            ],
+            "novelty_freedom": [
+              "Uranus angular/1st",
+              "visionary_originality motif"
+            ],
+            "soft_affection": [
+              "Venus strong",
+              "soft_bonding motif"
+            ],
+            "mental_precision": [
+              "Mercury-Saturn aspect"
+            ],
+            "visibility_sensitivity": [
+              "MC Libra",
+              "Chiron in 10th",
+              "visibility_sensitivity motif"
+            ],
+            "criticism_pressure": [
+              "Saturn on 3rd/10th axis"
+            ],
+            "overwhelm_by_intensity": [
+              "overwhelm_by_intensity_fallback"
+            ],
+            "fear_of_misalignment": [
+              "fear_of_misalignment_fallback"
+            ],
+            "instability_overload": [
+              "Uranus strong"
+            ],
+            "visibility_exposure": [
+              "Chiron in 10th",
+              "Neptune-MC sensitivity",
+              "visibility_sensitivity motif"
+            ],
+            "rejection_or_distance": [
+              "rejection_or_distance_fallback"
+            ],
+            "learn_clear_expression": [
+              "ASC ruler in 3rd",
+              "3rd house refinement emphasis",
+              "language_boundary motif"
+            ],
+            "build_safe_intimacy": [
+              "build_safe_intimacy_fallback"
+            ],
+            "integrate_vision_with_structure": [
+              "vision emphasis in 1st",
+              "system_builder motif"
+            ],
+            "mature_visibility": [
+              "Chiron in 10th",
+              "MC ruler carries visibility lesson",
+              "visibility_sensitivity motif"
+            ],
+            "embody_originality": [
+              "Uranus angular/1st",
+              "visionary_originality motif"
+            ],
+            "turn_depth_into_wisdom": [
+              "turn_depth_into_wisdom_fallback"
+            ]
+          }
+        }
+      },
+      "partner_b": {
+        "engine_version": "natal_graph_v2",
+        "chart_rulers": {
+          "asc_sign": "Libra",
+          "asc_ruler_primary": "Venus",
+          "asc_ruler_secondary": null,
+          "asc_ruler_placement": {
+            "planet": "Venus",
+            "sign": "Virgo",
+            "house": 11,
+            "longitude": 156.65,
+            "degree": null,
+            "retrograde": false
+          },
+          "mc_sign": "Cancer",
+          "mc_ruler_primary": "Moon",
+          "mc_ruler_secondary": null,
+          "mc_ruler_placement": {
+            "planet": "Moon",
+            "sign": "Gemini",
+            "house": 9,
+            "longitude": 67.6,
+            "degree": null,
+            "retrograde": false
+          },
+          "house_rulers": {
+            "1": {
+              "sign": "Libra",
+              "primary": "Venus",
+              "secondary": null,
+              "placement": {
+                "planet": "Venus",
+                "sign": "Virgo",
+                "house": 11,
+                "longitude": 156.65,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "2": {
+              "sign": "Scorpio",
+              "primary": "Mars",
+              "secondary": "Pluto",
+              "placement": {
+                "planet": "Mars",
+                "sign": "Leo",
+                "house": 11,
+                "longitude": 134.26,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": {
+                "planet": "Pluto",
+                "sign": "Sagittarius",
+                "house": 3,
+                "longitude": 245.5,
+                "degree": null,
+                "retrograde": false
+              }
+            },
+            "3": {
+              "sign": "Sagittarius",
+              "primary": "Jupiter",
+              "secondary": null,
+              "placement": {
+                "planet": "Jupiter",
+                "sign": "Pisces",
+                "house": 6,
+                "longitude": 353.58,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "4": {
+              "sign": "Capricorn",
+              "primary": "Saturn",
+              "secondary": null,
+              "placement": {
+                "planet": "Saturn",
+                "sign": "Taurus",
+                "house": 8,
+                "longitude": 32.99,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "5": {
+              "sign": "Aquarius",
+              "primary": "Saturn",
+              "secondary": "Uranus",
+              "placement": {
+                "planet": "Saturn",
+                "sign": "Taurus",
+                "house": 8,
+                "longitude": 32.99,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": {
+                "planet": "Uranus",
+                "sign": "Aquarius",
+                "house": 5,
+                "longitude": 309.34,
+                "degree": null,
+                "retrograde": false
+              }
+            },
+            "6": {
+              "sign": "Pisces",
+              "primary": "Jupiter",
+              "secondary": "Neptune",
+              "placement": {
+                "planet": "Jupiter",
+                "sign": "Pisces",
+                "house": 6,
+                "longitude": 353.58,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": {
+                "planet": "Neptune",
+                "sign": "Capricorn",
+                "house": 4,
+                "longitude": 299.61,
+                "degree": null,
+                "retrograde": false
+              }
+            },
+            "7": {
+              "sign": "Aries",
+              "primary": "Mars",
+              "secondary": null,
+              "placement": {
+                "planet": "Mars",
+                "sign": "Leo",
+                "house": 11,
+                "longitude": 134.26,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "8": {
+              "sign": "Taurus",
+              "primary": "Venus",
+              "secondary": null,
+              "placement": {
+                "planet": "Venus",
+                "sign": "Virgo",
+                "house": 11,
+                "longitude": 156.65,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "9": {
+              "sign": "Gemini",
+              "primary": "Mercury",
+              "secondary": null,
+              "placement": {
+                "planet": "Mercury",
+                "sign": "Virgo",
+                "house": 12,
+                "longitude": 157.2,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "10": {
+              "sign": "Cancer",
+              "primary": "Moon",
+              "secondary": null,
+              "placement": {
+                "planet": "Moon",
+                "sign": "Gemini",
+                "house": 9,
+                "longitude": 67.6,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "11": {
+              "sign": "Leo",
+              "primary": "Sun",
+              "secondary": null,
+              "placement": {
+                "planet": "Sun",
+                "sign": "Virgo",
+                "house": 12,
+                "longitude": 169.22,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            },
+            "12": {
+              "sign": "Virgo",
+              "primary": "Mercury",
+              "secondary": null,
+              "placement": {
+                "planet": "Mercury",
+                "sign": "Virgo",
+                "house": 12,
+                "longitude": 157.2,
+                "degree": null,
+                "retrograde": false
+              },
+              "secondary_placement": null
+            }
+          }
+        },
+        "dispositor_chains": {
+          "Sun": {
+            "start_sign": "Virgo",
+            "primary_chain": [
+              "Mercury"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Moon": {
+            "start_sign": "Gemini",
+            "primary_chain": [
+              "Mercury"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Mercury": {
+            "start_sign": "Virgo",
+            "primary_chain": [
+              "Mercury"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Venus": {
+            "start_sign": "Virgo",
+            "primary_chain": [
+              "Mercury"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Mars": {
+            "start_sign": "Leo",
+            "primary_chain": [
+              "Sun",
+              "Mercury"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Jupiter": {
+            "start_sign": "Pisces",
+            "primary_chain": [
+              "Jupiter"
+            ],
+            "secondary_echoes": [
+              "Neptune"
+            ],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Saturn": {
+            "start_sign": "Taurus",
+            "primary_chain": [
+              "Venus",
+              "Mercury"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Uranus": {
+            "start_sign": "Aquarius",
+            "primary_chain": [
+              "Saturn",
+              "Venus",
+              "Mercury"
+            ],
+            "secondary_echoes": [
+              "Uranus"
+            ],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Neptune": {
+            "start_sign": "Capricorn",
+            "primary_chain": [
+              "Saturn",
+              "Venus",
+              "Mercury"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Pluto": {
+            "start_sign": "Sagittarius",
+            "primary_chain": [
+              "Jupiter"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Node": {
+            "start_sign": "Virgo",
+            "primary_chain": [
+              "Mercury"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Lilith": {
+            "start_sign": "Scorpio",
+            "primary_chain": [
+              "Mars",
+              "Sun",
+              "Mercury"
+            ],
+            "secondary_echoes": [
+              "Pluto"
+            ],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Chiron": {
+            "start_sign": "Scorpio",
+            "primary_chain": [
+              "Mars",
+              "Sun",
+              "Mercury"
+            ],
+            "secondary_echoes": [
+              "Pluto"
+            ],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Vertex": {
+            "start_sign": "Virgo",
+            "primary_chain": [
+              "Mercury"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          },
+          "Fortune": {
+            "start_sign": "Gemini",
+            "primary_chain": [
+              "Mercury"
+            ],
+            "secondary_echoes": [],
+            "terminated": true,
+            "termination_reason": "domicile"
+          }
+        },
+        "signature_motifs": [
+          {
+            "id": "language_boundary",
+            "score": 0.3429,
+            "evidence": [
+              "mercury_saturn"
+            ]
+          },
+          {
+            "id": "system_builder",
+            "score": 0.3143,
+            "evidence": [
+              "mercury_saturn"
+            ]
+          },
+          {
+            "id": "transformational_intensity",
+            "score": 0.2857,
+            "evidence": [
+              "pluto_personal_contact"
+            ]
+          }
+        ],
+        "domain_vectors": {
+          "identity": 0.2,
+          "mind_communication": 0.1497,
+          "relationships": 0.25,
+          "intimacy_depth": 0.0,
+          "career_visibility": 0.225,
+          "home_roots": 0.225,
+          "creativity_talent": 0.0,
+          "meaning_learning": 0.225
+        },
+        "familiarity_vectors": {
+          "structure_control": 0.0,
+          "intensity_depth": 0.0653,
+          "novelty_freedom": 0.0,
+          "soft_affection": 0.0,
+          "mental_precision": 0.1025,
+          "visibility_sensitivity": 0.2
+        },
+        "sensitivity_vectors": {
+          "criticism_pressure": 0.0,
+          "overwhelm_by_intensity": 0.4357,
+          "fear_of_misalignment": 0.1846,
+          "instability_overload": 0.0,
+          "visibility_exposure": 0.0,
+          "rejection_or_distance": 0.0
+        },
+        "promise_vectors": {
+          "learn_clear_expression": 0.0732,
+          "build_safe_intimacy": 0.0,
+          "integrate_vision_with_structure": 0.0671,
+          "mature_visibility": 0.0,
+          "embody_originality": 0.0,
+          "turn_depth_into_wisdom": 0.0609
+        },
+        "debug": {
+          "vector_evidence": {
+            "identity": [
+              "ASC Libra"
+            ],
+            "mind_communication": [
+              "Mercury-Saturn trine",
+              "language_boundary motif"
+            ],
+            "relationships": [
+              "7th ruler Mars"
+            ],
+            "intimacy_depth": [
+              "intimacy_depth_fallback"
+            ],
+            "career_visibility": [
+              "MC Cancer"
+            ],
+            "home_roots": [
+              "IC Capricorn"
+            ],
+            "creativity_talent": [
+              "creativity_talent_fallback"
+            ],
+            "meaning_learning": [
+              "9th ruler Mercury"
+            ],
+            "structure_control": [
+              "structure_control_fallback"
+            ],
+            "intensity_depth": [
+              "transformational_intensity motif"
+            ],
+            "novelty_freedom": [
+              "novelty_freedom_fallback"
+            ],
+            "soft_affection": [
+              "soft_affection_fallback"
+            ],
+            "mental_precision": [
+              "Mercury-Saturn aspect"
+            ],
+            "visibility_sensitivity": [
+              "MC Cancer"
+            ],
+            "criticism_pressure": [
+              "criticism_pressure_fallback"
+            ],
+            "overwhelm_by_intensity": [
+              "Moon-Pluto deep contact",
+              "Venus-Pluto deep contact"
+            ],
+            "fear_of_misalignment": [
+              "relational perfectionism emphasis"
+            ],
+            "instability_overload": [
+              "instability_overload_fallback"
+            ],
+            "visibility_exposure": [
+              "visibility_exposure_fallback"
+            ],
+            "rejection_or_distance": [
+              "rejection_or_distance_fallback"
+            ],
+            "learn_clear_expression": [
+              "language_boundary motif"
+            ],
+            "build_safe_intimacy": [
+              "build_safe_intimacy_fallback"
+            ],
+            "integrate_vision_with_structure": [
+              "system_builder motif"
+            ],
+            "mature_visibility": [
+              "mature_visibility_fallback"
+            ],
+            "embody_originality": [
+              "embody_originality_fallback"
+            ],
+            "turn_depth_into_wisdom": [
+              "transformational_intensity motif"
+            ]
+          }
+        }
+      }
+    },
+    "resonance_hits": [
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "vertex",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.020000000000010232,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4794,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.25,
+        "hardness": 1.0,
+        "because": [
+          "vertex in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-vertex square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "venus",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.020000000000010232,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4614,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.25,
+        "hardness": 1.0,
+        "because": [
+          "venus in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-venus square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mercury",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.5699999999999932,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4566,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.25,
+        "hardness": 1.0,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-mercury square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mars",
+        "native_body": "saturn",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.5999999999999943,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4466,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.16,
+        "hardness": 0.25,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th",
+          "saturn-mars trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "vertex",
+        "native_body": "sun",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.15000000000000568,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4412,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.16,
+        "hardness": 0.25,
+        "because": [
+          "vertex in 8th",
+          "8th ruler Sun in 1th",
+          "sun-vertex trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "sun",
+        "native_body": "moon",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 1.289999999999992,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4401,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.25,
+        "hardness": 1.0,
+        "because": [
+          "sun in 8th",
+          "8th ruler Sun in 1th",
+          "moon-sun square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mars",
+        "native_body": "moon",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 3.670000000000016,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4383,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.16,
+        "hardness": 0.25,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th",
+          "moon-mars trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mars",
+        "native_body": "mercury",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 2.840000000000032,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4306,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.16,
+        "hardness": 0.25,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th",
+          "mercury-mars trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "venus",
+        "native_body": "sun",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.15000000000000568,
+        "domain": "intimacy_depth",
+        "activation_score": 0.424,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.16,
+        "hardness": 0.25,
+        "because": [
+          "venus in 8th",
+          "8th ruler Sun in 1th",
+          "sun-venus trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "node",
+        "native_body": "asc",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.39550000000002683,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4225,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.16,
+        "hardness": 0.25,
+        "because": [
+          "node in 8th",
+          "8th ruler Sun in 1th",
+          "asc-node trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mercury",
+        "native_body": "sun",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.6999999999999886,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4205,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.16,
+        "hardness": 0.25,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th",
+          "sun-mercury trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "sun",
+        "native_body": "mercury",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 2.119999999999976,
+        "domain": "intimacy_depth",
+        "activation_score": 0.4183,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.25,
+        "hardness": 1.0,
+        "because": [
+          "sun in 8th",
+          "8th ruler Sun in 1th",
+          "mercury-sun square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "saturn",
+        "native_body": "venus",
+        "activated_house": 4,
+        "aspect": "square",
+        "orb_deg": 0.9099999999999682,
+        "domain": "home_roots",
+        "activation_score": 0.4053,
+        "familiarity_boost": 0.426,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.17,
+        "hardness": 1.0,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th",
+          "venus-saturn square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "saturn",
+        "native_body": "vertex",
+        "activated_house": 4,
+        "aspect": "square",
+        "orb_deg": 0.9099999999999682,
+        "domain": "home_roots",
+        "activation_score": 0.4053,
+        "familiarity_boost": 0.426,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.17,
+        "hardness": 1.0,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th",
+          "vertex-saturn square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "mars",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "intimacy_depth",
+        "activation_score": 0.401,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.13,
+        "hardness": 0.0,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "vertex",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "intimacy_depth",
+        "activation_score": 0.394,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.13,
+        "hardness": 0.0,
+        "because": [
+          "vertex in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "saturn",
+        "native_body": "asc",
+        "activated_house": 4,
+        "aspect": "trine",
+        "orb_deg": 2.0255000000000223,
+        "domain": "home_roots",
+        "activation_score": 0.3883,
+        "familiarity_boost": 0.426,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.08,
+        "hardness": 0.25,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th",
+          "asc-saturn trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "sun",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "intimacy_depth",
+        "activation_score": 0.38,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.13,
+        "hardness": 0.0,
+        "because": [
+          "sun in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "mercury",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "intimacy_depth",
+        "activation_score": 0.38,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.13,
+        "hardness": 0.0,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "venus",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "intimacy_depth",
+        "activation_score": 0.38,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.13,
+        "hardness": 0.0,
+        "because": [
+          "venus in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "node",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "intimacy_depth",
+        "activation_score": 0.38,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.13,
+        "hardness": 0.0,
+        "because": [
+          "node in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "saturn",
+        "native_body": "uranus",
+        "activated_house": 4,
+        "aspect": "square",
+        "orb_deg": 3.930000000000007,
+        "domain": "home_roots",
+        "activation_score": 0.3799,
+        "familiarity_boost": 0.426,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.17,
+        "hardness": 1.0,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th",
+          "uranus-saturn square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "saturn",
+        "native_body": "sun",
+        "activated_house": 4,
+        "aspect": "trine",
+        "orb_deg": 3.509999999999991,
+        "domain": "home_roots",
+        "activation_score": 0.3781,
+        "familiarity_boost": 0.426,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.08,
+        "hardness": 0.25,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th",
+          "sun-saturn trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "uranus",
+        "native_body": "mars",
+        "activated_house": 1,
+        "aspect": "conjunction",
+        "orb_deg": 1.5499999999999545,
+        "domain": "identity",
+        "activation_score": 0.3546,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4883,
+        "hardness": 0.55,
+        "because": [
+          "uranus in 1th",
+          "1th ruler Saturn in 3th",
+          "mars-uranus conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "saturn",
+        "native_body": null,
+        "activated_house": 4,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "home_roots",
+        "activation_score": 0.354,
+        "familiarity_boost": 0.426,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.05,
+        "hardness": 0.0,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "neptune",
+        "native_body": "neptune",
+        "activated_house": 1,
+        "aspect": "conjunction",
+        "orb_deg": 0.8000000000000114,
+        "domain": "identity",
+        "activation_score": 0.334,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4883,
+        "hardness": 0.55,
+        "because": [
+          "neptune in 1th",
+          "1th ruler Saturn in 3th",
+          "neptune-neptune conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "uranus",
+        "native_body": null,
+        "activated_house": 1,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.301,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4223,
+        "hardness": 0.0,
+        "because": [
+          "uranus in 1th",
+          "1th ruler Saturn in 3th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mc",
+        "native_body": "asc",
+        "activated_house": 7,
+        "aspect": "opposition",
+        "orb_deg": 2.526100000000014,
+        "domain": "relationships",
+        "activation_score": 0.2976,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.158,
+        "hardness": 0.9,
+        "because": [
+          "mc in 7th",
+          "7th ruler Moon in 12th",
+          "asc-mc opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "mars",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 0.19000000000002615,
+        "domain": "creativity_talent",
+        "activation_score": 0.2964,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2792,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "mars-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mc",
+        "native_body": "sun",
+        "activated_house": 7,
+        "aspect": "opposition",
+        "orb_deg": 3.0093999999999994,
+        "domain": "relationships",
+        "activation_score": 0.2943,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.158,
+        "hardness": 0.9,
+        "because": [
+          "mc in 7th",
+          "7th ruler Moon in 12th",
+          "sun-mc opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "uranus",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 0.6799999999999784,
+        "domain": "creativity_talent",
+        "activation_score": 0.2906,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2792,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "uranus-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "pluto",
+        "activated_house": 5,
+        "aspect": "opposition",
+        "orb_deg": 0.9699999999999989,
+        "domain": "creativity_talent",
+        "activation_score": 0.2883,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.3572,
+        "hardness": 0.9,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "pluto-moon opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "neptune",
+        "native_body": null,
+        "activated_house": 1,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.28,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4223,
+        "hardness": 0.0,
+        "because": [
+          "neptune in 1th",
+          "1th ruler Saturn in 3th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "venus",
+        "activated_house": 9,
+        "aspect": "trine",
+        "orb_deg": 0.7753999999999905,
+        "domain": "meaning_learning",
+        "activation_score": 0.28,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.0761,
+        "hardness": 0.25,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "venus-asc trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "vertex",
+        "activated_house": 9,
+        "aspect": "trine",
+        "orb_deg": 0.7753999999999905,
+        "domain": "meaning_learning",
+        "activation_score": 0.28,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.0761,
+        "hardness": 0.25,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "vertex-asc trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "venus",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 3.700000000000017,
+        "domain": "creativity_talent",
+        "activation_score": 0.2793,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2792,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "venus-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "asc",
+        "activated_house": 9,
+        "aspect": "square",
+        "orb_deg": 2.1601,
+        "domain": "meaning_learning",
+        "activation_score": 0.278,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.1661,
+        "hardness": 1.0,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "asc-asc square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "sun",
+        "activated_house": 9,
+        "aspect": "square",
+        "orb_deg": 3.3754000000000133,
+        "domain": "meaning_learning",
+        "activation_score": 0.2685,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.1661,
+        "hardness": 1.0,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "sun-asc square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "vertex",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 3.700000000000017,
+        "domain": "creativity_talent",
+        "activation_score": 0.2612,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2792,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "vertex-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "mc",
+        "native_body": null,
+        "activated_house": 7,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "relationships",
+        "activation_score": 0.26,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.05,
+        "hardness": 0.0,
+        "because": [
+          "mc in 7th",
+          "7th ruler Moon in 12th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "moon",
+        "native_body": null,
+        "activated_house": 5,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "creativity_talent",
+        "activation_score": 0.24,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2492,
+        "hardness": 0.0,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "asc",
+        "native_body": null,
+        "activated_house": 9,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "meaning_learning",
+        "activation_score": 0.24,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.0461,
+        "hardness": 0.0,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "chiron",
+        "native_body": null,
+        "activated_house": 10,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "career_visibility",
+        "activation_score": 0.2375,
+        "familiarity_boost": 0.7867,
+        "promise_boost": 0.6681,
+        "trigger_risk": 0.5956,
+        "hardness": 0.0,
+        "because": [
+          "chiron in 10th",
+          "10th ruler Venus in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "jupiter",
+        "native_body": null,
+        "activated_house": 3,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "mind_communication",
+        "activation_score": 0.22,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.1354,
+        "hardness": 0.0,
+        "because": [
+          "jupiter in 3th",
+          "3th ruler Jupiter in 2th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "lilith",
+        "native_body": null,
+        "activated_house": 10,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "career_visibility",
+        "activation_score": 0.22,
+        "familiarity_boost": 0.7867,
+        "promise_boost": 0.6681,
+        "trigger_risk": 0.5956,
+        "hardness": 0.0,
+        "because": [
+          "lilith in 10th",
+          "10th ruler Venus in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "pluto",
+        "activated_house": 11,
+        "aspect": "conjunction",
+        "orb_deg": 1.1299999999999955,
+        "domain": "relationships",
+        "activation_score": 0.1997,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.066,
+        "hardness": 0.55,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "pluto-pluto conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "venus",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.020000000000010232,
+        "domain": "relationships",
+        "activation_score": 0.1903,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.17,
+        "hardness": 1.0,
+        "because": [
+          "venus in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-venus square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "saturn",
+        "native_body": "asc",
+        "activated_house": 4,
+        "aspect": "trine",
+        "orb_deg": 2.0255000000000223,
+        "domain": "identity",
+        "activation_score": 0.189,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4523,
+        "hardness": 0.25,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th",
+          "asc-saturn trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "sun",
+        "native_body": "moon",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 1.289999999999992,
+        "domain": "identity",
+        "activation_score": 0.1859,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.5423,
+        "hardness": 1.0,
+        "because": [
+          "sun in 8th",
+          "8th ruler Sun in 1th",
+          "moon-sun square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "saturn",
+        "native_body": "venus",
+        "activated_house": 4,
+        "aspect": "square",
+        "orb_deg": 0.9099999999999682,
+        "domain": "identity",
+        "activation_score": 0.1859,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.5423,
+        "hardness": 1.0,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th",
+          "venus-saturn square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "saturn",
+        "native_body": "vertex",
+        "activated_house": 4,
+        "aspect": "square",
+        "orb_deg": 0.9099999999999682,
+        "domain": "identity",
+        "activation_score": 0.1859,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.5423,
+        "hardness": 1.0,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th",
+          "vertex-saturn square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "saturn",
+        "native_body": "sun",
+        "activated_house": 4,
+        "aspect": "trine",
+        "orb_deg": 3.509999999999991,
+        "domain": "identity",
+        "activation_score": 0.1831,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4523,
+        "hardness": 0.25,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th",
+          "sun-saturn trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "venus",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.6000000000000227,
+        "domain": "relationships",
+        "activation_score": 0.1824,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.018,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "venus-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "sun",
+        "native_body": "mercury",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 2.119999999999976,
+        "domain": "identity",
+        "activation_score": 0.1782,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.5423,
+        "hardness": 1.0,
+        "because": [
+          "sun in 8th",
+          "8th ruler Sun in 1th",
+          "mercury-sun square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "saturn",
+        "native_body": "uranus",
+        "activated_house": 4,
+        "aspect": "square",
+        "orb_deg": 3.930000000000007,
+        "domain": "identity",
+        "activation_score": 0.1759,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.5423,
+        "hardness": 1.0,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th",
+          "uranus-saturn square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "pluto",
+        "activated_house": 5,
+        "aspect": "opposition",
+        "orb_deg": 0.9699999999999989,
+        "domain": "relationships",
+        "activation_score": 0.1736,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.108,
+        "hardness": 0.9,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "pluto-moon opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "lilith",
+        "native_body": null,
+        "activated_house": 10,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.172,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.3723,
+        "hardness": 0.0,
+        "because": [
+          "lilith in 10th",
+          "10th ruler Venus in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "vertex",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.6000000000000227,
+        "domain": "relationships",
+        "activation_score": 0.1709,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.018,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "vertex-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "vertex",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.020000000000010232,
+        "domain": "relationships",
+        "activation_score": 0.1679,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.17,
+        "hardness": 1.0,
+        "because": [
+          "vertex in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-vertex square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "venus",
+        "native_body": "sun",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.15000000000000568,
+        "domain": "identity",
+        "activation_score": 0.1673,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4523,
+        "hardness": 0.25,
+        "because": [
+          "venus in 8th",
+          "8th ruler Sun in 1th",
+          "sun-venus trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "vertex",
+        "native_body": "sun",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.15000000000000568,
+        "domain": "identity",
+        "activation_score": 0.1673,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4523,
+        "hardness": 0.25,
+        "because": [
+          "vertex in 8th",
+          "8th ruler Sun in 1th",
+          "sun-vertex trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "venus",
+        "native_body": "sun",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.15000000000000568,
+        "domain": "relationships",
+        "activation_score": 0.167,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.08,
+        "hardness": 0.25,
+        "because": [
+          "venus in 8th",
+          "8th ruler Sun in 1th",
+          "sun-venus trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mercury",
+        "native_body": "sun",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.6999999999999886,
+        "domain": "identity",
+        "activation_score": 0.1634,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4523,
+        "hardness": 0.25,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th",
+          "sun-mercury trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "uranus",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.420000000000016,
+        "domain": "relationships",
+        "activation_score": 0.1609,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.018,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "uranus-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "node",
+        "native_body": "asc",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.39550000000002683,
+        "domain": "identity",
+        "activation_score": 0.1605,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4523,
+        "hardness": 0.25,
+        "because": [
+          "node in 8th",
+          "8th ruler Sun in 1th",
+          "asc-node trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "mars",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 0.19000000000002615,
+        "domain": "relationships",
+        "activation_score": 0.1581,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.03,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "mars-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "chiron",
+        "native_body": null,
+        "activated_house": 10,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.158,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.3723,
+        "hardness": 0.0,
+        "because": [
+          "chiron in 10th",
+          "10th ruler Venus in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "venus",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 3.700000000000017,
+        "domain": "relationships",
+        "activation_score": 0.1548,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.03,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "venus-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "uranus",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 0.6799999999999784,
+        "domain": "relationships",
+        "activation_score": 0.1545,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.03,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "uranus-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "mars",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 2.2900000000000205,
+        "domain": "relationships",
+        "activation_score": 0.1543,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.018,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "mars-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "uranus",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 0.6799999999999784,
+        "domain": "identity",
+        "activation_score": 0.1536,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4023,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "uranus-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "venus",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.020000000000010232,
+        "domain": "identity",
+        "activation_score": 0.1528,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.5423,
+        "hardness": 1.0,
+        "because": [
+          "venus in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-venus square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "vertex",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.020000000000010232,
+        "domain": "identity",
+        "activation_score": 0.1528,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.5423,
+        "hardness": 1.0,
+        "because": [
+          "vertex in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-vertex square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "pluto",
+        "activated_house": 11,
+        "aspect": "conjunction",
+        "orb_deg": 1.1299999999999955,
+        "domain": "identity",
+        "activation_score": 0.1495,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4383,
+        "hardness": 0.55,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "pluto-pluto conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mercury",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.5699999999999932,
+        "domain": "identity",
+        "activation_score": 0.1485,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.5423,
+        "hardness": 1.0,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-mercury square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "pluto",
+        "activated_house": 5,
+        "aspect": "opposition",
+        "orb_deg": 0.9699999999999989,
+        "domain": "identity",
+        "activation_score": 0.1463,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4803,
+        "hardness": 0.9,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "pluto-moon opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "vertex",
+        "native_body": "sun",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.15000000000000568,
+        "domain": "relationships",
+        "activation_score": 0.1455,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.08,
+        "hardness": 0.25,
+        "because": [
+          "vertex in 8th",
+          "8th ruler Sun in 1th",
+          "sun-vertex trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "sun",
+        "native_body": "moon",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 1.289999999999992,
+        "domain": "relationships",
+        "activation_score": 0.1452,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.17,
+        "hardness": 1.0,
+        "because": [
+          "sun in 8th",
+          "8th ruler Sun in 1th",
+          "moon-sun square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "vertex",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 3.700000000000017,
+        "domain": "relationships",
+        "activation_score": 0.1435,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.03,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "vertex-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "mars",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 0.19000000000002615,
+        "domain": "identity",
+        "activation_score": 0.1418,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4023,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "mars-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mercury",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.5699999999999932,
+        "domain": "relationships",
+        "activation_score": 0.1409,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.17,
+        "hardness": 1.0,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-mercury square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "node",
+        "native_body": "asc",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.39550000000002683,
+        "domain": "relationships",
+        "activation_score": 0.1395,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.08,
+        "hardness": 0.25,
+        "because": [
+          "node in 8th",
+          "8th ruler Sun in 1th",
+          "asc-node trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mars",
+        "native_body": "saturn",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.5999999999999943,
+        "domain": "identity",
+        "activation_score": 0.1391,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4523,
+        "hardness": 0.25,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th",
+          "saturn-mars trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "saturn",
+        "native_body": null,
+        "activated_house": 4,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.138,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4223,
+        "hardness": 0.0,
+        "because": [
+          "saturn in 4th",
+          "4th ruler Mars in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "uranus",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.420000000000016,
+        "domain": "identity",
+        "activation_score": 0.1369,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.3903,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "uranus-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "pluto",
+        "native_body": null,
+        "activated_house": 11,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "relationships",
+        "activation_score": 0.134,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.0,
+        "hardness": 0.0,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "sun",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.133,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4223,
+        "hardness": 0.0,
+        "because": [
+          "sun in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "pluto",
+        "activated_house": 11,
+        "aspect": "conjunction",
+        "orb_deg": 1.1299999999999955,
+        "domain": "creativity_talent",
+        "activation_score": 0.1315,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.3152,
+        "hardness": 0.55,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "pluto-pluto conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "pluto",
+        "activated_house": 11,
+        "aspect": "conjunction",
+        "orb_deg": 1.1299999999999955,
+        "domain": "meaning_learning",
+        "activation_score": 0.1315,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.1121,
+        "hardness": 0.55,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "pluto-pluto conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "neptune",
+        "native_body": "neptune",
+        "activated_house": 1,
+        "aspect": "conjunction",
+        "orb_deg": 0.8000000000000114,
+        "domain": "mind_communication",
+        "activation_score": 0.131,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.2514,
+        "hardness": 0.55,
+        "because": [
+          "neptune in 1th",
+          "1th ruler Saturn in 3th",
+          "neptune-neptune conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "uranus",
+        "native_body": "mars",
+        "activated_house": 1,
+        "aspect": "conjunction",
+        "orb_deg": 1.5499999999999545,
+        "domain": "mind_communication",
+        "activation_score": 0.1254,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.2514,
+        "hardness": 0.55,
+        "because": [
+          "uranus in 1th",
+          "1th ruler Saturn in 3th",
+          "mars-uranus conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mars",
+        "native_body": "mercury",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 2.840000000000032,
+        "domain": "identity",
+        "activation_score": 0.1247,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4523,
+        "hardness": 0.25,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th",
+          "mercury-mars trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "venus",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.6000000000000227,
+        "domain": "creativity_talent",
+        "activation_score": 0.1221,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2672,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "venus-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "pluto",
+        "activated_house": 11,
+        "aspect": "conjunction",
+        "orb_deg": 1.1299999999999955,
+        "domain": "intimacy_depth",
+        "activation_score": 0.122,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.066,
+        "hardness": 0.55,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "pluto-pluto conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "venus",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.6000000000000227,
+        "domain": "identity",
+        "activation_score": 0.1218,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.3903,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "venus-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "vertex",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.6000000000000227,
+        "domain": "identity",
+        "activation_score": 0.1218,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.3903,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "vertex-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mars",
+        "native_body": "saturn",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.5999999999999943,
+        "domain": "relationships",
+        "activation_score": 0.1211,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.08,
+        "hardness": 0.25,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th",
+          "saturn-mars trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mercury",
+        "native_body": "sun",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.6999999999999886,
+        "domain": "relationships",
+        "activation_score": 0.1205,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.08,
+        "hardness": 0.25,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th",
+          "sun-mercury trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "venus",
+        "activated_house": 9,
+        "aspect": "trine",
+        "orb_deg": 0.7753999999999905,
+        "domain": "mind_communication",
+        "activation_score": 0.12,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.1654,
+        "hardness": 0.25,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "venus-asc trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "vertex",
+        "activated_house": 9,
+        "aspect": "trine",
+        "orb_deg": 0.7753999999999905,
+        "domain": "mind_communication",
+        "activation_score": 0.12,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.1654,
+        "hardness": 0.25,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "vertex-asc trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mars",
+        "native_body": "moon",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 3.670000000000016,
+        "domain": "relationships",
+        "activation_score": 0.1195,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.08,
+        "hardness": 0.25,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th",
+          "moon-mars trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mars",
+        "native_body": "moon",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 3.670000000000016,
+        "domain": "identity",
+        "activation_score": 0.1194,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4523,
+        "hardness": 0.25,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th",
+          "moon-mars trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "venus",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 3.700000000000017,
+        "domain": "identity",
+        "activation_score": 0.1192,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4023,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "venus-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "vertex",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 3.700000000000017,
+        "domain": "identity",
+        "activation_score": 0.1192,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4023,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "vertex-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mc",
+        "native_body": "sun",
+        "activated_house": 7,
+        "aspect": "opposition",
+        "orb_deg": 3.0093999999999994,
+        "domain": "identity",
+        "activation_score": 0.1184,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.5303,
+        "hardness": 0.9,
+        "because": [
+          "mc in 7th",
+          "7th ruler Moon in 12th",
+          "sun-mc opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "sun",
+        "native_body": "mercury",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 2.119999999999976,
+        "domain": "relationships",
+        "activation_score": 0.1183,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.17,
+        "hardness": 1.0,
+        "because": [
+          "sun in 8th",
+          "8th ruler Sun in 1th",
+          "mercury-sun square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "asc",
+        "activated_house": 9,
+        "aspect": "square",
+        "orb_deg": 2.1601,
+        "domain": "mind_communication",
+        "activation_score": 0.118,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.2554,
+        "hardness": 1.0,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "asc-asc square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mc",
+        "native_body": "asc",
+        "activated_house": 7,
+        "aspect": "opposition",
+        "orb_deg": 2.526100000000014,
+        "domain": "identity",
+        "activation_score": 0.1172,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.5303,
+        "hardness": 0.9,
+        "because": [
+          "mc in 7th",
+          "7th ruler Moon in 12th",
+          "asc-mc opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "mars",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 2.2900000000000205,
+        "domain": "identity",
+        "activation_score": 0.117,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.3903,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "mars-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "uranus",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.420000000000016,
+        "domain": "meaning_learning",
+        "activation_score": 0.1166,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.0641,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "uranus-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "jupiter",
+        "native_body": null,
+        "activated_house": 3,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "meaning_learning",
+        "activation_score": 0.115,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.0461,
+        "hardness": 0.0,
+        "because": [
+          "jupiter in 3th",
+          "3th ruler Jupiter in 2th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "venus",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "relationships",
+        "activation_score": 0.115,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.05,
+        "hardness": 0.0,
+        "because": [
+          "venus in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "uranus",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.420000000000016,
+        "domain": "creativity_talent",
+        "activation_score": 0.1143,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2672,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "uranus-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "vertex",
+        "activated_house": 9,
+        "aspect": "trine",
+        "orb_deg": 0.7753999999999905,
+        "domain": "intimacy_depth",
+        "activation_score": 0.1129,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.03,
+        "hardness": 0.25,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "vertex-asc trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "mars",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 2.2900000000000205,
+        "domain": "creativity_talent",
+        "activation_score": 0.1101,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2672,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "mars-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "uranus",
+        "native_body": "mars",
+        "activated_house": 1,
+        "aspect": "conjunction",
+        "orb_deg": 1.5499999999999545,
+        "domain": "meaning_learning",
+        "activation_score": 0.1086,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.1622,
+        "hardness": 0.55,
+        "because": [
+          "uranus in 1th",
+          "1th ruler Saturn in 3th",
+          "mars-uranus conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "sun",
+        "activated_house": 9,
+        "aspect": "square",
+        "orb_deg": 3.3754000000000133,
+        "domain": "mind_communication",
+        "activation_score": 0.1085,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.2554,
+        "hardness": 1.0,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "sun-asc square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "moon",
+        "native_body": null,
+        "activated_house": 5,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "relationships",
+        "activation_score": 0.108,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.0,
+        "hardness": 0.0,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "mars",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 2.2900000000000205,
+        "domain": "meaning_learning",
+        "activation_score": 0.1079,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.0641,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "mars-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mars",
+        "native_body": "mercury",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 2.840000000000032,
+        "domain": "relationships",
+        "activation_score": 0.1067,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.08,
+        "hardness": 0.25,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th",
+          "mercury-mars trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "vertex",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.6000000000000227,
+        "domain": "creativity_talent",
+        "activation_score": 0.1038,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2672,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "vertex-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "venus",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.6000000000000227,
+        "domain": "meaning_learning",
+        "activation_score": 0.1038,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.0641,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "venus-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "pluto",
+        "native_body": "vertex",
+        "activated_house": 11,
+        "aspect": "sextile",
+        "orb_deg": 1.6000000000000227,
+        "domain": "meaning_learning",
+        "activation_score": 0.1038,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.0641,
+        "hardness": 0.15,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th",
+          "vertex-pluto sextile"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "venus",
+        "activated_house": 9,
+        "aspect": "trine",
+        "orb_deg": 0.7753999999999905,
+        "domain": "intimacy_depth",
+        "activation_score": 0.103,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.03,
+        "hardness": 0.25,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "venus-asc trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "asc",
+        "activated_house": 9,
+        "aspect": "square",
+        "orb_deg": 2.1601,
+        "domain": "intimacy_depth",
+        "activation_score": 0.101,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.12,
+        "hardness": 1.0,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "asc-asc square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mc",
+        "native_body": "asc",
+        "activated_house": 7,
+        "aspect": "opposition",
+        "orb_deg": 2.526100000000014,
+        "domain": "intimacy_depth",
+        "activation_score": 0.1006,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.158,
+        "hardness": 0.9,
+        "because": [
+          "mc in 7th",
+          "7th ruler Moon in 12th",
+          "asc-mc opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "pluto",
+        "activated_house": 5,
+        "aspect": "opposition",
+        "orb_deg": 0.9699999999999989,
+        "domain": "intimacy_depth",
+        "activation_score": 0.1004,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.108,
+        "hardness": 0.9,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "pluto-moon opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "moon",
+        "native_body": null,
+        "activated_house": 5,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.098,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.3723,
+        "hardness": 0.0,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "mercury",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.098,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4223,
+        "hardness": 0.0,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "venus",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.098,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4223,
+        "hardness": 0.0,
+        "because": [
+          "venus in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "mars",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.098,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4223,
+        "hardness": 0.0,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "pluto",
+        "native_body": null,
+        "activated_house": 11,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.098,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.3723,
+        "hardness": 0.0,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "node",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.098,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4223,
+        "hardness": 0.0,
+        "because": [
+          "node in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "vertex",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "identity",
+        "activation_score": 0.098,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4223,
+        "hardness": 0.0,
+        "because": [
+          "vertex in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "vertex",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "relationships",
+        "activation_score": 0.0975,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.05,
+        "hardness": 0.0,
+        "because": [
+          "vertex in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mc",
+        "native_body": "sun",
+        "activated_house": 7,
+        "aspect": "opposition",
+        "orb_deg": 3.0093999999999994,
+        "domain": "intimacy_depth",
+        "activation_score": 0.0973,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.158,
+        "hardness": 0.9,
+        "because": [
+          "mc in 7th",
+          "7th ruler Moon in 12th",
+          "sun-mc opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "neptune",
+        "native_body": "neptune",
+        "activated_house": 1,
+        "aspect": "conjunction",
+        "orb_deg": 0.8000000000000114,
+        "domain": "intimacy_depth",
+        "activation_score": 0.0967,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.116,
+        "hardness": 0.55,
+        "because": [
+          "neptune in 1th",
+          "1th ruler Saturn in 3th",
+          "neptune-neptune conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mercury",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.5699999999999932,
+        "domain": "mind_communication",
+        "activation_score": 0.0946,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.3054,
+        "hardness": 1.0,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-mercury square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "node",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "relationships",
+        "activation_score": 0.094,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.05,
+        "hardness": 0.0,
+        "because": [
+          "node in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "pluto",
+        "activated_house": 5,
+        "aspect": "opposition",
+        "orb_deg": 0.9699999999999989,
+        "domain": "home_roots",
+        "activation_score": 0.092,
+        "familiarity_boost": 0.426,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.108,
+        "hardness": 0.9,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "pluto-moon opposition"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "sun",
+        "activated_house": 9,
+        "aspect": "square",
+        "orb_deg": 3.3754000000000133,
+        "domain": "intimacy_depth",
+        "activation_score": 0.0915,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.12,
+        "hardness": 1.0,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "sun-asc square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "asc",
+        "activated_house": 9,
+        "aspect": "square",
+        "orb_deg": 2.1601,
+        "domain": "identity",
+        "activation_score": 0.0912,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4923,
+        "hardness": 1.0,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "asc-asc square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "venus",
+        "native_body": "pluto",
+        "activated_house": 8,
+        "aspect": "square",
+        "orb_deg": 0.020000000000010232,
+        "domain": "creativity_talent",
+        "activation_score": 0.0907,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.4192,
+        "hardness": 1.0,
+        "because": [
+          "venus in 8th",
+          "8th ruler Sun in 1th",
+          "pluto-venus square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "neptune",
+        "native_body": "neptune",
+        "activated_house": 1,
+        "aspect": "conjunction",
+        "orb_deg": 0.8000000000000114,
+        "domain": "creativity_talent",
+        "activation_score": 0.0896,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.3652,
+        "hardness": 0.55,
+        "because": [
+          "neptune in 1th",
+          "1th ruler Saturn in 3th",
+          "neptune-neptune conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "mars",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 0.19000000000002615,
+        "domain": "home_roots",
+        "activation_score": 0.0867,
+        "familiarity_boost": 0.426,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.03,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "mars-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "mars",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 0.19000000000002615,
+        "domain": "intimacy_depth",
+        "activation_score": 0.0847,
+        "familiarity_boost": 0.056,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.03,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "mars-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "sun",
+        "activated_house": 9,
+        "aspect": "square",
+        "orb_deg": 3.3754000000000133,
+        "domain": "identity",
+        "activation_score": 0.084,
+        "familiarity_boost": 0.7541,
+        "promise_boost": 0.3416,
+        "trigger_risk": 0.4923,
+        "hardness": 1.0,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "sun-asc square"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "moon",
+        "native_body": "uranus",
+        "activated_house": 5,
+        "aspect": "trine",
+        "orb_deg": 0.6799999999999784,
+        "domain": "home_roots",
+        "activation_score": 0.0829,
+        "familiarity_boost": 0.426,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.03,
+        "hardness": 0.25,
+        "because": [
+          "moon in 5th",
+          "5th ruler Venus in 1th",
+          "uranus-moon trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "mercury",
+        "native_body": "sun",
+        "activated_house": 8,
+        "aspect": "trine",
+        "orb_deg": 0.6999999999999886,
+        "domain": "mind_communication",
+        "activation_score": 0.0828,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.2154,
+        "hardness": 0.25,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th",
+          "sun-mercury trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "neptune",
+        "native_body": "neptune",
+        "activated_house": 1,
+        "aspect": "conjunction",
+        "orb_deg": 0.8000000000000114,
+        "domain": "home_roots",
+        "activation_score": 0.0825,
+        "familiarity_boost": 0.426,
+        "promise_boost": 0.0,
+        "trigger_risk": 0.116,
+        "hardness": 0.55,
+        "because": [
+          "neptune in 1th",
+          "1th ruler Saturn in 3th",
+          "neptune-neptune conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "neptune",
+        "native_body": "neptune",
+        "activated_house": 1,
+        "aspect": "conjunction",
+        "orb_deg": 0.8000000000000114,
+        "domain": "meaning_learning",
+        "activation_score": 0.082,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.1622,
+        "hardness": 0.55,
+        "because": [
+          "neptune in 1th",
+          "1th ruler Saturn in 3th",
+          "neptune-neptune conjunction"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "asc",
+        "native_body": "venus",
+        "activated_house": 9,
+        "aspect": "trine",
+        "orb_deg": 0.7753999999999905,
+        "domain": "creativity_talent",
+        "activation_score": 0.0809,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2792,
+        "hardness": 0.25,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th",
+          "venus-asc trine"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "fortune",
+        "native_body": null,
+        "activated_house": 6,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "mind_communication",
+        "activation_score": 0.08,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.1354,
+        "hardness": 0.0,
+        "because": [
+          "fortune in 6th",
+          "6th ruler Mercury in 12th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "asc",
+        "native_body": null,
+        "activated_house": 9,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "mind_communication",
+        "activation_score": 0.08,
+        "familiarity_boost": 0.3058,
+        "promise_boost": 0.7533,
+        "trigger_risk": 0.1354,
+        "hardness": 0.0,
+        "because": [
+          "asc in 9th",
+          "9th ruler Mercury in 12th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "pluto",
+        "native_body": null,
+        "activated_house": 11,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "creativity_talent",
+        "activation_score": 0.08,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.2492,
+        "hardness": 0.0,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "pluto",
+        "native_body": null,
+        "activated_house": 11,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "meaning_learning",
+        "activation_score": 0.08,
+        "familiarity_boost": 0.1758,
+        "promise_boost": 0.1591,
+        "trigger_risk": 0.0461,
+        "hardness": 0.0,
+        "because": [
+          "pluto in 11th",
+          "11th ruler Mars in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "sun",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "relationships",
+        "activation_score": 0.08,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.05,
+        "hardness": 0.0,
+        "because": [
+          "sun in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "mercury",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "relationships",
+        "activation_score": 0.08,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.05,
+        "hardness": 0.0,
+        "because": [
+          "mercury in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "overlay",
+        "incoming_body": "mars",
+        "native_body": null,
+        "activated_house": 8,
+        "aspect": null,
+        "orb_deg": null,
+        "domain": "relationships",
+        "activation_score": 0.08,
+        "familiarity_boost": 0.154,
+        "promise_boost": 0.112,
+        "trigger_risk": 0.05,
+        "hardness": 0.0,
+        "because": [
+          "mars in 8th",
+          "8th ruler Sun in 1th"
+        ]
+      },
+      {
+        "for_partner": "a",
+        "source": "touchpoint",
+        "incoming_body": "uranus",
+        "native_body": "mars",
+        "activated_house": 1,
+        "aspect": "conjunction",
+        "orb_deg": 1.5499999999999545,
+        "domain": "creativity_talent",
+        "activation_score": 0.0788,
+        "familiarity_boost": 0.242,
+        "promise_boost": 0.365,
+        "trigger_risk": 0.3652,
+        "hardness": 0.55,
+        "because": [
+          "uranus in 1th",
+          "1th ruler Saturn in 3th",
+          "mars-uranus conjunction"
+        ]
+      }
+    ]
+  }
+}

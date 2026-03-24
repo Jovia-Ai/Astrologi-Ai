@@ -6,6 +6,20 @@ from typing import Any, Dict, List, Mapping
 from app.narrative.humanize_tr import humanize_tr_text
 from app.natal.narrative.signature_engine import BLOCK_ORDER, normalize_facts
 
+PLANET_LABELS_TR = {
+    "Sun": "Güneş",
+    "Moon": "Ay",
+    "Mercury": "Merkür",
+    "Venus": "Venüs",
+    "Mars": "Mars",
+    "Jupiter": "Jüpiter",
+    "Saturn": "Satürn",
+    "Uranus": "Uranüs",
+    "Neptune": "Neptün",
+    "Pluto": "Plüton",
+    "Fortune": "Fortuna",
+}
+
 
 LEGACY_BLOCKS: Dict[str, List[Dict[str, Any]]] = {
     "identity_aura": [
@@ -26,10 +40,10 @@ LEGACY_BLOCKS: Dict[str, List[Dict[str, Any]]] = {
     ],
     "drive_rhythm": [
         {
-            "headline": "Hareket ritmi",
-            "teaser": "Sende hız, doğru zamanlama ve yönle birlikte büyüyor.",
-            "body": "Bir şeye başladığında yalnızca ilerlemek değil, onu sürdürülebilir kılmak da önemli oluyor. Küçük bir plan, net bir başlangıç ve düzenli ilerleme sende performansı belirgin biçimde artırıyor.",
-            "chips": ["Tempo", "İlk Adım", "Süreklilik"],
+            "headline": "Gücün en çok nerede belirginleşiyor",
+            "teaser": "Sende yetenek, anlamı bir yapıya dönüştürebildiğin yerde parlıyor.",
+            "body": "Dağınık olanı toparlama ve sezgisel olanı anlaşılır hale getirme tarafın güçlü. Bir şeyi sadece hissetmekle kalmıyor, ona biçim verip başkalarının da tutabileceği bir düzene oturtmak istiyorsun; bu da seni hem derin düşünen hem de kurabilen biri yapıyor.",
+            "chips": ["Anlam", "Yapı", "Kurucu Zihin"],
         }
     ],
     "love_depth": [
@@ -42,10 +56,10 @@ LEGACY_BLOCKS: Dict[str, List[Dict[str, Any]]] = {
     ],
     "career_visibility": [
         {
-            "headline": "Görünürlük çizgin",
-            "teaser": "İş tarafında etki, düzenli görünürlük ve net çıktı ile büyüyor.",
-            "body": "Kariyerde seni öne çıkaran şey yalnızca iyi üretmek değil, onu doğru bağlamda görünür kılmak. Küçük ama tutarlı vitrin adımları, sende özgüven ve etkiyi aynı anda büyütüyor.",
-            "chips": ["Vitrin", "İşçilik", "Çıktı"],
+            "headline": "Görünür olmadan önce",
+            "teaser": "İşin güçlü; ama sen görünürlüğü önce içerde kurup sonra taşırsın.",
+            "body": "Kariyerde seni öne çıkaran şey yalnızca iyi üretmek değil, onu içeride iyice olgunlaştırıp kendi adıyla dışarı taşıyabilmen. Baskı arttığında bekleme uzayabilir; yine de en güçlü halin, kalite ile etkinin aynı yerde birleştiği anlarda ortaya çıkıyor.",
+            "chips": ["Kalite", "Etki", "Görünürlük"],
         }
     ],
     "home_roots": [
@@ -58,10 +72,10 @@ LEGACY_BLOCKS: Dict[str, List[Dict[str, Any]]] = {
     ],
     "luck_creation": [
         {
-            "headline": "Fırsat ritmin",
-            "teaser": "Şans sende çoğu zaman hareketle ve görünür adımla açılıyor.",
-            "body": "Beklemekten çok başlatmak sende daha verimli çalışıyor. Küçük bir teklif, kısa bir görünürlük hamlesi ya da somut bir üretim adımı, akışın açılmasını beklediğinden daha hızlı sağlayabiliyor.",
-            "chips": ["Fırsat", "Akış", "Başlat"],
+            "headline": "Şansın en kolay nerede açılıyor",
+            "teaser": "Sende fırsat çoğu zaman tesadüf gibi değil; emek verdiğin yerde açılıyor.",
+            "body": "Bir şeyi gerçekten sahiplenip ona kendi tadını kattığında hayatın da orada karşılık verme eğilimi artıyor. Şansın özellikle yaratım, ifade ve görünür olma cesaretiyle bağlantılı; beklediğinde durgunlaşsa da içinden gelen şeyi ortaya koyduğunda akış hızlanıyor.",
+            "chips": ["Yaratım", "Akış", "Canlılık"],
         }
     ],
 }
@@ -74,6 +88,54 @@ def _pick(seed: str, block_id: str, variants: List[Dict[str, Any]]) -> tuple[int
 
 def _cleanup(value: str, max_sentences: int) -> str:
     return humanize_tr_text(" ".join(str(value or "").split()), max_sentences=max_sentences)
+
+
+def _legacy_astro_sources(block_id: str, facts: Mapping[str, Any]) -> list[str]:
+    planets = facts.get("planets") if isinstance(facts.get("planets"), Mapping) else {}
+    house_rulers = facts.get("house_rulers") if isinstance(facts.get("house_rulers"), Mapping) else {}
+    angle_signs = facts.get("angle_signs") if isinstance(facts.get("angle_signs"), Mapping) else {}
+
+    def placement(planet: str) -> str:
+        payload = planets.get(planet) if isinstance(planets.get(planet), Mapping) else {}
+        house = payload.get("house")
+        label = PLANET_LABELS_TR.get(planet, planet)
+        if house:
+            return f"{label} {house}. ev"
+        sign = str(payload.get("sign") or "").strip()
+        return f"{label} {sign}".strip()
+
+    def ruler(house: int) -> str:
+        payload = house_rulers.get(str(house)) if isinstance(house_rulers.get(str(house)), Mapping) else {}
+        pos = payload.get("primary_ruler_pos") if isinstance(payload.get("primary_ruler_pos"), Mapping) else {}
+        ruler_name = str(payload.get("primary_ruler") or "").strip()
+        ruler_house = pos.get("house")
+        if ruler_name and ruler_house:
+            return f"{house}. ev yöneticisi {ruler_name} {ruler_house}. ev"
+        return ""
+
+    angle_map = {
+        "identity_aura": f"Yükselen {angle_signs.get('ASC') or ''}".strip(),
+        "mind_voice": placement("Mercury"),
+        "drive_rhythm": placement("Mars"),
+        "love_depth": placement("Moon"),
+        "career_visibility": f"MC {angle_signs.get('MC') or ''}".strip(),
+        "home_roots": f"IC {angle_signs.get('IC') or ''}".strip(),
+        "luck_creation": placement("Fortune"),
+    }
+    ruler_house_map = {
+        "identity_aura": 1,
+        "mind_voice": 3,
+        "drive_rhythm": 9,
+        "love_depth": 7,
+        "career_visibility": 10,
+        "home_roots": 4,
+    }
+    ruler_label = ""
+    ruler_house = ruler_house_map.get(block_id)
+    if isinstance(ruler_house, int):
+        ruler_label = ruler(ruler_house)
+    source_labels = [angle_map.get(block_id, ""), ruler_label]
+    return [item for item in source_labels if item][:3]
 
 
 def build_profile_narrative_legacy(
@@ -100,6 +162,7 @@ def build_profile_narrative_legacy(
                 "headline": _cleanup(str(template.get("headline") or ""), 2),
                 "teaser": _cleanup(str(template.get("teaser") or ""), 2),
                 "body": _cleanup(str(template.get("body") or ""), 5),
+                "astro_sources": _legacy_astro_sources(block_id, facts),
                 "chips": list(template.get("chips") or [])[:3],
             }
         )

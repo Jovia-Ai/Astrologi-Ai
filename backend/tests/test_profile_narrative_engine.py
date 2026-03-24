@@ -1,3 +1,6 @@
+import re
+from collections import Counter
+
 from app.natal.narrative.profile_narrative_engine import build_profile_narrative
 from app.natal.narrative.signature_engine import normalize_facts
 from app.natal.natal_graph import build_natal_graph
@@ -167,6 +170,82 @@ def _aspects_c() -> list[dict]:
     ]
 
 
+def _semantic_tokens(text: str) -> set[str]:
+    stopwords = {
+        "ve",
+        "ile",
+        "bu",
+        "bir",
+        "da",
+        "de",
+        "için",
+        "gibi",
+        "ama",
+        "çok",
+        "daha",
+        "sen",
+        "sende",
+        "senin",
+    }
+    return {
+        token
+        for token in re.findall(r"[a-zA-ZçğıöşüÇĞİÖŞÜ]+", str(text or "").lower())
+        if len(token) >= 3 and token not in stopwords
+    }
+
+
+def _semantic_overlap(a: str, b: str) -> float:
+    left = _semantic_tokens(a)
+    right = _semantic_tokens(b)
+    if not left or not right:
+        return 0.0
+    return len(left & right) / len(left | right)
+
+
+def _assert_block_quality(block: dict) -> None:
+    sentence_count = len(re.findall(r"[.!?]", block["body"]))
+    assert 3 <= sentence_count <= 4
+    body_sentences = [sentence.strip() for sentence in re.split(r"(?<=[.!?])\s+", str(block["body"])) if sentence.strip()]
+    assert sum(1 for sentence in body_sentences if sentence.lower().startswith("sende ")) <= 1
+    merged_public = " ".join(
+        [
+            str(block.get("headline") or ""),
+            str(block.get("teaser") or ""),
+            str(block.get("body") or ""),
+            str(block.get("astro_hint") or ""),
+            " ".join(str(chip) for chip in block.get("chips") or []),
+        ]
+    )
+    lowered_body = str(block.get("body") or "").lower()
+    lowered_micro = str(block.get("micro") or "").lower()
+    for banned in (
+        "vitrin",
+        "çıktı",
+        "cikti",
+        "rota",
+        "upgrade",
+        "kalibrasyon",
+        "paket",
+        "workflow",
+        "sprint",
+    ):
+        assert not re.search(rf"\b{re.escape(banned)}\b", lowered_body)
+        assert not re.search(rf"\b{re.escape(banned)}\b", lowered_micro)
+    for debuggy in ("kimlik hattında", "kariyer hattında", "akış tarafında", "zihinsel tarafta"):
+        assert debuggy not in lowered_body
+        assert debuggy not in lowered_micro
+    for awkward in ("yakınlık sende yüzey değil", "söz senin kasın", "sende kapı açan taraf"):
+        assert awkward not in merged_public.lower()
+    for templated in ("bu tarafının dışarıdaki hali", "yetenek tarafında ilk görülen şey", "dışarıya verdiğin iş sinyalinde ilk görülen taraf"):
+        assert templated not in lowered_body
+    assert not re.search(r"\b\d{1,2}\.\s*ev\b", merged_public, re.IGNORECASE)
+    assert "kavuşum" not in merged_public.lower()
+    assert "kare" not in str(block.get("astro_hint") or "").lower()
+    assert _semantic_overlap(block["teaser"], body_sentences[0]) < 0.75
+    if block.get("micro"):
+        assert _semantic_overlap(block["micro"], block["body"]) < 0.75
+
+
 def test_profile_narrative_is_deterministic_for_same_chart() -> None:
     chart = _chart_a()
     graph = _graph(chart, _planets_a(), _aspects_a())
@@ -174,12 +253,46 @@ def test_profile_narrative_is_deterministic_for_same_chart() -> None:
     second = build_profile_narrative(chart, graph, include_debug=True, engine_override="signature")
 
     assert first["profile_public"] == second["profile_public"]
-    assert first["profile_public"]["engine_version"] == "profile_narrative_v1"
+    assert first["profile_public"]["engine_version"] == "profile_narrative_v2"
     assert first["profile_public"]["blocks"]
     assert len(first["profile_public"]["blocks"]) == 7
 
 
-def test_profile_narrative_debug_has_evidence_for_every_public_block() -> None:
+def test_profile_narrative_public_blocks_have_required_fields_and_separate_micro() -> None:
+    chart = _chart_a()
+    graph = _graph(chart, _planets_a(), _aspects_a())
+    payload = build_profile_narrative(chart, graph, include_debug=True, engine_override="signature")
+
+    public_blocks = payload["profile_public"]["blocks"]
+    assert len(public_blocks) == 7
+
+    for block in public_blocks:
+        assert {"id", "headline", "teaser", "body", "micro", "chips", "astro_sources"} <= set(block.keys())
+        assert block["headline"]
+        assert block["teaser"]
+        assert block["body"]
+        assert isinstance(block["micro"], str)
+        assert isinstance(block["astro_sources"], list)
+        assert block["body"] != block["micro"]
+        if block["micro"]:
+            assert block["micro"] not in block["body"]
+            lowered_micro = block["micro"].lower()
+            for banned in ("48 saat", "sprint", "tek adım", "tek paylaşım", "en iyi çözüm", "iyi gelir", "gerekir", "strateji", "rota", "vitrin", "çıktı", "paket", " senden", "çok tipik"):
+                assert banned not in lowered_micro
+            for debuggy in ("kimlik hattında", "kariyer hattında", "akış tarafında", "zihinsel tarafta"):
+                assert debuggy not in lowered_micro
+        lowered_body = str(block.get("body") or "").lower()
+        assert not re.search(
+            r"\b(?:merkür|merkur|güneş|gunes|ay|venüs|venus|mars|jüpiter|jupiter|satürn|saturn|uran[üu]s|nept[üu]n|pl[üu]ton)\b",
+            lowered_body,
+            re.IGNORECASE,
+        )
+        _assert_block_quality(block)
+        if block["astro_sources"]:
+            assert len(block["astro_sources"]) <= 3
+
+
+def test_profile_narrative_debug_has_evidence_and_v2_metadata() -> None:
     chart = _chart_a()
     graph = _graph(chart, _planets_a(), _aspects_a())
     payload = build_profile_narrative(chart, graph, include_debug=True, engine_override="signature")
@@ -198,8 +311,24 @@ def test_profile_narrative_debug_has_evidence_for_every_public_block() -> None:
         assert debug_block["template_id"]
         assert debug_block["template_variant_id"]
         assert debug_block["seed_material"]
-        assert debug_block["selected_template_index"] in {0, 1}
-        assert debug_block["primary_signature_id"]
+        assert debug_block["seed_version"] == "profile_signature_seed_v2_s1"
+        assert debug_block["selected_template_index"] in {0, 1, 2, 3}
+        assert debug_block["render_mode"] in {"A", "B", "C", "D"}
+
+
+def test_profile_narrative_quality_holds_across_multiple_chart_shapes() -> None:
+    charts = [
+        (_chart_b(), _planets_b(), _aspects_b()),
+        (_chart_c(), _planets_c(), _aspects_c()),
+    ]
+
+    for chart, planets, aspects in charts:
+        graph = _graph(chart, planets, aspects)
+        payload = build_profile_narrative(chart, graph, include_debug=False, engine_override="signature")
+        blocks = payload["profile_public"]["blocks"]
+        assert len(blocks) == 7
+        for block in blocks:
+            _assert_block_quality(block)
 
 
 def test_profile_narrative_seeds_and_bodies_change_across_different_charts() -> None:
@@ -225,6 +354,97 @@ def test_profile_narrative_seeds_and_bodies_change_across_different_charts() -> 
     bodies_c = {block["id"]: block["body"] for block in payload_c["profile_public"]["blocks"]}
     assert any(bodies_a.get(block_id) != bodies_b.get(block_id) for block_id in set(bodies_a) & set(bodies_b))
     assert any(bodies_a.get(block_id) != bodies_c.get(block_id) for block_id in set(bodies_a) & set(bodies_c))
+
+
+def test_profile_narrative_fallback_path_keeps_stable_debug_evidence() -> None:
+    chart = {
+        "birth_datetime": "2001-01-01T10:00:00+03:00",
+        "location": {"city": "Bursa, TR"},
+        "angles": {"ascendant_sign": "Aries", "midheaven_sign": "Capricorn"},
+        "house_positions": {"1": {"sign": "Aries"}, "10": {"sign": "Capricorn"}},
+    }
+    graph = {
+        "chart_planets": {},
+        "chart_aspects": [],
+        "house_rulers": {
+            "1": {"cusp_sign": "Aries", "primary_ruler": "Mars", "primary_ruler_pos": {"house": 1, "sign": "Aries"}},
+            "3": {"cusp_sign": "Gemini", "primary_ruler": "Mercury", "primary_ruler_pos": {"house": 3, "sign": "Gemini"}},
+            "4": {"cusp_sign": "Cancer", "primary_ruler": "Moon", "primary_ruler_pos": {"house": 4, "sign": "Cancer"}},
+            "7": {"cusp_sign": "Libra", "primary_ruler": "Venus", "primary_ruler_pos": {"house": 7, "sign": "Libra"}},
+            "9": {"cusp_sign": "Sagittarius", "primary_ruler": "Jupiter", "primary_ruler_pos": {"house": 9, "sign": "Sagittarius"}},
+            "10": {"cusp_sign": "Capricorn", "primary_ruler": "Saturn", "primary_ruler_pos": {"house": 10, "sign": "Capricorn"}},
+        },
+    }
+
+    first = build_profile_narrative(chart, graph, include_debug=True, engine_override="signature")
+    second = build_profile_narrative(chart, graph, include_debug=True, engine_override="signature")
+
+    assert first == second
+    for block in first["profile_internal"]["blocks_debug"]:
+        assert len(block["evidence"]) >= 2
+        assert block["template_id"]
+        assert block["primary_signature_id"]
+
+
+def test_profile_narrative_chart_with_strong_sparks_uses_multiple_spark_signatures() -> None:
+    chart = _chart_a()
+    graph = _graph(chart, _planets_a(), _aspects_a())
+    payload = build_profile_narrative(chart, graph, include_debug=True, engine_override="signature")
+
+    spark_blocks = [
+        block
+        for block in payload["profile_internal"]["blocks_debug"]
+        if str(block.get("spark_signature_id") or "").strip()
+    ]
+    assert len(spark_blocks) >= 3
+
+
+def test_identity_block_prioritizes_identity_spine_over_saturn_third_only_signature() -> None:
+    chart = _chart_a()
+    graph = _graph(chart, _planets_a(), _aspects_a())
+    payload = build_profile_narrative(chart, graph, include_debug=True, engine_override="signature")
+
+    identity_debug = next(block for block in payload["profile_internal"]["blocks_debug"] if block["id"] == "identity_aura")
+    assert str(identity_debug["primary_signature_id"]).startswith("identity_")
+    assert identity_debug["primary_signature_id"] != "mind_saturn_3rd_boundary"
+
+
+def test_identity_block_uses_identity_centered_language_when_identity_signatures_are_strong() -> None:
+    chart = _chart_a()
+    graph = _graph(chart, _planets_a(), _aspects_a())
+    payload = build_profile_narrative(chart, graph, include_debug=True, engine_override="signature")
+
+    identity_public = next(block for block in payload["profile_public"]["blocks"] if block["id"] == "identity_aura")
+    body = str(identity_public["body"]).lower()
+    assert any(token in body for token in ("özgün", "omurga", "büyük resmi", "kendi yolunu", "çizgin"))
+    assert "mesaj" not in body
+
+
+def test_profile_narrative_uses_multiple_render_modes_when_possible() -> None:
+    chart = _chart_a()
+    graph = _graph(chart, _planets_a(), _aspects_a())
+    payload = build_profile_narrative(chart, graph, include_debug=True, engine_override="signature")
+
+    modes = {
+        str(block.get("render_mode") or "")
+        for block in payload["profile_internal"]["blocks_debug"]
+        if str(block.get("render_mode") or "")
+    }
+    assert len(modes) >= 2
+
+
+def test_profile_narrative_reduces_repeated_discourse_starters() -> None:
+    chart = _chart_a()
+    graph = _graph(chart, _planets_a(), _aspects_a())
+    payload = build_profile_narrative(chart, graph, include_debug=True, engine_override="signature")
+
+    starters = []
+    for block in payload["profile_public"]["blocks"]:
+        words = str(block.get("body") or "").split()
+        starters.append(" ".join(words[:3]).lower())
+    counts = Counter(starters)
+    assert counts
+    assert max(counts.values()) <= 2
 
 
 def test_profile_narrative_legacy_override_keeps_schema() -> None:

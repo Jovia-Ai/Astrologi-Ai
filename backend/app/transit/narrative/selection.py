@@ -68,6 +68,18 @@ def select_event_ids(
         try:
             return float(item.get("strength"))
         except (TypeError, ValueError):
+            ranking = item.get("ranking") if isinstance(item.get("ranking"), Mapping) else {}
+            try:
+                weight = float(ranking.get("weight"))
+            except (TypeError, ValueError):
+                weight = 0.0
+            if weight > 0:
+                return min(1.0, max(0.05, weight / 1.6))
+            tier = str(ranking.get("tier") or "").strip().lower()
+            if tier == "main":
+                return 0.78
+            if tier == "support":
+                return 0.58
             return 0.0
 
     def _orb(item: Mapping[str, Any]) -> float:

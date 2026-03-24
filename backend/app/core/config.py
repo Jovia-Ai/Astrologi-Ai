@@ -42,6 +42,17 @@ class Settings(BaseSettings):
     supabase_anon_key: str | None = Field(default=None, validation_alias="SUPABASE_ANON_KEY")
     supabase_service_role_key: str | None = Field(default=None, validation_alias="SUPABASE_SERVICE_ROLE_KEY")
     house_system: str = Field(default="P", validation_alias="HOUSE_SYSTEM")
+    enable_home_fast_cache: bool = Field(default=True, validation_alias="ENABLE_HOME_FAST_CACHE")
+    enable_home_deep_cache: bool = Field(default=True, validation_alias="ENABLE_HOME_DEEP_CACHE")
+    enable_stale_while_revalidate: bool = Field(default=True, validation_alias="ENABLE_STALE_WHILE_REVALIDATE")
+    enable_background_refresh: bool = Field(default=False, validation_alias="ENABLE_BACKGROUND_REFRESH")
+    enable_timing_logs: bool = Field(default=True, validation_alias="ENABLE_TIMING_LOGS")
+    global_transits_ttl_seconds: int = Field(default=3600, validation_alias="GLOBAL_TRANSITS_TTL_SECONDS")
+    global_transits_stale_ttl_seconds: int = Field(default=43200, validation_alias="GLOBAL_TRANSITS_STALE_TTL_SECONDS")
+    home_fast_ttl_seconds: int = Field(default=1800, validation_alias="HOME_FAST_TTL_SECONDS")
+    home_fast_stale_ttl_seconds: int = Field(default=3600, validation_alias="HOME_FAST_STALE_TTL_SECONDS")
+    home_deep_ttl_seconds: int = Field(default=7200, validation_alias="HOME_DEEP_TTL_SECONDS")
+    home_deep_stale_ttl_seconds: int = Field(default=14400, validation_alias="HOME_DEEP_STALE_TTL_SECONDS")
 
     @field_validator("allowed_origins", mode="before")
     @classmethod
@@ -57,6 +68,15 @@ class Settings(BaseSettings):
             return "P"
         normalized = str(value).strip().upper()
         return normalized if normalized in {"P", "O", "E"} else "P"
+
+    @field_validator("swisseph_path", mode="before")
+    @classmethod
+    def _resolve_swisseph_path(cls, value: str | None) -> str:
+        raw = (value or "./ephe").strip()
+        path = Path(raw)
+        if path.is_absolute():
+            return str(path)
+        return str((BASE_DIR / path).resolve())
 
     @property
     def is_production(self) -> bool:

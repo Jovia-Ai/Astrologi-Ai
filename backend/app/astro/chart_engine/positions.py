@@ -41,6 +41,9 @@ PLANET_CODES = {
     "Vertex": swe.VERTEX,
 }
 
+if hasattr(swe, "JUNO"):
+    PLANET_CODES["Juno"] = swe.JUNO
+
 
 def normalize_degrees(value: float | None) -> float | None:
     if value is None:

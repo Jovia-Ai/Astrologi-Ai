@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from collections import Counter
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 from app.builders.semantic_normalizer import normalize_slot_text
@@ -44,6 +45,12 @@ def select_phase2_fragments(
 
     reduced: Dict[str, Dict[str, Any]] = {}
     domain_text_tokens: Dict[str, List[set[str]]] = {}
+    diversity_state = {
+        "planets": Counter(),
+        "houses": Counter(),
+        "rule_groups": Counter(),
+        "texts": [],
+    }
     normalized_fragments = _canonicalize_fragment_map(fragments_by_domain)
     for domain, slots in normalized_fragments.items():
         domain_key = domain
@@ -70,6 +77,7 @@ def select_phase2_fragments(
                 ),
                 slot=slot,
                 existing_tokens=tokens,
+                diversity_state=diversity_state,
             )
             fragment = reduced_slots[slot]
             if fragment:
@@ -84,9 +92,11 @@ def select_phase2_fragments(
             tokens,
             meta_info,
             axis_activation,
+            diversity_state,
         )
         anchor = reduced_slots.get("cause")
         reduced[domain_key] = {"slots": reduced_slots, "anchor": anchor}
+        _update_diversity_state(diversity_state, [fragment for fragment in reduced_slots.values() if isinstance(fragment, Mapping)])
     if max_domains and len(reduced) > max_domains:
         reduced, compressed = _select_focus_domains(reduced, max_domains=max_domains)
         if compressed:
@@ -102,6 +112,7 @@ def _select_fragment_by_priority(
     composite_priority: float,
     slot: str,
     existing_tokens: Sequence[set[str]] | None = None,
+    diversity_state: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any] | None:
     if not candidates:
         return None
@@ -110,6 +121,8 @@ def _select_fragment_by_priority(
     filtered_entries = _exclude_similar_entries(entries, existing_tokens, slot)
     if not filtered_entries:
         return None
+    overall_best = _resolve_best_fragment(filtered_entries, composite_priority, diversity_state=diversity_state)
+    overall_score = _effective_fragment_score(overall_best, composite_priority, diversity_state) if overall_best else -999.0
 
     priority_matchers = (
         lambda fragment: _matches_planet(fragment, "sun"),
@@ -122,23 +135,24 @@ def _select_fragment_by_priority(
         subset = [(idx, fragment) for idx, fragment in filtered_entries if matcher(fragment)]
         if not subset:
             continue
-        best = _resolve_best_fragment(subset, composite_priority)
-        if best:
+        best = _resolve_best_fragment(subset, composite_priority, diversity_state=diversity_state)
+        if best and _effective_fragment_score(best, composite_priority, diversity_state) >= overall_score - 0.015:
             return _format_fragment_output(best, slot)
 
-    final_best = _resolve_best_fragment(filtered_entries, composite_priority)
-    return _format_fragment_output(final_best, slot) if final_best else None
+    return _format_fragment_output(overall_best, slot) if overall_best else None
 
 
 def _resolve_best_fragment(
     entries: Sequence[Tuple[int, Dict[str, Any]]],
     composite_priority: float,
+    *,
+    diversity_state: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any] | None:
     best_fragment: Dict[str, Any] | None = None
     best_key: Tuple[float, int, str] | None = None
 
     for _, fragment in entries:
-        score = _fragment_priority_score(fragment, composite_priority)
+        score = _fragment_priority_score(fragment, composite_priority) - _diversity_penalty(fragment, diversity_state)
         trigger_rank = _trigger_type_rank(fragment)
         fragment_id = str(fragment.get("fragment_id") or "")
         current_key = (score, trigger_rank, fragment_id)
@@ -147,6 +161,16 @@ def _resolve_best_fragment(
             best_key = current_key
 
     return best_fragment
+
+
+def _effective_fragment_score(
+    fragment: Mapping[str, Any] | None,
+    composite_priority: float,
+    diversity_state: Mapping[str, Any] | None,
+) -> float:
+    if not isinstance(fragment, Mapping):
+        return -999.0
+    return _fragment_priority_score(dict(fragment), composite_priority) - _diversity_penalty(fragment, diversity_state)
 
 
 def _fragment_priority_score(fragment: Dict[str, Any], fallback: float) -> float:
@@ -264,6 +288,7 @@ def _ensure_required_slots(
     tokens: List[set[str]],
     meta_info: Mapping[str, Any],
     axis_activation: Mapping[str, Any] | None,
+    diversity_state: Mapping[str, Any] | None,
 ) -> None:
     required = ("cause", "mechanism", "potential")
     for slot in required:
@@ -452,6 +477,54 @@ def _dedupe_and_score_candidates(
             best["supporting_facts"] = summaries[:5]
         deduped.append(best)
     return deduped
+
+
+def _diversity_penalty(fragment: Mapping[str, Any], diversity_state: Mapping[str, Any] | None) -> float:
+    if not diversity_state:
+        return 0.0
+    penalty = 0.0
+    trigger = fragment.get("trigger") or {}
+    planet = _extract_planet(dict(fragment))
+    if planet:
+        penalty += min(0.1, float((diversity_state.get("planets") or {}).get(planet, 0)) * 0.04)
+    house = trigger.get("house")
+    if house is not None:
+        penalty += min(0.06, float((diversity_state.get("houses") or {}).get(str(house), 0)) * 0.03)
+    rule_group = _rule_id_group(fragment.get("source_rule_ids"))
+    if rule_group:
+        penalty += min(0.06, float((diversity_state.get("rule_groups") or {}).get(rule_group, 0)) * 0.03)
+    tokens = _fragment_text_tokens(fragment, fragment.get("type") or fragment.get("slot") or "")
+    for prior in diversity_state.get("texts") or []:
+        if not tokens or not prior:
+            continue
+        overlap = _jaccard_similarity(tokens, prior)
+        if overlap >= 0.52:
+            penalty += min(0.08, overlap * 0.1)
+            break
+    return min(0.18, penalty)
+
+
+def _update_diversity_state(diversity_state: Mapping[str, Any], fragments: Sequence[Mapping[str, Any]]) -> None:
+    planets = diversity_state.get("planets")
+    houses = diversity_state.get("houses")
+    rule_groups = diversity_state.get("rule_groups")
+    texts = diversity_state.get("texts")
+    if not isinstance(planets, Counter) or not isinstance(houses, Counter) or not isinstance(rule_groups, Counter) or not isinstance(texts, list):
+        return
+    for fragment in fragments:
+        trigger = fragment.get("trigger") or {}
+        planet = _extract_planet(dict(fragment))
+        if planet:
+            planets[planet] += 1
+        house = trigger.get("house")
+        if house is not None:
+            houses[str(house)] += 1
+        rule_group = _rule_id_group(fragment.get("source_rule_ids"))
+        if rule_group:
+            rule_groups[rule_group] += 1
+        tokens = _fragment_text_tokens(fragment, fragment.get("intent") or fragment.get("type") or fragment.get("slot") or "")
+        if tokens:
+            texts.append(tokens)
 
 
 def _supporting_fact_summary(fragment: Mapping[str, Any]) -> Dict[str, Any]:

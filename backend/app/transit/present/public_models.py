@@ -55,4 +55,9 @@ class PublicTransitResponse(BaseModel):
     events: Optional[List[PublicEvent]] = None
     period_core: Optional[dict] = None
     event_cards: Optional[List[dict]] = None
+    period_peak_timeline: Optional[List[dict]] = None
     timeline: Optional[dict] = None
+    multi_event: Optional[dict] = None
+    personal_transit_rail: Optional[List[dict]] = None
+    structural_chapter_rail: Optional[List[dict]] = None
+    solar_year_frame: Optional[dict] = None

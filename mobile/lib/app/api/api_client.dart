@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'api_environment.dart';
+
 class ApiClient {
-  ApiClient({required String baseUrl})
+  ApiClient({String? baseUrl})
     : _dio = Dio(
         BaseOptions(
-          baseUrl: baseUrl,
+          baseUrl: ApiEnvironment.resolveBaseUrl(baseUrl),
           connectTimeout: const Duration(seconds: 10),
           receiveTimeout: const Duration(seconds: 20),
         ),
@@ -26,22 +28,35 @@ class ApiClient {
 
   final Dio _dio;
 
-  Future<Response<dynamic>> post(String path, {Object? data}) {
+  Future<Response<dynamic>> post(
+    String path, {
+    Object? data,
+    Duration? receiveTimeout,
+  }) {
     return _dio.post(
       path,
       data: data,
-      options: Options(responseType: ResponseType.json),
+      options: Options(
+        responseType: ResponseType.json,
+        receiveTimeout: receiveTimeout,
+        sendTimeout: receiveTimeout,
+      ),
     );
   }
 
   Future<Response<dynamic>> get(
     String path, {
     Map<String, dynamic>? queryParameters,
+    Duration? receiveTimeout,
   }) {
     return _dio.get(
       path,
       queryParameters: queryParameters,
-      options: Options(responseType: ResponseType.json),
+      options: Options(
+        responseType: ResponseType.json,
+        receiveTimeout: receiveTimeout,
+        sendTimeout: receiveTimeout,
+      ),
     );
   }
 }

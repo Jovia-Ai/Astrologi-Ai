@@ -1,11 +1,147 @@
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, Mapping
 
+from app.narrative.editorial_render_policy import apply_phrase_policy, select_rhythm_family
+from app.narrative.humanize_tr import clean_public_block_tr
 from app.natal.narrative.micro_example_engine_tr import choose_micro_example
-from app.natal.narrative.phrase_lib_tr_profile import render_block_template
+from app.natal.narrative.primitive_engine import build_primitives
+from app.natal.narrative.phrase_lib_tr_profile import (
+    humanize_public_chips,
+    render_block_template,
+    soft_public_astro_hint,
+)
 from app.natal.narrative.signature_catalog_tr import SIGNATURE_CATALOG_TR
 from app.natal.narrative.signature_engine import BLOCK_ORDER, extract_candidates, normalize_facts, select_by_block
+from app.natal.narrative.signature_taxonomy_tr import BLOCK_ALIAS_TO_TAXONOMY
+
+ENGINE_VERSION = "profile_narrative_v2"
+SEED_VERSION = "profile_signature_seed_v2_s1"
+
+ASPECT_LABELS_TR = {
+    "conjunction": "kavuşumu",
+    "opposition": "karşıtlığı",
+    "square": "karesi",
+    "trine": "üçgeni",
+    "sextile": "sekstili",
+}
+
+ANGLE_LABELS_TR = {
+    "ASC": "Yükselen",
+    "MC": "Tepe Noktası",
+    "DSC": "Alçalan",
+    "IC": "Dip Noktası",
+}
+
+PLANET_LABELS_TR = {
+    "Sun": "Güneş",
+    "Moon": "Ay",
+    "Mercury": "Merkür",
+    "Venus": "Venüs",
+    "Mars": "Mars",
+    "Jupiter": "Jüpiter",
+    "Saturn": "Satürn",
+    "Uranus": "Uranüs",
+    "Neptune": "Neptün",
+    "Pluto": "Plüton",
+    "Ascendant": "Yükselen",
+    "Midheaven": "Tepe Noktası",
+    "Descendant": "Alçalan",
+    "Imum Coeli": "Dip Noktası",
+    "Fortune": "Fortuna",
+    "Chiron": "Kiron",
+    "Vertex": "Vertex",
+    "Lilith": "Lilith",
+}
+
+PRIMITIVE_SENTENCE_HINTS = {
+    "inner_structure": "İçeride önce yapı ve çerçeve kuran bir omurga çalışıyor.",
+    "self_definition": "Kimliğini netleştirme ihtiyacın güçlü olduğu için duruşun kolay silinmiyor.",
+    "originality_drive": "Aynı anda kendi yolunu açmak isteyen özgün bir dürtü de var.",
+    "big_picture_vision": "Sadece anı değil, büyük resmi de aynı anda duyma eğilimin belirgin.",
+    "tone_sensitivity": "Sözün tonu ve yükü sende sadece ifade değil, güven meselesi de oluyor.",
+    "inner_critic": "Standart yükseldiğinde içerdeki eleştirmen kolayca sesi büyütebiliyor.",
+    "push_pull_drive": "Bir yanın hızlanmak isterken diğer yanın durup ölçmek istiyor.",
+    "systems_thinking": "Parçaları bir sisteme bağlayınca zihnin ve üretimin güçleniyor.",
+    "methodical_drive": "Hevesin en iyi sonuçlarını yöntem kurduğunda alıyorsun.",
+    "intimacy_depth": "Yakınlık sende yüzeyden çok derinlik ve güven üzerinden kuruluyor.",
+    "relational_security": "Bağ kurarken tutarlılık ve güven zemini senin için belirleyici.",
+    "emotional_threshold": "Kalbin açılırken aynı anda korunma eşiği de devreye giriyor.",
+    "transformative_bonding": "Gerçek bağlar sende sadece yakınlık değil, dönüşüm de yaratıyor.",
+    "public_refinement": "Görünür olduğunda kaliteyi ve ince ayarı birlikte taşımak istiyorsun.",
+    "visibility_sensitivity": "Dışarıdaki göz arttığında içerideki hassasiyet de yükseliyor.",
+    "backstage_creation": "Bir şeyi önce görünmeden olgunlaştırma eğilimin güçlü.",
+    "family_self_reliance": "Güveni çoğu zaman önce kendi içinde kurup sonra paylaşıyorsun.",
+    "recharge_through_home": "Ev ve iç alan senin için gerçek bir toparlanma hattı gibi çalışıyor.",
+    "creation_luck": "Şansın çoğu zaman üretim ve görünür deneme üzerinden açılıyor.",
+    "meaningful_expansion": "Ufuk büyüdükçe enerjin de daha anlamlı bir akış buluyor.",
+}
+
+_COPY_STOPWORDS = {
+    "ve",
+    "ile",
+    "bu",
+    "bir",
+    "da",
+    "de",
+    "gibi",
+    "için",
+    "daha",
+    "çok",
+    "ama",
+    "hem",
+    "sen",
+    "sende",
+    "senin",
+    "olduğunda",
+    "geldiğinde",
+    "arttığında",
+    "yükseldiğinde",
+    "olgunlaştığında",
+    "dengeye",
+    "tarafın",
+    "tarafı",
+    "yapı",
+}
+
+_BLOCK_COPY_FALLBACKS = {
+    "identity_aura": {
+        "mechanism": "içeride hem sağlam kalmak hem kendi yolunu korumak istiyorsun",
+        "shadow": "yük arttığında yönünü içerde yeniden toplamak isteyebilirsin",
+        "gift": "bu yapı sana net, özgün ve güven veren bir duruş kazandırır",
+    },
+    "mind_voice": {
+        "mechanism": "zihninde tartıp ayıklayarak en doğru formu bulmak istersin",
+        "shadow": "iç standart yükselince akış gecikebilir",
+        "gift": "bu yapı sana dayanıklılık ve berrak bir ifade kazandırır",
+    },
+    "drive_rhythm": {
+        "mechanism": "bir şeyi sadece hissetmez, ona biçim de vermek istersin",
+        "shadow": "ayrıntıda fazla oyalanıp akışı geciktirebilirsin",
+        "gift": "bu yapı seni hem derin düşünen hem de kurabilen biri yapar",
+    },
+    "love_depth": {
+        "mechanism": "yakınlık sende güvenle, açıklıkla ve korunma eşiğiyle birlikte çalışıyor",
+        "shadow": "belirsiz bağlarda geri çekilme ya da fazla hassasiyet artabilir",
+        "gift": "sahici bağlarda çok sıcak ve iyileştirici bir yakınlık kurarsın",
+    },
+    "career_visibility": {
+        "mechanism": "görünürlük kadar içerde hazırlık ve kalite duygun da güçlü",
+        "shadow": "hazır hissetmediğinde bekleme uzayabilir",
+        "gift": "kalite ile etkiyi aynı yerde birleştirebilirsin",
+    },
+    "home_roots": {
+        "mechanism": "kendi alanına dönmek sende sadece dinlenmek değil, ritmi geri kurmak anlamına geliyor",
+        "shadow": "yükü tek başına üstlenmeye meyledebilirsin",
+        "gift": "kendi alanında toplandığında dış dünyaya da daha rahat açılırsın",
+    },
+    "luck_creation": {
+        "mechanism": "akış en çok içinden gelen şeyi somutlaştırdığında hızlanıyor",
+        "shadow": "bekledikçe durgunluk artabilir",
+        "gift": "yaratıcılığın görünür oldukça fırsatlar da çoğalıyor",
+    },
+}
 
 
 FALLBACK_ARENA_BY_BLOCK = {
@@ -24,83 +160,83 @@ FALLBACK_SIGNATURES_BY_BLOCK = {
         "spark": False,
         "chips": ["Duruş", "Yön", "Çerçeve"],
         "copy_tr": {
-            "headline": "Duruşun",
-            "teaser": "Haritanın yönü, senin duruş ve karar tarzın üzerinden güçleniyor.",
-            "spark": "Kendini ortaya koyma biçimin, hayatın ritmini de belirler.",
-            "gift": "İyi çalıştığında netlik ve istikrar verir.",
-            "watch": "Zorlandığında dağılma artabilir; küçük çerçeve iyi gelir.",
+            "headline": "Dışarıdan ve içeriden",
+            "teaser": "Dışarıda sağlam, içeride kendi yönünü korumak isteyen bir tarafın var.",
+            "spark": "Kendini ortaya koyma biçimin, kararlarını ve duruşunu doğrudan etkiliyor.",
+            "gift": "Bu yapı olgunlaştığında sana netlik ve istikrar kazandırır.",
+            "watch": "Zorlandığında yönünü içerde yeniden toplamak isteyebilirsin.",
         },
     },
     "mind_voice": {
         "signature_id": "fallback_mind_voice",
         "spark": False,
-        "chips": ["Zihin", "İfade", "Netlik"],
+        "chips": ["İç Ritim", "İnce Ayar", "Dayanıklılık"],
         "copy_tr": {
-            "headline": "Zihnin yönü",
-            "teaser": "Düşünme ve anlatma biçimin hayat akışında belirleyici bir yer tutuyor.",
-            "spark": "Senin için doğru cümle, çoğu zaman doğru kararla aynı kapıyı açıyor.",
-            "gift": "İyi çalıştığında açıklık ve sağlam iletişim kurarsın.",
-            "watch": "Zorlandığında konuyu uzatmak yerine niyeti netlemek iyi gelir.",
+            "headline": "Karar verirken içinde ne oluyor",
+            "teaser": "Başlatınca hızlanırsın; ama iç standardın bazen frene de basar.",
+            "spark": "Sen karar verirken sadece seçmezsin; içinden tartar ve en doğru formu bulmak istersin.",
+            "gift": "Bu yapı olgunlaştığında sana dayanıklılık ve güven veren bir netlik kazandırır.",
+            "watch": "Denge bozulduğunda iç standart yükselir ve akış gecikebilir.",
         },
     },
     "drive_rhythm": {
         "signature_id": "fallback_drive_rhythm",
         "spark": False,
-        "chips": ["Ritim", "Tempo", "İlk Adım"],
+        "chips": ["Anlam", "Yapı", "Kurucu Zihin"],
         "copy_tr": {
-            "headline": "Hareket ritmin",
-            "teaser": "Sende hız, doğru ritim oturunca daha verimli çalışıyor.",
-            "spark": "Başlangıç şeklin günün geri kalan temposunu doğrudan etkiliyor.",
-            "gift": "İyi çalıştığında sürdürülebilir ve temiz bir hareket hattı kurarsın.",
-            "watch": "Zorlandığında tek adımı seçmek dağılmayı azaltır.",
+            "headline": "Gücün en çok nerede belirginleşiyor",
+            "teaser": "Sende yetenek, anlamı bir yapıya dönüştürebildiğin yerde parlıyor.",
+            "spark": "Dağınık olanı toparlama ve sezgisel olanı anlaşılır hale getirme becerin güçlü.",
+            "gift": "Bu yapı olgunlaştığında seni hem derin düşünen hem de kurabilen biri yapar.",
+            "watch": "Yük arttığında ayrıntıda fazla oyalanabilir ya da iç standardın yüzünden akışı geciktirebilirsin.",
         },
     },
     "love_depth": {
         "signature_id": "fallback_love_depth",
         "spark": False,
-        "chips": ["Yakınlık", "Güven", "Netlik"],
+        "chips": ["Güven", "Sadakat", "Derin Temas"],
         "copy_tr": {
-            "headline": "Yakınlık biçimin",
-            "teaser": "İlişkide güven duygusu, sende hızdan daha önemli çalışıyor.",
-            "spark": "Bağ kurarken tutarlılık ve temiz sinyal kalbini daha hızlı açıyor.",
-            "gift": "İyi çalıştığında sıcak, güven veren bir temas kurarsın.",
-            "watch": "Zorlandığında küçük ama net cümleler ilişkiyi taşır.",
+            "headline": "Yakınlık sende nasıl açılıyor",
+            "teaser": "Sende yakınlık yüzeyde kalmaz; güven kurdukça derinleşir.",
+            "spark": "Sen bağ kurarken yalnızca sıcaklık değil, güven ve gerçek temas da istersin.",
+            "gift": "Yakınlık sahici geldiğinde çok sadık, sıcak ve iyileştirici bir bağ kurarsın.",
+            "watch": "Belirsiz ya da yarım duran bağlar seni çabuk yorabilir.",
         },
     },
     "career_visibility": {
         "signature_id": "fallback_career_visibility",
         "spark": False,
-        "chips": ["Vitrin", "Süreklilik", "İşçilik"],
+        "chips": ["Kalite", "Etki", "Görünürlük"],
         "copy_tr": {
-            "headline": "Görünürlük çizgin",
-            "teaser": "İşin büyümesi, çoğu zaman düzenli görünürlükle güçleniyor.",
-            "spark": "Sende etki, bir anda parlamaktan çok istikrarlı iz bırakınca büyüyor.",
-            "gift": "İyi çalıştığında kaliteyi görünür sonuca dönüştürürsün.",
-            "watch": "Zorlandığında beklemek yerine küçük vitrin adımı daha iyi çalışır.",
+            "headline": "Görünür olmadan önce",
+            "teaser": "İşin güçlü; ama sen görünürlüğü önce içerde kurup sonra taşırsın.",
+            "spark": "İş tarafında ilk dikkat çeken şey, yaptığın şeyin gerçekten güçlü olması.",
+            "gift": "Olgun tarafında kalite ile etki aynı yerde birleşir.",
+            "watch": "Baskı arttığında bekleme uzayabilir.",
         },
     },
     "home_roots": {
         "signature_id": "fallback_home_roots",
         "spark": False,
-        "chips": ["Ev", "Güven", "Toparlanma"],
+        "chips": ["Bağımsızlık", "Şarj", "Zemin"],
         "copy_tr": {
-            "headline": "Köklerin",
-            "teaser": "İç güven alanın, dış dünyadaki performansını doğrudan besliyor.",
-            "spark": "Kendi alanında ritim kurduğunda zihin ve beden daha hızlı toparlanıyor.",
-            "gift": "İyi çalıştığında ev, senin merkezlenme alanın olur.",
-            "watch": "Zorlandığında küçük düzenlemeler güveni geri toplar.",
+            "headline": "İç güvenin en çok nerede kuruluyor",
+            "teaser": "Köklerde 'ben hallederim' refleksi güçlü; kendi alanın seni hızlı toplar.",
+            "spark": "Ortama dağılıp sarsıldığında kendi alanına dönme ihtiyacın artıyor.",
+            "gift": "Kendi alanında toparlandığında dış dünyaya da daha rahat açılıyorsun.",
+            "watch": "Bazen yükü tek başına üstlenmeye meyledebilirsin.",
         },
     },
     "luck_creation": {
         "signature_id": "fallback_luck_creation",
         "spark": False,
-        "chips": ["Fırsat", "Akış", "Başlat"],
+        "chips": ["Yaratım", "Akış", "Canlılık"],
         "copy_tr": {
-            "headline": "Fırsat ritmin",
-            "teaser": "Şans sende çoğu zaman hareketle ve görünür adımla açılıyor.",
-            "spark": "Bir şeyi başlattığında akışın sana cevap verme ihtimali yükseliyor.",
-            "gift": "İyi çalıştığında fırsatı üretime ve temasa çevirebilirsin.",
-            "watch": "Zorlandığında beklemek yerine küçük bir deneme şansı açar.",
+            "headline": "Şansın en kolay nerede açılıyor",
+            "teaser": "Sende fırsat çoğu zaman tesadüf gibi değil; emek verdiğin yerde açılıyor.",
+            "spark": "Bir şeyi sahiplenip ona emek verdiğinde hayat da orada karşılık vermeye başlıyor.",
+            "gift": "İçinden gelen şeyi görünür kıldığında akış daha kolay hızlanıyor.",
+            "watch": "Beklediğinde durgunlaşabilirsin.",
         },
     },
 }
@@ -113,6 +249,120 @@ def _bridge(color_signature: Mapping[str, Any] | None) -> str:
     if not spark:
         return ""
     return f"Buna eşlik eden ikinci ton da açık: {spark} "
+
+
+def _planet_label(value: Any) -> str:
+    return PLANET_LABELS_TR.get(str(value or "").strip(), str(value or "").strip())
+
+
+def _house_label(value: Any) -> str:
+    resolved = _safe_house(value)
+    return f"{resolved}. ev" if resolved is not None else ""
+
+
+def _compact_join(parts: list[str]) -> str:
+    return " ".join(part for part in parts if part).strip()
+
+
+def _astro_item_label(item: Mapping[str, Any]) -> str:
+    item_type = str(item.get("type") or "").strip().lower()
+
+    if item_type == "placement":
+        return _compact_join([_planet_label(item.get("planet")), _house_label(item.get("house"))])
+
+    if item_type == "stellium":
+        return _compact_join([_house_label(item.get("house")), "yoğunluğu"])
+
+    if item_type == "house_emphasis":
+        return _compact_join([_house_label(item.get("house")), "vurgusu"])
+
+    if item_type == "house_ruler":
+        return _compact_join(
+            [
+                _house_label(item.get("house")),
+                "yöneticisi",
+                _planet_label(item.get("ruler")),
+                _house_label(item.get("ruler_house")),
+            ]
+        )
+
+    if item_type == "angle":
+        return _compact_join(
+            [
+                ANGLE_LABELS_TR.get(str(item.get("angle") or "").strip(), str(item.get("angle") or "").strip()),
+                str(item.get("sign") or "").strip(),
+            ]
+        )
+
+    if item_type == "aspect":
+        return _compact_join(
+            [
+                _planet_label(item.get("planet1") or item.get("a")),
+                ASPECT_LABELS_TR.get(str(item.get("aspect") or item.get("type_name") or "").strip().lower(), ""),
+                _planet_label(item.get("planet2") or item.get("b")),
+            ]
+        )
+
+    if item_type == "ruler_chain":
+        return _compact_join([_house_label(item.get("house")), "yöneticisi", _house_label(item.get("target_house"))])
+
+    if item_type == "retrograde":
+        return _compact_join([_planet_label(item.get("planet")), "retro"])
+
+    planet = _planet_label(item.get("planet"))
+    house = _house_label(item.get("house") or item.get("target_house"))
+    sign = str(item.get("sign") or "").strip()
+    if planet and house:
+        return _compact_join([planet, house])
+    if planet and sign:
+        return _compact_join([planet, sign])
+    return ""
+
+
+def _astro_hint(block_id: str, selection: Mapping[str, Any], facts: Mapping[str, Any]) -> str:
+    labels: list[str] = []
+    seen: set[str] = set()
+
+    def add_label(value: str) -> None:
+        clean = str(value or "").strip()
+        if not clean:
+            return
+        key = clean.lower()
+        if key in seen:
+            return
+        seen.add(key)
+        labels.append(clean)
+
+    for candidate in (selection.get("primary"), selection.get("color")):
+        if not isinstance(candidate, Mapping):
+            continue
+        for item in candidate.get("astro_tokens") or []:
+            if isinstance(item, Mapping):
+                add_label(_astro_item_label(item))
+            if len(labels) >= 2:
+                break
+        for item in candidate.get("evidence") or []:
+            if isinstance(item, Mapping):
+                add_label(_astro_item_label(item))
+            if len(labels) >= 2:
+                break
+        if len(labels) >= 2:
+            break
+
+    for item in _fallback_evidence(block_id, facts):
+        if isinstance(item, Mapping):
+            add_label(_astro_item_label(item))
+        if len(labels) >= 2:
+            break
+
+    primary = selection.get("primary") if isinstance(selection.get("primary"), Mapping) else {}
+    raw_hint = ", ".join(labels[:2])
+    return soft_public_astro_hint(
+        block_id,
+        raw_hint,
+        seed=str(facts.get("seed") or ""),
+        signature_id=str(primary.get("signature_id") or ""),
+    )
 
 
 def _infer_arena_house(block_id: str, selection: Mapping[str, Any]) -> int:
@@ -223,7 +473,25 @@ def _fallback_evidence(block_id: str, facts: Mapping[str, Any]) -> list[Dict[str
     return mapping.get(block_id, [])
 
 
-def _render_block(block_id: str, selection: Mapping[str, Any], seed: str) -> Dict[str, Any]:
+def _editorialize_copy_payload(block_id: str, copy_payload: Mapping[str, Any]) -> Dict[str, str]:
+    out: Dict[str, str] = {}
+    background_mode = "background" if block_id == "home_roots" else "core"
+    for field in ("headline", "teaser", "core", "mechanism", "shadow", "gift", "spark", "watch"):
+        value = str(copy_payload.get(field) or "").strip()
+        mode = background_mode if field in {"shadow", "watch"} else "core"
+        out[field] = apply_phrase_policy(value, mode=mode)
+    return out
+
+
+def _render_block(
+    block_id: str,
+    selection: Mapping[str, Any],
+    seed: str,
+    *,
+    family: str,
+    used_openings: list[str],
+    used_bodies: list[str],
+) -> Dict[str, Any]:
     primary = selection.get("primary") if isinstance(selection.get("primary"), Mapping) else {}
     arena_house = _infer_arena_house(block_id, selection)
     micro = choose_micro_example(
@@ -233,13 +501,21 @@ def _render_block(block_id: str, selection: Mapping[str, Any], seed: str) -> Dic
         tone_planets=_tone_planets(selection),
         valence=_micro_valence(selection),
     )
+    copy_payload = _editorialize_copy_payload(block_id, dict(primary.get("copy_tr") or {}))
     slots = {
-        "copy": dict(primary.get("copy_tr") or {}),
-        "astro_hint": "",
-        "micro": micro,
+        "copy": copy_payload,
+        "micro": str(micro or "").strip(),
         "bridge": _bridge(selection.get("color")),
     }
-    return render_block_template(block_id=block_id, seed=f"{seed}|{primary.get('signature_id')}", slots=slots)
+    return render_block_template(
+        block_id=block_id,
+        seed=seed,
+        slots=slots,
+        signature_id=str(primary.get("signature_id") or ""),
+        preferred_family=family,
+        used_openings=used_openings,
+        used_bodies=used_bodies,
+    )
 
 
 def _fallback_selection(block_id: str, facts: Mapping[str, Any]) -> Dict[str, Any]:
@@ -251,25 +527,367 @@ def _fallback_selection(block_id: str, facts: Mapping[str, Any]) -> Dict[str, An
         "evidence": _fallback_evidence(block_id, facts),
         "astro_tokens": [{"type": "fallback", "house": FALLBACK_ARENA_BY_BLOCK.get(block_id)}],
     }
-    return {"primary": primary, "color": None}
+    return {
+        "primary": primary,
+        "color": None,
+        "spine_signature": primary,
+        "spark_signature": None,
+        "area_signature": None,
+        "tone_modifier": None,
+        "taxonomy_block_id": BLOCK_ALIAS_TO_TAXONOMY.get(block_id, block_id),
+    }
 
 
-def _public_block(block_id: str, rendered: Mapping[str, Any], selection: Mapping[str, Any]) -> Dict[str, Any]:
+def _ensure_sentence(text: str, fallback: str = "") -> str:
+    value = str(text or fallback or "").strip()
+    if not value:
+        return ""
+    return value if value[-1] in ".!?" else f"{value}."
+
+
+def _first_clause(text: str) -> str:
+    value = str(text or "").strip()
+    if not value:
+        return ""
+    value = value.replace(";", ", ")
+    return re.split(r"(?<=[.!?])\s+", value, maxsplit=1)[0].strip()
+
+
+def _clean_copy_sentence(text: str, fallback: str = "") -> str:
+    value = _first_clause(text or fallback)
+    if not value:
+        return _ensure_sentence(fallback)
+    for prefix in (
+        "iyi çalıştığında ",
+        "en iyi hâlinde ",
+        "en iyi halinde ",
+        "doğru çalıştığında ",
+        "olgun ifadesinde ",
+        "olgun halinde ",
+        "dengeye geldiğinde ",
+        "zorlandığında ",
+        "baskı yükseldiğinde ",
+        "baskı arttığında ",
+        "yerine oturduğunda ",
+        "güvende hissettiğinde ",
+        "bu yapı olgunlaştığında ",
+        "yük arttığında ",
+        "denge bozulduğunda ",
+        "yorulduğunda ",
+        "kırıldığında ",
+    ):
+        if value.lower().startswith(prefix):
+            value = value[len(prefix) :].strip()
+            break
+    value = value.lstrip(",:; ")
+    value = value.replace("’", "'")
+    return _ensure_sentence(value, fallback)
+
+
+def _copy_tokens(text: str) -> set[str]:
+    import re
+
+    tokens = re.findall(r"[a-zA-ZçğıöşüÇĞİÖŞÜ]+", str(text or "").lower())
+    return {token for token in tokens if len(token) >= 3 and token not in _COPY_STOPWORDS}
+
+
+def _copy_overlap(a: str, b: str) -> float:
+    left = _copy_tokens(a)
+    right = _copy_tokens(b)
+    if not left or not right:
+        return 0.0
+    union = left | right
+    return len(left & right) / len(union) if union else 0.0
+
+
+def _choose_distinct_copy(candidates: list[Any], fallback: str, used: list[str]) -> str:
+    fallback_clean = _clean_copy_sentence(fallback, fallback)
+    for candidate in candidates:
+        text = str(candidate or "").strip()
+        if not text:
+            continue
+        cleaned = _clean_copy_sentence(text, fallback_clean)
+        if not cleaned:
+            continue
+        if all(_copy_overlap(cleaned, prior) < 0.58 for prior in used if prior):
+            return cleaned
+    return fallback_clean
+
+
+def _identity_priority_copy(
+    selection: Mapping[str, Any],
+    primitive_ids: list[str],
+    primary_copy: Mapping[str, Any],
+) -> Dict[str, str] | None:
+    signature_ids = {
+        str(((selection.get(key) or {}) if isinstance(selection.get(key), Mapping) else {}).get("signature_id") or "")
+        for key in ("primary", "spine_signature", "spark_signature", "area_signature", "tone_modifier")
+    }
+    primitive_set = {str(item) for item in primitive_ids}
+
+    structure = bool(signature_ids & {"identity_1st_stellium", "identity_sun_angular", "fallback_identity_chart_ruler"}) or bool(
+        primitive_set & {"inner_structure", "self_definition"}
+    )
+    originality = "identity_uranus_angular" in signature_ids or "originality_drive" in primitive_set
+    vision = "identity_jupiter_neptune_vision" in signature_ids or "big_picture_vision" in primitive_set
+
+    if not (structure and (originality or vision)):
+        return None
+
+    teaser = "Dışarıda sağlam, içeride farklı ve kendi yönünü kurmak isteyen bir tarafın var."
+    core = "dışarıda sağlam duran ama içeride aynı çizgide kalıba sığmayan bir yapın var"
+    mechanism = "çerçeve kurmak istersin ama o çerçevenin içinde kendi yolunu ve büyük resmi de duyman gerekir"
+    shadow = "yükü fazla tek başına sırtlanabilir ya da aynı anda çok fazla olasılığı hissedip yönünü geciktirebilirsin"
+    gift = "bu yapı sonunda yalnızca güçlü değil, özgün ve ufuk açan bir etkiye dönüşür"
+
+    if structure and originality and not vision:
+        teaser = "Dışarıda toplu, içeride kendi yolunu açan bir çizgin var."
+        mechanism = "önce omurga kurup sonra o omurganın içinde farklı olanı ayırmak istersin"
+        gift = "bu yapı sonunda sana hem güven veren hem de taklit edilemeyen bir duruş kazandırır"
+    elif structure and vision and not originality:
+        teaser = "Sağlam dururken aynı anda büyük resmi duyan bir tarafın var."
+        core = "duruşunda omurga var ama o omurga sadece kontrol için değil, yön duygusu için de çalışıyor"
+        mechanism = "ayrıntıyı tutarken içeride anlamı ve uzun resmi de kaybetmek istemezsin"
+        gift = "bu yapı sonunda sana yön veren, toparlayıcı ve ufku geniş bir etki kazandırır"
+
+    raw_teaser = str(primary_copy.get("teaser") or "").strip()
+    if raw_teaser and "büyük resmi" in raw_teaser.lower() and "özgün" in raw_teaser.lower():
+        teaser = raw_teaser
+
+    return {
+        "headline": "Kendi çizgin",
+        "teaser": teaser,
+        "core": _ensure_sentence(core),
+        "mechanism": _ensure_sentence(mechanism),
+        "shadow": _ensure_sentence(shadow),
+        "gift": _ensure_sentence(gift),
+        "spark": _clean_copy_sentence(primary_copy.get("spark") or "", core),
+        "watch": _clean_copy_sentence(primary_copy.get("watch") or "", shadow),
+    }
+
+
+def _talent_priority_copy(
+    selection: Mapping[str, Any],
+    primitive_ids: list[str],
+    primary_copy: Mapping[str, Any],
+) -> Dict[str, str] | None:
+    primitive_set = {str(item) for item in primitive_ids}
+    signature_ids = {
+        str(((selection.get(key) or {}) if isinstance(selection.get(key), Mapping) else {}).get("signature_id") or "")
+        for key in ("primary", "spine_signature", "spark_signature", "area_signature", "tone_modifier")
+    }
+    if not (
+        primitive_set
+        & {
+            "systems_thinking",
+            "meaning_making",
+            "creative_synthesis",
+            "vision_to_structure",
+            "pattern_recognition",
+            "translational_intelligence",
+            "implementation_power",
+        }
+        or signature_ids
+        & {
+            "drive_mars_trine_neptune_inspired_action",
+            "drive_saturn_sextile_uranus_structured_change",
+            "drive_mars_9th_method",
+        }
+    ):
+        return None
+
+    teaser = "Sende yetenek, anlamı bir yapıya dönüştürebildiğin yerde parlıyor."
+    core = "dağınık olanı toparlayıp sezgisel olanı anlaşılır hale getirebilen bir tarafın var"
+    mechanism = "bir şeyi sadece hissetmekle kalmaz, ona biçim verip başkalarının da tutabileceği bir düzene oturtmak istersin"
+    shadow = "yük arttığında ayrıntıda fazla oyalanabilir ya da iç standardın yüzünden akışı geciktirebilirsin"
+    gift = "bu yapı olgunlaştığında seni hem derin düşünen hem de kurabilen biri yapar"
+
+    raw_teaser = str(primary_copy.get("teaser") or "").strip().lower()
+    if "anlam" in raw_teaser and ("yapı" in raw_teaser or "biçim" in raw_teaser):
+        teaser = str(primary_copy.get("teaser") or teaser).strip()
+
+    return {
+        "headline": "Gücün en çok nerede belirginleşiyor",
+        "teaser": teaser,
+        "core": _ensure_sentence(core),
+        "mechanism": _ensure_sentence(mechanism),
+        "shadow": _ensure_sentence(shadow),
+        "gift": _ensure_sentence(gift),
+        "spark": _clean_copy_sentence(primary_copy.get("spark") or "", core),
+        "watch": _clean_copy_sentence(primary_copy.get("watch") or "", shadow),
+    }
+
+
+def _top_primitive_ids_for_block(block_id: str, primitive_hits: list[Mapping[str, Any]]) -> list[str]:
+    taxonomy_block_id = BLOCK_ALIAS_TO_TAXONOMY.get(block_id, block_id)
+    out: list[str] = []
+    for hit in primitive_hits:
+        if not isinstance(hit, Mapping):
+            continue
+        primitive_id = str(hit.get("primitive_id") or "")
+        if not primitive_id:
+            continue
+        theme_bias = hit.get("theme_bias")
+        if isinstance(theme_bias, list) and taxonomy_block_id not in [str(item) for item in theme_bias]:
+            continue
+        out.append(primitive_id)
+        if len(out) >= 4:
+            break
+    return out
+
+
+def _compose_copy(block_id: str, selection: Mapping[str, Any], primitive_hits: list[Mapping[str, Any]]) -> Dict[str, str]:
+    primary = selection.get("spine_signature") if isinstance(selection.get("spine_signature"), Mapping) else selection.get("primary")
+    spark = selection.get("spark_signature") if isinstance(selection.get("spark_signature"), Mapping) else {}
+    area = selection.get("area_signature") if isinstance(selection.get("area_signature"), Mapping) else {}
+    tone = selection.get("tone_modifier") if isinstance(selection.get("tone_modifier"), Mapping) else {}
+    primary_copy = dict(primary.get("copy_tr") or {}) if isinstance(primary, Mapping) else {}
+    spark_copy = dict(spark.get("copy_tr") or {}) if isinstance(spark, Mapping) else {}
+    area_copy = dict(area.get("copy_tr") or {}) if isinstance(area, Mapping) else {}
+    tone_copy = dict(tone.get("copy_tr") or {}) if isinstance(tone, Mapping) else {}
+
+    primitive_ids = _top_primitive_ids_for_block(block_id, primitive_hits)
+    primitive_lines = [PRIMITIVE_SENTENCE_HINTS.get(pid, "") for pid in primitive_ids]
+    block_fallbacks = _BLOCK_COPY_FALLBACKS.get(block_id, {})
+
+    core_fallback = primitive_lines[0] if primitive_lines else ""
+
+    primitive_mechanism = primitive_lines[1] if len(primitive_lines) > 1 else ""
+    if not primitive_mechanism or "birden fazla" in primitive_mechanism.lower():
+        primitive_mechanism = str(block_fallbacks.get("mechanism") or "")
+    mechanism_fallback = primitive_mechanism or "Bunun altında birden fazla iç dürtü aynı anda çalışıyor."
+
+    primitive_shadow = primitive_lines[2] if len(primitive_lines) > 2 else ""
+    if not primitive_shadow or "aynı güç" in primitive_shadow.lower():
+        primitive_shadow = str(block_fallbacks.get("shadow") or "")
+    shadow_fallback = primitive_shadow or "Zorlandığında aynı güç kendi içinde baskı veya duraksama yaratabiliyor."
+
+    primitive_gift = primitive_lines[3] if len(primitive_lines) > 3 else ""
+    if not primitive_gift or "dengeye geldiğinde" in primitive_gift.lower() or "iyi çalıştığında" in primitive_gift.lower():
+        primitive_gift = str(block_fallbacks.get("gift") or "")
+    gift_fallback = primitive_gift or "Dengeye geldiğinde bu yapı sende olgun ve güven veren bir etkiye dönüşüyor."
+
+    if block_id == "identity_aura":
+        identity_override = _identity_priority_copy(selection, primitive_ids, primary_copy)
+        if identity_override:
+            return identity_override
+    if block_id == "drive_rhythm":
+        talent_override = _talent_priority_copy(selection, primitive_ids, primary_copy)
+        if talent_override:
+            return talent_override
+
+    core = _choose_distinct_copy(
+        [
+            primary_copy.get("core"),
+            primary_copy.get("spark"),
+            spark_copy.get("spark"),
+            primary_copy.get("teaser"),
+        ],
+        core_fallback,
+        [],
+    )
+    mechanism = _choose_distinct_copy(
+        [
+            spark_copy.get("mechanism"),
+            spark_copy.get("spark"),
+            primary_copy.get("spark"),
+            primitive_lines[1] if len(primitive_lines) > 1 else "",
+        ],
+        mechanism_fallback,
+        [core],
+    )
+    shadow = _choose_distinct_copy(
+        [
+            spark_copy.get("shadow"),
+            primary_copy.get("shadow"),
+            primary_copy.get("watch"),
+            tone_copy.get("watch"),
+            primitive_lines[2] if len(primitive_lines) > 2 else "",
+        ],
+        shadow_fallback,
+        [core, mechanism],
+    )
+    gift = _choose_distinct_copy(
+        [
+            area_copy.get("gift"),
+            primary_copy.get("gift"),
+            tone_copy.get("gift"),
+            primitive_lines[3] if len(primitive_lines) > 3 else "",
+        ],
+        gift_fallback,
+        [core, mechanism, shadow],
+    )
+
+    return {
+        "headline": str(primary_copy.get("headline") or area_copy.get("headline") or ""),
+        "teaser": str(primary_copy.get("teaser") or area_copy.get("teaser") or ""),
+        "core": core,
+        "mechanism": mechanism,
+        "shadow": shadow,
+        "gift": gift,
+        "spark": str(primary_copy.get("spark") or spark_copy.get("spark") or ""),
+        "watch": str(primary_copy.get("watch") or spark_copy.get("watch") or ""),
+    }
+
+
+def _public_astro_sources(selection: Mapping[str, Any], facts: Mapping[str, Any]) -> list[str]:
+    labels: list[str] = []
+    seen: set[str] = set()
+
+    def add_item(item: Mapping[str, Any] | None) -> None:
+        if not isinstance(item, Mapping):
+            return
+        label = _astro_item_label(item)
+        if not label:
+            return
+        key = label.lower()
+        if key in seen:
+            return
+        seen.add(key)
+        labels.append(label)
+
+    for candidate in (selection.get("primary"), selection.get("color")):
+        if not isinstance(candidate, Mapping):
+            continue
+        for item in candidate.get("evidence") or []:
+            add_item(item if isinstance(item, Mapping) else None)
+            if len(labels) >= 3:
+                return labels
+        for item in candidate.get("astro_tokens") or []:
+            add_item(item if isinstance(item, Mapping) else None)
+            if len(labels) >= 3:
+                return labels
+
+    block_id = str(selection.get("block_id") or "")
+    for item in _fallback_evidence(block_id, facts):
+        add_item(item if isinstance(item, Mapping) else None)
+        if len(labels) >= 3:
+            break
+    return labels
+
+
+def _public_block(block_id: str, rendered: Mapping[str, Any], selection: Mapping[str, Any], facts: Mapping[str, Any]) -> Dict[str, Any]:
     primary = selection.get("primary") if isinstance(selection.get("primary"), Mapping) else {}
     color = selection.get("color") if isinstance(selection.get("color"), Mapping) else {}
-    chips: list[str] = []
+    raw_chips: list[str] = []
     for source in (primary.get("chips") or [], color.get("chips") or []):
         for chip in source:
             value = str(chip).strip()
-            if value and value not in chips and len(chips) < 3:
-                chips.append(value)
-    return {
+            if value and value not in raw_chips and len(raw_chips) < 6:
+                raw_chips.append(value)
+    return clean_public_block_tr(
+        {
         "id": block_id,
         "headline": rendered.get("headline"),
         "teaser": rendered.get("teaser"),
+        "subtitle": rendered.get("teaser"),
         "body": rendered.get("body"),
-        "chips": chips,
-    }
+        "micro": rendered.get("micro") or "",
+        "astro_hint": rendered.get("astro_hint"),
+        "astro_sources": _public_astro_sources(selection, facts),
+        "chips": humanize_public_chips(block_id, raw_chips),
+        }
+    )
 
 
 def _debug_block(block_id: str, selection: Mapping[str, Any], rendered: Mapping[str, Any], facts: Mapping[str, Any]) -> Dict[str, Any]:
@@ -286,21 +904,43 @@ def _debug_block(block_id: str, selection: Mapping[str, Any], rendered: Mapping[
         for item in _fallback_evidence(block_id, facts):
             if item not in evidence:
                 evidence.append(item)
+    primitive_hits = selection.get("primitive_hits") if isinstance(selection.get("primitive_hits"), list) else []
+    spine = selection.get("spine_signature") if isinstance(selection.get("spine_signature"), Mapping) else {}
+    spark = selection.get("spark_signature") if isinstance(selection.get("spark_signature"), Mapping) else {}
+    area = selection.get("area_signature") if isinstance(selection.get("area_signature"), Mapping) else {}
+    tone = selection.get("tone_modifier") if isinstance(selection.get("tone_modifier"), Mapping) else {}
+    block_primitive_ids = set(_top_primitive_ids_for_block(block_id, primitive_hits))
     return {
         "id": block_id,
         "engine": "signature",
+        "block_id": block_id,
         "seed": facts.get("seed"),
         "seed_material": facts.get("seed"),
+        "seed_version": SEED_VERSION,
         "selected_template_index": rendered.get("template_index"),
-        "template_id": f"{block_id}:{rendered.get('template_index')}",
-        "template_variant_id": f"{block_id}:{rendered.get('template_index')}",
+        "render_mode": rendered.get("mode"),
+        "render_mode_label": rendered.get("mode_label"),
+        "template_id": f"{block_id}:body_4step",
+        "selected_template_id": f"{block_id}:body_4step:{rendered.get('template_index')}",
+        "template_variant_id": f"{block_id}:body_4step:{rendered.get('template_index')}",
         "primary_signature_id": primary.get("signature_id"),
+        "spark_signature_id": spark.get("signature_id"),
+        "area_signature_id": area.get("signature_id"),
+        "tone_modifier_id": tone.get("signature_id"),
         "score_primary": primary.get("score"),
         "primary_score": primary.get("score"),
+        "spark_score": spark.get("score"),
+        "area_score": area.get("score"),
         "color_signature_id": color.get("signature_id"),
         "score_color": color.get("score"),
         "color_score": color.get("score"),
         "evidence": evidence,
+        "astro_evidence": [{"type": item.get("type"), "ref": _astro_item_label(item)} for item in evidence if isinstance(item, Mapping)],
+        "primitive_hits": [{"primitive_id": item.get("primitive_id"), "score": item.get("score")} for item in primitive_hits],
+        "selected_spine_primitive_ids": [item.get("primitive_id") for item in primitive_hits if item.get("category_hint") == "spine" and item.get("primitive_id") in block_primitive_ids][:3],
+        "selected_spark_primitive_ids": [item.get("primitive_id") for item in primitive_hits if item.get("spark") and item.get("primitive_id") in block_primitive_ids][:3],
+        "selected_tone_primitive_ids": [item.get("primitive_id") for item in primitive_hits if item.get("category_hint") == "tone" and item.get("primitive_id") in block_primitive_ids][:3],
+        "taxonomy_block_id": selection.get("taxonomy_block_id"),
         "fallback_reason": fallback_reason,
     }
 
@@ -318,21 +958,45 @@ def build_profile_narrative_signature(
     if seed_key:
         facts = dict(facts)
         facts["seed"] = seed_key
+    primitive_hits = build_primitives(chart, natal_graph, facts=facts)
     candidates = extract_candidates(facts, SIGNATURE_CATALOG_TR)
-    selected = select_by_block(candidates, facts)
+    selected = select_by_block(candidates, facts, primitive_hits=primitive_hits)
 
     public_blocks = []
     debug_blocks = []
+    used_families: list[str] = []
+    used_openings: list[str] = []
+    used_bodies: list[str] = []
     for block_id in BLOCK_ORDER:
         selection = selected.get(block_id) or _fallback_selection(block_id, facts)
-        rendered = _render_block(block_id, selection, str(facts.get("seed") or ""))
-        public_blocks.append(_public_block(block_id, rendered, selection))
+        selection = dict(selection)
+        selection["block_id"] = block_id
+        selection["primitive_hits"] = primitive_hits
+        primary = selection.get("primary")
+        if isinstance(primary, dict):
+            primary["copy_tr"] = _compose_copy(block_id, selection, primitive_hits)
+        family = select_rhythm_family(str(facts.get("seed") or ""), "profile_narrative", block_id, used_families)
+        rendered = _render_block(
+            block_id,
+            selection,
+            str(facts.get("seed") or ""),
+            family=family,
+            used_openings=used_openings,
+            used_bodies=used_bodies,
+        )
+        rendered["astro_hint"] = _astro_hint(block_id, selection, facts) or None
+        used_families.append(str(rendered.get("mode_label") or family))
+        if rendered.get("opening_key"):
+            used_openings.append(str(rendered.get("opening_key") or ""))
+        if rendered.get("body"):
+            used_bodies.append(str(rendered.get("body") or ""))
+        public_blocks.append(_public_block(block_id, rendered, selection, facts))
         if include_debug:
             debug_blocks.append(_debug_block(block_id, selection, rendered, facts))
 
     payload: Dict[str, Any] = {
         "profile_public": {
-            "engine_version": "profile_narrative_v1",
+            "engine_version": ENGINE_VERSION,
             "blocks": public_blocks,
         }
     }

@@ -86,9 +86,9 @@ class TransitRequestBuilder {
     required Map<String, dynamic> profile,
     required DateTime selectedDate,
   }) {
-    final now = DateTime.now();
-    final start = fmtDate(DateTime(now.year, now.month, 1));
-    final end = fmtDate(DateTime(now.year, now.month + 1, 0));
+    final month = stripDate(selectedDate);
+    final start = fmtDate(DateTime(month.year, month.month, 1));
+    final end = fmtDate(DateTime(month.year, month.month + 1, 0));
     final place = resolvePlace(profile);
 
     return <String, dynamic>{
@@ -105,6 +105,24 @@ class TransitRequestBuilder {
       'intent': 'general',
       'include_best_times': true,
       'lens': 'general',
+    };
+  }
+
+  static Map<String, dynamic> buildTransitPayload({
+    required Map<String, dynamic> profile,
+    required DateTime transitDate,
+  }) {
+    final place = resolvePlace(profile);
+    return <String, dynamic>{
+      'birth_date': (profile['birth_date'] ?? '').toString().trim(),
+      'birth_time': normalizeBirthTime(
+        (profile['birth_time'] ?? '').toString(),
+      ),
+      'birth_place': place,
+      'transit_date': fmtDate(stripDate(transitDate)),
+      'transit_time': '12:00',
+      'transit_place': place,
+      'context_mode': 'context-lite',
     };
   }
 
@@ -156,8 +174,7 @@ class TransitRequestBuilder {
 }
 
 class NarrativeRepository {
-  NarrativeRepository({ApiClient? client})
-    : _client = client ?? ApiClient(baseUrl: 'http://127.0.0.1:5000');
+  NarrativeRepository({ApiClient? client}) : _client = client ?? ApiClient();
 
   final ApiClient _client;
 
@@ -174,11 +191,115 @@ class NarrativeRepository {
     );
     return TransitRequestBuilder.asMap(response.data);
   }
+
+  Future<Map<String, dynamic>> fetchTransitSummary({
+    required Map<String, dynamic> profile,
+    required DateTime transitDate,
+  }) async {
+    final response = await _client.post(
+      '/transits',
+      data: TransitRequestBuilder.buildTransitPayload(
+        profile: profile,
+        transitDate: transitDate,
+      ),
+    );
+    return TransitRequestBuilder.asMap(response.data);
+  }
+}
+
+class SkyFeedItemDto {
+  const SkyFeedItemDto({
+    required this.id,
+    required this.title,
+    required this.summary,
+    required this.badge,
+    required this.relativeTiming,
+    required this.tags,
+  });
+
+  final String id;
+  final String title;
+  final String summary;
+  final String badge;
+  final String relativeTiming;
+  final List<String> tags;
+
+  factory SkyFeedItemDto.fromMap(Map<String, dynamic> map) {
+    final tagsRaw = map['tags'];
+    return SkyFeedItemDto(
+      id: (map['id'] ?? '').toString(),
+      title: ((map['short_title_tr'] ?? map['title_tr']) ?? '').toString(),
+      summary: (map['summary_tr'] ?? '').toString(),
+      badge: (map['badge_tr'] ?? '').toString(),
+      relativeTiming: (map['relative_timing_tr'] ?? '').toString(),
+      tags: tagsRaw is List
+          ? [for (final tag in tagsRaw) tag.toString()]
+          : const <String>[],
+    );
+  }
+}
+
+class SkyNowDto {
+  const SkyNowDto({
+    required this.summary,
+    required this.chips,
+    required this.items,
+  });
+
+  final String summary;
+  final List<String> chips;
+  final List<SkyFeedItemDto> items;
+
+  factory SkyNowDto.fromMap(Map<String, dynamic> map) {
+    final itemsRaw = map['items'];
+    final items = itemsRaw is List
+        ? [
+            for (final item in itemsRaw)
+              if (item is Map)
+                SkyFeedItemDto.fromMap(Map<String, dynamic>.from(item)),
+          ]
+        : const <SkyFeedItemDto>[];
+    final chips = <String>[];
+    for (final item in items) {
+      for (final tag in item.tags) {
+        if (!chips.contains(tag)) {
+          chips.add(tag);
+        }
+        if (chips.length >= 3) {
+          break;
+        }
+      }
+      if (chips.length >= 3) {
+        break;
+      }
+    }
+    return SkyNowDto(
+      summary: (map['summary_tr'] ?? '').toString(),
+      chips: chips,
+      items: items,
+    );
+  }
+}
+
+class SkyRepository {
+  SkyRepository({ApiClient? client}) : _client = client ?? ApiClient();
+
+  final ApiClient _client;
+
+  Future<Map<String, dynamic>> fetchNow({
+    required String tz,
+    int limit = 4,
+  }) async {
+    final response = await _client.get(
+      '/sky/now',
+      queryParameters: <String, dynamic>{'tz': tz, 'limit': '$limit'},
+    );
+    return TransitRequestBuilder.asMap(response.data);
+  }
 }
 
 class CalendarRepository {
-  CalendarRepository({ApiClient? client})
-    : _client = client ?? ApiClient(baseUrl: 'http://127.0.0.1:5000');
+  CalendarRepository({ApiClient? client}) : _client = client ?? ApiClient();
 
   final ApiClient _client;
 

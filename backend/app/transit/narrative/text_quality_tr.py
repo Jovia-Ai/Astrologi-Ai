@@ -3,13 +3,17 @@ from __future__ import annotations
 import os
 import re
 from collections import Counter
-from difflib import SequenceMatcher
 from typing import Any, Dict, List, Mapping, Sequence
 
 from app.narrative.humanize_tr import humanize_tr_text
+from app.transit.narrative.chain_explainer_tr import build_chain_explainer_tr
 from app.transit.narrative.phrase_lib_tr import (
+    PLANET_TR,
+    POINT_TR,
+    SIGN_TR,
     compose_phrase_pack,
     house_motif_line,
+    render_signature_tr,
     strip_tech_tokens,
 )
 
@@ -236,6 +240,82 @@ _THEME_BANK: Dict[str, Any] = {
     },
 }
 
+HOUSE_SCENES_TR: Dict[int, str] = {
+    1: "benlik/duruş/imaj",
+    2: "para/değer/özgüven",
+    3: "iletişim tarzı/yakın çevre/kardeşler/kısa eğitim/günlük trafik",
+    4: "ev/kök/dinlenme",
+    5: "yaratıcılık/aşk/keyif",
+    6: "iş rutini/sağlık/verim",
+    7: "ilişki/ortaklık",
+    8: "yakınlık/güven/kriz",
+    9: "ufuk/uzmanlaşma/eğitim/yayın/yabancılar/inançlar/yol haritası",
+    10: "kariyer/itibar/yön",
+    11: "topluluk/network/hedef/ekip",
+    12: "iç dünya/arınma/geri çekilme",
+}
+
+PLANET_ESSENCE_TR: Dict[str, Dict[str, str]] = {
+    "neptune": {"gift": "sezgi", "risk": "sis/idealizasyon"},
+    "pluto": {"gift": "dönüşüm gücü", "risk": "kontrol/yoğunluk"},
+    "uranus": {"gift": "yenilik", "risk": "dağılma/ani kopuş"},
+    "saturn": {"gift": "yapı", "risk": "baskı/sertlik"},
+    "mars": {"gift": "hamle", "risk": "acele/gerilim"},
+    "jupiter": {"gift": "genişleme", "risk": "abartı"},
+    "moon": {"gift": "duygu sinyali", "risk": "dalga"},
+    "sun": {"gift": "odak", "risk": "ego inadı"},
+    "mercury": {"gift": "zihin/ifade", "risk": "fazla düşünme"},
+    "venus": {"gift": "uyum", "risk": "taviz"},
+    "chiron": {"gift": "şifa", "risk": "hassas tetik"},
+    "lilith": {"gift": "ham dürüstlük", "risk": "sert sınır"},
+    "north_node": {"gift": "yön büyümesi", "risk": "eski alışkanlıkla çekişme"},
+    "south_node": {"gift": "yük boşaltma", "risk": "otomatik pilot"},
+}
+
+ASPECT_DYNAMIC_TR: Dict[str, Dict[str, str]] = {
+    "square": {"name": "sürtünme", "verb": "ayar ister", "risk": "yanlış ayar/yanlış anlaşılma"},
+    "opposition": {"name": "çekişme", "verb": "denge ister", "risk": "iki uca savrulma"},
+    "conjunction": {"name": "büyüteç", "verb": "büyütür", "risk": "fazla yüklenme"},
+    "trine": {"name": "akış", "verb": "kolay açar", "risk": "rehavet/dağılma"},
+    "sextile": {"name": "fırsat", "verb": "kapı açar", "risk": "pasif kalma"},
+}
+
+_ORPHAN_BACKLINK_RE = re.compile(r"(?i)^\s*arka bağlantı:\s*\d+\.?\s*$")
+_ORDINAL_RE = re.compile(r"(\b\d{1,2})\.(\s*)(Ev|ev)\b")
+_PUNCT_STRIP_RE = re.compile(r"[^\wçğıöşü]+", flags=re.IGNORECASE)
+
+
+def protect_ordinals(text: str) -> str:
+    return _ORDINAL_RE.sub(r"\1<EV_DOT>\2\3", str(text or ""))
+
+
+def restore_ordinals(text: str) -> str:
+    return str(text or "").replace("<EV_DOT>", ".")
+
+
+def _split_sentences(text: str) -> List[str]:
+    protected = protect_ordinals(text)
+    parts = [part.strip() for part in re.split(r"(?<!\d[.!?])(?<=[.!?])\s+", protected) if part.strip()]
+    if len(parts) == 1 and "." not in protected and "!" not in protected and "?" not in protected:
+        parts = [part.strip() for part in re.split(r"\s*;\s*", protected) if part.strip()]
+    return [restore_ordinals(part) for part in parts if restore_ordinals(part).strip()]
+
+
+def normalize(text: str) -> str:
+    value = restore_ordinals(strip_tech_tokens(tr_normalize(str(text or "")))).lower()
+    value = _PUNCT_STRIP_RE.sub(" ", value)
+    return re.sub(r"\s+", " ", value).strip()
+
+
+def similarity(a: str, b: str) -> float:
+    left = set(normalize(a).split())
+    right = set(normalize(b).split())
+    if not left or not right:
+        return 0.0
+    inter = len(left & right)
+    union = len(left | right)
+    return inter / union if union else 0.0
+
 
 def tr_normalize(text: str) -> str:
     out = str(text or "")
@@ -251,13 +331,839 @@ def tr_normalize(text: str) -> str:
     out = re.sub(r"\b([1-9]|1[0-2])\s*ev\b", r"\1. Ev", out, flags=re.IGNORECASE)
     out = re.sub(r"\b([1-9]|1[0-2])\.\s*ev\b", r"\1. Ev", out, flags=re.IGNORECASE)
 
-    for raw_sign, tr_sign in _SIGN_TR.items():
+    for raw_sign, tr_sign in {**_SIGN_TR, **SIGN_TR}.items():
         out = re.sub(rf"\b{re.escape(raw_sign)}\b", tr_sign, out, flags=re.IGNORECASE)
+    for raw_planet, tr_planet in PLANET_TR.items():
+        out = re.sub(rf"\b{re.escape(raw_planet)}\b", tr_planet, out, flags=re.IGNORECASE)
+    for raw_point, tr_point in POINT_TR.items():
+        out = re.sub(rf"\b{re.escape(raw_point)}\b", tr_point, out, flags=re.IGNORECASE)
 
     out = re.sub(r"\s+([,.;:!?])", r"\1", out)
     out = re.sub(r"([,;:!?])(?!\s|$)", r"\1 ", out)
     out = re.sub(r"\.{2,}", ".", out)
     out = re.sub(r"\s+", " ", out).strip()
+    return out
+
+
+def _norm(s: str) -> str:
+    return tr_normalize(strip_tech_tokens(str(s or "")))
+
+
+def _collapse_period_prefix(text: str) -> str:
+    t = _norm(text)
+    if not t:
+        return ""
+    matches = list(re.finditer(r"(?i)bu dönem[^:]{20,220}:\s*", t))
+    if len(matches) <= 1:
+        return t
+    return (t[: matches[0].end()] + t[matches[-1].end() :]).strip()
+
+
+def _house_scene(house: int | None) -> str:
+    if not house:
+        return "genel"
+    return HOUSE_SCENES_TR.get(int(house), "genel")
+
+
+def _axis_house(point: str) -> int | None:
+    return {"ASC": 1, "DSC": 7, "MC": 10, "IC": 4}.get(str(point or "").strip().upper())
+
+
+def _planet_key(name: Any) -> str:
+    return str(name or "").strip().lower().replace(" ", "_")
+
+
+def _aspect_key(name: Any) -> str:
+    return str(name or "").strip().lower()
+
+
+def _is_period(horizon: str) -> bool:
+    return str(horizon or "").strip().lower() == "period"
+
+
+def _soften_today(text: str, horizon: str) -> str:
+    t = _norm(text)
+    if not t:
+        return ""
+    if _is_period(horizon):
+        t = re.sub(r"(?i)\bbugün\b", "bu hafta", t)
+    return t
+
+
+def _coerce_house(value: Any) -> int | None:
+    if isinstance(value, int):
+        return value
+    if str(value or "").isdigit():
+        return int(str(value))
+    return None
+
+
+HOUSE_LIFE_TRANSLATIONS_TR: Dict[int, Dict[str, str]] = {
+    1: {
+        "short": "kendini ortaya koyuş biçimin",
+        "full": "kendini dışarıda nasıl taşıdığın, beden dilin ve ilk izlenimin",
+        "build": "kendini daha net ortaya koyma",
+    },
+    2: {
+        "short": "para ve özdeğer dengen",
+        "full": "para kararların, sahip oldukların ve güven duygun",
+        "build": "değerini daha net sahiplenme",
+    },
+    3: {
+        "short": "iletişim biçimin",
+        "full": "mesajların, konuşmaların, yakın çevre trafiğin ve yazı dilin",
+        "build": "kendini daha açık ifade etme",
+    },
+    4: {
+        "short": "ev ve iç güven alanın",
+        "full": "ev düzenin, dinlenme alanın ve iç güvenlik hissin",
+        "build": "kendi içinde daha güvenli kalma",
+    },
+    5: {
+        "short": "yaratıcılık ve görünür üretim alanın",
+        "full": "yaratıcılığın, keyif alanın, flört enerjin ve görünür üretimin",
+        "build": "ilhamı görünür kılma",
+    },
+    6: {
+        "short": "günlük düzenin",
+        "full": "iş akışın, alışkanlıkların, sağlığın ve günlük düzenin",
+        "build": "kendine işleyen bir düzen kurma",
+    },
+    7: {
+        "short": "ilişkilerde kurduğun denge",
+        "full": "yakın bağların, ortaklıkların ve karşı tarafla kurduğun denge",
+        "build": "ilişkide beklentiyi açık kurma",
+    },
+    8: {
+        "short": "yakınlık ve güven alanın",
+        "full": "yakınlık, güven, paylaşım ve derin bağ kurma biçimin",
+        "build": "yakınlıkta kendini kaybetmeden kalma",
+    },
+    9: {
+        "short": "öğrenme ve yön duygun",
+        "full": "öğrenme, uzmanlaşma, yayınlama, uzaklar ve dünya görüşün",
+        "build": "öğrendiklerini somut bir yöne çevirme",
+    },
+    10: {
+        "short": "kariyer yönün",
+        "full": "kariyer yönün, görünürlüğün ve dışarıda üstlendiğin sorumluluklar",
+        "build": "sorumluluğu net bir yöne çevirme",
+    },
+    11: {
+        "short": "çevren ve gelecek planların",
+        "full": "arkadaş çevren, ekipler, networkün ve ortak hedeflerin",
+        "build": "gücünü doğru çevrelerle birleştirme",
+    },
+    12: {
+        "short": "iç dünya alanın",
+        "full": "iç dünyan, geri çekilme ihtiyacın ve perde arkasında yürüyen süreçlerin",
+        "build": "içeride net kalabilme",
+    },
+}
+
+ANGLE_LIFE_TRANSLATIONS_TR: Dict[str, str] = {
+    "ASC": "kendini dışarıda nasıl taşıdığın",
+    "DSC": "yakın ilişkilerde kurduğun denge",
+    "MC": "dışarıda tuttuğun yön ve görünürlük",
+    "IC": "iç güvenlik ve kök duygun",
+}
+
+PLANET_EXPERIENCE_TR: Dict[str, Dict[str, str]] = {
+    "neptune": {
+        "pressure": "bulanıklık ve idealizasyon",
+        "gift": "sezgi ve incelik",
+        "watch": "muğlak konuşmak ya da kararı ertelemek",
+    },
+    "uranus": {
+        "pressure": "ani kopuş ve sabırsız sıçrama",
+        "gift": "yenilik ve cesur deneme",
+        "watch": "aynı anda her şeyi değiştirmeye kalkmak",
+    },
+    "pluto": {
+        "pressure": "kontrol etme ve her şeyi aşırı yükleme",
+        "gift": "derinleşme ve eleme gücü",
+        "watch": "gücü yalnızca sıkı tutmak sanmak",
+    },
+    "saturn": {
+        "pressure": "aşırı sertleşme ve gecikme korkusu",
+        "gift": "dayanıklılık ve yapı",
+        "watch": "kusursuz olana kadar beklemek",
+    },
+    "mars": {
+        "pressure": "acele tepki ve gereksiz sertlik",
+        "gift": "hareket ve cesaret",
+        "watch": "hız uğruna niyeti bulanıklaştırmak",
+    },
+    "jupiter": {
+        "pressure": "abartı ve fazla açılma",
+        "gift": "genişleme ve fırsat",
+        "watch": "ölçüsüz iyimserlik",
+    },
+    "venus": {
+        "pressure": "uyum uğruna taviz vermek",
+        "gift": "uyum ve bağ kurma",
+        "watch": "onay için kendi ölçünü bırakmak",
+    },
+    "mercury": {
+        "pressure": "fazla düşünmek ve dağılmak",
+        "gift": "ayrıştırma ve anlatma",
+        "watch": "detayda takılıp özü kaçırmak",
+    },
+}
+
+ASPECT_EXPERIENCE_TR: Dict[str, Dict[str, str]] = {
+    "square": {
+        "tone": "ayar istiyor",
+        "watch": "ilk tepkiyle hareket etmek",
+    },
+    "opposition": {
+        "tone": "denge ve karşı tarafı doğru okuma ihtiyacı yaratıyor",
+        "watch": "karşı tarafı niyetinin tamamı sanmak",
+    },
+    "conjunction": {
+        "tone": "bir alanı büyüteç altına alıyor",
+        "watch": "her şeyi tek başına taşımaya kalkmak",
+    },
+    "trine": {
+        "tone": "doğal bir kolaylık açıyor",
+        "watch": "kolay geliyor diye odağı gevşetmek",
+    },
+    "sextile": {
+        "tone": "küçük ama gerçek bir kapı aralıyor",
+        "watch": "fırsatı fark edip yine de hareketsiz kalmak",
+    },
+}
+
+
+def _life_scene(house: int | None, *, detail: str = "short") -> str:
+    if not house:
+        return "hayatının bu alanı"
+    return HOUSE_LIFE_TRANSLATIONS_TR.get(int(house), {}).get(detail) or "hayatının bu alanı"
+
+
+def _target_life_label(natal_point: str, target_house: int | None) -> str:
+    point = str(natal_point or "").strip().upper()
+    if point in ANGLE_LIFE_TRANSLATIONS_TR:
+        return ANGLE_LIFE_TRANSLATIONS_TR[point]
+    return _life_scene(target_house, detail="short")
+
+
+def _transit_target_houses(card: Mapping[str, Any], event: Mapping[str, Any]) -> tuple[int | None, int | None]:
+    houses = event.get("houses") if isinstance(event.get("houses"), Mapping) else {}
+    pack = card.get("natal_context_pack") if isinstance(card.get("natal_context_pack"), Mapping) else {}
+    target = pack.get("target") if isinstance(pack.get("target"), Mapping) else {}
+    transit_house = _coerce_house(houses.get("transit_in_natal_house"))
+    target_house = _coerce_house(houses.get("natal_point_house")) or _coerce_house(target.get("house")) or _axis_house(event.get("natal_point"))
+    return transit_house, target_house
+
+
+def _secondary_context_sentence(card: Mapping[str, Any], event: Mapping[str, Any], target_house: int | None) -> str:
+    pack = card.get("natal_context_pack") if isinstance(card.get("natal_context_pack"), Mapping) else {}
+    target = pack.get("target") if isinstance(pack.get("target"), Mapping) else {}
+    sign_tr = str(target.get("sign_tr") or target.get("sign") or "").strip()
+    planet = str(target.get("planet") or event.get("natal_point") or "").strip()
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+
+    if natal_point in ANGLE_LIFE_TRANSLATIONS_TR and sign_tr:
+        return {
+            "ASC": f"Bu hatta mesele sadece görünmek değil, {sign_tr} tonunda daha güvenilir ve anlaşılır görünmek.",
+            "DSC": f"Bu hatta mesele sadece yakınlık değil, {sign_tr} tonunda daha açık ve dengeli bağ kurmak.",
+            "MC": f"Bu hatta mesele sadece görünür olmak değil, {sign_tr} tonunda daha tutarlı bir yön göstermek.",
+            "IC": f"Bu hatta mesele sadece huzur aramak değil, {sign_tr} tonunda daha sağlam bir iç alan kurmak.",
+        }.get(natal_point, "")
+    if planet and target_house:
+        return f"Sende {POINT_TR.get(natal_point, planet)} zaten {_life_scene(target_house, detail='short')} tarafında çalıştığı için bu etki yüzeyde kalmıyor."
+    return ""
+
+
+def _supporting_spillover_note(card: Mapping[str, Any]) -> str:
+    pack = card.get("natal_context_pack") if isinstance(card.get("natal_context_pack"), Mapping) else {}
+    rulership = pack.get("rulership_houses") if isinstance(pack.get("rulership_houses"), list) else []
+    houses: List[int] = []
+    for entry in rulership:
+        house = _safe_int(entry.get("house")) if isinstance(entry, Mapping) else None
+        if house and house not in houses:
+            houses.append(house)
+    if not houses:
+        return ""
+    labels = [_life_scene(house, detail="short") for house in houses[:2]]
+    if len(labels) == 1:
+        return f"İkincil yankı {labels[0]} tarafına da uzanabilir."
+    return f"İkincil yankı zamanla {labels[0]} ve {labels[1]} alanına da uzanabilir."
+
+
+def _title_for_event(event: Mapping[str, Any], transit_house: int | None, target_house: int | None) -> str:
+    transit = _planet_key(event.get("transit_body"))
+    aspect = _aspect_key(event.get("aspect"))
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+    if transit == "neptune" and aspect == "square" and natal_point == "ASC":
+        return "Kendini Anlatışını Yeniden Ayarlıyorsun"
+    if transit == "uranus" and aspect in {"trine", "sextile"} and natal_point.lower() == "mars":
+        return "İlhamını Yönteme Çeviriyorsun"
+    if transit == "pluto" and aspect == "sextile" and natal_point.lower() == "pluto":
+        return "Çevren ve Yönün Daha Seçici Hale Geliyor"
+    if target_house == 7:
+        return "İlişkide Çerçeve Netleşiyor"
+    if target_house == 9:
+        return "Yönün ve Öğrenme Biçimin Değişiyor"
+    if target_house == 11:
+        return "Çevren ve Gelecek Planların Yenileniyor"
+    if target_house == 1:
+        return "Kendini Ortaya Koyuşun Değişiyor"
+    if transit_house == 3:
+        return "İfade Tarzın Güncelleniyor"
+    return "Bu Dönem Sende Yeni Bir Ayar Açıyor"
+
+
+def _generic_opening(event: Mapping[str, Any], card: Mapping[str, Any], transit_house: int | None, target_house: int | None) -> str:
+    transit = _planet_key(event.get("transit_body"))
+    aspect = _aspect_key(event.get("aspect"))
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+    start_full = _life_scene(transit_house, detail="full")
+    end_short = _target_life_label(natal_point, target_house)
+
+    if transit == "neptune" and aspect == "square" and natal_point == "ASC":
+        return _dedupe_sentences(
+            "Şu sıralar sadece ne söylediğin değil, nasıl duyulduğun da hassaslaşıyor. "
+            "Aynı niyet bazen daha muğlak, daha yumuşak ya da olduğundan sert algılanabilir."
+        )
+    if transit == "uranus" and aspect in {"trine", "sextile"} and natal_point.lower() == "mars":
+        return _dedupe_sentences(
+            "Yeni bir şey denemek, üretmek ya da cesur bir çıkış yapmak daha doğal geliyor. "
+            "Asıl değişim hevesin kendisinde değil; bunu öğrenme planına, uzmanlaşmaya ya da somut bir hatta taşıyabildiğinde başlıyor."
+        )
+    if transit == "pluto" and aspect == "sextile" and natal_point.lower() == "pluto":
+        return _dedupe_sentences(
+            "Bazı insanlara, hedeflere ve uzun vadeli planlara eski gözle bakmıyorsun. "
+            "İçeride güç tanımın değiştikçe hangi çevrede yer almak istediğin de seçiliyor."
+        )
+
+    return _dedupe_sentences(
+        f"Bu etki önce {start_full} tarafında hareket yaratıyor. "
+        f"Sonra bunun karşılığı {end_short} alanında daha görünür hale geliyor."
+    )
+
+
+def _generic_essence(event: Mapping[str, Any], transit_house: int | None, target_house: int | None) -> str:
+    transit = _planet_key(event.get("transit_body"))
+    aspect = _aspect_key(event.get("aspect"))
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+    end_short = _target_life_label(natal_point, target_house)
+    aspect_tone = ASPECT_EXPERIENCE_TR.get(aspect, {}).get("tone", "bir ayar açıyor")
+
+    if transit == "neptune" and aspect == "square" and natal_point == "ASC":
+        return _dedupe_sentences(
+            "Bu dönem temel mesele kendini daha çok göstermek değil, daha anlaşılır göstermek. "
+            "İçeride ne hissettiğinle dışarıda nasıl okunduğun arasındaki mesafe kapanmak istiyor."
+        )
+    if transit == "uranus" and aspect in {"trine", "sextile"} and natal_point.lower() == "mars":
+        return _dedupe_sentences(
+            "Bu dönem sana kısa süreli gaz değil, yeni bir yöntem teklif ediyor. "
+            "Kıvılcımını plana çevirdiğinde değişim geçici bir heyecan olmaktan çıkıp gerçek bir yön haline geliyor."
+        )
+    if transit == "pluto" and aspect == "sextile" and natal_point.lower() == "pluto":
+        return _dedupe_sentences(
+            "Buradaki değişim gürültülü değil; daha seçici, daha derin ve daha stratejik. "
+            "Seni büyütmeyen çevre, hedef ya da rol ile seni gerçekten güçlendiren olan arasındaki fark belirginleşiyor."
+        )
+
+    pressure = PLANET_EXPERIENCE_TR.get(transit, {}).get("pressure", "bir baskı")
+    return _dedupe_sentences(
+        f"Bu süreç {end_short} alanında eski alışkanlıkları gözden geçirmeni istiyor. "
+        f"Yüzeyde {aspect_tone}; altta ise {pressure} tarafını daha bilinçli yönetmeyi öğretiyor."
+    )
+
+
+def _generic_mechanism(card: Mapping[str, Any], event: Mapping[str, Any], transit_house: int | None, target_house: int | None) -> str:
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+    start_full = _life_scene(transit_house, detail="full")
+    end_full = _target_life_label(natal_point, target_house)
+    secondary = _secondary_context_sentence(card, event, target_house)
+    base = (
+        f"Önce {start_full} tarafında bir hareket başlıyor. "
+        f"Sonra bunun etkisi {end_full} alanında belirginleşiyor."
+    )
+    if secondary:
+        base = f"{base} {secondary}"
+    return _dedupe_sentences(base)
+
+
+def _generic_asks(event: Mapping[str, Any], transit_house: int | None, target_house: int | None) -> str:
+    transit = _planet_key(event.get("transit_body"))
+    aspect = _aspect_key(event.get("aspect"))
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+
+    if transit == "neptune" and aspect == "square" and natal_point == "ASC":
+        return _dedupe_sentences(
+            "Senden ne hissettiğini değil, neyi netleştirmen gerektiğini fark etmeni istiyor. "
+            "Cümleyi sadeleştirip sınırı baştan söylediğinde bu etki lehine çalışıyor."
+        )
+    if transit == "uranus" and aspect in {"trine", "sextile"} and natal_point.lower() == "mars":
+        return _dedupe_sentences(
+            "Hevesi tek seferlik bir çıkışta bırakmamanı istiyor. "
+            "Denemeyi plana, planı da tekrar eden bir yönteme çevirdiğinde gerçek kazanım geliyor."
+        )
+    if transit == "pluto" and aspect == "sextile" and natal_point.lower() == "pluto":
+        return _dedupe_sentences(
+            "Kiminle, ne uğruna ve hangi bedelle ilerlemek istediğini daha seçici belirlemeni istiyor. "
+            "Her kapıyı açık tutmak yerine doğru kapıyı bilinçli seçtiğinde güç birikiyor."
+        )
+
+    build_target = _life_scene(target_house, detail="build")
+    return _dedupe_sentences(
+        f"Buradaki davet, {_life_scene(transit_house, detail='short')} tarafında olanı {build_target} kasına çevirmek. "
+        "Net olanı seçip onu tekrar edilebilir hale getirdiğinde bu dönem hızlanıyor."
+    )
+
+
+def _generic_watchout(event: Mapping[str, Any], transit_house: int | None, target_house: int | None) -> str:
+    transit = _planet_key(event.get("transit_body"))
+    aspect = _aspect_key(event.get("aspect"))
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+    planet_watch = PLANET_EXPERIENCE_TR.get(transit, {}).get("watch", "otomatik pilota kaymak")
+    aspect_watch = ASPECT_EXPERIENCE_TR.get(aspect, {}).get("watch", "ölçüyü kaçırmak")
+
+    if transit == "neptune" and aspect == "square" and natal_point == "ASC":
+        return _dedupe_sentences(
+            "Asıl risk, yanlış anlaşılmayı yalnızca ton meselesi sanıp içeriği netleştirmemek. "
+            "Muğlak konuşmak ya da niyetini açık söylememek seni gereksiz açıklama döngüsüne sokabilir."
+        )
+    if transit == "uranus" and aspect in {"trine", "sextile"} and natal_point.lower() == "mars":
+        return _dedupe_sentences(
+            "Risk, aynı anda fazla fikir açıp hiçbiriyle yeterince derine gitmemek. "
+            "Hızın cazibesi ölçüyü dağıttığında gerçek kazanım yerine kısa süreli heyecan kalır."
+        )
+    if transit == "pluto" and aspect == "sextile" and natal_point.lower() == "pluto":
+        return _dedupe_sentences(
+            "Risk, seçiciliği içe kapanmaya ya da her şeyi kontrol etmeye çevirmek. "
+            "Güç toplamak isterken insanları yalnızca işe yarayıp yaramadığına göre okumak bağı kurutabilir."
+        )
+
+    return _dedupe_sentences(
+        f"Bu süreçte {aspect_watch} kolay. "
+        f"Özellikle {planet_watch} refleksi devreye girdiğinde konu gereğinden fazla büyüyebilir."
+    )
+
+
+def _generic_what_it_builds(event: Mapping[str, Any], transit_house: int | None, target_house: int | None) -> str:
+    transit = _planet_key(event.get("transit_body"))
+    aspect = _aspect_key(event.get("aspect"))
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+    if transit == "neptune" and aspect == "square" and natal_point == "ASC":
+        return "kendini daha net ifade etme ve yanlış anlaşılma payını azaltma kasını"
+    if transit == "uranus" and aspect in {"trine", "sextile"} and natal_point.lower() == "mars":
+        return "ilhamı çalışır bir yönteme ve gerçek bir yöne çevirme kasını"
+    if transit == "pluto" and aspect == "sextile" and natal_point.lower() == "pluto":
+        return "gücünü doğru çevre ve doğru hedefle birleştirme kasını"
+    return f"{_life_scene(target_house, detail='build')} kasını"
+
+
+def _technical_note(card: Mapping[str, Any], event: Mapping[str, Any], transit_house: int | None, target_house: int | None) -> str:
+    transit = _PLANET_TR.get(_planet_key(event.get("transit_body")), str(event.get("transit_body") or "Transit"))
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+    target = POINT_TR.get(natal_point, natal_point.title() if natal_point else "Nokta")
+    aspect_label = {"square": "kare", "opposition": "karşıt", "conjunction": "kavuşum", "trine": "üçgen", "sextile": "sekstil"}.get(_aspect_key(event.get("aspect")), "açı")
+    parts = [
+        f"Teknik not: {transit} {target} ile {aspect_label} açı yapıyor.",
+    ]
+    if transit_house:
+        parts.append(f"Ana sahne {transit_house}. Ev: {_life_scene(transit_house, detail='short')}.")
+    if target_house:
+        parts.append(f"Hedef alan {target_house}. Ev: {_life_scene(target_house, detail='short')}.")
+    spillover = _supporting_spillover_note(card)
+    if spillover:
+        parts.append(spillover)
+    return _dedupe_sentences(" ".join(parts))
+
+
+def _event_guidance_bullets(event: Mapping[str, Any], transit_house: int | None, target_house: int | None) -> List[str]:
+    transit = _planet_key(event.get("transit_body"))
+    aspect = _aspect_key(event.get("aspect"))
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+    if transit == "neptune" and aspect == "square" and natal_point == "ASC":
+        return [
+            "Önemli cümleyi göndermeden önce bir kez sadeleştir.",
+            "Niyetini ve sınırını aynı anda söyle.",
+            "Yanlış anlaşılma ihtimali olan konuşmayı yazılı teyitle kapat.",
+        ]
+    if transit == "uranus" and aspect in {"trine", "sextile"} and natal_point.lower() == "mars":
+        return [
+            "Aynı anda üç fikir açma; birini seçip sonuna kadar götür.",
+            "Ürettiğin şeyi küçük bir çıktı ya da paylaşım haline getir.",
+            "Öğrenme planını haftalık bir düzene bağla.",
+        ]
+    if transit == "pluto" and aspect == "sextile" and natal_point.lower() == "pluto":
+        return [
+            "Gerçekten güçlendiren çevreyi ayıkla.",
+            "Uzun vadeli hedefi tek cümlede yeniden tanımla.",
+            "Sırf alıştığın için açık tuttuğun kapıları gözden geçir.",
+        ]
+    bullets = [
+        f"{_life_scene(transit_house, detail='short').capitalize()} tarafında bir şeyi sadeleştir.",
+        f"{_target_life_label(natal_point, target_house).capitalize()} alanında tek net adım seç.",
+        "Ölçülü ilerle; tek seferde her şeyi çözmeye çalışma.",
+    ]
+    return bullets
+
+
+def _event_watch_bullets(watchout: str) -> List[str]:
+    sentences = _split_sentences(watchout)
+    return [cap_sentences(sentence, max_sentences=1) for sentence in sentences[:2] if sentence.strip()]
+
+
+def _build_event_narrative_fields(card: Mapping[str, Any], event: Mapping[str, Any], horizon: str) -> Dict[str, Any]:
+    transit_house, target_house = _transit_target_houses(card, event)
+    headline = _title_for_event(event, transit_house, target_house)
+    opening = _generic_opening(event, card, transit_house, target_house)
+    essence = _generic_essence(event, transit_house, target_house)
+    mechanism = _generic_mechanism(card, event, transit_house, target_house)
+    asks = _generic_asks(event, transit_house, target_house)
+    watchout = _generic_watchout(event, transit_house, target_house)
+    what_it_builds = _generic_what_it_builds(event, transit_house, target_house)
+    technical_note = _technical_note(card, event, transit_house, target_house)
+    why_now = why_now_tr(event)
+    guidance = _normalize_bullet_list(
+        _event_guidance_bullets(event, transit_house, target_house),
+        fallback=["Önce niyeti netleştir.", "Tek bir adım seç ve tamamla."],
+        minimum=3,
+    )[:3]
+    watch_bullets = _normalize_bullet_list(
+        _event_watch_bullets(watchout),
+        fallback=["Acele tepki verme."],
+        minimum=1,
+    )[:2]
+
+    out: Dict[str, Any] = dict(card)
+    out.update(
+        {
+            "headline": _clamp_text(headline, max_chars=120, max_sentences=1),
+            "opening": _clamp_text(opening, max_chars=300, max_sentences=3),
+            "essence": _clamp_text(essence, max_chars=280, max_sentences=2),
+            "mechanism": _clamp_text(mechanism, max_chars=320, max_sentences=3),
+            "asks": _clamp_text(asks, max_chars=280, max_sentences=2),
+            "watchout": _clamp_text(watchout, max_chars=260, max_sentences=2),
+            "what_it_builds": _clamp_text(f"Bu dönem sende {what_it_builds} geliştiriyor.", max_chars=180, max_sentences=1),
+            "technical_note": _clamp_text(technical_note, max_chars=260, max_sentences=3),
+            "why_now": _clamp_text(why_now, max_chars=220, max_sentences=3),
+            "guidance": guidance,
+            "watch_out": watch_bullets,
+            "title": _clamp_text(headline, max_chars=120, max_sentences=1),
+            "teaser": _clamp_text(opening, max_chars=300, max_sentences=3),
+            "conflict": _clamp_text(essence, max_chars=280, max_sentences=2),
+            "shadow": _clamp_text(watchout, max_chars=260, max_sentences=2),
+            "upper": _clamp_text(asks, max_chars=280, max_sentences=2),
+            "big_picture": _clamp_text(essence, max_chars=280, max_sentences=2),
+            "upper_meaning": _clamp_text(f"Bu dönem sende {what_it_builds} geliştiriyor.", max_chars=180, max_sentences=1),
+            "potential": "",
+            "extra_line": "",
+            "time_hint": _clamp_text(why_now, max_chars=220, max_sentences=2),
+        }
+    )
+    return out
+
+
+def rewrite_event_card_tr(card: Mapping[str, Any], event: Mapping[str, Any], horizon: str) -> Dict[str, Any]:
+    out = _build_event_narrative_fields(card, event, horizon)
+    for field in (
+        "headline",
+        "opening",
+        "essence",
+        "mechanism",
+        "asks",
+        "watchout",
+        "what_it_builds",
+        "technical_note",
+        "teaser",
+        "why_now",
+        "conflict",
+        "shadow",
+        "upper",
+        "big_picture",
+        "upper_meaning",
+        "time_hint",
+    ):
+        if field in out:
+            out[field] = _dedupe_sentences(str(out.get(field) or ""))
+
+    for list_key in ("guidance", "watch_out"):
+        raw = out.get(list_key)
+        if not isinstance(raw, list):
+            continue
+        out[list_key] = _clamp_bullets(raw, max_n=3 if list_key == "guidance" else 2)
+
+    out = _dedupe_section_overlap(out)
+    out["horizon"] = str(horizon or out.get("horizon") or "").strip().lower() or str(out.get("horizon") or "")
+    return out
+
+def why_now_tr(event: Mapping[str, Any]) -> str:
+    orb = _safe_float(event.get("orb_deg"), 9.9)
+    if orb <= 0.3:
+        orb_line = "Etki şu an en yoğun noktasına yakın."
+    elif orb <= 1.0:
+        orb_line = "Etki güçlü biçimde hissediliyor."
+    else:
+        orb_line = "Etki şimdiden çalışıyor; ana tema görünür durumda."
+
+    bucket = str(event.get("bucket") or "").strip().lower()
+    duration_line = {
+        "long": "Bu dalga birkaç ay boyunca katman katman çalışır.",
+        "medium": "Bu tema birkaç hafta boyunca gündemde kalır.",
+        "short": "Bu etki kısa ama belirgin bir pencere açar.",
+    }.get(bucket, "Bu etki bir süre daha gündemde kalır.")
+
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+    axis_line = {
+        "ASC": "Kimlik hattı aktif.",
+        "DSC": "İlişki hattı aktif.",
+        "MC": "Yön ve kariyer hattı aktif.",
+        "IC": "Ev ve iç güven hattı aktif.",
+    }.get(natal_point, "")
+
+    phase = str(event.get("phase") or "").strip().lower()
+    phase_line = {
+        "applying": "Etki büyüyor.",
+        "exact": "Tam odakta.",
+        "exactish": "Tam odakta.",
+        "separating": "Ana vurgu geçti ama yankısı sürüyor.",
+    }.get(phase, "")
+
+    if axis_line and phase_line:
+        phase_fragment = {
+            "applying": "etki giderek belirginleşiyor",
+            "exact": "tema tam odakta",
+            "exactish": "tema tam odakta",
+            "separating": "ana vurgu geçti ama yankısı sürüyor",
+        }.get(phase)
+        if phase_fragment:
+            axis_line = f"{axis_line[:-1]}; {phase_fragment}."
+            phase_line = ""
+
+    lines = [orb_line, duration_line]
+    if axis_line:
+        lines.append(axis_line)
+    if phase_line and normalize(phase_line) not in normalize(" ".join(lines)):
+        lines.append(phase_line)
+    return _dedupe_sentences(" ".join(lines[:3]))
+
+
+def _period_muscle_line(event: Mapping[str, Any], scene_house: int | None) -> str:
+    if scene_house == 3:
+        return "Zamanla neyi söyleyip neyi bırakacağını daha iyi seçersin; ifade sadeleşir."
+    if scene_house == 9:
+        return "Dağılmadan tek yönteme bağlandığında yön duygun ve uzmanlaşma isteğin birlikte güçlenir."
+    if scene_house == 11:
+        return "Doğru insanı, doğru hedefi ve doğru mesafeyi seçmek burada kolaylaşır."
+    return "Net olanı seçip tekrar edilebilir hale getirdiğinde kazanım kalıcı olur."
+
+
+def _salient_fallback_excerpt(text: str, max_len: int = 140) -> str:
+    parts = _split_sentences(str(text or ""))
+    if not parts:
+        return ""
+
+    def _is_contextful(part: str) -> bool:
+        cleaned = normalize(part)
+        return bool(
+            re.search(r"\b\d+\s+ev\b", cleaned)
+            or any(
+                token in cleaned
+                for token in (
+                    "yükselen",
+                    "alçalan",
+                    "tepe noktası",
+                    "dip noktası",
+                    "yöneticisi",
+                    "kimlik benlik",
+                    "topluluk hedef",
+                    "ev kök",
+                    "ilişki ortaklık",
+                )
+            )
+        )
+
+    for part in parts:
+        if _is_contextful(part):
+            return _first_sentence(part, max_len=max_len)
+    return _first_sentence(str(text or ""), max_len=max_len)
+
+
+def _period_conflict_line(event: Mapping[str, Any], fallback: str) -> str:
+    aspect = _aspect_key(event.get("aspect"))
+    dynamics = ASPECT_DYNAMIC_TR.get(aspect, {})
+    transit = _planet_key(event.get("transit_body"))
+    risk = PLANET_ESSENCE_TR.get(transit, {}).get("risk", "dağılma")
+    if aspect in {"square", "opposition"}:
+        base = f"Bu temada {dynamics.get('name', 'gerilim')} öne çıkıyor; {risk} artarsa ayarı kaçırmak kolaylaşır."
+    elif aspect == "conjunction":
+        base = "Gündem tek noktada büyüdüğü için yük hissi artabilir ve ölçü kolayca kayabilir."
+    else:
+        base = "Akış açık ama tam da bu yüzden ölçü kaçarsa konu kolayca dağılabilir."
+    if fallback and similarity(base, fallback) < 0.5:
+        base = f"{base} {_salient_fallback_excerpt(fallback, max_len=120)}"
+    return _dedupe_sentences(base)
+
+
+def _period_shadow_line(event: Mapping[str, Any], fallback: str) -> str:
+    aspect = _aspect_key(event.get("aspect"))
+    transit = _planet_key(event.get("transit_body"))
+    risk = PLANET_ESSENCE_TR.get(transit, {}).get("risk", "dağılma")
+    if aspect in {"square", "opposition"}:
+        base = f"Otomatik refleks, baskı anında {risk} tarafına kaymak olabilir."
+    elif aspect == "conjunction":
+        base = "Otomatik refleks, her şeyi aynı anda taşıyıp yükü gereksiz büyütmek olabilir."
+    else:
+        base = "Otomatik refleks, akış var diye odağı gevşetmek olabilir."
+    if fallback and similarity(base, fallback) < 0.45:
+        base = f"{base} {_first_sentence(fallback, max_len=90)}"
+    return _dedupe_sentences(base)
+
+
+def _period_upper_line(event: Mapping[str, Any], fallback: str, scene_house: int | None) -> str:
+    muscle = _period_muscle_line(event, scene_house)
+    transit = _planet_key(event.get("transit_body"))
+    gift = PLANET_ESSENCE_TR.get(transit, {}).get("gift", "netlik")
+    base = f"Kazanç, {gift} tarafını daha bilinçli kullanabilmende. {muscle}"
+    if fallback and similarity(base, fallback) < 0.45:
+        base = f"{base} {_salient_fallback_excerpt(fallback, max_len=120)}"
+    return _dedupe_sentences(base)
+
+
+def _period_big_picture_line(event: Mapping[str, Any], fallback: str, scene_house: int | None) -> str:
+    point = str(event.get("natal_point") or "").strip().upper()
+    if point in {"ASC", "DSC", "MC", "IC"}:
+        base = f"Bu süreç {POINT_TR.get(point, point).lower()} hattında daha sakin bir ayar kuruyor."
+    elif scene_house:
+        base = f"Bu süreç {scene_house}. Ev temasını daha olgun bir çizgiye taşıyor."
+    else:
+        base = "Bu süreç seni daha net ve daha ölçülü bir hatta topluyor."
+    if fallback and similarity(base, fallback) < 0.35:
+        return _dedupe_sentences(base)
+    return _dedupe_sentences(base)
+
+
+def _period_context_line(card: Mapping[str, Any], event: Mapping[str, Any]) -> str:
+    derived = card.get("derived_context") if isinstance(card.get("derived_context"), Mapping) else {}
+    chain_line = build_chain_explainer_tr(event, derived if isinstance(derived, Mapping) else {})
+    if chain_line:
+        return chain_line
+
+    target = derived.get("natal_target") if isinstance(derived.get("natal_target"), Mapping) else {}
+    rulership_houses = target.get("rulership_houses") if isinstance(target.get("rulership_houses"), list) else []
+    houses: List[int] = []
+    for raw_house in rulership_houses:
+        house = _safe_int(raw_house)
+        if house and house not in houses:
+            houses.append(house)
+
+    if not houses:
+        return ""
+
+    labels = [f"{house}. Ev ({_house_scene(house)})" for house in houses[:2]]
+    if len(labels) == 1:
+        return f"Bu tema {labels[0]} hattına da iner."
+    return f"Bu tema {labels[0]} ve {labels[1]} hattına da iner."
+
+
+def _period_mechanism_line(card: Mapping[str, Any], event: Mapping[str, Any], scene_house: int | None) -> str:
+    derived = card.get("derived_context") if isinstance(card.get("derived_context"), Mapping) else {}
+    chain_line = build_chain_explainer_tr(event, derived if isinstance(derived, Mapping) else {})
+
+    houses = event.get("houses") if isinstance(event.get("houses"), Mapping) else {}
+    transit_house = _safe_int(houses.get("transit_in_natal_house"))
+    target_house = _safe_int(houses.get("natal_point_house"))
+    natal_point = str(event.get("natal_point") or "").strip().upper()
+
+    lines: List[str] = []
+    if chain_line:
+        lines.append(chain_line)
+
+    if natal_point == "ASC" and transit_house == 3:
+        lines.append("Etki iletişim ritminde başlar; sonra duruşuna/kimliğine yansır.")
+        return _clamp_text(" ".join(lines), max_chars=320, max_sentences=3)
+
+    if transit_house and target_house:
+        lines.append(
+            f"Etki önce {transit_house}. Evde {_house_scene(transit_house)} tarafında belirir; "
+            f"sonra {target_house}. Evde {_house_scene(target_house)} tarafına yansır."
+        )
+    elif transit_house and natal_point in POINT_TR:
+        lines.append(
+            f"Etki önce {transit_house}. Evde {_house_scene(transit_house)} tarafında belirir; "
+            f"sonra {POINT_TR.get(natal_point, natal_point).lower()} hattına yansır."
+        )
+    elif scene_house:
+        lines.append(f"Etki {scene_house}. Evde {_house_scene(scene_house)} tarafında ritmi değiştirir.")
+
+    return _clamp_text(" ".join(line for line in lines if line), max_chars=320, max_sentences=2)
+
+
+def _clamp_text(text: str, *, max_chars: int, max_sentences: int) -> str:
+    cleaned = _dedupe_sentences(_collapse_period_prefix(text))
+    if not cleaned:
+        return ""
+    parts = _split_sentences(cleaned)[: max(1, max_sentences)]
+    candidate = " ".join(parts).strip()
+    if len(candidate) <= max_chars:
+        return candidate
+    best = ""
+    current: List[str] = []
+    for part in parts:
+        tentative = " ".join(current + [part]).strip()
+        if len(tentative) > max_chars:
+            break
+        current.append(part)
+        best = tentative
+    return best or parts[0]
+
+
+def dedupe_fields(card: Mapping[str, Any], horizon: str) -> Dict[str, Any]:
+    out = dict(card)
+    for field in (
+        "headline",
+        "opening",
+        "essence",
+        "asks",
+        "watchout",
+        "what_it_builds",
+        "technical_note",
+        "teaser",
+        "why_now",
+        "conflict",
+        "shadow",
+        "upper",
+        "big_picture",
+        "mechanism",
+        "upper_meaning",
+    ):
+        if field in out:
+            out[field] = _dedupe_sentences(str(out.get(field) or ""))
+
+    pairs = [
+        ("headline", "opening"),
+        ("opening", "essence"),
+        ("essence", "asks"),
+        ("asks", "what_it_builds"),
+        ("teaser", "upper"),
+        ("teaser", "big_picture"),
+        ("teaser", "mechanism"),
+        ("why_now", "conflict"),
+        ("upper", "big_picture"),
+        ("upper", "mechanism"),
+        ("big_picture", "mechanism"),
+    ]
+    for left, right in pairs:
+        if similarity(str(out.get(left) or ""), str(out.get(right) or "")) >= 0.75:
+            if horizon == "period":
+                if right in {"mechanism", "big_picture"}:
+                    out[right] = ""
+                elif left == "teaser" and right == "upper":
+                    out[right] = ""
+            else:
+                out["mechanism"] = ""
+
+    if horizon == "period":
+        if similarity(str(out.get("teaser") or ""), str(out.get("big_picture") or "")) >= 0.55:
+            out["big_picture"] = ""
     return out
 
 
@@ -361,9 +1267,7 @@ def cap_sentences(text: str, max_sentences: int = 3) -> str:
     if max_sentences < 1:
         return ""
 
-    parts = [p.strip() for p in re.split(r"(?<!\d[.!?])(?<=[.!?])\s+", raw) if p.strip()]
-    if len(parts) == 1 and "." not in raw and "!" not in raw and "?" not in raw:
-        parts = [p.strip() for p in re.split(r"\s*;\s*", raw) if p.strip()]
+    parts = _split_sentences(raw)
     if not parts:
         return ""
 
@@ -378,10 +1282,10 @@ def _s(x: Any) -> str:
 
 
 def _first_sentence(text: str, max_len: int = 160) -> str:
-    t = strip_tech_tokens(str(text or "")).strip()
+    t = restore_ordinals(strip_tech_tokens(str(text or "")).strip())
     if not t:
         return ""
-    parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", t) if p.strip()]
+    parts = _split_sentences(t)
     s = parts[0] if parts else t
     if len(s) > max_len:
         s = s[:max_len].rstrip() + "…"
@@ -389,15 +1293,15 @@ def _first_sentence(text: str, max_len: int = 160) -> str:
 
 
 def _dedupe_sentences(text: str) -> str:
-    t = strip_tech_tokens(str(text or "")).strip()
+    t = _norm(text)
     if not t:
         return ""
-    parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", t) if p.strip()]
+    parts = _split_sentences(t)
     seen: set[str] = set()
     out: List[str] = []
     for p in parts:
-        key = " ".join(p.lower().split())
-        if key in seen:
+        key = normalize(p)
+        if not key or key in seen:
             continue
         seen.add(key)
         out.append(p)
@@ -413,10 +1317,10 @@ def _clamp_bullets(items: Any, max_n: int = 3) -> List[str]:
     out: List[str] = []
     seen: set[str] = set()
     for it in items:
-        s = strip_tech_tokens(str(it or "")).strip()
+        s = restore_ordinals(strip_tech_tokens(str(it or "")).strip())
         if not s:
             continue
-        key = " ".join(s.lower().split())
+        key = normalize(s)
         if key in seen:
             continue
         seen.add(key)
@@ -430,62 +1334,34 @@ def rewrite_period_card_tr(
     card: Mapping[str, Any],
     event: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    """
-    Final-pass rewrite for PERIOD cards: human tone, 'sana ne katıyor' framing,
-    house motif expansion, tech token stripping, de-duplication.
-    """
-    out = dict(card)
     ev = dict(event or {})
-
-    # House context (scene): prefer transit house, else target house
-    houses = ev.get("houses") if isinstance(ev.get("houses"), Mapping) else {}
-    transit_house = houses.get("transit_in_natal_house")
-    target_house = houses.get("natal_point_house")
-    scene_house = int(transit_house) if transit_house else (int(target_house) if target_house else None)
-    scene = house_motif_line(scene_house)
-
-    # Teaser (tap reason) — 1 clear line
-    # Prefer existing teaser/why_now/conflict; but make it period-style
-    raw_seed = out.get("teaser") or out.get("why_now") or out.get("conflict") or out.get("upper") or ""
-    seed_1 = _first_sentence(str(raw_seed), max_len=170)
-    if scene:
-        # "Bu dönem ..." opener, very clear and non-technical
-        out["teaser"] = (
-            f"Bu dönem {scene} alanında ince ayar var: "
-            f"{seed_1.lower() if seed_1 else 'daha net seçim, daha iyi ritim.'}"
-        )
-    else:
-        out["teaser"] = seed_1
-
-    # Reframe sections to period tone (gain / skill)
-    # conflict -> "Ne oluyor?" already in UI, keep but humanize
-    out["conflict"] = _dedupe_sentences(out.get("conflict") or out.get("why_now") or "")
-    # shadow -> "Refleks" in UI
-    out["shadow"] = _dedupe_sentences(out.get("shadow") or "")
-    # upper -> "Ustalık": always answer "sana ne katıyor?"
-    upper_seed = out.get("upper") or ""
-    upper_1 = _first_sentence(upper_seed, max_len=220)
-    if scene:
-        out["upper"] = _dedupe_sentences(
-            f"Bu tema sende {scene} kasını güçlendiriyor: daha net seçim, daha iyi ritim. {upper_1}"
-        )
-    else:
-        out["upper"] = _dedupe_sentences(upper_1)
-
-    # Bullets
-    out["guidance"] = _clamp_bullets(out.get("guidance"), max_n=3)
+    out = rewrite_event_card_tr(card, ev, horizon="period")
+    transit_house, target_house = _transit_target_houses(out, ev)
+    natal_point = str(ev.get("natal_point") or "").strip().upper()
+    life_expression = _dedupe_sentences(
+        f"Günlük hayatta bu tema en çok {_life_scene(transit_house, detail='short')} tarafında başlar; "
+        f"asıl sonucu {_target_life_label(natal_point, target_house)} alanında görünür olur."
+    )
+    out.update(
+        {
+            "period_opening": out.get("opening") or out.get("teaser") or "",
+            "growth_edge": out.get("watchout") or out.get("shadow") or "",
+            "relational_or_life_expression": _clamp_text(life_expression, max_chars=260, max_sentences=2),
+            "what_it_builds": out.get("what_it_builds") or "",
+            "signature": render_signature_tr(ev) if ev else str(out.get("signature") or ""),
+            "signature_tr": render_signature_tr(ev) if ev else str(out.get("signature_tr") or out.get("signature") or ""),
+        }
+    )
+    out["teaser"] = out.get("period_opening") or out.get("teaser") or ""
+    out["conflict"] = out.get("essence") or out.get("conflict") or ""
+    out["shadow"] = out.get("growth_edge") or out.get("shadow") or ""
+    out["upper"] = out.get("asks") or out.get("upper") or ""
+    out["upper_meaning"] = out.get("what_it_builds") or out.get("upper_meaning") or ""
+    out["big_picture"] = out.get("essence") or out.get("big_picture") or ""
+    out["mechanism"] = out.get("mechanism") or ""
     out["watch_out"] = _clamp_bullets(out.get("watch_out"), max_n=2)
-
-    # Extra line: short, warm, period
-    extra = out.get("extra_line") or ""
-    extra_1 = _first_sentence(extra, max_len=120)
-    out["extra_line"] = extra_1
-
-    # Final tech strip for all visible fields
-    for k in ["title", "teaser", "conflict", "shadow", "upper", "extra_line"]:
-        if k in out:
-            out[k] = strip_tech_tokens(str(out.get(k) or "")).strip()
-    return out
+    out["guidance"] = _clamp_bullets(out.get("guidance"), max_n=3)
+    return _dedupe_section_overlap(out)
 
 
 def normalize_card_text_tr(card: Mapping[str, Any]) -> Dict[str, Any]:
@@ -1058,27 +1934,27 @@ def _period_transform_paragraph(
     keys = {str(item.get("key") or "") for item in root_causes}
     if "method_shift_9_virgo" in keys:
         return (
-            f"Bu dönem 'nasıl'ı değiştiriyor: {main_house}. Evde {scene} sahnesi yöntem ve ritim güncellemesi istiyor. "
-            "Üst potansiyel, mikro sprintleri ölçümle birleştirip kalıcı öğrenme ivmesine çevirmek."
+            f"Bu dönem {scene} tarafında küçük bir yöntem değişikliğini büyütüyor. "
+            "Asıl kazanım, hevesi mikro denemelerden çıkıp kalıcı bir öğrenme ve üretim düzenine bağladığında geliyor."
         )
     if "identity_spine" in keys and "mirror_axis_1_7" in keys:
         return (
-            f"Bu dönem 'nasıl'ı sınır dili üzerinden değiştiriyor; tema {motif} olsa da ana kazanç rol netliğinde. "
-            "Üst potansiyel, ilişki aynasını kullanıp iç referansı daha sakin ve tutarlı kurmak."
+            f"Bu dönem {motif} temasını daha çok ilişki dili ve sınır cümleleri üzerinden çalıştırıyor. "
+            "Asıl kazanım, karşı tarafı doğru okuyup kendi merkezini daha sakin ve tutarlı kurabilmek."
         )
     if mode == "pressure":
         return (
-            f"Bu dönem 'nasıl'ı çerçeve disipliniyle değiştiriyor; {main_house}. Evde {scene} hattı tekrar isteyen bir laboratuvar. "
-            "Üst potansiyel, baskıyı tek kanallı yönteme çevirerek güvenilir bir ritim üretmek."
+            f"Bu dönem {scene} tarafında tekrar ve net çerçeve istiyor. "
+            "Baskıyı dağıtmak yerine tek kanallı bir yönteme çevirdiğinde daha güvenilir bir düzen kuruyorsun."
         )
     if mode == "expansion":
         return (
-            f"Bu dönem 'nasıl'ı fırsat seçimiyle değiştiriyor; {main_house}. Evde {scene} hattı dağılmadan büyümeyi çağırıyor. "
-            "Üst potansiyel, küçük ama tekrarlı hamlelerle verimi görünür biçimde artırmak."
+            f"Bu dönem {scene} tarafında açılan fırsatları daha seçici kullanmanı istiyor. "
+            "Küçük ama tekrarlı hamleler büyümeyi daha görünür ve daha sürdürülebilir hale getirir."
         )
     return (
-        f"Bu dönem 'nasıl'ı kalibrasyonla değiştiriyor; {main_house}. Evde {scene} ve tema {motif} birlikte ince ayar istiyor. "
-        "Üst potansiyel, tempoyu sadeleştirip daha net bir iç ritim kurmak."
+        f"Bu dönem {scene} tarafında daha bilinçli bir ayar kuruyor. "
+        f"{motif.capitalize()} burada ana tema; sadeleştikçe içerideki yön hissi daha netleşiyor."
     )
 
 
@@ -1269,17 +2145,17 @@ def _dedupe_section_overlap(card: Mapping[str, Any]) -> Dict[str, Any]:
     seen: set[str] = set()
 
     def _strip_sentences(text: str) -> str:
-        parts = [p.strip() for p in re.split(r"(?<=[.!?])\s+", str(text or "").strip()) if p.strip()]
+        parts = _split_sentences(str(text or "").strip())
         cleaned: List[str] = []
         for part in parts:
-            lowered = " ".join(part.lower().split())
+            lowered = normalize(part)
             if re.match(r"^\s*Sahne\s", part, flags=re.IGNORECASE):
                 continue
             if " sahne " in f" {lowered} ":
                 continue
             if "vurduğu yer" in lowered or "vurdugu yer" in lowered:
                 continue
-            key = " ".join(part.lower().split())
+            key = normalize(part)
             if not key or key in seen:
                 continue
             seen.add(key)
@@ -1290,6 +2166,12 @@ def _dedupe_section_overlap(card: Mapping[str, Any]) -> Dict[str, Any]:
         return merged
 
     for field in (
+        "opening",
+        "essence",
+        "asks",
+        "watchout",
+        "what_it_builds",
+        "technical_note",
         "teaser",
         "why_now",
         "conflict",
@@ -1303,20 +2185,10 @@ def _dedupe_section_overlap(card: Mapping[str, Any]) -> Dict[str, Any]:
         if field in out:
             out[field] = _strip_sentences(out.get(field) or "")
 
-    def _norm(value: str) -> str:
-        text = str(value or "").strip().lower()
-        text = re.sub(r"\s+", " ", text)
-        return text
-
-    def _sim(a: str, b: str) -> float:
-        if not a or not b:
-            return 0.0
-        return SequenceMatcher(None, _norm(a), _norm(b)).ratio()
-
     def _drop_if_similar(primary: str, secondary: str, threshold: float = 0.8) -> None:
         left = str(out.get(primary) or "").strip()
         right = str(out.get(secondary) or "").strip()
-        if _sim(left, right) >= threshold:
+        if similarity(left, right) >= threshold:
             out[secondary] = ""
 
     _drop_if_similar("headline", "big_picture", 0.8)
@@ -1325,4 +2197,5 @@ def _dedupe_section_overlap(card: Mapping[str, Any]) -> Dict[str, Any]:
     _drop_if_similar("teaser", "why_now", 0.8)
     _drop_if_similar("teaser", "upper", 0.8)
     _drop_if_similar("why_now", "conflict", 0.8)
-    return out
+    horizon = str(out.get("horizon") or "").strip().lower()
+    return dedupe_fields(out, horizon="period" if horizon == "period" else "daily")

@@ -8,15 +8,22 @@ from app.transit.narrative.point_policy import is_public_point, normalize_point_
 
 BLOCKED_TOKENS: set[str] = set()
 
-# --- P0: LANGUAGE ONLY ---
-# Teknik kelimeler public metne sızmasın.
+# ----------------------------
+# P0 LANGUAGE: strip tech tokens (BUT never remove ASC/DSC/MC/IC or planet names)
+# ----------------------------
 _TECH_TOKENS_RE = re.compile(
+    r"(?ix)"
     r"\b("
-    r"orb|orb_deg|exactish|exact|applying|separating|phase|bucket|period|raw|marker|"
-    r"square|trine|sextile|opposition|conjunction|"
-    r"asc|dsc|mc|ic|t:\d+->n:\d+|n:\d+|t:\d+"
-    r")\b",
-    flags=re.IGNORECASE,
+    r"orb|orb_deg|degree|deg|exactish|exact|applying|separating|retrograde|rx|station"
+    r"|percentile|marker|tier|bucket|phase|window_days|step_hours|raw|period"
+    r")\b"
+    r"|[°º]"
+)
+
+_TECH_VALUE_RE = re.compile(
+    r"(?ix)"
+    r"\b(?:orb|orb_deg)\s*[:=]?\s*\d+(?:[.,]\d+)?\b"
+    r"|\b(?:t:\d+\s*->\s*n:\d+|n:\d+|t:\d+)\b"
 )
 
 HOUSE_LABEL_TR = {
@@ -35,14 +42,127 @@ HOUSE_LABEL_TR = {
     12: "bilinçaltı/çözülme",
 }
 
-HOUSE_MOTIFS_TR: Dict[int, str] = {
-    1: "benlik/duruş/imaj; başlangıç enerjisi ve yön hissi",
-    3: "iletişim tarzın; yakın çevre, kardeşler, kısa eğitimler ve günlük trafik",
-    4: "ev/kök; iç düzen, güven duygusu ve temel ritim",
-    7: "ilişki/ortaklık; sınır, anlaşma ve karşılıklılık",
-    9: "ufuk/uzmanlaşma; eğitim, yayın, yabancılar, inançlar ve yol haritası",
-    10: "iş/itibar; hedef, görünürlük ve sorumluluk",
-    11: "topluluk/hedef; network, ekip, proje ekosistemi ve gelecek planı",
+HOUSE_LIFE_SCENE_TR = {
+    1: "kendini dışarıda nasıl taşıdığın",
+    2: "para ve özdeğer dengesi",
+    3: "mesajların, konuşmaların ve yakın çevre trafiğin",
+    4: "ev düzenin ve iç güvenlik hissin",
+    5: "yaratıcılık, keyif ve görünür üretim alanın",
+    6: "iş düzenin, alışkanlıkların ve günlük akışın",
+    7: "yakın ilişkilerde kurduğun denge",
+    8: "yakınlık, güven ve paylaşım biçimin",
+    9: "öğrenme, uzmanlaşma ve yön duygun",
+    10: "kariyer yönün ve görünürlüğün",
+    11: "arkadaş çevren, ekipler ve gelecek planların",
+    12: "iç dünyan ve geri çekilme ihtiyacın",
+}
+
+PLANET_TR: Dict[str, str] = {
+    "sun": "Güneş",
+    "moon": "Ay",
+    "mercury": "Merkür",
+    "venus": "Venüs",
+    "mars": "Mars",
+    "jupiter": "Jüpiter",
+    "saturn": "Satürn",
+    "uranus": "Uranüs",
+    "neptune": "Neptün",
+    "pluto": "Plüton",
+    "chiron": "Kiron",
+    "lilith": "Lilith",
+    "north_node": "Kuzey Ay Düğümü",
+    "south_node": "Güney Ay Düğümü",
+    "fortune": "Şans Noktası",
+    "vertex": "Vertex",
+}
+
+SIGN_TR: Dict[str, str] = {
+    "aries": "Koç",
+    "taurus": "Boğa",
+    "gemini": "İkizler",
+    "cancer": "Yengeç",
+    "leo": "Aslan",
+    "virgo": "Başak",
+    "libra": "Terazi",
+    "scorpio": "Akrep",
+    "sagittarius": "Yay",
+    "capricorn": "Oğlak",
+    "aquarius": "Kova",
+    "pisces": "Balık",
+}
+
+POINT_TR: Dict[str, str] = {
+    "ASC": "Yükselen",
+    "DSC": "Alçalan",
+    "MC": "Tepe Noktası",
+    "IC": "Dip Noktası",
+}
+
+ASPECT_TR: Dict[str, str] = {
+    "square": "kare",
+    "trine": "üçgen",
+    "sextile": "altmışlık",
+    "conjunction": "kavuşum",
+    "opposition": "karşıt",
+}
+
+HOUSE_MOTIFS_TR: Dict[int, Sequence[str]] = {
+    1: (
+        "benlik ve duruş tarafında daha net bir çizgi kurman isteniyor.",
+        "duruşun, ilk izlenimin ve başlangıç enerjin bu dönemde yeniden ayarlanıyor.",
+        "kendini ortaya koyma biçimin sadeleştikçe yön hissin de güçleniyor.",
+        "imajın ile iç niyetin arasındaki fark kapanmak istiyor.",
+        "beden dili ve öz güven hattın daha bilinçli çalışmak istiyor.",
+        "başlangıç enerjini dağıtmadan kullanman önemli hale geliyor.",
+    ),
+    3: (
+        "iletişim tarzın, yakın çevre ilişkilerin ve düşünme ritmin bu dönemde yeniden ayarlanıyor.",
+        "kardeşler, kısa eğitimler ve günlük trafik gibi 3. Ev başlıklarında netlik ihtiyacı artıyor.",
+        "mesajların kadar konuşma tonun ve zihinsel hızın da bu dönemin konusu.",
+        "yakın çevreyle kurduğun dil sadeleştikçe düşünce akışın da toparlanıyor.",
+        "kısa yolculuklar, yazışmalar ve öğrenme ritmin tek bir hatta toplanmak istiyor.",
+        "düşünceyi ifade etme biçiminle günlük koordinasyonun aynı anda ince ayar istiyor.",
+    ),
+    4: (
+        "ev, kökler ve iç güven alanında daha sakin bir düzen kurman bekleniyor.",
+        "dinlenme biçiminle duygusal temelini aynı anda güçlendiren bir dönemdesin.",
+        "özel alanındaki düzen dış dünyadaki ritmini doğrudan etkiliyor.",
+        "ev içi ritim sadeleştikçe iç güvenin daha kolay toparlanıyor.",
+        "kök duygun ve aitlik hissin yeniden yerleşmek istiyor.",
+        "iç dünyanı taşıyan temel düzen şimdi daha görünür çalışıyor.",
+    ),
+    7: (
+        "ilişkiler ve ortaklıklar tarafında sınır ile karşılıklılık yeniden tanımlanıyor.",
+        "karşındaki insanla kurduğun denge bu dönemde daha bilinçli bir ayar istiyor.",
+        "beklenti, anlaşma ve açık ilişki dili daha net kurulmak istiyor.",
+        "ilişki aynası sana hem ihtiyacını hem sınırını daha görünür kılıyor.",
+        "ortaklık kurma biçimin ve pazarlık tonun yeniden kalibre ediliyor.",
+        "yakın ilişkilerde ne verdiğin ve ne beklediğin daha açık hale gelmek istiyor.",
+    ),
+    9: (
+        "ufuk, uzmanlaşma ve eğitim hattında yeni bir yön duygusu kuruluyor.",
+        "yayın, yabancılar, inançlar ve yol haritası tarafında büyüyen bir tema var.",
+        "öğrenme biçimin ile büyük resim kurma yeteneğin aynı anda güncelleniyor.",
+        "uzmanlaşma, uzak bağlantılar ve anlam arayışın tek bir eksende toparlanıyor.",
+        "eğitim ve yayın başlıklarında daha olgun bir yöntem geliştirme zamanı.",
+        "vizyonunu taşıyan inanç ve öğrenme düzeni bu dönemde değişiyor.",
+    ),
+    10: (
+        "kariyer, itibar ve yön duygun daha görünür bir çizgiye taşınıyor.",
+        "sorumluluk alma biçimin ile görünürlük hattın aynı anda yeniden ayarlanıyor.",
+        "hedeflerinle dış dünyadaki imzan arasında daha net bir bağ kuruluyor.",
+        "iş ve itibar alanında kalıcı sonuç verecek bir düzen arıyorsun.",
+        "otoriteyle ilişkin ve kendi yön duygun şimdi daha açık hale geliyor.",
+        "dış dünyada nasıl göründüğünle neyi temsil ettiğin aynı hatta toplanıyor.",
+    ),
+    11: (
+        "topluluk, network ve ortak hedefler alanında yeni bir ritim kuruluyor.",
+        "ekip ilişkileri ve gelecek planları bu dönemde daha seçici hale geliyor.",
+        "arkadaş çevresi, proje ağı ve hedef paylaşımı tek bir eksende toparlanıyor.",
+        "ait olduğun topluluklarla kurduğun bağlar daha bilinçli bir ayar istiyor.",
+        "network içindeki yerin ve gelecek hedeflerin yeniden hizalanıyor.",
+        "ortak üretim, ekip koordinasyonu ve uzun vadeli hedefler daha görünür çalışıyor.",
+    ),
 }
 
 PLANET_ARCHETYPES_TR: Dict[str, Dict[str, Sequence[str]]] = {
@@ -248,87 +368,121 @@ TARGET_TONE_TR: Dict[str, Sequence[str]] = {
 
 PERIOD_TRACK_COPY_TR: Dict[str, Dict[str, Any]] = {
     "identity_spine": {
-        "version": "v1",
-        "lead": (
-            "{{planet_hook}} Aynı cümleyi kurup farklı duyulduğunu fark edebilirsin.",
-            "{{planet_hook}} Bu dönem sesin ve duruşun daha sahici bir çizgiye çağrılıyor.",
+        "version": "v2",
+        "period_opening": (
+            "Bu dönem önce kendini nasıl anlattığın değişiyor, sonra bunun etkisi dışarıda nasıl göründüğüne yansıyor.",
+            "Şu sıralar mesele daha çok görünmek değil; daha anlaşılır, daha tutarlı görünmek.",
         ),
         "big_picture": (
-            "Dışarıda güçlü görünme refleksi yüksekken bu etki fazlalıkları çözer ve daha güvenilir bir ifade hattı açar.",
-            "Kimlik katılaştığında sürtünme artar; esnediğinde netlik güçlenir.",
+            "Kimlik hattında gereksiz fazlalıklar ayıklanıyor. İçeride hissettiğinle dışarıda bıraktığın iz arasındaki mesafe kapanmak istiyor.",
+            "Buradaki kazanım imaj üretmek değil, daha güvenilir ve daha okunur bir ifade biçimi kurmak.",
         ),
         "mechanism": (
-            "Etki önce iletişim ritminde başlar, sonra kimliğe yansır. Önce dil netleşir, sonra duruş.",
-            "Mesaj trafiğinde başlayan bulanıklık, sınır cümlesi kurdukça dağılır.",
+            "Hikâye önce iletişim, konuşma ve yakın çevre tarafında başlıyor; sonra bunun karşılığı kimlik ve duruş alanında görülüyor.",
+            "Önce dil sadeleşiyor, ardından dışarıda nasıl algılandığın değişiyor.",
         ),
-        "contribution": (
-            "Nazik ama net sınır kurma kasın güçlenir; sezgi bulanıklık değil zamanlama üretir.",
-            "Bu dönem sonunda daha az kelimeyle daha net anlaşılmayı öğrenirsin.",
+        "growth_edge": (
+            "En kritik eşik, yanlış anlaşılmayı yalnızca ton sorunu sanmak. İçeriği netleştirmediğinde aynı konuşmayı tekrar tekrar yapmak yorabilir.",
+            "Muğlaklık uzadıkça gereksiz açıklama döngüsü başlar; o yüzden sınırı baştan kurmak önemli.",
+        ),
+        "relational_or_life_expression": (
+            "Günlük hayatta bu; önemli konuşmalarda daha çok açıklık ihtiyacı, daha seçilmiş kelimeler ve net sınırlar olarak görünür.",
+            "İnsanlar seni yanlış değil, eksik okumaya daha yatkın olabilir; bu yüzden eksik yeri sen tamamlıyorsun.",
+        ),
+        "what_it_builds": (
+            "Bu dönem sende kendini daha net ifade etme kasını geliştiriyor.",
+            "Bu dönem sende yanlış anlaşılma payını azaltan daha temiz bir ifade kası kuruyor.",
         ),
     },
     "method_shift_9_virgo": {
-        "version": "v1",
-        "lead": (
-            "{{planet_hook}} Kıvılcım, doğru yöntemle kalıcı ritme dönüşebilir.",
-            "{{planet_hook}} Hız var; asıl kazanç bunu sürdürülebilir kılmak.",
+        "version": "v2",
+        "period_opening": (
+            "Bu dönem hevesin kendisi kadar, onu nasıl sürdüreceğin de değişiyor.",
+            "Yeni bir şey denemek kolay; asıl hikâye bunu tekrar edilebilir bir yönteme çevirmende.",
         ),
         "big_picture": (
-            "Bu hat heves değil sistem üretir; küçük yöntem değişikliği rota etkisi yaratır.",
-            "Yaratıcı açılım, uzmanlaşma ve öğrenme kanalına bağlandığında büyüme kalıcı olur.",
+            "Buradaki açılım sadece yaratıcı bir kıvılcım değil; yön duygunu değiştirebilecek bir çalışma biçimi.",
+            "Küçük bir yöntem değişikliği, uzun vadede öğrenme, uzmanlaşma ve üretim hattını yeniden kurabilir.",
         ),
         "mechanism": (
-            "Akış yaratıcı denemeden başlar, sonra planlı sprint ve çıktı düzenine oturur.",
-            "Tek hedef ve ölçülebilir adım, bu açının en verimli kullanım şeklidir.",
+            "Etki önce deneme, üretim ve cesaret tarafında açılıyor; sonra bunun sonucu öğrenme, uzmanlaşma ve yön duygusunda görülüyor.",
+            "İlk kıvılcım keyif alanından geliyor, asıl dönüşüm ise bunu çalışır bir düzene bağladığında oluyor.",
         ),
-        "contribution": (
-            "Kendine ait bir çalışma sistemi kurarsın; hız dağılmadan sonuç üretir.",
-            "Yöntem netleşince karar kalitesi ve yön duygusu birlikte güçlenir.",
+        "growth_edge": (
+            "Risk, aynı anda fazla fikir açıp hiçbirini yeterince derinleştirmemek.",
+            "Hızın cazibesi ölçüyü dağıttığında gerçek kazanım yerine kısa süreli heyecan kalabilir.",
+        ),
+        "relational_or_life_expression": (
+            "Günlük hayatta bunu yeni bir kurs, yeni bir yayın fikri, yeni bir üretim biçimi ya da farklı bir yol haritası ihtiyacı olarak hissedebilirsin.",
+            "Kendini geliştirme isteğin artar; ama bu kez sadece bilgi toplamak değil, onu sonuç verecek bir düzene koymak önem kazanır.",
+        ),
+        "what_it_builds": (
+            "Bu dönem sende ilhamı çalışır bir sisteme çevirme kasını geliştiriyor.",
+            "Bu dönem sende hevesi yön duygusuna bağlama kasını güçlendiriyor.",
         ),
     },
     "network_transform_11": {
-        "version": "v1",
-        "lead": (
-            "{{planet_hook}} Küçük bir görünürlük hamlesi uzun vadeli kapı açabilir.",
-            "{{planet_hook}} Burada mesele çok kişi değil, doğru topluluk.",
+        "version": "v2",
+        "period_opening": (
+            "Bu dönem çevren, hedeflerin ve kiminle yürümek istediğin daha seçici hale geliyor.",
+            "Mesele çok insan değil; doğru çevre, doğru hedef ve doğru ortaklık.",
         ),
         "big_picture": (
-            "Kimlik duruşu netleştikçe network kendini eler; doğru çevreye hizalanma başlar.",
-            "Rolün güncellenir: neyi temsil ettiğin ve nereye çağrıldığın netleşir.",
+            "İçeride değişen güç algın, dışarıda hangi çevrede yer almak istediğini de yeniden tanımlıyor.",
+            "Eski hedefler ve yeni yön aynı anda masada; bu dönem neyi temsil etmek istediğini netleştiriyor.",
         ),
         "mechanism": (
-            "Dönüşüm içeride duruşta başlar, dışarıda topluluk ve hedef alanında yankı bulur.",
-            "Düzenli ve sade paylaşım, bu etkinin ivmesini kalıcı hale getirir.",
+            "Dönüşüm önce içeride hangi rolde durmak istediğin konusunda başlıyor; sonra bunun yankısı topluluklar, ekipler ve gelecek planlarında görülüyor.",
+            "Önce içeride eleme oluyor, sonra dışarıda çevre ve hedef kendini yeniden sıralıyor.",
         ),
-        "contribution": (
-            "Doğru yerde doğru cümleyi kurma becerin artar; fırsatlar daha seçici gelir.",
-            "Pasif kalmazsan küçük kapılar orta vadede güçlü bir konum değişimine döner.",
+        "growth_edge": (
+            "Risk, seçiciliği soğukluk ya da kontrol etme ihtiyacına çevirmek.",
+            "Her ilişkiyi yalnızca işlevine göre okumak bağı kurutabilir.",
+        ),
+        "relational_or_life_expression": (
+            "Günlük hayatta bu; bazı ekiplerden uzaklaşma, bazı hedefleri yeniden adlandırma ve seni büyüten çevreye daha bilinçli yaklaşma ihtiyacı olarak çalışır.",
+            "Kiminle görünür olacağına ve neyin parçası olacağına daha bilinçli karar vermek istersin.",
+        ),
+        "what_it_builds": (
+            "Bu dönem sende gücünü doğru çevrelerle birleştirme kasını geliştiriyor.",
+            "Bu dönem sende uzun vadeli hedefleri daha seçici kurma kasını güçlendiriyor.",
         ),
     },
     "mirror_axis_1_7": {
-        "version": "v1",
-        "lead": (
-            "{{planet_hook}} Yakınlık bu dönemde belirsizlikle değil çerçeveyle büyür.",
-            "{{planet_hook}} İlişki dilinde net tanım altın değerinde.",
+        "version": "v2",
+        "period_opening": (
+            "Bu dönem ilişkilerde yakınlık kadar tanım ve çerçeve ihtiyacı da büyüyor.",
+            "Karşı tarafı anlamak kadar, kendi beklentini açık söylemek de önemli hale geliyor.",
         ),
         "big_picture": (
-            "İdealizasyon ve projeksiyon arttığında yol; net beklenti, net sınır ve net teyitten geçer.",
-            "Ayna etkisi büyüdükçe hız değil sıra önemlidir: önce niyet, sonra adım.",
+            "İlişki tarafında mesele sadece bağ kurmak değil; bağı taşıyacak dili ve sınırı kurmak.",
+            "Ayna etkisi büyüdüğünde ne hissettiğin kadar neyi açık söylediğin de belirleyici olur.",
         ),
         "mechanism": (
-            "Etki önce iletişim tonunda belirir, sonra ilişki dinamiğine taşınır.",
-            "Yazılı netlik ve tekrar eden çerçeve, bu hatta sisin dağılmasını hızlandırır.",
+            "Süreç önce iletişim tonunda, mesajlarda ve beklenti konuşmalarında başlar; sonra doğrudan ilişki dengesine taşınır.",
+            "Önce konuşma biçimi değişir, ardından ilişkinin ritmi ve güven duygusu buna cevap verir.",
         ),
-        "contribution": (
-            "Kendini kaybetmeden bağ kurma kasın güçlenir: nazik ama net sınır.",
-            "İlişki dilin olgunlaşır; güven belirsizlikten değil anlaşmadan büyür.",
+        "growth_edge": (
+            "Risk, ima ile anlaşılmayı beklemek ya da karşı tarafın tepkisini bütün niyetin yerine koymak.",
+            "Belirsizlik uzadıkça hem kırgınlık hem yanlış okuma artabilir.",
+        ),
+        "relational_or_life_expression": (
+            "Günlük hayatta bu; ilişkilerde beklenti konuşmalarının artması, ortak planların daha net kurulması ve sınır cümlelerinin daha önemli hale gelmesi olarak yaşanabilir.",
+            "Yakın bağlarda yumuşak ama açık bir dil bu dönemin ana taşıyıcısı olur.",
+        ),
+        "what_it_builds": (
+            "Bu dönem sende yakınlık içinde kendini kaybetmeden kalabilme kasını geliştiriyor.",
+            "Bu dönem sende ilişkide beklentiyi açık kurma kasını güçlendiriyor.",
         ),
     },
     "default": {
-        "version": "v1",
-        "lead": ("{{planet_hook}} Bu dönem ritim kurdukça netleşir.",),
-        "big_picture": ("Gökyüzü belirli bir alanı görünür kılıyor; küçük ve düzenli adım en iyi çalışır.",),
-        "mechanism": ("Etki önce gündelik ritimde başlar, sonra davranış kalıbına yerleşir.",),
-        "contribution": ("Bu dönem daha net seçim ve daha sağlam ritim kurma fırsatı verir.",),
+        "version": "v2",
+        "period_opening": ("Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.",),
+        "big_picture": ("Mesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.",),
+        "mechanism": ("Etki önce gündelik hayatta görünür oluyor, sonra bunun sonucu daha kalıcı bir davranış değişimine dönüşüyor.",),
+        "growth_edge": ("Risk, ilk hissi sonuç sanıp süreci aceleye getirmek.",),
+        "relational_or_life_expression": ("Günlük hayatta bu, daha seçici kararlar ve daha net sınırlar olarak hissedilebilir.",),
+        "what_it_builds": ("Bu dönem sende daha net seçim yapma kasını geliştiriyor.",),
     },
 }
 
@@ -370,18 +524,84 @@ def _safe_text(s: Any) -> str:
     return str(s or "").strip()
 
 
+def _canonical_key(value: Any) -> str:
+    return str(value or "").strip().lower().replace(" ", "_")
+
+
+def _planet_tr(value: Any) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    upper = raw.upper()
+    if upper in POINT_TR:
+        return POINT_TR[upper]
+    key = _canonical_key(raw)
+    return PLANET_TR.get(key, raw.title())
+
+
+def _sign_tr(value: Any) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    return SIGN_TR.get(_canonical_key(raw), raw.title())
+
+
+def _point_tr(value: Any) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    upper = raw.upper()
+    if upper in POINT_TR:
+        return POINT_TR[upper]
+    return _planet_tr(raw)
+
+
+def _aspect_tr(value: Any) -> str:
+    raw = str(value or "").strip().lower()
+    return ASPECT_TR.get(raw, raw)
+
+
+def _phase_hint_tr(value: Any) -> str:
+    phase = str(value or "").strip().lower()
+    return {
+        "applying": "yaklaşıyor",
+        "exact": "tam üstünde",
+        "exactish": "tam üstünde",
+        "separating": "geri çekiliyor",
+    }.get(phase, "")
+
+
 def strip_tech_tokens(text: str) -> str:
     out = _safe_text(text)
+    out = _TECH_VALUE_RE.sub("", out)
     out = _TECH_TOKENS_RE.sub("", out)
     out = re.sub(r"\s{2,}", " ", out).strip()
     out = re.sub(r"\s+([.,;:!?])", r"\1", out)
+    out = re.sub(r"\(\s*\)", "", out)
     return out
 
 
-def house_motif_line(house: int | None) -> str:
+def render_signature_tr(event: Mapping[str, Any]) -> str:
+    transit_body = _planet_tr(event.get("transit_body") or "Transit")
+    natal_point = _point_tr(event.get("natal_point") or "Nokta")
+    aspect = _aspect_tr(event.get("aspect"))
+    houses = event.get("houses") if isinstance(event.get("houses"), Mapping) else {}
+    transit_house = _safe_int(houses.get("transit_in_natal_house"))
+    house_part = f" ({transit_house}. Ev)" if transit_house else ""
+    phase = _phase_hint_tr(event.get("phase"))
+    tail = phase or "şu an güçlü"
+    return f"{transit_body} {natal_point} ile {aspect}{house_part} — {tail}"
+
+
+def house_motif_line(house: int | None, seed: str | None = None) -> str:
     if not house:
         return ""
-    return HOUSE_MOTIFS_TR.get(int(house), "")
+    variants = list(HOUSE_MOTIFS_TR.get(int(house), ()))
+    if not variants:
+        return ""
+    raw_seed = seed or f"house:{int(house)}"
+    idx = int(hashlib.sha1(raw_seed.encode("utf-8")).hexdigest()[:8], 16) % len(variants)
+    return str(variants[idx]).strip()
 
 
 def compose_phrase_pack(
@@ -481,8 +701,6 @@ def compose_phrase_pack(
         upper_add = f"{upper_add} {mech}."
 
     rulership_line = _rulership_line(rulership)
-    if rulership_line:
-        upper_add = f"{rulership_line} {upper_add}"
 
     if transit_house == 5 and is_uranus_mars:
         conflict_add = f"{conflict_add} 5. Evde üretim ve sahne tarafında elektrikli bir itki var."
@@ -515,17 +733,21 @@ def compose_phrase_pack(
         "guidance_add": _sanitize_bullets(guidance_add, exact_max=2),
         "watch_out_add": _sanitize_bullets(watch_add, exact_max=1),
         "scene_line": _limit_sentences(_sanitize(scene_line), 1),
+        "technical_note": _limit_sentences(_sanitize(rulership_line), 1),
     }
     return out
 
 
 def _build_scene_line(transit_house: int | None, target_house: int | None) -> str:
     if transit_house and target_house and transit_house != target_house:
-        return f"Etki {transit_house}. Evde başlar; {target_house}. Ev temasına yansır."
+        return (
+            f"Etki önce {HOUSE_LIFE_SCENE_TR.get(transit_house, f'{transit_house}. ev alanı')} tarafında açılır; "
+            f"sonra {HOUSE_LIFE_SCENE_TR.get(target_house, f'{target_house}. ev alanı')} alanında sonuç verir."
+        )
     if target_house:
-        return f"Etki {target_house}. Ev hattında görünür olur."
+        return f"Etki en çok {HOUSE_LIFE_SCENE_TR.get(target_house, f'{target_house}. ev alanı')} tarafında görünür olur."
     if transit_house:
-        return f"Etki {transit_house}. Ev hattında toparlanma ister."
+        return f"Etki en çok {HOUSE_LIFE_SCENE_TR.get(transit_house, f'{transit_house}. ev alanı')} tarafında çalışır."
     return ""
 
 
@@ -562,10 +784,10 @@ def _rulership_line(rulership_houses: Sequence[Mapping[str, Any]]) -> str:
         return ""
     if len(houses) == 1:
         h = houses[0]
-        return f"Arka bağlantı: {h}. Ev ({HOUSE_LABEL_TR.get(h, 'genel')}) hattına düşer."
+        return f"Teknik yankı: {h}. Ev ({HOUSE_LABEL_TR.get(h, 'genel')}) hattına uzanır."
     a, b = houses[0], houses[1]
     return (
-        f"Arka bağlantı: {a}. Ev ({HOUSE_LABEL_TR.get(a, 'genel')}) ve "
+        f"Teknik yankı: {a}. Ev ({HOUSE_LABEL_TR.get(a, 'genel')}) ve "
         f"{b}. Ev ({HOUSE_LABEL_TR.get(b, 'genel')}) arasında çalışır."
     )
 
@@ -618,38 +840,42 @@ def _sanitize_bullets(values: Sequence[str], *, exact_max: int) -> List[str]:
 
 def _build_why_now(event: Mapping[str, Any]) -> str:
     orb = _safe_float(event.get("orb_deg"), default=9.9)
-    if orb <= 0.6:
-        orb_phrase = "Orb çok yakın"
-    elif orb <= 1.6:
-        orb_phrase = "Orb yakın"
+    if orb <= 0.3:
+        orb_phrase = "Etki şu an çok belirgin."
+    elif orb <= 1.0:
+        orb_phrase = "Etki şu sıralar güçlü biçimde hissediliyor."
     else:
-        orb_phrase = "Orb geniş"
+        orb_phrase = "Tema şimdiden çalışıyor."
 
     bucket = str(event.get("bucket") or "").strip().lower()
     duration_phrase = {
-        "long": "aylar süren etki",
-        "medium": "haftalar süren etki",
-        "short": "günlük kısa etki",
-    }.get(bucket, "orta süreli etki")
+        "long": "Bu dalga birkaç ay boyunca etkisini sürdürebilir.",
+        "medium": "Bu tema birkaç hafta gündemde kalabilir.",
+        "short": "Bu etki kısa ama dikkat çekici bir pencere açar.",
+    }.get(bucket, "Bu etki bir süre daha çalışır.")
 
     natal_point = str(event.get("natal_point") or "").strip().upper()
-    angle_phrase = "angle tetikleniyor" if natal_point in {"ASC", "DSC", "MC", "IC"} else "açı hattı aktif"
+    angle_phrase = {
+        "ASC": "Kimlik hattı aktif.",
+        "DSC": "İlişki hattı aktif.",
+        "MC": "Yön ve kariyer hattı aktif.",
+        "IC": "Ev ve iç güven hattı aktif.",
+    }.get(natal_point, "")
 
     phase = str(event.get("phase") or "").strip().lower()
     phase_phrase = {
-        "exact": "exact",
-        "exactish": "exact",
-        "applying": "yaklaşıyor",
-        "separating": "çözülüyor",
+        "exact": "Ana vurgu tam odakta.",
+        "exactish": "Ana vurgu tam odakta.",
+        "applying": "Etki büyüyor.",
+        "separating": "Ana vurgu geçti ama yankısı sürüyor.",
     }.get(phase, "")
-    parts = [orb_phrase, duration_phrase, angle_phrase]
+    parts = [orb_phrase, duration_phrase]
+    if angle_phrase:
+        parts.append(angle_phrase)
     if phase_phrase:
         parts.append(phase_phrase)
-    text = " + ".join(parts) + "."
+    text = " ".join(parts[:3])
     text = _sanitize(text)
-    words = text.split()
-    if len(words) > 14:
-        text = " ".join(words[:14]).rstrip(".,;:!?") + "."
     return text
 
 
@@ -715,9 +941,9 @@ def _append_unique_sentence(base: str, addon: str) -> str:
 
 def period_big_picture(domain: str, seed: int, enable_fun: bool = True) -> str:
     pool = [
-        f"Bu dönem gökyüzü {domain} alanında ince bir ayar açıyor. Bazen aynı cümleyi kurup bambaşka duyulduğunu fark edebilirsin. Ama süreç seni daha gerçek ve daha güvenilir bir ifadeye taşıyor.",
-        f"Bu dönem {domain} tarafında bir güncelleme var. Önce sistem ağırlaşıyor gibi görünür, sonra yeni ritim yerine oturur. Kafa karışıklığı gibi görünen şey aslında yeniden yön bulma süreci.",
-        f"Bu dönem {domain} tarafında az ama net çizgisi büyüyor. His var, sezgi var. Asıl kazanım ise çerçeve kurabilmek.",
+        f"Bu dönem {domain} alanında ne yaptığın kadar bunu nasıl taşıdığın da değişiyor. İlk bakışta karışık gelen şey, aslında daha temiz bir yön kurma ihtiyacından geliyor.",
+        f"Bu süreç {domain} tarafında fazlalıkları ayıklıyor. Dışarıdan baskı gibi görünen şey, içeride daha net ve daha tutarlı bir çizgi istemesinden kaynaklanıyor.",
+        f"Buradaki tema büyük sözler vermek değil; {domain} alanında daha anlaşılır, daha seçici ve daha çalışır bir düzen kurmak.",
     ]
     return _pick(pool, seed)
 
@@ -748,8 +974,8 @@ def period_mechanism_chain(
         ruler_house_txt = f"{ruler_house}. evde" if ruler_house else "ilgili evde"
 
         pool = [
-            f"{angle_tr} çizgin {sign} temasında çalıştığı için dış dünyaya net bir yerden yaklaşırsın. Bu çizginin yöneticisi {ruler} haritanda {ruler_house_txt} çalışır. Şimdi {transit_body} bu hatta {aspect} açıyla dokununca değişim önce {start_theme} tarafında hissedilir; sonuçta {end_theme} alanında görünür olur.",
-            f"Bu dönem {angle_tr} hattı hassas. {sign} çizgisinin yöneticisi {ruler} {ruler_house_txt} olduğu için gökyüzündeki etki önce {start_theme} düzeninde başlar. {transit_body} etkisi sonunda {end_theme} tarafında kalıcı bir ayara dönüşür.",
+            f"Bu dönemde hikâye önce {start_theme} tarafında başlıyor. Sonra bunun etkisi {angle_tr} üzerinden {end_theme} alanına yerleşiyor. {sign} tonunun yöneticisi {ruler} {ruler_house_txt} çalıştığı için mesele yüzeyde kalmıyor; daha kalıcı bir ayara dönüşmek istiyor.",
+            f"{angle_tr} hattı bu süreçte daha hassas. Etki önce {start_theme} tarafında beliriyor, sonra seni {end_theme} alanında daha bilinçli davranmaya zorluyor. {ruler} {ruler_house_txt} olduğu için öğrendiğin şey kısa süreli olmuyor.",
         ]
         return _pick(pool, seed)
 
@@ -761,13 +987,13 @@ def period_mechanism_chain(
         dispositor = str(target_chain.get("dispositor") or "").strip()
 
         pool = [
-            f"{planet} haritanda {house_txt} çalıştığı için bu dönem hikâye {end_theme} alanına bağlanıyor. {sign} vurgusu yöntemi ve detayları büyütür, {dispositor} tarafı bunu zihinsel bir çerçeveye oturtma ihtiyacını artırır. {transit_body} etkisi {start_theme} tarafında başlar ve {end_theme} tarafında kalıcı bir ayara döner.",
+            f"Bu dönem etki önce {start_theme} tarafında açılıyor, ama asıl gelişim {planet} yüzünden {end_theme} alanına bağlanıyor. {sign} tonu meseleyi yöntem ve detay tarafına çekiyor; bu yüzden yaşanan şey geçici bir duygu değil, kalıcı bir öğrenme haline geliyor.",
         ]
         return _pick(pool, seed)
 
     return _pick(
         [
-            f"{transit_body} ile {aspect} teması bu dönem {start_theme} tarafında başlıyor ve zamanla {end_theme} alanına yayılıyor. Bu yüzden küçük görünen bir detay daha büyük bir yön değişimine bağlanabilir."
+            f"Bu dönem hikâye önce {start_theme} tarafında başlıyor, sonra yavaş yavaş {end_theme} alanına yayılıyor. Yani küçük görünen bir hareket daha büyük bir yön değişimini tetikleyebilir."
         ],
         seed,
     )
@@ -781,7 +1007,7 @@ def period_upper_meaning(
     enable_fun: bool = True,
 ) -> str:
     pool = [
-        f"Bu transitin amacı bir şeyi bozmak değil, {skill_gain} kasını büyütmek. Sende bunun karşılığı {promise_theme} temasıyla birleşiyor. Netlik arttıkça hem kendini hem ilişkilerini daha az yorarak taşırsın. İyi kullanırsan bu dönem bittiğinde sende kalan şey daha az kelimeyle daha çok güven olur.",
-        f"Bu dönem {promise_theme} tarafında olgunlaşma getiriyor. Zorlayan yer sisin içinden çerçeveyi bulmak, hediyesi ise {skill_gain}. Süreç tamamlandığında daha gerçek bir yön hissiyle ilerlersin.",
+        f"Bu dönemin asıl hediyesi {skill_gain} kasını büyütmesi. Bu, sende {promise_theme} temasıyla birleştiğinde hem kararlarını hem ilişkilerini daha az yorarak taşımanı sağlar.",
+        f"Buradaki gelişim gösterişli değil, kalıcı. Süreç bittiğinde sende kalan şey daha net seçim, daha sakin güç ve {skill_gain} becerisi olur.",
     ]
     return _pick(pool, seed)

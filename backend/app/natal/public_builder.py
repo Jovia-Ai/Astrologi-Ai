@@ -1,9 +1,21 @@
 from __future__ import annotations
 
 import os
-from typing import Any, Dict
+from typing import Any, Dict, Mapping
 
-from app.narrative.humanize_tr import humanize_compact_item, humanize_tr_text
+from app.narrative.narrative_contract_v2 import build_contract_descriptor_v2
+from app.narrative.humanize_tr import (
+    clean_public_block_tr,
+    cleanup_tr_punctuation,
+    humanize_compact_item,
+    humanize_natal_core_story_tr,
+    humanize_natal_layer_tr,
+    humanize_tr_text,
+    sentence_safe_clamp,
+)
+from app.natal.narrative.aspect_bundle_selector import select_aspect_bundles
+from app.natal.profile_insights import build_profile_insight_modules
+from app.natal.narrative.phrase_lib_tr_profile import humanize_public_chips, soft_public_astro_hint
 from .public_models import (
     PublicFlags,
     PublicMetaSummary,
@@ -40,11 +52,29 @@ def build_public_natal_view(response: Dict[str, Any], *, locale: str = "tr", inc
 
     raw_core_story = response.get("core_story")
     core_story = (
-        humanize_tr_text(str(raw_core_story), max_sentences=14)
+        humanize_natal_core_story_tr(str(raw_core_story))
         if isinstance(raw_core_story, str) and raw_core_story.strip()
         else raw_core_story
     )
     core_story_ui = _humanize_core_story_ui(response.get("core_story_ui"))
+
+    personality_imprint = _humanize_personality_imprint(
+        response.get("personality_imprint"),
+        include_debug=include_debug,
+    )
+    supporting_threads = _humanize_supporting_threads(response.get("supporting_threads"))
+    narrative_v2 = _build_narrative_v2(response, include_debug=include_debug)
+    profile_insight_modules = build_profile_insight_modules(
+        moon_sign=_extract_planet_sign(response.get("planets"), "Moon"),
+    )
+    profile_narrative = _humanize_profile_narrative(
+        response.get("profile_narrative"),
+        include_debug=include_debug,
+        supporting_threads=supporting_threads,
+        personality_imprint=personality_imprint,
+        narrative_v2=narrative_v2,
+        insight_modules=profile_insight_modules,
+    )
 
     public = PublicNatalView(
         locale=locale or "tr",
@@ -64,9 +94,11 @@ def build_public_natal_view(response: Dict[str, Any], *, locale: str = "tr", inc
             domain=narrative_anchor.get("domain"),
         ),
         natal_graph_compact=_allowlist_natal_graph(response.get("natal_graph_compact")),
-        profile_narrative=_humanize_profile_narrative(response.get("profile_narrative"), include_debug=include_debug),
+        personality_imprint=personality_imprint,
+        profile_narrative=profile_narrative,
         sections_v2=_humanize_sections_v2(response.get("sections_v2")),
-        supporting_threads=_humanize_supporting_threads(response.get("supporting_threads")),
+        supporting_threads=supporting_threads,
+        narrative_v2=narrative_v2,
         flags=PublicFlags(
             dynamic_insights_enabled=dynamic_insights_enabled,
             premium_mode=bool(response.get("premium_mode")),
@@ -133,7 +165,7 @@ def _humanize_supporting_threads(value: Any) -> list[dict[str, Any]]:
         for key, max_sentences in (("one_liner", 2), ("paragraph", 5), ("body", 5), ("micro", 2)):
             raw = entry.get(key)
             if isinstance(raw, str) and raw.strip():
-                entry[key] = humanize_tr_text(raw, max_sentences=max_sentences)
+                entry[key] = humanize_natal_layer_tr(raw, max_sentences=max_sentences, layer="thread")
         out.append(entry)
     return out
 
@@ -149,35 +181,539 @@ def _humanize_sections_v2(value: Any) -> list[dict[str, Any]]:
         for key, max_sentences in (("subtitle", 2), ("body", 5), ("micro", 2)):
             raw = entry.get(key)
             if isinstance(raw, str) and raw.strip():
-                entry[key] = humanize_tr_text(raw, max_sentences=max_sentences)
+                entry[key] = humanize_natal_layer_tr(raw, max_sentences=max_sentences, layer="section")
         out.append(entry)
     return out
 
 
-def _humanize_profile_narrative(value: Any, *, include_debug: bool = False) -> Dict[str, Any] | None:
-    if not isinstance(value, dict):
+_PROFILE_BLOCK_FAMILY_BY_ID = {
+    "identity_aura": "self_definition",
+    "mind_voice": "mind_mechanics",
+    "drive_rhythm": "desire_style",
+    "love_depth": "intimacy_guard",
+    "career_visibility": "visible_power",
+    "home_roots": "retreat_recharge",
+    "luck_creation": "creative_channel",
+}
+
+_PROFILE_BUNDLE_FAMILY_BY_TYPE = {
+    "contradiction_bundle": "contradiction_core",
+    "emotional_regulation_bundle": "protection_pattern",
+    "mental_style_bundle": "mind_mechanics",
+    "relational_pattern_bundle": "intimacy_guard",
+    "angle_identity_bundle": "outer_inner_split",
+    "pressure_growth_bundle": "control_vs_flow",
+    "soft_capacity_bundle": "creative_channel",
+    "personal_core_bundle": "self_definition",
+}
+
+
+def _extract_planet_sign(value: Any, target_planet: str) -> str:
+    planets = value if isinstance(value, list) else []
+    target = target_planet.strip().lower()
+    for item in planets:
+        if not isinstance(item, Mapping):
+            continue
+        label = str(item.get("planet") or item.get("name") or "").strip().lower()
+        if label != target:
+            continue
+        sign = str(item.get("sign") or item.get("zodiac_sign") or "").strip()
+        if sign:
+            return sign
+    return ""
+
+
+def _humanize_profile_narrative(
+    value: Any,
+    *,
+    include_debug: bool = False,
+    supporting_threads: list[dict[str, Any]] | None = None,
+    personality_imprint: dict[str, Any] | None = None,
+    narrative_v2: dict[str, Any] | None = None,
+    insight_modules: list[dict[str, Any]] | None = None,
+) -> Dict[str, Any] | None:
+    payload = value if isinstance(value, dict) else {}
+    if not payload and not insight_modules:
         return None
-    public_payload = value.get("profile_public") if isinstance(value.get("profile_public"), dict) else {}
+    public_payload = payload.get("profile_public") if isinstance(payload.get("profile_public"), dict) else {}
     blocks = public_payload.get("blocks") if isinstance(public_payload.get("blocks"), list) else []
     normalized_blocks: list[dict[str, Any]] = []
     for item in blocks:
         if not isinstance(item, dict):
             continue
         entry = dict(item)
-        for key, max_sentences in (("headline", 2), ("teaser", 2), ("body", 5)):
-            raw = entry.get(key)
-            if isinstance(raw, str) and raw.strip():
-                entry[key] = humanize_tr_text(raw, max_sentences=max_sentences)
-        normalized_blocks.append(entry)
+        block_id = str(entry.get("id") or "").strip()
+        headline = entry.get("headline")
+        if isinstance(headline, str) and headline.strip():
+            entry["headline"] = _soft_word_clamp(humanize_tr_text(headline, max_sentences=2), 34)
+        teaser = entry.get("teaser")
+        if isinstance(teaser, str) and teaser.strip():
+            entry["teaser"] = _soft_word_clamp(humanize_tr_text(teaser, max_sentences=2), 140)
+        body = entry.get("body")
+        if isinstance(body, str) and body.strip():
+            entry["body"] = sentence_safe_clamp(humanize_tr_text(body, max_sentences=4), max_chars=520, max_sentences=4)
+        micro = entry.get("micro")
+        if isinstance(micro, str):
+            entry["micro"] = sentence_safe_clamp(humanize_tr_text(micro, max_sentences=2), max_chars=160, max_sentences=2) if micro.strip() else ""
+        astro_hint = entry.get("astro_hint")
+        entry["astro_hint"] = (
+            _soft_word_clamp(
+                soft_public_astro_hint(block_id, str(astro_hint or "").strip()),
+                72,
+            )
+            if isinstance(astro_hint, str) and astro_hint.strip()
+            else soft_public_astro_hint(block_id, "")
+        )
+        astro_sources = entry.get("astro_sources") if isinstance(entry.get("astro_sources"), list) else []
+        entry["astro_sources"] = [
+            cleanup_tr_punctuation(str(item).strip())
+            for item in astro_sources
+            if str(item).strip()
+        ][:3]
+        entry["chips"] = humanize_public_chips(
+            block_id,
+            entry.get("chips") if isinstance(entry.get("chips"), list) else [],
+        )
+        normalized_blocks.append(clean_public_block_tr(entry))
+    v3_payload = _build_profile_narrative_v3(
+        normalized_blocks,
+        supporting_threads=supporting_threads or [],
+        personality_imprint=personality_imprint or {},
+        narrative_v2=narrative_v2 or {},
+    )
     out: Dict[str, Any] = {
         "profile_public": {
             "engine_version": public_payload.get("engine_version"),
             "blocks": normalized_blocks,
+            "insight_modules": [
+                dict(item)
+                for item in (insight_modules or [])
+                if isinstance(item, dict)
+            ],
+            **v3_payload,
         }
     }
-    if include_debug and isinstance(value.get("profile_internal"), dict):
-        out["profile_internal"] = value.get("profile_internal")
+    if include_debug and isinstance(payload.get("profile_internal"), dict):
+        out["profile_internal"] = payload.get("profile_internal")
     return out
+
+
+def _build_profile_narrative_v3(
+    normalized_blocks: list[dict[str, Any]],
+    *,
+    supporting_threads: list[dict[str, Any]],
+    personality_imprint: dict[str, Any],
+    narrative_v2: dict[str, Any],
+) -> dict[str, Any]:
+    candidate_blocks: list[dict[str, Any]] = [
+        _augment_profile_block(
+            block,
+            family=_PROFILE_BLOCK_FAMILY_BY_ID.get(str(block.get("id") or "").strip(), "identity"),
+            emphasis="candidate",
+            origin="profile_block",
+        )
+        for block in normalized_blocks
+    ]
+
+    boosted_families = {
+        _PROFILE_BUNDLE_FAMILY_BY_TYPE.get(
+            str(bundle.get("bundle_type") or "").strip(),
+            "",
+        )
+        for bundle in _selected_bundles_from_v2(narrative_v2)
+    }
+    boosted_families.update(
+        _profile_family_for_thread(
+            str(thread.get("section_id") or thread.get("id") or "").strip(),
+            str(thread.get("title") or "").strip(),
+        )
+        for thread in supporting_threads
+    )
+    boosted_families.discard("")
+
+    identity_block = next(
+        (
+            block
+            for block in candidate_blocks
+            if str(block.get("id") or "").strip() == "identity_aura"
+        ),
+        None,
+    )
+    remaining_blocks = [
+        block for block in candidate_blocks if block is not identity_block
+    ]
+    remaining_blocks.sort(
+        key=lambda block: _score_profile_block_for_v3(
+            block,
+            boosted_families=boosted_families,
+        ),
+        reverse=True,
+    )
+
+    core_blocks = []
+    if identity_block is not None:
+        core_blocks.append(
+            _augment_profile_block(
+                identity_block,
+                family=str(identity_block.get("family") or "self_definition"),
+                emphasis="core",
+                origin=str(identity_block.get("origin") or "profile_block"),
+            )
+        )
+    for block in remaining_blocks[: max(0, 4 - len(core_blocks))]:
+        core_blocks.append(
+            _augment_profile_block(
+                block,
+                family=str(block.get("family") or "identity"),
+                emphasis="core",
+                origin=str(block.get("origin") or "profile_block"),
+            )
+        )
+
+    core_ids = {str(block.get("id") or "").strip() for block in core_blocks}
+    extra_blocks: list[dict[str, Any]] = [
+        _augment_profile_block(
+            block,
+            family=str(block.get("family") or "identity"),
+            emphasis="extra",
+            origin=str(block.get("origin") or "profile_block"),
+        )
+        for block in candidate_blocks
+        if str(block.get("id") or "").strip() not in core_ids
+    ]
+
+    for bundle in _selected_bundles_from_v2(narrative_v2)[:2]:
+        synthesized = _bundle_as_profile_block(bundle)
+        if synthesized:
+            extra_blocks.append(synthesized)
+
+    for thread in supporting_threads[:2]:
+        synthesized = _thread_as_profile_block(thread)
+        if synthesized:
+            extra_blocks.append(synthesized)
+
+    extra_blocks = _dedupe_profile_cards(extra_blocks)[:6]
+
+    detail_cards: list[dict[str, Any]] = []
+    for block in [*core_blocks, *extra_blocks]:
+        detail_cards.append(_detail_card_from_profile_block(block))
+
+    for entry in _personality_imprint_detail_cards(personality_imprint)[:4]:
+        detail_cards.append(entry)
+
+    detail_cards = _dedupe_profile_cards(detail_cards)[:12]
+
+    return {
+        "schema_version": "profile_narrative_public_v3",
+        "core_blocks": core_blocks,
+        "extra_blocks": extra_blocks,
+        "detail_cards": detail_cards,
+    }
+
+
+def _augment_profile_block(
+    block: Mapping[str, Any],
+    *,
+    family: str,
+    emphasis: str,
+    origin: str,
+) -> dict[str, Any]:
+    out = dict(block)
+    card_key = str(out.get("card_key") or "").strip() or f"{str(out.get('id') or 'block').strip()}_detail"
+    out["family"] = family
+    out["emphasis"] = emphasis
+    out["origin"] = origin
+    out["card_key"] = card_key
+    return out
+
+
+def _score_profile_block_for_v3(
+    block: Mapping[str, Any],
+    *,
+    boosted_families: set[str],
+) -> int:
+    family = str(block.get("family") or "").strip()
+    astro_sources = block.get("astro_sources") if isinstance(block.get("astro_sources"), list) else []
+    chips = block.get("chips") if isinstance(block.get("chips"), list) else []
+    score = 0
+    score += min(len(astro_sources), 3) * 4
+    score += min(len(chips), 4) * 2
+    if str(block.get("astro_hint") or "").strip():
+        score += 2
+    if family in boosted_families:
+        score += 5
+    return score
+
+
+def _selected_bundles_from_v2(narrative_v2: dict[str, Any]) -> list[dict[str, Any]]:
+    selector = narrative_v2.get("aspect_bundle_selector")
+    if not isinstance(selector, dict):
+        return []
+    selected = selector.get("selected_bundles")
+    if not isinstance(selected, list):
+        return []
+    return [item for item in selected if isinstance(item, dict)]
+
+
+def _bundle_as_profile_block(bundle: Mapping[str, Any]) -> dict[str, Any] | None:
+    bundle_type = str(bundle.get("bundle_type") or "").strip()
+    bundle_id = str(bundle.get("bundle_id") or "").strip() or bundle_type or "bundle"
+    recognition = [cleanup_tr_punctuation(str(item).strip()) for item in (bundle.get("recognition_tags") or []) if str(item).strip()]
+    gifts = [cleanup_tr_punctuation(str(item).strip()) for item in (bundle.get("gift_tags") or []) if str(item).strip()]
+    reflex = [cleanup_tr_punctuation(str(item).strip()) for item in (bundle.get("reflex_tags") or []) if str(item).strip()]
+    domains = [cleanup_tr_punctuation(str(item).strip()) for item in (bundle.get("domains") or []) if str(item).strip()]
+    if not recognition and not gifts and not reflex:
+        return None
+    family = _PROFILE_BUNDLE_FAMILY_BY_TYPE.get(bundle_type, "inner_layer")
+    title = {
+        "outer_inner_split": "Dışarıdan ve içeriden",
+        "mind_mechanics": "Zihnin nasıl çalışıyor",
+        "protection_pattern": "Kendini nasıl koruyorsun",
+        "intimacy_guard": "Yakınlıkta hangi tarafın açılıyor",
+        "control_vs_flow": "Tutma ve bırakma dengesi",
+        "creative_channel": "Akışın nerede güçleniyor",
+        "self_definition": "Sende kolay tanınan çizgi",
+        "contradiction_core": "İçeride iki yönün nasıl çalışıyor",
+    }.get(family, "Sende çalışan ikinci katman")
+    teaser_parts = [
+        recognition[:3] and " • ".join(recognition[:3]),
+        gifts[:2] and f"Güç: {' • '.join(gifts[:2])}",
+    ]
+    body_parts = [
+        domains and f"Alanlar: {' • '.join(domains)}",
+        recognition and f"İlk hissedilen çizgi: {' • '.join(recognition)}",
+        gifts and f"Güçlü taraf: {' • '.join(gifts)}",
+        reflex and f"Sıkışınca çalışan refleks: {' • '.join(reflex)}",
+    ]
+    entry = {
+        "id": f"bundle_{bundle_id}",
+        "headline": title,
+        "teaser": " ".join([part for part in teaser_parts if part]).strip() or title,
+        "subtitle": "",
+        "body": "\n\n".join([part for part in body_parts if part]).strip(),
+        "micro": "",
+        "astro_hint": "",
+        "astro_sources": [],
+        "chips": domains[:3] or gifts[:3],
+        "family": family,
+        "emphasis": "extra",
+        "origin": "narrative_v2_bundle",
+        "card_key": f"{bundle_id}_detail",
+    }
+    return clean_public_block_tr(entry)
+
+
+def _thread_as_profile_block(thread: Mapping[str, Any]) -> dict[str, Any] | None:
+    title = cleanup_tr_punctuation(str(thread.get("title") or "").strip())
+    teaser = cleanup_tr_punctuation(str(thread.get("one_liner") or "").strip())
+    body = cleanup_tr_punctuation(str(thread.get("paragraph") or thread.get("body") or "").strip())
+    if not title or not teaser:
+        return None
+    section_id = str(thread.get("section_id") or thread.get("id") or "").strip()
+    family = _profile_family_for_thread(section_id, title)
+    entry = {
+        "id": str(thread.get("id") or section_id or title).strip(),
+        "headline": title,
+        "teaser": teaser,
+        "subtitle": "",
+        "body": body,
+        "micro": cleanup_tr_punctuation(str(thread.get("micro") or "").strip()),
+        "astro_hint": "",
+        "astro_sources": [],
+        "chips": [cleanup_tr_punctuation(str(item).strip()) for item in (thread.get("chips") or []) if str(item).strip()][:3],
+        "family": family,
+        "emphasis": "extra",
+        "origin": "supporting_thread",
+        "card_key": f"{str(thread.get('id') or section_id or 'thread').strip()}_detail",
+    }
+    return clean_public_block_tr(entry)
+
+
+def _profile_family_for_thread(section_id: str, title: str) -> str:
+    label = f"{section_id} {title}".lower()
+    if "mind" in label or "zihin" in label:
+        return "mind_mechanics"
+    if "identity" in label or "kimlik" in label:
+        return "outer_inner_split"
+    if "home" in label or "kök" in label or "ev" in label:
+        return "retreat_recharge"
+    if "relation" in label or "iliş" in label or "yakın" in label:
+        return "intimacy_guard"
+    return "inner_layer"
+
+
+def _detail_card_from_profile_block(block: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "card_key": str(block.get("card_key") or "").strip() or f"{str(block.get('id') or 'block').strip()}_detail",
+        "id": str(block.get("id") or "").strip(),
+        "family": str(block.get("family") or "").strip(),
+        "origin": str(block.get("origin") or "").strip(),
+        "eyebrow": str(block.get("headline") or "").strip(),
+        "title": str(block.get("headline") or "").strip(),
+        "summary": str(block.get("teaser") or "").strip(),
+        "body": str(block.get("body") or "").strip(),
+        "micro": str(block.get("micro") or "").strip(),
+        "chips": list(block.get("chips") or [])[:4],
+        "astro_sources": list(block.get("astro_sources") or [])[:3],
+    }
+
+
+def _personality_imprint_detail_cards(payload: dict[str, Any]) -> list[dict[str, Any]]:
+    if not isinstance(payload, dict):
+        return []
+    entries = payload.get("entries") if isinstance(payload.get("entries"), list) else []
+    extra_entries = payload.get("extra_entries") if isinstance(payload.get("extra_entries"), list) else []
+    cards: list[dict[str, Any]] = []
+    for item in [*entries, *extra_entries]:
+        if not isinstance(item, dict):
+            continue
+        title = cleanup_tr_punctuation(str(item.get("label_tr") or "").strip())
+        if not title:
+            continue
+        family = {
+            "aspect": "contradiction_core",
+            "house_placement": "placement_signature",
+            "sign_placement": "tone_signature",
+        }.get(str(item.get("kind") or "").strip(), "placement_signature")
+        parts = [
+            cleanup_tr_punctuation(str(item.get("aura") or "").strip()),
+            cleanup_tr_punctuation(str(item.get("trait") or "").strip()),
+            cleanup_tr_punctuation(str(item.get("drive") or "").strip()),
+            cleanup_tr_punctuation(str(item.get("gift") or "").strip()),
+            cleanup_tr_punctuation(str(item.get("shadow") or "").strip()),
+            cleanup_tr_punctuation(str(item.get("background_hint") or "").strip()),
+        ]
+        body = "\n\n".join([part for part in parts if part])
+        if not body:
+            continue
+        cards.append(
+            {
+                "card_key": f"{str(item.get('key') or title).strip()}_detail",
+                "id": str(item.get("key") or "").strip(),
+                "family": family,
+                "origin": "personality_imprint",
+                "eyebrow": "Kişilik izi",
+                "title": title,
+                "summary": next((part for part in parts if part), title),
+                "body": body,
+                "micro": "",
+                "chips": [cleanup_tr_punctuation(str(tag).strip()) for tag in (item.get("tags") or []) if str(tag).strip()][:4],
+                "astro_sources": [],
+            }
+        )
+    return cards
+
+
+def _dedupe_profile_cards(items: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    seen: set[str] = set()
+    out: list[dict[str, Any]] = []
+    for item in items:
+        key = str(item.get("card_key") or item.get("id") or item.get("title") or "").strip()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(item)
+    return out
+
+
+def _humanize_personality_imprint(value: Any, *, include_debug: bool = False) -> Dict[str, Any] | None:
+    payload = value if isinstance(value, dict) else None
+    if not payload:
+        return None
+    def _normalize_imprint_entry(item: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "key": str(item.get("key") or "").strip(),
+            "kind": str(item.get("kind") or "").strip(),
+            "label_tr": cleanup_tr_punctuation(str(item.get("label_tr") or "").strip()),
+            "tags": [
+                cleanup_tr_punctuation(str(tag).strip())
+                for tag in (item.get("tags") or [])
+                if str(tag).strip()
+            ],
+            "aura": cleanup_tr_punctuation(str(item.get("aura") or "").strip()),
+            "trait": cleanup_tr_punctuation(str(item.get("trait") or "").strip()),
+            "drive": cleanup_tr_punctuation(str(item.get("drive") or "").strip()),
+            "shadow": cleanup_tr_punctuation(str(item.get("shadow") or "").strip()),
+            "background_hint": cleanup_tr_punctuation(str(item.get("background_hint") or "").strip()),
+            "gift": cleanup_tr_punctuation(str(item.get("gift") or "").strip()),
+            "support_keys": [
+                str(key).strip()
+                for key in (item.get("support_keys") or [])
+                if str(key).strip()
+            ],
+        }
+    out: Dict[str, Any] = {
+        "engine_version": payload.get("engine_version"),
+        "library_version": payload.get("library_version"),
+        "locale": payload.get("locale") or "tr",
+        "headline": cleanup_tr_punctuation(str(payload.get("headline") or "").strip()),
+        "render_shape": payload.get("render_shape") if isinstance(payload.get("render_shape"), dict) else {},
+        "entries": [],
+        "extra_entries": [],
+        "support_entries": [],
+        "bundles": [],
+        "extra_bundles": [],
+    }
+    entries = payload.get("entries") if isinstance(payload.get("entries"), list) else []
+    for item in entries:
+        if not isinstance(item, dict):
+            continue
+        out["entries"].append(_normalize_imprint_entry(item))
+    extra_entries = payload.get("extra_entries") if isinstance(payload.get("extra_entries"), list) else []
+    for item in extra_entries:
+        if not isinstance(item, dict):
+            continue
+        out["extra_entries"].append(_normalize_imprint_entry(item))
+    support_entries = payload.get("support_entries") if isinstance(payload.get("support_entries"), list) else []
+    for item in support_entries:
+        if not isinstance(item, dict):
+            continue
+        out["support_entries"].append(_normalize_imprint_entry(item))
+    def _normalize_bundle(item: dict[str, Any]) -> dict[str, Any]:
+        return {
+            "id": str(item.get("id") or "").strip(),
+            "dominant_key": str(item.get("dominant_key") or "").strip(),
+            "dominant_kind": str(item.get("dominant_kind") or "").strip(),
+            "related_planets": [
+                str(planet).strip()
+                for planet in (item.get("related_planets") or [])
+                if str(planet).strip()
+            ],
+            "support_keys": [
+                str(key).strip()
+                for key in (item.get("support_keys") or [])
+                if str(key).strip()
+            ],
+        }
+    bundles = payload.get("bundles") if isinstance(payload.get("bundles"), list) else []
+    for item in bundles:
+        if not isinstance(item, dict):
+            continue
+        out["bundles"].append(_normalize_bundle(item))
+    extra_bundles = payload.get("extra_bundles") if isinstance(payload.get("extra_bundles"), list) else []
+    for item in extra_bundles:
+        if not isinstance(item, dict):
+            continue
+        out["extra_bundles"].append(_normalize_bundle(item))
+    if include_debug and isinstance(payload.get("selection_debug"), dict):
+        out["selection_debug"] = payload.get("selection_debug")
+    return out
+
+
+def _soft_word_clamp(text: str, preferred_max_chars: int) -> str:
+    clean = cleanup_tr_punctuation(str(text or "").strip())
+    if not clean or len(clean) <= preferred_max_chars:
+        return clean
+    words = clean.split()
+    best = ""
+    current: list[str] = []
+    for word in words:
+        tentative = " ".join(current + [word]).strip()
+        if len(tentative) > preferred_max_chars:
+            break
+        current.append(word)
+        best = tentative
+    return best or clean
 
 
 def _humanize_core_story_ui(value: Any) -> Dict[str, Any] | None:
@@ -192,3 +728,23 @@ def _humanize_core_story_ui(value: Any) -> Dict[str, Any] | None:
     if isinstance(text, str) and text.strip():
         out["text"] = humanize_tr_text(text, max_sentences=5)
     return out
+
+
+def _build_narrative_v2(response: Dict[str, Any], *, include_debug: bool) -> Dict[str, Any]:
+    descriptor = build_contract_descriptor_v2()
+    bundles = select_aspect_bundles(response)
+    payload: Dict[str, Any] = {
+        "contract_version": descriptor["contract_version"],
+        "aspect_bundle_selector": bundles,
+    }
+    if include_debug:
+        payload.update(
+            {
+                "section_priority_matrix": descriptor.get("section_priority_matrix"),
+                "field_sets": descriptor.get("field_sets"),
+                "hook_families": descriptor.get("hook_families"),
+                "fallback_rules": descriptor.get("fallback_rules"),
+                "migration_map": descriptor.get("migration_map"),
+            }
+        )
+    return payload

@@ -132,9 +132,8 @@ def test_phrase_injection_uses_hybrid_context_for_uranus_mars() -> None:
         ]
     )
     assert "Başak" in merged
-    assert "9. Ev" in merged
-    assert any(token in merged.lower() for token in ("eğitim", "yayın", "uzman", "yabancı dil", "mentorluk"))
-    assert any(token in merged.lower() for token in ("üretim", "yaratıc", "sahne", "prototip"))
+    assert any(token in merged.lower() for token in ("öğren", "yayın", "uzman", "yol haritası", "yön"))
+    assert any(token in merged.lower() for token in ("üretim", "yaratıc", "prototip", "deneme"))
     assert any(token in merged.lower() for token in ("sprint", "prototip", "not", "ölç"))
     assert out.get("conflict_label") == "Akış"
     assert out.get("conflict_tone") == "flow"
@@ -159,7 +158,7 @@ def test_period_copy_is_multi_paragraph_and_has_hooks() -> None:
     )
     assert "\n\n" in out["core_story"]
     assert "çünkü" in out["core_story"].lower()
-    assert "bu dönem 'nasıl'ı değiştiriyor" in out["core_story"].lower()
+    assert any(token in out["core_story"].lower() for token in ("yöntem", "öğrenme", "üretim", "yön"))
     assert isinstance(out.get("root_causes"), list) and out["root_causes"]
 
 

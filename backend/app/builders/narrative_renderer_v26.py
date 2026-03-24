@@ -188,6 +188,7 @@ def render_core_story(
         text = payload.get("text") or ""
         if text:
             text = _collapse_repeated_leads(text)
+            text = _polish_core_story_paragraph(text)
             payload["text"] = text
         if text:
             paragraphs.append(text)
@@ -210,7 +211,7 @@ def render_core_story(
                 fallback.append(_normalize_sentence(t))
         paragraphs = [p for p in fallback if p]
 
-    paragraphs = [_apply_tone_safe(p, tone, "core_story") for p in paragraphs if p]
+    paragraphs = [_polish_core_story_paragraph(_apply_tone_safe(p, tone, "core_story")) for p in paragraphs if p]
     text = "\n\n".join([para.strip() for para in paragraphs if para and para.strip()])
 
     if debug_payload is not None:
@@ -684,12 +685,21 @@ def _split_sentences(text: str) -> list[str]:
     return parts
 
 
+def _capitalize_turkish_initial(text: str) -> str:
+    value = str(text or "").strip()
+    if not value:
+        return ""
+    first = value[:1]
+    mapped = {"i": "İ", "ı": "I"}.get(first, first.upper())
+    return mapped + value[1:]
+
+
 def _normalize_sentence(sentence: str) -> str:
     cleaned = " ".join(str(sentence or "").split())
     if not cleaned:
         return ""
     if cleaned[0].islower():
-        cleaned = cleaned[0].upper() + cleaned[1:]
+        cleaned = _capitalize_turkish_initial(cleaned)
     if cleaned[-1] not in ".!?":
         cleaned += "."
     return cleaned
@@ -789,6 +799,77 @@ def _clean_sentence(s: str) -> str:
     cleaned = re.sub(r"\s+,", ",", cleaned)
     cleaned = re.sub(r",\s+\.", ".", cleaned)
     return cleaned
+
+
+_CORE_STORY_STOPWORDS = {
+    "ve",
+    "ile",
+    "bu",
+    "bir",
+    "da",
+    "de",
+    "için",
+    "gibi",
+    "ama",
+    "daha",
+    "çok",
+    "olan",
+    "oluyor",
+    "olduğunda",
+    "geldiğinde",
+}
+
+
+def _core_story_tokens(text: str) -> set[str]:
+    tokens = re.findall(r"[a-zA-ZçğıöşüÇĞİÖŞÜ]+", str(text or "").lower())
+    return {
+        token
+        for token in tokens
+        if len(token) >= 3 and token not in _CORE_STORY_STOPWORDS
+    }
+
+
+def _core_story_overlap(a: str, b: str) -> float:
+    left = _core_story_tokens(a)
+    right = _core_story_tokens(b)
+    if not left or not right:
+        return 0.0
+    union = left | right
+    return len(left & right) / len(union) if union else 0.0
+
+
+def _polish_core_story_sentence(sentence: str) -> str:
+    cleaned = str(sentence or "").replace("‘", "'").replace("’", "'").strip()
+    if not cleaned:
+        return ""
+    cleaned = re.sub(r"^Bu ihtiyaç yükseldiğinde,\s*", "Yük arttığında ", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"^Böylece\s+", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(
+        r"^Psikolojik temelinde\s+'?([^.!?']{6,})\.?$",
+        r"İçeride sık sık '\1?' sorusu çalışıyor.",
+        cleaned,
+        flags=re.IGNORECASE,
+    )
+    cleaned = re.sub(r"\s+\?'", "?'", cleaned)
+    cleaned = re.sub(r",\s*([A-ZÇĞİÖŞÜ])", lambda m: ", " + m.group(1).lower(), cleaned, count=1)
+    cleaned = re.sub(r"([?!])\s+'", r"\1'", cleaned)
+    cleaned = re.sub(r"'\s+sorusu", "' sorusu", cleaned)
+    cleaned = cleaned.replace("? '", "?'").replace("! '", "!'")
+    cleaned = _clean_sentence(cleaned)
+    return _normalize_sentence(cleaned)
+
+
+def _polish_core_story_paragraph(text: str) -> str:
+    sentences = [_polish_core_story_sentence(piece) for piece in _split_sentences(text)]
+    filtered: list[str] = []
+    for sentence in sentences:
+        if not sentence:
+            continue
+        if any(_core_story_overlap(sentence, prior) >= 0.82 for prior in filtered):
+            continue
+        filtered.append(sentence)
+    filtered, _ = _cap_connector_usage(filtered, max_per_paragraph=1)
+    return " ".join(filtered).strip()
 
 
 def _bridge_inner_outer(sentences: list[str]) -> list[str]:

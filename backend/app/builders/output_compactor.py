@@ -6,6 +6,7 @@ from typing import Any, Dict, Iterable, List, Mapping, Sequence, Tuple
 
 from app.engine.tone_profile import load_tone_config
 from app.helpers.normalize import normalize_planet_key, normalize_sign_key
+from app.narrative.editorial_render_policy import render_fragment_line, select_rhythm_family
 
 
 DOMAIN_ORDER_LIMIT = 3
@@ -21,13 +22,14 @@ def build_user_compact(
     phase2_snapshot: Mapping[str, Any] | None = None,
     tone_profile: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    domains = _build_domains(fragments_by_domain, phase2_snapshot or {})
-    micro_insights = _build_micro_insights(fragments_by_domain, domains)
+    seed = _compact_seed(fragments_by_domain, phase2_snapshot or {})
+    domains = _build_domains(fragments_by_domain, phase2_snapshot or {}, seed=seed)
+    micro_insights = _build_micro_insights(fragments_by_domain, domains, seed=seed)
     payload: Dict[str, Any] = {
         "profile": "user_compact",
         "domains": domains,
         "micro_insights": micro_insights,
-        "meta": {"max_domains": DOMAIN_ORDER_LIMIT, "policy_version": "tasnif_v2"},
+        "meta": {"max_domains": DOMAIN_ORDER_LIMIT, "policy_version": "tasnif_v3"},
     }
     if tone_profile:
         payload["tone_profile"] = tone_profile
@@ -37,10 +39,13 @@ def build_user_compact(
 def _build_domains(
     fragments_by_domain: Mapping[str, Mapping[str, Any]],
     phase2_snapshot: Mapping[str, Any],
+    *,
+    seed: str,
 ) -> List[Dict[str, Any]]:
     domain_scores = _domain_scores(fragments_by_domain, phase2_snapshot)
     ordered_domains = [domain for domain, _ in domain_scores][:DOMAIN_ORDER_LIMIT]
     domains: List[Dict[str, Any]] = []
+    used_families: list[str] = []
     for domain in ordered_domains:
         entry = fragments_by_domain.get(domain)
         if not isinstance(entry, Mapping):
@@ -48,7 +53,8 @@ def _build_domains(
         slots = entry.get("slots") or {}
         if not isinstance(slots, Mapping):
             continue
-        highlights = _build_highlights(domain, slots)
+        family = select_rhythm_family(seed, "user_compact", domain, used_families)
+        highlights = _build_highlights(domain, slots, family=family)
         summary = _build_summary(highlights)
         signals = _build_signals(slots)
         domains.append(
@@ -60,6 +66,7 @@ def _build_domains(
                 "signals": signals,
             }
         )
+        used_families.append(family)
     return domains
 
 
@@ -110,7 +117,7 @@ def _felt_intensity_map_from_snapshot(phase2_snapshot: Mapping[str, Any]) -> Dic
     return {domain: float(score) for domain, score in felt_totals.items()}
 
 
-def _build_highlights(domain: str, slots: Mapping[str, Any]) -> List[Dict[str, Any]]:
+def _build_highlights(domain: str, slots: Mapping[str, Any], *, family: str) -> List[Dict[str, Any]]:
     highlights: List[Dict[str, Any]] = []
     used_signatures: set[Tuple[str, str, str, str, str, str]] = set()
 
@@ -121,19 +128,19 @@ def _build_highlights(domain: str, slots: Mapping[str, Any]) -> List[Dict[str, A
 
     if recognition:
         highlights.append(
-            _format_highlight("Recognition", recognition, safe=False)
+            _format_highlight("Recognition", recognition, domain=domain, family=family, safe=False)
         )
     if experienced:
         highlights.append(
-            _format_highlight("Experienced Reality", experienced, safe=False)
+            _format_highlight("Experienced Reality", experienced, domain=domain, family=family, safe=False)
         )
     if potential:
         highlights.append(
-            _format_highlight("Potential", potential, safe=False)
+            _format_highlight("Potential", potential, domain=domain, family=family, safe=False)
         )
     if shadow:
         highlights.append(
-            _format_highlight("Shadow", shadow, safe=True)
+            _format_highlight("Shadow", shadow, domain=domain, family=family, safe=True)
         )
 
     return highlights
@@ -163,11 +170,22 @@ def _pick_fragment(
     return fragment
 
 
-def _format_highlight(label: str, fragment: Mapping[str, Any], *, safe: bool) -> Dict[str, Any]:
-    text = _fragment_text(fragment)
+def _format_highlight(label: str, fragment: Mapping[str, Any], *, domain: str, family: str, safe: bool) -> Dict[str, Any]:
+    role_map = {
+        "Recognition": "recognition",
+        "Experienced Reality": "experienced",
+        "Potential": "potential",
+        "Shadow": "shadow",
+    }
+    evidence_text = _primary_evidence_text(fragment)
+    text = render_fragment_line(
+        _fragment_text(fragment),
+        family=family,
+        role=role_map.get(label, "experienced"),
+        evidence_text=evidence_text,
+        mode="background" if safe else "core",
+    )
     text = _truncate_text(text, HIGHLIGHT_TEXT_LIMIT)
-    if safe:
-        text = _apply_shadow_template(text)
     evidence = _build_evidence(fragment)
     highlight: Dict[str, Any] = {
         "label": label,
@@ -222,10 +240,13 @@ def _build_signals(slots: Mapping[str, Any]) -> Dict[str, Any]:
 def _build_micro_insights(
     fragments_by_domain: Mapping[str, Mapping[str, Any]],
     domains: Sequence[Mapping[str, Any]],
+    *,
+    seed: str,
 ) -> List[Dict[str, Any]]:
     selected_domains = {entry.get("domain") for entry in domains}
     insights: List[Dict[str, Any]] = []
     candidates: List[Tuple[str, Mapping[str, Any]]] = []
+    used_families: list[str] = []
     for domain, entry in fragments_by_domain.items():
         slots = entry.get("slots") if isinstance(entry, Mapping) else None
         if not isinstance(slots, Mapping):
@@ -239,14 +260,59 @@ def _build_micro_insights(
             break
         if domain in selected_domains and any(d not in selected_domains for d, _ in candidates):
             continue
+        family = select_rhythm_family(seed, "user_compact_micro", domain, used_families)
         insights.append(
             {
-                "text": _truncate_text(_fragment_text(fragment), HIGHLIGHT_TEXT_LIMIT),
+                "text": _truncate_text(
+                    render_fragment_line(
+                        _fragment_text(fragment),
+                        family=family,
+                        role="experienced",
+                        evidence_text=_primary_evidence_text(fragment),
+                    ),
+                    HIGHLIGHT_TEXT_LIMIT,
+                ),
                 "domain": domain,
                 "evidence": _build_evidence(fragment),
             }
         )
+        used_families.append(family)
     return insights
+
+
+def _compact_seed(
+    fragments_by_domain: Mapping[str, Mapping[str, Any]],
+    phase2_snapshot: Mapping[str, Any],
+) -> str:
+    accepted = (((phase2_snapshot.get("slots") or {}).get("accepted")) if isinstance(phase2_snapshot.get("slots"), Mapping) else None) or []
+    accepted_ids = [
+        str(item.get("fragment_id") or item.get("slot") or item.get("domain") or "")
+        for item in accepted
+        if isinstance(item, Mapping)
+    ]
+    if accepted_ids:
+        return "|".join(accepted_ids[:12])
+    return "|".join(sorted(str(key) for key in fragments_by_domain.keys()))
+
+
+def _primary_evidence_text(fragment: Mapping[str, Any]) -> str:
+    supporting = fragment.get("supporting_facts") or []
+    if isinstance(supporting, Iterable):
+        for item in supporting:
+            if not isinstance(item, Mapping):
+                continue
+            text = str(item.get("text") or "").strip()
+            if text:
+                return text
+    evidence = fragment.get("evidence") or []
+    if isinstance(evidence, Iterable):
+        for item in evidence:
+            if not isinstance(item, Mapping):
+                continue
+            text = str(item.get("summary") or item.get("text") or "").strip()
+            if text:
+                return text
+    return ""
 
 
 def _build_evidence(fragment: Mapping[str, Any]) -> List[Dict[str, Any]]:

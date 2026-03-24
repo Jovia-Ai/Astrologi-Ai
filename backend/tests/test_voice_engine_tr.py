@@ -1,5 +1,5 @@
 from app.transit.narrative.deep_archetype_engine import build_active_event_cards, build_event_card
-from app.transit.narrative.text_quality_tr import _dedupe_section_overlap
+from app.transit.narrative.text_quality_tr import rewrite_period_card_tr, why_now_tr
 
 
 def _natal_snapshot() -> dict:
@@ -39,6 +39,22 @@ def _natal_snapshot() -> dict:
     }
 
 
+def _event_neptune_square_asc() -> dict:
+    return {
+        "event_id": "evt_neptune_asc",
+        "transit_body": "Neptune",
+        "natal_point": "ASC",
+        "aspect": "square",
+        "phase": "applying",
+        "bucket": "long",
+        "orb_deg": 0.17,
+        "houses": {"transit_in_natal_house": 3, "natal_point_house": 1},
+        "domains": ["identity"],
+        "ranking": {"tier": "main", "weight": 1.3},
+        "strength": 0.92,
+    }
+
+
 def _event_neptune_square_dsc() -> dict:
     return {
         "event_id": "evt_neptune_dsc",
@@ -48,10 +64,10 @@ def _event_neptune_square_dsc() -> dict:
         "phase": "applying",
         "bucket": "long",
         "orb_deg": 0.9,
-        "houses": {"transit_in_natal_house": 3},
+        "houses": {"transit_in_natal_house": 3, "natal_point_house": 7},
         "domains": ["relationships"],
         "ranking": {"tier": "main", "weight": 1.2},
-        "interpretation": {"headline": "Uzun soluklu ayar"},
+        "strength": 0.88,
     }
 
 
@@ -64,208 +80,158 @@ def _event_uranus_trine_mars() -> dict:
         "phase": "applying",
         "bucket": "long",
         "orb_deg": 0.8,
-        "houses": {"transit_in_natal_house": 9},
-        "domains": ["mind"],
+        "houses": {"transit_in_natal_house": 5, "natal_point_house": 9},
+        "domains": ["meaning_learning"],
         "ranking": {"tier": "main", "weight": 1.3},
-        "interpretation": {
-            "headline": "Uzun soluklu ayar",
-            "watch": ["south node gerilimi"],
-        },
+        "strength": 0.91,
     }
 
 
-def test_title_not_generic() -> None:
-    card = build_event_card(_event_neptune_square_dsc(), context={"natal": _natal_snapshot()})
-    assert card["title"] != "Uzun soluklu ayar"
+def _event_pluto_sextile_pluto() -> dict:
+    return {
+        "event_id": "evt_pluto_pluto",
+        "transit_body": "Pluto",
+        "natal_point": "Pluto",
+        "aspect": "sextile",
+        "phase": "applying",
+        "bucket": "long",
+        "orb_deg": 0.6,
+        "houses": {"transit_in_natal_house": 1, "natal_point_house": 11},
+        "domains": ["social_future"],
+        "ranking": {"tier": "main", "weight": 1.15},
+        "strength": 0.87,
+    }
 
 
-def test_rulership_houses_in_copy() -> None:
-    card = build_event_card(_event_uranus_trine_mars(), context={"natal": _natal_snapshot()})
-    merged = f"{card.get('conflict','')} {card.get('upper','')}".lower()
-    assert any(token in merged for token in ("4.", "11.", "ev/kok", "topluluk/hedef"))
+def test_event_card_exposes_gold_schema_fields() -> None:
+    card = build_event_card(_event_neptune_square_asc(), context={"natal": _natal_snapshot()})
+    for key in (
+        "headline",
+        "opening",
+        "essence",
+        "mechanism",
+        "asks",
+        "watchout",
+        "what_it_builds",
+        "technical_note",
+    ):
+        assert isinstance(card.get(key), str) and str(card.get(key)).strip()
 
 
-def test_no_blocked_tokens_in_public_copy() -> None:
-    card = build_event_card(_event_uranus_trine_mars(), context={"natal": _natal_snapshot()})
-    merged = " ".join([card.get("conflict", ""), card.get("shadow", ""), card.get("upper", "")]).lower()
-    for banned in ("south node", "north node", "lilith", "vertex", "fortune", "chiron"):
+def test_neptune_square_asc_copy_is_human_and_clear() -> None:
+    card = build_event_card(_event_neptune_square_asc(), context={"natal": _natal_snapshot()})
+    merged = " ".join(
+        str(card.get(key) or "")
+        for key in ("headline", "opening", "essence", "mechanism", "asks", "watchout", "what_it_builds")
+    ).lower()
+    assert "nasıl duyulduğun" in merged
+    assert "iletişim" in merged or "konuşma" in merged
+    assert "dışarıda" in merged or "ilk izlenim" in merged
+    for banned in ("orb", "phase", "bucket", "exact", "applying", "arka bağlantı", "tema ile çalışır"):
         assert banned not in merged
 
 
-def test_angle_event_lead_is_not_ruler_lead() -> None:
-    event = {
-        "event_id": "evt_neptune_asc",
-        "transit_body": "Neptune",
-        "natal_point": "ASC",
-        "aspect": "square",
-        "phase": "applying",
-        "bucket": "long",
-        "orb_deg": 0.9,
-        "houses": {"transit_in_natal_house": 3},
-        "domains": ["identity"],
-        "ranking": {"tier": "main", "weight": 1.2},
-        "interpretation": {"headline": "Uzun soluklu ayar"},
-    }
-    card = build_event_card(event, context={"natal": _natal_snapshot()})
-    merged = " ".join(
-        [
-            str(card.get("title") or ""),
-            str(card.get("teaser") or ""),
-            str(card.get("conflict") or ""),
-            str(card.get("why_now") or ""),
-            str(card.get("shadow") or ""),
-            str(card.get("upper") or ""),
-        ]
-    )
-    assert "Yükselen" in merged
-    assert "yöneticisi Satürn" in merged
-    assert "3. ev" in merged
-    assert "iletişim ritminde başlar; sonra duruşuna/kimliğine yansır." in str(card.get("mechanism") or "")
-    assert str(card.get("headline") or "").strip() != str(card.get("big_picture") or "").strip()
-    for banned in ("orb", "phase", "bucket", "Sahne", "vurduğu yer", "exact", "applying", "separating", "period"):
-        assert banned.lower() not in merged.lower()
-
-
-def test_bullets_have_quality_rules() -> None:
+def test_uranus_trine_mars_respects_5_to_9_priority() -> None:
     card = build_event_card(_event_uranus_trine_mars(), context={"natal": _natal_snapshot()})
-    guidance = card.get("guidance") if isinstance(card.get("guidance"), list) else []
-    watch_out = card.get("watch_out") if isinstance(card.get("watch_out"), list) else []
-    assert len(guidance) >= 2
-    assert len(watch_out) >= 2
-    all_items = [str(x) for x in guidance + watch_out]
-    assert all(item.strip() for item in all_items)
-    assert all("Netleştir:" not in item for item in all_items)
-    for item in all_items:
-        assert len(item.split()) <= 14
+    mechanism = str(card.get("mechanism") or "").lower()
+    watchout = str(card.get("watchout") or "").lower()
+    technical = str(card.get("technical_note") or "").lower()
+
+    assert any(token in mechanism for token in ("yaratıcılık", "görünür üretim", "keyif"))
+    assert any(token in mechanism for token in ("öğrenme", "uzmanlaşma", "yön duygusu"))
+    assert "4. ev" not in watchout
+    assert "11. ev" not in watchout
+    assert "4. ev" not in mechanism
+    assert "11. ev" not in mechanism
+    assert card["headline"].startswith("İlhamını Yönteme Çeviriyorsun")
+    assert "ilhamı çalışır bir yönteme" in str(card.get("what_it_builds") or "").lower()
+    if technical:
+        assert any(token in technical for token in ("5. ev", "9. ev"))
 
 
-def test_upper_repetition_not_globally_copied() -> None:
-    base = _event_uranus_trine_mars()
-    items = []
-    variants = [
-        ("evt1", "Uranus", "trine", "Mars", 9),
-        ("evt2", "Neptune", "square", "ASC", 3),
-        ("evt3", "Saturn", "opposition", "DSC", 7),
-        ("evt4", "Jupiter", "sextile", "Mercury", 3),
-        ("evt5", "Mars", "conjunction", "MC", 10),
-    ]
-    for event_id, body, aspect, natal_point, house in variants:
-        item = dict(base)
-        item["event_id"] = event_id
-        item["transit_body"] = body
-        item["aspect"] = aspect
-        item["natal_point"] = natal_point
-        item["houses"] = {"transit_in_natal_house": house}
-        items.append(item)
-    report = {"display": {"items": items}, "natal": _natal_snapshot()}
-    cards = build_active_event_cards(report, max_cards=5)
-    merged = " ".join(str(card.get("upper") or "") for card in cards)
-    assert merged.count("Çerçeveyi net kurduğunda") <= 1
+def test_pluto_sextile_pluto_keeps_its_own_voice() -> None:
+    card = build_event_card(_event_pluto_sextile_pluto(), context={"natal": _natal_snapshot()})
+    opening = str(card.get("opening") or "").lower()
+    essence = str(card.get("essence") or "").lower()
+    assert "nasıl duyulduğun" not in opening
+    assert "muğlak" not in opening
+    assert "çevre" in opening or "hedef" in opening
+    assert "seçici" in essence or "stratejik" in essence
 
 
-def test_guidance_watch_frequency_cap_across_cards() -> None:
-    base = _event_uranus_trine_mars()
-    events = []
-    variants = [
-        ("evt_a", "Uranus", "trine", "Mars", 9),
-        ("evt_b", "Neptune", "square", "ASC", 3),
-        ("evt_c", "Saturn", "opposition", "DSC", 7),
-        ("evt_d", "Pluto", "conjunction", "MC", 10),
-        ("evt_e", "Jupiter", "sextile", "Mercury", 11),
-    ]
-    for event_id, body, aspect, natal_point, house in variants:
-        item = dict(base)
-        item["event_id"] = event_id
-        item["transit_body"] = body
-        item["aspect"] = aspect
-        item["natal_point"] = natal_point
-        item["strength"] = 0.9
-        item["houses"] = {"transit_in_natal_house": house, "natal_point_house": house}
-        events.append(item)
-    report = {"display": {"items": events}, "natal": _natal_snapshot()}
-    cards = build_active_event_cards(report, max_cards=5)
-    assert len(cards) == 5
-    all_guidance = [str(line) for card in cards for line in (card.get("guidance") or [])]
-    all_watch = [str(line) for card in cards for line in (card.get("watch_out") or [])]
-    assert len(all_guidance) == len(set(x.lower() for x in all_guidance))
-    assert len(all_watch) == len(set(x.lower() for x in all_watch))
+def test_watchout_contains_actual_risk_not_spillover() -> None:
+    card = build_event_card(_event_uranus_trine_mars(), context={"natal": _natal_snapshot()})
+    watchout = str(card.get("watchout") or "").lower()
+    assert any(token in watchout for token in ("risk", "dağı", "heyecan", "ölçü"))
+    for banned in ("4. ev", "11. ev", "arkadaş çevresi", "ev düzeni"):
+        assert banned not in watchout
 
 
-def test_house_specific_guidance_keywords_for_house_3_and_9() -> None:
-    event_9 = _event_uranus_trine_mars()
-    event_9["strength"] = 0.9
-    event_9["houses"] = {"transit_in_natal_house": 5, "natal_point_house": 9}
-    event_3 = _event_neptune_square_dsc()
-    event_3["event_id"] = "evt_neptune_asc_3"
-    event_3["natal_point"] = "ASC"
-    event_3["strength"] = 0.9
-    event_3["houses"] = {"transit_in_natal_house": 3, "natal_point_house": 3}
-
-    report = {"display": {"items": [event_9, event_3]}, "natal": _natal_snapshot()}
-    cards = build_active_event_cards(report, max_cards=2)
-    assert len(cards) == 2
-    by_id = {card["event_id"]: card for card in cards}
-
-    merged_9 = " ".join(str(x) for x in by_id[event_9["event_id"]].get("guidance", [])).lower()
-    assert any(token in merged_9 for token in ("sprint", "öğren", "yayın", "roadmap"))
-
-    merged_3 = " ".join(str(x) for x in by_id[event_3["event_id"]].get("guidance", [])).lower()
-    assert any(token in merged_3 for token in ("özet", "soru", "taslak", "yazılı"))
-
-
-def test_neptune_square_asc_links_to_neptune_saturn_cofeatured() -> None:
-    neptune_asc = {
-        "event_id": "evt_neptune_asc",
-        "transit_body": "Neptune",
-        "natal_point": "ASC",
-        "aspect": "square",
-        "phase": "applying",
-        "bucket": "long",
-        "orb_deg": 0.17,
-        "houses": {"transit_in_natal_house": 3, "natal_point_house": 1},
-        "domains": ["identity"],
-        "ranking": {"tier": "main", "weight": 1.3},
+def test_active_event_cards_do_not_append_generic_watchout_when_event_risk_exists() -> None:
+    report = {
+        "display": {
+            "items": [
+                _event_neptune_square_dsc(),
+                _event_uranus_trine_mars(),
+                _event_pluto_sextile_pluto(),
+            ]
+        },
+        "natal": _natal_snapshot(),
     }
-    neptune_saturn = {
-        "event_id": "evt_neptune_saturn",
-        "transit_body": "Neptune",
-        "natal_point": "Saturn",
-        "aspect": "conjunction",
-        "phase": "applying",
-        "bucket": "long",
-        "orb_deg": 0.14,
-        "houses": {"transit_in_natal_house": 3, "natal_point_house": 3},
-        "domains": ["mind"],
-        "ranking": {"tier": "main", "weight": 1.28},
+    cards = build_active_event_cards(report, max_cards=3)
+    neptune_card = next(card for card in cards if card.get("event_id") == "evt_neptune_dsc")
+    watch_list = [str(item).strip() for item in (neptune_card.get("watch_out") or []) if str(item).strip()]
+    assert watch_list
+    assert "Aşırı yüklenme." not in watch_list
+    assert "Odak kaybı." not in watch_list
+    assert "Acele karar." not in watch_list
+
+
+def test_cards_in_same_period_keep_distinct_openings() -> None:
+    report = {
+        "display": {
+            "items": [
+                _event_neptune_square_asc(),
+                _event_uranus_trine_mars(),
+                _event_pluto_sextile_pluto(),
+                _event_neptune_square_dsc(),
+            ]
+        },
+        "natal": _natal_snapshot(),
     }
-    report = {"display": {"items": [neptune_asc, neptune_saturn]}, "natal": _natal_snapshot()}
-    cards = build_active_event_cards(report, max_cards=2)
-    by_id = {str(card.get("event_id")): card for card in cards}
-    links = (by_id["evt_neptune_asc"].get("derived_context") or {}).get("links") or []
-    assert any(
-        isinstance(link, dict)
-        and link.get("type") == "cofeatured_hit"
-        and link.get("target_event_id") == "evt_neptune_saturn"
-        and link.get("because") == "same transit hits ASC and ASC ruler"
-        for link in links
+    cards = build_active_event_cards(report, max_cards=4)
+    openings = [str(card.get("opening") or card.get("teaser") or "").strip() for card in cards]
+    assert len(openings) == len(set(openings))
+
+
+def test_rewrite_period_card_tr_adds_period_fields_without_flattening_event_voice() -> None:
+    base = build_event_card(_event_uranus_trine_mars(), context={"natal": _natal_snapshot()})
+    out = rewrite_period_card_tr(base, event=_event_uranus_trine_mars())
+    assert isinstance(out.get("period_opening"), str) and out["period_opening"]
+    assert isinstance(out.get("relational_or_life_expression"), str) and out["relational_or_life_expression"]
+    assert isinstance(out.get("what_it_builds"), str) and out["what_it_builds"]
+    assert "öğrenme" in str(out.get("mechanism") or "").lower() or "uzmanlaşma" in str(out.get("mechanism") or "").lower()
+    assert "muğlak" not in str(out.get("opening") or "").lower()
+
+
+def test_no_mechanical_phrase_regressions_in_primary_fields() -> None:
+    card = build_event_card(_event_neptune_square_asc(), context={"natal": _natal_snapshot()})
+    merged = " ".join(
+        str(card.get(key) or "")
+        for key in ("headline", "opening", "essence", "mechanism", "asks", "watchout")
+    ).lower()
+    banned_phrases = (
+        "sesin ve duruşun",
+        "akış açık",
+        "ilk tepkiyi ritme çevirmek",
+        "ritim kurdukça netleşir",
     )
+    for banned in banned_phrases:
+        assert banned not in merged
 
 
-def test_dedupe_headline_vs_big_picture_similarity_below_threshold() -> None:
-    card = {
-        "headline": "Bu dönem dilini kalibre etmen gerekiyor ve netleşme alanı açılıyor.",
-        "big_picture": "Bu dönem dilini kalibre etmen gerekiyor ve netleşme alanı açılıyor.",
-        "mechanism": "Sahne 3. Ev; vurduğu yer 1. Ev. Etki iletişim ritminde başlar; sonra duruşuna yansır.",
-        "upper": "Nazik ama net sınır koy.",
-    }
-    out = _dedupe_section_overlap(card)
-    headline = str(out.get("headline") or "")
-    big_picture = str(out.get("big_picture") or "")
-    mechanism = str(out.get("mechanism") or "")
-    assert "sahne" not in mechanism.lower()
-    assert "vurduğu yer" not in mechanism.lower()
-    if big_picture:
-        import difflib
-
-        ratio = difflib.SequenceMatcher(None, headline.lower(), big_picture.lower()).ratio()
-        assert ratio < 0.8
+def test_why_now_tr_stays_human_readable() -> None:
+    text = why_now_tr(_event_neptune_square_asc())
+    assert "+" not in text
+    assert "kimlik hattı aktif" in text.lower()
+    assert any(token in text.lower() for token in ("katman katman", "gündemde", "belirgin", "odakta"))

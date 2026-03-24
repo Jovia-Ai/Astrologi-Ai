@@ -126,6 +126,15 @@ def test_public_response_includes_layered_fields() -> None:
     assert isinstance(period["core_story"], str) and period["core_story"]
     assert isinstance(period["upper_meaning"], str) and period["upper_meaning"]
     assert isinstance(period["tags"], list) and period["tags"]
+    for key in (
+        "period_opening",
+        "big_picture",
+        "mechanism",
+        "growth_edge",
+        "relational_or_life_expression",
+        "what_it_builds",
+    ):
+        assert isinstance(period.get(key), str) and str(period.get(key)).strip()
 
     cards = public["event_cards"]
     assert isinstance(cards, list) and cards
@@ -133,6 +142,13 @@ def test_public_response_includes_layered_fields() -> None:
     for key in (
         "event_id",
         "title",
+        "headline",
+        "opening",
+        "essence",
+        "asks",
+        "watchout",
+        "what_it_builds",
+        "technical_note",
         "signature",
         "tone",
         "section_labels",
@@ -146,6 +162,7 @@ def test_public_response_includes_layered_fields() -> None:
         "connected_points",
         "natal_context_pack",
         "natal_promise",
+        "narrative_provenance",
     ):
         assert key in first
     assert "Moon" not in {card["signature"] for card in cards}
@@ -161,6 +178,10 @@ def test_public_response_includes_layered_fields() -> None:
         target = first["natal_context_pack"].get("target") or {}
         assert "planet" in target
         assert "house" in target
+    provenance = first["narrative_provenance"]
+    assert provenance["headline_source"] == "event.headline"
+    assert provenance["opening_source"] == "event.opening"
+    assert isinstance(provenance["period_track_used"], bool)
 
     point_kinds = {
         p.get("kind")
