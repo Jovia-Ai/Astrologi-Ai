@@ -157,6 +157,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   : (_isNatalLoading
                         ? 'Natal yorum yukleniyor.'
                         : 'Dogum bilgileri tamamlandiginda profil okumasi burada acilacak.');
+              final dominantElementLabel = _dominantElementLabel(elementScores);
               final contentView = _segmentIndex == 0
                   ? _ProfileRecoveryReadingBody(
                       isLoading: _isNatalLoading,
@@ -231,66 +232,44 @@ class _ProfilePageState extends State<ProfilePage> {
                               : JoviaUiAsset.settingsRings,
                           reserveTrailingSpace: widget.readOnly || uid == null,
                         ),
-                        const SizedBox(height: 20),
-                        JoviaEditorialHeroBlock(
-                          label: 'Profile',
-                          title: displayName,
-                          body: heroBody,
-                          large: true,
-                          glyph: avatarUrl.isEmpty
-                              ? const JoviaUiIcon(
-                                  asset: JoviaUiAsset.profileComet,
-                                  size: 18,
-                                )
-                              : null,
-                          background: const JoviaColorWash(
-                            asset: JoviaColorAsset.wash11,
-                            opacity: 0.14,
-                          ),
-                          accent: const Padding(
-                            padding: EdgeInsets.only(top: 8, right: 2),
-                            child: JoviaIllustrationAccent(
-                              asset: JoviaIllustrationAsset.layers,
-                              width: 72,
-                              height: 72,
-                              opacity: 0.24,
+                        const SizedBox(height: 16),
+                        _ProfileIdentityHeaderCard(
+                          displayName: displayName,
+                          username: username,
+                          heroBody: heroBody,
+                          avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
+                          isAvatarUploading: _isAvatarUploading,
+                          onAvatarEdit: widget.readOnly
+                              ? null
+                              : _pickAndUploadAvatar,
+                          dominantElementLabel: dominantElementLabel,
+                          sunSign: _sunSign,
+                          moonSign: _moonSign,
+                          risingSign: _risingSign,
+                          stats: [
+                            _ProfileStatItem(
+                              value: friendsCount.toString(),
+                              label: 'Arkadas',
+                              onTap: widget.readOnly
+                                  ? null
+                                  : () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute<void>(
+                                          builder: (_) =>
+                                              const PeopleListPage(),
+                                        ),
+                                      );
+                                    },
                             ),
-                          ),
-                          footer: _ProfileRecoveryHeroFooter(
-                            username: username,
-                            sunSign: _sunSign,
-                            moonSign: _moonSign,
-                            risingSign: _risingSign,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        JoviaSurfaceCard(
-                          child: _ProfileStatsRow(
-                            items: [
-                              _ProfileStatItem(
-                                value: friendsCount.toString(),
-                                label: 'Arkadas',
-                                onTap: widget.readOnly
-                                    ? null
-                                    : () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute<void>(
-                                            builder: (_) =>
-                                                const PeopleListPage(),
-                                          ),
-                                        );
-                                      },
-                              ),
-                              _ProfileStatItem(
-                                value: natalCount.toString(),
-                                label: 'Yorum',
-                              ),
-                              _ProfileStatItem(
-                                value: astroCount.toString(),
-                                label: 'Astro',
-                              ),
-                            ],
-                          ),
+                            _ProfileStatItem(
+                              value: natalCount.toString(),
+                              label: 'Yorum',
+                            ),
+                            _ProfileStatItem(
+                              value: astroCount.toString(),
+                              label: 'Astro',
+                            ),
+                          ],
                         ),
                         if (kDebugMode) ...[
                           const SizedBox(height: 12),
@@ -299,20 +278,20 @@ class _ProfilePageState extends State<ProfilePage> {
                             child: _ElementDebugChip(scores: elementScores),
                           ),
                         ],
-                        const SizedBox(height: 20),
-                        JoviaSegmentedControl<int>(
-                          value: _segmentIndex,
-                          options: const <int>[0, 1],
-                          labelBuilder: (value) =>
-                              value == 0 ? 'Haritam' : 'Timing',
-                          onChanged: (value) {
-                            if (value == _segmentIndex) {
-                              return;
-                            }
-                            setState(() => _segmentIndex = value);
-                          },
+                        const SizedBox(height: 18),
+                        JoviaSurfaceCard(
+                          padding: const EdgeInsets.all(6),
+                          child: _ProfileTabBar(
+                            currentIndex: _segmentIndex,
+                            onChanged: (value) {
+                              if (value == _segmentIndex) {
+                                return;
+                              }
+                              setState(() => _segmentIndex = value);
+                            },
+                          ),
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 24),
                         contentView,
                         const SizedBox(height: 20),
                         widget.readOnly
@@ -567,6 +546,15 @@ class _ProfilePageState extends State<ProfilePage> {
       air: values[2],
       earth: values[3],
     ).normalize();
+  }
+
+  String _dominantElementLabel(ElementScores scores) {
+    return switch (scores.dominant) {
+      AstroElement.fire => 'Ateş baskın',
+      AstroElement.water => 'Su baskın',
+      AstroElement.air => 'Hava baskın',
+      AstroElement.earth => 'Toprak baskın',
+    };
   }
 
   String _displayName(Map<String, dynamic>? profile) {
@@ -1775,6 +1763,122 @@ class _ProfileRecoveryHeroFooter extends StatelessWidget {
   }
 }
 
+class _ProfileIdentityHeaderCard extends StatelessWidget {
+  const _ProfileIdentityHeaderCard({
+    required this.displayName,
+    required this.username,
+    required this.heroBody,
+    required this.avatarUrl,
+    required this.isAvatarUploading,
+    required this.onAvatarEdit,
+    required this.dominantElementLabel,
+    required this.sunSign,
+    required this.moonSign,
+    required this.risingSign,
+    required this.stats,
+  });
+
+  final String displayName;
+  final String username;
+  final String heroBody;
+  final String? avatarUrl;
+  final bool isAvatarUploading;
+  final VoidCallback? onAvatarEdit;
+  final String dominantElementLabel;
+  final String sunSign;
+  final String moonSign;
+  final String risingSign;
+  final List<_ProfileStatItem> stats;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return JoviaSurfaceCard(
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'WHO AM I?',
+            style: profile.typography.eyebrow.copyWith(
+              color: profile.colors.textLight,
+              letterSpacing: 1.6,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _AvatarHalo(
+                size: 82,
+                imageUrl: avatarUrl,
+                onEdit: onAvatarEdit,
+                isUploading: isAvatarUploading,
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      displayName,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: profile.typography.heroTitle.copyWith(
+                        color: profile.colors.text,
+                        fontSize: 28,
+                        height: 1.02,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      username,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: profile.typography.bodyCompact.copyWith(
+                        color: profile.colors.textLight,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          _ProfileRecoveryHeroFooter(
+            username: '',
+            sunSign: sunSign,
+            moonSign: moonSign,
+            risingSign: risingSign,
+          ),
+          const SizedBox(height: 14),
+          Text(
+            dominantElementLabel,
+            style: profile.typography.body.copyWith(
+              color: profile.colors.text,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            heroBody,
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+            style: profile.typography.bodyCompact.copyWith(
+              color: profile.colors.textLight,
+              height: 1.45,
+            ),
+          ),
+          const SizedBox(height: 16),
+          const ThinDivider(),
+          const SizedBox(height: 14),
+          _ProfileStatsRow(items: stats),
+        ],
+      ),
+    );
+  }
+}
+
 class _ProfileRecoveryReadingBody extends StatelessWidget {
   const _ProfileRecoveryReadingBody({
     required this.isLoading,
@@ -1808,6 +1912,7 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
         JoviaReadingPanel(
           label: 'Natal',
           title: 'Ana okuma',
+          large: true,
           child: _ProfileRecoverySummaryBlock(
             isLoading: isLoading,
             error: error,
@@ -1815,28 +1920,25 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
           ),
         ),
         if (placementCards.isNotEmpty) ...[
-          const SizedBox(height: 18),
-          for (final card in placementCards) ...[
-            _ProfileEditorialCard(card: card),
-            if (card != placementCards.last) const SizedBox(height: 18),
-          ],
+          const SizedBox(height: 22),
+          _ProfileEditorialFlow(cards: placementCards),
         ],
         if (insightModules.isNotEmpty) ...[
-          const SizedBox(height: 18),
+          const SizedBox(height: 24),
           for (final module in insightModules) ...[
-            _ProfileInsightModuleCard(module: module),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: _ProfileInsightModuleCard(module: module),
+            ),
             if (module != insightModules.last) const SizedBox(height: 18),
           ],
         ],
         if (primaryCards.isNotEmpty) ...[
-          const SizedBox(height: 18),
-          for (final card in primaryCards) ...[
-            _ProfileEditorialCard(card: card),
-            if (card != primaryCards.last) const SizedBox(height: 18),
-          ],
+          const SizedBox(height: 24),
+          _ProfileEditorialFlow(cards: primaryCards),
         ],
         if (supportingThreads.isNotEmpty) ...[
-          const SizedBox(height: 18),
+          const SizedBox(height: 24),
           JoviaReadingPanel(
             label: 'Katmanlar',
             title: 'Destekleyen izler',
@@ -1862,7 +1964,7 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
           ),
         ],
         if (!readOnly) ...[
-          const SizedBox(height: 18),
+          const SizedBox(height: 24),
           JoviaActionRail(
             title: 'Kisi alani',
             body:
@@ -1878,6 +1980,42 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+class _ProfileEditorialFlow extends StatelessWidget {
+  const _ProfileEditorialFlow({required this.cards});
+
+  final List<_ProfileNarrativeCard> cards;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 390;
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            for (var index = 0; index < cards.length; index++) ...[
+              Padding(
+                padding: compact || index == 0
+                    ? EdgeInsets.zero
+                    : EdgeInsets.only(
+                        left: index.isOdd ? 18 : 0,
+                        right: index.isOdd ? 0 : 18,
+                      ),
+                child: _ProfileEditorialCard(
+                  card: cards[index],
+                  featured: index == 0,
+                ),
+              ),
+              if (index != cards.length - 1)
+                SizedBox(height: index == 0 ? 20 : 16),
+            ],
+          ],
+        );
+      },
     );
   }
 }
@@ -1927,14 +2065,21 @@ class _ProfileRecoverySummaryBlock extends StatelessWidget {
 }
 
 class _ProfileEditorialCard extends StatelessWidget {
-  const _ProfileEditorialCard({required this.card});
+  const _ProfileEditorialCard({required this.card, this.featured = false});
 
   final _ProfileNarrativeCard card;
+  final bool featured;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     return JoviaSurfaceCard(
+      padding: EdgeInsets.fromLTRB(
+        featured ? 22 : 18,
+        featured ? 22 : 18,
+        featured ? 22 : 18,
+        featured ? 20 : 18,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -1952,7 +2097,7 @@ class _ProfileEditorialCard extends StatelessWidget {
             card.title,
             style: profile.typography.card.copyWith(
               color: profile.colors.text,
-              fontSize: 22,
+              fontSize: featured ? 30 : 22,
               height: 1.08,
               fontWeight: FontWeight.w600,
             ),
@@ -1960,6 +2105,8 @@ class _ProfileEditorialCard extends StatelessWidget {
           const SizedBox(height: 10),
           Text(
             card.previewBody,
+            maxLines: featured ? 8 : 5,
+            overflow: TextOverflow.ellipsis,
             style: profile.typography.bodyCompact.copyWith(
               color: profile.colors.text,
               height: 1.45,
