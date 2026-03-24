@@ -54,6 +54,9 @@ class _ProfilePageState extends State<ProfilePage> {
   String? _natalSummary;
   String? _natalError;
   List<_SupportingThreadItem> _supportingThreads = const [];
+  List<_ProfileNarrativeCard> _profilePrimaryCards = const [];
+  List<_ProfileNarrativeCard> _profilePlacementCards = const [];
+  List<_ProfileInsightModule> _profileInsightModules = const [];
   String _sunSign = '—';
   String _moonSign = '—';
   String _risingSign = '—';
@@ -160,6 +163,9 @@ class _ProfilePageState extends State<ProfilePage> {
                       error: _natalError,
                       summary: summaryText,
                       supportingThreads: _supportingThreads,
+                      primaryCards: _profilePrimaryCards,
+                      placementCards: _profilePlacementCards,
+                      insightModules: _profileInsightModules,
                       readOnly: widget.readOnly,
                       onOpenPeople: widget.readOnly
                           ? null
@@ -669,6 +675,27 @@ class _ProfilePageState extends State<ProfilePage> {
       final map = _asMap(response.data);
       final summary = _extractNatalSummary(map);
       final supportingThreads = _extractSupportingThreads(map);
+      final profileBlocks = _extractProfileNarrativeCards(map, field: 'blocks');
+      final coreBlocks = _extractProfileNarrativeCards(
+        map,
+        field: 'core_blocks',
+      );
+      final extraBlocks = _extractProfileNarrativeCards(
+        map,
+        field: 'extra_blocks',
+      );
+      final detailCards = _extractProfileNarrativeCards(
+        map,
+        field: 'detail_cards',
+      );
+      final primaryCards = _mergeNarrativeCards([
+        ...coreBlocks,
+        ...extraBlocks,
+        if (coreBlocks.isEmpty && extraBlocks.isEmpty) ...profileBlocks,
+        ...detailCards.where((item) => !item.isPlacementLike),
+      ]);
+      final placementCards = _selectPlacementCards(detailCards);
+      final insightModules = _extractProfileInsightModules(map);
       final sun = _extractPlanetSign(map, 'Sun');
       final moon = _extractPlanetSign(map, 'Moon');
       final rising = _extractRisingSign(map);
@@ -680,6 +707,9 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         _natalSummary = summary;
         _supportingThreads = supportingThreads;
+        _profilePrimaryCards = primaryCards;
+        _profilePlacementCards = placementCards;
+        _profileInsightModules = insightModules;
         _sunSign = _toTrSign(sun);
         _moonSign = _toTrSign(moon);
         _risingSign = _toTrSign(rising);
@@ -915,6 +945,82 @@ class _ProfilePageState extends State<ProfilePage> {
     return fallback;
   }
 
+  Map<String, dynamic> _extractProfilePublicPayload(Map<String, dynamic> map) {
+    for (final scope in _natalScopes(map)) {
+      final narrative = _asMap(scope['profile_narrative']);
+      final profilePublic = _asMap(narrative['profile_public']);
+      if (profilePublic.isNotEmpty) {
+        return profilePublic;
+      }
+    }
+    return <String, dynamic>{};
+  }
+
+  List<_ProfileNarrativeCard> _extractProfileNarrativeCards(
+    Map<String, dynamic> map, {
+    required String field,
+  }) {
+    final profilePublic = _extractProfilePublicPayload(map);
+    final raw = profilePublic[field];
+    if (raw is! List) {
+      return const [];
+    }
+    return raw
+        .whereType<Map>()
+        .map(
+          (item) =>
+              _ProfileNarrativeCard.fromMap(Map<String, dynamic>.from(item)),
+        )
+        .where((item) => item.title.isNotEmpty && item.previewBody.isNotEmpty)
+        .toList();
+  }
+
+  List<_ProfileInsightModule> _extractProfileInsightModules(
+    Map<String, dynamic> map,
+  ) {
+    final profilePublic = _extractProfilePublicPayload(map);
+    final raw = profilePublic['insight_modules'];
+    if (raw is! List) {
+      return const [];
+    }
+    return raw
+        .whereType<Map>()
+        .map(
+          (item) =>
+              _ProfileInsightModule.fromMap(Map<String, dynamic>.from(item)),
+        )
+        .where((item) => item.headline.isNotEmpty && item.title.isNotEmpty)
+        .toList();
+  }
+
+  List<_ProfileNarrativeCard> _mergeNarrativeCards(
+    List<_ProfileNarrativeCard> items,
+  ) {
+    final seen = <String>{};
+    final out = <_ProfileNarrativeCard>[];
+    for (final item in items) {
+      if (item.isPlacementLike) {
+        continue;
+      }
+      final key = item.cardKey.isNotEmpty ? item.cardKey : item.title;
+      if (key.isEmpty || !seen.add(key)) {
+        continue;
+      }
+      out.add(item);
+    }
+    return out;
+  }
+
+  List<_ProfileNarrativeCard> _selectPlacementCards(
+    List<_ProfileNarrativeCard> items,
+  ) {
+    final preferred = items.where((item) => item.isPlacementLike).toList();
+    if (preferred.isNotEmpty) {
+      return preferred.take(4).toList();
+    }
+    return items.take(4).toList();
+  }
+
   String _extractPlanetSign(Map<String, dynamic> map, String planetName) {
     final targets = <String>{
       planetName.toLowerCase(),
@@ -1133,6 +1239,153 @@ class _SupportingThreadItem {
       title: s('title'),
       oneLiner: s('one_liner'),
       paragraph: s('paragraph'),
+    );
+  }
+}
+
+class _ProfileNarrativeCard {
+  const _ProfileNarrativeCard({
+    required this.cardKey,
+    required this.id,
+    required this.family,
+    required this.origin,
+    required this.eyebrow,
+    required this.title,
+    required this.summary,
+    required this.body,
+    required this.micro,
+    required this.chips,
+  });
+
+  final String cardKey;
+  final String id;
+  final String family;
+  final String origin;
+  final String eyebrow;
+  final String title;
+  final String summary;
+  final String body;
+  final String micro;
+  final List<String> chips;
+
+  String get previewBody {
+    final bodyText = body.trim();
+    if (bodyText.isNotEmpty) {
+      return bodyText;
+    }
+    final summaryText = summary.trim();
+    if (summaryText.isNotEmpty) {
+      return summaryText;
+    }
+    return micro.trim();
+  }
+
+  bool get isPlacementLike =>
+      origin == 'personality_imprint' ||
+      family == 'placement_signature' ||
+      family == 'tone_signature';
+
+  factory _ProfileNarrativeCard.fromMap(Map<String, dynamic> map) {
+    List<String> normalizeChips(dynamic raw) {
+      if (raw is! List) {
+        return const [];
+      }
+      return raw
+          .map((item) => item.toString().trim())
+          .where((item) {
+            if (item.isEmpty) {
+              return false;
+            }
+            final lower = item.toLowerCase();
+            if (lower.contains('_')) {
+              return false;
+            }
+            if (lower == 'moon_sign' ||
+                lower == 'sun_sign' ||
+                lower == 'rising_sign' ||
+                lower == 'ascendant') {
+              return false;
+            }
+            return true;
+          })
+          .take(4)
+          .toList();
+    }
+
+    String pickTitle() {
+      final title = (map['title'] ?? '').toString().trim();
+      if (title.isNotEmpty) {
+        return title;
+      }
+      return (map['headline'] ?? '').toString().trim();
+    }
+
+    String pickSummary() {
+      final summary = (map['summary'] ?? '').toString().trim();
+      if (summary.isNotEmpty) {
+        return summary;
+      }
+      return (map['teaser'] ?? '').toString().trim();
+    }
+
+    String pickEyebrow() {
+      final eyebrow = (map['eyebrow'] ?? '').toString().trim();
+      if (eyebrow.isNotEmpty) {
+        return eyebrow;
+      }
+      final family = (map['family'] ?? '').toString().trim();
+      return switch (family) {
+        'placement_signature' => 'Kişilik izi',
+        'tone_signature' => 'Ton izi',
+        'mind_mechanics' => 'Zihnin nasıl çalışıyor',
+        'intimacy_guard' => 'Yakınlık sende nasıl açılıyor',
+        'creative_channel' => 'Fırsatın aktığı yer',
+        _ => '',
+      };
+    }
+
+    return _ProfileNarrativeCard(
+      cardKey: (map['card_key'] ?? '').toString().trim(),
+      id: (map['id'] ?? '').toString().trim(),
+      family: (map['family'] ?? '').toString().trim(),
+      origin: (map['origin'] ?? '').toString().trim(),
+      eyebrow: pickEyebrow(),
+      title: pickTitle(),
+      summary: pickSummary(),
+      body: (map['body'] ?? '').toString().trim(),
+      micro: (map['micro'] ?? '').toString().trim(),
+      chips: normalizeChips(map['chips']),
+    );
+  }
+}
+
+class _ProfileInsightModule {
+  const _ProfileInsightModule({
+    required this.moduleId,
+    required this.headline,
+    required this.subheadline,
+    required this.title,
+    required this.body,
+  });
+
+  final String moduleId;
+  final String headline;
+  final String subheadline;
+  final String title;
+  final String body;
+
+  factory _ProfileInsightModule.fromMap(Map<String, dynamic> map) {
+    final content = map['content'] is Map<String, dynamic>
+        ? map['content'] as Map<String, dynamic>
+        : (map['content'] is Map
+              ? Map<String, dynamic>.from(map['content'] as Map)
+              : <String, dynamic>{});
+    return _ProfileInsightModule(
+      moduleId: (map['module_id'] ?? '').toString().trim(),
+      headline: (map['headline'] ?? '').toString().trim(),
+      subheadline: (map['subheadline'] ?? '').toString().trim(),
+      title: (content['title'] ?? map['title'] ?? '').toString().trim(),
+      body: (content['body'] ?? map['body'] ?? '').toString().trim(),
     );
   }
 }
@@ -1528,6 +1781,9 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
     required this.error,
     required this.summary,
     required this.supportingThreads,
+    required this.primaryCards,
+    required this.placementCards,
+    required this.insightModules,
     required this.readOnly,
     this.onOpenPeople,
     this.onAddPerson,
@@ -1537,6 +1793,9 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
   final String? error;
   final String summary;
   final List<_SupportingThreadItem> supportingThreads;
+  final List<_ProfileNarrativeCard> primaryCards;
+  final List<_ProfileNarrativeCard> placementCards;
+  final List<_ProfileInsightModule> insightModules;
   final bool readOnly;
   final VoidCallback? onOpenPeople;
   final VoidCallback? onAddPerson;
@@ -1555,6 +1814,27 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
             summary: summary,
           ),
         ),
+        if (placementCards.isNotEmpty) ...[
+          const SizedBox(height: 18),
+          for (final card in placementCards) ...[
+            _ProfileEditorialCard(card: card),
+            if (card != placementCards.last) const SizedBox(height: 18),
+          ],
+        ],
+        if (insightModules.isNotEmpty) ...[
+          const SizedBox(height: 18),
+          for (final module in insightModules) ...[
+            _ProfileInsightModuleCard(module: module),
+            if (module != insightModules.last) const SizedBox(height: 18),
+          ],
+        ],
+        if (primaryCards.isNotEmpty) ...[
+          const SizedBox(height: 18),
+          for (final card in primaryCards) ...[
+            _ProfileEditorialCard(card: card),
+            if (card != primaryCards.last) const SizedBox(height: 18),
+          ],
+        ],
         if (supportingThreads.isNotEmpty) ...[
           const SizedBox(height: 18),
           JoviaReadingPanel(
@@ -1643,6 +1923,84 @@ class _ProfileRecoverySummaryBlock extends StatelessWidget {
         color: context.profileTheme.colors.text,
       ),
     );
+  }
+}
+
+class _ProfileEditorialCard extends StatelessWidget {
+  const _ProfileEditorialCard({required this.card});
+
+  final _ProfileNarrativeCard card;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return JoviaSurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (card.eyebrow.trim().isNotEmpty) ...[
+            Text(
+              card.eyebrow.toUpperCase(),
+              style: profile.typography.eyebrow.copyWith(
+                color: profile.colors.textLight,
+                letterSpacing: 1.3,
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+          Text(
+            card.title,
+            style: profile.typography.card.copyWith(
+              color: profile.colors.text,
+              fontSize: 22,
+              height: 1.08,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 10),
+          Text(
+            card.previewBody,
+            style: profile.typography.bodyCompact.copyWith(
+              color: profile.colors.text,
+              height: 1.45,
+            ),
+          ),
+          if (card.chips.isNotEmpty) ...[
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final chip in card.chips) JoviaMetaPill(label: chip),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileInsightModuleCard extends StatelessWidget {
+  const _ProfileInsightModuleCard({required this.module});
+
+  final _ProfileInsightModule module;
+
+  @override
+  Widget build(BuildContext context) {
+    final card = _ProfileNarrativeCard(
+      cardKey: module.moduleId,
+      id: module.moduleId,
+      family: 'protection_pattern',
+      origin: 'insight_module',
+      eyebrow: module.headline,
+      title: module.title,
+      summary: module.subheadline,
+      body: module.body,
+      micro: '',
+      chips: const [],
+    );
+    return _ProfileEditorialCard(card: card);
   }
 }
 
