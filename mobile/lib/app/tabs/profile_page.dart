@@ -13,6 +13,7 @@ import 'package:mobile/app/people/people_providers.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/profile/profile_repository.dart';
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
+import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/design/astro/astro_theme_extension.dart';
 import 'package:mobile/design/astro/astro_theme_generator.dart';
 import 'package:mobile/design/astro/element_scores.dart';
@@ -220,7 +221,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           centerText: username,
                           onActionTap: widget.readOnly || uid == null
                               ? null
-                              : () => _showSettingsSheet(
+                              : () => _showProfileMenu(
                                   context: context,
                                   ref: ref,
                                   uid: uid,
@@ -229,7 +230,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ),
                           actionAsset: widget.readOnly || uid == null
                               ? null
-                              : JoviaUiAsset.settingsRings,
+                              : JoviaUiAsset.menuStack,
                           reserveTrailingSpace: widget.readOnly || uid == null,
                         ),
                         const SizedBox(height: 16),
@@ -831,6 +832,101 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                 ],
               ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _showProfileMenu({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String uid,
+    required ProfileRepository repo,
+    required String? currentUserEmail,
+  }) async {
+    final profile = context.profileTheme;
+    final currentMode = ref.read(joviaThemeModeProvider);
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return Padding(
+          padding: EdgeInsets.all(profile.spacing.lg),
+          child: JoviaSurfaceCard(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Menu',
+                  style: profile.typography.card.copyWith(
+                    color: profile.colors.text,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                JoviaUtilityRow(
+                  label: 'Profil',
+                  title: 'Profili duzenle',
+                  body: 'Isim, dogum bilgileri ve diger ayarlari ac.',
+                  leading: const JoviaUiIcon(
+                    asset: JoviaUiAsset.settingsRings,
+                    size: 18,
+                  ),
+                  onTap: () {
+                    Navigator.of(sheetContext).pop();
+                    _showSettingsSheet(
+                      context: context,
+                      ref: ref,
+                      uid: uid,
+                      repo: repo,
+                      currentUserEmail: currentUserEmail,
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
+                const ThinDivider(),
+                const SizedBox(height: 12),
+                Text(
+                  'Tema',
+                  style: profile.typography.eyebrow.copyWith(
+                    color: profile.colors.textLight,
+                    letterSpacing: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: MinimalCTAButton(
+                        label: 'Koyu mod',
+                        emphasized: currentMode == JoviaThemeMode.dark,
+                        onTap: () {
+                          ref
+                              .read(joviaThemeModeProvider.notifier)
+                              .setMode(JoviaThemeMode.dark);
+                          Navigator.of(sheetContext).pop();
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: MinimalCTAButton(
+                        label: 'Acik mod',
+                        emphasized: currentMode == JoviaThemeMode.light,
+                        onTap: () {
+                          ref
+                              .read(joviaThemeModeProvider.notifier)
+                              .setMode(JoviaThemeMode.light);
+                          Navigator.of(sheetContext).pop();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         );

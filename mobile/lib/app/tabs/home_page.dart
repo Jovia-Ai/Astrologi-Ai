@@ -11,6 +11,8 @@ import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
 import 'package:mobile/app/tabs/period_detail_page.dart';
+import 'package:mobile/app/tabs/profile_page.dart';
+import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/source_guards.dart';
 import 'package:mobile/app/timing/transit_repositories.dart';
@@ -38,6 +40,8 @@ class _HomePageState extends ConsumerState<HomePage> {
   String _moonSign = '—';
   String _risingSign = '—';
   List<PeriodCardDto> _periodCards = const <PeriodCardDto>[];
+  List<_SkyFeedItemData> _skyFeedItems = const <_SkyFeedItemData>[];
+  String _skyFeedSummary = '';
   PeriodCoreDto? _periodCore;
   String? _lastKey;
   final NarrativeRepository _narrativeRepository = NarrativeRepository();
@@ -68,7 +72,15 @@ class _HomePageState extends ConsumerState<HomePage> {
         builder: (context) {
           final profileTheme = context.profileTheme;
           final colors = profileTheme.colors;
-          final skyBulletin = _buildSkyBulletin(_periodCards);
+          final skyBulletin = _skyFeedItems.isNotEmpty
+              ? _buildSkyBulletinFromFeed(
+                  items: _skyFeedItems,
+                  summary: _skyFeedSummary,
+                )
+              : _buildSkyBulletin(_periodCards);
+          final skyHeroItem = _skyFeedItems.isNotEmpty
+              ? _skyFeedItems.first
+              : null;
           final displayName = _displayName(profile, user);
           final heroBody = _coreStory.trim().isNotEmpty
               ? _coreStory.trim()
@@ -107,6 +119,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   JoviaProfileTopBar(
                     label: 'Anasayfa',
                     centerText: displayName,
+                    onActionTap: () => _showHomeMenu(context),
+                    actionAsset: JoviaUiAsset.menuStack,
                     reserveTrailingSpace: true,
                   ),
                   const SizedBox(height: 16),
@@ -179,8 +193,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                   _HomeCollectivePulseCard(
                     bulletin: skyBulletin,
                     card: collectiveCard,
+                    skyItem: skyHeroItem,
                     onOpenThread: () {
-                      if (collectiveCard != null) {
+                      if (skyHeroItem != null) {
+                        _openSkyDetails(context, skyBulletin);
+                      } else if (collectiveCard != null) {
                         _openPeriodDetails(context, collectiveCard);
                       } else {
                         _openTiming(context);
@@ -190,10 +207,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                         ? null
                         : () => _openSkyDetails(context, skyBulletin),
                   ),
-                  if (skyBulletin.highlights.length > 1) ...[
+                  if (_skyFeedItems.length > 1) ...[
                     const SizedBox(height: 14),
-                    _HomeCollectiveHighlightsRow(
-                      items: skyBulletin.highlights.skip(1).take(2).toList(),
+                    _HomeSkyEventList(
+                      items: _skyFeedItems.skip(1).take(2).toList(),
+                      onOpenAll: () => _openSkyDetails(context, skyBulletin),
                     ),
                   ],
                   if (_periodCore != null) ...[
@@ -310,6 +328,13 @@ class _HomePageState extends ConsumerState<HomePage> {
 
       final responses = await Future.wait<dynamic>([
         client.post('/interpret/ui', data: natalPayload),
+        client.get(
+          '/sky/now',
+          queryParameters: <String, dynamic>{
+            'tz': _resolveTimezone(profile),
+            'limit': 4,
+          },
+        ),
         _narrativeRepository.fetchDailyNarrative(
           profile: profile,
           selectedDate: DateTime.now(),
@@ -317,7 +342,8 @@ class _HomePageState extends ConsumerState<HomePage> {
       ]);
 
       final interpretMap = _asMap((responses[0] as Response<dynamic>).data);
-      final periodMap = TransitRequestBuilder.asMap(responses[1]);
+      final skyMap = _asMap((responses[1] as Response<dynamic>).data);
+      final periodMap = TransitRequestBuilder.asMap(responses[2]);
       final periodNarrative = NarrativeResponse.fromMap(periodMap);
       final periodEvents = pickPeriodEventCards(
         periodNarrative.eventCards,
@@ -344,6 +370,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         _risingSign = rising;
         _periodCore = periodNarrative.periodCore;
         _periodCards = periodCards;
+        _skyFeedSummary = _extractSkySummary(skyMap);
+        _skyFeedItems = _extractSkyFeedItems(skyMap);
         _loading = false;
       });
     } on DioException catch (_) {
@@ -367,6 +395,13 @@ class _HomePageState extends ConsumerState<HomePage> {
 
       final responses = await Future.wait<dynamic>([
         client.post('/interpret', data: natalPayload),
+        client.get(
+          '/sky/now',
+          queryParameters: <String, dynamic>{
+            'tz': _resolveTimezone(profile),
+            'limit': 4,
+          },
+        ),
         _narrativeRepository.fetchDailyNarrative(
           profile: profile,
           selectedDate: DateTime.now(),
@@ -374,7 +409,8 @@ class _HomePageState extends ConsumerState<HomePage> {
       ]);
 
       final interpretMap = _asMap((responses[0] as Response<dynamic>).data);
-      final periodMap = TransitRequestBuilder.asMap(responses[1]);
+      final skyMap = _asMap((responses[1] as Response<dynamic>).data);
+      final periodMap = TransitRequestBuilder.asMap(responses[2]);
       final periodNarrative = NarrativeResponse.fromMap(periodMap);
       final periodEvents = pickPeriodEventCards(
         periodNarrative.eventCards,
@@ -396,6 +432,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         _risingSign = _toTrSign(_extractRisingSign(interpretMap));
         _periodCore = periodNarrative.periodCore;
         _periodCards = periodCards;
+        _skyFeedSummary = _extractSkySummary(skyMap);
+        _skyFeedItems = _extractSkyFeedItems(skyMap);
         _loading = false;
         _error = null;
       });
@@ -436,6 +474,14 @@ class _HomePageState extends ConsumerState<HomePage> {
       return city;
     }
     return '$city, $country';
+  }
+
+  String _resolveTimezone(Map<String, dynamic> profile) {
+    final raw = (profile['timezone'] ?? '').toString().trim();
+    if (raw.contains('/')) {
+      return raw;
+    }
+    return 'Europe/Istanbul';
   }
 
   bool _hasProfile(Map<String, dynamic>? profile) {
@@ -554,6 +600,24 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
+  _SkyBulletin _buildSkyBulletinFromFeed({
+    required List<_SkyFeedItemData> items,
+    required String summary,
+  }) {
+    if (items.isEmpty) {
+      return _buildSkyBulletin(const <PeriodCardDto>[]);
+    }
+    final hero = items.first;
+    return _SkyBulletin(
+      summary: summary.trim().isNotEmpty ? summary.trim() : hero.summary,
+      chips: hero.chips.take(3).toList(growable: false),
+      highlights: [
+        for (final item in items)
+          _SkyHighlight(title: item.title, blurb: item.summary),
+      ],
+    );
+  }
+
   double _skyScore(PeriodCardDto card) {
     final haystack = '${card.title} ${card.subtitle} ${card.timeHint}'
         .toLowerCase();
@@ -645,6 +709,116 @@ class _HomePageState extends ConsumerState<HomePage> {
     final cut = source.split(RegExp(r'[.!?]')).first.trim();
     final clean = cut.isEmpty ? source : cut;
     return clean.length > 140 ? '${clean.substring(0, 140).trim()}...' : clean;
+  }
+
+  String _extractSkySummary(Map<String, dynamic> map) {
+    final summary = (map['summary_tr'] ?? '').toString().trim();
+    if (summary.isNotEmpty) {
+      return summary;
+    }
+    final hero = _asMap(map['hero']);
+    return (hero['summary_tr'] ?? '').toString().trim();
+  }
+
+  List<_SkyFeedItemData> _extractSkyFeedItems(Map<String, dynamic> map) {
+    final items = map['items'];
+    if (items is! List) {
+      return const <_SkyFeedItemData>[];
+    }
+    return items
+        .whereType<Map>()
+        .map(
+          (item) => _SkyFeedItemData.fromMap(Map<String, dynamic>.from(item)),
+        )
+        .where((item) => item.title.isNotEmpty && item.summary.isNotEmpty)
+        .toList();
+  }
+
+  Future<void> _showHomeMenu(BuildContext context) async {
+    final currentMode = ref.read(joviaThemeModeProvider);
+    final profile = context.profileTheme;
+    await showModalBottomSheet<void>(
+      context: context,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return Padding(
+          padding: EdgeInsets.all(profile.spacing.lg),
+          child: JoviaSurfaceCard(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Menu',
+                  style: profile.typography.card.copyWith(
+                    color: profile.colors.text,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                JoviaUtilityRow(
+                  label: 'Profil',
+                  title: 'Profili duzenle',
+                  body: 'Profil ekranina git ve bilgilerini duzenle.',
+                  leading: const JoviaUiIcon(
+                    asset: JoviaUiAsset.profileComet,
+                    size: 18,
+                  ),
+                  onTap: () {
+                    Navigator.of(sheetContext).pop();
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => const ProfilePage(),
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
+                const ThinDivider(),
+                const SizedBox(height: 12),
+                Text(
+                  'Tema',
+                  style: profile.typography.eyebrow.copyWith(
+                    color: profile.colors.textLight,
+                    letterSpacing: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Row(
+                  children: [
+                    Expanded(
+                      child: MinimalCTAButton(
+                        label: 'Koyu mod',
+                        emphasized: currentMode == JoviaThemeMode.dark,
+                        onTap: () {
+                          ref
+                              .read(joviaThemeModeProvider.notifier)
+                              .setMode(JoviaThemeMode.dark);
+                          Navigator.of(sheetContext).pop();
+                        },
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: MinimalCTAButton(
+                        label: 'Acik mod',
+                        emphasized: currentMode == JoviaThemeMode.light,
+                        onTap: () {
+                          ref
+                              .read(joviaThemeModeProvider.notifier)
+                              .setMode(JoviaThemeMode.light);
+                          Navigator.of(sheetContext).pop();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   Map<String, dynamic> _asMap(dynamic data) {
@@ -1259,22 +1433,28 @@ class _HomeCollectivePulseCard extends StatelessWidget {
   const _HomeCollectivePulseCard({
     required this.bulletin,
     required this.card,
+    required this.skyItem,
     required this.onOpenThread,
     this.onOpenDetails,
   });
 
   final _SkyBulletin bulletin;
   final PeriodCardDto? card;
+  final _SkyFeedItemData? skyItem;
   final VoidCallback onOpenThread;
   final VoidCallback? onOpenDetails;
 
   @override
   Widget build(BuildContext context) {
-    final chips = bulletin.chips.take(2).toList(growable: false);
-    final blurb = card == null ? bulletin.summary : _blurbFromCard(card!);
-    final title = card?.title.trim().isNotEmpty == true
-        ? card!.title
-        : 'Acik konular';
+    final chips =
+        skyItem?.chips.take(3).toList(growable: false) ??
+        bulletin.chips.take(2).toList(growable: false);
+    final blurb =
+        skyItem?.summary ??
+        (card == null ? bulletin.summary : _blurbFromCard(card!));
+    final title =
+        skyItem?.title ??
+        (card?.title.trim().isNotEmpty == true ? card!.title : 'Acik konular');
 
     return JoviaSurfaceCard(
       child: Column(
@@ -1380,6 +1560,92 @@ class _HomeCollectiveHighlightsRow extends StatelessWidget {
   }
 }
 
+class _HomeSkyEventList extends StatelessWidget {
+  const _HomeSkyEventList({required this.items, required this.onOpenAll});
+
+  final List<_SkyFeedItemData> items;
+  final VoidCallback onOpenAll;
+
+  @override
+  Widget build(BuildContext context) {
+    if (items.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final item in items) ...[
+          _HomeSkyEventCard(item: item),
+          if (item != items.last) const SizedBox(height: 14),
+        ],
+        const SizedBox(height: 14),
+        JoviaSurfaceCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Acik konular',
+                style: context.profileTheme.typography.cardTitle,
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Kolektifte su an calisan tum basliklara buradan gir.',
+                style: context.profileTheme.typography.bodyCompact.copyWith(
+                  color: context.profileTheme.colors.textLight,
+                ),
+              ),
+              const SizedBox(height: 16),
+              MinimalCTAButton(
+                label: 'Tum konular',
+                emphasized: true,
+                onTap: onOpenAll,
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _HomeSkyEventCard extends StatelessWidget {
+  const _HomeSkyEventCard({required this.item});
+
+  final _SkyFeedItemData item;
+
+  @override
+  Widget build(BuildContext context) {
+    return JoviaSurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(item.title, style: context.profileTheme.typography.cardTitle),
+          const SizedBox(height: 10),
+          Text(
+            item.summary,
+            maxLines: 4,
+            overflow: TextOverflow.ellipsis,
+            style: context.profileTheme.typography.bodyCompact.copyWith(
+              color: context.profileTheme.colors.textLight,
+            ),
+          ),
+          if (item.chips.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final chip in item.chips.take(2))
+                  JoviaMetaPill(label: chip),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
 class _SkyMiniCard extends StatelessWidget {
   const _SkyMiniCard({required this.item, required this.accent});
 
@@ -1440,6 +1706,44 @@ class _SkyHighlight {
 
   final String title;
   final String blurb;
+}
+
+class _SkyFeedItemData {
+  const _SkyFeedItemData({
+    required this.id,
+    required this.title,
+    required this.summary,
+    required this.badge,
+    required this.relativeTiming,
+    required this.chips,
+  });
+
+  final String id;
+  final String title;
+  final String summary;
+  final String badge;
+  final String relativeTiming;
+  final List<String> chips;
+
+  factory _SkyFeedItemData.fromMap(Map<String, dynamic> map) {
+    final title = (map['short_title_tr'] ?? map['title_tr'] ?? '')
+        .toString()
+        .trim();
+    final summary = (map['summary_tr'] ?? '').toString().trim();
+    final badge = (map['badge_tr'] ?? '').toString().trim();
+    final relativeTiming = (map['relative_timing_tr'] ?? '').toString().trim();
+    return _SkyFeedItemData(
+      id: (map['id'] ?? '').toString().trim(),
+      title: title,
+      summary: summary,
+      badge: badge,
+      relativeTiming: relativeTiming,
+      chips: [
+        if (badge.isNotEmpty) badge,
+        if (relativeTiming.isNotEmpty) relativeTiming,
+      ],
+    );
+  }
 }
 
 class _SkyBulletin {
