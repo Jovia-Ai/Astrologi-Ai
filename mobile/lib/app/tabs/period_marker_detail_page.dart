@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
-import 'package:mobile/design/widgets/jovia_assets.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 class PeriodMarkerDetailPage extends StatelessWidget {

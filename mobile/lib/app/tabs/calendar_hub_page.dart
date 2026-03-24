@@ -11,7 +11,6 @@ import 'package:mobile/app/timing/period_peak_timeline_widget.dart';
 import 'package:mobile/app/timing/source_guards.dart';
 import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
-import 'package:mobile/design/widgets/jovia_assets.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 enum _CalendarHubTab { daily, period }

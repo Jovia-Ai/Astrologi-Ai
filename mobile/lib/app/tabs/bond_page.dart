@@ -12,7 +12,6 @@ import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/tabs/bond_models.dart';
 import 'package:mobile/app/tabs/bond_result_page.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
-import 'package:mobile/design/widgets/jovia_assets.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 class BondPage extends ConsumerStatefulWidget {

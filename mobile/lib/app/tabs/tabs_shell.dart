@@ -8,7 +8,6 @@ import 'home_page.dart';
 import 'profile_page.dart';
 import 'story_studio_page.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
-import 'package:mobile/design/widgets/jovia_assets.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 class TabsShell extends StatefulWidget {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
-import 'package:mobile/design/widgets/jovia_assets.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 import 'add_person_page.dart';

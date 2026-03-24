@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element, unused_field, prefer_final_fields
+
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
@@ -16,7 +18,7 @@ import 'package:mobile/design/astro/astro_theme_extension.dart';
 import 'package:mobile/design/astro/astro_theme_generator.dart';
 import 'package:mobile/design/astro/element_scores.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
-import 'package:mobile/ui/components/editorial_divider.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -66,207 +68,151 @@ class _HomePageState extends ConsumerState<HomePage> {
         builder: (context) {
           final profileTheme = context.profileTheme;
           final colors = profileTheme.colors;
-          final spacing = profileTheme.spacing;
-          final typo = profileTheme.typography;
           final skyBulletin = _buildSkyBulletin(_periodCards);
-          final hasLongStory = _coreStory.trim().length > 180;
-
           final displayName = _displayName(profile, user);
+          final heroBody = _coreStory.trim().isNotEmpty
+              ? _coreStory.trim()
+              : (_loading
+                    ? 'Bugunun hikayesi yukleniyor...'
+                    : 'Bugun icin kisa yorum henuz hazir degil.');
+          final activeCard = _periodCards.isNotEmpty
+              ? _periodCards.first
+              : null;
+          final dailyCards = _periodCards.take(3).toList(growable: false);
+          final collectiveCard = _periodCards.length > 1
+              ? _periodCards[1]
+              : activeCard;
 
-          return ColoredBox(
-            color: colors.bg,
-            child: ListView(
-              padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
-              children: [
-                _HomeAuraHeader(
-                  child: Padding(
-                    padding: const EdgeInsets.all(18),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Merhaba, $displayName',
-                          style: typo.h1.copyWith(
-                            height: 1.14,
-                            color: colors.text,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Text(
-                          _coreStory.trim().isNotEmpty
-                              ? _coreStory.trim()
-                              : (_loading
-                                    ? 'Bugunun hikayesi yukleniyor...'
-                                    : 'Bugun icin kisa yorum henuz hazir degil.'),
-                          style: typo.body.copyWith(
-                            height: 1.5,
-                            color: colors.muted,
-                          ),
-                          maxLines: _coreStoryExpanded ? 5 : 2,
-                          overflow: _coreStoryExpanded
-                              ? TextOverflow.fade
-                              : TextOverflow.ellipsis,
-                        ),
-                        if (hasLongStory) ...[
-                          const SizedBox(height: 8),
-                          TextButton(
-                            onPressed: () {
-                              setState(() {
-                                _coreStoryExpanded = !_coreStoryExpanded;
-                              });
-                            },
-                            style: TextButton.styleFrom(
-                              padding: EdgeInsets.zero,
-                              minimumSize: const Size(0, 0),
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            ),
-                            child: Text(
-                              _coreStoryExpanded ? 'Gizle' : 'Devami',
-                              style: typo.micro.copyWith(
-                                color: colors.primary,
-                                fontWeight: FontWeight.w700,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ),
-                const EditorialDivider(),
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        'Gokyuzunde Ne Var?',
-                        style: typo.h2.copyWith(color: colors.text),
-                      ),
-                    ),
-                    if (skyBulletin.highlights.isNotEmpty)
-                      TextButton(
-                        onPressed: () => _openSkyDetails(context, skyBulletin),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          minimumSize: const Size(0, 30),
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: Text(
-                          'Detaylar',
-                          style: typo.micro.copyWith(
-                            color: colors.primary,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                if (skyBulletin.highlights.isEmpty)
-                  _GlassCard(
-                    child: Text(
-                      'Bugun gokyuzu sakin.',
-                      style: typo.body.copyWith(color: colors.muted),
-                    ),
-                  )
-                else
-                  SizedBox(
-                    height: 118,
-                    child: ListView.separated(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: skyBulletin.highlights.length,
-                      separatorBuilder: (_, i) => const SizedBox(width: 10),
-                      itemBuilder: (context, index) {
-                        final item = skyBulletin.highlights[index];
-                        return SizedBox(
-                          width: 210,
-                          child: _SkyMiniCard(
-                            item: item,
-                            accent: _accentForIndex(index),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                const EditorialDivider(),
-                _GlassCard(
-                  child: InkWell(
-                    onTap: () => _openTiming(context),
-                    borderRadius: BorderRadius.circular(20),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 4,
-                        vertical: 2,
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 42,
-                            height: 42,
-                            decoration: BoxDecoration(
-                              color: colors.lime.withValues(alpha: 0.28),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: colors.strokeSoft,
-                                width: 1.5,
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.calendar_month_rounded,
-                              color: colors.primary,
-                              size: 22,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Calendar Hub',
-                                  style: typo.body.copyWith(
-                                    fontWeight: FontWeight.w700,
-                                    color: colors.text,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  'Daily ve Period gorunumune gec.',
-                                  style: typo.micro.copyWith(
-                                    color: colors.muted,
-                                  ),
-                                  maxLines: 2,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Icon(
-                            Icons.chevron_right_rounded,
-                            color: colors.primary,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const EditorialDivider(),
-                Text(
-                  'Donem Kartlari',
-                  style: typo.h2.copyWith(color: colors.text),
-                ),
-                const SizedBox(height: 10),
-                SizedBox(height: 186, child: _buildTransitCarousel(context)),
-                if (_error != null) ...[
-                  SizedBox(height: spacing.sm),
-                  Text(
-                    _error ?? '',
-                    style: typo.micro.copyWith(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ),
+          return DecoratedBox(
+            decoration: BoxDecoration(
+              color: colors.bg,
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  colors.bg,
+                  colors.bg,
+                  colors.surface.withValues(alpha: 0.92),
                 ],
-              ],
+                stops: const [0, 0.58, 1],
+              ),
+            ),
+            child: JoviaPageScaffold(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: [
+                  const JoviaProfileTopBar(
+                    label: 'Home',
+                    centerText: 'gundelik akis',
+                    reserveTrailingSpace: true,
+                  ),
+                  const SizedBox(height: 20),
+                  JoviaEditorialHeroBlock(
+                    label: 'Bugun',
+                    title: 'Merhaba, $displayName',
+                    body: heroBody,
+                    large: true,
+                    glyph: const JoviaUiIcon(
+                      asset: JoviaUiAsset.homePortal,
+                      size: 18,
+                    ),
+                    background: const JoviaColorWash(
+                      asset: JoviaColorAsset.wash03,
+                      opacity: 0.14,
+                    ),
+                    accent: const Padding(
+                      padding: EdgeInsets.only(top: 8, right: 4),
+                      child: JoviaIllustrationAccent(
+                        asset: JoviaIllustrationAsset.dots,
+                        width: 80,
+                        height: 80,
+                        opacity: 0.28,
+                      ),
+                    ),
+                    footer: _HomeSignStateRow(
+                      sunSign: _sunSign,
+                      moonSign: _moonSign,
+                      risingSign: _risingSign,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  JoviaSectionHeader(
+                    label: 'Daily update',
+                    title: 'Bugun one cikan akışlar',
+                    body: dailyCards.isEmpty
+                        ? 'Bugune ait update kartlari hazir degil.'
+                        : 'Gunluk kartlar editoriyal bir strip icinde toplandi.',
+                    variant: JoviaSectionHeaderVariant.editorial,
+                  ),
+                  const SizedBox(height: 12),
+                  _HomeDailyUpdateStrip(
+                    cards: dailyCards,
+                    loading: _loading && dailyCards.isEmpty,
+                    onOpen: (card) => _openPeriodDetails(context, card),
+                  ),
+                  const SizedBox(height: 24),
+                  JoviaSectionHeader(
+                    label: 'Active theme',
+                    title: activeCard?.title.trim().isNotEmpty == true
+                        ? activeCard!.title
+                        : 'Aktif tema bekleniyor',
+                    body: activeCard?.subtitle.trim().isNotEmpty == true
+                        ? activeCard!.subtitle
+                        : 'Bugunun temasini period akisindan okuyacaksin.',
+                    variant: JoviaSectionHeaderVariant.editorial,
+                  ),
+                  const SizedBox(height: 12),
+                  _HomeActiveThemeCard(
+                    card: activeCard,
+                    onOpen: activeCard == null
+                        ? () => _openTiming(context)
+                        : () => _openPeriodDetails(context, activeCard),
+                  ),
+                  const SizedBox(height: 24),
+                  JoviaSectionHeader(
+                    label: 'Collective pulse',
+                    title: 'Kolektif nabiz',
+                    body: skyBulletin.summary,
+                    variant: JoviaSectionHeaderVariant.editorial,
+                  ),
+                  const SizedBox(height: 12),
+                  _HomeCollectivePulseCard(
+                    bulletin: skyBulletin,
+                    card: collectiveCard,
+                    onOpenThread: () {
+                      if (collectiveCard != null) {
+                        _openPeriodDetails(context, collectiveCard);
+                      } else {
+                        _openTiming(context);
+                      }
+                    },
+                    onOpenDetails: skyBulletin.highlights.isEmpty
+                        ? null
+                        : () => _openSkyDetails(context, skyBulletin),
+                  ),
+                  if (_periodCore != null) ...[
+                    const SizedBox(height: 24),
+                    JoviaReadingPanel(
+                      label: 'Timing',
+                      title: _periodCore!.title.trim().isEmpty
+                          ? 'Aktif period'
+                          : _periodCore!.title,
+                      body: _periodCore!.coreStory.trim().isEmpty
+                          ? _periodCore!.bigPicture
+                          : _periodCore!.coreStory,
+                    ),
+                  ],
+                  if (_error != null) ...[
+                    const SizedBox(height: 18),
+                    Text(
+                      _error ?? '',
+                      style: context.profileTheme.typography.micro.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
             ),
           );
         },
@@ -899,6 +845,319 @@ class _HomeAuraHeader extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class _HomeSignStateRow extends StatelessWidget {
+  const _HomeSignStateRow({
+    required this.sunSign,
+    required this.moonSign,
+    required this.risingSign,
+  });
+
+  final String sunSign;
+  final String moonSign;
+  final String risingSign;
+
+  @override
+  Widget build(BuildContext context) {
+    final chips = <String>[
+      if (sunSign.trim().isNotEmpty && sunSign.trim() != '—') 'Gunes $sunSign',
+      if (moonSign.trim().isNotEmpty && moonSign.trim() != '—') 'Ay $moonSign',
+      if (risingSign.trim().isNotEmpty && risingSign.trim() != '—')
+        'Yukselen $risingSign',
+    ];
+
+    if (chips.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (var index = 0; index < chips.length; index++) ...[
+            JoviaMetaPill(label: chips[index]),
+            if (index != chips.length - 1) const SizedBox(width: 8),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeDailyUpdateStrip extends StatelessWidget {
+  const _HomeDailyUpdateStrip({
+    required this.cards,
+    required this.loading,
+    required this.onOpen,
+  });
+
+  final List<PeriodCardDto> cards;
+  final bool loading;
+  final ValueChanged<PeriodCardDto> onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    if (loading) {
+      return const SizedBox(
+        height: 132,
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+    if (cards.isEmpty) {
+      return const SizedBox(
+        height: 132,
+        child: JoviaSurfaceCard(
+          child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text('Daily update strip su an bos.'),
+          ),
+        ),
+      );
+    }
+
+    return SizedBox(
+      height: 132,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: cards.length,
+        separatorBuilder: (context, index) => const SizedBox(width: 12),
+        itemBuilder: (context, index) {
+          final card = cards[index];
+          final meta = card.timeHint.trim().isNotEmpty
+              ? card.timeHint.trim()
+              : 'Timing';
+          return SizedBox(
+            width: 248,
+            child: JoviaPressable(
+              onTap: () => onOpen(card),
+              borderRadius: BorderRadius.circular(20),
+              child: JoviaSurfaceCard(
+                padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      meta.toUpperCase(),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.profileTheme.typography.eyebrow.copyWith(
+                        color: context.profileTheme.colors.textLight,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      card.title.isNotEmpty ? card.title : 'Aktif akis',
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.profileTheme.typography.cardTitle,
+                    ),
+                    const Spacer(),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          JoviaMetaPill(
+                            label: card.subtitle.trim().isNotEmpty
+                                ? card.subtitle.trim()
+                                : 'Detayi ac',
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _HomeActiveThemeCard extends StatelessWidget {
+  const _HomeActiveThemeCard({required this.card, required this.onOpen});
+
+  final PeriodCardDto? card;
+  final VoidCallback onOpen;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = card?.title.trim().isNotEmpty == true
+        ? card!.title
+        : 'Aktif tema bekleniyor';
+    final body = card?.subtitle.trim().isNotEmpty == true
+        ? card!.subtitle
+        : 'Period akisindan gelen aktif tema burada kompakt kart olarak gorunecek.';
+    final timeHint = card?.timeHint.trim() ?? '';
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final compact = constraints.maxWidth < 430;
+        final metaChips = <String>[
+          if (timeHint.isNotEmpty) timeHint,
+          if ((card?.eventCard?.signatureTr ?? '').trim().isNotEmpty)
+            card!.eventCard!.signatureTr.trim(),
+        ].take(compact ? 1 : 2).toList(growable: false);
+
+        final cta = MinimalCTAButton(
+          label: 'Temayi ac',
+          emphasized: true,
+          onTap: onOpen,
+        );
+
+        return JoviaSurfaceCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                maxLines: compact ? 2 : 3,
+                overflow: TextOverflow.ellipsis,
+                style: context.profileTheme.typography.card.copyWith(
+                  color: context.profileTheme.colors.text,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                body,
+                maxLines: compact ? 3 : 4,
+                overflow: TextOverflow.ellipsis,
+                style: context.profileTheme.typography.bodyCompact.copyWith(
+                  color: context.profileTheme.colors.textLight,
+                ),
+              ),
+              if (metaChips.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      for (
+                        var index = 0;
+                        index < metaChips.length;
+                        index++
+                      ) ...[
+                        JoviaMetaPill(label: metaChips[index]),
+                        if (index != metaChips.length - 1)
+                          const SizedBox(width: 8),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
+              const SizedBox(height: 14),
+              if (compact)
+                Align(alignment: Alignment.centerLeft, child: cta)
+              else
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        'Compact LayoutBuilder aktif kart',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: context.profileTheme.typography.micro.copyWith(
+                          color: context.profileTheme.colors.textLight,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    cta,
+                  ],
+                ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _HomeCollectivePulseCard extends StatelessWidget {
+  const _HomeCollectivePulseCard({
+    required this.bulletin,
+    required this.card,
+    required this.onOpenThread,
+    this.onOpenDetails,
+  });
+
+  final _SkyBulletin bulletin;
+  final PeriodCardDto? card;
+  final VoidCallback onOpenThread;
+  final VoidCallback? onOpenDetails;
+
+  @override
+  Widget build(BuildContext context) {
+    final chips = bulletin.chips.take(2).toList(growable: false);
+    final blurb = card == null ? bulletin.summary : _blurbFromCard(card!);
+
+    return JoviaSurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Text(
+                  bulletin.summary,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.profileTheme.typography.bodyCompact.copyWith(
+                    color: context.profileTheme.colors.text,
+                  ),
+                ),
+              ),
+              if (onOpenDetails != null) ...[
+                const SizedBox(width: 12),
+                MinimalCTAButton(label: 'Notlar', onTap: onOpenDetails),
+              ],
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            blurb,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
+            style: context.profileTheme.typography.bodyCompact.copyWith(
+              color: context.profileTheme.colors.textLight,
+            ),
+          ),
+          if (chips.isNotEmpty) ...[
+            const SizedBox(height: 12),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  for (var index = 0; index < chips.length; index++) ...[
+                    JoviaMetaPill(label: chips[index]),
+                    if (index != chips.length - 1) const SizedBox(width: 8),
+                  ],
+                ],
+              ),
+            ),
+          ],
+          const SizedBox(height: 16),
+          JoviaPrimaryButton(label: "Thread'e gir", onTap: onOpenThread),
+        ],
+      ),
+    );
+  }
+
+  String _blurbFromCard(PeriodCardDto card) {
+    final source = card.subtitle.trim().isNotEmpty
+        ? card.subtitle.trim()
+        : card.timeHint.trim();
+    if (source.isEmpty) {
+      return 'Genel atmosferde bu etkinin kademeli olarak guclenmesi bekleniyor.';
+    }
+    final cut = source.split(RegExp(r'[.!?]')).first.trim();
+    final clean = cut.isEmpty ? source : cut;
+    return clean.length > 140 ? '${clean.substring(0, 140).trim()}...' : clean;
   }
 }
 

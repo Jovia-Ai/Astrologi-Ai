@@ -1,3 +1,5 @@
+// ignore_for_file: unused_element
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,6 +17,7 @@ import 'package:mobile/design/astro/astro_theme_extension.dart';
 import 'package:mobile/design/astro/astro_theme_generator.dart';
 import 'package:mobile/design/astro/element_scores.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
@@ -104,8 +107,6 @@ class _ProfilePageState extends State<ProfilePage> {
             builder: (context) {
               final profileTheme = context.profileTheme;
               final colors = profileTheme.colors;
-              final spacing = profileTheme.spacing;
-              final typo = profileTheme.typography;
               final friendsCount = widget.readOnly
                   ? 0
                   : peopleAsync.valueOrNull?.length ?? 0;
@@ -147,154 +148,70 @@ class _ProfilePageState extends State<ProfilePage> {
                 email: currentUserEmail,
               );
               final avatarUrl = (_avatarUrl ?? authAvatarUrl ?? '').trim();
-              final natalView = Padding(
-                padding: EdgeInsets.fromLTRB(
-                  spacing.lg,
-                  spacing.xl,
-                  spacing.lg,
-                  0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _GlassCard(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Natal Yorum', style: typo.h2),
-                          SizedBox(height: spacing.sm),
-                          if (_isNatalLoading)
-                            Row(
-                              children: [
-                                const SizedBox(
-                                  height: 16,
-                                  width: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                  ),
-                                ),
-                                SizedBox(width: spacing.sm),
-                                Text('Yukleniyor...', style: typo.body),
-                              ],
-                            )
-                          else if (_natalError != null)
-                            Text(
-                              _natalError ?? '',
-                              style: typo.body.copyWith(
-                                color: Theme.of(context).colorScheme.error,
-                              ),
-                            )
-                          else if ((_natalSummary ?? '').trim().isNotEmpty)
-                            Text((_natalSummary ?? '').trim(), style: typo.body)
-                          else
-                            Text(
-                              'Natal yorum henuz hazir degil.',
-                              style: typo.body.copyWith(color: colors.muted),
-                            ),
-                          if (_supportingThreads.isNotEmpty) ...[
-                            const _EditorialDivider(),
-                            _SupportingThreadsSection(
-                              items: _supportingThreads,
-                            ),
-                          ],
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: spacing.xl),
-                    if (!widget.readOnly) ...[
-                      _GlassCard(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Arkadaslar', style: typo.h2),
-                            SizedBox(height: spacing.sm),
-                            Wrap(
-                              spacing: spacing.sm,
-                              runSpacing: spacing.sm,
-                              children: [
-                                OutlinedButton.icon(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute<void>(
-                                        builder: (_) => const PeopleListPage(),
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(Icons.groups_outlined),
-                                  label: const Text('Arkadaşlarını gör'),
-                                ),
-                                ElevatedButton.icon(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute<void>(
-                                        builder: (_) => const AddPersonPage(),
-                                      ),
-                                    );
-                                  },
-                                  icon: const Icon(Icons.person_add_alt_1),
-                                  label: const Text('+ Kişi Ekle'),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: spacing.xl),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: OutlinedButton.icon(
-                          onPressed: () async {
-                            await Supabase.instance.client.auth.signOut();
-                          },
-                          icon: const Icon(Icons.logout),
-                          label: const Text('Sign out'),
-                        ),
-                      ),
-                    ] else
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: OutlinedButton.icon(
-                          onPressed: () => Navigator.of(
-                            context,
-                            rootNavigator: true,
-                          ).maybePop(),
-                          icon: const Icon(Icons.arrow_back),
-                          label: const Text('Geri Dön'),
-                        ),
-                      ),
-                  ],
-                ),
-              );
+              final summaryText = (_natalSummary ?? '').trim();
+              final heroBody = summaryText.isNotEmpty
+                  ? summaryText
+                  : (_isNatalLoading
+                        ? 'Natal yorum yukleniyor.'
+                        : 'Dogum bilgileri tamamlandiginda profil okumasi burada acilacak.');
               final contentView = _segmentIndex == 0
-                  ? natalView
-                  : PeriodCalendarTab(
-                      profileOverride: widget.profileOverride,
-                      embedded: true,
+                  ? _ProfileRecoveryReadingBody(
+                      isLoading: _isNatalLoading,
+                      error: _natalError,
+                      summary: summaryText,
+                      supportingThreads: _supportingThreads,
+                      readOnly: widget.readOnly,
+                      onOpenPeople: widget.readOnly
+                          ? null
+                          : () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const PeopleListPage(),
+                                ),
+                              );
+                            },
+                      onAddPerson: widget.readOnly
+                          ? null
+                          : () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const AddPersonPage(),
+                                ),
+                              );
+                            },
+                    )
+                  : SizedBox(
+                      height: 780,
+                      child: PeriodCalendarTab(
+                        profileOverride: widget.profileOverride,
+                        embedded: true,
+                      ),
                     );
 
               return Scaffold(
                 backgroundColor: colors.bg,
-                body: CustomScrollView(
-                  slivers: [
-                    SliverAppBar(
-                      expandedHeight: 360,
-                      pinned: false,
-                      floating: false,
-                      automaticallyImplyLeading: false,
-                      backgroundColor: Colors.transparent,
-                      surfaceTintColor: Colors.transparent,
-                      elevation: 0,
-                      flexibleSpace: FlexibleSpaceBar(
-                        background: _ProfileHeroScene(
-                          displayName: displayName,
-                          username: username,
-                          avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
-                          isAvatarUploading: _isAvatarUploading,
-                          onAvatarEdit: widget.readOnly
-                              ? null
-                              : _pickAndUploadAvatar,
-                          readOnly: widget.readOnly,
-                          onSettingsTap: widget.readOnly || uid == null
+                body: DecoratedBox(
+                  decoration: BoxDecoration(
+                    color: colors.bg,
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        colors.bg,
+                        colors.bg,
+                        colors.surface.withValues(alpha: 0.94),
+                      ],
+                      stops: const [0, 0.56, 1],
+                    ),
+                  ),
+                  child: JoviaPageScaffold(
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      children: [
+                        JoviaProfileTopBar(
+                          label: 'Profile',
+                          centerText: username,
+                          onActionTap: widget.readOnly || uid == null
                               ? null
                               : () => _showSettingsSheet(
                                   context: context,
@@ -303,19 +220,45 @@ class _ProfilePageState extends State<ProfilePage> {
                                   repo: repo,
                                   currentUserEmail: currentUserEmail,
                                 ),
+                          actionAsset: widget.readOnly || uid == null
+                              ? null
+                              : JoviaUiAsset.settingsRings,
+                          reserveTrailingSpace: widget.readOnly || uid == null,
                         ),
-                      ),
-                    ),
-                    SliverToBoxAdapter(child: const _EditorialDivider()),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          spacing.lg,
-                          spacing.sm,
-                          spacing.lg,
-                          0,
+                        const SizedBox(height: 20),
+                        JoviaEditorialHeroBlock(
+                          label: 'Profile',
+                          title: displayName,
+                          body: heroBody,
+                          large: true,
+                          glyph: avatarUrl.isEmpty
+                              ? const JoviaUiIcon(
+                                  asset: JoviaUiAsset.profileComet,
+                                  size: 18,
+                                )
+                              : null,
+                          background: const JoviaColorWash(
+                            asset: JoviaColorAsset.wash11,
+                            opacity: 0.14,
+                          ),
+                          accent: const Padding(
+                            padding: EdgeInsets.only(top: 8, right: 2),
+                            child: JoviaIllustrationAccent(
+                              asset: JoviaIllustrationAsset.layers,
+                              width: 72,
+                              height: 72,
+                              opacity: 0.24,
+                            ),
+                          ),
+                          footer: _ProfileRecoveryHeroFooter(
+                            username: username,
+                            sunSign: _sunSign,
+                            moonSign: _moonSign,
+                            risingSign: _risingSign,
+                          ),
                         ),
-                        child: _GlassCard(
+                        const SizedBox(height: 20),
+                        JoviaSurfaceCard(
                           child: _ProfileStatsRow(
                             items: [
                               _ProfileStatItem(
@@ -343,33 +286,19 @@ class _ProfilePageState extends State<ProfilePage> {
                             ],
                           ),
                         ),
-                      ),
-                    ),
-                    if (kDebugMode)
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(
-                            spacing.lg,
-                            spacing.sm,
-                            spacing.lg,
-                            0,
-                          ),
-                          child: Align(
+                        if (kDebugMode) ...[
+                          const SizedBox(height: 12),
+                          Align(
                             alignment: Alignment.centerLeft,
                             child: _ElementDebugChip(scores: elementScores),
                           ),
-                        ),
-                      ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: EdgeInsets.fromLTRB(
-                          spacing.lg,
-                          spacing.xl,
-                          spacing.lg,
-                          0,
-                        ),
-                        child: _ProfileTabBar(
-                          currentIndex: _segmentIndex,
+                        ],
+                        const SizedBox(height: 20),
+                        JoviaSegmentedControl<int>(
+                          value: _segmentIndex,
+                          options: const <int>[0, 1],
+                          labelBuilder: (value) =>
+                              value == 0 ? 'Haritam' : 'Timing',
                           onChanged: (value) {
                             if (value == _segmentIndex) {
                               return;
@@ -377,11 +306,26 @@ class _ProfilePageState extends State<ProfilePage> {
                             setState(() => _segmentIndex = value);
                           },
                         ),
-                      ),
+                        const SizedBox(height: 20),
+                        contentView,
+                        const SizedBox(height: 20),
+                        widget.readOnly
+                            ? MinimalCTAButton(
+                                label: 'Geri don',
+                                onTap: () => Navigator.of(
+                                  context,
+                                  rootNavigator: true,
+                                ).maybePop(),
+                              )
+                            : MinimalCTAButton(
+                                label: 'Cikis yap',
+                                onTap: () async {
+                                  await Supabase.instance.client.auth.signOut();
+                                },
+                              ),
+                      ],
                     ),
-                    SliverToBoxAdapter(child: contentView),
-                    SliverToBoxAdapter(child: SizedBox(height: spacing.xxl)),
-                  ],
+                  ),
                 ),
               );
             },
@@ -1538,6 +1482,166 @@ class _ProfileHeroScene extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class _ProfileRecoveryHeroFooter extends StatelessWidget {
+  const _ProfileRecoveryHeroFooter({
+    required this.username,
+    required this.sunSign,
+    required this.moonSign,
+    required this.risingSign,
+  });
+
+  final String username;
+  final String sunSign;
+  final String moonSign;
+  final String risingSign;
+
+  @override
+  Widget build(BuildContext context) {
+    final chips = <String>[
+      if (username.trim().isNotEmpty) username.trim(),
+      if (sunSign.trim().isNotEmpty && sunSign.trim() != '—') 'Gunes $sunSign',
+      if (moonSign.trim().isNotEmpty && moonSign.trim() != '—') 'Ay $moonSign',
+      if (risingSign.trim().isNotEmpty && risingSign.trim() != '—')
+        'Yukselen $risingSign',
+    ];
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (var index = 0; index < chips.length; index++) ...[
+            JoviaMetaPill(label: chips[index]),
+            if (index != chips.length - 1) const SizedBox(width: 8),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileRecoveryReadingBody extends StatelessWidget {
+  const _ProfileRecoveryReadingBody({
+    required this.isLoading,
+    required this.error,
+    required this.summary,
+    required this.supportingThreads,
+    required this.readOnly,
+    this.onOpenPeople,
+    this.onAddPerson,
+  });
+
+  final bool isLoading;
+  final String? error;
+  final String summary;
+  final List<_SupportingThreadItem> supportingThreads;
+  final bool readOnly;
+  final VoidCallback? onOpenPeople;
+  final VoidCallback? onAddPerson;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        JoviaReadingPanel(
+          label: 'Natal',
+          title: 'Ana okuma',
+          child: _ProfileRecoverySummaryBlock(
+            isLoading: isLoading,
+            error: error,
+            summary: summary,
+          ),
+        ),
+        if (supportingThreads.isNotEmpty) ...[
+          const SizedBox(height: 18),
+          JoviaReadingPanel(
+            label: 'Katmanlar',
+            title: 'Destekleyen izler',
+            child: Column(
+              children: [
+                for (
+                  var index = 0;
+                  index < supportingThreads.length;
+                  index++
+                ) ...[
+                  JoviaUtilityRow(
+                    title: supportingThreads[index].title,
+                    body: supportingThreads[index].oneLiner,
+                  ),
+                  if (index != supportingThreads.length - 1) ...[
+                    const SizedBox(height: 10),
+                    const ThinDivider(),
+                    const SizedBox(height: 10),
+                  ],
+                ],
+              ],
+            ),
+          ),
+        ],
+        if (!readOnly) ...[
+          const SizedBox(height: 18),
+          JoviaActionRail(
+            title: 'Kisi alani',
+            body:
+                'Arkadaslarini ve referans profilleri buradan yonetebilirsin.',
+            primaryAction: MinimalCTAButton(
+              label: 'Arkadaslarini gor',
+              emphasized: true,
+              onTap: onOpenPeople,
+            ),
+            secondaryActions: [
+              MinimalCTAButton(label: '+ Kisi ekle', onTap: onAddPerson),
+            ],
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _ProfileRecoverySummaryBlock extends StatelessWidget {
+  const _ProfileRecoverySummaryBlock({
+    required this.isLoading,
+    required this.error,
+    required this.summary,
+  });
+
+  final bool isLoading;
+  final String? error;
+  final String summary;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+    if ((error ?? '').trim().isNotEmpty) {
+      return Text(
+        error!,
+        style: context.profileTheme.typography.bodyCompact.copyWith(
+          color: Theme.of(context).colorScheme.error,
+        ),
+      );
+    }
+    if (summary.trim().isEmpty) {
+      return Text(
+        'Natal okuma henuz hazir degil.',
+        style: context.profileTheme.typography.bodyCompact.copyWith(
+          color: context.profileTheme.colors.textLight,
+        ),
+      );
+    }
+    return Text(
+      summary,
+      style: context.profileTheme.typography.bodyCompact.copyWith(
+        color: context.profileTheme.colors.text,
+      ),
     );
   }
 }
