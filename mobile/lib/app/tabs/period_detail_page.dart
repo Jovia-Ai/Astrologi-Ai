@@ -92,10 +92,8 @@ class PeriodDetailPage extends StatelessWidget {
                   bodyMaxLines: 4,
                   surface: true,
                   large: true,
-                  glyph: JoviaPlanetGlyph(
-                    asset: isDaily
-                        ? JoviaPlanetAsset.moon
-                        : JoviaPlanetAsset.saturn,
+                  glyph: JoviaUiIcon(
+                    asset: JoviaUiAsset.orbitPlanet,
                     size: 16,
                     color: colors.primary,
                   ),

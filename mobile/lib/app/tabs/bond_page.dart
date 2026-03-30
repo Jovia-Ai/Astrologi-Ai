@@ -130,7 +130,7 @@ class _BondPageState extends ConsumerState<BondPage> {
                                   .copyWith(color: palette.softText),
                             ),
                             const SizedBox(height: 8),
-                            JoviaSegmentedControl<BondType>(
+                            _BondLensSelector(
                               value: _bondType,
                               options: BondType.values,
                               labelBuilder: (value) => value.label,
@@ -758,6 +758,139 @@ class _BondProfileChooser extends StatelessWidget {
   }
 }
 
+class _BondLensSelector extends StatelessWidget {
+  const _BondLensSelector({
+    required this.value,
+    required this.options,
+    required this.labelBuilder,
+    required this.onChanged,
+  });
+
+  final BondType value;
+  final List<BondType> options;
+  final String Function(BondType value) labelBuilder;
+  final ValueChanged<BondType> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final palette = _BondReferencePalette.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final trackColor = isDark
+        ? const Color(0xFF120E0D)
+        : Color.alphaBlend(
+            profile.colors.primary.withValues(alpha: 0.06),
+            palette.softFill,
+          );
+
+    return Container(
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: trackColor,
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: palette.edge.withValues(alpha: 0.86)),
+        boxShadow: [
+          BoxShadow(
+            color: palette.shadow.withValues(alpha: isDark ? 0.12 : 0.08),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+            spreadRadius: -14,
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          for (final option in options)
+            Expanded(
+              child: _BondLensSelectorOption(
+                label: labelBuilder(option),
+                selected: option == value,
+                onTap: () => onChanged(option),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BondLensSelectorOption extends StatelessWidget {
+  const _BondLensSelectorOption({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final palette = _BondReferencePalette.of(context);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final activeFill = isDark
+        ? Color.alphaBlend(
+            palette.edge.withValues(alpha: 0.18),
+            const Color(0xFF261B17),
+          )
+        : Color.alphaBlend(
+            Colors.white.withValues(alpha: 0.82),
+            profile.colors.primary.withValues(alpha: 0.18),
+          );
+    final activeBorder = isDark
+        ? palette.edge.withValues(alpha: 0.92)
+        : profile.colors.primary.withValues(alpha: 0.4);
+
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        decoration: BoxDecoration(
+          color: selected ? activeFill : Colors.transparent,
+          borderRadius: BorderRadius.circular(999),
+          border: Border.all(
+            color: selected ? activeBorder : Colors.transparent,
+          ),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: profile.typography.buttonLabel.copyWith(
+                color: selected ? palette.text : palette.softText,
+                fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+                letterSpacing: selected ? -0.18 : -0.08,
+              ),
+            ),
+            const SizedBox(height: 5),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              curve: Curves.easeOutCubic,
+              width: selected ? 18 : 0,
+              height: 2,
+              decoration: BoxDecoration(
+                color: selected
+                    ? (isDark
+                          ? const Color(0xFFF3D4B6)
+                          : profile.colors.primary)
+                    : Colors.transparent,
+                borderRadius: BorderRadius.circular(999),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _BondAvatarCircle extends StatelessWidget {
   const _BondAvatarCircle({
     required this.icon,
@@ -962,6 +1095,7 @@ class _BondReferencePalette {
 
   static _BondReferencePalette of(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final profile = context.profileTheme;
     return isDark
         ? const _BondReferencePalette(
             canvas: Color(0xFF080606),
@@ -978,20 +1112,38 @@ class _BondReferencePalette {
             softText: Color(0xFFB9A99A),
             shadow: Color(0xFF000000),
           )
-        : const _BondReferencePalette(
-            canvas: Color(0xFFF4EFE7),
-            lowerGlow: Color(0xFFEDE0D0),
-            panelFill: Color(0xFFFBF6EF),
-            sheetFill: Color(0xFFF8F2EA),
-            softFill: Color(0xFFF2E7D9),
-            avatarFill: Color(0xFFF6ECDD),
-            avatarInset: Color(0xFFFDF8F2),
-            edge: Color(0xFFD6945A),
-            rule: Color(0xFF7E6A59),
-            text: Color(0xFF181211),
-            mutedText: Color(0xFF6D5B50),
-            softText: Color(0xFF9A8373),
-            shadow: Color(0xFF8F6D4C),
+        : _BondReferencePalette(
+            canvas: profile.colors.bg,
+            lowerGlow: Color.alphaBlend(
+              profile.colors.primary.withValues(alpha: 0.08),
+              profile.colors.heroBase,
+            ),
+            panelFill: Color.alphaBlend(
+              Colors.white.withValues(alpha: 0.56),
+              profile.colors.heroBase,
+            ),
+            sheetFill: Color.alphaBlend(
+              Colors.white.withValues(alpha: 0.68),
+              profile.colors.surface,
+            ),
+            softFill: Color.alphaBlend(
+              profile.colors.warmAccent.withValues(alpha: 0.08),
+              profile.colors.panelSoft,
+            ),
+            avatarFill: Color.alphaBlend(
+              profile.colors.primary.withValues(alpha: 0.06),
+              profile.colors.panelSoft,
+            ),
+            avatarInset: profile.colors.surface,
+            edge: Color.alphaBlend(
+              profile.colors.primary.withValues(alpha: 0.34),
+              profile.colors.strokeSoft,
+            ),
+            rule: profile.colors.separator,
+            text: profile.colors.text,
+            mutedText: profile.colors.muted,
+            softText: profile.colors.textLight,
+            shadow: profile.colors.shadowLift,
           );
   }
 }

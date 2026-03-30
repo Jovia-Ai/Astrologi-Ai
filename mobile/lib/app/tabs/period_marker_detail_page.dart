@@ -52,9 +52,10 @@ class PeriodMarkerDetailPage extends StatelessWidget {
                   bodyMaxLines: 4,
                   surface: true,
                   large: true,
-                  glyph: const JoviaPlanetGlyph(
-                    asset: JoviaPlanetAsset.moon,
+                  glyph: JoviaUiIcon(
+                    asset: JoviaUiAsset.orbitPlanet,
                     size: 16,
+                    color: colors.primary,
                   ),
                   background: JoviaColorWash(asset: heroWash, opacity: 0.14),
                   accent: const Padding(

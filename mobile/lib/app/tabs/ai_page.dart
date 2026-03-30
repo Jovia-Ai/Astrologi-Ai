@@ -15,6 +15,21 @@ class _AiPageState extends State<AiPage> {
   final ScrollController _scrollController = ScrollController();
   final List<_AiChatMessageData> _messages = <_AiChatMessageData>[];
 
+  List<_AiChatMessageData> get _conversationMessages {
+    if (_messages.isNotEmpty) {
+      return _messages;
+    }
+    return const <_AiChatMessageData>[
+      _AiChatMessageData(
+        sender: _AiChatSender.aila,
+        text:
+            'Merhaba, ben Aila. İstersen bugün hissettiğin şeyi, aklındaki bir konuyu ya da haritana dair merak ettiğin bir detayı yaz.',
+        senderLabel: 'Aila',
+        timestamp: 'Şimdi',
+      ),
+    ];
+  }
+
   @override
   void dispose() {
     _composerController.dispose();
@@ -60,7 +75,9 @@ class _AiPageState extends State<AiPage> {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
     final palette = _AiReferencePalette.of(context);
+    final messages = _conversationMessages;
 
     return Scaffold(
       backgroundColor: palette.canvas,
@@ -79,16 +96,16 @@ class _AiPageState extends State<AiPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                child: JoviaReveal(child: _AiChatHeader(onMoreTap: () {})),
+                child: JoviaReveal(child: _AiTopBar(onMoreTap: () {})),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: profile.spacing.s12),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: JoviaReveal(
                     delay: const Duration(milliseconds: 30),
                     child: _AiChatShell(
-                      messages: _messages,
+                      messages: messages,
                       scrollController: _scrollController,
                     ),
                   ),
@@ -159,34 +176,92 @@ class _AiReferencePalette {
   final Color assistantFill;
 
   static _AiReferencePalette of(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark
-        ? const _AiReferencePalette(
-            canvas: Color(0xFF070708),
-            lowerGlow: Color(0xFF141112),
-            surface: Color(0xFF0E0C0D),
-            softFill: Color(0xFF181415),
-            edge: Color(0xFFB97B46),
-            rule: Color(0xFF4B3B33),
-            text: Color(0xFFF5F1EB),
-            mutedText: Color(0xFFC7BCB1),
-            softText: Color(0xFFB2A69B),
-            userFill: Color(0xFF1F1815),
-            assistantFill: Color(0xFF131113),
-          )
-        : const _AiReferencePalette(
-            canvas: Color(0xFFF5F0E8),
-            lowerGlow: Color(0xFFECE0D4),
-            surface: Color(0xFFFBF6EF),
-            softFill: Color(0xFFF2E7D9),
-            edge: Color(0xFFD6945A),
-            rule: Color(0xFF7F6A59),
-            text: Color(0xFF171211),
-            mutedText: Color(0xFF6F6257),
-            softText: Color(0xFF9B8677),
-            userFill: Color(0xFFF3E9DE),
-            assistantFill: Color(0xFFFFFBF6),
-          );
+    final colors = context.profileTheme.colors;
+    return _AiReferencePalette(
+      canvas: colors.bg,
+      lowerGlow: Color.alphaBlend(
+        colors.neonPink.withValues(alpha: 0.12),
+        colors.bg,
+      ),
+      surface: colors.panelStrong,
+      softFill: colors.panelSoft,
+      edge: colors.warmAccent.withValues(alpha: 0.72),
+      rule: colors.strokeSoft.withValues(alpha: 0.92),
+      text: colors.text,
+      mutedText: colors.muted,
+      softText: colors.textLight,
+      userFill: Color.alphaBlend(
+        colors.warmAccent.withValues(alpha: 0.1),
+        colors.panelStrong,
+      ),
+      assistantFill: Color.alphaBlend(
+        colors.primary.withValues(alpha: 0.08),
+        colors.panelStrong,
+      ),
+    );
+  }
+}
+
+class _AiTopBar extends StatelessWidget {
+  const _AiTopBar({required this.onMoreTap});
+
+  final VoidCallback onMoreTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final palette = _AiReferencePalette.of(context);
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            color: palette.softFill.withValues(alpha: 0.92),
+            shape: BoxShape.circle,
+            border: Border.all(color: palette.rule),
+          ),
+          child: Center(
+            child: JoviaUiIcon(
+              asset: JoviaUiAsset.chatOrbit,
+              size: 20,
+              color: palette.text,
+            ),
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Aila',
+                style: profile.typography.cardTitle.copyWith(
+                  color: palette.text,
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                'Çevrimiçi',
+                style: profile.typography.meta.copyWith(
+                  color: palette.softText,
+                ),
+              ),
+            ],
+          ),
+        ),
+        JoviaGlassIconButton(
+          onTap: onMoreTap,
+          size: 46,
+          child: JoviaUiIcon(
+            asset: JoviaUiAsset.menuStack,
+            size: 18,
+            color: palette.text,
+          ),
+        ),
+      ],
+    );
   }
 }
 
@@ -198,104 +273,14 @@ class _AiChatShell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final palette = _AiReferencePalette.of(context);
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: Opacity(
-            opacity: Theme.of(context).brightness == Brightness.dark
-                ? 0.12
-                : 0.08,
-            child: const JoviaColorWash(
-              asset: JoviaColorAsset.wash09,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        if (messages.isEmpty)
-          const _AiEmptyState()
-        else
-          ListView.separated(
-            controller: scrollController,
-            padding: const EdgeInsets.fromLTRB(0, 12, 0, 18),
-            itemCount: messages.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 14),
-            itemBuilder: (context, index) {
-              return _AiMessageBubble(message: messages[index]);
-            },
-          ),
-        Positioned(
-          left: 0,
-          right: 0,
-          bottom: 0,
-          child: IgnorePointer(
-            child: Container(
-              height: 28,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    palette.canvas.withValues(alpha: 0),
-                    palette.canvas.withValues(alpha: 0.92),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class _AiEmptyState extends StatelessWidget {
-  const _AiEmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    final profile = context.profileTheme;
-    final palette = _AiReferencePalette.of(context);
-    return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 320),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 72,
-              height: 72,
-              decoration: BoxDecoration(
-                color: palette.softFill.withValues(alpha: 0.82),
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: palette.rule.withValues(alpha: 0.56)),
-              ),
-              child: Center(
-                child: JoviaUiIcon(
-                  asset: JoviaUiAsset.chatOrbit,
-                  size: 28,
-                  color: palette.softText,
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
-            Text(
-              'Mesajını yaz ve konuşmayı başlat.',
-              textAlign: TextAlign.center,
-              style: profile.typography.cardTitle.copyWith(color: palette.text),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Bu alan backend bağlandığında doğal bir konuşma akışıyla dolacak.',
-              textAlign: TextAlign.center,
-              style: profile.typography.bodyCompact.copyWith(
-                color: palette.mutedText,
-                height: 1.56,
-              ),
-            ),
-          ],
-        ),
-      ),
+    return ListView.separated(
+      controller: scrollController,
+      padding: const EdgeInsets.fromLTRB(0, 12, 0, 20),
+      itemCount: messages.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 14),
+      itemBuilder: (context, index) {
+        return _AiMessageBubble(message: messages[index]);
+      },
     );
   }
 }
@@ -359,62 +344,6 @@ class _AiMessageBubble extends StatelessWidget {
   }
 }
 
-class _AiChatHeader extends StatelessWidget {
-  const _AiChatHeader({required this.onMoreTap});
-
-  final VoidCallback onMoreTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final profile = context.profileTheme;
-    final palette = _AiReferencePalette.of(context);
-    return SizedBox(
-      height: 56,
-      child: Row(
-        children: [
-          const SizedBox(width: 44),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Aila',
-                  style: profile.typography.cardTitle.copyWith(
-                    color: palette.text,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  'Online',
-                  style: profile.typography.meta.copyWith(
-                    color: palette.softText,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          JoviaPressable(
-            onTap: onMoreTap,
-            borderRadius: BorderRadius.circular(999),
-            child: SizedBox(
-              width: 44,
-              height: 44,
-              child: Center(
-                child: JoviaUiIcon(
-                  asset: JoviaUiAsset.menuStack,
-                  size: 18,
-                  color: palette.text,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _AiChatDock extends StatelessWidget {
   const _AiChatDock({required this.controller, required this.onSend});
 
@@ -458,10 +387,7 @@ class _AiComposer extends StatelessWidget {
       decoration: BoxDecoration(
         color: palette.surface.withValues(alpha: 0.94),
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(
-          color: palette.edge.withValues(alpha: 0.82),
-          width: 1.2,
-        ),
+        border: Border.all(color: palette.rule, width: 1.2),
       ),
       child: Row(
         children: [
@@ -491,9 +417,9 @@ class _AiComposer extends StatelessWidget {
               width: 42,
               height: 42,
               decoration: BoxDecoration(
-                color: palette.softFill,
+                color: palette.userFill,
                 borderRadius: BorderRadius.circular(999),
-                border: Border.all(color: palette.edge.withValues(alpha: 0.56)),
+                border: Border.all(color: palette.edge.withValues(alpha: 0.5)),
               ),
               child: Center(
                 child: JoviaUiIcon(
