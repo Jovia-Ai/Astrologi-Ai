@@ -1,5 +1,6 @@
 import re
 
+import app.natal.public_builder as natal_public_builder_module
 from app.natal.public_builder import build_public_natal_view
 
 
@@ -265,6 +266,49 @@ def test_public_natal_view_naturalizes_profile_copy_and_humanizes_chips() -> Non
     assert overlap < 0.8
     assert block["astro_sources"] == ["Jüpiter 5. ev", "Mars-Neptün üçgeni"]
     assert block["chips"] == ["Yenilik", "İç Denge", "Yapı ve Yenilik"]
+
+
+def test_public_natal_view_editorializes_synthesized_bundle_cards(monkeypatch) -> None:
+    monkeypatch.setattr(
+        natal_public_builder_module,
+        "select_aspect_bundles",
+        lambda _response: {
+            "selected_bundles": [
+                {
+                    "bundle_id": "relational_heat",
+                    "bundle_type": "relational_pattern_bundle",
+                    "domains": ["ilişkiler", "yakınlık"],
+                    "recognition_tags": ["güven arayışı", "derin temas"],
+                    "gift_tags": ["sadakat"],
+                    "reflex_tags": ["geri çekilme"],
+                }
+            ],
+            "max_primary_bundles": 3,
+        },
+    )
+
+    public = build_public_natal_view(
+        {
+            "core_story": "Kısa test metni.",
+            "meta": {"pressure_index": 0.4, "support_index": 0.6},
+            "narrative_anchor": {"domain": "identity"},
+            "planets": [{"planet": "Moon", "house": 8, "sign": "Scorpio"}],
+            "profile_narrative": {"profile_public": {"engine_version": "profile_narrative_v2", "blocks": []}},
+        },
+        locale="tr",
+    )
+
+    extra_blocks = public["profile_narrative"]["profile_public"]["extra_blocks"]
+    synthesized = next(
+        block for block in extra_blocks if block["origin"] == "narrative_v2_bundle"
+    )
+
+    assert synthesized["headline"] == "Yakınlık sende nasıl açılıyor"
+    assert "İlk hissedilen çizgi:" not in synthesized["body"]
+    assert "Güçlü taraf:" not in synthesized["body"]
+    assert "Sıkışınca çalışan refleks:" not in synthesized["body"]
+    assert "İlk bakışta okunan tarafın" in synthesized["body"]
+    assert "Sıkıştığında ise" in synthesized["body"]
 
 
 def test_public_natal_view_profile_copy_cleanup_is_deterministic() -> None:

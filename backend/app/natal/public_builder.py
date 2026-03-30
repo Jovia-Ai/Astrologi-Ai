@@ -207,6 +207,17 @@ _PROFILE_BUNDLE_FAMILY_BY_TYPE = {
     "personal_core_bundle": "self_definition",
 }
 
+_PROFILE_EDITORIAL_TITLES = {
+    "outer_inner_split": "Dışarıdan ve içeriden",
+    "mind_mechanics": "Zihnin nasıl çalışıyor",
+    "protection_pattern": "Kendini nasıl koruyorsun",
+    "intimacy_guard": "Yakınlık sende nasıl açılıyor",
+    "control_vs_flow": "Tutma ve bırakma dengesi",
+    "creative_channel": "Fırsatın aktığı yer",
+    "self_definition": "Sende kolay tanınan çizgi",
+    "contradiction_core": "İçeride iki yönün nasıl çalışıyor",
+}
+
 
 def _extract_planet_sign(value: Any, target_planet: str) -> str:
     planets = value if isinstance(value, list) else []
@@ -220,6 +231,94 @@ def _extract_planet_sign(value: Any, target_planet: str) -> str:
         sign = str(item.get("sign") or item.get("zodiac_sign") or "").strip()
         if sign:
             return sign
+    return ""
+
+
+def _editorial_profile_title(family: str, *, fallback: str = "Sende çalışan ikinci katman") -> str:
+    return _PROFILE_EDITORIAL_TITLES.get(family, fallback)
+
+
+def _editorial_phrase_list(values: list[str], *, limit: int = 3) -> str:
+    cleaned = [
+        cleanup_tr_punctuation(str(item).strip())
+        for item in values[:limit]
+        if str(item).strip()
+    ]
+    if not cleaned:
+        return ""
+    if len(cleaned) == 1:
+        return cleaned[0]
+    if len(cleaned) == 2:
+        return f"{cleaned[0]} ve {cleaned[1]}"
+    return f"{', '.join(cleaned[:-1])} ve {cleaned[-1]}"
+
+
+def _editorial_bundle_teaser(*, family: str, recognition: list[str], gifts: list[str], reflex: list[str]) -> str:
+    lead = _editorial_phrase_list(recognition, limit=2)
+    if not lead:
+        lead = _editorial_phrase_list(gifts, limit=2)
+    if not lead:
+        lead = _editorial_phrase_list(reflex, limit=2)
+    if not lead:
+        return _editorial_profile_title(family)
+
+    return {
+        "mind_mechanics": f"Zihninde ilk hissedilen çizgi {lead} tarafında toplanıyor.",
+        "intimacy_guard": f"Yakınlıkta önce {lead} tarafın açılıyor.",
+        "creative_channel": f"Akışın en çok {lead} çizgisinde güçleniyor.",
+        "outer_inner_split": f"İnsanlar sende önce {lead} tarafını hissediyor.",
+        "control_vs_flow": f"İçinde aynı anda {lead} çalışan bir denge var.",
+        "protection_pattern": f"Zorlandığında ilk devreye {lead} tarafın giriyor.",
+        "contradiction_core": f"İçeride aynı anda {lead} çalışan iki yön var.",
+        "self_definition": f"Sende kolay tanınan çizgi {lead} tarafında beliriyor.",
+    }.get(family, f"Sende belirginleşen çizgi {lead} tarafında toplanıyor.")
+
+
+def _editorial_bundle_body(
+    *,
+    family: str,
+    recognition: list[str],
+    gifts: list[str],
+    reflex: list[str],
+    domains: list[str],
+) -> str:
+    domain_text = _editorial_phrase_list(domains, limit=2)
+    recognition_text = _editorial_phrase_list(recognition, limit=3)
+    gift_text = _editorial_phrase_list(gifts, limit=2)
+    reflex_text = _editorial_phrase_list(reflex, limit=2)
+
+    sentences: list[str] = []
+    if domain_text:
+        domain_templates = {
+            "mind_mechanics": f"Bu katman en çok {domain_text} alanında belirginleşiyor.",
+            "intimacy_guard": f"Bu çizgi en çok {domain_text} alanında görünür oluyor.",
+            "creative_channel": f"Bu akış en çok {domain_text} alanında açılıyor.",
+        }
+        sentences.append(
+            domain_templates.get(
+                family,
+                f"Bu katman en çok {domain_text} alanında görünür oluyor.",
+            )
+        )
+    if recognition_text:
+        sentences.append(f"İlk bakışta okunan tarafın çoğu zaman {recognition_text} oluyor.")
+    if gift_text:
+        sentences.append(f"Güçlü halinde bu çizgi {gift_text} olarak çalışıyor.")
+    if reflex_text:
+        sentences.append(f"Sıkıştığında ise {reflex_text} tarafı öne çıkabiliyor.")
+
+    if not sentences:
+        return _editorial_profile_title(family)
+    return " ".join(sentences)
+
+
+def _editorial_bundle_micro(*, gifts: list[str], reflex: list[str]) -> str:
+    gift_text = _editorial_phrase_list(gifts, limit=1)
+    reflex_text = _editorial_phrase_list(reflex, limit=1)
+    if reflex_text:
+        return f"Daraldığında {reflex_text} tarafın daha hızlı görünür olabilir."
+    if gift_text:
+        return f"Yerine oturduğunda en güçlü çalışan tarafın {gift_text} oluyor."
     return ""
 
 
@@ -465,33 +564,25 @@ def _bundle_as_profile_block(bundle: Mapping[str, Any]) -> dict[str, Any] | None
     if not recognition and not gifts and not reflex:
         return None
     family = _PROFILE_BUNDLE_FAMILY_BY_TYPE.get(bundle_type, "inner_layer")
-    title = {
-        "outer_inner_split": "Dışarıdan ve içeriden",
-        "mind_mechanics": "Zihnin nasıl çalışıyor",
-        "protection_pattern": "Kendini nasıl koruyorsun",
-        "intimacy_guard": "Yakınlıkta hangi tarafın açılıyor",
-        "control_vs_flow": "Tutma ve bırakma dengesi",
-        "creative_channel": "Akışın nerede güçleniyor",
-        "self_definition": "Sende kolay tanınan çizgi",
-        "contradiction_core": "İçeride iki yönün nasıl çalışıyor",
-    }.get(family, "Sende çalışan ikinci katman")
-    teaser_parts = [
-        recognition[:3] and " • ".join(recognition[:3]),
-        gifts[:2] and f"Güç: {' • '.join(gifts[:2])}",
-    ]
-    body_parts = [
-        domains and f"Alanlar: {' • '.join(domains)}",
-        recognition and f"İlk hissedilen çizgi: {' • '.join(recognition)}",
-        gifts and f"Güçlü taraf: {' • '.join(gifts)}",
-        reflex and f"Sıkışınca çalışan refleks: {' • '.join(reflex)}",
-    ]
+    title = _editorial_profile_title(family)
     entry = {
         "id": f"bundle_{bundle_id}",
         "headline": title,
-        "teaser": " ".join([part for part in teaser_parts if part]).strip() or title,
+        "teaser": _editorial_bundle_teaser(
+            family=family,
+            recognition=recognition,
+            gifts=gifts,
+            reflex=reflex,
+        ),
         "subtitle": "",
-        "body": "\n\n".join([part for part in body_parts if part]).strip(),
-        "micro": "",
+        "body": _editorial_bundle_body(
+            family=family,
+            recognition=recognition,
+            gifts=gifts,
+            reflex=reflex,
+            domains=domains,
+        ),
+        "micro": _editorial_bundle_micro(gifts=gifts, reflex=reflex),
         "astro_hint": "",
         "astro_sources": [],
         "chips": domains[:3] or gifts[:3],

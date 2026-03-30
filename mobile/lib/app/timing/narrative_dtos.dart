@@ -742,37 +742,37 @@ class PeriodMarkerDto {
   final Map<String, dynamic> raw;
 
   factory PeriodMarkerDto.fromMap(Map<String, dynamic> map) {
-    final id = (map['id'] ??
-            map['marker_id'] ??
-            map['event_id'] ??
-            map['slug'] ??
-            map['key'] ??
-            '')
-        .toString()
-        .trim();
-    final title = (map['title'] ??
-            map['label'] ??
-            map['headline'] ??
-            map['name'] ??
-            '')
-        .toString()
-        .trim();
-    final summary = (map['summary'] ??
-            map['subtitle'] ??
-            map['description'] ??
-            map['core_story'] ??
-            '')
-        .toString()
-        .trim();
+    final id =
+        (map['id'] ??
+                map['marker_id'] ??
+                map['event_id'] ??
+                map['slug'] ??
+                map['key'] ??
+                '')
+            .toString()
+            .trim();
+    final title =
+        (map['title'] ?? map['label'] ?? map['headline'] ?? map['name'] ?? '')
+            .toString()
+            .trim();
+    final summary =
+        (map['summary'] ??
+                map['subtitle'] ??
+                map['description'] ??
+                map['core_story'] ??
+                '')
+            .toString()
+            .trim();
     final timing = map['timing'];
-    final timeHint = (map['range'] ??
-            map['time_hint'] ??
-            map['time_hint_tr'] ??
-            (timing is Map ? timing['timing_note'] : null) ??
-            map['label'] ??
-            '')
-        .toString()
-        .trim();
+    final timeHint =
+        (map['range'] ??
+                map['time_hint'] ??
+                map['time_hint_tr'] ??
+                (timing is Map ? timing['timing_note'] : null) ??
+                map['label'] ??
+                '')
+            .toString()
+            .trim();
     return PeriodMarkerDto(
       id: id,
       title: title,
@@ -798,39 +798,46 @@ class PeriodThemeDto {
   final String timeHint;
   final Map<String, dynamic> raw;
 
-  factory PeriodThemeDto.fromMap(Map<String, dynamic> map, {required int index}) {
+  factory PeriodThemeDto.fromMap(
+    Map<String, dynamic> map, {
+    required int index,
+  }) {
     final labelPack = map['label_pack'] is Map
         ? Map<String, dynamic>.from(map['label_pack'] as Map)
         : const <String, dynamic>{};
-    final id = (map['id'] ??
-            map['theme_id'] ??
-            map['event_id'] ??
-            map['label'] ??
-            'theme-$index')
-        .toString()
-        .trim();
-    final title = (map['title'] ??
-            map['label'] ??
-            labelPack['short'] ??
-            labelPack['full'] ??
-            'Tema ${index + 1}')
-        .toString()
-        .trim();
-    final summary = (map['summary'] ??
-            map['description'] ??
-            map['why'] ??
-            map['note'] ??
-            map['theme'] ??
-            '')
-        .toString()
-        .trim();
-    final timeHint = (map['time_hint'] ??
-            map['range'] ??
-            labelPack['where'] ??
-            map['phase_kind'] ??
-            '')
-        .toString()
-        .trim();
+    final id =
+        (map['id'] ??
+                map['theme_id'] ??
+                map['event_id'] ??
+                map['label'] ??
+                'theme-$index')
+            .toString()
+            .trim();
+    final title =
+        (map['title'] ??
+                map['label'] ??
+                labelPack['short'] ??
+                labelPack['full'] ??
+                'Tema ${index + 1}')
+            .toString()
+            .trim();
+    final summary =
+        (map['summary'] ??
+                map['description'] ??
+                map['why'] ??
+                map['note'] ??
+                map['theme'] ??
+                '')
+            .toString()
+            .trim();
+    final timeHint =
+        (map['time_hint'] ??
+                map['range'] ??
+                labelPack['where'] ??
+                map['phase_kind'] ??
+                '')
+            .toString()
+            .trim();
     return PeriodThemeDto(
       id: id.isNotEmpty ? id : 'theme-$index',
       title: title.isNotEmpty ? title : 'Tema ${index + 1}',
@@ -864,22 +871,26 @@ class IntentSummaryDto {
     final byDate = map['by_date'] is Map
         ? Map<String, dynamic>.from(map['by_date'] as Map)
         : const <String, dynamic>{};
-    final entries = byDate.entries
-        .where((entry) => entry.value is Map)
-        .map(
-          (entry) => MapEntry(
-            entry.key,
-            Map<String, dynamic>.from(entry.value as Map),
-          ),
-        )
-        .toList()
-      ..sort(
-        (a, b) => (((b.value['score'] ?? 0) as num).toDouble()).compareTo(
-          ((a.value['score'] ?? 0) as num).toDouble(),
-        ),
-      );
+    final entries =
+        byDate.entries
+            .where((entry) => entry.value is Map)
+            .map(
+              (entry) => MapEntry(
+                entry.key,
+                Map<String, dynamic>.from(entry.value as Map),
+              ),
+            )
+            .toList()
+          ..sort(
+            (a, b) => (((b.value['score'] ?? 0) as num).toDouble()).compareTo(
+              ((a.value['score'] ?? 0) as num).toDouble(),
+            ),
+          );
     final top = entries.take(2).toList(growable: false);
-    final topDates = top.map((entry) => entry.key).where((e) => e.isNotEmpty).toList();
+    final topDates = top
+        .map((entry) => entry.key)
+        .where((e) => e.isNotEmpty)
+        .toList();
     final topRatings = top
         .map((entry) => (entry.value['rating'] ?? '').toString().trim())
         .where((e) => e.isNotEmpty)
@@ -980,21 +991,18 @@ class PeriodCardDto {
     required PeriodCoreDto? periodCore,
     required int index,
   }) {
+    final periodTitle = periodCore?.title.trim() ?? '';
+    final periodStory = periodCore?.coreStory.trim() ?? '';
+    final periodUpperMeaning = periodCore?.upperMeaning.trim() ?? '';
     final title = marker.title.isNotEmpty
         ? marker.title
-        : (periodCore?.title.trim().isNotEmpty == true
-              ? periodCore!.title.trim()
-              : 'Period');
+        : (periodTitle.isNotEmpty ? periodTitle : 'Period');
     final subtitle = marker.summary.isNotEmpty
         ? marker.summary
-        : (periodCore?.coreStory.trim().isNotEmpty == true
-              ? periodCore!.coreStory.trim()
-              : 'Bu donemin ana temasi.');
+        : (periodStory.isNotEmpty ? periodStory : 'Bu donemin ana temasi.');
     final timeHint = marker.timeHint.isNotEmpty
         ? marker.timeHint
-        : (periodCore?.upperMeaning.trim().isNotEmpty == true
-              ? periodCore!.upperMeaning.trim()
-              : '');
+        : (periodUpperMeaning.isNotEmpty ? periodUpperMeaning : '');
     return PeriodCardDto(
       id: marker.id.isNotEmpty ? marker.id : 'period-$index',
       title: title,
@@ -1131,14 +1139,12 @@ String _normalizeDetailText(String value) {
 }
 
 double _detailSimilarity(String left, String right) {
-  final leftTokens = _normalizeDetailText(left)
-      .split(' ')
-      .where((token) => token.isNotEmpty)
-      .toSet();
-  final rightTokens = _normalizeDetailText(right)
-      .split(' ')
-      .where((token) => token.isNotEmpty)
-      .toSet();
+  final leftTokens = _normalizeDetailText(
+    left,
+  ).split(' ').where((token) => token.isNotEmpty).toSet();
+  final rightTokens = _normalizeDetailText(
+    right,
+  ).split(' ').where((token) => token.isNotEmpty).toSet();
   if (leftTokens.isEmpty || rightTokens.isEmpty) {
     return 0;
   }
@@ -1249,20 +1255,14 @@ List<String> _uniqueDetailLabels(List<String> values, {int limit = 3}) {
 }
 
 class _DetailSourceValue {
-  const _DetailSourceValue({
-    required this.value,
-    required this.source,
-  });
+  const _DetailSourceValue({required this.value, required this.source});
 
   final String value;
   final String source;
 }
 
 class _DetailSourceCandidate {
-  const _DetailSourceCandidate({
-    required this.source,
-    required this.value,
-  });
+  const _DetailSourceCandidate({required this.source, required this.value});
 
   final String source;
   final String value;
@@ -1295,17 +1295,21 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
     final story = event?.periodStory;
 
     if (event == null) {
-      final eyebrow = _firstDistinctSnippet([
-        periodCore?.title ?? '',
-      ], avoid: <String>[title], maxSentences: 1);
+      final eyebrow = _firstDistinctSnippet(
+        [periodCore?.title ?? ''],
+        avoid: <String>[title],
+        maxSentences: 1,
+      );
       final summary = _firstDistinctSnippet([
         subtitle,
         periodCore?.coreStory ?? '',
         'Bu donemde one cikan tema burada toplanir.',
       ], maxSentences: 2);
-      final timingNote = _firstDistinctSnippet([
-        timeHint,
-      ], avoid: <String>[summary], maxSentences: 2);
+      final timingNote = _firstDistinctSnippet(
+        [timeHint],
+        avoid: <String>[summary],
+        maxSentences: 2,
+      );
       return PeriodDetailNarrativeDto(
         eyebrow: eyebrow,
         headline: title.trim().isNotEmpty ? title.trim() : 'Donem',
@@ -1354,107 +1358,135 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
       _DetailSourceCandidate(source: 'event.teaser', value: event.teaser),
       _DetailSourceCandidate(source: 'period_card.subtitle', value: subtitle),
     ], maxSentences: 2);
-    final timing = _firstSourceValue([
-      _DetailSourceCandidate(
-        source: 'event.time_hint_tr',
-        value: event.timeHintTr,
-      ),
-      _DetailSourceCandidate(source: 'event.why_now', value: event.whyNow),
-      _DetailSourceCandidate(
-        source: 'event.timing.timing_note',
-        value: event.timing.timingNote,
-      ),
-      _DetailSourceCandidate(source: 'period_card.time_hint', value: timeHint),
-    ], avoid: <String>[opening.value], maxSentences: 2);
-    final essence = _firstSourceValue([
-      _DetailSourceCandidate(source: 'event.essence', value: event.essence),
-      _DetailSourceCandidate(
-        source: 'event.big_picture',
-        value: event.bigPicture,
-      ),
-      _DetailSourceCandidate(source: 'event.conflict', value: event.conflict),
-    ], avoid: <String>[opening.value], maxSentences: 2);
-    final mechanism = _firstSourceValue([
-      _DetailSourceCandidate(
-        source: 'event.mechanism',
-        value: event.mechanism,
-      ),
-      _DetailSourceCandidate(source: 'event.why_now', value: event.whyNow),
-    ], avoid: <String>[opening.value, timing.value, essence.value], maxSentences: 2);
-    final asks = _firstSourceValue([
-      _DetailSourceCandidate(source: 'event.asks', value: event.asks),
-      _DetailSourceCandidate(source: 'event.upper', value: event.upper),
-      _DetailSourceCandidate(
-        source: 'event.guidance',
-        value: _listToNarrative(
-          event.guidance,
-          prefix: 'Kucuk pratik:',
+    final timing = _firstSourceValue(
+      [
+        _DetailSourceCandidate(
+          source: 'event.time_hint_tr',
+          value: event.timeHintTr,
         ),
-      ),
-    ], avoid: <String>[opening.value, timing.value, essence.value, mechanism.value], maxSentences: 2);
-    final builds = _firstSourceValue([
-      _DetailSourceCandidate(
-        source: 'event.what_it_builds',
-        value: event.whatItBuilds,
-      ),
-    ], avoid: <String>[
-      opening.value,
-      timing.value,
-      essence.value,
-      mechanism.value,
-      asks.value,
-    ], maxSentences: 1);
-    final watchout = _firstSourceValue([
-      _DetailSourceCandidate(
-        source: 'event.watchout',
-        value: event.watchout,
-      ),
-      _DetailSourceCandidate(source: 'event.shadow', value: event.shadow),
-      _DetailSourceCandidate(
-        source: 'event.watch_out',
-        value: _listToNarrative(
-          event.watchOut,
-          prefix: 'Bunu zorlastiran sey genelde su olur:',
+        _DetailSourceCandidate(source: 'event.why_now', value: event.whyNow),
+        _DetailSourceCandidate(
+          source: 'event.timing.timing_note',
+          value: event.timing.timingNote,
         ),
-      ),
-    ], avoid: <String>[
-      opening.value,
-      timing.value,
-      essence.value,
-      mechanism.value,
-      asks.value,
-      builds.value,
-    ], maxSentences: 2);
-    final umbrellaTitle = _firstSourceValue([
-      _DetailSourceCandidate(
-        source: 'period_story.title',
-        value: story?.title ?? '',
-      ),
-    ], avoid: <String>[headline.value], maxSentences: 1);
-    final umbrellaBody = _firstSourceValue([
-      _DetailSourceCandidate(
-        source: 'period_story.lead',
-        value: story?.lead ?? '',
-      ),
-      _DetailSourceCandidate(
-        source: 'period_story.big_picture',
-        value: story?.bigPicture ?? '',
-      ),
-    ], avoid: <String>[opening.value, essence.value], maxSentences: 2);
+        _DetailSourceCandidate(
+          source: 'period_card.time_hint',
+          value: timeHint,
+        ),
+      ],
+      avoid: <String>[opening.value],
+      maxSentences: 2,
+    );
+    final essence = _firstSourceValue(
+      [
+        _DetailSourceCandidate(source: 'event.essence', value: event.essence),
+        _DetailSourceCandidate(
+          source: 'event.big_picture',
+          value: event.bigPicture,
+        ),
+        _DetailSourceCandidate(source: 'event.conflict', value: event.conflict),
+      ],
+      avoid: <String>[opening.value],
+      maxSentences: 2,
+    );
+    final mechanism = _firstSourceValue(
+      [
+        _DetailSourceCandidate(
+          source: 'event.mechanism',
+          value: event.mechanism,
+        ),
+        _DetailSourceCandidate(source: 'event.why_now', value: event.whyNow),
+      ],
+      avoid: <String>[opening.value, timing.value, essence.value],
+      maxSentences: 2,
+    );
+    final asks = _firstSourceValue(
+      [
+        _DetailSourceCandidate(source: 'event.asks', value: event.asks),
+        _DetailSourceCandidate(source: 'event.upper', value: event.upper),
+        _DetailSourceCandidate(
+          source: 'event.guidance',
+          value: _listToNarrative(event.guidance, prefix: 'Kucuk pratik:'),
+        ),
+      ],
+      avoid: <String>[
+        opening.value,
+        timing.value,
+        essence.value,
+        mechanism.value,
+      ],
+      maxSentences: 2,
+    );
+    final builds = _firstSourceValue(
+      [
+        _DetailSourceCandidate(
+          source: 'event.what_it_builds',
+          value: event.whatItBuilds,
+        ),
+      ],
+      avoid: <String>[
+        opening.value,
+        timing.value,
+        essence.value,
+        mechanism.value,
+        asks.value,
+      ],
+      maxSentences: 1,
+    );
+    final watchout = _firstSourceValue(
+      [
+        _DetailSourceCandidate(source: 'event.watchout', value: event.watchout),
+        _DetailSourceCandidate(source: 'event.shadow', value: event.shadow),
+        _DetailSourceCandidate(
+          source: 'event.watch_out',
+          value: _listToNarrative(
+            event.watchOut,
+            prefix: 'Bunu zorlastiran sey genelde su olur:',
+          ),
+        ),
+      ],
+      avoid: <String>[
+        opening.value,
+        timing.value,
+        essence.value,
+        mechanism.value,
+        asks.value,
+        builds.value,
+      ],
+      maxSentences: 2,
+    );
+    final umbrellaTitle = _firstSourceValue(
+      [
+        _DetailSourceCandidate(
+          source: 'period_story.title',
+          value: story?.title ?? '',
+        ),
+      ],
+      avoid: <String>[headline.value],
+      maxSentences: 1,
+    );
+    final umbrellaBody = _firstSourceValue(
+      [
+        _DetailSourceCandidate(
+          source: 'period_story.lead',
+          value: story?.lead ?? '',
+        ),
+        _DetailSourceCandidate(
+          source: 'period_story.big_picture',
+          value: story?.bigPicture ?? '',
+        ),
+      ],
+      avoid: <String>[opening.value, essence.value],
+      maxSentences: 2,
+    );
 
     final sections = <PeriodDetailSectionDto>[
       if (essence.value.isNotEmpty)
         PeriodDetailSectionDto(title: 'Bu donemin ozu', body: essence.value),
       if (mechanism.value.isNotEmpty)
-        PeriodDetailSectionDto(
-          title: 'Nasil calisiyor',
-          body: mechanism.value,
-        ),
+        PeriodDetailSectionDto(title: 'Nasil calisiyor', body: mechanism.value),
       if (asks.value.isNotEmpty)
-        PeriodDetailSectionDto(
-          title: 'Senden ne istiyor',
-          body: asks.value,
-        ),
+        PeriodDetailSectionDto(title: 'Senden ne istiyor', body: asks.value),
       if (watchout.value.isNotEmpty)
         PeriodDetailSectionDto(
           title: 'Dikkat edilmesi gereken',
@@ -1573,10 +1605,7 @@ class PeriodCalendarDto {
           continue;
         }
         themes.add(
-          PeriodThemeDto.fromMap(
-            Map<String, dynamic>.from(item),
-            index: i,
-          ),
+          PeriodThemeDto.fromMap(Map<String, dynamic>.from(item), index: i),
         );
       }
     }
@@ -1602,7 +1631,9 @@ class PeriodCalendarDto {
 
     if (markers.isEmpty && periodCore != null) {
       final featured = publicRaw['period_core'] is Map
-          ? (Map<String, dynamic>.from(publicRaw['period_core'] as Map))['featured_events']
+          ? (Map<String, dynamic>.from(
+              publicRaw['period_core'] as Map,
+            ))['featured_events']
           : null;
       if (featured is List) {
         for (final item in featured) {
@@ -1619,19 +1650,21 @@ class PeriodCalendarDto {
           markers.add(
             PeriodMarkerDto(
               id: (mapItem['event_id'] ?? '').toString().trim(),
-              title: (interpretation['headline'] ??
-                      interpretation['headline_short'] ??
-                      mapItem['label'] ??
-                      '')
-                  .toString()
-                  .trim(),
+              title:
+                  (interpretation['headline'] ??
+                          interpretation['headline_short'] ??
+                          mapItem['label'] ??
+                          '')
+                      .toString()
+                      .trim(),
               summary: (interpretation['summary'] ?? '').toString().trim(),
-              timeHint: (interpretation['time_hint'] ??
-                      timing['timing_note'] ??
-                      mapItem['phase'] ??
-                      '')
-                  .toString()
-                  .trim(),
+              timeHint:
+                  (interpretation['time_hint'] ??
+                          timing['timing_note'] ??
+                          mapItem['phase'] ??
+                          '')
+                      .toString()
+                      .trim(),
               raw: mapItem,
             ),
           );

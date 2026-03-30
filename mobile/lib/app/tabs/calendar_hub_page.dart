@@ -1507,9 +1507,9 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
 
     try {
       final now = DateTime.now();
-      final narrativeMap = await _narrativeRepository.fetchTransitSummary(
+      final narrativeMap = await _narrativeRepository.fetchDailyNarrative(
         profile: profile,
-        transitDate: now,
+        selectedDate: now,
       );
       final narrative = NarrativeResponse.fromMap(narrativeMap);
       final periodEvents = pickPeriodEventCards(

@@ -140,3 +140,38 @@ def test_home_deep_warms_fast_cache(monkeypatch) -> None:
     assert deep_lookup.status == "hit"
     assert fast_lookup.entry is not None
     assert fast_lookup.entry.value["headline"] == "fast preview"
+
+
+def test_home_fast_prefers_editorial_core_story_over_upper_meaning() -> None:
+    orchestrator = HomeOrchestrator(cache_store=InMemoryCacheStore())
+
+    payload = orchestrator._assemble_fast_payload(
+        natal_public={"core_story_ui": {"headline": "Kimlik", "text": "Sessiz ama net bir yön hissi kuruluyor."}},
+        transit_payload={
+            "public": {
+                "period_core": {
+                    "title": "Aktif tema",
+                    "upper_meaning": "Daha soyut bir üst anlam cümlesi.",
+                    "core_story": "Bu dönem mesele hız değil; daha anlaşılır görünmek.",
+                },
+                "event_cards": [],
+            }
+        },
+        sky_payload={"summary_tr": "Gökyüzünde teknik bir açıklama."},
+    )
+
+    assert payload["summary"] == "Bu dönem mesele hız değil; daha anlaşılır görünmek."
+
+
+def test_home_editorializes_collective_aspect_summary() -> None:
+    orchestrator = HomeOrchestrator(cache_store=InMemoryCacheStore())
+
+    summary = orchestrator._editorialize_sky_summary(
+        {
+            "short_title_tr": "Güneş-Satürn kavuşumu",
+            "summary_tr": "Güneş ile Satürn arasındaki kavuşum, kolektif atmosferde görünürlük ile yapı kurma başlıklarını aynı anda hareketlendirebilir.",
+            "badge_tr": "Aktif",
+        }
+    )
+
+    assert summary == "güneş-satürn kavuşumu şu sıralar kolektif ritimde daha görünür çalışıyor."

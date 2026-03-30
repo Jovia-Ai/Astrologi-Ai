@@ -42,6 +42,8 @@ class MyApp extends ConsumerWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode.materialMode,
+      themeAnimationDuration: const Duration(milliseconds: 520),
+      themeAnimationCurve: Curves.easeInOutCubic,
       home: SplashScreen(
         child: supabaseReady
             ? const AuthGate()

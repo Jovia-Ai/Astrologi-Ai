@@ -62,6 +62,8 @@ def test_transit_narrative_includes_public_event_cards(monkeypatch) -> None:
 
     response = transits.build_transit_narrative(_request(selected_date="2026-03-10"))
     assert "public" in response
+    assert response["meta"]["snapshot_id"].startswith("trsnap_")
+    assert response["meta"]["source_meta"]["endpoint"] == "/transit/narrative"
     assert isinstance(response["public"]["event_cards"], list)
     assert response["public"]["event_cards"][0]["natal_promise"]["score"] == 0.7
     assert response["public"]["period_peak_timeline"][0]["peak_date_utc"] == "2026-03-05T09:00:00+00:00"
@@ -103,6 +105,8 @@ def test_transit_narrative_public_payload_fallback_on_error(monkeypatch) -> None
 
     response = transits.build_transit_narrative(_request())
     assert "public" in response
+    assert response["meta"]["snapshot_id"].startswith("trsnap_")
+    assert response["meta"]["source_meta"]["endpoint"] == "/transit/narrative"
     assert response["public"]["event_cards"] == []
     assert response["public"]["period_peak_timeline"] == []
     assert response["public"]["period_core"] == {}
@@ -145,6 +149,8 @@ def test_transit_narrative_debug_includes_period_selection(monkeypatch) -> None:
     )
 
     response = transits.build_transit_narrative(_request(debug=True))
+    assert response["meta"]["snapshot_id"].startswith("trsnap_")
+    assert response["meta"]["source_meta"]["endpoint"] == "/transit/narrative"
     assert "_period_coverage" not in response["public"]
     assert "_period_selection" not in response["public"]
     assert "_period_root_causes" not in response["public"]

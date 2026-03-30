@@ -180,10 +180,10 @@ def _summary_from_items(items: List[SkyFeedItem]) -> str:
         return "Bugün gökyüzünde öne çıkan güçlü bir kolektif eşik görünmüyor."
     hero = items[0]
     if hero.badge_tr == "Tutulma":
-        return f"Şu anda gökyüzünde en güçlü başlık {hero.short_title_tr.lower()}; kolektif atmosfer hızlı yön değişimlerine açık."
+        return f"Şu anda gökyüzü {hero.short_title_tr.lower()} etrafında daha sert bir eşik hissi taşıyor."
     if hero.badge_tr in {"Retro başlıyor", "Retro bitiyor"}:
-        return f"Şu anda gökyüzünün ana haberi {hero.short_title_tr.lower()}; kolektif ritim karar değil ayar istiyor."
-    return f"Şu anda gökyüzünde öne çıkan başlık {hero.short_title_tr.lower()}; gündem kolektif olarak daha görünür çalışıyor."
+        return f"Şu anda gökyüzünün ana başlığı {hero.short_title_tr.lower()}; ritim hızdan çok ayar istiyor."
+    return f"Şu anda gökyüzünde {hero.short_title_tr.lower()} başlığı kolektif ritmi belirliyor."
 
 
 def _select_active_events(

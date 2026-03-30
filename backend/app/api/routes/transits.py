@@ -6,13 +6,13 @@ import copy
 import hashlib
 import os
 from datetime import date as date_type, time as time_type
-from typing import Any, Dict, List, Mapping, Optional, Tuple, Literal
+from typing import Annotated, Any, Dict, List, Mapping, Optional, Tuple, Literal
 import json
 import logging
 from functools import lru_cache
 from time import perf_counter
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Header, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.engine.transit_engine import (
@@ -45,6 +45,12 @@ from app.transit.narrative import (
 from app.transit.narrative.coverage import build_period_coverage
 from app.transit.narrative.selection import select_event_ids
 from app.transit.narrative.generator import make_birth_fingerprint
+from app.transit.observability import (
+    TRACE_EVENT_NAME,
+    build_route_trace_log_payload,
+    generate_snapshot_id,
+    inject_snapshot_meta,
+)
 
 router = APIRouter(tags=["transits"])
 logger = logging.getLogger(__name__)
@@ -67,6 +73,60 @@ def _payload_size_bytes(payload: Any) -> int:
     )
 
 
+def _trace_logs_enabled() -> bool:
+    return os.getenv("ENABLE_TIMING_LOGS", "true").strip().lower() in {
+        "1",
+        "true",
+        "yes",
+        "on",
+    }
+
+
+def _safe_range_days(start: str, end: str) -> int | None:
+    try:
+        return (date_type.fromisoformat(end) - date_type.fromisoformat(start)).days + 1
+    except ValueError:
+        return None
+
+
+def _finalize_route_response(
+    response: Dict[str, Any],
+    *,
+    endpoint: str,
+    snapshot_id: str,
+    client_trace_id: str | None,
+    client_surface: str | None,
+    duration_ms: float,
+    extra_log_fields: Mapping[str, Any] | None = None,
+) -> Dict[str, Any]:
+    finalized = inject_snapshot_meta(
+        response,
+        endpoint=endpoint,
+        snapshot_id=snapshot_id,
+    )
+    if isinstance(finalized, Mapping) and _trace_logs_enabled():
+        payload = build_route_trace_log_payload(
+            endpoint=endpoint,
+            snapshot_id=snapshot_id,
+            client_trace_id=client_trace_id,
+            client_surface=client_surface,
+            duration_ms=duration_ms,
+            payload_bytes=_payload_size_bytes(finalized),
+            extra_fields=extra_log_fields,
+        )
+        logger.info(
+            "%s %s",
+            TRACE_EVENT_NAME,
+            json.dumps(
+                payload,
+                ensure_ascii=False,
+                sort_keys=True,
+                default=_json_safe,
+            ),
+        )
+    return dict(finalized) if isinstance(finalized, Mapping) else response
+
+
 def _log_transit_timing(
     *,
     endpoint: str,
@@ -74,7 +134,7 @@ def _log_transit_timing(
     response: Mapping[str, Any],
     duration_ms: float,
 ) -> None:
-    if not os.getenv("ENABLE_TIMING_LOGS", "true").strip().lower() in {"1", "true", "yes", "on"}:
+    if not _trace_logs_enabled():
         return
     start_date = _parse_iso_date(request.start, field_name="start")
     end_date = _parse_iso_date(request.end, field_name="end")
@@ -1436,9 +1496,26 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
 
 
 @router.post("/transits")
-def build_transits(request: TransitRequest) -> Dict[str, Any]:
+def build_transits(
+    request: TransitRequest,
+    client_trace_id: Annotated[str | None, Header(alias="X-Transit-Trace-Id")] = None,
+    client_surface: Annotated[str | None, Header(alias="X-Transit-Surface")] = None,
+) -> Dict[str, Any]:
+    started = perf_counter()
+    snapshot_id = generate_snapshot_id()
     response = _build_transits_engine_response(request)
-    return build_public_response(response)
+    public = build_public_response(response)
+    return _finalize_route_response(
+        public,
+        endpoint="/transits",
+        snapshot_id=snapshot_id,
+        client_trace_id=client_trace_id,
+        client_surface=client_surface,
+        duration_ms=(perf_counter() - started) * 1000.0,
+        extra_log_fields={
+            "transit_date": request.transit_date,
+        },
+    )
 
 
 @router.post("/transits/debug")
@@ -1473,7 +1550,11 @@ def build_transit_calendar(
     lens: str = "general",
     view: str = Query("public", description="public | internal | both (ui/full are accepted aliases)"),
     include: str | None = Query(None, description="markers,items_map,items_map_raw,themes,intent_summary,calendar_internal"),
+    client_trace_id: Annotated[str | None, Header(alias="X-Transit-Trace-Id")] = None,
+    client_surface: Annotated[str | None, Header(alias="X-Transit-Surface")] = None,
 ) -> Dict[str, Any]:
+    started = perf_counter()
+    snapshot_id = generate_snapshot_id()
     payload = build_transit_calendar_public(
         birth_date=birth_date,
         birth_time=birth_time,
@@ -1488,10 +1569,33 @@ def build_transit_calendar(
     v = _normalize_calendar_view(view)
     internal = payload.get("calendar_internal") or payload
     public = payload.get("calendar_public") or {}
+    log_fields = {
+        "range_start": start,
+        "range_end": end,
+        "range_days": _safe_range_days(start, end),
+        "view": v,
+        "include": include,
+    }
     if v == "internal":
-        return internal
+        return _finalize_route_response(
+            internal,
+            endpoint="/transit/calendar",
+            snapshot_id=snapshot_id,
+            client_trace_id=client_trace_id,
+            client_surface=client_surface,
+            duration_ms=(perf_counter() - started) * 1000.0,
+            extra_log_fields=log_fields,
+        )
     if v == "both":
-        return {"calendar_internal": internal, "calendar_public": public}
+        return _finalize_route_response(
+            {"calendar_internal": internal, "calendar_public": public},
+            endpoint="/transit/calendar",
+            snapshot_id=snapshot_id,
+            client_trace_id=client_trace_id,
+            client_surface=client_surface,
+            duration_ms=(perf_counter() - started) * 1000.0,
+            extra_log_fields=log_fields,
+        )
 
     # public + optional include (never mutate public in-place)
     out = copy.deepcopy(public)
@@ -1509,7 +1613,15 @@ def build_transit_calendar(
             out["intent_summary"] = internal.get("intent_summary", {})
         if "calendar_internal" in inc:
             out["calendar_internal"] = internal
-    return out
+    return _finalize_route_response(
+        out,
+        endpoint="/transit/calendar",
+        snapshot_id=snapshot_id,
+        client_trace_id=client_trace_id,
+        client_surface=client_surface,
+        duration_ms=(perf_counter() - started) * 1000.0,
+        extra_log_fields=log_fields,
+    )
 
 
 @router.get("/transit/calendar/best-times")
@@ -1532,7 +1644,11 @@ def transit_calendar_best_times(
     debug: int = Query(0, description="1 => evidence/rules döndür"),
     transit_place: str | None = None,
     lens: str = Query("general", description="general | relationship | marriage | business | career | money | health | home"),
+    client_trace_id: Annotated[str | None, Header(alias="X-Transit-Trace-Id")] = None,
+    client_surface: Annotated[str | None, Header(alias="X-Transit-Surface")] = None,
 ) -> Dict[str, Any]:
+    started = perf_counter()
+    snapshot_id = generate_snapshot_id()
     try:
         start_date = _parse_iso_date(start, field_name="start")
         end_date = _parse_iso_date(end, field_name="end")
@@ -1580,11 +1696,36 @@ def transit_calendar_best_times(
             tz=tz,
             intent=public_intent,
         )
+        log_fields = {
+            "range_start": start_date.isoformat(),
+            "range_end": end_date.isoformat(),
+            "range_days": (end_date - start_date).days + 1,
+            "intent": intent,
+            "sub_intent": sub_intent,
+            "top": top,
+            "window": window,
+        }
 
         if v == "internal":
-            return internal_result
+            return _finalize_route_response(
+                internal_result,
+                endpoint="/transit/calendar/best-times",
+                snapshot_id=snapshot_id,
+                client_trace_id=client_trace_id,
+                client_surface=client_surface,
+                duration_ms=(perf_counter() - started) * 1000.0,
+                extra_log_fields=log_fields,
+            )
         if v == "both":
-            return {"public": public_result, "internal": internal_result}
+            return _finalize_route_response(
+                {"public": public_result, "internal": internal_result},
+                endpoint="/transit/calendar/best-times",
+                snapshot_id=snapshot_id,
+                client_trace_id=client_trace_id,
+                client_surface=client_surface,
+                duration_ms=(perf_counter() - started) * 1000.0,
+                extra_log_fields=log_fields,
+            )
 
         if debug:
             if "_debug_calendar" not in internal_result:
@@ -1603,7 +1744,15 @@ def transit_calendar_best_times(
                 "calendar": internal_result.get("_debug_calendar") or {},
             }
 
-        return public_result
+        return _finalize_route_response(
+            public_result,
+            endpoint="/transit/calendar/best-times",
+            snapshot_id=snapshot_id,
+            client_trace_id=client_trace_id,
+            client_surface=client_surface,
+            duration_ms=(perf_counter() - started) * 1000.0,
+            extra_log_fields=log_fields,
+        )
     except ValueError as exc:
         logger.warning("best-times validation error: %s", exc)
         raise HTTPException(
@@ -1712,8 +1861,13 @@ def build_transit_calendar_day(
 
 
 @router.post("/transit/narrative")
-def build_transit_narrative(request: TransitNarrativeRequest) -> Dict[str, Any]:
+def build_transit_narrative(
+    request: TransitNarrativeRequest,
+    client_trace_id: Annotated[str | None, Header(alias="X-Transit-Trace-Id")] = None,
+    client_surface: Annotated[str | None, Header(alias="X-Transit-Surface")] = None,
+) -> Dict[str, Any]:
     started = perf_counter()
+    snapshot_id = generate_snapshot_id()
     start_date = _parse_iso_date(request.start, field_name="start")
     end_date = _parse_iso_date(request.end, field_name="end")
     if start_date > end_date:
@@ -1905,6 +2059,21 @@ def build_transit_narrative(request: TransitNarrativeRequest) -> Dict[str, Any]:
             response["best_times"] = best_times_public
         if best_times_internal is not None:
             response["best_times_internal"] = best_times_internal
+    response = _finalize_route_response(
+        response,
+        endpoint="/transit/narrative",
+        snapshot_id=snapshot_id,
+        client_trace_id=client_trace_id,
+        client_surface=client_surface,
+        duration_ms=(perf_counter() - started) * 1000.0,
+        extra_log_fields={
+            "range_start": start_date.isoformat(),
+            "range_end": end_date.isoformat(),
+            "range_days": (end_date - start_date).days + 1,
+            "selected_date": request.selected_date,
+            "include_best_times": bool(request.include_best_times),
+        },
+    )
     _log_transit_timing(
         endpoint="/transit/narrative",
         request=request,

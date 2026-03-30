@@ -281,6 +281,7 @@ class HomeOrchestrator:
         core_story_ui = natal_public.get("core_story_ui") if isinstance(natal_public.get("core_story_ui"), Mapping) else {}
         period_core = transit_public.get("period_core") if isinstance(transit_public.get("period_core"), Mapping) else {}
         sky_hero = sky_payload.get("hero") if isinstance(sky_payload.get("hero"), Mapping) else {}
+        sky_editorial_summary = self._editorialize_sky_summary(sky_hero or {}, fallback=sky_payload.get("summary_tr"))
 
         highlights = self._build_fast_highlights(transit_public=transit_public, sky_payload=sky_payload)
         headline = self._first_text(
@@ -290,9 +291,10 @@ class HomeOrchestrator:
             sky_hero.get("short_title_tr"),
         )
         summary = self._first_text(
-            period_core.get("upper_meaning"),
             period_core.get("core_story"),
             core_story_ui.get("text"),
+            period_core.get("upper_meaning"),
+            sky_editorial_summary,
             sky_payload.get("summary_tr"),
         )
 
@@ -303,7 +305,11 @@ class HomeOrchestrator:
             "energy": {
                 "badge": self._first_text(sky_hero.get("badge_tr"), "Home"),
                 "focus": self._first_text(period_core.get("title"), core_story_ui.get("headline")),
-                "summary": self._first_text(sky_hero.get("summary_tr"), sky_payload.get("summary_tr")),
+                "summary": self._first_text(
+                    sky_editorial_summary,
+                    sky_hero.get("summary_tr"),
+                    sky_payload.get("summary_tr"),
+                ),
             },
             "cta": {
                 "label": "Derin akisi ac",
@@ -340,12 +346,12 @@ class HomeOrchestrator:
         sections = [
             {
                 "id": "natal_sections",
-                "title": "Natal katman",
+                "title": "Kimlik katmanları",
                 "items": copy.deepcopy(sections_v2[:3]),
             },
             {
                 "id": "period_story",
-                "title": "Donem okuma",
+                "title": "Aktif tema",
                 "items": [
                     {
                         "title": self._first_text((transit_public.get("period_core") or {}).get("title"), "Donem"),
@@ -358,11 +364,15 @@ class HomeOrchestrator:
             },
             {
                 "id": "collective_pulse",
-                "title": "Kolektif pulse",
+                "title": "Kolektif konu",
                 "items": [
                     {
                         "title": self._first_text(item.get("short_title_tr"), item.get("title_tr")),
-                        "summary": self._first_text(item.get("summary_tr"), item.get("badge_tr")),
+                        "summary": self._first_text(
+                            self._editorialize_sky_summary(item),
+                            item.get("summary_tr"),
+                            item.get("badge_tr"),
+                        ),
                     }
                     for item in sky_items[:3]
                     if isinstance(item, Mapping)
@@ -435,7 +445,11 @@ class HomeOrchestrator:
                     "id": str(item.get("id") or f"sky-{len(highlights) + 1}"),
                     "kind": "sky",
                     "title": self._first_text(item.get("short_title_tr"), item.get("title_tr")),
-                    "summary": self._first_text(item.get("summary_tr"), item.get("badge_tr")),
+                    "summary": self._first_text(
+                        self._editorialize_sky_summary(item),
+                        item.get("summary_tr"),
+                        item.get("badge_tr"),
+                    ),
                 }
             )
             if len(highlights) >= 2:
@@ -473,6 +487,26 @@ class HomeOrchestrator:
             if len(items) >= 5:
                 break
         return items[:5]
+
+    def _editorialize_sky_summary(
+        self,
+        item: Mapping[str, Any],
+        *,
+        fallback: Any | None = None,
+    ) -> str:
+        short_title = self._first_text(item.get("short_title_tr"), item.get("title_tr")).strip()
+        badge = str(item.get("badge_tr") or "").strip()
+        summary = self._first_text(item.get("summary_tr"), fallback).strip()
+        if not short_title and not summary:
+            return ""
+        lower_title = short_title.lower() if short_title else ""
+        if badge == "Tutulma" and lower_title:
+            return f"{lower_title} kolektif atmosferde daha sert bir eşik hissi yaratabilir."
+        if badge in {"Retro başlıyor", "Retro bitiyor"} and lower_title:
+            return f"{lower_title} yüzünden kolektif ritim hızdan çok ayar istiyor."
+        if " arasındaki " in summary and lower_title:
+            return f"{lower_title} şu sıralar kolektif ritimde daha görünür çalışıyor."
+        return summary
 
     def _warm_fast_cache_from_deep(self, *, context: HomeRequestContext, payload: Mapping[str, Any], now: datetime) -> None:
         if not settings.enable_home_fast_cache:

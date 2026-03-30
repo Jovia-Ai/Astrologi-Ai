@@ -17,134 +17,197 @@ class PeopleListPage extends ConsumerWidget {
     final peopleAsync = ref.watch(peopleListProvider);
     final profile = context.profileTheme;
     final spacing = profile.spacing;
+    final colors = profile.colors;
+
+    Future<void> openCreatePerson([PersonProfile? initial]) async {
+      final created = await Navigator.of(context).push<bool>(
+        MaterialPageRoute<bool>(
+          builder: (_) => AddPersonPage(initialPerson: initial),
+        ),
+      );
+      if (created == true) {
+        ref.invalidate(peopleListProvider);
+      }
+    }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          'KISILER',
-          style: profile.typography.navigationLabel(color: profile.colors.text),
-        ),
-        actions: [
-          IconButton(
-            tooltip: 'Kişi ekle',
-            icon: const Icon(Icons.person_add_alt_1_outlined),
-            onPressed: () async {
-              final created = await Navigator.of(context).push<bool>(
-                MaterialPageRoute<bool>(builder: (_) => const AddPersonPage()),
-              );
-              if (created == true) {
-                ref.invalidate(peopleListProvider);
-              }
-            },
+      backgroundColor: colors.bg,
+      body: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              colors.bg,
+              colors.bg,
+              Color.alphaBlend(
+                colors.neonPink.withValues(alpha: 0.1),
+                colors.bg,
+              ),
+            ],
+            stops: const [0, 0.7, 1],
           ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          ref.invalidate(peopleListProvider);
-          await ref.read(peopleListProvider.future);
-        },
-        child: peopleAsync.when(
-          data: (items) {
-            if (items.isEmpty) {
-              return ListView(
-                padding: EdgeInsets.all(spacing.s24),
-                children: [
-                  JoviaReadingPanel(
-                    label: 'People',
-                    title: 'Henuz kayitli kisi yok',
-                    body:
-                        'Bond ve diger iliski akislari icin kisi alanini buradan kuracaksin.',
-                  ),
-                  SizedBox(height: spacing.s12),
-                  JoviaPrimaryButton(
-                    label: 'Kisi ekle',
-                    onTap: () async {
-                      final created = await Navigator.of(context).push<bool>(
-                        MaterialPageRoute<bool>(
-                          builder: (_) => const AddPersonPage(),
-                        ),
-                      );
-                      if (created == true) {
-                        ref.invalidate(peopleListProvider);
-                      }
-                    },
-                  ),
-                ],
-              );
-            }
-
-            return ListView(
-              padding: EdgeInsets.all(spacing.s16),
+        ),
+        child: JoviaPageScaffold(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              ref.invalidate(peopleListProvider);
+              await ref.read(peopleListProvider.future);
+            },
+            child: ListView(
+              padding: EdgeInsets.zero,
               children: [
-                JoviaReadingPanel(
+                JoviaProfileTopBar(
                   label: 'People',
-                  title: 'Kisi alanin',
-                  body:
-                      'Kaydettigin insanlar burada tek bir utility listede durur.',
-                  child: Column(
-                    children: [
-                      for (var index = 0; index < items.length; index++) ...[
-                        _PeopleListItem(
-                          person: items[index],
-                          onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                builder: (_) => FriendProfilePage(
-                                  personId: items[index].id,
-                                ),
-                              ),
-                            );
-                          },
-                          onEdit: () async {
-                            final updated = await Navigator.of(context)
-                                .push<bool>(
-                                  MaterialPageRoute<bool>(
-                                    builder: (_) => AddPersonPage(
-                                      initialPerson: items[index],
+                  centerText: 'Sosyal çevren',
+                  onActionTap: () => openCreatePerson(),
+                  actionAsset: JoviaUiAsset.plusCrosshair,
+                  actionTooltip: 'Kişi ekle',
+                ),
+                SizedBox(height: spacing.s24),
+                const _PeopleHeroCard(),
+                SizedBox(height: spacing.s24),
+                peopleAsync.when(
+                  data: (items) {
+                    if (items.isEmpty) {
+                      return Column(
+                        children: [
+                          JoviaReadingPanel(
+                            label: 'People',
+                            title: 'Henüz kayıtlı kişi yok',
+                            body:
+                                'Bond ve diğer ilişki akışları için çevreni burada kuracaksın. Aynı spacing ve aynı sosyal yüzey diliyle ilerliyor.',
+                          ),
+                          SizedBox(height: spacing.s12),
+                          SizedBox(
+                            width: double.infinity,
+                            child: JoviaPrimaryButton(
+                              label: 'Kişi ekle',
+                              onTap: () => openCreatePerson(),
+                            ),
+                          ),
+                        ],
+                      );
+                    }
+
+                    return JoviaReadingPanel(
+                      label: 'Circle',
+                      title: 'Yakın çevren',
+                      body:
+                          'Kayıtlı kişiler utility listede değil, daha sakin ve tutarlı bir sosyal yüzeyde tutuluyor.',
+                      background: const Align(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: EdgeInsets.only(right: 10, top: 8),
+                          child: JoviaIllustrationAccent(
+                            asset: JoviaIllustrationAsset.flower,
+                            width: 82,
+                            height: 82,
+                            opacity: 0.78,
+                          ),
+                        ),
+                      ),
+                      child: Column(
+                        children: [
+                          for (
+                            var index = 0;
+                            index < items.length;
+                            index++
+                          ) ...[
+                            _PeopleListItem(
+                              person: items[index],
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute<void>(
+                                    builder: (_) => FriendProfilePage(
+                                      personId: items[index].id,
                                     ),
                                   ),
                                 );
-                            if (updated == true) {
-                              ref.invalidate(peopleListProvider);
-                            }
-                          },
-                        ),
-                        if (index != items.length - 1) const ThinDivider(),
-                      ],
-                    ],
+                              },
+                              onEdit: () => openCreatePerson(items[index]),
+                            ),
+                            if (index != items.length - 1) ...[
+                              SizedBox(height: spacing.s8),
+                              const ThinDivider(),
+                              SizedBox(height: spacing.s8),
+                            ],
+                          ],
+                        ],
+                      ),
+                    );
+                  },
+                  loading: () => const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 48),
+                    child: Center(child: CircularProgressIndicator()),
                   ),
+                  error: (error, _) {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      final msg = error is PeopleQueryException
+                          ? error.userMessage
+                          : 'Arkadaş listesi yüklenemedi: $error';
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(msg)));
+                    });
+                    return JoviaReadingPanel(
+                      label: 'People',
+                      title: 'Kişi listesi yüklenemedi',
+                      body: error is PeopleQueryException
+                          ? error.userMessage
+                          : 'Arkadaş listesi yüklenemedi: $error',
+                    );
+                  },
                 ),
               ],
-            );
-          },
-          loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, _) => ListView(
-            padding: EdgeInsets.all(spacing.s24),
-            children: [
-              Builder(
-                builder: (context) {
-                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                    final msg = error is PeopleQueryException
-                        ? error.userMessage
-                        : 'Arkadaş listesi yüklenemedi: $error';
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(msg)));
-                  });
-                  return const SizedBox.shrink();
-                },
-              ),
-              JoviaReadingPanel(
-                label: 'People',
-                title: 'Kisi listesi yuklenemedi',
-                body: error is PeopleQueryException
-                    ? error.userMessage
-                    : 'Arkadaş listesi yüklenemedi: $error',
-              ),
-            ],
+            ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _PeopleHeroCard extends StatelessWidget {
+  const _PeopleHeroCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return JoviaEditorialHeroBlock(
+      label: 'Social',
+      title: 'Çevreni aynı editorial ritimde tut.',
+      body:
+          'Illustration üstte, spacing daha geniş, kart yapısı daha sakin. Buradaki insanlar artık geri kalan tasarımla aynı premium akışın içinde.',
+      large: true,
+      background: Stack(
+        children: [
+          const Positioned.fill(
+            child: JoviaColorWash(
+              asset: JoviaColorAsset.wash05,
+              fit: BoxFit.cover,
+              opacity: 0.1,
+            ),
+          ),
+          Positioned(
+            right: -8,
+            top: -4,
+            child: JoviaIllustrationAccent(
+              asset: JoviaIllustrationAsset.heart,
+              width: 88,
+              height: 88,
+              opacity: 0.84,
+            ),
+          ),
+        ],
+      ),
+      footer: const Wrap(
+        spacing: 8,
+        runSpacing: 8,
+        children: [
+          JoviaMetaPill(label: 'Bond hazır'),
+          JoviaMetaPill(label: 'Sessiz ton'),
+          JoviaMetaPill(label: 'Premium social'),
+        ],
       ),
     );
   }
@@ -163,21 +226,29 @@ class _PeopleListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = context.profileTheme.colors;
     return JoviaUtilityRow(
-      label: 'Kisi',
+      label: 'Friend',
       title: person.name,
       body:
           '${person.birthDate} • ${((person.birthTime ?? '').trim().isEmpty ? 'saat yok' : person.birthTime!.trim())} • ${person.city}, ${person.country}',
-      leading: CircleAvatar(
-        radius: 18,
-        backgroundColor: context.profileTheme.colors.lavender,
-        child: const JoviaUiIcon(asset: JoviaUiAsset.profileComet, size: 16),
+      leading: Container(
+        width: 40,
+        height: 40,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: colors.panelSoft,
+          border: Border.all(color: colors.strokeSoft),
+        ),
+        child: const Center(
+          child: JoviaUiIcon(asset: JoviaUiAsset.profileComet, size: 16),
+        ),
       ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            tooltip: 'Duzenle',
+            tooltip: 'Düzenle',
             icon: const Icon(Icons.edit_outlined, size: 18),
             onPressed: onEdit,
           ),

@@ -44,6 +44,23 @@ class ProfileColors {
   final Color neonPink;
   final Color neonCyan;
 
+  Color get canvas => bg;
+  Color get canvasAlt => heroBase;
+  Color get heroBand =>
+      Color.alphaBlend(primary.withValues(alpha: 0.14), heroBase);
+  Color get panelSoft =>
+      Color.alphaBlend(strokeSoft.withValues(alpha: 0.18), surface);
+  Color get panelStrong =>
+      Color.alphaBlend(border.withValues(alpha: 0.22), heroBase);
+  Color get pillIdle => chipBg;
+  Color get pillActive =>
+      Color.alphaBlend(warmAccent.withValues(alpha: 0.12), panelStrong);
+  Color get buttonPrimary => warmAccent;
+  Color get buttonSecondary => panelStrong;
+  Color get hairline => separator;
+  Color get shadowSoft => const Color(0x1F0E1620);
+  Color get shadowLift => const Color(0x33202A33);
+
   Color get bgBase => bg;
   Color get surfaceCard => surface;
   Color get brandPurple => primary;
@@ -67,47 +84,47 @@ class ProfileColors {
   Color get statusReceding => const Color(0xFF8FA1B5);
 
   static const ProfileColors light = ProfileColors(
-    bg: Color(0xFFF6F0E8),
-    surface: Color(0xFFFFFAF4),
-    text: Color(0xFF17151F),
-    muted: Color(0xFF655B52),
-    textLight: Color(0xFF8C7F73),
-    primary: Color(0xFFC17E48),
-    lime: Color(0xFFF3E7D9),
-    lavender: Color(0xFFF8EEE4),
-    border: Color(0x1E3B271C),
-    strokeSoft: Color(0x163B271C),
-    separator: Color(0x223B271C),
-    auraStops: <Color>[Color(0xFFF6F0E8), Color(0xFFF7EBDD), Color(0xFFFFFAF4)],
-    chipBg: Color(0xFFF6EEE4),
-    chipBorder: Color(0x30C17E48),
-    warmAccent: Color(0xFFC17E48),
-    heroText: Color(0xFF17151F),
-    heroBase: Color(0xFFFFF8F1),
-    neonPink: Color(0xFFE8C6B1),
-    neonCyan: Color(0xFFE7DDD3),
+    bg: Color(0xFFEFF3F6),
+    surface: Color(0xFFF8FBFD),
+    text: Color(0xFF182028),
+    muted: Color(0xFF667480),
+    textLight: Color(0xFF95A3AE),
+    primary: Color(0xFFAABAC7),
+    lime: Color(0xFFF1F5F8),
+    lavender: Color(0xFFE9EFF4),
+    border: Color(0x2A8EA0AF),
+    strokeSoft: Color(0x1F8EA0AF),
+    separator: Color(0x1A8EA0AF),
+    auraStops: <Color>[Color(0xFFEFF3F6), Color(0xFFF5F8FB), Color(0xFFF8FBFD)],
+    chipBg: Color(0xE6F7FAFC),
+    chipBorder: Color(0x339EAFBD),
+    warmAccent: Color(0xFFB8C7D4),
+    heroText: Color(0xFF182028),
+    heroBase: Color(0xFFE7EDF2),
+    neonPink: Color(0xFFDDE6F2),
+    neonCyan: Color(0xFFDDE8EC),
   );
 
   static const ProfileColors dark = ProfileColors(
-    bg: Color(0xFF15110F),
-    surface: Color(0xFF241D19),
-    text: Color(0xFFF6F0E8),
-    muted: Color(0xFFD8CCBF),
-    textLight: Color(0xFFB7ABA0),
-    primary: Color(0xFFD9C4B0),
-    lime: Color(0xFF221C18),
-    lavender: Color(0xFF2A221D),
-    border: Color(0x36FFFFFF),
-    strokeSoft: Color(0x28FFFFFF),
-    separator: Color(0x20FFFFFF),
-    auraStops: <Color>[Color(0xFF15110F), Color(0xFF201713), Color(0xFF0E0B0A)],
-    chipBg: Color(0xFF2C241F),
-    chipBorder: Color(0x30FFFFFF),
-    warmAccent: Color(0xFFC19773),
-    heroText: Color(0xFFF6F0E8),
-    heroBase: Color(0xFF100C0A),
-    neonPink: Color(0xFF6F5447),
-    neonCyan: Color(0xFF574E48),
+    bg: Color(0xFF06090D),
+    surface: Color(0xFF10161C),
+    text: Color(0xFFF2F5F8),
+    muted: Color(0xFFC8D0D7),
+    textLight: Color(0xFF93A1AE),
+    primary: Color(0xFFAAB7C3),
+    lime: Color(0xFF11181F),
+    lavender: Color(0xFF161D24),
+    border: Color(0x337D8D9C),
+    strokeSoft: Color(0x268595A4),
+    separator: Color(0x1F8A99A8),
+    auraStops: <Color>[Color(0xFF06090D), Color(0xFF10161C), Color(0xFF06090D)],
+    chipBg: Color(0xCC111820),
+    chipBorder: Color(0x338899A8),
+    warmAccent: Color(0xFFC7D6E2),
+    heroText: Color(0xFF0E141A),
+    heroBase: Color(0xFF0B1015),
+    neonPink: Color(0xFF313E4B),
+    neonCyan: Color(0xFF24333C),
   );
 }
 
@@ -131,9 +148,9 @@ class ProfileRadii {
 
   static const ProfileRadii standard = ProfileRadii(
     small: 14,
-    medium: 20,
-    large: 28,
-    pillRadius: 14,
+    medium: 22,
+    large: 30,
+    pillRadius: 18,
   );
 }
 
@@ -187,6 +204,13 @@ class ProfileSpacing {
   double get primaryToSecondaryGap => sm;
   double get iconActionGap => sm;
   double get textActionGap => sm;
+  double get sectionGap => xl;
+  double get headlineGap => lg;
+  double get cardInset => step20;
+  double get railGap => sm;
+  double get pillHeight => 44;
+  double get buttonHeight => 48;
+  double get navInset => md;
 
   static const ProfileSpacing standard = ProfileSpacing(
     xxs: 4,
@@ -214,15 +238,15 @@ class ProfileShadows {
 
   static const ProfileShadows soft = ProfileShadows(
     cardShadow: BoxShadow(
-      color: Color(0x26000000),
-      blurRadius: 24,
-      offset: Offset(0, 14),
-      spreadRadius: -18,
+      color: Color(0x26141F28),
+      blurRadius: 30,
+      offset: Offset(0, 18),
+      spreadRadius: -20,
     ),
     floatingShadow: BoxShadow(
-      color: Color(0x33000000),
-      blurRadius: 34,
-      offset: Offset(0, 20),
+      color: Color(0x33212B35),
+      blurRadius: 40,
+      offset: Offset(0, 24),
       spreadRadius: -24,
     ),
   );

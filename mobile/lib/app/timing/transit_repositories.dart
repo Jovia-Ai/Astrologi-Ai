@@ -177,6 +177,8 @@ class NarrativeRepository {
   NarrativeRepository({ApiClient? client}) : _client = client ?? ApiClient();
 
   final ApiClient _client;
+  static const Duration _narrativeCacheTtl = Duration(seconds: 45);
+  static const Duration _transitSummaryCacheTtl = Duration(seconds: 30);
 
   Future<Map<String, dynamic>> fetchDailyNarrative({
     required Map<String, dynamic> profile,
@@ -188,6 +190,7 @@ class NarrativeRepository {
         profile: profile,
         selectedDate: selectedDate,
       ),
+      cacheTtl: _narrativeCacheTtl,
     );
     return TransitRequestBuilder.asMap(response.data);
   }
@@ -202,6 +205,7 @@ class NarrativeRepository {
         profile: profile,
         transitDate: transitDate,
       ),
+      cacheTtl: _transitSummaryCacheTtl,
     );
     return TransitRequestBuilder.asMap(response.data);
   }
@@ -285,6 +289,7 @@ class SkyRepository {
   SkyRepository({ApiClient? client}) : _client = client ?? ApiClient();
 
   final ApiClient _client;
+  static const Duration _skyCacheTtl = Duration(seconds: 60);
 
   Future<Map<String, dynamic>> fetchNow({
     required String tz,
@@ -293,6 +298,7 @@ class SkyRepository {
     final response = await _client.get(
       '/sky/now',
       queryParameters: <String, dynamic>{'tz': tz, 'limit': '$limit'},
+      cacheTtl: _skyCacheTtl,
     );
     return TransitRequestBuilder.asMap(response.data);
   }
@@ -302,6 +308,8 @@ class CalendarRepository {
   CalendarRepository({ApiClient? client}) : _client = client ?? ApiClient();
 
   final ApiClient _client;
+  static const Duration _calendarCacheTtl = Duration(seconds: 45);
+  static const Duration _bestTimesCacheTtl = Duration(seconds: 45);
 
   Future<Map<String, dynamic>> fetchCalendar({
     required Map<String, dynamic> profile,
@@ -315,6 +323,7 @@ class CalendarRepository {
         focusedDate: focusedDate,
         include: include,
       ),
+      cacheTtl: _calendarCacheTtl,
     );
     return TransitRequestBuilder.asMap(response.data);
   }
@@ -329,6 +338,7 @@ class CalendarRepository {
         profile: profile,
         focusedDate: focusedDate,
       ),
+      cacheTtl: _bestTimesCacheTtl,
     );
     return TransitRequestBuilder.asMap(response.data);
   }

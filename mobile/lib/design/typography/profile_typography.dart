@@ -31,6 +31,34 @@ class ProfileTypography {
   TextStyle get card => cardTitle;
   TextStyle get body => bodyLarge;
   TextStyle get label => chipLabel;
+  TextStyle get heroName => heroEditorial.copyWith(
+    fontSize: 26,
+    height: 1.06,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.42,
+  );
+  TextStyle get editorialHeadline => heroEditorial.copyWith(
+    fontSize: 32,
+    height: 1.08,
+    fontWeight: FontWeight.w600,
+    letterSpacing: -0.62,
+  );
+  TextStyle get monoEyebrow =>
+      sectionLabel.copyWith(fontWeight: FontWeight.w700, letterSpacing: 2.35);
+  TextStyle get bodyReading =>
+      bodyLarge.copyWith(fontSize: 15.5, height: 1.74, letterSpacing: -0.08);
+  TextStyle get buttonLabel => chipLabel.copyWith(
+    fontSize: 12.5,
+    height: 16 / 12.5,
+    fontWeight: FontWeight.w600,
+    letterSpacing: 0.04,
+  );
+  TextStyle get metaSoft => meta.copyWith(
+    fontSize: 12.5,
+    height: 18 / 12.5,
+    fontWeight: FontWeight.w500,
+    letterSpacing: 0.02,
+  );
 
   TextStyle get h1 => heroEditorial;
   TextStyle get h2 => sectionTitle;
@@ -43,10 +71,10 @@ class ProfileTypography {
   TextStyle navigationLabel({Color? color}) {
     return sectionLabel.copyWith(
       color: color ?? sectionLabel.color,
-      fontSize: 12,
-      height: 16 / 12,
+      fontSize: 11.5,
+      height: 15 / 11.5,
       fontWeight: FontWeight.w600,
-      letterSpacing: 1.8,
+      letterSpacing: 1.35,
     );
   }
 
@@ -56,34 +84,19 @@ class ProfileTypography {
       fontSize: 13,
       height: 18 / 13,
       fontWeight: FontWeight.w500,
+      letterSpacing: 0,
     );
   }
 
   TextStyle navigationAction({Color? color}) {
-    return pageTitle.copyWith(
+    return cardTitle.copyWith(
       color: color ?? pageTitle.color,
-      fontSize: 18,
-      height: 24 / 18,
+      fontSize: 17,
+      height: 22 / 17,
       fontWeight: FontWeight.w600,
-      letterSpacing: 1.1,
+      letterSpacing: -0.18,
     );
   }
-
-  static const String _sansFamily = 'Inter';
-  static const String _serifFamily = 'Cormorant Garamond';
-
-  static List<String> get _sansFallbackFamily => const <String>[
-    '.SF Pro Text',
-    'Segoe UI',
-    'Roboto',
-  ];
-
-  static List<String> get _serifFallbackFamily => const <String>[
-    'Iowan Old Style',
-    'Georgia',
-    'Times New Roman',
-    'Times',
-  ];
 
   bool prefersEditorialSerif(String text) {
     final normalized = text.trim();
@@ -91,7 +104,7 @@ class ProfileTypography {
       return false;
     }
     final wordCount = normalized.split(RegExp(r'\s+')).length;
-    return normalized.length <= 48 && wordCount <= 8;
+    return normalized.length <= 34 && wordCount <= 5;
   }
 
   TextStyle headlineFor(String text, {Color? color}) {
@@ -106,85 +119,67 @@ class ProfileTypography {
   }) {
     return ProfileTypography(
       sectionLabel: TextStyle(
-        fontSize: 12,
-        height: 16 / 12,
-        fontWeight: FontWeight.w600,
+        fontSize: 11.5,
+        height: 16 / 11.5,
+        fontWeight: FontWeight.w700,
         color: mutedLabelColor,
-        letterSpacing: 1.8,
-        fontFamily: _sansFamily,
-        fontFamilyFallback: _sansFallbackFamily,
+        letterSpacing: 1.9,
       ),
       pageTitle: TextStyle(
-        fontSize: 30,
-        height: 34 / 30,
+        fontSize: 28,
+        height: 33 / 28,
         fontWeight: FontWeight.w600,
         color: textColor,
-        fontFamily: _sansFamily,
-        fontFamilyFallback: _sansFallbackFamily,
-        letterSpacing: -0.5,
+        letterSpacing: -0.58,
       ),
       sectionTitle: TextStyle(
-        fontSize: 21,
-        height: 28 / 21,
+        fontSize: 22,
+        height: 28 / 22,
         fontWeight: FontWeight.w600,
         color: textColor,
-        fontFamily: _sansFamily,
-        fontFamilyFallback: _sansFallbackFamily,
-        letterSpacing: -0.32,
+        letterSpacing: -0.34,
       ),
       cardTitle: TextStyle(
-        fontSize: 17,
-        height: 24 / 17,
+        fontSize: 18,
+        height: 24 / 18,
         fontWeight: FontWeight.w600,
         color: textColor,
-        fontFamily: _sansFamily,
-        fontFamilyFallback: _sansFallbackFamily,
-        letterSpacing: -0.22,
+        letterSpacing: -0.26,
       ),
       bodyLarge: TextStyle(
-        fontSize: 16,
-        height: 27 / 16,
+        fontSize: 15.5,
+        height: 28 / 15.5,
         fontWeight: FontWeight.w400,
         color: textColor,
-        fontFamily: _sansFamily,
-        fontFamilyFallback: _sansFallbackFamily,
-        letterSpacing: -0.06,
+        letterSpacing: -0.08,
       ),
       bodyCompact: TextStyle(
-        fontSize: 15,
-        height: 24 / 15,
+        fontSize: 14.5,
+        height: 24 / 14.5,
         fontWeight: FontWeight.w400,
         color: textColor,
-        fontFamily: _sansFamily,
-        fontFamilyFallback: _sansFallbackFamily,
-        letterSpacing: -0.04,
+        letterSpacing: -0.05,
       ),
       meta: TextStyle(
-        fontSize: 13,
-        height: 19 / 13,
+        fontSize: 12.5,
+        height: 18 / 12.5,
         fontWeight: FontWeight.w500,
         color: secondaryColor,
-        fontFamily: _sansFamily,
-        fontFamilyFallback: _sansFallbackFamily,
-        letterSpacing: 0.02,
+        letterSpacing: 0.01,
       ),
       chipLabel: TextStyle(
-        fontSize: 12,
-        height: 16 / 12,
+        fontSize: 12.5,
+        height: 16 / 12.5,
         fontWeight: FontWeight.w600,
         color: textColor,
-        fontFamily: _sansFamily,
-        fontFamilyFallback: _sansFallbackFamily,
-        letterSpacing: 0.22,
+        letterSpacing: 0.02,
       ),
       heroEditorial: TextStyle(
-        fontSize: 46,
-        height: 48 / 46,
+        fontSize: 32,
+        height: 38 / 32,
         fontWeight: FontWeight.w600,
         color: textColor,
-        fontFamily: _serifFamily,
-        fontFamilyFallback: _serifFallbackFamily,
-        letterSpacing: -0.92,
+        letterSpacing: -0.62,
       ),
     );
   }

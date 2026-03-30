@@ -302,12 +302,12 @@ ThemeData withProfileTheme(ThemeData base, {ProfileTheme? profileTheme}) {
       outlineVariant: resolved.colors.separator,
     ),
     cardTheme: CardThemeData(
-      color: resolved.colors.surface,
+      color: resolved.colors.panelSoft,
       elevation: 0,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(resolved.radii.cardRadius),
-        side: BorderSide(color: resolved.colors.strokeSoft),
+        side: BorderSide(color: resolved.colors.hairline),
       ),
     ),
     appBarTheme: AppBarTheme(
@@ -350,14 +350,16 @@ ThemeData withProfileTheme(ThemeData base, {ProfileTheme? profileTheme}) {
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: resolved.colors.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: resolved.colors.buttonPrimary,
+        foregroundColor: resolved.colors.heroText,
         elevation: 0,
         padding: EdgeInsets.symmetric(
           horizontal: resolved.spacing.s20,
           vertical: resolved.spacing.sm,
         ),
-        textStyle: resolved.typography.chipLabel.copyWith(color: Colors.white),
+        textStyle: resolved.typography.buttonLabel.copyWith(
+          color: resolved.colors.heroText,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(resolved.radii.pillRadius),
         ),
@@ -365,14 +367,16 @@ ThemeData withProfileTheme(ThemeData base, {ProfileTheme? profileTheme}) {
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: resolved.colors.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: resolved.colors.buttonPrimary,
+        foregroundColor: resolved.colors.heroText,
         elevation: 0,
         padding: EdgeInsets.symmetric(
           horizontal: resolved.spacing.s20,
           vertical: resolved.spacing.sm,
         ),
-        textStyle: resolved.typography.chipLabel.copyWith(color: Colors.white),
+        textStyle: resolved.typography.buttonLabel.copyWith(
+          color: resolved.colors.heroText,
+        ),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(resolved.radii.pillRadius),
         ),
