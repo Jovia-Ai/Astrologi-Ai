@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,6 +13,8 @@ import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
 import 'package:mobile/app/tabs/period_detail_page.dart';
 import 'package:mobile/app/tabs/profile_page.dart';
+import 'package:mobile/app/tabs/sky_event_detail_page.dart';
+import 'package:mobile/app/tabs/sky_event_feed_page.dart';
 import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/source_guards.dart';
@@ -106,6 +109,10 @@ class _HomePageState extends ConsumerState<HomePage> {
           final lineText = periodBigPicture.isNotEmpty
               ? periodBigPicture
               : heroBody;
+          final avatarUrl = (user?.userMetadata?['avatar_url'] ?? '')
+              .toString()
+              .trim();
+          final weekItems = _buildWeekItems(dailyCards);
           final showTimingPanel = _shouldShowTimingPanel(
             periodCore: _periodCore,
             heroBody: heroBody,
@@ -114,23 +121,40 @@ class _HomePageState extends ConsumerState<HomePage> {
           );
 
           return DecoratedBox(
-            decoration: BoxDecoration(color: colors.bg),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? <Color>[
+                        const Color(0xFF09080F),
+                        const Color(0xFF120F1A),
+                        colors.bg,
+                      ]
+                    : <Color>[
+                        const Color(0xFFF5F0FF),
+                        const Color(0xFFFFFBFF),
+                        colors.bg,
+                      ],
+                stops: const <double>[0, 0.36, 1],
+              ),
+            ),
             child: JoviaPageScaffold(
               child: ListView(
-                padding: EdgeInsets.zero,
+                padding: const EdgeInsets.fromLTRB(0, 10, 0, 24),
                 children: [
-                  JoviaProfileTopBar(
-                    label: 'Anasayfa',
-                    centerText: displayName,
+                  _HomeReferenceHeader(
+                    displayName: displayName,
+                    avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
+                    dateLabel: _formatHomeToday(DateTime.now()),
                     onActionTap: () => _showHomeMenu(context),
-                    actionAsset: JoviaUiAsset.menuStack,
-                    reserveTrailingSpace: true,
                   ),
-                  const SizedBox(height: 16),
-                  _HomeOpeningHeroCard(
+                  const SizedBox(height: 18),
+                  _HomeReferenceHeroCard(
                     title: activeTitle,
                     body: heroBody,
                     prompt: activeSubtitle,
+                    weekItems: weekItems,
                     onOpen: activeCard == null
                         ? () => _openTiming(context)
                         : () => _openPeriodDetails(context, activeCard),
@@ -140,67 +164,52 @@ class _HomePageState extends ConsumerState<HomePage> {
                       risingSign: _risingSign,
                     ),
                   ),
-                  const SizedBox(height: 30),
-                  _HomeEditorialLine(label: 'Gunun cizgisi', text: lineText),
-                  const SizedBox(height: 30),
-                  JoviaSectionHeader(
-                    label: 'Günün akışı',
-                    title: 'Bugün öne çıkan hareketler',
-                    variant: JoviaSectionHeaderVariant.editorial,
+                  const SizedBox(height: 26),
+                  _HomeSectionLead(
+                    title: 'Senin planların',
+                    subtitle: 'Bu hafta akışın ve kolektif nabız yan yana.',
                   ),
-                  const SizedBox(height: 10),
-                  _HomeDailyUpdateStrip(
-                    cards: dailyCards,
-                    loading: _loading && dailyCards.isEmpty,
-                    onOpen: (card) => _openPeriodDetails(context, card),
-                  ),
-                  const SizedBox(height: 24),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: JoviaSectionHeader(
-                      label: 'Kolektif konu',
-                      title: 'Kolektif nabız',
-                      variant: JoviaSectionHeaderVariant.editorial,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  _HomeCollectivePulseCard(
+                  const SizedBox(height: 14),
+                  _HomeReferencePlanBoard(
+                    activeCard: activeCard,
+                    dailyCards: dailyCards,
                     bulletin: skyBulletin,
-                    card: collectiveCard,
                     skyItem: skyHeroItem,
-                    onOpenThread: () {
+                    lineText: lineText,
+                    loading: _loading && dailyCards.isEmpty,
+                    onOpenActive: activeCard == null
+                        ? () => _openTiming(context)
+                        : () => _openPeriodDetails(context, activeCard),
+                    onOpenCard: (card) => _openPeriodDetails(context, card),
+                    onOpenSky: () {
                       if (skyHeroItem != null) {
-                        _openSkyDetails(context, skyBulletin);
+                        _openSkyEventDetail(context, skyHeroItem);
                       } else if (collectiveCard != null) {
                         _openPeriodDetails(context, collectiveCard);
                       } else {
                         _openTiming(context);
                       }
                     },
-                    onOpenDetails: skyBulletin.highlights.isEmpty
-                        ? null
-                        : () => _openSkyDetails(context, skyBulletin),
+                    onOpenCalendar: () => _openTiming(context),
                   ),
                   if (_skyFeedItems.length > 1) ...[
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 18),
                     _HomeSkyEventList(
                       items: _skyFeedItems.skip(1).take(2).toList(),
-                      onOpenAll: () => _openSkyDetails(context, skyBulletin),
+                      onOpenItem: (item) => _openSkyEventDetail(context, item),
+                      onOpenAll: () => _openSkyFeed(context),
                     ),
                   ],
                   if (showTimingPanel) ...[
                     const SizedBox(height: 24),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 18),
-                      child: JoviaReadingPanel(
-                        label: 'Timing',
-                        title: (_periodCore?.title.trim().isEmpty ?? true)
-                            ? 'Aktif period'
-                            : (_periodCore?.title ?? 'Aktif period'),
-                        body: (_periodCore?.coreStory.trim().isEmpty ?? true)
-                            ? (_periodCore?.bigPicture ?? '')
-                            : (_periodCore?.coreStory ?? ''),
-                      ),
+                    _HomeReferenceTimingCard(
+                      title: (_periodCore?.title.trim().isEmpty ?? true)
+                          ? 'Aktif period'
+                          : (_periodCore?.title ?? 'Aktif period'),
+                      body: (_periodCore?.coreStory.trim().isEmpty ?? true)
+                          ? (_periodCore?.bigPicture ?? '')
+                          : (_periodCore?.coreStory ?? ''),
+                      onTap: () => _openTiming(context),
                     ),
                   ],
                   if (_error != null) ...[
@@ -243,6 +252,62 @@ class _HomePageState extends ConsumerState<HomePage> {
         bodyCandidate == hero ||
         bodyCandidate == activeSubtitleNorm;
     return !(titleRepeats && bodyRepeats);
+  }
+
+  List<_HomeWeekItemData> _buildWeekItems(List<PeriodCardDto> cards) {
+    const weekdayLabels = <String>[
+      'Pzt',
+      'Sal',
+      'Çar',
+      'Per',
+      'Cum',
+      'Cmt',
+      'Paz',
+    ];
+    final now = DateTime.now();
+    return List<_HomeWeekItemData>.generate(7, (index) {
+      final date = DateTime(now.year, now.month, now.day + index);
+      final card = index < cards.length ? cards[index] : null;
+      return _HomeWeekItemData(
+        weekdayLabel: weekdayLabels[date.weekday - 1],
+        dayNumber: date.day,
+        isToday: index == 0,
+        isHighlighted: card != null,
+        accent: _homeAccentForIndex(index),
+        card: card,
+      );
+    });
+  }
+
+  Color _homeAccentForIndex(int index) {
+    const accents = <Color>[
+      Color(0xFFFFB84D),
+      Color(0xFF8AB6FF),
+      Color(0xFFE79BFF),
+      Color(0xFF88E6D7),
+      Color(0xFFFF9EBC),
+      Color(0xFFC0A4FF),
+      Color(0xFFFFD780),
+    ];
+    return accents[index % accents.length];
+  }
+
+  String _formatHomeToday(DateTime date) {
+    const months = <String>[
+      'Ocak',
+      'Şubat',
+      'Mart',
+      'Nisan',
+      'Mayıs',
+      'Haziran',
+      'Temmuz',
+      'Ağustos',
+      'Eylül',
+      'Ekim',
+      'Kasım',
+      'Aralık',
+    ];
+    return '${date.day} ${months[date.month - 1]}';
   }
 
   Widget _buildTransitCarousel(BuildContext context) {
@@ -529,51 +594,21 @@ class _HomePageState extends ConsumerState<HomePage> {
     );
   }
 
-  void _openSkyDetails(BuildContext context, _SkyBulletin bulletin) {
-    final profile = context.profileTheme;
-    final colors = profile.colors;
-    final typo = profile.typography;
-    if (bulletin.highlights.isEmpty) {
+  void _openSkyEventDetail(BuildContext context, _SkyFeedItemData item) {
+    final dto = item.toDto();
+    if (dto.eventKey.isEmpty) {
       return;
     }
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) {
-        return Padding(
-          padding: EdgeInsets.all(profile.spacing.lg),
-          child: _GlassCard(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Gokyuzunde Ne Var?',
-                  style: typo.h2.copyWith(color: colors.text),
-                ),
-                SizedBox(height: profile.spacing.sm),
-                for (final item in bulletin.highlights) ...[
-                  Text(
-                    item.title,
-                    style: typo.body.copyWith(
-                      fontWeight: FontWeight.w600,
-                      color: colors.text,
-                    ),
-                  ),
-                  SizedBox(height: profile.spacing.xs),
-                  Text(
-                    item.blurb,
-                    style: typo.body.copyWith(color: colors.muted),
-                  ),
-                  SizedBox(height: profile.spacing.sm),
-                ],
-              ],
-            ),
-          ),
-        );
-      },
+    Navigator.of(context, rootNavigator: true).push(
+      _adaptiveSwipeRoute<void>(context, (_) => SkyEventDetailPage(item: dto)),
     );
+  }
+
+  void _openSkyFeed(BuildContext context) {
+    Navigator.of(
+      context,
+      rootNavigator: true,
+    ).push(_adaptiveSwipeRoute<void>(context, (_) => const SkyEventFeedPage()));
   }
 
   _SkyBulletin _buildSkyBulletin(List<PeriodCardDto> cards) {
@@ -614,7 +649,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     final hero = items.first;
     return _SkyBulletin(
       summary: summary.trim().isNotEmpty ? summary.trim() : hero.summary,
-      chips: hero.chips.take(3).toList(growable: false),
+      chips: hero.previewChips.take(3).toList(growable: false),
       highlights: [
         for (final item in items)
           _SkyHighlight(title: item.title, blurb: item.summary),
@@ -1007,6 +1042,947 @@ class _HomePageState extends ConsumerState<HomePage> {
       return '${hour.toString().padLeft(2, '0')}:${minute.toString().padLeft(2, '0')}';
     }
     return value;
+  }
+}
+
+class _HomeWeekItemData {
+  const _HomeWeekItemData({
+    required this.weekdayLabel,
+    required this.dayNumber,
+    required this.isToday,
+    required this.isHighlighted,
+    required this.accent,
+    required this.card,
+  });
+
+  final String weekdayLabel;
+  final int dayNumber;
+  final bool isToday;
+  final bool isHighlighted;
+  final Color accent;
+  final PeriodCardDto? card;
+}
+
+class _HomeReferenceHeader extends StatelessWidget {
+  const _HomeReferenceHeader({
+    required this.displayName,
+    required this.avatarUrl,
+    required this.dateLabel,
+    required this.onActionTap,
+  });
+
+  final String displayName;
+  final String? avatarUrl;
+  final String dateLabel;
+  final VoidCallback onActionTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final firstName = displayName.trim().split(RegExp(r'\s+')).first.trim();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Row(
+        children: [
+          _HomeReferenceAvatar(
+            imageUrl: avatarUrl,
+            fallbackLabel: firstName.isEmpty ? '?' : firstName.substring(0, 1),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Merhaba ${firstName.isEmpty ? 'sen' : firstName}',
+                  style: profile.typography.card.copyWith(
+                    color: profile.colors.text,
+                    fontSize: 20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  'Bugün $dateLabel',
+                  style: profile.typography.bodyCompact.copyWith(
+                    color: profile.colors.textLight,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          _HomeReferenceActionButton(
+            icon: Icons.search_rounded,
+            onTap: onActionTap,
+            isDark: isDark,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeReferenceAvatar extends StatelessWidget {
+  const _HomeReferenceAvatar({
+    required this.imageUrl,
+    required this.fallbackLabel,
+  });
+
+  final String? imageUrl;
+  final String fallbackLabel;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return Container(
+      width: 46,
+      height: 46,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFFFC89A), Color(0xFFA78BFA)],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFA78BFA).withValues(alpha: 0.22),
+            blurRadius: 16,
+            offset: const Offset(0, 10),
+            spreadRadius: -10,
+          ),
+        ],
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(2.4),
+        child: ClipOval(
+          child: Container(
+            color: profile.colors.surface,
+            alignment: Alignment.center,
+            child: (imageUrl ?? '').trim().isEmpty
+                ? Text(
+                    fallbackLabel.toUpperCase(),
+                    style: profile.typography.body.copyWith(
+                      color: profile.colors.text,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  )
+                : Image.network(
+                    imageUrl!,
+                    fit: BoxFit.cover,
+                    errorBuilder: (_, _, _) => Text(
+                      fallbackLabel.toUpperCase(),
+                      style: profile.typography.body.copyWith(
+                        color: profile.colors.text,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeReferenceActionButton extends StatelessWidget {
+  const _HomeReferenceActionButton({
+    required this.icon,
+    required this.onTap,
+    required this.isDark,
+  });
+
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: isDark
+          ? Colors.white.withValues(alpha: 0.06)
+          : Colors.white.withValues(alpha: 0.72),
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          width: 44,
+          height: 44,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.12)
+                  : Colors.black.withValues(alpha: 0.06),
+            ),
+          ),
+          child: Icon(
+            icon,
+            size: 20,
+            color: isDark ? Colors.white : const Color(0xFF16141A),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeReferenceHeroCard extends StatelessWidget {
+  const _HomeReferenceHeroCard({
+    required this.title,
+    required this.body,
+    required this.prompt,
+    required this.weekItems,
+    required this.onOpen,
+    required this.footer,
+  });
+
+  final String title;
+  final String body;
+  final String prompt;
+  final List<_HomeWeekItemData> weekItems;
+  final VoidCallback onOpen;
+  final Widget footer;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: TweenAnimationBuilder<double>(
+        tween: Tween<double>(begin: 0, end: 1),
+        duration: const Duration(milliseconds: 650),
+        curve: Curves.easeOutCubic,
+        builder: (context, value, child) {
+          return Opacity(
+            opacity: value,
+            child: Transform.translate(
+              offset: Offset(0, 18 * (1 - value)),
+              child: child,
+            ),
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(34),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: isDark
+                  ? const <Color>[
+                      Color(0xFF201A2E),
+                      Color(0xFF171520),
+                      Color(0xFF121017),
+                    ]
+                  : const <Color>[
+                      Color(0xFFB698FF),
+                      Color(0xFFD6C7FF),
+                      Color(0xFFF8F3FF),
+                    ],
+            ),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.08)
+                  : Colors.white.withValues(alpha: 0.54),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFFA78BFA).withValues(alpha: 0.22),
+                blurRadius: 28,
+                offset: const Offset(0, 18),
+                spreadRadius: -18,
+              ),
+            ],
+          ),
+          child: Stack(
+            children: [
+              Positioned(
+                right: -18,
+                top: -8,
+                child: JoviaIllustrationAccent(
+                  asset: JoviaIllustrationAsset.planet,
+                  width: 138,
+                  height: 138,
+                  opacity: isDark ? 0.92 : 0.98,
+                ),
+              ),
+              Positioned(
+                left: -22,
+                bottom: 78,
+                child: JoviaIllustrationAccent(
+                  asset: JoviaIllustrationAsset.shape,
+                  width: 72,
+                  height: 72,
+                  opacity: isDark ? 0.16 : 0.12,
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Günün teması',
+                    style: profile.typography.bodyCompact.copyWith(
+                      color: isDark
+                          ? Colors.white.withValues(alpha: 0.72)
+                          : const Color(0xFF3E315E),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 240),
+                    child: Text(
+                      title,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: profile.typography.editorialHeadline.copyWith(
+                        color: isDark ? Colors.white : const Color(0xFF161122),
+                        fontSize: 34,
+                        height: 1.02,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 232),
+                    child: Text(
+                      body,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: profile.typography.bodyReading.copyWith(
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.82)
+                            : const Color(0xFF3F3355),
+                        fontSize: 14.8,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          prompt,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: profile.typography.bodyCompact.copyWith(
+                            color: isDark
+                                ? Colors.white.withValues(alpha: 0.76)
+                                : const Color(0xFF5A4E75),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      _HomeHeroButton(onTap: onOpen),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  footer,
+                  const SizedBox(height: 18),
+                  _HomeWeekStrip(items: weekItems, fallbackTap: onOpen),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeHeroButton extends StatelessWidget {
+  const _HomeHeroButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Material(
+      color: isDark ? Colors.white : const Color(0xFF15131A),
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(18),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Text(
+            'Aç',
+            style: context.profileTheme.typography.buttonLabel.copyWith(
+              color: isDark ? const Color(0xFF17131E) : Colors.white,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeWeekStrip extends StatelessWidget {
+  const _HomeWeekStrip({required this.items, required this.fallbackTap});
+
+  final List<_HomeWeekItemData> items;
+  final VoidCallback fallbackTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: [
+          for (var index = 0; index < items.length; index++) ...[
+            _HomeWeekDayChip(
+              item: items[index],
+              onTap: items[index].card == null ? fallbackTap : null,
+            ),
+            if (index != items.length - 1) const SizedBox(width: 10),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeWeekDayChip extends StatelessWidget {
+  const _HomeWeekDayChip({required this.item, this.onTap});
+
+  final _HomeWeekItemData item;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final child = AnimatedContainer(
+      duration: const Duration(milliseconds: 240),
+      curve: Curves.easeOutCubic,
+      width: 52,
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      decoration: BoxDecoration(
+        color: item.isToday
+            ? (isDark ? Colors.white : const Color(0xFF16131D))
+            : (isDark
+                  ? Colors.white.withValues(alpha: 0.08)
+                  : Colors.white.withValues(alpha: 0.72)),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(
+          color: item.isToday
+              ? item.accent.withValues(alpha: 0.68)
+              : (isDark
+                    ? Colors.white.withValues(alpha: 0.08)
+                    : Colors.black.withValues(alpha: 0.06)),
+        ),
+        boxShadow: item.isToday
+            ? [
+                BoxShadow(
+                  color: item.accent.withValues(alpha: 0.28),
+                  blurRadius: 18,
+                  offset: const Offset(0, 10),
+                  spreadRadius: -10,
+                ),
+              ]
+            : null,
+      ),
+      child: Column(
+        children: [
+          Text(
+            item.weekdayLabel,
+            style: context.profileTheme.typography.micro.copyWith(
+              color: item.isToday
+                  ? (isDark ? const Color(0xFF16131D) : Colors.white)
+                  : (isDark
+                        ? Colors.white.withValues(alpha: 0.76)
+                        : const Color(0xFF6B6480)),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            '${item.dayNumber}',
+            style: context.profileTheme.typography.body.copyWith(
+              color: item.isToday
+                  ? (isDark ? const Color(0xFF16131D) : Colors.white)
+                  : (isDark ? Colors.white : const Color(0xFF16131D)),
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: item.isHighlighted ? item.accent : Colors.transparent,
+            ),
+          ),
+        ],
+      ),
+    );
+    if (onTap == null) {
+      return child;
+    }
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: child,
+    );
+  }
+}
+
+class _HomeSectionLead extends StatelessWidget {
+  const _HomeSectionLead({required this.title, required this.subtitle});
+
+  final String title;
+  final String subtitle;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: profile.typography.section.copyWith(
+              color: profile.colors.text,
+              fontSize: 28,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            subtitle,
+            style: profile.typography.bodyCompact.copyWith(
+              color: profile.colors.textLight,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeReferencePlanBoard extends StatelessWidget {
+  const _HomeReferencePlanBoard({
+    required this.activeCard,
+    required this.dailyCards,
+    required this.bulletin,
+    required this.skyItem,
+    required this.lineText,
+    required this.loading,
+    required this.onOpenActive,
+    required this.onOpenCard,
+    required this.onOpenSky,
+    required this.onOpenCalendar,
+  });
+
+  final PeriodCardDto? activeCard;
+  final List<PeriodCardDto> dailyCards;
+  final _SkyBulletin bulletin;
+  final _SkyFeedItemData? skyItem;
+  final String lineText;
+  final bool loading;
+  final VoidCallback onOpenActive;
+  final ValueChanged<PeriodCardDto> onOpenCard;
+  final VoidCallback onOpenSky;
+  final VoidCallback onOpenCalendar;
+
+  @override
+  Widget build(BuildContext context) {
+    final compact = MediaQuery.of(context).size.width < 392;
+    final skyTitle = skyItem?.title ?? 'Kolektif nabız';
+    final skyBody = skyItem?.hook.isNotEmpty == true
+        ? skyItem!.hook
+        : bulletin.summary;
+    final thirdCard = dailyCards.length > 1 ? dailyCards[1] : activeCard;
+
+    if (loading && activeCard == null && dailyCards.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(vertical: 32),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                flex: compact ? 1 : 11,
+                child: _HomeColorPlanCard(
+                  title: activeCard?.title.isNotEmpty == true
+                      ? activeCard!.title
+                      : 'Günün planı',
+                  metaTop: activeCard?.timeHint.trim().isNotEmpty == true
+                      ? activeCard!.timeHint.trim()
+                      : 'Primary',
+                  body: activeCard?.subtitle.trim().isNotEmpty == true
+                      ? activeCard!.subtitle.trim()
+                      : lineText,
+                  footer:
+                      activeCard?.eventCard?.signatureTr.trim().isNotEmpty ==
+                          true
+                      ? activeCard!.eventCard!.signatureTr.trim()
+                      : 'Takvime geç',
+                  palette: const _HomeCardPalette.sunset(),
+                  onTap: onOpenActive,
+                  tall: true,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: compact ? 1 : 9,
+                child: Column(
+                  children: [
+                    _HomeColorPlanCard(
+                      title: skyTitle,
+                      metaTop: skyItem?.badge.isNotEmpty == true
+                          ? skyItem!.badge
+                          : 'Collective',
+                      body: skyBody,
+                      footer:
+                          skyItem?.previewChips.skip(1).take(2).join(' • ') ??
+                          bulletin.chips.take(2).join(' • '),
+                      palette: const _HomeCardPalette.sky(),
+                      onTap: onOpenSky,
+                    ),
+                    const SizedBox(height: 12),
+                    _HomeColorPlanCard(
+                      title: thirdCard?.title.isNotEmpty == true
+                          ? thirdCard!.title
+                          : 'Takvim',
+                      metaTop: thirdCard?.timeHint.trim().isNotEmpty == true
+                          ? thirdCard!.timeHint.trim()
+                          : 'Week',
+                      body: thirdCard?.subtitle.trim().isNotEmpty == true
+                          ? thirdCard!.subtitle.trim()
+                          : 'Önündeki 1 haftalık akışı aç.',
+                      footer: '1 haftalık görünüm',
+                      palette: const _HomeCardPalette.candy(),
+                      onTap: thirdCard != null
+                          ? () => onOpenCard(thirdCard)
+                          : onOpenCalendar,
+                      compact: true,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          _HomeReferenceTimingCard(
+            title: 'Haftalık takvim',
+            body:
+                'Mevcut takvim akışını küçük görünümden aç ve tüm haftayı gör.',
+            onTap: onOpenCalendar,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeCardPalette {
+  const _HomeCardPalette({
+    required this.background,
+    required this.foreground,
+    required this.surface,
+    required this.chip,
+  });
+
+  const _HomeCardPalette.sunset()
+    : background = const <Color>[Color(0xFFFFC15A), Color(0xFFFFAE45)],
+      foreground = const Color(0xFF1C1407),
+      surface = const Color(0x40FFFFFF),
+      chip = const Color(0xFFFFE2AA);
+
+  const _HomeCardPalette.sky()
+    : background = const <Color>[Color(0xFFB6D3FF), Color(0xFF8BB8FF)],
+      foreground = const Color(0xFF12203D),
+      surface = const Color(0x42FFFFFF),
+      chip = const Color(0xFFDCEAFF);
+
+  const _HomeCardPalette.candy()
+    : background = const <Color>[Color(0xFFF9B7FF), Color(0xFFE9A3FF)],
+      foreground = const Color(0xFF33153A),
+      surface = const Color(0x42FFFFFF),
+      chip = const Color(0xFFFFD8FF);
+
+  final List<Color> background;
+  final Color foreground;
+  final Color surface;
+  final Color chip;
+}
+
+class _HomeColorPlanCard extends StatelessWidget {
+  const _HomeColorPlanCard({
+    required this.title,
+    required this.metaTop,
+    required this.body,
+    required this.footer,
+    required this.palette,
+    required this.onTap,
+    this.tall = false,
+    this.compact = false,
+  });
+
+  final String title;
+  final String metaTop;
+  final String body;
+  final String footer;
+  final _HomeCardPalette palette;
+  final VoidCallback onTap;
+  final bool tall;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: Duration(milliseconds: tall ? 620 : 700),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        return Opacity(
+          opacity: value,
+          child: Transform.translate(
+            offset: Offset(0, 16 * (1 - value)),
+            child: child,
+          ),
+        );
+      },
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(28),
+          child: Container(
+            constraints: BoxConstraints(minHeight: tall ? 212 : 100),
+            padding: EdgeInsets.fromLTRB(
+              compact ? 14 : 16,
+              compact ? 14 : 16,
+              compact ? 14 : 16,
+              compact ? 14 : 16,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(28),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: palette.background,
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: palette.background.last.withValues(alpha: 0.24),
+                  blurRadius: 24,
+                  offset: const Offset(0, 16),
+                  spreadRadius: -18,
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  right: -16,
+                  top: -12,
+                  child: Container(
+                    width: compact ? 68 : 84,
+                    height: compact ? 68 : 84,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.18),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 18,
+                  bottom: 18,
+                  child: Container(
+                    width: compact ? 42 : 50,
+                    height: compact ? 42 : 50,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: palette.surface,
+                    ),
+                    child: Icon(
+                      compact
+                          ? Icons.auto_awesome_rounded
+                          : Icons.wb_sunny_outlined,
+                      color: palette.foreground.withValues(alpha: 0.82),
+                      size: compact ? 18 : 22,
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: palette.surface,
+                        borderRadius: BorderRadius.circular(999),
+                      ),
+                      child: Text(
+                        metaTop,
+                        style: profile.typography.micro.copyWith(
+                          color: palette.foreground.withValues(alpha: 0.82),
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxWidth: compact ? 150 : 180,
+                      ),
+                      child: Text(
+                        title,
+                        maxLines: compact ? 2 : 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: profile.typography.section.copyWith(
+                          color: palette.foreground,
+                          fontSize: compact ? 22 : 30,
+                          height: 1.04,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Text(
+                      body,
+                      maxLines: compact ? 2 : 4,
+                      overflow: TextOverflow.ellipsis,
+                      style: profile.typography.bodyCompact.copyWith(
+                        color: palette.foreground.withValues(alpha: 0.82),
+                        height: 1.45,
+                      ),
+                    ),
+                    SizedBox(height: compact ? 18 : 28),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            footer,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: profile.typography.bodyCompact.copyWith(
+                              color: palette.foreground.withValues(alpha: 0.88),
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Icon(
+                          Icons.arrow_outward_rounded,
+                          color: palette.foreground,
+                          size: 18,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _HomeReferenceTimingCard extends StatelessWidget {
+  const _HomeReferenceTimingCard({
+    required this.title,
+    required this.body,
+    required this.onTap,
+  });
+
+  final String title;
+  final String body;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 14),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(26),
+          child: Container(
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(26),
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.06)
+                  : Colors.white.withValues(alpha: 0.82),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.08)
+                    : Colors.black.withValues(alpha: 0.05),
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: profile.typography.card.copyWith(
+                          color: profile.colors.text,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        body,
+                        style: profile.typography.bodyCompact.copyWith(
+                          color: profile.colors.textLight,
+                          height: 1.45,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFA78BFA).withValues(alpha: 0.18),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Icon(
+                    Icons.calendar_month_rounded,
+                    color: Color(0xFF7B5AF8),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -1665,20 +2641,18 @@ class _HomeCollectivePulseCard extends StatelessWidget {
     required this.card,
     required this.skyItem,
     required this.onOpenThread,
-    this.onOpenDetails,
   });
 
   final _SkyBulletin bulletin;
   final PeriodCardDto? card;
   final _SkyFeedItemData? skyItem;
   final VoidCallback onOpenThread;
-  final VoidCallback? onOpenDetails;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final chips =
-        skyItem?.chips.take(3).toList(growable: false) ??
+        skyItem?.previewChips.take(3).toList(growable: false) ??
         bulletin.chips.take(2).toList(growable: false);
     final cardTitle = card?.title.trim() ?? '';
     final fallbackCard = card;
@@ -1770,8 +2744,6 @@ class _HomeCollectivePulseCard extends StatelessWidget {
                 spacing: 10,
                 runSpacing: 10,
                 children: [
-                  if (onOpenDetails != null)
-                    MinimalCTAButton(label: 'Notlar', onTap: onOpenDetails),
                   MinimalCTAButton(
                     label: "Thread'e gir",
                     emphasized: true,
@@ -1835,9 +2807,14 @@ class _HomeCollectiveHighlightsRow extends StatelessWidget {
 }
 
 class _HomeSkyEventList extends StatelessWidget {
-  const _HomeSkyEventList({required this.items, required this.onOpenAll});
+  const _HomeSkyEventList({
+    required this.items,
+    required this.onOpenItem,
+    required this.onOpenAll,
+  });
 
   final List<_SkyFeedItemData> items;
+  final ValueChanged<_SkyFeedItemData> onOpenItem;
   final VoidCallback onOpenAll;
 
   @override
@@ -1849,7 +2826,7 @@ class _HomeSkyEventList extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         for (final item in items) ...[
-          _HomeSkyEventCard(item: item),
+          _HomeSkyEventCard(item: item, onTap: () => onOpenItem(item)),
           if (item != items.last) const SizedBox(height: 14),
         ],
         const SizedBox(height: 14),
@@ -1883,39 +2860,20 @@ class _HomeSkyEventList extends StatelessWidget {
 }
 
 class _HomeSkyEventCard extends StatelessWidget {
-  const _HomeSkyEventCard({required this.item});
+  const _HomeSkyEventCard({required this.item, required this.onTap});
 
   final _SkyFeedItemData item;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    return JoviaSurfaceCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(item.title, style: context.profileTheme.typography.cardTitle),
-          const SizedBox(height: 10),
-          Text(
-            item.summary,
-            maxLines: 4,
-            overflow: TextOverflow.ellipsis,
-            style: context.profileTheme.typography.bodyCompact.copyWith(
-              color: context.profileTheme.colors.textLight,
-            ),
-          ),
-          if (item.chips.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final chip in item.chips.take(2))
-                  JoviaMetaPill(label: chip),
-              ],
-            ),
-          ],
-        ],
-      ),
+    return JoviaTopicSurface(
+      eyebrow: item.previewChips.isNotEmpty ? item.previewChips.first : null,
+      title: item.title,
+      body: item.hook,
+      meta: item.previewChips.skip(1).take(2).toList(growable: false),
+      secondaryAction: const Icon(Icons.arrow_outward_rounded, size: 18),
+      onTap: onTap,
     );
   }
 }
@@ -1985,37 +2943,86 @@ class _SkyHighlight {
 class _SkyFeedItemData {
   const _SkyFeedItemData({
     required this.id,
+    required this.slug,
+    required this.eventType,
     required this.title,
+    required this.shortTitle,
     required this.summary,
     required this.badge,
     required this.relativeTiming,
-    required this.chips,
+    required this.startsAt,
+    required this.exactAt,
+    required this.endsAt,
+    required this.tags,
+    required this.bodies,
+    required this.aspect,
+    required this.sign,
+    required this.personalizationCta,
   });
 
   final String id;
+  final String slug;
+  final String eventType;
   final String title;
+  final String shortTitle;
   final String summary;
   final String badge;
   final String relativeTiming;
-  final List<String> chips;
+  final String startsAt;
+  final String exactAt;
+  final String endsAt;
+  final List<String> tags;
+  final List<String> bodies;
+  final String aspect;
+  final String sign;
+  final Map<String, dynamic> personalizationCta;
 
-  factory _SkyFeedItemData.fromMap(Map<String, dynamic> map) {
-    final title = (map['short_title_tr'] ?? map['title_tr'] ?? '')
-        .toString()
-        .trim();
-    final summary = (map['summary_tr'] ?? '').toString().trim();
-    final badge = (map['badge_tr'] ?? '').toString().trim();
-    final relativeTiming = (map['relative_timing_tr'] ?? '').toString().trim();
-    return _SkyFeedItemData(
-      id: (map['id'] ?? '').toString().trim(),
+  String get hook => toDto().hookTr;
+
+  List<String> get previewChips => toDto().previewChips;
+
+  SkyFeedItemDto toDto() {
+    return SkyFeedItemDto(
+      id: id,
+      slug: slug,
+      eventType: eventType,
       title: title,
+      shortTitle: shortTitle,
       summary: summary,
       badge: badge,
       relativeTiming: relativeTiming,
-      chips: [
-        if (badge.isNotEmpty) badge,
-        if (relativeTiming.isNotEmpty) relativeTiming,
-      ],
+      phase: '',
+      status: '',
+      startsAt: startsAt,
+      exactAt: exactAt,
+      endsAt: endsAt,
+      tags: tags,
+      bodies: bodies,
+      aspect: aspect,
+      sign: sign,
+      personalizationCta: personalizationCta,
+    );
+  }
+
+  factory _SkyFeedItemData.fromMap(Map<String, dynamic> map) {
+    final dto = SkyFeedItemDto.fromMap(map);
+    return _SkyFeedItemData(
+      id: dto.id.trim(),
+      slug: dto.slug.trim(),
+      eventType: dto.eventType.trim(),
+      title: dto.title.trim(),
+      shortTitle: dto.shortTitle.trim(),
+      summary: dto.summary.trim(),
+      badge: dto.badge.trim(),
+      relativeTiming: dto.relativeTiming.trim(),
+      startsAt: dto.startsAt.trim(),
+      exactAt: dto.exactAt.trim(),
+      endsAt: dto.endsAt.trim(),
+      tags: dto.tags,
+      bodies: dto.bodies,
+      aspect: dto.aspect.trim(),
+      sign: dto.sign.trim(),
+      personalizationCta: dto.personalizationCta,
     );
   }
 }
@@ -2170,6 +3177,14 @@ class _TransitSummaryCard extends StatelessWidget {
       ),
     );
   }
+}
+
+Route<T> _adaptiveSwipeRoute<T>(BuildContext context, WidgetBuilder builder) {
+  final platform = Theme.of(context).platform;
+  if (platform == TargetPlatform.iOS || platform == TargetPlatform.macOS) {
+    return CupertinoPageRoute<T>(builder: builder);
+  }
+  return MaterialPageRoute<T>(builder: builder);
 }
 
 class _TransitBadge extends StatelessWidget {

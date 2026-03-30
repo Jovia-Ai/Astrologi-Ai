@@ -340,6 +340,13 @@ _PROFILE_CHIP_REPLACEMENTS = {
     "Network": "Bağlantı",
     "İnkübasyon": "İçte Olgunlaşma",
     "Pişirip Çık": "İçte Olgunlaşma",
+    "identity": "Kimlik",
+    "relationships": "İlişkiler",
+    "relationship": "İlişki",
+    "mind": "Zihin",
+    "career": "Kariyer",
+    "home": "Ev",
+    "inner": "İç Dünya",
 }
 
 

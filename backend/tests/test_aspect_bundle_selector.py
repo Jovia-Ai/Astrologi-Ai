@@ -37,4 +37,4 @@ def test_select_aspect_bundles_prefers_recognizable_diverse_candidates() -> None
     assert all(item["recognition_tags"] for item in bundles)
     assert all(item["gift_tags"] for item in bundles)
     assert all(item["reflex_tags"] for item in bundles)
-
+    assert all(item["astro_sources"] for item in bundles)

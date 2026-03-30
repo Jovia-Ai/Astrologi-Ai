@@ -10,6 +10,231 @@ const Color _kDetailFlowAccent = Color(0xFFFF8A4C);
 const Duration _kDetailPlaybackAutoplay = Duration(seconds: 7);
 const Duration _kDetailPlaybackPageTurn = Duration(milliseconds: 280);
 
+class ProfileDetailTone {
+  const ProfileDetailTone({
+    required this.background,
+    required this.surface,
+    required this.surfaceStrong,
+    required this.accent,
+    required this.accentSoft,
+    required this.stroke,
+    required this.glow,
+    required this.mutedText,
+  });
+
+  final Color background;
+  final Color surface;
+  final Color surfaceStrong;
+  final Color accent;
+  final Color accentSoft;
+  final Color stroke;
+  final Color glow;
+  final Color mutedText;
+}
+
+const ProfileDetailTone _kDefaultProfileDetailTone = ProfileDetailTone(
+  background: Color(0xFF08070B),
+  surface: Color(0xFF12101A),
+  surfaceStrong: Color(0xFF1A1524),
+  accent: Color(0xFFB58DFF),
+  accentSoft: Color(0xFF9EF0E7),
+  stroke: Color(0x3DB58DFF),
+  glow: Color(0x33B58DFF),
+  mutedText: Color(0xFFD3CBDD),
+);
+
+ProfileDetailTone profileDetailToneForSignature({
+  required String title,
+  String summary = '',
+  String family = '',
+  String eyebrow = '',
+}) {
+  final haystack = '$title $summary $family $eyebrow'.toLowerCase();
+
+  bool matches(List<String> values) {
+    return values.any((value) {
+      final needle = value.toLowerCase();
+      if (needle.contains(' ') || needle.contains('_')) {
+        return haystack.contains(needle);
+      }
+      return RegExp(
+        '(^|[^a-zçğıöşü])${RegExp.escape(needle)}([^a-zçğıöşü]|\$)',
+      ).hasMatch(haystack);
+    });
+  }
+
+  if (matches(const ['güneş', 'gunes', 'sun', 'solar'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF120A04),
+      surface: Color(0xFF1E120A),
+      surfaceStrong: Color(0xFF2A180D),
+      accent: Color(0xFFFF9B47),
+      accentSoft: Color(0xFFFFD07A),
+      stroke: Color(0x40FF9B47),
+      glow: Color(0x33FF9B47),
+      mutedText: Color(0xFFE6D1BE),
+    );
+  }
+  if (matches(const ['ay', 'moon', 'luna'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF071018),
+      surface: Color(0xFF101A25),
+      surfaceStrong: Color(0xFF162334),
+      accent: Color(0xFF8CB8FF),
+      accentSoft: Color(0xFFD8E7FF),
+      stroke: Color(0x408CB8FF),
+      glow: Color(0x338CB8FF),
+      mutedText: Color(0xFFD3DDF0),
+    );
+  }
+  if (matches(const ['merkür', 'merkur', 'mercury'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF061315),
+      surface: Color(0xFF0F2023),
+      surfaceStrong: Color(0xFF173036),
+      accent: Color(0xFF69E3E2),
+      accentSoft: Color(0xFFB2F3F0),
+      stroke: Color(0x4069E3E2),
+      glow: Color(0x3369E3E2),
+      mutedText: Color(0xFFCDE5E3),
+    );
+  }
+  if (matches(const ['venüs', 'venus', 'ask', 'sevgi'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF170A11),
+      surface: Color(0xFF24101B),
+      surfaceStrong: Color(0xFF311625),
+      accent: Color(0xFFFF8CC6),
+      accentSoft: Color(0xFFFFC6E1),
+      stroke: Color(0x40FF8CC6),
+      glow: Color(0x33FF8CC6),
+      mutedText: Color(0xFFE9CBD9),
+    );
+  }
+  if (matches(const ['mars', 'kavga', 'ates'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF170805),
+      surface: Color(0xFF25110D),
+      surfaceStrong: Color(0xFF341713),
+      accent: Color(0xFFFF7A59),
+      accentSoft: Color(0xFFFFB18E),
+      stroke: Color(0x40FF7A59),
+      glow: Color(0x33FF7A59),
+      mutedText: Color(0xFFE6CCC3),
+    );
+  }
+  if (matches(const ['jüpiter', 'jupiter'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF140E04),
+      surface: Color(0xFF221909),
+      surfaceStrong: Color(0xFF31230D),
+      accent: Color(0xFFF2B84A),
+      accentSoft: Color(0xFFFFE39A),
+      stroke: Color(0x40F2B84A),
+      glow: Color(0x33F2B84A),
+      mutedText: Color(0xFFE4D7B8),
+    );
+  }
+  if (matches(const ['satürn', 'saturn'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF100D0A),
+      surface: Color(0xFF1A1612),
+      surfaceStrong: Color(0xFF252018),
+      accent: Color(0xFFC7A97B),
+      accentSoft: Color(0xFFE4D3B8),
+      stroke: Color(0x40C7A97B),
+      glow: Color(0x33C7A97B),
+      mutedText: Color(0xFFD8CFC2),
+    );
+  }
+  if (matches(const ['uranüs', 'uranus'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF071510),
+      surface: Color(0xFF10231D),
+      surfaceStrong: Color(0xFF163229),
+      accent: Color(0xFF5DE6B4),
+      accentSoft: Color(0xFFB4F5DB),
+      stroke: Color(0x405DE6B4),
+      glow: Color(0x335DE6B4),
+      mutedText: Color(0xFFCBE6DA),
+    );
+  }
+  if (matches(const ['neptün', 'neptun', 'neptune'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF070D19),
+      surface: Color(0xFF111A2D),
+      surfaceStrong: Color(0xFF162541),
+      accent: Color(0xFF7FA7FF),
+      accentSoft: Color(0xFF79E7FF),
+      stroke: Color(0x407FA7FF),
+      glow: Color(0x337FA7FF),
+      mutedText: Color(0xFFD0DBF7),
+    );
+  }
+  if (matches(const ['plüto', 'pluto'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF14070F),
+      surface: Color(0xFF220F1B),
+      surfaceStrong: Color(0xFF31152B),
+      accent: Color(0xFFE46AB6),
+      accentSoft: Color(0xFFF3A4D5),
+      stroke: Color(0x40E46AB6),
+      glow: Color(0x33E46AB6),
+      mutedText: Color(0xFFE4C8D7),
+    );
+  }
+  if (matches(const [
+    'açı',
+    'aci',
+    'contradiction',
+    'kare',
+    'karşıt',
+    'karsit',
+  ])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF140908),
+      surface: Color(0xFF221210),
+      surfaceStrong: Color(0xFF311915),
+      accent: Color(0xFFFF8D6B),
+      accentSoft: Color(0xFFFFC3A8),
+      stroke: Color(0x40FF8D6B),
+      glow: Color(0x33FF8D6B),
+      mutedText: Color(0xFFE5CEC7),
+    );
+  }
+  if (matches(const ['burç', 'burc', 'tone_signature'])) {
+    return const ProfileDetailTone(
+      background: Color(0xFF07140E),
+      surface: Color(0xFF102018),
+      surfaceStrong: Color(0xFF173024),
+      accent: Color(0xFF72D6A4),
+      accentSoft: Color(0xFFB7F0CB),
+      stroke: Color(0x4072D6A4),
+      glow: Color(0x3372D6A4),
+      mutedText: Color(0xFFCDE4D7),
+    );
+  }
+  return _kDefaultProfileDetailTone;
+}
+
+class ProfileDetailCatalogItem {
+  const ProfileDetailCatalogItem({
+    required this.id,
+    required this.eyebrow,
+    required this.title,
+    required this.subtitle,
+    required this.illustrationAsset,
+    this.tone = _kDefaultProfileDetailTone,
+  });
+
+  final String id;
+  final String eyebrow;
+  final String title;
+  final String subtitle;
+  final JoviaIllustrationAsset illustrationAsset;
+  final ProfileDetailTone tone;
+}
+
 enum ProfileDetailSceneVariant {
   glance,
   posterScene,
@@ -69,20 +294,22 @@ class ProfileDetailPage extends StatelessWidget {
     required this.flowTitle,
     required this.flowSubtitle,
     required this.scenes,
+    this.tone = _kDefaultProfileDetailTone,
   });
 
   final String flowTitle;
   final String flowSubtitle;
   final List<ProfileDetailSceneData> scenes;
+  final ProfileDetailTone tone;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final firstScene = scenes.isNotEmpty ? scenes.first : null;
     return Scaffold(
-      backgroundColor: _kDetailFlowBg,
+      backgroundColor: tone.background,
       body: ColoredBox(
-        color: _kDetailFlowBg,
+        color: tone.background,
         child: SafeArea(
           bottom: false,
           child: JoviaPageScaffold(
@@ -116,7 +343,7 @@ class ProfileDetailPage extends StatelessWidget {
                             shape: BoxShape.circle,
                             gradient: RadialGradient(
                               colors: [
-                                Colors.white.withValues(alpha: 0.08),
+                                tone.accent.withValues(alpha: 0.22),
                                 Colors.transparent,
                               ],
                             ),
@@ -143,7 +370,7 @@ class ProfileDetailPage extends StatelessWidget {
                           runSpacing: 8,
                           children: [
                             for (final chip in firstScene.chips.take(3))
-                              JoviaMetaPill(label: chip),
+                              _ProfileDetailThemeChip(label: chip, tone: tone),
                           ],
                         ),
                 ),
@@ -153,6 +380,7 @@ class ProfileDetailPage extends StatelessWidget {
                     scene: scenes[index],
                     index: index,
                     total: scenes.length,
+                    tone: tone,
                   ),
                   SizedBox(height: profile.spacing.s16),
                 ],
@@ -170,91 +398,404 @@ class _ProfileDetailSceneCard extends StatelessWidget {
     required this.scene,
     required this.index,
     required this.total,
+    required this.tone,
   });
 
   final ProfileDetailSceneData scene;
   final int index;
   final int total;
+  final ProfileDetailTone tone;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final hasIntro = scene.intro.trim().isNotEmpty;
     final hasWhy = scene.whyText.trim().isNotEmpty;
-    return JoviaReadingPanel(
-      label: scene.eyebrow.isNotEmpty ? scene.eyebrow : 'Kart',
-      title: scene.title,
-      body: hasIntro ? scene.intro : null,
-      leading: JoviaIllustrationAccent(
-        asset: scene.illustrationAsset,
-        width: 20,
-        height: 20,
-        opacity: 0.84,
+    return Container(
+      decoration: BoxDecoration(
+        color: tone.surface,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: tone.stroke),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 26,
+            offset: const Offset(0, 18),
+            color: tone.glow,
+            spreadRadius: -20,
+          ),
+        ],
       ),
-      background: Align(
-        alignment: Alignment.bottomRight,
-        child: Padding(
-          padding: const EdgeInsets.only(right: 10, bottom: 10),
-          child: JoviaIllustrationAccent(
-            asset: scene.illustrationAsset,
-            width: 88,
-            height: 88,
-            opacity: 0.1,
+      child: Stack(
+        children: [
+          Positioned(
+            right: -18,
+            top: -18,
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    tone.accent.withValues(alpha: 0.24),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+              child: const SizedBox(width: 120, height: 120),
+            ),
+          ),
+          Positioned(
+            right: 14,
+            bottom: 12,
+            child: JoviaIllustrationAccent(
+              asset: scene.illustrationAsset,
+              width: 84,
+              height: 84,
+              opacity: 0.14,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            scene.eyebrow.isNotEmpty ? scene.eyebrow : 'Kart',
+                            style: profile.typography.monoEyebrow.copyWith(
+                              color: tone.accent,
+                              fontSize: 11.5,
+                              letterSpacing: 1.7,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            scene.title,
+                            style: profile.typography.section.copyWith(
+                              color: _kDetailFlowText,
+                              fontSize: 26,
+                              height: 1.08,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    JoviaIllustrationAccent(
+                      asset: scene.illustrationAsset,
+                      width: 38,
+                      height: 38,
+                      opacity: 0.92,
+                    ),
+                  ],
+                ),
+                if (hasIntro) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    scene.intro,
+                    style: profile.typography.bodyCompact.copyWith(
+                      color: tone.mutedText,
+                      height: 1.6,
+                    ),
+                  ),
+                ],
+                if (scene.bodyBlocks.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  for (final block in scene.bodyBlocks) ...[
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+                      decoration: BoxDecoration(
+                        color: tone.surfaceStrong,
+                        borderRadius: BorderRadius.circular(18),
+                        border: Border.all(color: tone.stroke),
+                      ),
+                      child: Text(
+                        block,
+                        style: profile.typography.bodyCompact.copyWith(
+                          color: _kDetailFlowText,
+                          height: 1.6,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+                ],
+                if (scene.chips.isNotEmpty) ...[
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final chip in scene.chips.take(4))
+                        _ProfileDetailThemeChip(label: chip, tone: tone),
+                    ],
+                  ),
+                  if (hasWhy) const SizedBox(height: 16),
+                ],
+                if (hasWhy) ...[
+                  Text(
+                    'Neden burada',
+                    style: profile.typography.eyebrow.copyWith(
+                      color: tone.accent,
+                      letterSpacing: 1.3,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    scene.whyText,
+                    style: profile.typography.bodyCompact.copyWith(
+                      color: tone.mutedText,
+                      height: 1.56,
+                    ),
+                  ),
+                ],
+                if (index < total - 1 && scene.nextTitle.trim().isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Text(
+                    'Sonraki: ${scene.nextTitle}',
+                    style: profile.typography.meta.copyWith(
+                      color: tone.mutedText.withValues(alpha: 0.82),
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ProfileDetailThemeChip extends StatelessWidget {
+  const _ProfileDetailThemeChip({required this.label, required this.tone});
+
+  final String label;
+  final ProfileDetailTone tone;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: tone.accent.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: tone.stroke),
+      ),
+      child: Text(
+        label,
+        style: profile.typography.buttonLabel.copyWith(
+          color: _kDetailFlowText,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+}
+
+class ProfileDetailCatalogPage extends StatelessWidget {
+  const ProfileDetailCatalogPage({
+    super.key,
+    required this.title,
+    required this.subtitle,
+    required this.items,
+    required this.onOpenItem,
+  });
+
+  final String title;
+  final String subtitle;
+  final List<ProfileDetailCatalogItem> items;
+  final ValueChanged<ProfileDetailCatalogItem> onOpenItem;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final pageTone = items.isNotEmpty
+        ? items.first.tone
+        : _kDefaultProfileDetailTone;
+    return Scaffold(
+      backgroundColor: pageTone.background,
+      body: ColoredBox(
+        color: pageTone.background,
+        child: SafeArea(
+          bottom: false,
+          child: JoviaPageScaffold(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 28),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                JoviaProfileTopBar(
+                  label: title,
+                  centerText: 'Tüm Kartlar',
+                  onBackTap: () => Navigator.of(context).maybePop(),
+                  reserveTrailingSpace: true,
+                ),
+                const SizedBox(height: 18),
+                Container(
+                  padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+                  decoration: BoxDecoration(
+                    color: pageTone.surface,
+                    borderRadius: BorderRadius.circular(28),
+                    border: Border.all(color: pageTone.stroke),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title.toUpperCase(),
+                        style: profile.typography.monoEyebrow.copyWith(
+                          color: pageTone.accent,
+                          fontSize: 11.5,
+                          letterSpacing: 1.8,
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Kişilik imzası kartları',
+                        style: profile.typography.section.copyWith(
+                          color: _kDetailFlowText,
+                          fontSize: 24,
+                          height: 1.08,
+                        ),
+                      ),
+                      if (subtitle.trim().isNotEmpty) ...[
+                        const SizedBox(height: 10),
+                        Text(
+                          subtitle,
+                          style: profile.typography.bodyCompact.copyWith(
+                            color: pageTone.mutedText,
+                            height: 1.56,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 18),
+                for (var index = 0; index < items.length; index++) ...[
+                  _ProfileDetailCatalogCard(
+                    item: items[index],
+                    onTap: () => onOpenItem(items[index]),
+                  ),
+                  if (index != items.length - 1) const SizedBox(height: 14),
+                ],
+              ],
+            ),
           ),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (scene.bodyBlocks.isNotEmpty)
-            for (final block in scene.bodyBlocks) ...[
-              Text(
-                block,
-                style: profile.typography.bodyCompact.copyWith(
-                  color: _kDetailFlowText,
-                  height: 1.6,
+    );
+  }
+}
+
+class _ProfileDetailCatalogCard extends StatelessWidget {
+  const _ProfileDetailCatalogCard({required this.item, required this.onTap});
+
+  final ProfileDetailCatalogItem item;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(24),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        decoration: BoxDecoration(
+          color: item.tone.surface,
+          borderRadius: BorderRadius.circular(24),
+          border: Border.all(color: item.tone.stroke),
+          boxShadow: [
+            BoxShadow(
+              color: item.tone.glow,
+              blurRadius: 24,
+              offset: const Offset(0, 16),
+              spreadRadius: -18,
+            ),
+          ],
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(18),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    item.tone.accent.withValues(alpha: 0.32),
+                    item.tone.accentSoft.withValues(alpha: 0.18),
+                    item.tone.surfaceStrong,
+                  ],
                 ),
               ),
-              const SizedBox(height: 12),
-            ],
-          if (scene.chips.isNotEmpty) ...[
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final chip in scene.chips.take(4))
-                  JoviaMetaPill(label: chip),
-              ],
-            ),
-            if (hasWhy) const SizedBox(height: 16),
-          ],
-          if (hasWhy) ...[
-            Text(
-              'Neden burada',
-              style: profile.typography.eyebrow.copyWith(
-                color: profile.colors.textLight,
-                letterSpacing: 1.3,
+              child: Center(
+                child: JoviaIllustrationAccent(
+                  asset: item.illustrationAsset,
+                  width: 44,
+                  height: 44,
+                  opacity: 0.92,
+                ),
               ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              scene.whyText,
-              style: profile.typography.bodyCompact.copyWith(
-                color: profile.colors.textLight,
-                height: 1.56,
+            const SizedBox(width: 14),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (item.eyebrow.trim().isNotEmpty) ...[
+                    Text(
+                      item.eyebrow.toUpperCase(),
+                      style: profile.typography.monoEyebrow.copyWith(
+                        color: item.tone.accent,
+                        fontSize: 11.0,
+                        letterSpacing: 1.6,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                  ],
+                  Text(
+                    item.title,
+                    style: profile.typography.card.copyWith(
+                      color: _kDetailFlowText,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 18,
+                      height: 1.22,
+                    ),
+                  ),
+                  if (item.subtitle.trim().isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      item.subtitle,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: profile.typography.metaSoft.copyWith(
+                        color: item.tone.mutedText,
+                        height: 1.5,
+                      ),
+                    ),
+                  ],
+                ],
               ),
             ),
-          ],
-          if (index < total - 1 && scene.nextTitle.trim().isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Text(
-              'Sonraki: ${scene.nextTitle}',
-              style: profile.typography.meta.copyWith(
-                color: profile.colors.textLight,
-              ),
+            const SizedBox(width: 10),
+            Icon(
+              Icons.arrow_forward_rounded,
+              color: item.tone.accent,
+              size: 20,
             ),
           ],
-        ],
+        ),
       ),
     );
   }

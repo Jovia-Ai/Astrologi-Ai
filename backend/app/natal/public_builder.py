@@ -234,7 +234,7 @@ def _extract_planet_sign(value: Any, target_planet: str) -> str:
     return ""
 
 
-def _editorial_profile_title(family: str, *, fallback: str = "Sende çalışan ikinci katman") -> str:
+def _editorial_profile_title(family: str, *, fallback: str = "Sende öne çıkan taraf") -> str:
     return _PROFILE_EDITORIAL_TITLES.get(family, fallback)
 
 
@@ -263,15 +263,15 @@ def _editorial_bundle_teaser(*, family: str, recognition: list[str], gifts: list
         return _editorial_profile_title(family)
 
     return {
-        "mind_mechanics": f"Zihninde ilk hissedilen çizgi {lead} tarafında toplanıyor.",
-        "intimacy_guard": f"Yakınlıkta önce {lead} tarafın açılıyor.",
-        "creative_channel": f"Akışın en çok {lead} çizgisinde güçleniyor.",
+        "mind_mechanics": f"Zihninde ilk öne çıkan şey çoğu zaman {lead} oluyor.",
+        "intimacy_guard": f"Yakınlıkta önce {lead} tarafın devreye giriyor.",
+        "creative_channel": f"Akışın en çok {lead} olduğunda güçleniyor.",
         "outer_inner_split": f"İnsanlar sende önce {lead} tarafını hissediyor.",
         "control_vs_flow": f"İçinde aynı anda {lead} çalışan bir denge var.",
         "protection_pattern": f"Zorlandığında ilk devreye {lead} tarafın giriyor.",
-        "contradiction_core": f"İçeride aynı anda {lead} çalışan iki yön var.",
-        "self_definition": f"Sende kolay tanınan çizgi {lead} tarafında beliriyor.",
-    }.get(family, f"Sende belirginleşen çizgi {lead} tarafında toplanıyor.")
+        "contradiction_core": f"İçinde aynı anda {lead} isteyen iki yön var.",
+        "self_definition": f"İnsanların sende ilk fark ettiği şey çoğu zaman {lead} oluyor.",
+    }.get(family, f"Sende en çok {lead} tarafı öne çıkıyor.")
 
 
 def _editorial_bundle_body(
@@ -290,22 +290,22 @@ def _editorial_bundle_body(
     sentences: list[str] = []
     if domain_text:
         domain_templates = {
-            "mind_mechanics": f"Bu katman en çok {domain_text} alanında belirginleşiyor.",
-            "intimacy_guard": f"Bu çizgi en çok {domain_text} alanında görünür oluyor.",
+            "mind_mechanics": f"Bu tema en çok {domain_text} alanında kendini gösteriyor.",
+            "intimacy_guard": f"Bu tema en çok {domain_text} alanında hissediliyor.",
             "creative_channel": f"Bu akış en çok {domain_text} alanında açılıyor.",
         }
         sentences.append(
             domain_templates.get(
                 family,
-                f"Bu katman en çok {domain_text} alanında görünür oluyor.",
+                f"Bu tema en çok {domain_text} alanında kendini gösteriyor.",
             )
         )
     if recognition_text:
-        sentences.append(f"İlk bakışta okunan tarafın çoğu zaman {recognition_text} oluyor.")
+        sentences.append(f"İnsanların sende ilk fark ettiği şey çoğu zaman {recognition_text} oluyor.")
     if gift_text:
-        sentences.append(f"Güçlü halinde bu çizgi {gift_text} olarak çalışıyor.")
+        sentences.append(f"Dengede olduğunda sende en çok {gift_text} öne çıkıyor.")
     if reflex_text:
-        sentences.append(f"Sıkıştığında ise {reflex_text} tarafı öne çıkabiliyor.")
+        sentences.append(f"Zorlandığında ise {reflex_text} tarafın öne çıkabiliyor.")
 
     if not sentences:
         return _editorial_profile_title(family)
@@ -316,9 +316,9 @@ def _editorial_bundle_micro(*, gifts: list[str], reflex: list[str]) -> str:
     gift_text = _editorial_phrase_list(gifts, limit=1)
     reflex_text = _editorial_phrase_list(reflex, limit=1)
     if reflex_text:
-        return f"Daraldığında {reflex_text} tarafın daha hızlı görünür olabilir."
+        return f"Zorlandığında {reflex_text} tarafın daha hızlı öne çıkabilir."
     if gift_text:
-        return f"Yerine oturduğunda en güçlü çalışan tarafın {gift_text} oluyor."
+        return f"Dengede olduğunda sende en çok {gift_text} öne çıkıyor."
     return ""
 
 
@@ -584,7 +584,11 @@ def _bundle_as_profile_block(bundle: Mapping[str, Any]) -> dict[str, Any] | None
         ),
         "micro": _editorial_bundle_micro(gifts=gifts, reflex=reflex),
         "astro_hint": "",
-        "astro_sources": [],
+        "astro_sources": [
+            cleanup_tr_punctuation(str(item).strip())
+            for item in (bundle.get("astro_sources") or [])
+            if str(item).strip()
+        ][:3],
         "chips": domains[:3] or gifts[:3],
         "family": family,
         "emphasis": "extra",

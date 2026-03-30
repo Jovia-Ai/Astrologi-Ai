@@ -1,5 +1,7 @@
 // ignore_for_file: unused_element
 
+import 'dart:ui' as ui;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,6 +29,10 @@ const Color _kProfilePosterSurfaceSoft = Color(0xFF090807);
 const Color _kProfilePosterStroke = Color(0x285B4736);
 const Color _kProfilePosterMuted = Color(0xFFC5BCD0);
 const Color _kProfilePosterAccent = Color(0xFFFF8A1C);
+const Color _kProfilePosterLilac = Color(0xFFB58DFF);
+const Color _kProfilePosterBlush = Color(0xFFFFC5E7);
+const Color _kProfilePosterMint = Color(0xFF9EF0E7);
+const Color _kProfilePosterButter = Color(0xFFFFE5A4);
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
@@ -228,12 +234,13 @@ class _ProfilePageState extends State<ProfilePage> {
                   )
                   .take(2)
                   .toList();
-              final signatureCards = _profileBundleTeasers.isNotEmpty
-                  ? _profileBundleTeasers
+              final allSignatureCards = _profilePlacementCards.isNotEmpty
+                  ? _profilePlacementCards
+                  : _profileBundleTeasers
                         .map((item) => item.toNarrativeCard())
-                        .take(4)
-                        .toList()
-                  : _profilePlacementCards.take(4).toList();
+                        .take(12)
+                        .toList();
+              final signatureCards = allSignatureCards.take(3).toList();
               final sideThemes = _supportingThreads.take(3).toList();
               final mainHeadlineText = _profilePosterLeadText(
                 headlineCard: headlineCard ?? heroNarrativeCard,
@@ -478,13 +485,13 @@ class _ProfilePageState extends State<ProfilePage> {
                             title: imprintHeadline.isNotEmpty
                                 ? imprintHeadline
                                 : 'İmza Katmanları',
-                            cards: signatureCards,
+                            cards: allSignatureCards,
                           ),
                           onOpenCard: (card) => _openSignatureFlow(
                             title: imprintHeadline.isNotEmpty
                                 ? imprintHeadline
                                 : 'İmza Katmanları',
-                            cards: signatureCards,
+                            cards: allSignatureCards,
                             selected: card,
                           ),
                         ),
@@ -588,8 +595,16 @@ class _ProfilePageState extends State<ProfilePage> {
                         summary: identitySummary,
                         supportingThreads: sideThemes,
                         primaryCards: curatedCards,
-                        placementCards: signatureCards,
+                        placementCards: allSignatureCards,
                         insightModules: _profileInsightModules,
+                        onOpenPlacementFlow: allSignatureCards.isEmpty
+                            ? null
+                            : () => _openSignatureFlow(
+                                title: imprintHeadline.isNotEmpty
+                                    ? imprintHeadline
+                                    : 'İmza Katmanları',
+                                cards: allSignatureCards,
+                              ),
                         readOnly: widget.readOnly,
                       )
                     else
@@ -1199,7 +1214,7 @@ class _ProfilePageState extends State<ProfilePage> {
         coreBlocks.isNotEmpty ? coreBlocks : profileBlocks,
       );
       final extraNarrativeCards = _mergeNarrativeCards(extraBlocks);
-      final placementCards = _selectPlacementCards([
+      final placementCards = _selectSignatureCards([
         ...detailCards,
         ...personalityCards,
         if (detailCards.isEmpty && personalityCards.isEmpty)
@@ -1923,25 +1938,32 @@ class _ProfilePageState extends State<ProfilePage> {
     return out;
   }
 
-  List<_ProfileNarrativeCard> _selectPlacementCards(
+  List<_ProfileNarrativeCard> _selectSignatureCards(
     List<_ProfileNarrativeCard> items,
   ) {
     final preferred = <_ProfileNarrativeCard>[];
+    final secondary = <_ProfileNarrativeCard>[];
     final seen = <String>{};
     for (final item in items) {
-      if (!item.isPlacementLike) {
-        continue;
-      }
-      final key = item.cardKey.isNotEmpty ? item.cardKey : item.title;
+      final key = _signatureCardIdentity(item);
       if (key.isEmpty || !seen.add(key)) {
         continue;
       }
-      preferred.add(item);
+      final isSignatureLike =
+          item.origin == 'personality_imprint' ||
+          item.family == 'placement_signature' ||
+          item.family == 'tone_signature' ||
+          item.family == 'contradiction_core';
+      if (isSignatureLike) {
+        preferred.add(item);
+      } else {
+        secondary.add(item);
+      }
     }
     if (preferred.isNotEmpty) {
-      return preferred.take(12).toList();
+      return [...preferred, ...secondary].take(12).toList();
     }
-    return items.take(12).toList();
+    return _uniqueSignatureCards(items).take(12).toList();
   }
 
   String _extractPlanetSign(Map<String, dynamic> map, String planetName) {
@@ -2344,6 +2366,45 @@ class _ProfilePageState extends State<ProfilePage> {
     return card.title.trim();
   }
 
+  String _normalizeSignatureDisplayTitle(String title) {
+    return title
+        .trim()
+        .toLowerCase()
+        .replaceAll('i̇', 'i')
+        .replaceAll('ı', 'i')
+        .replaceAll('ş', 's')
+        .replaceAll('ğ', 'g')
+        .replaceAll('ü', 'u')
+        .replaceAll('ö', 'o')
+        .replaceAll('ç', 'c')
+        .replaceAll(RegExp(r'\s+'), ' ');
+  }
+
+  String _signatureCardIdentity(_ProfileNarrativeCard card) {
+    final semanticTitle = _normalizeSignatureDisplayTitle(
+      _displayTitleForCard(card),
+    );
+    if (semanticTitle.isNotEmpty) {
+      return semanticTitle;
+    }
+    return _cardIdentity(card);
+  }
+
+  List<_ProfileNarrativeCard> _uniqueSignatureCards(
+    Iterable<_ProfileNarrativeCard> items,
+  ) {
+    final seen = <String>{};
+    final result = <_ProfileNarrativeCard>[];
+    for (final item in items) {
+      final key = _signatureCardIdentity(item);
+      if (key.isEmpty || !seen.add(key)) {
+        continue;
+      }
+      result.add(item);
+    }
+    return result;
+  }
+
   List<_ProfileNarrativeCard> _uniqueNarrativeCards(
     Iterable<_ProfileNarrativeCard> items,
   ) {
@@ -2695,21 +2756,27 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   String _whyTextForNarrativeCard(_ProfileNarrativeCard card) {
+    if (card.astroSources.isNotEmpty) {
+      return [
+        'Bu yorum en çok şu astrolojik göstergelere dayanıyor:',
+        ...card.astroSources.take(3).map((item) => '• $item'),
+      ].join('\n');
+    }
     if (card.chips.isNotEmpty) {
-      return 'Bu okuma ${card.chips.take(3).join(' • ')} çizgilerinden kürleniyor.';
+      return 'Bu yorum en çok ${card.chips.take(3).join(', ')} temalarına dayanıyor.';
     }
     return switch (card.family) {
       'mind_mechanics' =>
-        'Bu bölüm zihinsel ritim ve karar alma hattının baskın işaretlerinden kuruluyor.',
+        'Bu bölüm, düşünme biçiminin kararlarını nasıl etkilediğini anlatıyor.',
       'intimacy_guard' =>
-        'Bu bölüm yakınlık, sınır ve duygusal açılma kalıplarının bir özeti.',
+        'Bu bölüm, yakınlıkta ne zaman açıldığını ve neye ihtiyaç duyduğunu anlatıyor.',
       'outer_inner_split' =>
-        'Bu bölüm dışarıdan görünen ton ile içeride çalışan ikinci çizginin farkını anlatıyor.',
+        'Bu bölüm, dışarıdan görünen tarafınla iç dünyandaki hassas tarafı birlikte anlatıyor.',
       'creative_channel' =>
-        'Bu bölüm akışın kolay açıldığı alanlar ve üretim çizgisinden geliyor.',
+        'Bu bölüm, hayatın hangi alanlarında daha kolay akmaya başladığını anlatıyor.',
       'contradiction_core' =>
-        'Bu bölüm aynı anda çalışan iki yönün birbirini nasıl çekip ittiğini gösteriyor.',
-      _ => 'Bu bölüm haritada tekrar eden bir imza çizgisinden derleniyor.',
+        'Bu bölüm, içinde aynı anda çalışan iki farklı eğilimi gösteriyor.',
+      _ => 'Bu bölüm, sende sık tekrar eden bir temayı anlatıyor.',
     };
   }
 
@@ -2738,6 +2805,44 @@ class _ProfilePageState extends State<ProfilePage> {
       return '$displayName için bu okuma ${parts.join(' / ')} izleri üzerinden kuruluyor.';
     }
     return '$displayName için bu bölüm kamusal ton ile iç motivasyonun birleştiği kimlik katmanı.';
+  }
+
+  ProfileDetailTone _detailToneForNarrativeCard(_ProfileNarrativeCard card) {
+    return profileDetailToneForSignature(
+      title: _displayTitleForCard(card),
+      summary: card.summary,
+      family: card.family,
+      eyebrow: card.eyebrow,
+    );
+  }
+
+  ProfileDetailTone _detailToneForThread(_SupportingThreadItem item) {
+    return profileDetailToneForSignature(
+      title: item.title,
+      summary: item.oneLiner,
+      family: 'supporting_thread',
+    );
+  }
+
+  ProfileDetailTone _detailToneForInsight(_ProfileInsightModule module) {
+    return profileDetailToneForSignature(
+      title: module.title,
+      summary: module.subheadline,
+      family: 'insight_module',
+      eyebrow: module.headline,
+    );
+  }
+
+  ProfileDetailTone _detailToneForIdentity({
+    required String headline,
+    required String summary,
+    required List<String> drivers,
+  }) {
+    return profileDetailToneForSignature(
+      title: headline,
+      summary: [summary, ...drivers].join(' '),
+      family: 'identity_flow',
+    );
   }
 
   ProfileDetailSceneVariant _detailVariantForCard(
@@ -2862,6 +2967,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _ProfileNarrativeCard card, {
     required ProfileDetailSceneVariant variant,
     String? eyebrowOverride,
+    String? titleOverride,
   }) {
     final intro = card.summary.trim().isNotEmpty
         ? card.summary.trim()
@@ -2874,7 +2980,7 @@ class _ProfilePageState extends State<ProfilePage> {
       eyebrow: (eyebrowOverride ?? card.eyebrow).trim().isNotEmpty
           ? (eyebrowOverride ?? card.eyebrow).trim()
           : 'Detay',
-      title: card.title,
+      title: (titleOverride ?? card.title).trim(),
       intro: intro,
       bodyBlocks: _detailBlocksFromText(detailText),
       chips: card.chips,
@@ -2979,6 +3085,16 @@ class _ProfilePageState extends State<ProfilePage> {
     required String title,
     required String subtitle,
     required List<ProfileDetailSceneData> scenes,
+    ProfileDetailTone tone = const ProfileDetailTone(
+      background: Color(0xFF08070B),
+      surface: Color(0xFF12101A),
+      surfaceStrong: Color(0xFF1A1524),
+      accent: Color(0xFFB58DFF),
+      accentSoft: Color(0xFF9EF0E7),
+      stroke: Color(0x3DB58DFF),
+      glow: Color(0x33B58DFF),
+      mutedText: Color(0xFFD3CBDD),
+    ),
   }) {
     final curatedScenes = _withNextLabels(_dedupeScenes(scenes));
     if (curatedScenes.isEmpty) {
@@ -2990,6 +3106,7 @@ class _ProfilePageState extends State<ProfilePage> {
           flowTitle: title,
           flowSubtitle: subtitle,
           scenes: curatedScenes,
+          tone: tone,
         ),
       ),
     );
@@ -3015,6 +3132,11 @@ class _ProfilePageState extends State<ProfilePage> {
           ? headline.trim()
           : 'Kimliğinin dışarıdan ve içeriden nasıl okunduğunu burada daha uzun gör.',
       scenes: scenes,
+      tone: _detailToneForIdentity(
+        headline: headline.trim().isNotEmpty ? headline : displayName,
+        summary: summary,
+        drivers: drivers,
+      ),
     );
   }
 
@@ -3029,8 +3151,9 @@ class _ProfilePageState extends State<ProfilePage> {
       title: selectedCard.title,
       subtitle: selectedCard.summary.isNotEmpty
           ? selectedCard.summary
-          : 'Bu bölüm profil yüzeyindeki teaserın tam okuması.',
+          : 'Bu bölümün sende nasıl çalıştığını burada daha açık okuyorsun.',
       scenes: scenes,
+      tone: _detailToneForNarrativeCard(selectedCard),
     );
   }
 
@@ -3039,21 +3162,66 @@ class _ProfilePageState extends State<ProfilePage> {
     required List<_ProfileNarrativeCard> cards,
     _ProfileNarrativeCard? selected,
   }) {
-    if (selected == null && cards.isEmpty) {
+    final uniqueCards = _uniqueSignatureCards(cards);
+    if (selected == null && uniqueCards.isEmpty) {
       return;
     }
-    final activeCard = selected ?? cards.first;
+    if (selected != null) {
+      _openSignatureCardDetail(title: title, card: selected);
+      return;
+    }
+    if (uniqueCards.length == 1) {
+      _openSignatureCardDetail(title: title, card: uniqueCards.first);
+      return;
+    }
+    final items = [
+      for (final card in uniqueCards)
+        ProfileDetailCatalogItem(
+          id: _cardIdentity(card),
+          eyebrow: _signatureEyebrowForCard(card),
+          title: _legacySignalLineForCard(card),
+          subtitle: card.summary.isNotEmpty ? card.summary : card.previewBody,
+          illustrationAsset: _profilePosterIllustrationForCard(card),
+          tone: _detailToneForNarrativeCard(card),
+        ),
+    ];
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => ProfileDetailCatalogPage(
+          title: title,
+          subtitle:
+              'Kart listesinde yalnızca başlıkları görürsün; bir karta basınca sadece onun detayı açılır.',
+          items: items,
+          onOpenItem: (item) {
+            final card = uniqueCards.firstWhere(
+              (candidate) => _cardIdentity(candidate) == item.id,
+            );
+            _openSignatureCardDetail(title: title, card: card);
+          },
+        ),
+      ),
+    );
+  }
+
+  void _openSignatureCardDetail({
+    required String title,
+    required _ProfileNarrativeCard card,
+  }) {
     final scenes = <ProfileDetailSceneData>[
       _sceneFromNarrativeCard(
-        activeCard,
-        variant: _detailVariantForCard(activeCard, isSignature: true),
-        eyebrowOverride: 'İmza katmanı',
+        card,
+        variant: _detailVariantForCard(card, isSignature: true),
+        eyebrowOverride: _signatureEyebrowForCard(card),
+        titleOverride: _legacySignalLineForCard(card),
       ),
     ];
     _pushDetailFlow(
-      title: activeCard.title.isNotEmpty ? activeCard.title : title,
-      subtitle: 'Kısa imzaların arkasındaki daha uzun okuma burada açılıyor.',
+      title: title,
+      subtitle: card.summary.isNotEmpty
+          ? card.summary
+          : 'Bu kişilik imzası kartının tam açıklaması burada açılıyor.',
       scenes: scenes,
+      tone: _detailToneForNarrativeCard(card),
     );
   }
 
@@ -3073,8 +3241,9 @@ class _ProfilePageState extends State<ProfilePage> {
     ];
     _pushDetailFlow(
       title: activeItem.title,
-      subtitle: 'Ana portreyi destekleyen ikinci çizgiler burada ayrışıyor.',
+      subtitle: 'Burada ana portreni tamamlayan diğer taraflar öne çıkıyor.',
       scenes: scenes,
+      tone: _detailToneForThread(activeItem),
     );
   }
 
@@ -3088,6 +3257,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ? module.subheadline
           : 'Bu bölüm savunma ve büyüme eksenindeki tam akışı açıyor.',
       scenes: scenes,
+      tone: _detailToneForInsight(module),
     );
   }
 
@@ -3283,6 +3453,7 @@ class _ProfileBundleTeaser {
     required this.summary,
     required this.body,
     required this.chips,
+    required this.astroSources,
   });
 
   final String id;
@@ -3291,10 +3462,23 @@ class _ProfileBundleTeaser {
   final String summary;
   final String body;
   final List<String> chips;
+  final List<String> astroSources;
 
   factory _ProfileBundleTeaser.fromBundleMap(Map<String, dynamic> map) {
     List<String> readList(String key) {
       return _sanitizeUserFacingChips(map[key], max: 12);
+    }
+
+    List<String> readAstroSources(String key) {
+      final raw = map[key];
+      if (raw is! List) {
+        return const <String>[];
+      }
+      return raw
+          .map((item) => item.toString().trim())
+          .where((item) => item.isNotEmpty)
+          .take(3)
+          .toList();
     }
 
     String editorialTitleForFamily(String family) {
@@ -3307,7 +3491,7 @@ class _ProfileBundleTeaser {
         'creative_channel' => 'Fırsatın aktığı yer',
         'self_definition' => 'Sende kolay tanınan çizgi',
         'contradiction_core' => 'İçeride iki yönün nasıl çalışıyor',
-        _ => 'İkinci katmanda çalışan çizgi',
+        _ => 'Sende öne çıkan taraf',
       };
     }
 
@@ -3346,17 +3530,17 @@ class _ProfileBundleTeaser {
       }
       return switch (family) {
         'mind_mechanics' =>
-          'Zihninde ilk hissedilen çizgi $lead tarafında toplanıyor.',
-        'intimacy_guard' => 'Yakınlıkta önce $lead tarafın açılıyor.',
-        'creative_channel' => 'Akışın en çok $lead çizgisinde güçleniyor.',
+          'Zihninde ilk öne çıkan şey çoğu zaman $lead oluyor.',
+        'intimacy_guard' => 'Yakınlıkta önce $lead tarafın devreye giriyor.',
+        'creative_channel' => 'Akışın en çok $lead olduğunda güçleniyor.',
         'outer_inner_split' => 'İnsanlar sende önce $lead tarafını hissediyor.',
         'control_vs_flow' => 'İçinde aynı anda $lead çalışan bir denge var.',
         'protection_pattern' =>
           'Zorlandığında ilk devreye $lead tarafın giriyor.',
-        'contradiction_core' => 'İçeride aynı anda $lead çalışan iki yön var.',
+        'contradiction_core' => 'İçinde aynı anda $lead isteyen iki yön var.',
         'self_definition' =>
-          'Sende kolay tanınan çizgi $lead tarafında beliriyor.',
-        _ => 'Sende belirginleşen çizgi $lead tarafında toplanıyor.',
+          'İnsanların sende ilk fark ettiği şey çoğu zaman $lead oluyor.',
+        _ => 'Sende en çok $lead tarafı öne çıkıyor.',
       };
     }
 
@@ -3375,19 +3559,19 @@ class _ProfileBundleTeaser {
         if (domainText.isNotEmpty)
           switch (family) {
             'mind_mechanics' =>
-              'Bu katman en çok $domainText alanında belirginleşiyor.',
+              'Bu tema en çok $domainText alanında kendini gösteriyor.',
             'intimacy_guard' =>
-              'Bu çizgi en çok $domainText alanında görünür oluyor.',
+              'Bu tema en çok $domainText alanında hissediliyor.',
             'creative_channel' =>
               'Bu akış en çok $domainText alanında açılıyor.',
-            _ => 'Bu katman en çok $domainText alanında görünür oluyor.',
+            _ => 'Bu tema en çok $domainText alanında kendini gösteriyor.',
           },
         if (recognitionText.isNotEmpty)
-          'İlk bakışta okunan tarafın çoğu zaman $recognitionText oluyor.',
+          'İnsanların sende ilk fark ettiği şey çoğu zaman $recognitionText oluyor.',
         if (giftText.isNotEmpty)
-          'Güçlü halinde bu çizgi $giftText olarak çalışıyor.',
+          'Dengede olduğunda sende en çok $giftText öne çıkıyor.',
         if (reflexText.isNotEmpty)
-          'Sıkıştığında ise $reflexText tarafı öne çıkabiliyor.',
+          'Zorlandığında ise $reflexText tarafın öne çıkabiliyor.',
       ];
       return sentences.join(' ').trim();
     }
@@ -3429,6 +3613,7 @@ class _ProfileBundleTeaser {
       summary: summary.trim().isEmpty ? title : summary.trim(),
       body: body,
       chips: (domains.isNotEmpty ? domains : giftTags).take(3).toList(),
+      astroSources: readAstroSources('astro_sources'),
     );
   }
 
@@ -3438,12 +3623,13 @@ class _ProfileBundleTeaser {
       id: id,
       family: family,
       origin: 'narrative_v2_bundle',
-      eyebrow: 'İmza katmanı',
+      eyebrow: 'Öne çıkan tema',
       title: title,
       summary: summary,
       body: body,
       micro: '',
       chips: chips,
+      astroSources: astroSources,
     );
   }
 }
@@ -3460,6 +3646,7 @@ class _ProfileNarrativeCard {
     required this.body,
     required this.micro,
     required this.chips,
+    required this.astroSources,
   });
 
   final String cardKey;
@@ -3472,6 +3659,7 @@ class _ProfileNarrativeCard {
   final String body;
   final String micro;
   final List<String> chips;
+  final List<String> astroSources;
 
   String get previewBody {
     final summaryText = summary.trim();
@@ -3493,6 +3681,30 @@ class _ProfileNarrativeCard {
   factory _ProfileNarrativeCard.fromMap(Map<String, dynamic> map) {
     List<String> normalizeChips(dynamic raw) {
       return _sanitizeUserFacingChips(raw, max: 4);
+    }
+
+    List<String> normalizeAstroSources(dynamic raw) {
+      if (raw is! List) {
+        return const <String>[];
+      }
+      final sources = <String>[];
+      for (final item in raw) {
+        final value = item.toString().trim();
+        if (value.isEmpty) {
+          continue;
+        }
+        final duplicate = sources.any(
+          (existing) => existing.toLowerCase() == value.toLowerCase(),
+        );
+        if (duplicate) {
+          continue;
+        }
+        sources.add(value);
+        if (sources.length >= 3) {
+          break;
+        }
+      }
+      return sources;
     }
 
     String pickTitle() {
@@ -3518,15 +3730,15 @@ class _ProfileNarrativeCard {
           lowerEyebrow == 'kisilik izi' ||
           lowerEyebrow == 'ton izi' ||
           lowerEyebrow == 'aci izi') {
-        return 'İmza katmanı';
+        return 'Öne çıkan tema';
       }
       if (eyebrow.isNotEmpty) {
         return eyebrow;
       }
       final family = (map['family'] ?? '').toString().trim();
       return switch (family) {
-        'placement_signature' => 'İmza katmanı',
-        'tone_signature' => 'İmza katmanı',
+        'placement_signature' => 'Öne çıkan tema',
+        'tone_signature' => 'Öne çıkan tema',
         'self_definition' => 'Sende kolay tanınan çizgi',
         'outer_inner_split' => 'Dışarıdan ve içeriden',
         'mind_mechanics' => 'Zihnin nasıl çalışıyor',
@@ -3549,6 +3761,7 @@ class _ProfileNarrativeCard {
       body: (map['body'] ?? '').toString().trim(),
       micro: (map['micro'] ?? '').toString().trim(),
       chips: normalizeChips(map['chips']),
+      astroSources: normalizeAstroSources(map['astro_sources']),
     );
   }
 }
@@ -4561,32 +4774,15 @@ class _ProfilePosterLeadSection extends StatelessWidget {
           );
         }
 
-        return Container(
+        return _ProfileLilacGlassCard(
+          radius: 36,
+          sequence: 0,
+          strongerGlow: true,
           padding: EdgeInsets.fromLTRB(
             compact ? 18 : 22,
             22,
             compact ? 18 : 22,
             18,
-          ),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.centerLeft,
-              end: Alignment.centerRight,
-              colors: [Color(0xFF020202), Color(0xFF4B4B4B)],
-            ),
-            borderRadius: BorderRadius.circular(36),
-            border: Border.all(
-              color: Colors.white.withValues(alpha: 0.16),
-              width: 1.35,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.22),
-                blurRadius: 24,
-                offset: const Offset(0, 16),
-                spreadRadius: -20,
-              ),
-            ],
           ),
           child: Stack(
             clipBehavior: Clip.none,
@@ -5255,122 +5451,109 @@ class _NarrativeCardLarge extends StatelessWidget {
         break;
       }
     }
-    return JoviaPressable(
+    return _ProfileLilacGlassCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(32),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(20, 18, 18, 18),
-        decoration: BoxDecoration(
-          color: _kProfilePosterSurface,
-          borderRadius: BorderRadius.circular(32),
-          border: Border.all(color: _kProfilePosterStroke),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.18),
-              blurRadius: 18,
-              offset: const Offset(0, 12),
-              spreadRadius: -18,
+      radius: 32,
+      sequence: 1 + _profileAnimationSeed(title),
+      strongerGlow: true,
+      padding: const EdgeInsets.fromLTRB(20, 18, 18, 18),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(32),
+              child: const JoviaColorWash(
+                asset: JoviaColorAsset.wash09,
+                opacity: 0.12,
+              ),
             ),
-          ],
-        ),
-        child: Stack(
-          children: [
-            Positioned.fill(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(32),
-                child: const JoviaColorWash(
-                  asset: JoviaColorAsset.wash09,
-                  opacity: 0.04,
+          ),
+          Positioned(
+            right: -18,
+            bottom: -6,
+            child: JoviaIllustrationAccent(
+              asset: illustrationAsset,
+              width: 132,
+              height: 132,
+              opacity: 0.96,
+            ),
+          ),
+          const Positioned(
+            left: -30,
+            top: 58,
+            child: JoviaIllustrationAccent(
+              asset: JoviaIllustrationAsset.shape,
+              width: 74,
+              height: 74,
+              opacity: 0.08,
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 72),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: MinimalCTAButton(
+                    label: actionLabel,
+                    onTap: onTap,
+                    glassy: true,
+                  ),
                 ),
-              ),
-            ),
-            Positioned(
-              right: -18,
-              bottom: -6,
-              child: JoviaIllustrationAccent(
-                asset: illustrationAsset,
-                width: 132,
-                height: 132,
-                opacity: 0.96,
-              ),
-            ),
-            const Positioned(
-              left: -30,
-              top: 58,
-              child: JoviaIllustrationAccent(
-                asset: JoviaIllustrationAsset.shape,
-                width: 74,
-                height: 74,
-                opacity: 0.08,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(right: 72),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: MinimalCTAButton(
-                      label: actionLabel,
-                      onTap: onTap,
-                      glassy: true,
-                    ),
+                const SizedBox(height: 14),
+                Text(
+                  eyebrow.toUpperCase(),
+                  style: profile.typography.monoEyebrow.copyWith(
+                    color: profile.colors.textLight,
+                    fontSize: 11.5,
+                    letterSpacing: 1.7,
                   ),
-                  const SizedBox(height: 14),
-                  Text(
-                    eyebrow.toUpperCase(),
-                    style: profile.typography.monoEyebrow.copyWith(
-                      color: profile.colors.textLight,
-                      fontSize: 11.5,
-                      letterSpacing: 1.7,
-                    ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  title,
+                  style: profile.typography.section.copyWith(
+                    color: const Color(0xFFF5F2EE),
+                    fontSize: 24,
+                    height: 1.1,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    title,
-                    style: profile.typography.section.copyWith(
-                      color: const Color(0xFFF5F2EE),
-                      fontSize: 24,
-                      height: 1.1,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  if (visibleBlocks.isNotEmpty) ...[
-                    for (
-                      var index = 0;
-                      index < visibleBlocks.length;
-                      index++
-                    ) ...[
-                      Text(
-                        visibleBlocks[index],
-                        style: profile.typography.bodyReading.copyWith(
-                          color: const Color(0xFFF0EAE2),
-                          fontSize: 15.2,
-                          height: 1.58,
-                        ),
+                ),
+                const SizedBox(height: 12),
+                if (visibleBlocks.isNotEmpty) ...[
+                  for (
+                    var index = 0;
+                    index < visibleBlocks.length;
+                    index++
+                  ) ...[
+                    Text(
+                      visibleBlocks[index],
+                      style: profile.typography.bodyReading.copyWith(
+                        color: const Color(0xFFF0EAE2),
+                        fontSize: 15.2,
+                        height: 1.58,
                       ),
-                      if (index != visibleBlocks.length - 1)
-                        const SizedBox(height: 18),
-                    ],
-                  ],
-                  if (chips.isNotEmpty) ...[
-                    const SizedBox(height: 18),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 8,
-                      children: chips
-                          .take(4)
-                          .map((chip) => _ProfilePosterChip(label: chip))
-                          .toList(),
                     ),
+                    if (index != visibleBlocks.length - 1)
+                      const SizedBox(height: 18),
                   ],
-                  const SizedBox(height: 6),
                 ],
-              ),
+                if (chips.isNotEmpty) ...[
+                  const SizedBox(height: 18),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: chips
+                        .take(4)
+                        .map((chip) => _ProfilePosterChip(label: chip))
+                        .toList(),
+                  ),
+                ],
+                const SizedBox(height: 6),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -5825,7 +6008,7 @@ class _ProfilePosterPlacementsStrip extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'İMZA KATMANLARI',
+          'YERLEŞİM VE AÇILAR',
           style: profile.typography.monoEyebrow.copyWith(
             color: _kProfilePosterMuted,
             fontSize: 11.0,
@@ -5849,11 +6032,17 @@ class _ProfilePosterPlacementsStrip extends StatelessWidget {
             children: [
               for (var index = 0; index < cards.length; index++) ...[
                 _ProfilePosterMiniCard(
-                  title: cards[index].title,
+                  title: _displayTitleForCard(cards[index]),
                   body: cards[index].summary.isNotEmpty
                       ? cards[index].summary
                       : cards[index].previewBody,
                   asset: _profilePosterIllustrationForCard(cards[index]),
+                  tone: profileDetailToneForSignature(
+                    title: _displayTitleForCard(cards[index]),
+                    summary: cards[index].summary,
+                    family: cards[index].family,
+                    eyebrow: cards[index].eyebrow,
+                  ),
                   onTap: () => onOpenCard(cards[index]),
                 ),
                 if (index != cards.length - 1) const SizedBox(width: 14),
@@ -5862,7 +6051,7 @@ class _ProfilePosterPlacementsStrip extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 18),
-        _ProfilePosterFooterButton(label: 'İmza detayını aç', onTap: onOpenAll),
+        _ProfilePosterFooterButton(label: 'Daha fazla aç', onTap: onOpenAll),
       ],
     );
   }
@@ -6316,25 +6505,289 @@ class _ProfilePosterChip extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: isAccent
-            ? _kProfilePosterAccent.withValues(alpha: 0.12)
-            : Colors.white.withValues(alpha: 0.04),
+            ? _kProfilePosterLilac.withValues(alpha: 0.18)
+            : Colors.white.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
           color: isAccent
-              ? _kProfilePosterAccent.withValues(alpha: 0.24)
-              : Colors.white.withValues(alpha: 0.34),
+              ? _kProfilePosterLilac.withValues(alpha: 0.42)
+              : Colors.white.withValues(alpha: 0.24),
           width: 1,
         ),
+        boxShadow: [
+          if (isAccent)
+            BoxShadow(
+              color: _kProfilePosterLilac.withValues(alpha: 0.18),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
+              spreadRadius: -10,
+            ),
+        ],
       ),
       child: Text(
         label,
         style: profile.typography.buttonLabel.copyWith(
-          color: isAccent ? Colors.white : Colors.white.withValues(alpha: 0.86),
+          color: isAccent ? Colors.white : Colors.white.withValues(alpha: 0.90),
           fontSize: 12.0,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.02,
         ),
       ),
+    );
+  }
+}
+
+int _profileAnimationSeed(String value) {
+  final trimmed = value.trim();
+  if (trimmed.isEmpty) {
+    return 0;
+  }
+  return trimmed.runes.fold<int>(0, (sum, rune) => sum + rune) % 7;
+}
+
+class _ProfileCardEntrance extends StatelessWidget {
+  const _ProfileCardEntrance({required this.sequence, required this.child});
+
+  final int sequence;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: Duration(milliseconds: 560 + (sequence * 80)),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, child) {
+        final eased = Curves.easeOutCubic.transform(value);
+        return Opacity(
+          opacity: eased,
+          child: Transform.translate(
+            offset: Offset(0, (1 - eased) * 20),
+            child: Transform.scale(
+              scale: 0.965 + (eased * 0.035),
+              child: child,
+            ),
+          ),
+        );
+      },
+      child: child,
+    );
+  }
+}
+
+class _ProfileAnimatedOrb extends StatelessWidget {
+  const _ProfileAnimatedOrb({
+    required this.sequence,
+    required this.from,
+    required this.to,
+    required this.size,
+    required this.colors,
+    this.opacity = 0.22,
+  });
+
+  final int sequence;
+  final Alignment from;
+  final Alignment to;
+  final double size;
+  final List<Color> colors;
+  final double opacity;
+
+  @override
+  Widget build(BuildContext context) {
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: 1),
+      duration: Duration(milliseconds: 900 + (sequence * 110)),
+      curve: Curves.easeOutCubic,
+      builder: (context, value, _) {
+        final alignment = Alignment.lerp(from, to, value) ?? to;
+        return Align(
+          alignment: alignment,
+          child: Opacity(
+            opacity: opacity * (0.72 + (0.28 * value)),
+            child: Transform.scale(
+              scale: 0.84 + (0.16 * value),
+              child: Container(
+                width: size,
+                height: size,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: RadialGradient(
+                    colors: [
+                      colors.first.withValues(alpha: 0.95),
+                      colors.last.withValues(alpha: 0.0),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _ProfileLilacGlassCard extends StatelessWidget {
+  const _ProfileLilacGlassCard({
+    required this.child,
+    required this.radius,
+    required this.sequence,
+    this.padding = EdgeInsets.zero,
+    this.onTap,
+    this.strongerGlow = false,
+    this.tone,
+  });
+
+  final Widget child;
+  final double radius;
+  final int sequence;
+  final EdgeInsetsGeometry padding;
+  final VoidCallback? onTap;
+  final bool strongerGlow;
+  final ProfileDetailTone? tone;
+
+  @override
+  Widget build(BuildContext context) {
+    final resolvedTone = tone;
+    final accent = resolvedTone?.accent ?? _kProfilePosterLilac;
+    final accentSoft = resolvedTone?.accentSoft ?? _kProfilePosterMint;
+    final accentWarm = resolvedTone?.mutedText ?? _kProfilePosterBlush;
+    final surface = resolvedTone?.surface ?? const Color(0xFF151218);
+    final surfaceDeep = resolvedTone?.background ?? const Color(0xFF09080B);
+    final glow =
+        resolvedTone?.glow ?? _kProfilePosterLilac.withValues(alpha: 0.12);
+    final stroke = resolvedTone?.stroke ?? Colors.white.withValues(alpha: 0.16);
+    final card = _ProfileCardEntrance(
+      sequence: sequence,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(radius),
+              border: Border.all(color: stroke, width: 1.1),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color.alphaBlend(
+                    accent.withValues(alpha: strongerGlow ? 0.22 : 0.14),
+                    surface,
+                  ),
+                  Color.alphaBlend(
+                    accentSoft.withValues(alpha: strongerGlow ? 0.12 : 0.08),
+                    surfaceDeep,
+                  ),
+                  Color.alphaBlend(
+                    accentWarm.withValues(alpha: strongerGlow ? 0.14 : 0.08),
+                    surface,
+                  ),
+                ],
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: glow.withValues(alpha: strongerGlow ? 0.44 : 0.84),
+                  blurRadius: strongerGlow ? 32 : 24,
+                  offset: const Offset(0, 18),
+                  spreadRadius: -22,
+                ),
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.24),
+                  blurRadius: 24,
+                  offset: const Offset(0, 16),
+                  spreadRadius: -18,
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white.withValues(alpha: 0.08),
+                          Colors.transparent,
+                          Colors.white.withValues(alpha: 0.02),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                _ProfileAnimatedOrb(
+                  sequence: sequence,
+                  from: const Alignment(-1.05, -0.95),
+                  to: const Alignment(-0.72, -0.58),
+                  size: strongerGlow ? 210 : 156,
+                  colors: [accentSoft, accent],
+                  opacity: strongerGlow ? 0.20 : 0.14,
+                ),
+                _ProfileAnimatedOrb(
+                  sequence: sequence + 1,
+                  from: const Alignment(1.1, 1.05),
+                  to: const Alignment(0.78, 0.88),
+                  size: strongerGlow ? 240 : 170,
+                  colors: [accentWarm, accent],
+                  opacity: strongerGlow ? 0.24 : 0.16,
+                ),
+                _ProfileAnimatedOrb(
+                  sequence: sequence + 2,
+                  from: const Alignment(1.06, -1.08),
+                  to: const Alignment(0.92, -0.92),
+                  size: strongerGlow ? 156 : 110,
+                  colors: [_kProfilePosterButter, accentSoft],
+                  opacity: strongerGlow ? 0.12 : 0.08,
+                ),
+                Positioned(
+                  left: 16,
+                  right: 16,
+                  top: 0,
+                  child: TweenAnimationBuilder<double>(
+                    tween: Tween<double>(begin: 0, end: 1),
+                    duration: Duration(milliseconds: 760 + (sequence * 70)),
+                    curve: Curves.easeOutCubic,
+                    builder: (context, value, child) {
+                      return Opacity(
+                        opacity: 0.22 * value,
+                        child: Transform.translate(
+                          offset: Offset(0, -16 + (16 * value)),
+                          child: child,
+                        ),
+                      );
+                    },
+                    child: Container(
+                      height: 54,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(radius),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.white.withValues(alpha: 0.24),
+                            Colors.transparent,
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(padding: padding, child: child),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+    if (onTap == null) {
+      return card;
+    }
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(radius),
+      child: card,
     );
   }
 }
@@ -6345,35 +6798,54 @@ class _ProfilePosterMiniCard extends StatelessWidget {
     required this.body,
     required this.asset,
     required this.onTap,
+    this.tone,
   });
 
   final String title;
   final String body;
   final JoviaIllustrationAsset asset;
   final VoidCallback onTap;
+  final ProfileDetailTone? tone;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return JoviaPressable(
+    final resolvedTone = tone;
+    return _ProfileLilacGlassCard(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        width: 144,
-        decoration: BoxDecoration(
-          color: _kProfilePosterSurface,
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: _kProfilePosterStroke),
-          boxShadow: [profile.shadows.cardShadow],
-        ),
+      radius: 22,
+      sequence: 3 + _profileAnimationSeed(title),
+      padding: EdgeInsets.zero,
+      tone: resolvedTone,
+      child: SizedBox(
+        width: 152,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(22),
           child: Stack(
             children: [
               const Positioned.fill(
                 child: JoviaColorWash(
                   asset: JoviaColorAsset.wash14,
-                  opacity: 0.08,
+                  opacity: 0.16,
+                ),
+              ),
+              Positioned(
+                right: -28,
+                top: -20,
+                child: Container(
+                  width: 84,
+                  height: 84,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: RadialGradient(
+                      colors: [
+                        (resolvedTone?.accent ?? _kProfilePosterLilac)
+                            .withValues(alpha: 0.34),
+                        (resolvedTone?.accentSoft ?? _kProfilePosterBlush)
+                            .withValues(alpha: 0.0),
+                      ],
+                    ),
+                  ),
                 ),
               ),
               Padding(
@@ -6385,8 +6857,29 @@ class _ProfilePosterMiniCard extends StatelessWidget {
                       height: 108,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: _kProfilePosterSurfaceSoft,
+                        borderRadius: BorderRadius.circular(18),
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color.alphaBlend(
+                              (resolvedTone?.accent ?? _kProfilePosterLilac)
+                                  .withValues(alpha: 0.32),
+                              resolvedTone?.surfaceStrong ??
+                                  const Color(0xFF262031),
+                            ),
+                            Color.alphaBlend(
+                              (resolvedTone?.accentSoft ?? _kProfilePosterMint)
+                                  .withValues(alpha: 0.16),
+                              resolvedTone?.surface ?? const Color(0xFF15121D),
+                            ),
+                            Color.alphaBlend(
+                              _kProfilePosterButter.withValues(alpha: 0.22),
+                              resolvedTone?.background ??
+                                  const Color(0xFF241F20),
+                            ),
+                          ],
+                        ),
                       ),
                       child: Center(
                         child: JoviaIllustrationAccent(
@@ -6415,7 +6908,7 @@ class _ProfilePosterMiniCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: profile.typography.metaSoft.copyWith(
-                        color: _kProfilePosterMuted,
+                        color: resolvedTone?.mutedText ?? _kProfilePosterMuted,
                         fontSize: 12.6,
                         height: 1.58,
                       ),
@@ -6482,7 +6975,25 @@ String _sanitizeUserFacingChip(String raw) {
   if (normalized.isEmpty) {
     return '';
   }
+  const chipReplacements = <String, String>{
+    'upgrade': 'Yenilik',
+    'kalibrasyon': 'İç Denge',
+    'iç ayar': 'İç Denge',
+    'sistem + yenilik': 'Yapı ve Yenilik',
+    'network': 'Bağlantı',
+    'inkübasyon': 'İçte Olgunlaşma',
+    'pişirip çık': 'İçte Olgunlaşma',
+    'identity': 'Kimlik',
+    'relationships': 'İlişkiler',
+    'relationship': 'İlişki',
+    'mind': 'Zihin',
+    'career': 'Kariyer',
+    'home': 'Ev',
+    'inner': 'İç Dünya',
+  };
   final lower = normalized.toLowerCase();
+  final replaced = chipReplacements[lower];
+  final value = replaced ?? normalized;
   const hiddenPrefixes = <String>[
     'type:',
     'key:',
@@ -6516,7 +7027,7 @@ String _sanitizeUserFacingChip(String raw) {
   if (lower.contains('_') && !lower.contains(' ')) {
     return '';
   }
-  return normalized;
+  return value;
 }
 
 List<String> _sanitizeUserFacingChips(dynamic raw, {int max = 4}) {
@@ -7341,6 +7852,7 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
     required this.primaryCards,
     required this.placementCards,
     required this.insightModules,
+    required this.onOpenPlacementFlow,
     required this.readOnly,
   });
 
@@ -7351,10 +7863,12 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
   final List<_ProfileNarrativeCard> primaryCards;
   final List<_ProfileNarrativeCard> placementCards;
   final List<_ProfileInsightModule> insightModules;
+  final VoidCallback? onOpenPlacementFlow;
   final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
+    final placementPreviewCards = placementCards.take(3).toList();
     final showSummaryPanel =
         isLoading ||
         (error ?? '').trim().isNotEmpty ||
@@ -7362,8 +7876,18 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        if (placementCards.isNotEmpty) ...[
-          _ProfileEditorialFlow(cards: placementCards),
+        if (placementPreviewCards.isNotEmpty) ...[
+          _ProfileEditorialFlow(cards: placementPreviewCards),
+          if (onOpenPlacementFlow != null) ...[
+            const SizedBox(height: 10),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: TextButton(
+                onPressed: onOpenPlacementFlow,
+                child: const Text('Daha fazla aç'),
+              ),
+            ),
+          ],
         ],
         if (insightModules.isNotEmpty) ...[
           const SizedBox(height: 24),
@@ -7515,7 +8039,10 @@ class _ProfileEditorialCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return JoviaSurfaceCard(
+    return _ProfileLilacGlassCard(
+      radius: featured ? 30 : 26,
+      sequence: 2 + _profileAnimationSeed(card.title),
+      strongerGlow: featured,
       padding: EdgeInsets.fromLTRB(
         featured ? 22 : 18,
         featured ? 22 : 18,
@@ -7529,16 +8056,16 @@ class _ProfileEditorialCard extends StatelessWidget {
             Text(
               card.eyebrow.toUpperCase(),
               style: profile.typography.eyebrow.copyWith(
-                color: profile.colors.textLight,
-                letterSpacing: 1.3,
+                color: Colors.white.withValues(alpha: 0.74),
+                letterSpacing: 1.45,
               ),
             ),
             const SizedBox(height: 10),
           ],
           Text(
-            card.title,
+            _displayTitleForCard(card),
             style: profile.typography.card.copyWith(
-              color: profile.colors.text,
+              color: Colors.white,
               fontSize: featured ? 30 : 22,
               height: 1.08,
               fontWeight: FontWeight.w600,
@@ -7550,7 +8077,7 @@ class _ProfileEditorialCard extends StatelessWidget {
             maxLines: featured ? 8 : 5,
             overflow: TextOverflow.ellipsis,
             style: profile.typography.bodyCompact.copyWith(
-              color: profile.colors.text,
+              color: Colors.white.withValues(alpha: 0.86),
               height: 1.45,
             ),
           ),
@@ -7588,9 +8115,53 @@ class _ProfileInsightModuleCard extends StatelessWidget {
       body: module.body,
       micro: '',
       chips: const [],
+      astroSources: const [],
     );
     return _ProfileEditorialCard(card: card);
   }
+}
+
+String _displayTitleForCard(_ProfileNarrativeCard card) {
+  if (card.origin == 'personality_imprint') {
+    return _legacySignalLineForCard(card);
+  }
+  return card.title;
+}
+
+String _signatureEyebrowForCard(_ProfileNarrativeCard card) {
+  final title = card.title.trim();
+  if (RegExp(r'^.+?\s+\d+\.\s*Ev$', caseSensitive: false).hasMatch(title)) {
+    return 'Yerleşim';
+  }
+  if (card.family == 'contradiction_core') {
+    return 'Açı';
+  }
+  if (card.family == 'tone_signature') {
+    return 'Burç tonu';
+  }
+  return 'Öne çıkan tema';
+}
+
+String _legacySignalLineForCard(_ProfileNarrativeCard card) {
+  final title = card.title.trim();
+  if (title.isEmpty) {
+    return title;
+  }
+  final houseMatch = RegExp(
+    r'^(.+?)\s+(\d+)\.\s*Ev$',
+    caseSensitive: false,
+  ).firstMatch(title);
+  if (houseMatch != null) {
+    return '${houseMatch.group(1)} ${houseMatch.group(2)}. evde';
+  }
+  final signMatch = RegExp(
+    r'^(.+?)\s+(Koç|Boğa|İkizler|Yengeç|Aslan|Başak|Terazi|Akrep|Yay|Oğlak|Kova|Balık)$',
+    caseSensitive: false,
+  ).firstMatch(title);
+  if (signMatch != null) {
+    return '${signMatch.group(1)} ${signMatch.group(2)} burcunda';
+  }
+  return title;
 }
 
 class _FloatingTile extends StatelessWidget {

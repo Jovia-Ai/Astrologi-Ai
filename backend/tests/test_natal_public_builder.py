@@ -281,6 +281,7 @@ def test_public_natal_view_editorializes_synthesized_bundle_cards(monkeypatch) -
                     "recognition_tags": ["güven arayışı", "derin temas"],
                     "gift_tags": ["sadakat"],
                     "reflex_tags": ["geri çekilme"],
+                    "astro_sources": ["Ay-Satürn karesi", "Ay 8. ev", "Satürn 4. ev"],
                 }
             ],
             "max_primary_bundles": 3,
@@ -304,11 +305,12 @@ def test_public_natal_view_editorializes_synthesized_bundle_cards(monkeypatch) -
     )
 
     assert synthesized["headline"] == "Yakınlık sende nasıl açılıyor"
+    assert synthesized["astro_sources"] == ["Ay-Satürn karesi", "Ay 8. ev", "Satürn 4. ev"]
     assert "İlk hissedilen çizgi:" not in synthesized["body"]
     assert "Güçlü taraf:" not in synthesized["body"]
     assert "Sıkışınca çalışan refleks:" not in synthesized["body"]
-    assert "İlk bakışta okunan tarafın" in synthesized["body"]
-    assert "Sıkıştığında ise" in synthesized["body"]
+    assert "İnsanların sende ilk fark ettiği şey" in synthesized["body"]
+    assert "Zorlandığında ise" in synthesized["body"]
 
 
 def test_public_natal_view_profile_copy_cleanup_is_deterministic() -> None:

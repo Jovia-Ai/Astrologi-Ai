@@ -39,6 +39,31 @@ LUMINARIES = {"Sun", "Moon"}
 HARD = {"square", "opposition"}
 SOFT = {"trine", "sextile"}
 
+PLANET_LABELS_TR = {
+    "Sun": "Güneş",
+    "Moon": "Ay",
+    "Mercury": "Merkür",
+    "Venus": "Venüs",
+    "Mars": "Mars",
+    "Jupiter": "Jüpiter",
+    "Saturn": "Satürn",
+    "Uranus": "Uranüs",
+    "Neptune": "Neptün",
+    "Pluto": "Plüton",
+    "Ascendant": "Yükselen",
+    "Descendant": "Alçalan",
+    "Midheaven": "Tepe Noktası",
+    "IC": "Dip Noktası",
+}
+
+ASPECT_LABELS_TR = {
+    "conjunction": "kavuşumu",
+    "opposition": "karşıtlığı",
+    "square": "karesi",
+    "trine": "üçgeni",
+    "sextile": "sekstili",
+}
+
 BUNDLE_DOMAINS = {
     "personal_core_bundle": ["identity"],
     "angle_identity_bundle": ["identity", "career_visibility"],
@@ -116,6 +141,49 @@ def _aspect_tightness(aspect: Mapping[str, Any]) -> float:
 
 def _planet_weight(name: str) -> float:
     return PLANET_WEIGHTS.get(name, 0.55)
+
+
+def _planet_label_tr(name: str) -> str:
+    return PLANET_LABELS_TR.get(name, name)
+
+
+def _aspect_label_tr(name: str) -> str:
+    return ASPECT_LABELS_TR.get(name, name)
+
+
+def _astro_sources_tr(
+    aspect: Mapping[str, Any],
+    planets: Mapping[str, Mapping[str, Any]],
+) -> list[str]:
+    p1 = str(aspect.get("planet1") or "")
+    p2 = str(aspect.get("planet2") or "")
+    aspect_name = str(aspect.get("aspect") or "").lower()
+
+    sources: list[str] = []
+    if p1 and p2 and aspect_name:
+        sources.append(f"{_planet_label_tr(p1)}-{_planet_label_tr(p2)} {_aspect_label_tr(aspect_name)}")
+
+    for planet in (p1, p2):
+        placement = planets.get(planet) or {}
+        house = placement.get("house")
+        try:
+            house_num = int(house)
+        except (TypeError, ValueError):
+            house_num = 0
+        if planet and house_num > 0:
+            sources.append(f"{_planet_label_tr(planet)} {house_num}. ev")
+
+    deduped: list[str] = []
+    seen: set[str] = set()
+    for item in sources:
+        key = item.strip().lower()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        deduped.append(item.strip())
+        if len(deduped) >= 3:
+            break
+    return deduped
 
 
 def _bundle_type_for(aspect: Mapping[str, Any]) -> str:
@@ -270,6 +338,7 @@ def _bundle_payload(aspect: Mapping[str, Any], response: Mapping[str, Any], plan
         "gift_tags": list(tags.get("gift") or []),
         "reflex_tags": list(tags.get("reflex") or []),
         "source_planets": [p1, p2],
+        "astro_sources": _astro_sources_tr(aspect, planets),
     }
 
 
@@ -317,4 +386,3 @@ def select_aspect_bundles(response: Mapping[str, Any], *, max_bundles: int = MAX
         "max_primary_bundles": max_bundles,
         "selection_policy": "top_scored_diverse_bundles",
     }
-
