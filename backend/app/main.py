@@ -12,6 +12,7 @@ from app.api.routes.home import router as home_router
 from app.api.routes.sky import router as sky_router
 from app.api.routes.transits import router as transits_router
 from app.core.config import settings
+from app.forum.forum_router import router as forum_router
 from app.core.logging import configure_logging
 from app.routers import charts, chat, health, profile, story, synastry, user
 
@@ -47,6 +48,7 @@ def create_app() -> FastAPI:
     app.include_router(profile.router)
     app.include_router(story.router)
     app.include_router(synastry.router)
+    app.include_router(forum_router)
 
     return app
 

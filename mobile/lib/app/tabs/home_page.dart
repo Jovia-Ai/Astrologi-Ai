@@ -15,6 +15,8 @@ import 'package:mobile/app/tabs/period_detail_page.dart';
 import 'package:mobile/app/tabs/profile_page.dart';
 import 'package:mobile/app/tabs/sky_event_detail_page.dart';
 import 'package:mobile/app/tabs/sky_event_feed_page.dart';
+import 'package:mobile/app/widgets/forum_cta.dart';
+import 'package:mobile/app/widgets/forum_social_preview_strip.dart';
 import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/source_guards.dart';
@@ -169,6 +171,10 @@ class _HomePageState extends ConsumerState<HomePage> {
                     title: 'Senin planların',
                     subtitle: 'Bu hafta akışın ve kolektif nabız yan yana.',
                   ),
+                  const SizedBox(height: 14),
+                  const ForumCTA(),
+                  const SizedBox(height: 14),
+                  const SocialPreviewStrip(),
                   const SizedBox(height: 14),
                   _HomeReferencePlanBoard(
                     activeCard: activeCard,
@@ -1251,6 +1257,16 @@ class _HomeReferenceHeroCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surfaceGradient = <Color>[
+      Color.alphaBlend(
+        profile.colors.lavender.withValues(alpha: isDark ? 0.14 : 0.18),
+        profile.colors.panelStrong,
+      ),
+      Color.alphaBlend(
+        Colors.white.withValues(alpha: isDark ? 0.02 : 0.42),
+        profile.colors.panelSoft,
+      ),
+    ];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -1267,129 +1283,148 @@ class _HomeReferenceHeroCard extends StatelessWidget {
             ),
           );
         },
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+        child: DecoratedBox(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(34),
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: isDark
-                  ? const <Color>[
-                      Color(0xFF201A2E),
-                      Color(0xFF171520),
-                      Color(0xFF121017),
-                    ]
-                  : const <Color>[
-                      Color(0xFFB698FF),
-                      Color(0xFFD6C7FF),
-                      Color(0xFFF8F3FF),
-                    ],
+              colors: surfaceGradient,
             ),
-            border: Border.all(
-              color: isDark
-                  ? Colors.white.withValues(alpha: 0.08)
-                  : Colors.white.withValues(alpha: 0.54),
-            ),
+            border: Border.all(color: profile.colors.strokeSoft),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFFA78BFA).withValues(alpha: 0.22),
-                blurRadius: 28,
-                offset: const Offset(0, 18),
-                spreadRadius: -18,
+                color: profile.colors.lavender.withValues(
+                  alpha: isDark ? 0.14 : 0.18,
+                ),
+                blurRadius: 34,
+                offset: const Offset(0, 20),
+                spreadRadius: -20,
               ),
             ],
           ),
-          child: Stack(
-            children: [
-              Positioned(
-                right: -18,
-                top: -8,
-                child: JoviaIllustrationAccent(
-                  asset: JoviaIllustrationAsset.planet,
-                  width: 138,
-                  height: 138,
-                  opacity: isDark ? 0.92 : 0.98,
+          child: JoviaSurfaceCard(
+            radius: 34,
+            color: Colors.transparent,
+            padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+            child: Stack(
+              children: [
+                Positioned(
+                  right: -10,
+                  top: -12,
+                  child: JoviaIllustrationAccent(
+                    asset: JoviaIllustrationAsset.planet,
+                    width: 124,
+                    height: 124,
+                    opacity: isDark ? 0.88 : 0.92,
+                  ),
                 ),
-              ),
-              Positioned(
-                left: -22,
-                bottom: 78,
-                child: JoviaIllustrationAccent(
-                  asset: JoviaIllustrationAsset.shape,
-                  width: 72,
-                  height: 72,
-                  opacity: isDark ? 0.16 : 0.12,
+                Positioned(
+                  left: -14,
+                  bottom: 74,
+                  child: JoviaIllustrationAccent(
+                    asset: JoviaIllustrationAsset.shape,
+                    width: 68,
+                    height: 68,
+                    opacity: isDark ? 0.14 : 0.1,
+                  ),
                 ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Günün teması',
-                    style: profile.typography.bodyCompact.copyWith(
-                      color: isDark
-                          ? Colors.white.withValues(alpha: 0.72)
-                          : const Color(0xFF3E315E),
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 240),
-                    child: Text(
-                      title,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: profile.typography.editorialHeadline.copyWith(
-                        color: isDark ? Colors.white : const Color(0xFF161122),
-                        fontSize: 34,
-                        height: 1.02,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 232),
-                    child: Text(
-                      body,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                      style: profile.typography.bodyReading.copyWith(
-                        color: isDark
-                            ? Colors.white.withValues(alpha: 0.82)
-                            : const Color(0xFF3F3355),
-                        fontSize: 14.8,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          prompt,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: profile.typography.bodyCompact.copyWith(
-                            color: isDark
-                                ? Colors.white.withValues(alpha: 0.76)
-                                : const Color(0xFF5A4E75),
-                          ),
+                Positioned(
+                  right: 42,
+                  bottom: 110,
+                  child: IgnorePointer(
+                    child: Container(
+                      width: 72,
+                      height: 72,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: profile.colors.warmAccent.withValues(
+                          alpha: isDark ? 0.06 : 0.08,
                         ),
                       ),
-                      const SizedBox(width: 12),
-                      _HomeHeroButton(onTap: onOpen),
-                    ],
+                    ),
                   ),
-                  const SizedBox(height: 16),
-                  footer,
-                  const SizedBox(height: 18),
-                  _HomeWeekStrip(items: weekItems, fallbackTap: onOpen),
-                ],
-              ),
-            ],
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Günün teması',
+                      style: profile.typography.monoEyebrow.copyWith(
+                        color: profile.colors.textLight,
+                        fontSize: 10.8,
+                        letterSpacing: 1.6,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 240),
+                      child: Text(
+                        title,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: profile.typography.editorialHeadline.copyWith(
+                          color: profile.colors.text,
+                          fontSize: 30,
+                          height: 1.04,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 236),
+                      child: Text(
+                        body,
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: profile.typography.bodyCompact.copyWith(
+                          color: profile.colors.textLight,
+                          fontSize: 14,
+                          height: 1.48,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(22),
+                        color: isDark
+                            ? Colors.white.withValues(alpha: 0.04)
+                            : Colors.white.withValues(alpha: 0.5),
+                        border: Border.all(
+                          color: profile.colors.strokeSoft,
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              prompt,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: profile.typography.bodyCompact.copyWith(
+                                color: profile.colors.textLight,
+                                fontSize: 13.6,
+                                height: 1.4,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          _HomeHeroButton(onTap: onOpen),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                    footer,
+                    const SizedBox(height: 18),
+                    _HomeWeekStrip(items: weekItems, fallbackTap: onOpen),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -1404,21 +1439,43 @@ class _HomeHeroButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Material(
-      color: isDark ? Colors.white : const Color(0xFF15131A),
-      borderRadius: BorderRadius.circular(18),
+      color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(999),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          child: Text(
-            'Aç',
-            style: context.profileTheme.typography.buttonLabel.copyWith(
-              color: isDark ? const Color(0xFF17131E) : Colors.white,
-              fontWeight: FontWeight.w700,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(999),
+            color: isDark
+                ? Colors.white.withValues(alpha: 0.92)
+                : const Color(0xFF17131E),
+            border: Border.all(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.1)
+                  : Colors.black.withValues(alpha: 0.08),
             ),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Aç',
+                style: profile.typography.buttonLabel.copyWith(
+                  color: isDark ? const Color(0xFF17131E) : Colors.white,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Icon(
+                Icons.arrow_outward_rounded,
+                size: 14,
+                color: isDark ? const Color(0xFF17131E) : Colors.white,
+              ),
+            ],
           ),
         ),
       ),
@@ -1460,32 +1517,35 @@ class _HomeWeekDayChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final profile = context.profileTheme;
     final child = AnimatedContainer(
       duration: const Duration(milliseconds: 240),
       curve: Curves.easeOutCubic,
-      width: 52,
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      width: 54,
+      padding: const EdgeInsets.symmetric(vertical: 9),
       decoration: BoxDecoration(
         color: item.isToday
-            ? (isDark ? Colors.white : const Color(0xFF16131D))
+            ? (isDark
+                  ? Colors.white.withValues(alpha: 0.96)
+                  : const Color(0xFF17131E))
             : (isDark
-                  ? Colors.white.withValues(alpha: 0.08)
-                  : Colors.white.withValues(alpha: 0.72)),
+                  ? Colors.white.withValues(alpha: 0.05)
+                  : Colors.white.withValues(alpha: 0.58)),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: item.isToday
-              ? item.accent.withValues(alpha: 0.68)
+              ? item.accent.withValues(alpha: 0.52)
               : (isDark
-                    ? Colors.white.withValues(alpha: 0.08)
-                    : Colors.black.withValues(alpha: 0.06)),
+                    ? profile.colors.strokeSoft
+                    : Colors.black.withValues(alpha: 0.05)),
         ),
         boxShadow: item.isToday
             ? [
                 BoxShadow(
-                  color: item.accent.withValues(alpha: 0.28),
-                  blurRadius: 18,
-                  offset: const Offset(0, 10),
-                  spreadRadius: -10,
+                  color: item.accent.withValues(alpha: 0.24),
+                  blurRadius: 20,
+                  offset: const Offset(0, 12),
+                  spreadRadius: -12,
                 ),
               ]
             : null,
@@ -1499,7 +1559,7 @@ class _HomeWeekDayChip extends StatelessWidget {
                   ? (isDark ? const Color(0xFF16131D) : Colors.white)
                   : (isDark
                         ? Colors.white.withValues(alpha: 0.76)
-                        : const Color(0xFF6B6480)),
+                        : const Color(0xFF746C87)),
               fontWeight: FontWeight.w600,
             ),
           ),
