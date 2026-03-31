@@ -47,9 +47,11 @@ class _HomePageState extends ConsumerState<HomePage> {
   String _moonSign = '—';
   String _risingSign = '—';
   List<PeriodCardDto> _periodCards = const <PeriodCardDto>[];
+  List<EventCardDto> _todayDailyCards = const <EventCardDto>[];
   List<_SkyFeedItemData> _skyFeedItems = const <_SkyFeedItemData>[];
   String _skyFeedSummary = '';
   PeriodCoreDto? _periodCore;
+  NarrativeCalendarDay? _todayDayMeta;
   String? _lastKey;
   int _selectedWeekIndex = 0;
   final NarrativeRepository _narrativeRepository = NarrativeRepository();
@@ -90,13 +92,16 @@ class _HomePageState extends ConsumerState<HomePage> {
               ? _skyFeedItems.first
               : null;
           final displayName = _displayName(profile, user);
-          final heroBody = _coreStory.trim().isNotEmpty
+          final defaultHeroBody = _coreStory.trim().isNotEmpty
               ? _coreStory.trim()
               : (_loading
                     ? 'Bugunun hikayesi yukleniyor...'
                     : 'Bugun icin kisa yorum henuz hazir degil.');
           final activeCard = _periodCards.isNotEmpty
               ? _periodCards.first
+              : null;
+          final todayDailyCard = _todayDailyCards.isNotEmpty
+              ? _todayDailyCards.first
               : null;
           final fallbackTitle = activeCard?.title.trim().isNotEmpty == true
               ? activeCard?.title ?? 'Bugunun acilisi'
@@ -109,9 +114,6 @@ class _HomePageState extends ConsumerState<HomePage> {
               ? _periodCards[1]
               : activeCard;
           final periodBigPicture = _periodCore?.bigPicture.trim() ?? '';
-          final lineText = periodBigPicture.isNotEmpty
-              ? periodBigPicture
-              : heroBody;
           final avatarUrl = (user?.userMetadata?['avatar_url'] ?? '')
               .toString()
               .trim();
@@ -123,18 +125,40 @@ class _HomePageState extends ConsumerState<HomePage> {
               ? null
               : weekItems[_selectedWeekIndex.clamp(0, weekItems.length - 1)];
           final selectedCard = selectedWeekItem?.card;
-          final activeTitle = _resolveHomeHeroTitle(
-            selectedCard: selectedCard,
-            fallbackTitle: fallbackTitle,
-          );
-          final activeSubtitle = _resolveHomeHeroPrompt(
-            selectedCard: selectedCard,
-            fallbackPrompt: fallbackPrompt,
-          );
-          final selectedHeroBody = _resolveHomeHeroBody(
-            selectedCard: selectedCard,
-            fallbackBody: heroBody,
-          );
+          final useTodayNarrative =
+              selectedWeekItem == null ||
+              selectedWeekItem.isToday ||
+              selectedCard == null;
+          final activeTitle = useTodayNarrative
+              ? _resolveHomeDailyHeroTitle(
+                  card: todayDailyCard,
+                  dayMeta: _todayDayMeta,
+                  fallbackTitle: fallbackTitle,
+                )
+              : _resolveHomeHeroTitle(
+                  selectedCard: selectedCard,
+                  fallbackTitle: fallbackTitle,
+                );
+          final activeSubtitle = useTodayNarrative
+              ? _resolveHomeDailyHeroPrompt(
+                  card: todayDailyCard,
+                  dayMeta: _todayDayMeta,
+                  fallbackPrompt: fallbackPrompt,
+                )
+              : _resolveHomeHeroPrompt(
+                  selectedCard: selectedCard,
+                  fallbackPrompt: fallbackPrompt,
+                );
+          final selectedHeroBody = useTodayNarrative
+              ? _resolveHomeDailyHeroBody(
+                  card: todayDailyCard,
+                  dayMeta: _todayDayMeta,
+                  fallbackBody: defaultHeroBody,
+                )
+              : _resolveHomeHeroBody(
+                  selectedCard: selectedCard,
+                  fallbackBody: defaultHeroBody,
+                );
           final showTimingPanel = _shouldShowTimingPanel(
             periodCore: _periodCore,
             heroBody: selectedHeroBody,
@@ -210,7 +234,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                     dailyCards: dailyCards,
                     bulletin: skyBulletin,
                     skyItem: skyHeroItem,
-                    lineText: lineText,
+                    lineText: periodBigPicture.isNotEmpty
+                        ? periodBigPicture
+                        : selectedHeroBody,
                     loading: _loading && dailyCards.isEmpty,
                     onOpenActive: activeCard == null
                         ? () => _openTiming(context)
@@ -391,6 +417,67 @@ class _HomePageState extends ConsumerState<HomePage> {
     return fallbackPrompt;
   }
 
+  String _resolveHomeDailyHeroTitle({
+    required EventCardDto? card,
+    required NarrativeCalendarDay? dayMeta,
+    required String fallbackTitle,
+  }) {
+    final feltLine = card?.feltLineTr.trim() ?? '';
+    if (feltLine.isNotEmpty) {
+      return feltLine;
+    }
+    final microSummary = dayMeta?.microSummaryTr.trim() ?? '';
+    if (microSummary.isNotEmpty) {
+      return microSummary;
+    }
+    final headline = card?.headline.trim() ?? '';
+    if (headline.isNotEmpty) {
+      return headline;
+    }
+    return fallbackTitle;
+  }
+
+  String _resolveHomeDailyHeroBody({
+    required EventCardDto? card,
+    required NarrativeCalendarDay? dayMeta,
+    required String fallbackBody,
+  }) {
+    final whyLine = card?.whyItFeelsThisWayTr.trim() ?? '';
+    final guidanceLine = card?.guidanceMicroTr.trim() ?? '';
+    final body = [
+      whyLine,
+      guidanceLine,
+    ].where((line) => line.isNotEmpty).join('\n');
+    if (body.isNotEmpty) {
+      return body;
+    }
+    final microSummary = dayMeta?.microSummaryTr.trim() ?? '';
+    if (microSummary.isNotEmpty) {
+      return microSummary;
+    }
+    return fallbackBody;
+  }
+
+  String _resolveHomeDailyHeroPrompt({
+    required EventCardDto? card,
+    required NarrativeCalendarDay? dayMeta,
+    required String fallbackPrompt,
+  }) {
+    final signalLabel = card?.signalLabelTr.trim() ?? '';
+    if (signalLabel.isNotEmpty) {
+      return signalLabel;
+    }
+    final houseHint = card?.houseTouchpointHintTr.trim() ?? '';
+    if (houseHint.isNotEmpty) {
+      return houseHint;
+    }
+    final daySignal = dayMeta?.signalLabelTr.trim() ?? '';
+    if (daySignal.isNotEmpty) {
+      return daySignal;
+    }
+    return fallbackPrompt;
+  }
+
   Widget _buildTransitCarousel(BuildContext context) {
     final profileTheme = context.profileTheme;
     final typo = profileTheme.typography;
@@ -494,6 +581,15 @@ class _HomePageState extends ConsumerState<HomePage> {
       final skyMap = _asMap((responses[1] as Response<dynamic>).data);
       final periodMap = TransitRequestBuilder.asMap(responses[2]);
       final periodNarrative = NarrativeResponse.fromMap(periodMap);
+      final todayKey = TransitRequestBuilder.fmtDate(
+        TransitRequestBuilder.stripDate(DateTime.now()),
+      );
+      final dailyCards = periodNarrative.dailyEventCards.isNotEmpty
+          ? periodNarrative.dailyEventCards
+          : pickDailyEventCards(
+              periodNarrative.eventCards,
+              context: 'Home/Gunun Karti',
+            );
       final periodEvents = pickPeriodEventCards(
         periodNarrative.eventCards,
         context: 'Home/Donem Kartlari',
@@ -519,6 +615,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         _risingSign = rising;
         _periodCore = periodNarrative.periodCore;
         _periodCards = periodCards;
+        _todayDailyCards = dailyCards;
+        _todayDayMeta = periodNarrative.calendarDays[todayKey];
         _skyFeedSummary = _extractSkySummary(skyMap);
         _skyFeedItems = _extractSkyFeedItems(skyMap);
         _loading = false;
@@ -562,6 +660,15 @@ class _HomePageState extends ConsumerState<HomePage> {
       final skyMap = _asMap((responses[1] as Response<dynamic>).data);
       final periodMap = TransitRequestBuilder.asMap(responses[2]);
       final periodNarrative = NarrativeResponse.fromMap(periodMap);
+      final todayKey = TransitRequestBuilder.fmtDate(
+        TransitRequestBuilder.stripDate(DateTime.now()),
+      );
+      final dailyCards = periodNarrative.dailyEventCards.isNotEmpty
+          ? periodNarrative.dailyEventCards
+          : pickDailyEventCards(
+              periodNarrative.eventCards,
+              context: 'Home/Gunun Karti/Fallback',
+            );
       final periodEvents = pickPeriodEventCards(
         periodNarrative.eventCards,
         context: 'Home/Donem Kartlari/Fallback',
@@ -582,6 +689,8 @@ class _HomePageState extends ConsumerState<HomePage> {
         _risingSign = _toTrSign(_extractRisingSign(interpretMap));
         _periodCore = periodNarrative.periodCore;
         _periodCards = periodCards;
+        _todayDailyCards = dailyCards;
+        _todayDayMeta = periodNarrative.calendarDays[todayKey];
         _skyFeedSummary = _extractSkySummary(skyMap);
         _skyFeedItems = _extractSkyFeedItems(skyMap);
         _loading = false;
@@ -1367,18 +1476,18 @@ class _HomeReferenceHeroCard extends StatelessWidget {
     );
     final titleStyle = profile.typography.editorialHeadline.copyWith(
       color: profile.colors.text,
-      fontSize: 30,
-      height: 1.04,
+      fontSize: 25,
+      height: 1.08,
     );
     final bodyStyle = profile.typography.bodyCompact.copyWith(
       color: profile.colors.textLight,
-      fontSize: 14,
-      height: 1.48,
+      fontSize: 13,
+      height: 1.42,
     );
     final promptStyle = profile.typography.bodyCompact.copyWith(
       color: profile.colors.textLight,
-      fontSize: 13.6,
-      height: 1.4,
+      fontSize: 13,
+      height: 1.34,
     );
     final surfaceGradient = <Color>[
       Color.alphaBlend(
@@ -1430,123 +1539,77 @@ class _HomeReferenceHeroCard extends StatelessWidget {
             radius: 34,
             color: Colors.transparent,
             padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
-            child: Stack(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Positioned(
-                  right: -10,
-                  top: -12,
-                  child: JoviaIllustrationAccent(
-                    asset: JoviaIllustrationAsset.planet,
-                    width: 124,
-                    height: 124,
-                    opacity: isDark ? 0.88 : 0.92,
+                SizedBox(
+                  height: _homeHeroSlotHeight(labelStyle, 1),
+                  child: _HomeHeroAnimatedText(
+                    text: 'Günün teması',
+                    textStyle: labelStyle,
+                    maxLines: 1,
+                    delay: Duration.zero,
                   ),
                 ),
-                Positioned(
-                  left: -14,
-                  bottom: 74,
-                  child: JoviaIllustrationAccent(
-                    asset: JoviaIllustrationAsset.shape,
-                    width: 68,
-                    height: 68,
-                    opacity: isDark ? 0.14 : 0.1,
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: _homeHeroSlotHeight(titleStyle, 3),
+                  child: _HomeHeroAnimatedText(
+                    text: title,
+                    textStyle: titleStyle,
+                    maxLines: 3,
+                    delay: const Duration(milliseconds: 34),
                   ),
                 ),
-                Positioned(
-                  right: 42,
-                  bottom: 110,
-                  child: IgnorePointer(
-                    child: Container(
-                      width: 72,
-                      height: 72,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: profile.colors.warmAccent.withValues(
-                          alpha: isDark ? 0.06 : 0.08,
-                        ),
-                      ),
-                    ),
+                const SizedBox(height: 10),
+                SizedBox(
+                  height: _homeHeroSlotHeight(bodyStyle, 4),
+                  child: _HomeHeroAnimatedText(
+                    text: body,
+                    textStyle: bodyStyle,
+                    maxLines: 4,
+                    delay: const Duration(milliseconds: 68),
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: _homeHeroSlotHeight(labelStyle, 1),
-                      child: _HomeHeroAnimatedText(
-                        text: 'Günün teması',
-                        textStyle: labelStyle,
-                        maxLines: 1,
-                        delay: Duration.zero,
-                      ),
+                const SizedBox(height: 14),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(22),
+                    color: isDark
+                        ? Colors.white.withValues(alpha: 0.04)
+                        : Colors.white.withValues(alpha: 0.5),
+                    border: Border.all(
+                      color: profile.colors.strokeSoft,
+                      width: 1,
                     ),
-                    const SizedBox(height: 10),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 240),
-                      child: SizedBox(
-                        height: _homeHeroSlotHeight(titleStyle, 2),
-                        child: _HomeHeroAnimatedText(
-                          text: title,
-                          textStyle: titleStyle,
-                          maxLines: 2,
-                          delay: const Duration(milliseconds: 34),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 236),
-                      child: SizedBox(
-                        height: _homeHeroSlotHeight(bodyStyle, 3),
-                        child: _HomeHeroAnimatedText(
-                          text: body,
-                          textStyle: bodyStyle,
-                          maxLines: 3,
-                          delay: const Duration(milliseconds: 68),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(22),
-                        color: isDark
-                            ? Colors.white.withValues(alpha: 0.04)
-                            : Colors.white.withValues(alpha: 0.5),
-                        border: Border.all(
-                          color: profile.colors.strokeSoft,
-                          width: 1,
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: SizedBox(
-                              height: _homeHeroSlotHeight(promptStyle, 2),
-                              child: _HomeHeroAnimatedText(
-                                text: prompt,
-                                textStyle: promptStyle,
-                                maxLines: 2,
-                                delay: const Duration(milliseconds: 92),
-                              ),
-                            ),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: SizedBox(
+                          height: _homeHeroSlotHeight(promptStyle, 2),
+                          child: _HomeHeroAnimatedText(
+                            text: prompt,
+                            textStyle: promptStyle,
+                            maxLines: 2,
+                            delay: const Duration(milliseconds: 92),
                           ),
-                          const SizedBox(width: 12),
-                          _HomeHeroButton(onTap: onOpen),
-                        ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 14),
-                    footer,
-                    const SizedBox(height: 18),
-                    _HomeWeekStrip(
-                      items: weekItems,
-                      onSelectItem: onSelectDay,
-                      onOpenSelected: onOpen,
-                    ),
-                  ],
+                      const SizedBox(width: 12),
+                      _HomeHeroButton(onTap: onOpen),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 14),
+                footer,
+                const SizedBox(height: 18),
+                _HomeWeekStrip(
+                  items: weekItems,
+                  onSelectItem: onSelectDay,
+                  onOpenSelected: onOpen,
                 ),
               ],
             ),

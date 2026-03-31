@@ -1,0 +1,155 @@
+{
+  "component_weights": {
+    "orb_weight_max": 0.28,
+    "exactness_max": 0.18,
+    "natal_resonance_max": 0.14,
+    "angle_activation_max": 0.12,
+    "peak_day_boost_max": 0.10
+  },
+  "planet_speed_weights": {
+    "moon": 0.18,
+    "sun": 0.14,
+    "mercury": 0.14,
+    "mars": 0.14,
+    "venus": 0.10,
+    "jupiter": 0.06,
+    "saturn": 0.04,
+    "uranus": 0.04,
+    "neptune": 0.04,
+    "pluto": 0.04
+  },
+  "aspect_weights": {
+    "square": 0.16,
+    "opposition": 0.16,
+    "conjunction": 0.14,
+    "quincunx": 0.10,
+    "trine": 0.11,
+    "sextile": 0.09,
+    "default": 0.07
+  },
+  "phase_weights": {
+    "exact": 0.18,
+    "exactish": 0.16,
+    "applying": 0.10,
+    "separating": 0.04,
+    "default": 0.0
+  },
+  "date_proximity_weights": {
+    "exact_day": 0.10,
+    "one_day": 0.06,
+    "two_days": 0.03
+  },
+  "thresholds": {
+    "high_score_candidate_min": 0.58,
+    "meaningful_event_min": 0.42,
+    "eligible_strength_min": 0.18,
+    "eligible_today_min": 0.12,
+    "eligible_narrative_min": 0.12,
+    "humanizer_confidence_min": 0.35
+  },
+  "limits": {
+    "max_daily_cards": 2,
+    "max_period_cards": 3,
+    "orb_max_deg": 6.0
+  },
+  "lunation_boosts": {
+    "lunation_trigger": 0.16,
+    "eclipse_trigger": 0.24,
+    "new_moon": 0.22,
+    "full_moon": 0.22
+  },
+  "angle_activation": {
+    "angle_points": ["ASC", "DSC", "MC", "IC"],
+    "angular_houses": [1, 4, 7, 10]
+  },
+  "candidate_rules": {
+    "short_window_buckets": ["short"],
+    "exact_phases": ["exact", "exactish", "applying"],
+    "near_exact_max_days": 2,
+    "selected_day_top_event_boost": 0.10,
+    "explicit_lunation_priority": true,
+    "explicit_lunation_window_days": 2
+  },
+  "score_mix": {
+    "strength": 0.45,
+    "today": 0.35,
+    "narrative": 0.20
+  },
+  "strength_weights": {
+    "event_family_weight_max": 0.14,
+    "luminary_priority": {
+      "moon": 0.04,
+      "sun": 0.03
+    },
+    "event_family_weights": {
+      "lunation_trigger": 1.0,
+      "eclipse_trigger": 1.0,
+      "station_event": 0.85,
+      "house_ingress_event": 0.72,
+      "retro_shift": 0.78,
+      "direction_change": 0.78,
+      "peak_family": 0.62
+    }
+  },
+  "today_weights": {
+    "selected_date_proximity_max": 0.14,
+    "calendar_salience_max": 0.12,
+    "surfaceability_max": 0.09,
+    "peak_shift_max": 0.10
+  },
+  "narrative_weights": {
+    "house_clarity_max": 0.25,
+    "planet_feel_clarity_max": 0.18,
+    "aspect_readability_max": 0.16,
+    "humanizer_confidence_max": 0.23,
+    "guidance_value_max": 0.18,
+    "house_anchor_penalty": 0.12
+  },
+  "narrative_clarity": {
+    "house_weights": {
+      "1": 0.84,
+      "2": 0.82,
+      "3": 1.0,
+      "4": 0.96,
+      "5": 0.84,
+      "6": 0.90,
+      "7": 1.0,
+      "8": 0.86,
+      "9": 0.74,
+      "10": 1.0,
+      "11": 0.72,
+      "12": 0.62
+    },
+    "planet_translation": {
+      "moon": 1.0,
+      "mercury": 1.0,
+      "venus": 0.95,
+      "mars": 0.95,
+      "sun": 0.88,
+      "saturn": 0.78,
+      "jupiter": 0.72,
+      "uranus": 0.72,
+      "neptune": 0.68,
+      "pluto": 0.72,
+      "default": 0.60
+    },
+    "aspect_readability": {
+      "friction": 0.96,
+      "polarity": 1.0,
+      "concentration": 0.90,
+      "flow": 0.82,
+      "opening": 0.78,
+      "mixed": 0.60
+    }
+  },
+  "penalties": {
+    "same_house_penalty": 0.08,
+    "same_aspect_mode_penalty": 0.06,
+    "same_tone_penalty": 0.04,
+    "redundancy_penalty": 0.07
+  },
+  "balance": {
+    "prefer_non_shadow_bonus": 0.05,
+    "all_shadow_penalty": 0.03
+  }
+}

@@ -4754,7 +4754,6 @@ class _ProfilePosterLeadSection extends StatelessWidget {
         final portraitHeight = compact ? 156.0 : 182.0;
         final portraitRadius = compact ? 30.0 : 34.0;
         final crystalInset = compact ? 92.0 : 134.0;
-        final ctaTop = portraitHeight + (compact ? 66.0 : 78.0);
 
         TextStyle monoStyle({
           required Color color,
@@ -4832,29 +4831,6 @@ class _ProfilePosterLeadSection extends StatelessWidget {
                   width: compact ? 104 : 124,
                   height: compact ? 78 : 94,
                   opacity: 0.9,
-                ),
-              ),
-              Positioned(
-                right: compact ? 4 : 10,
-                top: ctaTop,
-                child: InkWell(
-                  onTap: onTap,
-                  borderRadius: BorderRadius.circular(999),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 2,
-                    ),
-                    child: Text(
-                      'TAM OKUMAYI AÇ',
-                      style: profile.typography.monoEyebrow.copyWith(
-                        color: Colors.white,
-                        fontSize: compact ? 10.8 : 11.8,
-                        fontWeight: FontWeight.w700,
-                        letterSpacing: compact ? 1.24 : 1.48,
-                      ),
-                    ),
-                  ),
                 ),
               ),
               Padding(
@@ -4940,6 +4916,12 @@ class _ProfilePosterLeadSection extends StatelessWidget {
                         ),
                       ),
                     ],
+                    const SizedBox(height: 24),
+                    _ProfilePosterInlineCta(
+                      compact: compact,
+                      label: 'Tam okumayi ac',
+                      onTap: onTap,
+                    ),
                   ],
                 ),
               ),
@@ -4947,6 +4929,61 @@ class _ProfilePosterLeadSection extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class _ProfilePosterInlineCta extends StatelessWidget {
+  const _ProfilePosterInlineCta({
+    required this.compact,
+    required this.label,
+    required this.onTap,
+  });
+
+  final bool compact;
+  final String label;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(999),
+        child: Container(
+          padding: EdgeInsets.symmetric(
+            horizontal: compact ? 14 : 16,
+            vertical: compact ? 10 : 11,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(999),
+            color: Colors.white.withValues(alpha: 0.08),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                label.toUpperCase(),
+                style: profile.typography.monoEyebrow.copyWith(
+                  color: Colors.white,
+                  fontSize: compact ? 10.6 : 11.2,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: compact ? 1.18 : 1.38,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Icon(
+                Icons.arrow_outward_rounded,
+                size: 14,
+                color: Colors.white,
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

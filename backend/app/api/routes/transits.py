@@ -4,6 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 import copy
 import hashlib
+import inspect
 import os
 from datetime import date as date_type, time as time_type
 from typing import Annotated, Any, Dict, List, Mapping, Optional, Tuple, Literal
@@ -43,6 +44,8 @@ from app.transit.narrative import (
     build_space_hub,
 )
 from app.transit.narrative.coverage import build_period_coverage
+from app.transit.narrative.daily_humanizer_tr import humanize_event_card_tr, summarize_daily_micro_copy
+from app.transit.narrative.daily_selection import select_daily_and_period_event_cards as build_daily_event_buckets
 from app.transit.narrative.selection import select_event_ids
 from app.transit.narrative.generator import make_birth_fingerprint
 from app.transit.observability import (
@@ -87,6 +90,114 @@ def _safe_range_days(start: str, end: str) -> int | None:
         return (date_type.fromisoformat(end) - date_type.fromisoformat(start)).days + 1
     except ValueError:
         return None
+
+
+def _human_day_signal_label(
+    *,
+    signals_count: int,
+    heat: int,
+    event_count: int,
+    is_critical: bool,
+) -> str:
+    if is_critical:
+        return "Hassas gün."
+    if heat >= 3 or signals_count >= 4:
+        return "Yüksek tempo."
+    if signals_count >= 3:
+        return "Bugün yoğun."
+    if signals_count == 2:
+        return "Bugün iki şey belirgin."
+    if signals_count == 1:
+        return "Tek bir şey öne çıkıyor."
+    if heat >= 2 and event_count == 0:
+        return "Bugün biraz karışık."
+    return "Bugün sakin."
+
+
+def _human_day_tone_label(
+    *,
+    signals_count: int,
+    heat: int,
+    is_critical: bool,
+) -> str:
+    if is_critical:
+        return "ince"
+    if heat >= 3 or signals_count >= 4:
+        return "yuksek_tempo"
+    if signals_count >= 3:
+        return "yogun"
+    if signals_count >= 1:
+        return "hareketli"
+    return "sakin"
+
+
+def _humanize_event_card(card: Mapping[str, Any]) -> Dict[str, Any]:
+    return humanize_event_card_tr(card)
+
+
+def _selected_day_context_from_calendar(
+    calendar_public: Mapping[str, Any] | None,
+    selected_date: str | None,
+) -> Dict[str, Any]:
+    if not isinstance(calendar_public, Mapping):
+        return {}
+    target_date = str(selected_date or "").strip()
+    days = calendar_public.get("days") if isinstance(calendar_public.get("days"), list) else []
+    for day in days:
+        if not isinstance(day, Mapping):
+            continue
+        if target_date and str(day.get("date") or "").strip() != target_date:
+            continue
+        top_events = day.get("top_events") if isinstance(day.get("top_events"), list) else []
+        labels = [str(label).strip() for label in (day.get("labels") or []) if str(label).strip()]
+        return {
+            "date": str(day.get("date") or "").strip(),
+            "top_event_ids": [str(item.get("id") or "").strip() for item in top_events if isinstance(item, Mapping)],
+            "labels": labels,
+            "critical_reasons": [
+                str(reason).strip()
+                for reason in (day.get("critical_reason") or day.get("critical_reasons") or [])
+                if str(reason).strip()
+            ],
+            "signals_count": max(
+                int(day.get("event_count") or len(top_events) or 0),
+                len(labels),
+                len(top_events),
+            ),
+            "event_count": int(day.get("event_count") or len(top_events) or 0),
+            "is_critical": bool(day.get("is_critical")),
+        }
+    return {}
+
+
+def _event_v2_index(response: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
+    payload = response.get("event_engine_v2") if isinstance(response.get("event_engine_v2"), Mapping) else {}
+    events_by_id = payload.get("events_by_id") if isinstance(payload.get("events_by_id"), Mapping) else {}
+    out: Dict[str, Dict[str, Any]] = {}
+    for event_id, raw in events_by_id.items():
+        if not str(event_id).strip() or not isinstance(raw, Mapping):
+            continue
+        out[str(event_id)] = dict(raw)
+    return out
+
+
+def _select_daily_and_period_event_cards(
+    *,
+    raw_events: List[Mapping[str, Any]],
+    event_cards: List[Mapping[str, Any]],
+    selected_date: str,
+    selected_day_context: Mapping[str, Any] | None = None,
+    natal: Mapping[str, Any] | None = None,
+    event_v2_by_id: Mapping[str, Mapping[str, Any]] | None = None,
+) -> Dict[str, Any]:
+    return build_daily_event_buckets(
+        raw_events=raw_events,
+        event_cards=event_cards,
+        selected_date=selected_date,
+        selected_day_context=selected_day_context,
+        natal=natal,
+        event_v2_by_id=event_v2_by_id,
+    )
 
 
 def _finalize_route_response(
@@ -1298,7 +1409,12 @@ class SolarYearFrameRequest(BaseModel):
     transit_place: str
 
 
-def _build_narrative_public_payload(request: TransitNarrativeRequest, start_date: date_type) -> Dict[str, Any]:
+def _build_narrative_public_payload(
+    request: TransitNarrativeRequest,
+    start_date: date_type,
+    *,
+    selected_day_context: Mapping[str, Any] | None = None,
+) -> Dict[str, Any]:
     transit_date = request.selected_date or start_date.isoformat()
     core_request = TransitRequest(
         birth_date=request.birth_date,
@@ -1333,11 +1449,37 @@ def _build_narrative_public_payload(request: TransitNarrativeRequest, start_date
         now_date=transit_date,
         tz=request.tz,
     )
+    event_v2_by_id = _event_v2_index(core_response)
+    event_cards = [
+        _humanize_event_card(card)
+        for card in (public_payload.get("event_cards") or [])
+        if isinstance(card, Mapping)
+    ]
+    selected_buckets = _select_daily_and_period_event_cards(
+        raw_events=[item for item in items_unscored if isinstance(item, Mapping)],
+        event_cards=event_cards,
+        selected_date=transit_date,
+        selected_day_context=selected_day_context,
+        natal=core_response.get("natal") if isinstance(core_response.get("natal"), Mapping) else None,
+        event_v2_by_id=event_v2_by_id,
+    )
+    period_peak_timeline = []
+    for item in (public_payload.get("period_peak_timeline") or []):
+        if not isinstance(item, Mapping):
+            continue
+        timeline_item = dict(item)
+        event_card = timeline_item.get("event_card")
+        if isinstance(event_card, Mapping):
+            timeline_item["event_card"] = _humanize_event_card(event_card)
+        period_peak_timeline.append(timeline_item)
     include_public_coverage = str(os.getenv("PERIOD_COVERAGE_PUBLIC", "0")).strip().lower() in {"1", "true", "yes", "on"}
     return {
         "period_core": period_core,
-        "event_cards": public_payload.get("event_cards") or [],
-        "period_peak_timeline": public_payload.get("period_peak_timeline") or [],
+        "event_cards": event_cards,
+        "daily_event_cards": selected_buckets["daily_event_cards"],
+        "period_event_cards": selected_buckets["period_event_cards"],
+        "daily_selection": selected_buckets["daily_selection"],
+        "period_peak_timeline": period_peak_timeline,
         "timeline": public_payload.get("timeline") or {},
         "multi_event": public_payload.get("multi_event") or {},
         "personal_transit_rail": public_payload.get("personal_transit_rail") or [],
@@ -1972,13 +2114,30 @@ def build_transit_narrative(
             for reason in critical_reasons_raw
             if str(reason).strip()
         ]
+        signal_label = _human_day_signal_label(
+            signals_count=signals_count,
+            heat=heat,
+            event_count=event_count,
+            is_critical=bool(day.get("is_critical")),
+        )
         calendar_days.append(
             {
                 "date": day_date,
+                "rating": rating,
+                "heat": heat,
+                "event_count": event_count,
                 "signals_count": signals_count,
+                "has_signals": signals_count > 0,
                 "is_critical": bool(day.get("is_critical")),
                 "labels": labels[:3],
                 "critical_reasons": critical_reasons,
+                "signal_label_tr": signal_label,
+                "tone_label_tr": _human_day_tone_label(
+                    signals_count=signals_count,
+                    heat=heat,
+                    is_critical=bool(day.get("is_critical")),
+                ),
+                "micro_summary_tr": signal_label,
             }
         )
 
@@ -1994,8 +2153,21 @@ def build_transit_narrative(
     period_selection_debug: Dict[str, Any] = {}
     period_root_causes_debug: List[Dict[str, Any]] = []
     public_events_debug: List[Dict[str, Any]] = []
+    selected_day_micro_summary_source = "calendar.signal_label_tr"
     try:
-        response["public"] = _build_narrative_public_payload(request, start_date)
+        selected_day_context = _selected_day_context_from_calendar(
+            calendar_public,
+            request.selected_date or start_date.isoformat(),
+        )
+        signature = inspect.signature(_build_narrative_public_payload)
+        if "selected_day_context" in signature.parameters:
+            response["public"] = _build_narrative_public_payload(
+                request,
+                start_date,
+                selected_day_context=selected_day_context,
+            )
+        else:  # pragma: no cover - compatibility for monkeypatched test doubles
+            response["public"] = _build_narrative_public_payload(request, start_date)
         if isinstance(response.get("public"), Mapping):
             period_coverage_debug = dict(response["public"].get("_period_coverage") or {})
             response["public"].pop("_period_coverage", None)
@@ -2013,11 +2185,29 @@ def build_transit_narrative(
                 if isinstance(item, Mapping)
             ]
             response["public"].pop("_events_debug", None)
+            selected_public_date = str(request.selected_date or start_date.isoformat())
+            daily_cards = response["public"].get("daily_event_cards") or []
+            if isinstance(daily_cards, list) and daily_cards:
+                summary = summarize_daily_micro_copy(daily_cards[0])
+                if summary:
+                    for day in response.get("calendar", {}).get("days", []):
+                        if not isinstance(day, dict):
+                            continue
+                        if str(day.get("date") or "") != selected_public_date:
+                            continue
+                        day["micro_summary_tr"] = summary
+                        selected_day_micro_summary_source = (
+                            "daily_event_cards[0].felt_line_tr|why_it_feels_this_way_tr"
+                        )
+                        break
     except Exception:  # pragma: no cover - defensive; do not fail narrative screen due to public cards
         logger.exception("transit narrative public payload failed")
         response["public"] = {
             "period_core": {},
             "event_cards": [],
+            "daily_event_cards": [],
+            "period_event_cards": [],
+            "daily_selection": {},
             "period_peak_timeline": [],
             "timeline": {},
             "multi_event": {
@@ -2054,6 +2244,48 @@ def build_transit_narrative(
             "period_selection": period_selection_debug,
             "period_root_causes": period_root_causes_debug,
             "events_debug": public_events_debug,
+            "selected_day_public": {
+                "date": str(request.selected_date or start_date.isoformat()),
+                "daily_event_cards_count": len(
+                    (
+                        response.get("public", {}).get("daily_event_cards")
+                        if isinstance(response.get("public"), Mapping)
+                        else []
+                    )
+                    or []
+                ),
+                "period_event_cards_count": len(
+                    (
+                        response.get("public", {}).get("period_event_cards")
+                        if isinstance(response.get("public"), Mapping)
+                        else []
+                    )
+                    or []
+                ),
+                "legacy_event_cards_count": len(
+                    (
+                        response.get("public", {}).get("event_cards")
+                        if isinstance(response.get("public"), Mapping)
+                        else []
+                    )
+                    or []
+                ),
+                "daily_selection": (
+                    dict(response.get("public", {}).get("daily_selection") or {})
+                    if isinstance(response.get("public"), Mapping)
+                    else {}
+                ),
+                "micro_summary_tr": next(
+                    (
+                        str(day.get("micro_summary_tr") or "")
+                        for day in calendar_days
+                        if str(day.get("date") or "")
+                        == str(request.selected_date or start_date.isoformat())
+                    ),
+                    "",
+                ),
+                "micro_summary_source": selected_day_micro_summary_source,
+            },
         }
         if best_times_public is not None:
             response["best_times"] = best_times_public

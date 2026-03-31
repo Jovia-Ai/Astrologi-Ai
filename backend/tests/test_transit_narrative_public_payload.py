@@ -69,6 +69,164 @@ def test_transit_narrative_includes_public_event_cards(monkeypatch) -> None:
     assert response["public"]["period_peak_timeline"][0]["peak_date_utc"] == "2026-03-05T09:00:00+00:00"
 
 
+def test_transit_narrative_humanizes_event_cards_and_calendar_days(monkeypatch) -> None:
+    monkeypatch.setattr(transits, "_build_transits_engine_response", lambda _request: {})
+    base_card = {
+        "event_id": "evt_1",
+        "transit_body": "Moon",
+        "aspect": "square",
+        "horizon": "daily",
+        "derived_context": {"natal_target": {"house": 3}},
+        "natal_promise": {"score": 0.7},
+    }
+    monkeypatch.setattr(
+        transits,
+        "build_public_response",
+        lambda _response: {
+            "period_core": {"title": "Core"},
+            "event_cards": [base_card],
+            "period_peak_timeline": [],
+            "timeline": {"summary": "line"},
+        },
+    )
+    monkeypatch.setattr(
+        transits,
+        "select_event_ids",
+        lambda _items, max_cards, natal=None: ([], {"selection_mode": "test"}),
+    )
+    monkeypatch.setattr(
+        transits,
+        "build_period_coverage",
+        lambda _items, selected_ids, now_date, tz: {"counts": {"total": 0}},
+    )
+    monkeypatch.setattr(
+        transits,
+        "build_transit_calendar_public",
+        lambda **_: {"calendar_internal": {"days": [{"date": "2026-03-10", "rating": 4, "heat": 3, "event_count": 2}]}} ,
+    )
+    monkeypatch.setattr(
+        transits,
+        "to_ui_calendar",
+        lambda *_args, **_kwargs: {
+            "range": {"start": "2026-03-01", "end": "2026-03-31", "tz": "Europe/Istanbul"},
+            "days": [
+                {
+                    "date": "2026-03-10",
+                    "labels": ["mind"],
+                    "top_events": [{"id": "evt_1"}, {"id": "evt_2"}],
+                    "event_count": 2,
+                    "heat": 3,
+                    "rating": 4,
+                    "is_critical": False,
+                }
+            ],
+            "year_summary": {},
+        },
+    )
+    monkeypatch.setattr(transits, "assemble_blocks", lambda **_: [])
+    monkeypatch.setattr(transits, "build_space_hub", lambda _blocks: {"title": "", "blocks": [], "count": 0})
+    monkeypatch.setattr(
+        transits,
+        "build_personal_transit",
+        lambda _blocks: {"title": "", "blocks": [], "count": 0},
+    )
+    monkeypatch.setattr(
+        transits,
+        "build_calendar_day",
+        lambda _blocks, _date: {"title": "", "blocks": [], "count": 0},
+    )
+    monkeypatch.setattr(transits, "build_feed_snippet", lambda _blocks: {"title": "", "blocks": [], "count": 0})
+    monkeypatch.setattr(
+        transits,
+        "_select_daily_and_period_event_cards",
+        lambda **_: {
+            "daily_event_cards": [transits._humanize_event_card(base_card)],
+            "period_event_cards": [],
+            "daily_selection": {
+                "used_period_fallback": False,
+                "period_only_note": "",
+                "daily_count": 1,
+                "period_count": 0,
+            },
+        },
+    )
+    response = transits.build_transit_narrative(_request(selected_date="2026-03-10"))
+
+    card = response["public"]["event_cards"][0]
+    assert card["felt_line_tr"]
+    assert card["why_it_feels_this_way_tr"]
+    assert card["guidance_micro_tr"]
+    assert card["house_touchpoint_tr"] == "zihnin ve konuşma halin"
+    assert response["public"]["daily_event_cards"][0]["event_id"] == "evt_1"
+    assert response["public"]["period_event_cards"] == []
+    assert response["calendar"]["days"][0]["signal_label_tr"] == "Yüksek tempo."
+    assert response["calendar"]["days"][0]["tone_label_tr"] == "yuksek_tempo"
+    assert response["calendar"]["days"][0]["micro_summary_tr"] == card["felt_line_tr"]
+
+
+def test_transit_narrative_uses_period_fallback_when_daily_missing(monkeypatch) -> None:
+    monkeypatch.setattr(transits, "_build_transits_engine_response", lambda _request: {})
+    period_card = {
+        "event_id": "evt_period",
+        "transit_body": "Saturn",
+        "aspect": "opposition",
+        "horizon": "period",
+        "bucket": "long",
+        "derived_context": {"natal_target": {"house": 7}},
+    }
+    monkeypatch.setattr(
+        transits,
+        "build_public_response",
+        lambda _response: {
+            "period_core": {"title": "Core"},
+            "event_cards": [period_card],
+            "period_peak_timeline": [],
+            "timeline": {"summary": "line"},
+        },
+    )
+    monkeypatch.setattr(
+        transits,
+        "select_event_ids",
+        lambda _items, max_cards, natal=None: ([], {"selection_mode": "test"}),
+    )
+    monkeypatch.setattr(
+        transits,
+        "build_period_coverage",
+        lambda _items, selected_ids, now_date, tz: {"counts": {"total": 0}},
+    )
+    monkeypatch.setattr(
+        transits,
+        "_select_daily_and_period_event_cards",
+        lambda **_: {
+            "daily_event_cards": [
+                {
+                    **transits._humanize_event_card(period_card),
+                    "horizon": "daily",
+                    "is_period_derived": True,
+                    "today_facing_fallback": True,
+                    "source_horizon": "period",
+                }
+            ],
+            "period_event_cards": [transits._humanize_event_card(period_card)],
+            "daily_selection": {
+                "used_period_fallback": True,
+                "period_only_note": "fallback",
+                "daily_count": 1,
+                "period_count": 1,
+            },
+        },
+    )
+
+    payload = transits._build_narrative_public_payload(
+        _request(selected_date="2026-03-10"),
+        transits.date_type.fromisoformat("2026-03-01"),
+    )
+
+    assert payload["daily_selection"]["used_period_fallback"] is True
+    assert payload["daily_event_cards"][0]["horizon"] == "daily"
+    assert payload["period_event_cards"][0]["event_id"] == "evt_period"
+
+
 def test_transit_narrative_public_payload_fallback_on_error(monkeypatch) -> None:
     monkeypatch.setattr(
         transits,
@@ -158,3 +316,4 @@ def test_transit_narrative_debug_includes_period_selection(monkeypatch) -> None:
     assert response["debug"]["period_selection"]["selection_mode"] == "coverage_first_v1"
     assert response["debug"]["period_root_causes"][0]["key"] == "identity_spine"
     assert response["debug"]["events_debug"][0]["event_id"] == "ev_debug_1"
+    assert response["debug"]["selected_day_public"]["date"] == "2026-03-01"

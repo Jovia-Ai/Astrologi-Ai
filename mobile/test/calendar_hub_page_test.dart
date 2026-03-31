@@ -35,7 +35,7 @@ void main() {
     await tester.tap(dayCell, warnIfMissed: false);
     await tester.pumpAndSettle();
 
-    expect(find.text('Kart 16'), findsWidgets);
+    expect(find.text('İç ses 16'), findsWidgets);
     expect(
       find.byKey(const ValueKey<String>('calendarDayBack')),
       findsOneWidget,
@@ -66,12 +66,12 @@ void main() {
       await tester.fling(find.byType(PageView), const Offset(-1000, 0), 1800);
       await tester.pumpAndSettle();
 
-      expect(find.text('Kart 16'), findsWidgets);
+      expect(find.text('İç ses 16'), findsWidgets);
 
       await tester.tap(find.byKey(const ValueKey<String>('calendarDayBack')));
       await tester.pumpAndSettle();
 
-      expect(find.text('Kart 16'), findsOneWidget);
+      expect(find.text('İç ses 16'), findsOneWidget);
     },
   );
 
@@ -96,7 +96,7 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Kart 17'), findsWidgets);
+    expect(find.text('İç ses 17'), findsWidgets);
     expect(find.byKey(const ValueKey<String>('calendarDayBack')), findsNothing);
 
     await tester.tap(find.text('Gunu ac').first);
@@ -106,7 +106,7 @@ void main() {
       find.byKey(const ValueKey<String>('calendarDayBack')),
       findsOneWidget,
     );
-    expect(find.text('Kart 17'), findsWidgets);
+    expect(find.text('İç ses 17'), findsWidgets);
   });
 
   testWidgets(
@@ -151,6 +151,78 @@ void main() {
       );
     },
   );
+
+  testWidgets('daily surfaces show human labels instead of raw signal counts', (
+    tester,
+  ) async {
+    await _pumpHarness(
+      tester,
+      child: CalendarHubPage(
+        profileOverride: fakeProfile,
+        dataSource: _FakeCalendarDataSource(),
+        initialSelectedDay: DateTime(2026, 3, 15),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('sinyal'), findsNothing);
+    expect(find.text('Bugün iki şey belirgin.'), findsWidgets);
+    expect(find.text('İç ses 15'), findsWidgets);
+    expect(find.textContaining('Ritim 15'), findsWidgets);
+    expect(find.textContaining('Bir nefes daha iyi gelir.'), findsWidgets);
+  });
+
+  testWidgets('daily and period sections render together when both exist', (
+    tester,
+  ) async {
+    await _pumpHarness(
+      tester,
+      child: CalendarHubPage(
+        profileOverride: fakeProfile,
+        dataSource: _FakeCalendarDataSource(),
+        initialSelectedDay: DateTime(2026, 3, 15),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('calendarDayCell_2026-03-15')),
+      warnIfMissed: false,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Bugünün vurgusu'), findsOneWidget);
+    expect(find.text('Uzun dönem bugün de etkili'), findsOneWidget);
+  });
+
+  testWidgets('period-only days do not fall back to empty state', (
+    tester,
+  ) async {
+    await _pumpHarness(
+      tester,
+      child: CalendarHubPage(
+        profileOverride: fakeProfile,
+        dataSource: _PeriodOnlyCalendarDataSource(),
+        initialSelectedDay: DateTime(2026, 3, 15),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('calendarDayCell_2026-03-15')),
+      warnIfMissed: false,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text('Bugünün vurgusu'), findsOneWidget);
+    expect(find.text('Uzun dönem bugün de etkili'), findsOneWidget);
+    expect(find.textContaining('kısa vadeli bir tetikten çok'), findsWidgets);
+    expect(find.text('Bugun sakin'), findsNothing);
+    expect(find.text('Secili gun sakin'), findsNothing);
+  });
 }
 
 Future<void> _pumpHarness(WidgetTester tester, {required Widget child}) async {
@@ -230,6 +302,13 @@ class _FakeCalendarDataSource implements CalendarDataSource {
           'critical_reasons': day == 15
               ? <String>['Yuksek vurgu']
               : const <String>[],
+          'signal_label_tr': day == 15
+              ? 'Hassas gün.'
+              : (day.isEven
+                    ? 'Bugün iki şey belirgin.'
+                    : 'Tek bir şey öne çıkıyor.'),
+          'tone_label_tr': day == 15 ? 'ince' : 'hareketli',
+          'micro_summary_tr': 'Bugün ritim $day tarafında öne çıkıyor.',
         },
     ];
 
@@ -279,6 +358,12 @@ class _FakeCalendarDataSource implements CalendarDataSource {
       'what_it_builds': 'Insa ${date.day}',
       'signature_tr': 'Tema ${date.day}',
       'why_now': 'Neden ${date.day}',
+      'felt_line_tr': 'İç ses ${date.day}',
+      'why_it_feels_this_way_tr': 'Ritim ${date.day}',
+      'guidance_micro_tr': 'Bir nefes daha iyi gelir.',
+      'signal_label_tr': 'Bugün iki şey belirgin.',
+      'tone_label_tr': 'hareketli',
+      'house_touchpoint_hint_tr': 'En çok konuşurken belli olabilir.',
       'horizon': horizon,
       'tags': <String, dynamic>{
         'duration': 'Kisa',
@@ -288,6 +373,31 @@ class _FakeCalendarDataSource implements CalendarDataSource {
       },
       'timing': <String, dynamic>{},
     };
+  }
+}
+
+class _PeriodOnlyCalendarDataSource extends _FakeCalendarDataSource {
+  const _PeriodOnlyCalendarDataSource();
+
+  @override
+  Future<Map<String, dynamic>> fetchDailyNarrative({
+    required Map<String, dynamic> profile,
+    required DateTime selectedDate,
+  }) async {
+    final base = await super.fetchDailyNarrative(
+      profile: profile,
+      selectedDate: selectedDate,
+    );
+    final publicRaw = Map<String, dynamic>.from(base['public'] as Map);
+    publicRaw['event_cards'] = <Map<String, dynamic>>[
+      _FakeCalendarDataSource._eventCardMap(
+        selectedDate,
+        horizon: 'period',
+        prefix: 'Period',
+      ),
+    ];
+    base['public'] = publicRaw;
+    return base;
   }
 }
 

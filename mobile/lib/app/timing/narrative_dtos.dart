@@ -123,6 +123,9 @@ class NarrativeCalendarDay {
     required this.isCritical,
     required this.labels,
     required this.criticalReasons,
+    required this.signalLabelTr,
+    required this.toneLabelTr,
+    required this.microSummaryTr,
   });
 
   final String date;
@@ -134,6 +137,9 @@ class NarrativeCalendarDay {
   final bool isCritical;
   final List<String> labels;
   final List<String> criticalReasons;
+  final String signalLabelTr;
+  final String toneLabelTr;
+  final String microSummaryTr;
 
   factory NarrativeCalendarDay.fromMap(Map<String, dynamic> map) {
     final labelsRaw = map['labels'];
@@ -154,13 +160,29 @@ class NarrativeCalendarDay {
                 reason.toString(),
             ]
           : const <String>[],
+      signalLabelTr: (map['signal_label_tr'] ?? '').toString(),
+      toneLabelTr: (map['tone_label_tr'] ?? '').toString(),
+      microSummaryTr: (map['micro_summary_tr'] ?? '').toString(),
     );
   }
 }
 
 List<EventCardDto> _parseEventCards(Map<String, dynamic> publicRaw) {
-  final raw = publicRaw['event_cards'];
+  final direct = _parseEventCardsFromAny(publicRaw['event_cards']);
+  if (direct.isNotEmpty) {
+    return direct;
+  }
+  return _parseEventCardsFromAny(publicRaw['event_cards_sample']);
+}
 
+List<EventCardDto> _parseEventCardsByKey(
+  Map<String, dynamic> publicRaw,
+  String key,
+) {
+  return _parseEventCardsFromAny(publicRaw[key]);
+}
+
+List<EventCardDto> _parseEventCardsFromAny(dynamic raw) {
   if (raw is List) {
     return [
       for (final card in raw)
@@ -180,15 +202,34 @@ List<EventCardDto> _parseEventCards(Map<String, dynamic> publicRaw) {
     }
   }
 
-  final sample = publicRaw['event_cards_sample'];
-  if (sample is List) {
-    return [
-      for (final card in sample)
-        if (card is Map) EventCardDto.fromMap(Map<String, dynamic>.from(card)),
-    ];
-  }
-
   return const <EventCardDto>[];
+}
+
+class DailySelectionDto {
+  const DailySelectionDto({
+    required this.usedPeriodFallback,
+    required this.periodOnlyNote,
+    required this.dailyCount,
+    required this.periodCount,
+  });
+
+  final bool usedPeriodFallback;
+  final String periodOnlyNote;
+  final int dailyCount;
+  final int periodCount;
+
+  factory DailySelectionDto.fromMap(Map<String, dynamic> map) {
+    return DailySelectionDto(
+      usedPeriodFallback: (map['used_period_fallback'] ?? false) == true,
+      periodOnlyNote: (map['period_only_note'] ?? '').toString(),
+      dailyCount: map['daily_count'] is int
+          ? map['daily_count'] as int
+          : int.tryParse((map['daily_count'] ?? '').toString()) ?? 0,
+      periodCount: map['period_count'] is int
+          ? map['period_count'] as int
+          : int.tryParse((map['period_count'] ?? '').toString()) ?? 0,
+    );
+  }
 }
 
 List<PeriodPeakTimelineItemDto> _parsePeriodPeakTimeline(
@@ -215,6 +256,9 @@ class NarrativeResponse {
     required this.calendarDays,
     required this.periodCore,
     required this.eventCards,
+    required this.dailyEventCards,
+    required this.periodEventCards,
+    required this.dailySelection,
     required this.periodPeakTimeline,
     required this.timeline,
   });
@@ -227,6 +271,9 @@ class NarrativeResponse {
   final Map<String, NarrativeCalendarDay> calendarDays;
   final PeriodCoreDto? periodCore;
   final List<EventCardDto> eventCards;
+  final List<EventCardDto> dailyEventCards;
+  final List<EventCardDto> periodEventCards;
+  final DailySelectionDto? dailySelection;
   final List<PeriodPeakTimelineItemDto> periodPeakTimeline;
   final TimelineDto? timeline;
 
@@ -295,6 +342,13 @@ class NarrativeResponse {
             )
           : null,
       eventCards: _parseEventCards(publicRaw),
+      dailyEventCards: _parseEventCardsByKey(publicRaw, 'daily_event_cards'),
+      periodEventCards: _parseEventCardsByKey(publicRaw, 'period_event_cards'),
+      dailySelection: publicRaw['daily_selection'] is Map
+          ? DailySelectionDto.fromMap(
+              Map<String, dynamic>.from(publicRaw['daily_selection'] as Map),
+            )
+          : null,
       periodPeakTimeline: _parsePeriodPeakTimeline(publicRaw),
       timeline: publicRaw['timeline'] is Map
           ? TimelineDto.fromMap(
@@ -455,6 +509,12 @@ class EventCardTimingDto {
 class EventCardDto {
   const EventCardDto({
     required this.eventId,
+    required this.transitBody,
+    required this.natalPoint,
+    required this.aspect,
+    required this.phase,
+    required this.bucket,
+    required this.orbDeg,
     required this.headline,
     required this.opening,
     required this.essence,
@@ -486,11 +546,28 @@ class EventCardDto {
     required this.derivedContext,
     required this.scene,
     required this.narrativeProvenance,
+    required this.feltLineTr,
+    required this.whyItFeelsThisWayTr,
+    required this.guidanceMicroTr,
+    required this.signalLabelTr,
+    required this.toneLabelTr,
+    required this.houseTouchpointTr,
+    required this.houseTouchpointHintTr,
+    required this.eventFamily,
+    required this.eventKind,
+    required this.importanceTier,
+    required this.natalPromiseScore,
     this.periodStory,
     this.storyTrackId,
   });
 
   final String eventId;
+  final String transitBody;
+  final String natalPoint;
+  final String aspect;
+  final String phase;
+  final String bucket;
+  final double? orbDeg;
   final String headline;
   final String opening;
   final String essence;
@@ -522,6 +599,17 @@ class EventCardDto {
   final Map<String, dynamic> derivedContext;
   final Map<String, dynamic> scene;
   final Map<String, dynamic> narrativeProvenance;
+  final String feltLineTr;
+  final String whyItFeelsThisWayTr;
+  final String guidanceMicroTr;
+  final String signalLabelTr;
+  final String toneLabelTr;
+  final String houseTouchpointTr;
+  final String houseTouchpointHintTr;
+  final String eventFamily;
+  final String eventKind;
+  final String importanceTier;
+  final double? natalPromiseScore;
   final PeriodStoryDto? periodStory;
   final String? storyTrackId;
 
@@ -560,6 +648,115 @@ class EventCardDto {
     return const <String, dynamic>{};
   }
 
+  EventCardDto copyWith({
+    String? eventId,
+    String? transitBody,
+    String? natalPoint,
+    String? aspect,
+    String? phase,
+    String? bucket,
+    double? orbDeg,
+    String? headline,
+    String? opening,
+    String? essence,
+    String? asks,
+    String? watchout,
+    String? whatItBuilds,
+    String? technicalNote,
+    String? title,
+    String? signature,
+    String? signatureTr,
+    String? teaser,
+    String? bigPicture,
+    String? mechanism,
+    String? horizon,
+    String? tone,
+    Map<String, String>? sectionLabels,
+    String? whyNow,
+    String? conflict,
+    String? shadow,
+    String? upper,
+    String? extraLine,
+    String? timeHint,
+    String? timeHintTr,
+    List<String>? guidance,
+    List<String>? watchOut,
+    List<String>? hookTags,
+    EventCardTagDto? tags,
+    EventCardTimingDto? timing,
+    Map<String, dynamic>? derivedContext,
+    Map<String, dynamic>? scene,
+    Map<String, dynamic>? narrativeProvenance,
+    String? feltLineTr,
+    String? whyItFeelsThisWayTr,
+    String? guidanceMicroTr,
+    String? signalLabelTr,
+    String? toneLabelTr,
+    String? houseTouchpointTr,
+    String? houseTouchpointHintTr,
+    String? eventFamily,
+    String? eventKind,
+    String? importanceTier,
+    double? natalPromiseScore,
+    PeriodStoryDto? periodStory,
+    String? storyTrackId,
+  }) {
+    return EventCardDto(
+      eventId: eventId ?? this.eventId,
+      transitBody: transitBody ?? this.transitBody,
+      natalPoint: natalPoint ?? this.natalPoint,
+      aspect: aspect ?? this.aspect,
+      phase: phase ?? this.phase,
+      bucket: bucket ?? this.bucket,
+      orbDeg: orbDeg ?? this.orbDeg,
+      headline: headline ?? this.headline,
+      opening: opening ?? this.opening,
+      essence: essence ?? this.essence,
+      asks: asks ?? this.asks,
+      watchout: watchout ?? this.watchout,
+      whatItBuilds: whatItBuilds ?? this.whatItBuilds,
+      technicalNote: technicalNote ?? this.technicalNote,
+      title: title ?? this.title,
+      signature: signature ?? this.signature,
+      signatureTr: signatureTr ?? this.signatureTr,
+      teaser: teaser ?? this.teaser,
+      bigPicture: bigPicture ?? this.bigPicture,
+      mechanism: mechanism ?? this.mechanism,
+      horizon: horizon ?? this.horizon,
+      tone: tone ?? this.tone,
+      sectionLabels: sectionLabels ?? this.sectionLabels,
+      whyNow: whyNow ?? this.whyNow,
+      conflict: conflict ?? this.conflict,
+      shadow: shadow ?? this.shadow,
+      upper: upper ?? this.upper,
+      extraLine: extraLine ?? this.extraLine,
+      timeHint: timeHint ?? this.timeHint,
+      timeHintTr: timeHintTr ?? this.timeHintTr,
+      guidance: guidance ?? this.guidance,
+      watchOut: watchOut ?? this.watchOut,
+      hookTags: hookTags ?? this.hookTags,
+      tags: tags ?? this.tags,
+      timing: timing ?? this.timing,
+      derivedContext: derivedContext ?? this.derivedContext,
+      scene: scene ?? this.scene,
+      narrativeProvenance: narrativeProvenance ?? this.narrativeProvenance,
+      feltLineTr: feltLineTr ?? this.feltLineTr,
+      whyItFeelsThisWayTr: whyItFeelsThisWayTr ?? this.whyItFeelsThisWayTr,
+      guidanceMicroTr: guidanceMicroTr ?? this.guidanceMicroTr,
+      signalLabelTr: signalLabelTr ?? this.signalLabelTr,
+      toneLabelTr: toneLabelTr ?? this.toneLabelTr,
+      houseTouchpointTr: houseTouchpointTr ?? this.houseTouchpointTr,
+      houseTouchpointHintTr:
+          houseTouchpointHintTr ?? this.houseTouchpointHintTr,
+      eventFamily: eventFamily ?? this.eventFamily,
+      eventKind: eventKind ?? this.eventKind,
+      importanceTier: importanceTier ?? this.importanceTier,
+      natalPromiseScore: natalPromiseScore ?? this.natalPromiseScore,
+      periodStory: periodStory ?? this.periodStory,
+      storyTrackId: storyTrackId ?? this.storyTrackId,
+    );
+  }
+
   factory EventCardDto.fromMap(Map<String, dynamic> map) {
     final headline = _s(map, 'headline', 'title');
     final opening = _s(map, 'opening').trim().isNotEmpty
@@ -577,8 +774,18 @@ class EventCardDto {
     final whatItBuilds = _s(map, 'what_it_builds').trim().isNotEmpty
         ? _s(map, 'what_it_builds')
         : _s(map, 'upper_meaning');
+    final rawOrb = map['orb_deg'];
+    final rawNatalPromise = map['natal_promise'] is Map
+        ? Map<String, dynamic>.from(map['natal_promise'] as Map)
+        : const <String, dynamic>{};
     return EventCardDto(
       eventId: _s(map, 'event_id', 'eventId'),
+      transitBody: _s(map, 'transit_body', 'transitBody'),
+      natalPoint: _s(map, 'natal_point', 'natalPoint'),
+      aspect: _s(map, 'aspect'),
+      phase: _s(map, 'phase'),
+      bucket: _s(map, 'bucket'),
+      orbDeg: rawOrb is num ? rawOrb.toDouble() : double.tryParse('$rawOrb'),
       headline: headline,
       opening: opening,
       essence: essence,
@@ -621,6 +828,27 @@ class EventCardDto {
         'narrative_provenance',
         'narrativeProvenance',
       ),
+      feltLineTr: _s(map, 'felt_line_tr', 'feltLineTr'),
+      whyItFeelsThisWayTr: _s(
+        map,
+        'why_it_feels_this_way_tr',
+        'whyItFeelsThisWayTr',
+      ),
+      guidanceMicroTr: _s(map, 'guidance_micro_tr', 'guidanceMicroTr'),
+      signalLabelTr: _s(map, 'signal_label_tr', 'signalLabelTr'),
+      toneLabelTr: _s(map, 'tone_label_tr', 'toneLabelTr'),
+      houseTouchpointTr: _s(map, 'house_touchpoint_tr', 'houseTouchpointTr'),
+      houseTouchpointHintTr: _s(
+        map,
+        'house_touchpoint_hint_tr',
+        'houseTouchpointHintTr',
+      ),
+      eventFamily: _s(map, 'event_family', 'eventFamily'),
+      eventKind: _s(map, 'event_kind', 'eventKind'),
+      importanceTier: _s(map, 'importance_tier', 'importanceTier'),
+      natalPromiseScore: rawNatalPromise['score'] is num
+          ? (rawNatalPromise['score'] as num).toDouble()
+          : double.tryParse('${rawNatalPromise['score'] ?? ''}'),
       periodStory: map['period_story'] is Map
           ? PeriodStoryDto.fromMap(
               Map<String, dynamic>.from(map['period_story'] as Map),
