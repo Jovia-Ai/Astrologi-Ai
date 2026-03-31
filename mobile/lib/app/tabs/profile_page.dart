@@ -509,9 +509,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       ],
                     ] else ...[
-                      PeriodCalendarTab(
+                      ProfileCalendarPreviewStrip(
                         profileOverride: widget.profileOverride,
-                        embedded: true,
                       ),
                     ],
                   ],
@@ -608,9 +607,8 @@ class _ProfilePageState extends State<ProfilePage> {
                         readOnly: widget.readOnly,
                       )
                     else
-                      PeriodCalendarTab(
+                      ProfileCalendarPreviewStrip(
                         profileOverride: widget.profileOverride,
-                        embedded: true,
                       ),
                   ],
                 ],

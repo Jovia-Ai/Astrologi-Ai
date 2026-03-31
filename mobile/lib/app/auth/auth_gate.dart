@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:mobile/app/data/supabase_tables.dart';
 import 'package:mobile/app/onboarding/onboarding_birth_page.dart';
+import 'package:mobile/app/profile/profile_repository.dart';
 import 'package:mobile/app/tabs/tabs_shell.dart';
 import 'package:mobile/app/auth/login_page.dart';
 
@@ -26,30 +26,38 @@ class AuthGate extends StatelessWidget {
   }
 }
 
-class _BirthDataGate extends StatelessWidget {
+class _BirthDataGate extends StatefulWidget {
   const _BirthDataGate({required this.userId});
 
   final String userId;
 
+  @override
+  State<_BirthDataGate> createState() => _BirthDataGateState();
+}
+
+class _BirthDataGateState extends State<_BirthDataGate> {
+  late Future<bool> _future;
+
+  @override
+  void initState() {
+    super.initState();
+    _future = _hasBirthData();
+  }
+
   Future<bool> _hasBirthData() async {
     try {
-      final row = await Supabase.instance.client
-          .from(SupabaseTables.birthData)
-          .select('birth_date, place')
-          .eq('user_id', userId)
-          .limit(1)
-          .maybeSingle();
+      final row = await ProfileRepository().getProfile(widget.userId);
 
       final hasBirth =
           row != null &&
           row['birth_date'] != null &&
           (row['place'] ?? '').toString().trim().isNotEmpty;
       debugPrint(
-        'AUTH_GATE_BIRTH_CHECK user=$userId hasBirth=$hasBirth row=$row',
+        'AUTH_GATE_BIRTH_CHECK user=${widget.userId} hasBirth=$hasBirth row=$row',
       );
       return hasBirth;
     } catch (e) {
-      debugPrint('AUTH_GATE_BIRTH_CHECK_ERROR user=$userId error=$e');
+      debugPrint('AUTH_GATE_BIRTH_CHECK_ERROR user=${widget.userId} error=$e');
       return false;
     }
   }
@@ -57,7 +65,7 @@ class _BirthDataGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: _hasBirthData(),
+      future: _future,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(

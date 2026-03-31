@@ -1,3 +1,5 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,24 +15,454 @@ import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
-enum _CalendarHubTab { daily, period }
+enum CalendarViewportMode { month, week }
 
-class CalendarHubPage extends StatefulWidget {
-  const CalendarHubPage({super.key, this.profileOverride});
+const List<String> _kCalendarMonthNames = <String>[
+  'Ocak',
+  'Subat',
+  'Mart',
+  'Nisan',
+  'Mayis',
+  'Haziran',
+  'Temmuz',
+  'Agustos',
+  'Eylul',
+  'Ekim',
+  'Kasim',
+  'Aralik',
+];
 
-  final Map<String, dynamic>? profileOverride;
+const List<String> _kCalendarWeekdayNames = <String>[
+  'Pazartesi',
+  'Sali',
+  'Carsamba',
+  'Persembe',
+  'Cuma',
+  'Cumartesi',
+  'Pazar',
+];
 
-  @override
-  State<CalendarHubPage> createState() => _CalendarHubPageState();
+const List<String> _kCalendarWeekdayLabels = <String>[
+  'Pzt',
+  'Sal',
+  'Car',
+  'Per',
+  'Cum',
+  'Cmt',
+  'Paz',
+];
+
+abstract class CalendarDataSource {
+  Future<Map<String, dynamic>> fetchDailyNarrative({
+    required Map<String, dynamic> profile,
+    required DateTime selectedDate,
+  });
+
+  Future<Map<String, dynamic>> fetchCalendar({
+    required Map<String, dynamic> profile,
+    required DateTime focusedDate,
+    String include = 'markers,themes,intent_summary',
+  });
+
+  Future<Map<String, dynamic>> fetchBestTimes({
+    required Map<String, dynamic> profile,
+    required DateTime focusedDate,
+  });
 }
 
-class _CalendarHubPageState extends State<CalendarHubPage> {
-  _CalendarHubTab _tab = _CalendarHubTab.daily;
+class NetworkCalendarDataSource implements CalendarDataSource {
+  NetworkCalendarDataSource({
+    NarrativeRepository? narrativeRepository,
+    CalendarRepository? calendarRepository,
+  }) : _narrativeRepository = narrativeRepository ?? NarrativeRepository(),
+       _calendarRepository = calendarRepository ?? CalendarRepository();
+
+  final NarrativeRepository _narrativeRepository;
+  final CalendarRepository _calendarRepository;
+
+  @override
+  Future<Map<String, dynamic>> fetchDailyNarrative({
+    required Map<String, dynamic> profile,
+    required DateTime selectedDate,
+  }) {
+    return _narrativeRepository.fetchDailyNarrative(
+      profile: profile,
+      selectedDate: selectedDate,
+    );
+  }
+
+  @override
+  Future<Map<String, dynamic>> fetchCalendar({
+    required Map<String, dynamic> profile,
+    required DateTime focusedDate,
+    String include = 'markers,themes,intent_summary',
+  }) {
+    return _calendarRepository.fetchCalendar(
+      profile: profile,
+      focusedDate: focusedDate,
+      include: include,
+    );
+  }
+
+  @override
+  Future<Map<String, dynamic>> fetchBestTimes({
+    required Map<String, dynamic> profile,
+    required DateTime focusedDate,
+  }) {
+    return _calendarRepository.fetchBestTimes(
+      profile: profile,
+      focusedDate: focusedDate,
+    );
+  }
+}
+
+class CalendarDayBundle {
+  const CalendarDayBundle({
+    required this.date,
+    required this.calendarDays,
+    required this.selectedDayMeta,
+    required this.dailyEventCards,
+    required this.periodCards,
+    required this.markers,
+    required this.bestTimes,
+    required this.timeline,
+    required this.periodCore,
+    required this.wrongSource,
+  });
+
+  final DateTime date;
+  final Map<String, NarrativeCalendarDay> calendarDays;
+  final NarrativeCalendarDay? selectedDayMeta;
+  final List<EventCardDto> dailyEventCards;
+  final List<PeriodCardDto> periodCards;
+  final List<PeriodMarkerDto> markers;
+  final List<CalendarBestTimeItem> bestTimes;
+  final TimelineDto? timeline;
+  final PeriodCoreDto? periodCore;
+  final bool wrongSource;
+
+  String get summary {
+    final timelineSummary = timeline?.summary.trim() ?? '';
+    if (timelineSummary.isNotEmpty) {
+      return _condenseCalendarCopy(timelineSummary, maxChars: 180);
+    }
+    if (selectedDayMeta != null && selectedDayMeta!.labels.isNotEmpty) {
+      return _condenseCalendarCopy(
+        selectedDayMeta!.labels.take(2).join(' • '),
+        maxChars: 180,
+      );
+    }
+    if (dailyEventCards.isNotEmpty) {
+      return _condenseCalendarCopy(
+        dailyEventCards.first.opening.trim().isNotEmpty
+            ? dailyEventCards.first.opening.trim()
+            : dailyEventCards.first.whyNow,
+        maxChars: 180,
+      );
+    }
+    return 'Secili gune dokunup gunun ritmini, kartlarini ve uzun donem etkisini ac.';
+  }
+
+  String get headline {
+    if (dailyEventCards.isNotEmpty) {
+      final title = dailyEventCards.first.title.trim();
+      if (title.isNotEmpty) {
+        return title;
+      }
+    }
+    if (selectedDayMeta != null && selectedDayMeta!.labels.isNotEmpty) {
+      return selectedDayMeta!.labels.first;
+    }
+    return _formatCalendarDayTitle(date);
+  }
+}
+
+String _calendarDayKey(DateTime value) =>
+    TransitRequestBuilder.fmtDate(TransitRequestBuilder.stripDate(value));
+
+String _formatCalendarMonthTitle(DateTime date) =>
+    '${_kCalendarMonthNames[date.month - 1]} ${date.year}';
+
+String _formatCalendarDayTitle(DateTime day) {
+  final weekday = _kCalendarWeekdayNames[day.weekday - 1];
+  final month = _kCalendarMonthNames[day.month - 1];
+  return '$weekday, ${day.day} $month';
+}
+
+String _formatCalendarShortWeekday(DateTime day) =>
+    _kCalendarWeekdayLabels[day.weekday - 1];
+
+double _calendarWeekAnchorAlignmentY(
+  List<DateTime> monthDays,
+  DateTime selectedDay,
+) {
+  final selectedKey = _calendarDayKey(selectedDay);
+  final selectedIndex = monthDays.indexWhere(
+    (day) => _calendarDayKey(day) == selectedKey,
+  );
+  if (selectedIndex < 0) {
+    return 0;
+  }
+  final rowCount = (monthDays.length / 7).round();
+  if (rowCount <= 1) {
+    return 0;
+  }
+  final rowIndex = selectedIndex ~/ 7;
+  return -1 + ((2 * rowIndex) / (rowCount - 1));
+}
+
+String _condenseCalendarCopy(String text, {int maxChars = 220}) {
+  final trimmed = text.trim();
+  if (trimmed.isEmpty) {
+    return '';
+  }
+  if (trimmed.length <= maxChars) {
+    return trimmed;
+  }
+  return '${trimmed.substring(0, maxChars).trimRight()}...';
+}
+
+List<CalendarBestTimeItem> _extractBestTimesFromNarrativePayload(
+  Map<String, dynamic> data,
+) {
+  final out = <CalendarBestTimeItem>[];
+  final publicRaw = data['public'] is Map
+      ? Map<String, dynamic>.from(data['public'] as Map)
+      : data;
+
+  List<dynamic>? pickList(dynamic raw) => raw is List ? raw : null;
+
+  final direct =
+      pickList(publicRaw['best_times']) ??
+      pickList(publicRaw['featured_windows']);
+  if (direct != null) {
+    for (final row in direct) {
+      if (row is! Map) {
+        continue;
+      }
+      final mapRow = Map<String, dynamic>.from(row);
+      final label =
+          (mapRow['label'] ??
+                  mapRow['title'] ??
+                  mapRow['time_label'] ??
+                  mapRow['window'] ??
+                  mapRow['date'] ??
+                  '')
+              .toString()
+              .trim();
+      final reason =
+          (mapRow['focus'] ?? mapRow['theme'] ?? mapRow['reason'] ?? '')
+              .toString()
+              .trim();
+      if (label.isEmpty && reason.isEmpty) {
+        continue;
+      }
+      out.add(
+        CalendarBestTimeItem(
+          label: reason.isEmpty ? label : '$label • $reason',
+        ),
+      );
+    }
+    if (out.isNotEmpty) {
+      return out.take(6).toList(growable: false);
+    }
+  }
+
+  final narrative = NarrativeResponse.fromMap(data);
+  final primary = narrative.blocks.where((b) => b.type == 'best_time_primary');
+  for (final block in primary) {
+    final date = (block.meta['date'] ?? '').toString().trim();
+    final score = (block.meta['score'] ?? '').toString().trim();
+    final label = date.isNotEmpty ? date : block.copy.title.trim();
+    final detail = block.copy.short.trim().isNotEmpty
+        ? block.copy.short.trim()
+        : score;
+    if (label.isEmpty && detail.isEmpty) {
+      continue;
+    }
+    out.add(
+      CalendarBestTimeItem(label: detail.isEmpty ? label : '$label • $detail'),
+    );
+  }
+  final lists = narrative.blocks.where((b) => b.type == 'best_time_list');
+  for (final block in lists) {
+    final candidates = block.meta['candidates'];
+    if (candidates is! List) {
+      continue;
+    }
+    for (final row in candidates.take(6)) {
+      if (row is! Map) {
+        continue;
+      }
+      final mapRow = Map<String, dynamic>.from(row);
+      final date = (mapRow['date'] ?? '').toString().trim();
+      final score = (mapRow['score'] ?? '').toString().trim();
+      if (date.isEmpty && score.isEmpty) {
+        continue;
+      }
+      out.add(
+        CalendarBestTimeItem(
+          label: score.isEmpty ? date : '$date • skor $score',
+        ),
+      );
+    }
+  }
+  return out.take(6).toList(growable: false);
+}
+
+List<CalendarBestTimeItem> _extractBestTimesFromBestTimesPayload(
+  Map<String, dynamic> data,
+) {
+  final out = <CalendarBestTimeItem>[];
+  final list = (data['best_times'] is List)
+      ? (data['best_times'] as List)
+      : (data['windows'] is List)
+      ? (data['windows'] as List)
+      : (data['candidates'] is List)
+      ? (data['candidates'] as List)
+      : const <dynamic>[];
+  for (final row in list) {
+    if (row is! Map) {
+      continue;
+    }
+    final mapRow = Map<String, dynamic>.from(row);
+    final label =
+        (mapRow['label'] ??
+                mapRow['time_label'] ??
+                mapRow['window'] ??
+                mapRow['date'] ??
+                '')
+            .toString()
+            .trim();
+    final focus = (mapRow['focus'] ?? mapRow['reason'] ?? mapRow['theme'] ?? '')
+        .toString()
+        .trim();
+    if (label.isEmpty && focus.isEmpty) {
+      continue;
+    }
+    out.add(
+      CalendarBestTimeItem(label: focus.isEmpty ? label : '$label • $focus'),
+    );
+  }
+  return out.take(6).toList(growable: false);
+}
+
+Future<CalendarDayBundle> _loadCalendarDayBundle({
+  required CalendarDataSource dataSource,
+  required Map<String, dynamic> profile,
+  required DateTime selectedDay,
+}) async {
+  final normalizedDate = TransitRequestBuilder.stripDate(selectedDay);
+  final responses = await Future.wait<Map<String, dynamic>>([
+    dataSource.fetchDailyNarrative(
+      profile: profile,
+      selectedDate: normalizedDate,
+    ),
+    dataSource.fetchCalendar(
+      profile: profile,
+      focusedDate: normalizedDate,
+      include: 'markers',
+    ),
+  ]);
+  final narrativeMap = responses[0];
+  final narrative = NarrativeResponse.fromMap(narrativeMap);
+  final periodCalendar = PeriodCalendarDto.fromMap(responses[1]);
+  final narrativeBest = _extractBestTimesFromNarrativePayload(narrativeMap);
+  final fallbackBest = narrativeBest.isNotEmpty
+      ? const <CalendarBestTimeItem>[]
+      : _extractBestTimesFromBestTimesPayload(
+          await dataSource.fetchBestTimes(
+            profile: profile,
+            focusedDate: normalizedDate,
+          ),
+        );
+  final dailyCards = pickDailyEventCards(
+    narrative.eventCards,
+    context: 'CalendarHub/Unified',
+  );
+  final periodCards = <PeriodCardDto>[
+    for (
+      var index = 0;
+      index <
+          pickPeriodEventCards(
+            narrative.eventCards,
+            context: 'CalendarHub/Unified/Period',
+          ).length;
+      index++
+    )
+      PeriodCardDto.fromEventCard(
+        eventCard: pickPeriodEventCards(
+          narrative.eventCards,
+          context: 'CalendarHub/Unified/Period',
+        )[index],
+        index: index,
+      ),
+  ];
+  final periodInNarrative =
+      narrative.periodCore != null && narrative.eventCards.isEmpty;
+  return CalendarDayBundle(
+    date: normalizedDate,
+    calendarDays: narrative.calendarDays,
+    selectedDayMeta: narrative.calendarDays[_calendarDayKey(normalizedDate)],
+    dailyEventCards: dailyCards,
+    periodCards: periodCards,
+    markers: periodCalendar.markers,
+    bestTimes: narrativeBest.isNotEmpty ? narrativeBest : fallbackBest,
+    timeline: narrative.timeline,
+    periodCore: narrative.periodCore ?? periodCalendar.periodCore,
+    wrongSource: periodInNarrative || dailyCards.isEmpty,
+  );
+}
+
+class CalendarHubPage extends ConsumerStatefulWidget {
+  const CalendarHubPage({
+    super.key,
+    this.profileOverride,
+    this.dataSource,
+    this.initialSelectedDay,
+    this.initialViewportMode = CalendarViewportMode.month,
+  });
+
+  final Map<String, dynamic>? profileOverride;
+  final CalendarDataSource? dataSource;
+  final DateTime? initialSelectedDay;
+  final CalendarViewportMode initialViewportMode;
+
+  @override
+  ConsumerState<CalendarHubPage> createState() => _CalendarHubPageState();
+}
+
+class _CalendarHubPageState extends ConsumerState<CalendarHubPage>
+    with TickerProviderStateMixin {
+  late DateTime _selectedDay;
+  late CalendarViewportMode _viewportMode;
+  late final CalendarDataSource _dataSource;
+
+  bool _loading = false;
+  String? _error;
+  CalendarDayBundle? _bundle;
+  String? _lastProfileKey;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = TransitRequestBuilder.stripDate(
+      widget.initialSelectedDay ?? DateTime.now(),
+    );
+    _viewportMode = widget.initialViewportMode;
+    _dataSource = widget.dataSource ?? NetworkCalendarDataSource();
+  }
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final spacing = profile.spacing;
+    final profileAsync = widget.profileOverride == null
+        ? ref.watch(userProfileProvider)
+        : const AsyncValue<Map<String, dynamic>?>.data(null);
+    final profileMap = widget.profileOverride ?? profileAsync.valueOrNull;
+    _maybeBootstrap(profileMap);
+
     return Scaffold(
       backgroundColor: profile.colors.bg,
       appBar: AppBar(
@@ -47,57 +479,1635 @@ class _CalendarHubPageState extends State<CalendarHubPage> {
           style: profile.typography.navigationLabel(color: profile.colors.text),
         ),
       ),
-      body: SafeArea(
-        top: false,
-        child: JoviaPageScaffold(
-          padding: EdgeInsets.fromLTRB(
-            spacing.pageHorizontal,
-            spacing.xs,
-            spacing.pageHorizontal,
-            spacing.pageBottom,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+      body: _buildBody(
+        context: context,
+        profileMap: profileMap,
+        profileAsync: profileAsync,
+        spacing: spacing,
+      ),
+    );
+  }
+
+  Widget _buildBody({
+    required BuildContext context,
+    required Map<String, dynamic>? profileMap,
+    required AsyncValue<Map<String, dynamic>?> profileAsync,
+    required dynamic spacing,
+  }) {
+    final profile = context.profileTheme;
+    if (profileAsync.isLoading && profileMap == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (profileAsync.hasError && profileMap == null) {
+      return const _ErrorText('Profil verisi yuklenemedi.');
+    }
+    if (!TransitRequestBuilder.hasProfile(profileMap)) {
+      return const _ErrorText(
+        'Takvim icin once profil dogum verisini tamamlayin.',
+      );
+    }
+
+    return SafeArea(
+      top: false,
+      child: JoviaPageScaffold(
+        padding: EdgeInsets.fromLTRB(
+          spacing.pageHorizontal,
+          spacing.xs,
+          spacing.pageHorizontal,
+          spacing.pageBottom,
+        ),
+        child: RefreshIndicator(
+          onRefresh: () => _loadBundle(profileMap!),
+          child: ListView(
+            padding: EdgeInsets.zero,
+            physics: const AlwaysScrollableScrollPhysics(),
             children: [
-              JoviaSectionHeader(
+              const JoviaSectionHeader(
                 label: 'Timing',
-                title: 'Gunluk takvim',
+                title: 'Birlesik takvim',
                 body:
-                    'Tum tarihleri ay gorunumunde takip et, bir gune dokunup gunluk akisi ve donem etkilerini ayni yerden oku.',
+                    'Ay ve hafta akisini ayni yuzde takip et. Bir gune dokundugunda o gunun sayfasi acilir; uzun donem etkisi baglam olarak korunur.',
                 variant: JoviaSectionHeaderVariant.editorial,
               ),
               SizedBox(height: spacing.sectionToContent),
-              JoviaSegmentedControl<_CalendarHubTab>(
-                value: _tab,
-                options: _CalendarHubTab.values,
-                labelBuilder: (tab) => switch (tab) {
-                  _CalendarHubTab.daily => 'Takvim',
-                  _CalendarHubTab.period => 'Period',
-                },
-                onChanged: (tab) => setState(() => _tab = tab),
+              _CalendarViewportSwitch(
+                mode: _viewportMode,
+                onChanged: (mode) => setState(() => _viewportMode = mode),
               ),
               SizedBox(height: spacing.majorSectionGap),
+              _UnifiedCalendarPanel(
+                selectedDay: _selectedDay,
+                viewportMode: _viewportMode,
+                calendarDays:
+                    _bundle?.calendarDays ??
+                    const <String, NarrativeCalendarDay>{},
+                onPickDate: () => _showDatePicker(profileMap!),
+                onShiftBackward: () => _shiftViewport(profileMap!, -1),
+                onShiftForward: () => _shiftViewport(profileMap!, 1),
+                onOpenDay: (day) => _openDayPage(profileMap!, day),
+              ),
+              if (_loading) ...[
+                SizedBox(height: spacing.sectionToContent),
+                const LinearProgressIndicator(),
+              ],
+              if (_error != null) ...[
+                SizedBox(height: spacing.sectionToContent),
+                Text(
+                  _error!,
+                  style: profile.typography.meta.copyWith(
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+              ],
+              SizedBox(height: spacing.majorSectionGap),
+              _SelectedDayHeroCard(
+                day: _selectedDay,
+                bundle: _bundle,
+                onOpenDay: () => _openDayPage(profileMap!, _selectedDay),
+              ),
+              if ((_bundle?.periodCore != null ||
+                  (_bundle?.periodCards.isNotEmpty ?? false))) ...[
+                SizedBox(height: spacing.majorSectionGap),
+                _LongTermEffectBand(
+                  periodCore: _bundle?.periodCore,
+                  periodCards: _bundle?.periodCards ?? const <PeriodCardDto>[],
+                  onOpenPeriodCard: _openPeriodCardDetail,
+                ),
+              ],
+              if (_bundle != null && _bundle!.bestTimes.isNotEmpty) ...[
+                SizedBox(height: spacing.majorSectionGap),
+                JoviaReadingPanel(
+                  label: 'Timing',
+                  title: 'Secili gun pencereleri',
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final item in _bundle!.bestTimes)
+                        _CalendarInfoPill(label: item.label, highlighted: true),
+                    ],
+                  ),
+                ),
+              ],
+              if (kDebugMode && (_bundle?.wrongSource ?? false))
+                Padding(
+                  padding: const EdgeInsets.only(top: 8),
+                  child: Text(
+                    'Data mismatch: wrong source',
+                    style: profile.typography.meta.copyWith(
+                      color: Colors.orange,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _showDatePicker(Map<String, dynamic> profile) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDay,
+      firstDate: DateTime.now().subtract(const Duration(days: 365 * 2)),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+    );
+    if (picked == null) {
+      return;
+    }
+    final normalized = TransitRequestBuilder.stripDate(picked);
+    setState(() => _selectedDay = normalized);
+    await _loadBundle(profile);
+  }
+
+  Future<void> _shiftViewport(Map<String, dynamic> profile, int delta) async {
+    late final DateTime next;
+    if (_viewportMode == CalendarViewportMode.month) {
+      final targetMonth = DateTime(
+        _selectedDay.year,
+        _selectedDay.month + delta,
+      );
+      final lastDay = DateTime(targetMonth.year, targetMonth.month + 1, 0).day;
+      next = DateTime(
+        targetMonth.year,
+        targetMonth.month,
+        _selectedDay.day.clamp(1, lastDay),
+      );
+    } else {
+      next = TransitRequestBuilder.stripDate(
+        _selectedDay.add(Duration(days: delta * 7)),
+      );
+    }
+    setState(() => _selectedDay = next);
+    await _loadBundle(profile);
+  }
+
+  Future<void> _openDayPage(Map<String, dynamic> profile, DateTime day) async {
+    final normalized = TransitRequestBuilder.stripDate(day);
+    setState(() => _selectedDay = normalized);
+    final initialBundle =
+        _bundle != null &&
+            _calendarDayKey(_bundle!.date) == _calendarDayKey(normalized)
+        ? _bundle
+        : null;
+    final returnedDate = await Navigator.of(context, rootNavigator: true)
+        .push<DateTime>(
+          MaterialPageRoute<DateTime>(
+            builder: (_) => CalendarDayPage(
+              profile: profile,
+              initialDate: normalized,
+              initialBundle: initialBundle,
+              dataSource: _dataSource,
+              source: 'calendar_hub',
+            ),
+          ),
+        );
+    if (returnedDate == null) {
+      if (_bundle == null ||
+          _calendarDayKey(_bundle!.date) != _calendarDayKey(_selectedDay)) {
+        await _loadBundle(profile);
+      }
+      return;
+    }
+    final resolvedDate = TransitRequestBuilder.stripDate(returnedDate);
+    if (_calendarDayKey(resolvedDate) == _calendarDayKey(_selectedDay) &&
+        _bundle != null &&
+        _calendarDayKey(_bundle!.date) == _calendarDayKey(resolvedDate)) {
+      return;
+    }
+    setState(() => _selectedDay = resolvedDate);
+    await _loadBundle(profile);
+  }
+
+  void _openPeriodCardDetail(PeriodCardDto card) {
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PeriodDetailPage(
+          card: card,
+          periodCore: _bundle?.periodCore,
+          routeSource: 'calendar_hub_long_term',
+        ),
+      ),
+    );
+  }
+
+  void _maybeBootstrap(Map<String, dynamic>? profile) {
+    if (!TransitRequestBuilder.hasProfile(profile)) {
+      return;
+    }
+    final key =
+        '${profile?['birth_date']}|${profile?['birth_time']}|${profile?['place'] ?? profile?['city']}|${profile?['timezone']}|${_calendarDayKey(_selectedDay)}';
+    if (_lastProfileKey == key) {
+      return;
+    }
+    _lastProfileKey = key;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || profile == null) {
+        return;
+      }
+      _loadBundle(profile);
+    });
+  }
+
+  Future<void> _loadBundle(Map<String, dynamic> profile) async {
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
+    try {
+      final bundle = await _loadCalendarDayBundle(
+        dataSource: _dataSource,
+        profile: profile,
+        selectedDay: _selectedDay,
+      );
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _bundle = bundle;
+        _loading = false;
+      });
+    } on DioException catch (exc) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _loading = false;
+        _error = exc.response?.statusCode == 422
+            ? 'Gonderilen tarih/alanlar gecersiz (422).'
+            : (exc.message ?? 'Takvim verisi alinamadi.');
+      });
+    } catch (exc) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _loading = false;
+        _error = exc.toString();
+      });
+    }
+  }
+}
+
+class _CalendarViewportSwitch extends StatelessWidget {
+  const _CalendarViewportSwitch({required this.mode, required this.onChanged});
+
+  final CalendarViewportMode mode;
+  final ValueChanged<CalendarViewportMode> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return JoviaSegmentedControl<CalendarViewportMode>(
+      value: mode,
+      options: CalendarViewportMode.values,
+      labelBuilder: (mode) => switch (mode) {
+        CalendarViewportMode.month => 'Ay',
+        CalendarViewportMode.week => 'Hafta',
+      },
+      onChanged: onChanged,
+    );
+  }
+}
+
+class _UnifiedCalendarPanel extends StatelessWidget {
+  const _UnifiedCalendarPanel({
+    required this.selectedDay,
+    required this.viewportMode,
+    required this.calendarDays,
+    required this.onPickDate,
+    required this.onShiftBackward,
+    required this.onShiftForward,
+    required this.onOpenDay,
+  });
+
+  final DateTime selectedDay;
+  final CalendarViewportMode viewportMode;
+  final Map<String, NarrativeCalendarDay> calendarDays;
+  final VoidCallback onPickDate;
+  final VoidCallback onShiftBackward;
+  final VoidCallback onShiftForward;
+  final ValueChanged<DateTime> onOpenDay;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final visibleDays = _monthVisibleDays();
+    final isMonth = viewportMode == CalendarViewportMode.month;
+    final rowCount = (visibleDays.length / 7).round().clamp(1, 6);
+    final anchorY = _calendarWeekAnchorAlignmentY(visibleDays, selectedDay);
+
+    return JoviaReadingPanel(
+      label: 'Calendar',
+      title: isMonth
+          ? _formatCalendarMonthTitle(selectedDay)
+          : '${_formatCalendarMonthTitle(selectedDay)} • Hafta',
+      body: isMonth
+          ? 'Ay gorunumunden bir gune dokunup o gunun sayfasina gec.'
+          : 'Hafta gorunumunde secili haftaya odaklan, gunu acip detayda sag-sol ilerle.',
+      large: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              JoviaGlassIconButton(
+                onTap: onShiftBackward,
+                child: const JoviaUiIcon(asset: JoviaUiAsset.back, size: 18),
+              ),
+              const SizedBox(width: 12),
               Expanded(
-                child: AnimatedSwitcher(
-                  duration: profile.motion.page,
-                  switchInCurve: profile.motion.curve,
-                  switchOutCurve: profile.motion.curve,
-                  child: _tab == _CalendarHubTab.daily
-                      ? DailyCalendarTab(
-                          key: const ValueKey<String>('calendar_daily'),
-                          profileOverride: widget.profileOverride,
-                          embedded: true,
-                        )
-                      : PeriodCalendarTab(
-                          key: const ValueKey<String>('calendar_period'),
-                          profileOverride: widget.profileOverride,
-                          embedded: true,
-                        ),
+                child: Text(
+                  isMonth
+                      ? _formatCalendarMonthTitle(selectedDay)
+                      : _formatCalendarDayTitle(selectedDay),
+                  textAlign: TextAlign.center,
+                  style: profile.typography.cardTitle.copyWith(
+                    color: profile.colors.text,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              JoviaGlassIconButton(
+                onTap: onShiftForward,
+                child: const JoviaUiIcon(
+                  asset: JoviaUiAsset.chevronRight,
+                  size: 18,
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 16),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: _CalendarActionChip(label: 'Tarih sec', onTap: onPickDate),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              for (final label in _kCalendarWeekdayLabels)
+                Expanded(
+                  child: Center(
+                    child: Text(
+                      label,
+                      style: profile.typography.eyebrow.copyWith(
+                        color: profile.colors.textLight,
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          TweenAnimationBuilder<double>(
+            tween: Tween<double>(end: isMonth ? 0 : 1),
+            duration: const Duration(milliseconds: 280),
+            curve: Curves.easeOutCubic,
+            builder: (context, progress, child) {
+              final heightFactor = lerpDouble(1, 1 / rowCount, progress) ?? 1;
+              final alignmentY = lerpDouble(0, anchorY, progress) ?? 0;
+              return ClipRect(
+                child: Align(
+                  alignment: Alignment(0, alignmentY),
+                  heightFactor: heightFactor,
+                  child: child,
+                ),
+              );
+            },
+            child: GridView.builder(
+              key: ValueKey<String>(
+                'calendarGrid_${selectedDay.year}_${selectedDay.month}',
+              ),
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: visibleDays.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 7,
+                mainAxisSpacing: 8,
+                crossAxisSpacing: 8,
+                childAspectRatio: 0.96,
+              ),
+              itemBuilder: (context, index) {
+                final day = visibleDays[index];
+                final dayKey = _calendarDayKey(day);
+                return _CalendarDayCell(
+                  day: day,
+                  meta: calendarDays[dayKey],
+                  isSelected: dayKey == _calendarDayKey(selectedDay),
+                  isCurrentMonth: day.month == selectedDay.month,
+                  onTap: () => onOpenDay(day),
+                );
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  List<DateTime> _monthVisibleDays() {
+    final firstDay = DateTime(selectedDay.year, selectedDay.month, 1);
+    final firstWeekday = firstDay.weekday;
+    final gridStart = firstDay.subtract(Duration(days: firstWeekday - 1));
+    final daysInMonth = DateTime(
+      selectedDay.year,
+      selectedDay.month + 1,
+      0,
+    ).day;
+    final totalCells = ((firstWeekday - 1 + daysInMonth + 6) ~/ 7) * 7;
+    return List<DateTime>.generate(
+      totalCells,
+      (index) =>
+          TransitRequestBuilder.stripDate(gridStart.add(Duration(days: index))),
+    );
+  }
+}
+
+class _SelectedDayHeroCard extends StatelessWidget {
+  const _SelectedDayHeroCard({
+    required this.day,
+    required this.bundle,
+    required this.onOpenDay,
+  });
+
+  final DateTime day;
+  final CalendarDayBundle? bundle;
+  final VoidCallback onOpenDay;
+
+  @override
+  Widget build(BuildContext context) {
+    final dayMeta = bundle?.selectedDayMeta;
+    return JoviaEditorialHeroBlock(
+      label: 'Gunun temasi',
+      title: bundle?.headline ?? _formatCalendarDayTitle(day),
+      body:
+          bundle?.summary ??
+          'Bir gune dokundugunda o gunun kartlari, markerlari ve uzun donem baglami ayrintili acilir.',
+      large: true,
+      accent: JoviaIllustrationAccent(
+        asset: (dayMeta?.isCritical ?? false)
+            ? JoviaIllustrationAsset.sunGrowth
+            : JoviaIllustrationAsset.planet,
+        width: 72,
+        height: 72,
+        opacity: 0.78,
+      ),
+      footer: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              _CalendarInfoPill(
+                label: '${day.day} ${_kCalendarMonthNames[day.month - 1]}',
+                highlighted: true,
+              ),
+              if ((dayMeta?.signalsCount ?? 0) > 0)
+                _CalendarInfoPill(label: '${dayMeta!.signalsCount} sinyal'),
+              if (dayMeta?.isCritical == true)
+                const _CalendarInfoPill(label: 'Kritik gun', highlighted: true),
+            ],
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            child: JoviaPrimaryButton(label: 'Gunu ac', onTap: onOpenDay),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _LongTermEffectBand extends StatelessWidget {
+  const _LongTermEffectBand({
+    required this.periodCore,
+    required this.periodCards,
+    required this.onOpenPeriodCard,
+  });
+
+  final PeriodCoreDto? periodCore;
+  final List<PeriodCardDto> periodCards;
+  final ValueChanged<PeriodCardDto> onOpenPeriodCard;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final summary = periodCore?.coreStory.trim().isNotEmpty == true
+        ? periodCore!.coreStory.trim()
+        : (periodCore?.bigPicture.trim().isNotEmpty == true
+              ? periodCore!.bigPicture.trim()
+              : 'Bu gunun arkasinda calisan daha uzun bir donem etkisi var.');
+    return JoviaReadingPanel(
+      label: 'Baglam',
+      title: periodCore?.title.trim().isNotEmpty == true
+          ? periodCore!.title.trim()
+          : 'Uzun donem etkisi',
+      body: _condenseCalendarCopy(summary, maxChars: 220),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (periodCards.isNotEmpty)
+            JoviaUtilityRow(
+              title: periodCards.first.title,
+              body: periodCards.first.subtitle,
+              trailing: const JoviaUiIcon(
+                asset: JoviaUiAsset.chevronRight,
+                size: 16,
+              ),
+              onTap: () => onOpenPeriodCard(periodCards.first),
+            )
+          else
+            Text(
+              'Gunun arka planinda calisan donem hikayesini gun sayfasinda daha uzun okuyabilirsin.',
+              style: profile.typography.bodyCompact.copyWith(
+                color: profile.colors.muted,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+class ProfileCalendarPreviewStrip extends ConsumerStatefulWidget {
+  const ProfileCalendarPreviewStrip({
+    super.key,
+    this.profileOverride,
+    this.dataSource,
+    this.initialDate,
+  });
+
+  final Map<String, dynamic>? profileOverride;
+  final CalendarDataSource? dataSource;
+  final DateTime? initialDate;
+
+  @override
+  ConsumerState<ProfileCalendarPreviewStrip> createState() =>
+      _ProfileCalendarPreviewStripState();
+}
+
+class _ProfileCalendarPreviewStripState
+    extends ConsumerState<ProfileCalendarPreviewStrip> {
+  late final CalendarDataSource _dataSource;
+  late DateTime _baseDay;
+  late DateTime _stripStartDay;
+  bool _loading = false;
+  String? _error;
+  CalendarDayBundle? _bundle;
+  final Map<String, CalendarDayBundle> _bundleCache =
+      <String, CalendarDayBundle>{};
+  String? _lastProfileKey;
+  int _requestEpoch = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _dataSource = widget.dataSource ?? NetworkCalendarDataSource();
+    _baseDay = TransitRequestBuilder.stripDate(
+      widget.initialDate ?? DateTime.now(),
+    );
+    _stripStartDay = _baseDay;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final profileAsync = widget.profileOverride == null
+        ? ref.watch(userProfileProvider)
+        : const AsyncValue<Map<String, dynamic>?>.data(null);
+    final profile = widget.profileOverride ?? profileAsync.valueOrNull;
+    _maybeBootstrap(profile);
+
+    if (profileAsync.isLoading && profile == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
+    if (!TransitRequestBuilder.hasProfile(profile)) {
+      return const JoviaReadingPanel(
+        label: 'Timing',
+        title: 'Takvim icin dogum verisi gerekiyor',
+        body:
+            'Dogum tarihi, saati ve yeri tamamlandiginda gunluk takvim acilir.',
+      );
+    }
+
+    final bundle = _bundle;
+    final heroData = _resolvePreviewHeroData(bundle);
+    final visibleDays = List<DateTime>.generate(
+      7,
+      (index) => TransitRequestBuilder.stripDate(
+        _stripStartDay.add(Duration(days: index)),
+      ),
+    );
+    final todayKey = _calendarDayKey(DateTime.now());
+
+    return _ProfileCalendarPreviewHero(
+      contentKey: heroData.contentKey,
+      label: heroData.label,
+      title: heroData.title,
+      body: heroData.body,
+      isCritical: heroData.isCritical,
+      footer: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (_error != null)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Text(
+                _error!,
+                style: context.profileTheme.typography.meta.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+            ),
+          Row(
+            children: [
+              Expanded(
+                child: MinimalCTAButton(
+                  label: 'Gunu ac',
+                  onTap: () => _openDayPage(profile!, _baseDay),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: JoviaPrimaryButton(
+                  label: 'Takvimi ac',
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => CalendarHubPage(
+                          profileOverride: widget.profileOverride,
+                          dataSource: _dataSource,
+                          initialSelectedDay: _baseDay,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 108,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                final day = visibleDays[index];
+                final meta = bundle?.calendarDays[_calendarDayKey(day)];
+                return _ProfileCalendarMiniDayCard(
+                  day: day,
+                  meta: meta,
+                  isSelected: _calendarDayKey(day) == _calendarDayKey(_baseDay),
+                  isToday: _calendarDayKey(day) == todayKey,
+                  onTap: () => _handlePreviewDayTap(profile!, day),
+                );
+              },
+              separatorBuilder: (context, _) => const SizedBox(width: 10),
+              itemCount: visibleDays.length,
+            ),
+          ),
+          if (_loading) ...[
+            const SizedBox(height: 14),
+            const LinearProgressIndicator(),
+          ],
+          if (bundle?.periodCore != null) ...[
+            const SizedBox(height: 14),
+            Text(
+              'Uzun donem etkisi: ${bundle!.periodCore!.title.trim().isNotEmpty ? bundle.periodCore!.title.trim() : 'arka planda aktif'}',
+              style: context.profileTheme.typography.metaSoft.copyWith(
+                color: context.profileTheme.colors.textLight,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  void _maybeBootstrap(Map<String, dynamic>? profile) {
+    if (!TransitRequestBuilder.hasProfile(profile)) {
+      return;
+    }
+    final key =
+        '${profile?['birth_date']}|${profile?['birth_time']}|${profile?['place'] ?? profile?['city']}|${profile?['timezone']}|${_calendarDayKey(_baseDay)}';
+    if (_lastProfileKey == key) {
+      return;
+    }
+    _lastProfileKey = key;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || profile == null) {
+        return;
+      }
+      _loadBundle(profile);
+    });
+  }
+
+  Future<void> _loadBundle(Map<String, dynamic> profile) async {
+    final requestDay = _baseDay;
+    final requestKey = _calendarDayKey(requestDay);
+    final requestEpoch = ++_requestEpoch;
+    setState(() {
+      _bundle = _bundleCache[requestKey] ?? _bundle;
+      _loading = !_bundleCache.containsKey(requestKey);
+      _error = null;
+    });
+    try {
+      final bundle = await _loadCalendarDayBundle(
+        dataSource: _dataSource,
+        profile: profile,
+        selectedDay: requestDay,
+      );
+      if (!mounted) {
+        return;
+      }
+      _bundleCache[requestKey] = bundle;
+      if (requestEpoch != _requestEpoch ||
+          requestKey != _calendarDayKey(_baseDay)) {
+        return;
+      }
+      setState(() {
+        _bundle = bundle;
+        _loading = false;
+      });
+    } catch (exc) {
+      if (!mounted) {
+        return;
+      }
+      if (requestEpoch != _requestEpoch ||
+          requestKey != _calendarDayKey(_baseDay)) {
+        return;
+      }
+      setState(() {
+        _loading = false;
+        _error = exc.toString();
+      });
+    }
+  }
+
+  Future<void> _handlePreviewDayTap(
+    Map<String, dynamic> profile,
+    DateTime day,
+  ) async {
+    final resolved = TransitRequestBuilder.stripDate(day);
+    if (_calendarDayKey(resolved) == _calendarDayKey(_baseDay)) {
+      await _openDayPage(profile, resolved);
+      return;
+    }
+    setState(() {
+      _baseDay = resolved;
+      _syncPreviewWindow(resolved);
+    });
+    await _loadBundle(profile);
+  }
+
+  Future<void> _openDayPage(Map<String, dynamic> profile, DateTime day) async {
+    final dayKey = _calendarDayKey(day);
+    final returned = await Navigator.of(context, rootNavigator: true)
+        .push<DateTime>(
+          MaterialPageRoute<DateTime>(
+            builder: (_) => CalendarDayPage(
+              profile: profile,
+              initialDate: day,
+              initialBundle:
+                  _bundleCache[dayKey] ??
+                  (_bundle != null && _calendarDayKey(_bundle!.date) == dayKey
+                      ? _bundle
+                      : null),
+              dataSource: _dataSource,
+              source: 'profile_calendar_preview',
+            ),
+          ),
+        );
+    final resolved = TransitRequestBuilder.stripDate(returned ?? day);
+    if (_calendarDayKey(resolved) == _calendarDayKey(_baseDay)) {
+      return;
+    }
+    setState(() {
+      _baseDay = resolved;
+      _syncPreviewWindow(resolved);
+    });
+    await _loadBundle(profile);
+  }
+
+  void _syncPreviewWindow(DateTime selectedDay) {
+    final normalized = TransitRequestBuilder.stripDate(selectedDay);
+    final startKey = _calendarDayKey(_stripStartDay);
+    final endKey = _calendarDayKey(
+      TransitRequestBuilder.stripDate(
+        _stripStartDay.add(const Duration(days: 6)),
+      ),
+    );
+    final selectedKey = _calendarDayKey(normalized);
+    if (selectedKey.compareTo(startKey) >= 0 &&
+        selectedKey.compareTo(endKey) <= 0) {
+      return;
+    }
+    _stripStartDay = TransitRequestBuilder.stripDate(
+      normalized.subtract(const Duration(days: 2)),
+    );
+  }
+
+  _PreviewHeroData _resolvePreviewHeroData(CalendarDayBundle? activeBundle) {
+    final selectedKey = _calendarDayKey(_baseDay);
+    final cachedBundle = _bundleCache[selectedKey];
+    final bundle =
+        cachedBundle ??
+        (activeBundle != null &&
+                _calendarDayKey(activeBundle.date) == selectedKey
+            ? activeBundle
+            : null);
+    final meta =
+        bundle?.selectedDayMeta ?? activeBundle?.calendarDays[selectedKey];
+    final title =
+        bundle?.headline ??
+        (meta != null && meta.labels.isNotEmpty
+            ? meta.labels.first
+            : _formatCalendarDayTitle(_baseDay));
+    final body =
+        bundle?.summary ??
+        (meta != null && meta.labels.isNotEmpty
+            ? _condenseCalendarCopy(meta.labels.take(2).join(' • '))
+            : 'Yakin gunleri hizlica tara, bir gune dokunup gun sayfasina gec.');
+    return _PreviewHeroData(
+      contentKey: selectedKey,
+      label: 'Gunun temasi',
+      title: title,
+      body: body,
+      isCritical:
+          bundle?.selectedDayMeta?.isCritical == true ||
+          meta?.isCritical == true,
+    );
+  }
+}
+
+class _PreviewHeroData {
+  const _PreviewHeroData({
+    required this.contentKey,
+    required this.label,
+    required this.title,
+    required this.body,
+    required this.isCritical,
+  });
+
+  final String contentKey;
+  final String label;
+  final String title;
+  final String body;
+  final bool isCritical;
+}
+
+class _ProfileCalendarPreviewHero extends StatelessWidget {
+  const _ProfileCalendarPreviewHero({
+    required this.contentKey,
+    required this.label,
+    required this.title,
+    required this.body,
+    required this.isCritical,
+    required this.footer,
+  });
+
+  final String contentKey;
+  final String label;
+  final String title;
+  final String body;
+  final bool isCritical;
+  final Widget footer;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final labelStyle = profile.typography.eyebrow.copyWith(
+      color: profile.colors.textLight,
+      letterSpacing: 1.5,
+    );
+    final titleStyle = profile.typography.pageTitle.copyWith(
+      color: profile.colors.text,
+      fontSize: 32,
+      height: 1.05,
+    );
+    final bodyStyle = profile.typography.bodyCompact.copyWith(
+      color: profile.colors.textLight,
+    );
+    return JoviaSurfaceCard(
+      padding: const EdgeInsets.all(24),
+      child: Stack(
+        children: [
+          Positioned(
+            right: 0,
+            top: 0,
+            child: IgnorePointer(
+              child: JoviaIllustrationAccent(
+                asset: isCritical
+                    ? JoviaIllustrationAsset.sunGrowth
+                    : JoviaIllustrationAsset.planet,
+                width: 72,
+                height: 72,
+                opacity: 0.82,
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                height: _heroTextSlotHeight(labelStyle, 1),
+                child: _PreviewHeroAnimatedText(
+                  text: label.toUpperCase(),
+                  textStyle: labelStyle,
+                  maxLines: 1,
+                  delay: Duration.zero,
+                ),
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: _heroTextSlotHeight(titleStyle, 3),
+                child: _PreviewHeroAnimatedText(
+                  text: title,
+                  textStyle: titleStyle,
+                  maxLines: 3,
+                  delay: const Duration(milliseconds: 36),
+                ),
+              ),
+              if (body.trim().isNotEmpty) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  height: _heroTextSlotHeight(bodyStyle, 5),
+                  child: _PreviewHeroAnimatedText(
+                    text: body,
+                    textStyle: bodyStyle,
+                    maxLines: 5,
+                    delay: const Duration(milliseconds: 72),
+                  ),
+                ),
+              ],
+              const SizedBox(height: 16),
+              KeyedSubtree(key: ValueKey<String>(contentKey), child: footer),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PreviewHeroAnimatedText extends StatefulWidget {
+  const _PreviewHeroAnimatedText({
+    required this.text,
+    required this.textStyle,
+    required this.maxLines,
+    required this.delay,
+  });
+
+  final String text;
+  final TextStyle textStyle;
+  final int maxLines;
+  final Duration delay;
+
+  @override
+  State<_PreviewHeroAnimatedText> createState() =>
+      _PreviewHeroAnimatedTextState();
+}
+
+class _PreviewHeroAnimatedTextState extends State<_PreviewHeroAnimatedText>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late String _currentText;
+  String? _previousText;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentText = widget.text;
+    _controller =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 320),
+          value: 1,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.completed && mounted) {
+            setState(() => _previousText = null);
+          }
+        });
+  }
+
+  @override
+  void didUpdateWidget(covariant _PreviewHeroAnimatedText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text == widget.text) {
+      return;
+    }
+    _previousText = _currentText;
+    _currentText = widget.text;
+    _controller.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_previousText == null) {
+      return Align(
+        alignment: Alignment.topLeft,
+        child: _buildText(_currentText),
+      );
+    }
+
+    final delayFraction =
+        widget.delay.inMilliseconds / _controller.duration!.inMilliseconds;
+    final outgoingEnd = (delayFraction + 0.44).clamp(0.0, 0.86);
+    final incomingStart = (delayFraction + 0.16).clamp(0.0, 0.94);
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final outgoing = CurvedAnimation(
+          parent: _controller,
+          curve: Interval(
+            delayFraction.clamp(0.0, 1.0),
+            outgoingEnd.toDouble(),
+            curve: Curves.easeIn,
+          ),
+        );
+        final incoming = CurvedAnimation(
+          parent: _controller,
+          curve: Interval(
+            incomingStart.toDouble(),
+            1,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+
+        return ClipRect(
+          child: Stack(
+            alignment: Alignment.topLeft,
+            children: [
+              if (_previousText != null)
+                Opacity(
+                  opacity: 1 - outgoing.value,
+                  child: Transform.translate(
+                    offset: Offset(0, -10 * outgoing.value),
+                    child: _buildText(_previousText!),
+                  ),
+                ),
+              Opacity(
+                opacity: incoming.value,
+                child: Transform.translate(
+                  offset: Offset(0, 12 * (1 - incoming.value)),
+                  child: _buildText(_currentText),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildText(String value) {
+    return Text(
+      value,
+      maxLines: widget.maxLines,
+      overflow: TextOverflow.ellipsis,
+      style: widget.textStyle,
+    );
+  }
+}
+
+double _heroTextSlotHeight(TextStyle style, int lines) {
+  final fontSize = style.fontSize ?? 14;
+  final lineHeight = style.height ?? 1.2;
+  return (fontSize * lineHeight * lines) + 2;
+}
+
+class _ProfileCalendarMiniDayCard extends StatelessWidget {
+  const _ProfileCalendarMiniDayCard({
+    required this.day,
+    required this.meta,
+    required this.isSelected,
+    required this.isToday,
+    required this.onTap,
+  });
+
+  final DateTime day;
+  final NarrativeCalendarDay? meta;
+  final bool isSelected;
+  final bool isToday;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final colors = profile.colors;
+    final signalCount = meta == null
+        ? 0
+        : (meta!.signalsCount > 3 ? 3 : meta!.signalsCount);
+    final emphasisColor = meta?.isCritical == true
+        ? colors.warmAccent
+        : colors.primary;
+    final fillColor = isSelected
+        ? Color.alphaBlend(
+            colors.primary.withValues(alpha: 0.16),
+            colors.surface.withValues(alpha: 0.68),
+          )
+        : isToday
+        ? Color.alphaBlend(
+            colors.primary.withValues(alpha: 0.06),
+            colors.surface.withValues(alpha: 0.58),
+          )
+        : colors.surface.withValues(alpha: 0.52);
+    final borderColor = isSelected
+        ? colors.primary.withValues(alpha: 0.9)
+        : isToday
+        ? colors.primary.withValues(alpha: 0.42)
+        : colors.strokeSoft.withValues(alpha: 0.74);
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(22),
+      child: AnimatedContainer(
+        key: ValueKey<String>('profilePreviewDay_${_calendarDayKey(day)}'),
+        duration: const Duration(milliseconds: 220),
+        curve: Curves.easeOutCubic,
+        width: 76,
+        padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+        decoration: BoxDecoration(
+          color: fillColor,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: borderColor, width: isSelected ? 1.2 : 1),
+          boxShadow: isSelected
+              ? [
+                  BoxShadow(
+                    color: colors.primary.withValues(alpha: 0.16),
+                    blurRadius: 18,
+                    offset: const Offset(0, 10),
+                    spreadRadius: -12,
+                  ),
+                ]
+              : isToday
+              ? [
+                  BoxShadow(
+                    color: colors.primary.withValues(alpha: 0.08),
+                    blurRadius: 16,
+                    offset: const Offset(0, 8),
+                    spreadRadius: -14,
+                  ),
+                ]
+              : null,
         ),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxHeight < 88;
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOutCubic,
+                  width: isSelected
+                      ? 20
+                      : isToday
+                      ? 14
+                      : 8,
+                  height: 3,
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? emphasisColor
+                        : isToday
+                        ? emphasisColor.withValues(alpha: 0.44)
+                        : colors.separator.withValues(alpha: 0.34),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+                Text(
+                  _formatCalendarShortWeekday(day),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: profile.typography.eyebrow.copyWith(
+                    color: isSelected
+                        ? colors.text
+                        : isToday
+                        ? colors.primary.withValues(alpha: 0.88)
+                        : colors.textLight,
+                    fontSize: compact ? 10 : 11,
+                    height: 1,
+                  ),
+                ),
+                Text(
+                  '${day.day}',
+                  style: profile.typography.section.copyWith(
+                    color: colors.text,
+                    fontSize: compact ? 24 : 28,
+                    fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                    height: 1,
+                  ),
+                ),
+                if (signalCount > 0)
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      for (var i = 0; i < signalCount; i++) ...[
+                        Container(
+                          width: compact ? 5 : 6,
+                          height: compact ? 5 : 6,
+                          margin: EdgeInsets.symmetric(
+                            horizontal: compact ? 1.5 : 2,
+                          ),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: meta?.isCritical == true
+                                ? colors.warmAccent
+                                : colors.primary,
+                          ),
+                        ),
+                      ],
+                    ],
+                  )
+                else
+                  Container(
+                    width: compact ? 6 : 8,
+                    height: compact ? 6 : 8,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: colors.separator.withValues(alpha: 0.42),
+                    ),
+                  ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class CalendarDayPage extends StatefulWidget {
+  const CalendarDayPage({
+    super.key,
+    required this.profile,
+    required this.initialDate,
+    this.initialBundle,
+    this.dataSource,
+    this.source = 'unknown',
+  });
+
+  final Map<String, dynamic> profile;
+  final DateTime initialDate;
+  final CalendarDayBundle? initialBundle;
+  final CalendarDataSource? dataSource;
+  final String source;
+
+  @override
+  State<CalendarDayPage> createState() => _CalendarDayPageState();
+}
+
+class _CalendarDayPageState extends State<CalendarDayPage> {
+  static const int _kInitialPage = 1000;
+
+  late final CalendarDataSource _dataSource;
+  late final PageController _pageController;
+  late DateTime _activeDate;
+  final Map<String, CalendarDayBundle> _cache = <String, CalendarDayBundle>{};
+  final Set<String> _loadingKeys = <String>{};
+
+  @override
+  void initState() {
+    super.initState();
+    _dataSource = widget.dataSource ?? NetworkCalendarDataSource();
+    _activeDate = TransitRequestBuilder.stripDate(widget.initialDate);
+    _pageController = PageController(initialPage: _kInitialPage);
+    if (widget.initialBundle != null) {
+      _cache[_calendarDayKey(widget.initialBundle!.date)] =
+          widget.initialBundle!;
+    }
+    _ensureLoaded(_activeDate);
+    _prefetchNeighbors(_activeDate);
+  }
+
+  Future<void> _ensureLoaded(DateTime date) async {
+    final key = _calendarDayKey(date);
+    if (_cache.containsKey(key) || _loadingKeys.contains(key)) {
+      return;
+    }
+    setState(() => _loadingKeys.add(key));
+    try {
+      final bundle = await _loadCalendarDayBundle(
+        dataSource: _dataSource,
+        profile: widget.profile,
+        selectedDay: date,
+      );
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _cache[key] = bundle;
+        _loadingKeys.remove(key);
+      });
+    } catch (_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() => _loadingKeys.remove(key));
+    }
+  }
+
+  void _prefetchNeighbors(DateTime center) {
+    _ensureLoaded(
+      TransitRequestBuilder.stripDate(center.subtract(const Duration(days: 1))),
+    );
+    _ensureLoaded(
+      TransitRequestBuilder.stripDate(center.add(const Duration(days: 1))),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return PopScope<DateTime>(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) {
+          return;
+        }
+        Navigator.of(context).pop(_activeDate);
+      },
+      child: Scaffold(
+        backgroundColor: profile.colors.bg,
+        appBar: AppBar(
+          leadingWidth: 52,
+          leading: Padding(
+            key: const ValueKey<String>('calendarDayBack'),
+            padding: const EdgeInsets.only(left: 12),
+            child: JoviaGlassIconButton(
+              onTap: () => Navigator.of(context).pop(_activeDate),
+              child: const JoviaUiIcon(asset: JoviaUiAsset.back, size: 18),
+            ),
+          ),
+          title: Text(
+            'GUN',
+            style: profile.typography.navigationLabel(
+              color: profile.colors.text,
+            ),
+          ),
+        ),
+        body: SafeArea(
+          top: false,
+          child: PageView.builder(
+            controller: _pageController,
+            scrollDirection: Axis.horizontal,
+            onPageChanged: (index) {
+              final date = TransitRequestBuilder.stripDate(
+                widget.initialDate.add(Duration(days: index - _kInitialPage)),
+              );
+              setState(() => _activeDate = date);
+              _ensureLoaded(date);
+              _prefetchNeighbors(date);
+            },
+            itemBuilder: (context, index) {
+              final date = TransitRequestBuilder.stripDate(
+                widget.initialDate.add(Duration(days: index - _kInitialPage)),
+              );
+              final key = _calendarDayKey(date);
+              final bundle = _cache[key];
+              final loading = _loadingKeys.contains(key) && bundle == null;
+              return _CalendarDayPageContent(
+                date: date,
+                bundle: bundle,
+                loading: loading,
+                source: widget.source,
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CalendarDayPageContent extends StatelessWidget {
+  const _CalendarDayPageContent({
+    required this.date,
+    required this.bundle,
+    required this.loading,
+    required this.source,
+  });
+
+  final DateTime date;
+  final CalendarDayBundle? bundle;
+  final bool loading;
+  final String source;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final spacing = profile.spacing;
+    return JoviaPageScaffold(
+      padding: EdgeInsets.fromLTRB(
+        spacing.pageHorizontal,
+        spacing.xs,
+        spacing.pageHorizontal,
+        spacing.pageBottom,
+      ),
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          JoviaEditorialHeroBlock(
+            label: 'Gun',
+            title: bundle?.headline ?? _formatCalendarDayTitle(date),
+            body:
+                bundle?.summary ??
+                'Bu gunun kartlari ve baglami yuklenirken bekleniyor.',
+            large: true,
+            accent: JoviaIllustrationAccent(
+              asset: (bundle?.selectedDayMeta?.isCritical ?? false)
+                  ? JoviaIllustrationAsset.sunGrowth
+                  : JoviaIllustrationAsset.planet,
+              width: 72,
+              height: 72,
+              opacity: 0.82,
+            ),
+            footer: Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                _CalendarInfoPill(
+                  label: '${date.day} ${_kCalendarMonthNames[date.month - 1]}',
+                  highlighted: true,
+                ),
+                if ((bundle?.selectedDayMeta?.signalsCount ?? 0) > 0)
+                  _CalendarInfoPill(
+                    label: '${bundle!.selectedDayMeta!.signalsCount} sinyal',
+                  ),
+                if (bundle?.selectedDayMeta?.isCritical == true)
+                  const _CalendarInfoPill(
+                    label: 'Kritik gun',
+                    highlighted: true,
+                  ),
+              ],
+            ),
+          ),
+          if (loading) ...[
+            SizedBox(height: spacing.sectionToContent),
+            const LinearProgressIndicator(),
+          ],
+          if (bundle != null &&
+              (bundle!.periodCore != null ||
+                  bundle!.periodCards.isNotEmpty)) ...[
+            SizedBox(height: spacing.majorSectionGap),
+            _LongTermEffectBand(
+              periodCore: bundle!.periodCore,
+              periodCards: bundle!.periodCards,
+              onOpenPeriodCard: (card) {
+                Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PeriodDetailPage(
+                      card: card,
+                      periodCore: bundle!.periodCore,
+                      routeSource: '${source}_day_period',
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+          if (bundle != null && bundle!.dailyEventCards.isNotEmpty) ...[
+            SizedBox(height: spacing.majorSectionGap),
+            const JoviaSectionHeader(
+              label: 'Cards',
+              title: 'Gunun kartlari',
+              body: 'Bugune acilan kartlar burada tam akisa gider.',
+            ),
+            SizedBox(height: spacing.sectionToContent),
+            for (final card in bundle!.dailyEventCards) ...[
+              JoviaTopicSurface(
+                eyebrow: card.signatureTr.trim().isNotEmpty
+                    ? card.signatureTr.trim()
+                    : (card.signature.trim().isNotEmpty
+                          ? card.signature.trim()
+                          : 'Aktif transit'),
+                title: card.title.isNotEmpty ? card.title : 'Aktif Transit',
+                body: card.opening.trim().isNotEmpty
+                    ? card.opening.trim()
+                    : (card.whyNow.trim().isNotEmpty
+                          ? card.whyNow.trim()
+                          : 'Detaylar icin karti ac.'),
+                meta: [
+                  if (card.whatItBuilds.trim().isNotEmpty)
+                    card.whatItBuilds.trim(),
+                ],
+                secondaryAction: MinimalCTAButton(
+                  label: 'Detayi ac',
+                  onTap: () {
+                    Navigator.of(context, rootNavigator: true).push(
+                      MaterialPageRoute<void>(
+                        builder: (_) => PeriodDetailPage(
+                          card: PeriodCardDto.fromEventCard(
+                            eventCard: card,
+                            index: 0,
+                          ),
+                          periodCore: null,
+                          routeSource: '${source}_day_card',
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              SizedBox(height: spacing.sectionToContent),
+            ],
+          ] else if (!loading) ...[
+            SizedBox(height: spacing.majorSectionGap),
+            EmptyStateBlock(
+              title: 'Bugun sakin',
+              body: bundle?.timeline?.summary.trim().isNotEmpty == true
+                  ? bundle!.timeline!.summary.trim()
+                  : 'Bu gun icin belirgin bir kart cikmadi. Sag-sol kaydirip komsu gunlere bakabilirsin.',
+            ),
+          ],
+          if (bundle != null && bundle!.markers.isNotEmpty) ...[
+            SizedBox(height: spacing.majorSectionGap),
+            JoviaReadingPanel(
+              label: 'Markers',
+              title: 'Gunun markerlari',
+              child: Column(
+                children: [
+                  for (
+                    var index = 0;
+                    index < bundle!.markers.length;
+                    index++
+                  ) ...[
+                    JoviaUtilityRow(
+                      title: bundle!.markers[index].title.isNotEmpty
+                          ? bundle!.markers[index].title
+                          : 'Gunluk marker',
+                      body: bundle!.markers[index].summary.isNotEmpty
+                          ? bundle!.markers[index].summary
+                          : (bundle!.markers[index].timeHint.isNotEmpty
+                                ? bundle!.markers[index].timeHint
+                                : 'Detaylar icin ac.'),
+                      trailing: const JoviaUiIcon(
+                        asset: JoviaUiAsset.chevronRight,
+                        size: 16,
+                      ),
+                      onTap: () {
+                        Navigator.of(context, rootNavigator: true).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => PeriodMarkerDetailPage(
+                              marker: bundle!.markers[index],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    if (index != bundle!.markers.length - 1)
+                      const ThinDivider(),
+                  ],
+                ],
+              ),
+            ),
+          ],
+          if (bundle != null &&
+              (bundle!.timeline?.lines.isNotEmpty == true ||
+                  bundle!.timeline?.summary.trim().isNotEmpty == true)) ...[
+            SizedBox(height: spacing.majorSectionGap),
+            JoviaReadingPanel(
+              label: 'Flow',
+              title: 'Gunun akis notlari',
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (bundle!.timeline?.summary.trim().isNotEmpty == true)
+                    Text(
+                      bundle!.timeline!.summary.trim(),
+                      style: profile.typography.bodyCompact.copyWith(
+                        color: profile.colors.text,
+                      ),
+                    ),
+                  for (final line
+                      in bundle!.timeline?.lines.take(4) ??
+                          const <String>[]) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      line,
+                      style: profile.typography.bodyCompact.copyWith(
+                        color: profile.colors.muted,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -126,7 +2136,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
   String? _error;
   List<EventCardDto> _dailyEventCards = const <EventCardDto>[];
   List<PeriodMarkerDto> _dailyMarkers = const <PeriodMarkerDto>[];
-  List<_BestTimeItem> _bestTimes = const <_BestTimeItem>[];
+  List<CalendarBestTimeItem> _bestTimes = const <CalendarBestTimeItem>[];
   Map<String, NarrativeCalendarDay> _calendarDays =
       const <String, NarrativeCalendarDay>{};
   TimelineDto? _dailyTimeline;
@@ -321,7 +2331,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
       }
       final narrativeBest = _extractBestTimesFromNarrativeMap(map);
       final fallbackBest = narrativeBest.isNotEmpty
-          ? const <_BestTimeItem>[]
+          ? const <CalendarBestTimeItem>[]
           : await _loadBestTimesFallback(profile);
       final periodInNarrative =
           narrative.periodCore != null && narrative.eventCards.isEmpty;
@@ -353,7 +2363,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
         _dailyMarkers = const <PeriodMarkerDto>[];
         _calendarDays = const <String, NarrativeCalendarDay>{};
         _dailyTimeline = null;
-        _bestTimes = const <_BestTimeItem>[];
+        _bestTimes = const <CalendarBestTimeItem>[];
         _error = _friendlyError(exc);
       });
     } catch (exc) {
@@ -365,13 +2375,13 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
         _dailyMarkers = const <PeriodMarkerDto>[];
         _calendarDays = const <String, NarrativeCalendarDay>{};
         _dailyTimeline = null;
-        _bestTimes = const <_BestTimeItem>[];
+        _bestTimes = const <CalendarBestTimeItem>[];
         _error = exc.toString();
       });
     }
   }
 
-  Future<List<_BestTimeItem>> _loadBestTimesFallback(
+  Future<List<CalendarBestTimeItem>> _loadBestTimesFallback(
     Map<String, dynamic> profile,
   ) async {
     try {
@@ -381,7 +2391,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
       );
       return _extractBestTimesFromBestTimesMap(map);
     } catch (_) {
-      return const <_BestTimeItem>[];
+      return const <CalendarBestTimeItem>[];
     }
   }
 
@@ -411,10 +2421,10 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
     return exc.message ?? 'Daily veri alinamadi.';
   }
 
-  List<_BestTimeItem> _extractBestTimesFromNarrativeMap(
+  List<CalendarBestTimeItem> _extractBestTimesFromNarrativeMap(
     Map<String, dynamic> data,
   ) {
-    final out = <_BestTimeItem>[];
+    final out = <CalendarBestTimeItem>[];
     final publicRaw = data['public'] is Map
         ? Map<String, dynamic>.from(data['public'] as Map)
         : data;
@@ -452,7 +2462,9 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
           continue;
         }
         out.add(
-          _BestTimeItem(label: reason.isEmpty ? label : '$label • $reason'),
+          CalendarBestTimeItem(
+            label: reason.isEmpty ? label : '$label • $reason',
+          ),
         );
       }
       if (out.isNotEmpty) {
@@ -475,7 +2487,9 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
         continue;
       }
       out.add(
-        _BestTimeItem(label: detail.isEmpty ? label : '$label • $detail'),
+        CalendarBestTimeItem(
+          label: detail.isEmpty ? label : '$label • $detail',
+        ),
       );
     }
     final lists = narrative.blocks.where((b) => b.type == 'best_time_list');
@@ -495,17 +2509,19 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
           continue;
         }
         out.add(
-          _BestTimeItem(label: score.isEmpty ? date : '$date • skor $score'),
+          CalendarBestTimeItem(
+            label: score.isEmpty ? date : '$date • skor $score',
+          ),
         );
       }
     }
     return out.take(6).toList(growable: false);
   }
 
-  List<_BestTimeItem> _extractBestTimesFromBestTimesMap(
+  List<CalendarBestTimeItem> _extractBestTimesFromBestTimesMap(
     Map<String, dynamic> data,
   ) {
-    final out = <_BestTimeItem>[];
+    final out = <CalendarBestTimeItem>[];
     final list = (data['best_times'] is List)
         ? (data['best_times'] as List)
         : (data['windows'] is List)
@@ -533,7 +2549,9 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
       if (label.isEmpty && focus.isEmpty) {
         continue;
       }
-      out.add(_BestTimeItem(label: focus.isEmpty ? label : '$label • $focus'));
+      out.add(
+        CalendarBestTimeItem(label: focus.isEmpty ? label : '$label • $focus'),
+      );
     }
     return out.take(6).toList(growable: false);
   }
@@ -565,7 +2583,7 @@ class _DailyCalendarContent extends StatelessWidget {
   final bool loading;
   final String? error;
   final bool wrongSource;
-  final List<_BestTimeItem> bestTimes;
+  final List<CalendarBestTimeItem> bestTimes;
   final List<EventCardDto> eventCards;
   final List<PeriodMarkerDto> markers;
   final TimelineDto? timeline;
@@ -1002,112 +3020,117 @@ class _CalendarDayCell extends StatelessWidget {
         ? colors.text
         : colors.textLight.withValues(alpha: 0.65);
 
-    return JoviaPressable(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(profile.radii.cardRadius - 2),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          final compact = constraints.maxHeight < 72;
-          final dotSize = compact ? 4.0 : 5.0;
-          final dotSpacing = compact ? 3.0 : 4.0;
-          final dayStyle = profile.typography.cardTitle.copyWith(
-            color: textColor,
-            fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-            fontSize: compact ? 15 : 17,
-            height: 1.0,
-          );
+    return KeyedSubtree(
+      key: ValueKey<String>('calendarDayCell_${_calendarDayKey(day)}'),
+      child: JoviaPressable(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(profile.radii.cardRadius - 2),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final compact = constraints.maxHeight < 72;
+            final dotSize = compact ? 4.0 : 5.0;
+            final dotSpacing = compact ? 3.0 : 4.0;
+            final dayStyle = profile.typography.cardTitle.copyWith(
+              color: textColor,
+              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+              fontSize: compact ? 15 : 17,
+              height: 1.0,
+            );
 
-          return Container(
-            padding: EdgeInsets.symmetric(
-              horizontal: compact ? 7 : 8,
-              vertical: compact ? 8 : 10,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(profile.radii.cardRadius - 2),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Colors.white.withValues(alpha: isSelected ? 0.16 : 0.08),
-                  fill,
+            return Container(
+              padding: EdgeInsets.symmetric(
+                horizontal: compact ? 7 : 8,
+                vertical: compact ? 8 : 10,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(
+                  profile.radii.cardRadius - 2,
+                ),
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.white.withValues(alpha: isSelected ? 0.16 : 0.08),
+                    fill,
+                  ],
+                ),
+                border: Border.all(color: border),
+                boxShadow: isSelected
+                    ? [
+                        BoxShadow(
+                          color: colors.primary.withValues(alpha: 0.16),
+                          blurRadius: 18,
+                          offset: const Offset(0, 12),
+                          spreadRadius: -14,
+                        ),
+                      ]
+                    : null,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('${day.day}', style: dayStyle),
+                  const Spacer(),
+                  if (signals > 0)
+                    Row(
+                      children: [
+                        for (
+                          var index = 0;
+                          index < (signals > 3 ? 3 : signals);
+                          index++
+                        ) ...[
+                          Container(
+                            width: dotSize,
+                            height: dotSize,
+                            margin: EdgeInsets.only(
+                              right: index == 2 ? 0 : dotSpacing,
+                            ),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: critical
+                                  ? colors.warmAccent
+                                  : colors.primary.withValues(alpha: 0.9),
+                            ),
+                          ),
+                        ],
+                      ],
+                    )
+                  else
+                    Container(
+                      width: compact ? 12 : 16,
+                      height: 1,
+                      color: colors.separator.withValues(alpha: 0.45),
+                    ),
+                  if (!compact && critical) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      'peak',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: profile.typography.meta.copyWith(
+                        color: colors.warmAccent,
+                        fontSize: 10,
+                        height: 1.0,
+                      ),
+                    ),
+                  ] else if (!compact && signals > 0) ...[
+                    const SizedBox(height: 4),
+                    Text(
+                      '$signals etki',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: profile.typography.meta.copyWith(
+                        color: colors.textLight,
+                        fontSize: 10,
+                        height: 1.0,
+                      ),
+                    ),
+                  ],
                 ],
               ),
-              border: Border.all(color: border),
-              boxShadow: isSelected
-                  ? [
-                      BoxShadow(
-                        color: colors.primary.withValues(alpha: 0.16),
-                        blurRadius: 18,
-                        offset: const Offset(0, 12),
-                        spreadRadius: -14,
-                      ),
-                    ]
-                  : null,
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('${day.day}', style: dayStyle),
-                const Spacer(),
-                if (signals > 0)
-                  Row(
-                    children: [
-                      for (
-                        var index = 0;
-                        index < (signals > 3 ? 3 : signals);
-                        index++
-                      ) ...[
-                        Container(
-                          width: dotSize,
-                          height: dotSize,
-                          margin: EdgeInsets.only(
-                            right: index == 2 ? 0 : dotSpacing,
-                          ),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: critical
-                                ? colors.warmAccent
-                                : colors.primary.withValues(alpha: 0.9),
-                          ),
-                        ),
-                      ],
-                    ],
-                  )
-                else
-                  Container(
-                    width: compact ? 12 : 16,
-                    height: 1,
-                    color: colors.separator.withValues(alpha: 0.45),
-                  ),
-                if (!compact && critical) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    'peak',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: profile.typography.meta.copyWith(
-                      color: colors.warmAccent,
-                      fontSize: 10,
-                      height: 1.0,
-                    ),
-                  ),
-                ] else if (!compact && signals > 0) ...[
-                  const SizedBox(height: 4),
-                  Text(
-                    '$signals etki',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: profile.typography.meta.copyWith(
-                      color: colors.textLight,
-                      fontSize: 10,
-                      height: 1.0,
-                    ),
-                  ),
-                ],
-              ],
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }
@@ -1178,8 +3201,8 @@ class _CalendarInfoPill extends StatelessWidget {
   }
 }
 
-class _BestTimeItem {
-  const _BestTimeItem({required this.label});
+class CalendarBestTimeItem {
+  const CalendarBestTimeItem({required this.label});
 
   final String label;
 }

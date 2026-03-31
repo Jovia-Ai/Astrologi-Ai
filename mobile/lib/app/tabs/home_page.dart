@@ -51,6 +51,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   String _skyFeedSummary = '';
   PeriodCoreDto? _periodCore;
   String? _lastKey;
+  int _selectedWeekIndex = 0;
   final NarrativeRepository _narrativeRepository = NarrativeRepository();
 
   @override
@@ -97,10 +98,10 @@ class _HomePageState extends ConsumerState<HomePage> {
           final activeCard = _periodCards.isNotEmpty
               ? _periodCards.first
               : null;
-          final activeTitle = activeCard?.title.trim().isNotEmpty == true
+          final fallbackTitle = activeCard?.title.trim().isNotEmpty == true
               ? activeCard?.title ?? 'Bugunun acilisi'
               : 'Bugunun acilisi';
-          final activeSubtitle = activeCard?.subtitle.trim().isNotEmpty == true
+          final fallbackPrompt = activeCard?.subtitle.trim().isNotEmpty == true
               ? activeCard?.subtitle ?? 'Bugun bende ne aciliyor?'
               : 'Bugun bende ne aciliyor?';
           final dailyCards = _periodCards.take(3).toList(growable: false);
@@ -114,11 +115,30 @@ class _HomePageState extends ConsumerState<HomePage> {
           final avatarUrl = (user?.userMetadata?['avatar_url'] ?? '')
               .toString()
               .trim();
-          final weekItems = _buildWeekItems(dailyCards);
+          final weekItems = _buildWeekItems(
+            dailyCards,
+            selectedIndex: _selectedWeekIndex,
+          );
+          final selectedWeekItem = weekItems.isEmpty
+              ? null
+              : weekItems[_selectedWeekIndex.clamp(0, weekItems.length - 1)];
+          final selectedCard = selectedWeekItem?.card;
+          final activeTitle = _resolveHomeHeroTitle(
+            selectedCard: selectedCard,
+            fallbackTitle: fallbackTitle,
+          );
+          final activeSubtitle = _resolveHomeHeroPrompt(
+            selectedCard: selectedCard,
+            fallbackPrompt: fallbackPrompt,
+          );
+          final selectedHeroBody = _resolveHomeHeroBody(
+            selectedCard: selectedCard,
+            fallbackBody: heroBody,
+          );
           final showTimingPanel = _shouldShowTimingPanel(
             periodCore: _periodCore,
-            heroBody: heroBody,
-            activeTitle: activeTitle,
+            heroBody: selectedHeroBody,
+            activeTitle: fallbackTitle,
             activeSubtitle: activeSubtitle,
           );
 
@@ -154,12 +174,21 @@ class _HomePageState extends ConsumerState<HomePage> {
                   const SizedBox(height: 18),
                   _HomeReferenceHeroCard(
                     title: activeTitle,
-                    body: heroBody,
+                    body: selectedHeroBody,
                     prompt: activeSubtitle,
                     weekItems: weekItems,
-                    onOpen: activeCard == null
-                        ? () => _openTiming(context)
-                        : () => _openPeriodDetails(context, activeCard),
+                    onSelectDay: (item) {
+                      if (item.isSelected) {
+                        _openHomeDay(context, profile, item.date);
+                        return;
+                      }
+                      setState(() => _selectedWeekIndex = item.index);
+                    },
+                    onOpen: () => _openHomeDay(
+                      context,
+                      profile,
+                      selectedWeekItem?.date ?? DateTime.now(),
+                    ),
                     footer: _HomeSignStateRow(
                       sunSign: _sunSign,
                       moonSign: _moonSign,
@@ -260,7 +289,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     return !(titleRepeats && bodyRepeats);
   }
 
-  List<_HomeWeekItemData> _buildWeekItems(List<PeriodCardDto> cards) {
+  List<_HomeWeekItemData> _buildWeekItems(
+    List<PeriodCardDto> cards, {
+    required int selectedIndex,
+  }) {
     const weekdayLabels = <String>[
       'Pzt',
       'Sal',
@@ -275,9 +307,12 @@ class _HomePageState extends ConsumerState<HomePage> {
       final date = DateTime(now.year, now.month, now.day + index);
       final card = index < cards.length ? cards[index] : null;
       return _HomeWeekItemData(
+        index: index,
+        date: date,
         weekdayLabel: weekdayLabels[date.weekday - 1],
         dayNumber: date.day,
         isToday: index == 0,
+        isSelected: index == selectedIndex,
         isHighlighted: card != null,
         accent: _homeAccentForIndex(index),
         card: card,
@@ -314,6 +349,46 @@ class _HomePageState extends ConsumerState<HomePage> {
       'Aralık',
     ];
     return '${date.day} ${months[date.month - 1]}';
+  }
+
+  String _resolveHomeHeroTitle({
+    required PeriodCardDto? selectedCard,
+    required String fallbackTitle,
+  }) {
+    if (selectedCard?.title.trim().isNotEmpty == true) {
+      return selectedCard!.title.trim();
+    }
+    return fallbackTitle;
+  }
+
+  String _resolveHomeHeroBody({
+    required PeriodCardDto? selectedCard,
+    required String fallbackBody,
+  }) {
+    final opening = selectedCard?.eventCard?.opening.trim() ?? '';
+    if (opening.isNotEmpty) {
+      return opening;
+    }
+    final subtitle = selectedCard?.subtitle.trim() ?? '';
+    if (subtitle.isNotEmpty) {
+      return subtitle;
+    }
+    return fallbackBody;
+  }
+
+  String _resolveHomeHeroPrompt({
+    required PeriodCardDto? selectedCard,
+    required String fallbackPrompt,
+  }) {
+    final builds = selectedCard?.eventCard?.whatItBuilds.trim() ?? '';
+    if (builds.isNotEmpty) {
+      return builds;
+    }
+    final subtitle = selectedCard?.subtitle.trim() ?? '';
+    if (subtitle.isNotEmpty) {
+      return subtitle;
+    }
+    return fallbackPrompt;
   }
 
   Widget _buildTransitCarousel(BuildContext context) {
@@ -587,6 +662,26 @@ class _HomePageState extends ConsumerState<HomePage> {
     Navigator.of(
       context,
     ).push(MaterialPageRoute<void>(builder: (_) => const CalendarHubPage()));
+  }
+
+  void _openHomeDay(
+    BuildContext context,
+    Map<String, dynamic>? profile,
+    DateTime day,
+  ) {
+    if (!_hasProfile(profile)) {
+      _openTiming(context);
+      return;
+    }
+    Navigator.of(context, rootNavigator: true).push(
+      MaterialPageRoute<void>(
+        builder: (_) => CalendarDayPage(
+          profile: profile!,
+          initialDate: DateTime(day.year, day.month, day.day),
+          source: 'home_preview',
+        ),
+      ),
+    );
   }
 
   void _openPeriodDetails(BuildContext context, PeriodCardDto card) {
@@ -1053,17 +1148,23 @@ class _HomePageState extends ConsumerState<HomePage> {
 
 class _HomeWeekItemData {
   const _HomeWeekItemData({
+    required this.index,
+    required this.date,
     required this.weekdayLabel,
     required this.dayNumber,
     required this.isToday,
+    required this.isSelected,
     required this.isHighlighted,
     required this.accent,
     required this.card,
   });
 
+  final int index;
+  final DateTime date;
   final String weekdayLabel;
   final int dayNumber;
   final bool isToday;
+  final bool isSelected;
   final bool isHighlighted;
   final Color accent;
   final PeriodCardDto? card;
@@ -1242,6 +1343,7 @@ class _HomeReferenceHeroCard extends StatelessWidget {
     required this.body,
     required this.prompt,
     required this.weekItems,
+    required this.onSelectDay,
     required this.onOpen,
     required this.footer,
   });
@@ -1250,6 +1352,7 @@ class _HomeReferenceHeroCard extends StatelessWidget {
   final String body;
   final String prompt;
   final List<_HomeWeekItemData> weekItems;
+  final ValueChanged<_HomeWeekItemData> onSelectDay;
   final VoidCallback onOpen;
   final Widget footer;
 
@@ -1257,6 +1360,26 @@ class _HomeReferenceHeroCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final labelStyle = profile.typography.monoEyebrow.copyWith(
+      color: profile.colors.textLight,
+      fontSize: 10.8,
+      letterSpacing: 1.6,
+    );
+    final titleStyle = profile.typography.editorialHeadline.copyWith(
+      color: profile.colors.text,
+      fontSize: 30,
+      height: 1.04,
+    );
+    final bodyStyle = profile.typography.bodyCompact.copyWith(
+      color: profile.colors.textLight,
+      fontSize: 14,
+      height: 1.48,
+    );
+    final promptStyle = profile.typography.bodyCompact.copyWith(
+      color: profile.colors.textLight,
+      fontSize: 13.6,
+      height: 1.4,
+    );
     final surfaceGradient = <Color>[
       Color.alphaBlend(
         profile.colors.lavender.withValues(alpha: isDark ? 0.14 : 0.18),
@@ -1348,39 +1471,38 @@ class _HomeReferenceHeroCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Günün teması',
-                      style: profile.typography.monoEyebrow.copyWith(
-                        color: profile.colors.textLight,
-                        fontSize: 10.8,
-                        letterSpacing: 1.6,
+                    SizedBox(
+                      height: _homeHeroSlotHeight(labelStyle, 1),
+                      child: _HomeHeroAnimatedText(
+                        text: 'Günün teması',
+                        textStyle: labelStyle,
+                        maxLines: 1,
+                        delay: Duration.zero,
                       ),
                     ),
                     const SizedBox(height: 10),
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 240),
-                      child: Text(
-                        title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: profile.typography.editorialHeadline.copyWith(
-                          color: profile.colors.text,
-                          fontSize: 30,
-                          height: 1.04,
+                      child: SizedBox(
+                        height: _homeHeroSlotHeight(titleStyle, 2),
+                        child: _HomeHeroAnimatedText(
+                          text: title,
+                          textStyle: titleStyle,
+                          maxLines: 2,
+                          delay: const Duration(milliseconds: 34),
                         ),
                       ),
                     ),
                     const SizedBox(height: 10),
                     ConstrainedBox(
                       constraints: const BoxConstraints(maxWidth: 236),
-                      child: Text(
-                        body,
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: profile.typography.bodyCompact.copyWith(
-                          color: profile.colors.textLight,
-                          fontSize: 14,
-                          height: 1.48,
+                      child: SizedBox(
+                        height: _homeHeroSlotHeight(bodyStyle, 3),
+                        child: _HomeHeroAnimatedText(
+                          text: body,
+                          textStyle: bodyStyle,
+                          maxLines: 3,
+                          delay: const Duration(milliseconds: 68),
                         ),
                       ),
                     ),
@@ -1401,14 +1523,13 @@ class _HomeReferenceHeroCard extends StatelessWidget {
                       child: Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              prompt,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: profile.typography.bodyCompact.copyWith(
-                                color: profile.colors.textLight,
-                                fontSize: 13.6,
-                                height: 1.4,
+                            child: SizedBox(
+                              height: _homeHeroSlotHeight(promptStyle, 2),
+                              child: _HomeHeroAnimatedText(
+                                text: prompt,
+                                textStyle: promptStyle,
+                                maxLines: 2,
+                                delay: const Duration(milliseconds: 92),
                               ),
                             ),
                           ),
@@ -1420,7 +1541,11 @@ class _HomeReferenceHeroCard extends StatelessWidget {
                     const SizedBox(height: 14),
                     footer,
                     const SizedBox(height: 18),
-                    _HomeWeekStrip(items: weekItems, fallbackTap: onOpen),
+                    _HomeWeekStrip(
+                      items: weekItems,
+                      onSelectItem: onSelectDay,
+                      onOpenSelected: onOpen,
+                    ),
                   ],
                 ),
               ],
@@ -1484,10 +1609,15 @@ class _HomeHeroButton extends StatelessWidget {
 }
 
 class _HomeWeekStrip extends StatelessWidget {
-  const _HomeWeekStrip({required this.items, required this.fallbackTap});
+  const _HomeWeekStrip({
+    required this.items,
+    required this.onSelectItem,
+    required this.onOpenSelected,
+  });
 
   final List<_HomeWeekItemData> items;
-  final VoidCallback fallbackTap;
+  final ValueChanged<_HomeWeekItemData> onSelectItem;
+  final VoidCallback onOpenSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -1498,7 +1628,13 @@ class _HomeWeekStrip extends StatelessWidget {
           for (var index = 0; index < items.length; index++) ...[
             _HomeWeekDayChip(
               item: items[index],
-              onTap: items[index].card == null ? fallbackTap : null,
+              onTap: () {
+                if (items[index].isSelected) {
+                  onOpenSelected();
+                  return;
+                }
+                onSelectItem(items[index]);
+              },
             ),
             if (index != items.length - 1) const SizedBox(width: 10),
           ],
@@ -1524,28 +1660,43 @@ class _HomeWeekDayChip extends StatelessWidget {
       width: 54,
       padding: const EdgeInsets.symmetric(vertical: 9),
       decoration: BoxDecoration(
-        color: item.isToday
+        color: item.isSelected
             ? (isDark
                   ? Colors.white.withValues(alpha: 0.96)
                   : const Color(0xFF17131E))
+            : item.isToday
+            ? (isDark
+                  ? Colors.white.withValues(alpha: 0.08)
+                  : Colors.white.withValues(alpha: 0.74))
             : (isDark
                   ? Colors.white.withValues(alpha: 0.05)
                   : Colors.white.withValues(alpha: 0.58)),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: item.isToday
+          color: item.isSelected
               ? item.accent.withValues(alpha: 0.52)
+              : item.isToday
+              ? item.accent.withValues(alpha: 0.34)
               : (isDark
                     ? profile.colors.strokeSoft
                     : Colors.black.withValues(alpha: 0.05)),
         ),
-        boxShadow: item.isToday
+        boxShadow: item.isSelected
             ? [
                 BoxShadow(
                   color: item.accent.withValues(alpha: 0.24),
                   blurRadius: 20,
                   offset: const Offset(0, 12),
                   spreadRadius: -12,
+                ),
+              ]
+            : item.isToday
+            ? [
+                BoxShadow(
+                  color: item.accent.withValues(alpha: 0.14),
+                  blurRadius: 18,
+                  offset: const Offset(0, 10),
+                  spreadRadius: -14,
                 ),
               ]
             : null,
@@ -1555,8 +1706,10 @@ class _HomeWeekDayChip extends StatelessWidget {
           Text(
             item.weekdayLabel,
             style: context.profileTheme.typography.micro.copyWith(
-              color: item.isToday
+              color: item.isSelected
                   ? (isDark ? const Color(0xFF16131D) : Colors.white)
+                  : item.isToday
+                  ? item.accent.withValues(alpha: isDark ? 0.88 : 0.94)
                   : (isDark
                         ? Colors.white.withValues(alpha: 0.76)
                         : const Color(0xFF746C87)),
@@ -1567,7 +1720,7 @@ class _HomeWeekDayChip extends StatelessWidget {
           Text(
             '${item.dayNumber}',
             style: context.profileTheme.typography.body.copyWith(
-              color: item.isToday
+              color: item.isSelected
                   ? (isDark ? const Color(0xFF16131D) : Colors.white)
                   : (isDark ? Colors.white : const Color(0xFF16131D)),
               fontWeight: FontWeight.w700,
@@ -1575,11 +1728,15 @@ class _HomeWeekDayChip extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Container(
-            width: 6,
+            width: item.isSelected ? 12 : 6,
             height: 6,
             decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: item.isHighlighted ? item.accent : Colors.transparent,
+              borderRadius: BorderRadius.circular(999),
+              color: item.isHighlighted
+                  ? item.accent
+                  : item.isToday
+                  ? item.accent.withValues(alpha: 0.38)
+                  : Colors.transparent,
             ),
           ),
         ],
@@ -1592,6 +1749,137 @@ class _HomeWeekDayChip extends StatelessWidget {
       onTap: onTap,
       borderRadius: BorderRadius.circular(18),
       child: child,
+    );
+  }
+}
+
+double _homeHeroSlotHeight(TextStyle style, int lines) {
+  final fontSize = style.fontSize ?? 14;
+  final lineHeight = style.height ?? 1.2;
+  return (fontSize * lineHeight * lines) + 2;
+}
+
+class _HomeHeroAnimatedText extends StatefulWidget {
+  const _HomeHeroAnimatedText({
+    required this.text,
+    required this.textStyle,
+    required this.maxLines,
+    required this.delay,
+  });
+
+  final String text;
+  final TextStyle textStyle;
+  final int maxLines;
+  final Duration delay;
+
+  @override
+  State<_HomeHeroAnimatedText> createState() => _HomeHeroAnimatedTextState();
+}
+
+class _HomeHeroAnimatedTextState extends State<_HomeHeroAnimatedText>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late String _currentText;
+  String? _previousText;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentText = widget.text;
+    _controller =
+        AnimationController(
+          vsync: this,
+          duration: const Duration(milliseconds: 320),
+          value: 1,
+        )..addStatusListener((status) {
+          if (status == AnimationStatus.completed && mounted) {
+            setState(() => _previousText = null);
+          }
+        });
+  }
+
+  @override
+  void didUpdateWidget(covariant _HomeHeroAnimatedText oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.text == widget.text) {
+      return;
+    }
+    _previousText = _currentText;
+    _currentText = widget.text;
+    _controller.forward(from: 0);
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_previousText == null) {
+      return Align(
+        alignment: Alignment.topLeft,
+        child: _buildText(_currentText),
+      );
+    }
+
+    final delayFraction =
+        widget.delay.inMilliseconds / _controller.duration!.inMilliseconds;
+    final outgoingEnd = (delayFraction + 0.44).clamp(0.0, 0.86);
+    final incomingStart = (delayFraction + 0.16).clamp(0.0, 0.94);
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final outgoing = CurvedAnimation(
+          parent: _controller,
+          curve: Interval(
+            delayFraction.clamp(0.0, 1.0),
+            outgoingEnd.toDouble(),
+            curve: Curves.easeIn,
+          ),
+        );
+        final incoming = CurvedAnimation(
+          parent: _controller,
+          curve: Interval(
+            incomingStart.toDouble(),
+            1,
+            curve: Curves.easeOutCubic,
+          ),
+        );
+        return ClipRect(
+          child: Stack(
+            alignment: Alignment.topLeft,
+            children: [
+              if (_previousText != null)
+                Opacity(
+                  opacity: 1 - outgoing.value,
+                  child: Transform.translate(
+                    offset: Offset(0, -10 * outgoing.value),
+                    child: _buildText(_previousText!),
+                  ),
+                ),
+              Opacity(
+                opacity: incoming.value,
+                child: Transform.translate(
+                  offset: Offset(0, 12 * (1 - incoming.value)),
+                  child: _buildText(_currentText),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildText(String value) {
+    return Text(
+      value,
+      maxLines: widget.maxLines,
+      overflow: TextOverflow.ellipsis,
+      style: widget.textStyle,
     );
   }
 }
@@ -1664,6 +1952,19 @@ class _HomeReferencePlanBoard extends StatelessWidget {
         ? skyItem!.hook
         : bulletin.summary;
     final thirdCard = dailyCards.length > 1 ? dailyCards[1] : activeCard;
+    final activeMeta = _compactHomeMeta(
+      activeCard?.timeHint.trim().isNotEmpty == true
+          ? activeCard!.timeHint.trim()
+          : 'Primary',
+    );
+    final skyMeta = _compactHomeMeta(
+      skyItem?.badge.isNotEmpty == true ? skyItem!.badge : 'Collective',
+    );
+    final weekMeta = _compactHomeMeta(
+      thirdCard?.timeHint.trim().isNotEmpty == true
+          ? thirdCard!.timeHint.trim()
+          : 'Week',
+    );
 
     if (loading && activeCard == null && dailyCards.isEmpty) {
       return const Padding(
@@ -1685,9 +1986,7 @@ class _HomeReferencePlanBoard extends StatelessWidget {
                   title: activeCard?.title.isNotEmpty == true
                       ? activeCard!.title
                       : 'Günün planı',
-                  metaTop: activeCard?.timeHint.trim().isNotEmpty == true
-                      ? activeCard!.timeHint.trim()
-                      : 'Primary',
+                  metaTop: activeMeta,
                   body: activeCard?.subtitle.trim().isNotEmpty == true
                       ? activeCard!.subtitle.trim()
                       : lineText,
@@ -1708,9 +2007,7 @@ class _HomeReferencePlanBoard extends StatelessWidget {
                   children: [
                     _HomeColorPlanCard(
                       title: skyTitle,
-                      metaTop: skyItem?.badge.isNotEmpty == true
-                          ? skyItem!.badge
-                          : 'Collective',
+                      metaTop: skyMeta,
                       body: skyBody,
                       footer:
                           skyItem?.previewChips.skip(1).take(2).join(' • ') ??
@@ -1723,9 +2020,7 @@ class _HomeReferencePlanBoard extends StatelessWidget {
                       title: thirdCard?.title.isNotEmpty == true
                           ? thirdCard!.title
                           : 'Takvim',
-                      metaTop: thirdCard?.timeHint.trim().isNotEmpty == true
-                          ? thirdCard!.timeHint.trim()
-                          : 'Week',
+                      metaTop: weekMeta,
                       body: thirdCard?.subtitle.trim().isNotEmpty == true
                           ? thirdCard!.subtitle.trim()
                           : 'Önündeki 1 haftalık akışı aç.',
@@ -1866,25 +2161,6 @@ class _HomeColorPlanCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 18,
-                  bottom: 18,
-                  child: Container(
-                    width: compact ? 42 : 50,
-                    height: compact ? 42 : 50,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: palette.surface,
-                    ),
-                    child: Icon(
-                      compact
-                          ? Icons.auto_awesome_rounded
-                          : Icons.wb_sunny_outlined,
-                      color: palette.foreground.withValues(alpha: 0.82),
-                      size: compact ? 18 : 22,
-                    ),
-                  ),
-                ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -1899,8 +2175,11 @@ class _HomeColorPlanCard extends StatelessWidget {
                       ),
                       child: Text(
                         metaTop,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                         style: profile.typography.micro.copyWith(
                           color: palette.foreground.withValues(alpha: 0.82),
+                          fontSize: 11,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
@@ -1916,8 +2195,8 @@ class _HomeColorPlanCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: profile.typography.section.copyWith(
                           color: palette.foreground,
-                          fontSize: compact ? 22 : 30,
-                          height: 1.04,
+                          fontSize: compact ? 19 : 25,
+                          height: 1.08,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -1929,10 +2208,11 @@ class _HomeColorPlanCard extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: profile.typography.bodyCompact.copyWith(
                         color: palette.foreground.withValues(alpha: 0.82),
+                        fontSize: compact ? 12.8 : 13.6,
                         height: 1.45,
                       ),
                     ),
-                    SizedBox(height: compact ? 18 : 28),
+                    SizedBox(height: compact ? 16 : 24),
                     Row(
                       children: [
                         Expanded(
@@ -1940,9 +2220,10 @@ class _HomeColorPlanCard extends StatelessWidget {
                             footer,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: profile.typography.bodyCompact.copyWith(
+                            style: profile.typography.metaSoft.copyWith(
                               color: palette.foreground.withValues(alpha: 0.88),
                               fontWeight: FontWeight.w600,
+                              fontSize: compact ? 11.8 : 12.4,
                             ),
                           ),
                         ),
@@ -1963,6 +2244,21 @@ class _HomeColorPlanCard extends StatelessWidget {
       ),
     );
   }
+}
+
+String _compactHomeMeta(String raw) {
+  final trimmed = raw.trim();
+  if (trimmed.isEmpty) {
+    return trimmed;
+  }
+  final semicolonIndex = trimmed.indexOf(';');
+  final shortened = semicolonIndex > 0
+      ? trimmed.substring(0, semicolonIndex).trim()
+      : trimmed;
+  if (shortened.length <= 18) {
+    return shortened;
+  }
+  return '${shortened.substring(0, 18).trim()}...';
 }
 
 class _HomeReferenceTimingCard extends StatelessWidget {

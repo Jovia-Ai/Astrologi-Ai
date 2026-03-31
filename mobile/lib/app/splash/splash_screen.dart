@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-const Duration kSplashMotionDuration = Duration(milliseconds: 1840);
-const Duration kSplashFadeDuration = Duration(milliseconds: 360);
+const Duration kSplashMotionDuration = Duration(milliseconds: 920);
+const Duration kSplashFadeDuration = Duration(milliseconds: 220);
 const double kSplashLogoWidthFactor = 0.7;
 const double kSplashLogoMinWidth = 220;
 const double kSplashLogoMaxWidth = 420;
