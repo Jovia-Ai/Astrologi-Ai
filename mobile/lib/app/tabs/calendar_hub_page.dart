@@ -209,6 +209,25 @@ double _calendarWeekAnchorAlignmentY(
   return -1 + ((2 * rowIndex) / (rowCount - 1));
 }
 
+int _calendarAnchorRowIndex(List<DateTime> monthDays, DateTime selectedDay) {
+  final selectedKey = _calendarDayKey(selectedDay);
+  final selectedIndex = monthDays.indexWhere(
+    (day) => _calendarDayKey(day) == selectedKey,
+  );
+  if (selectedIndex < 0) {
+    return 0;
+  }
+  return selectedIndex ~/ 7;
+}
+
+List<List<DateTime>> _calendarWeekRows(List<DateTime> monthDays) {
+  final rows = <List<DateTime>>[];
+  for (var index = 0; index < monthDays.length; index += 7) {
+    rows.add(monthDays.sublist(index, index + 7));
+  }
+  return rows;
+}
+
 String _condenseCalendarCopy(String text, {int maxChars = 220}) {
   final trimmed = text.trim();
   if (trimmed.isEmpty) {
@@ -1195,8 +1214,10 @@ class _UnifiedCalendarPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final visibleDays = _monthVisibleDays();
+    final weekRows = _calendarWeekRows(visibleDays);
     final isMonth = viewportMode == CalendarViewportMode.month;
     final rowCount = (visibleDays.length / 7).round().clamp(1, 6);
+    final anchorRowIndex = _calendarAnchorRowIndex(visibleDays, selectedDay);
     final anchorY = _calendarWeekAnchorAlignmentY(visibleDays, selectedDay);
 
     return JoviaReadingPanel(
@@ -1263,44 +1284,41 @@ class _UnifiedCalendarPanel extends StatelessWidget {
           const SizedBox(height: 10),
           TweenAnimationBuilder<double>(
             tween: Tween<double>(end: isMonth ? 0 : 1),
-            duration: const Duration(milliseconds: 280),
-            curve: Curves.easeOutCubic,
-            builder: (context, progress, child) {
+            duration: const Duration(milliseconds: 400),
+            curve: Curves.easeInOutCubic,
+            builder: (context, progress, _) {
               final heightFactor = lerpDouble(1, 1 / rowCount, progress) ?? 1;
               final alignmentY = lerpDouble(0, anchorY, progress) ?? 0;
               return ClipRect(
                 child: Align(
                   alignment: Alignment(0, alignmentY),
                   heightFactor: heightFactor,
-                  child: child,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      for (
+                        var rowIndex = 0;
+                        rowIndex < weekRows.length;
+                        rowIndex++
+                      )
+                        _AnimatedCalendarWeekRow(
+                          days: weekRows[rowIndex],
+                          calendarDays: calendarDays,
+                          selectedDay: selectedDay,
+                          isAnchorRow: rowIndex == anchorRowIndex,
+                          rowDistance: (rowIndex - anchorRowIndex).abs(),
+                          collapseTowardTop: rowIndex > anchorRowIndex,
+                          collapseProgress: progress,
+                          bottomSpacing: rowIndex == weekRows.length - 1
+                              ? 0
+                              : 8,
+                          onOpenDay: onOpenDay,
+                        ),
+                    ],
+                  ),
                 ),
               );
             },
-            child: GridView.builder(
-              key: ValueKey<String>(
-                'calendarGrid_${selectedDay.year}_${selectedDay.month}',
-              ),
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: visibleDays.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                mainAxisSpacing: 8,
-                crossAxisSpacing: 8,
-                childAspectRatio: 0.96,
-              ),
-              itemBuilder: (context, index) {
-                final day = visibleDays[index];
-                final dayKey = _calendarDayKey(day);
-                return _CalendarDayCell(
-                  day: day,
-                  meta: calendarDays[dayKey],
-                  isSelected: dayKey == _calendarDayKey(selectedDay),
-                  isCurrentMonth: day.month == selectedDay.month,
-                  onTap: () => onOpenDay(day),
-                );
-              },
-            ),
           ),
         ],
       ),
@@ -3499,6 +3517,137 @@ class _CalendarMonthPanel extends StatelessWidget {
 
   String _dayKey(DateTime value) =>
       TransitRequestBuilder.fmtDate(TransitRequestBuilder.stripDate(value));
+}
+
+class _AnimatedCalendarWeekRow extends StatelessWidget {
+  const _AnimatedCalendarWeekRow({
+    required this.days,
+    required this.calendarDays,
+    required this.selectedDay,
+    required this.isAnchorRow,
+    required this.rowDistance,
+    required this.collapseTowardTop,
+    required this.collapseProgress,
+    required this.bottomSpacing,
+    required this.onOpenDay,
+  });
+
+  final List<DateTime> days;
+  final Map<String, NarrativeCalendarDay> calendarDays;
+  final DateTime selectedDay;
+  final bool isAnchorRow;
+  final int rowDistance;
+  final bool collapseTowardTop;
+  final double collapseProgress;
+  final double bottomSpacing;
+  final ValueChanged<DateTime> onOpenDay;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final eased = Curves.easeInOutCubic.transform(collapseProgress);
+    final rowCollapse = isAnchorRow ? 0.0 : eased;
+    final translateY = isAnchorRow
+        ? 0.0
+        : lerpDouble(
+                0,
+                collapseTowardTop
+                    ? -(18 + (rowDistance * 6))
+                    : 18 + (rowDistance * 6),
+                eased,
+              ) ??
+              0;
+    final opacity = isAnchorRow
+        ? 1.0
+        : (lerpDouble(1, 0, rowCollapse) ?? 0).clamp(0.0, 1.0);
+    final heightFactor = isAnchorRow
+        ? 1.0
+        : (lerpDouble(1, 0.02, rowCollapse) ?? 1.0);
+    final spacingFactor = isAnchorRow
+        ? 1.0
+        : (lerpDouble(1, 0, rowCollapse) ?? 0.0);
+    final anchorGlow = isAnchorRow
+        ? (lerpDouble(0, 1, eased) ?? 0).toDouble()
+        : 0.0;
+
+    return Transform.translate(
+      offset: Offset(0, translateY),
+      child: Opacity(
+        opacity: opacity,
+        child: ClipRect(
+          child: Align(
+            alignment: collapseTowardTop
+                ? Alignment.bottomCenter
+                : Alignment.topCenter,
+            heightFactor: heightFactor,
+            child: Container(
+              padding: isAnchorRow
+                  ? EdgeInsets.symmetric(
+                      horizontal: lerpDouble(0, 2, anchorGlow) ?? 0,
+                      vertical: lerpDouble(0, 2, anchorGlow) ?? 0,
+                    )
+                  : EdgeInsets.zero,
+              decoration: isAnchorRow
+                  ? BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        lerpDouble(
+                              0,
+                              profile.radii.cardRadius - 2,
+                              anchorGlow,
+                            ) ??
+                            0,
+                      ),
+                      color: profile.colors.primary.withValues(
+                        alpha: (lerpDouble(0, 0.06, anchorGlow) ?? 0).clamp(
+                          0,
+                          1,
+                        ),
+                      ),
+                      border: Border.all(
+                        color: profile.colors.primary.withValues(
+                          alpha: (lerpDouble(0, 0.1, anchorGlow) ?? 0).clamp(
+                            0,
+                            1,
+                          ),
+                        ),
+                      ),
+                    )
+                  : null,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      for (var index = 0; index < days.length; index++) ...[
+                        Expanded(
+                          child: AspectRatio(
+                            aspectRatio: 0.96,
+                            child: _CalendarDayCell(
+                              day: days[index],
+                              meta: calendarDays[_calendarDayKey(days[index])],
+                              isSelected:
+                                  _calendarDayKey(days[index]) ==
+                                  _calendarDayKey(selectedDay),
+                              isCurrentMonth:
+                                  days[index].month == selectedDay.month,
+                              onTap: () => onOpenDay(days[index]),
+                            ),
+                          ),
+                        ),
+                        if (index != days.length - 1) const SizedBox(width: 8),
+                      ],
+                    ],
+                  ),
+                  if (bottomSpacing > 0)
+                    SizedBox(height: bottomSpacing * spacingFactor),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _CalendarDayCell extends StatelessWidget {
