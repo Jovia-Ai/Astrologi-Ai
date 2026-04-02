@@ -1,0 +1,87 @@
+{
+  "limits": {
+    "orb_max_deg": 6.0,
+    "visibility_window_days": 3
+  },
+  "narrative": {
+    "generic_guidance": [
+      "acele etme.",
+      "ilk cümleye mecbur değilsin.",
+      "hemen tepki verme.",
+      "her şeyi bugün çözmeye çalışma."
+    ],
+    "technical_tokens": [
+      "transit",
+      "orb",
+      "exact",
+      "applying",
+      "separating",
+      "square",
+      "opposition",
+      "conjunction",
+      "trine",
+      "sextile"
+    ],
+    "house_weights": {
+      "1": 0.84,
+      "2": 0.82,
+      "3": 1.0,
+      "4": 0.96,
+      "5": 0.84,
+      "6": 0.90,
+      "7": 1.0,
+      "8": 0.86,
+      "9": 0.74,
+      "10": 1.0,
+      "11": 0.72,
+      "12": 0.62
+    },
+    "planet_translation": {
+      "moon": 1.0,
+      "mercury": 1.0,
+      "venus": 0.95,
+      "mars": 0.95,
+      "sun": 0.88,
+      "saturn": 0.78,
+      "jupiter": 0.72,
+      "uranus": 0.72,
+      "neptune": 0.68,
+      "pluto": 0.72,
+      "default": 0.60
+    },
+    "aspect_readability": {
+      "friction": 0.96,
+      "polarity": 1.0,
+      "concentration": 0.90,
+      "flow": 0.82,
+      "opening": 0.78,
+      "mixed": 0.60
+    }
+  },
+  "structurality": {
+    "importance_tier": {
+      "critical": 1.0,
+      "high": 0.84,
+      "medium": 0.62,
+      "low": 0.40
+    },
+    "bucket": {
+      "long": 0.86,
+      "medium": 0.58,
+      "short": 0.28
+    }
+  },
+  "chapter_roles": {
+    "opener_families": ["lunation_trigger", "eclipse_trigger", "house_ingress_event"],
+    "builder_buckets": ["long", "medium"],
+    "release_phases": ["separating"],
+    "integrator_modes": ["flow", "opening"],
+    "min_role_score": 0.36
+  },
+  "personalization": {
+    "natal_hot_house_bonus": 0.03,
+    "dominant_theme_bonus": 0.025,
+    "lens_bonus": 0.02,
+    "behavioral_history_bonus": 0.015
+  }
+}

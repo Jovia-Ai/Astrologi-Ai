@@ -1,4 +1,7 @@
+import pytest
+
 from app.api.routes import transits
+from app.services.performance.cache_store import InMemoryCacheStore
 
 
 def _request(**kwargs):
@@ -13,6 +16,11 @@ def _request(**kwargs):
     }
     base.update(kwargs)
     return transits.TransitNarrativeRequest(**base)
+
+
+@pytest.fixture(autouse=True)
+def _fresh_transit_route_cache(monkeypatch):
+    monkeypatch.setattr(transits, "default_cache_store", InMemoryCacheStore())
 
 
 def test_transit_narrative_includes_public_event_cards(monkeypatch) -> None:
@@ -317,3 +325,52 @@ def test_transit_narrative_debug_includes_period_selection(monkeypatch) -> None:
     assert response["debug"]["period_root_causes"][0]["key"] == "identity_spine"
     assert response["debug"]["events_debug"][0]["event_id"] == "ev_debug_1"
     assert response["debug"]["selected_day_public"]["date"] == "2026-03-01"
+
+
+def test_transit_narrative_uses_route_cache(monkeypatch) -> None:
+    monkeypatch.setattr(transits, "default_cache_store", InMemoryCacheStore())
+    monkeypatch.setattr(transits.settings, "transit_narrative_ttl_seconds", 300)
+    monkeypatch.setattr(transits.settings, "transit_narrative_stale_ttl_seconds", 300)
+
+    calls = {"calendar": 0}
+
+    def _calendar_payload(**_kwargs):
+        calls["calendar"] += 1
+        return {"calendar_internal": {"days": [{"date": "2026-03-10", "rating": 2, "heat": 1, "event_count": 1}]}}
+
+    monkeypatch.setattr(transits, "build_transit_calendar_public", _calendar_payload)
+    monkeypatch.setattr(
+        transits,
+        "to_ui_calendar",
+        lambda *_args, **_kwargs: {
+            "range": {"start": "2026-03-01", "end": "2026-03-31", "tz": "Europe/Istanbul"},
+            "days": [{"date": "2026-03-10", "labels": [], "top_events": [], "is_critical": False}],
+            "year_summary": {},
+        },
+    )
+    monkeypatch.setattr(transits, "assemble_blocks", lambda **_: [])
+    monkeypatch.setattr(transits, "build_space_hub", lambda _blocks: {"title": "", "blocks": [], "count": 0})
+    monkeypatch.setattr(transits, "build_personal_transit", lambda _blocks: {"title": "", "blocks": [], "count": 0})
+    monkeypatch.setattr(transits, "build_calendar_day", lambda _blocks, _date: {"title": "", "blocks": [], "count": 0})
+    monkeypatch.setattr(transits, "build_feed_snippet", lambda _blocks: {"title": "", "blocks": [], "count": 0})
+    monkeypatch.setattr(
+        transits,
+        "_build_narrative_public_payload",
+        lambda _request, _start_date: {
+            "period_core": {"title": "Core"},
+            "event_cards": [{"event_id": "evt_1"}],
+            "daily_event_cards": [],
+            "period_event_cards": [],
+            "daily_selection": {},
+            "period_peak_timeline": [{"event_id": "evt_1"}],
+            "timeline": {"summary": "line"},
+        },
+    )
+
+    first = transits.build_transit_narrative(_request(debug=True, selected_date="2026-03-10"))
+    second = transits.build_transit_narrative(_request(debug=True, selected_date="2026-03-10"))
+
+    assert calls["calendar"] == 1
+    assert first["debug"]["cache_status"] == "miss"
+    assert second["debug"]["cache_status"] == "hit"
+    assert first["meta"]["snapshot_id"] != second["meta"]["snapshot_id"]

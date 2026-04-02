@@ -906,6 +906,7 @@ def _debug_block(block_id: str, selection: Mapping[str, Any], rendered: Mapping[
                 evidence.append(item)
     primitive_hits = selection.get("primitive_hits") if isinstance(selection.get("primitive_hits"), list) else []
     spine = selection.get("spine_signature") if isinstance(selection.get("spine_signature"), Mapping) else {}
+    spine_contract = selection.get("spine_contract") if isinstance(selection.get("spine_contract"), Mapping) else {}
     spark = selection.get("spark_signature") if isinstance(selection.get("spark_signature"), Mapping) else {}
     area = selection.get("area_signature") if isinstance(selection.get("area_signature"), Mapping) else {}
     tone = selection.get("tone_modifier") if isinstance(selection.get("tone_modifier"), Mapping) else {}
@@ -941,6 +942,10 @@ def _debug_block(block_id: str, selection: Mapping[str, Any], rendered: Mapping[
         "selected_spark_primitive_ids": [item.get("primitive_id") for item in primitive_hits if item.get("spark") and item.get("primitive_id") in block_primitive_ids][:3],
         "selected_tone_primitive_ids": [item.get("primitive_id") for item in primitive_hits if item.get("category_hint") == "tone" and item.get("primitive_id") in block_primitive_ids][:3],
         "taxonomy_block_id": selection.get("taxonomy_block_id"),
+        "spine_target_slot": spine_contract.get("slot"),
+        "spine_target_line_id": spine_contract.get("line_id"),
+        "spine_target_label": spine_contract.get("label"),
+        "spine_alignment_bonus": selection.get("spine_alignment_bonus"),
         "fallback_reason": fallback_reason,
     }
 
@@ -951,6 +956,7 @@ def build_profile_narrative_signature(
     locale: str = "tr",
     include_debug: bool = False,
     seed_key: str | None = None,
+    block_spine_contract: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> Dict[str, Any]:
     if (locale or "tr").lower() != "tr":
         locale = "tr"
@@ -960,7 +966,12 @@ def build_profile_narrative_signature(
         facts["seed"] = seed_key
     primitive_hits = build_primitives(chart, natal_graph, facts=facts)
     candidates = extract_candidates(facts, SIGNATURE_CATALOG_TR)
-    selected = select_by_block(candidates, facts, primitive_hits=primitive_hits)
+    selected = select_by_block(
+        candidates,
+        facts,
+        primitive_hits=primitive_hits,
+        block_spine_contract=block_spine_contract,
+    )
 
     public_blocks = []
     debug_blocks = []
@@ -972,6 +983,12 @@ def build_profile_narrative_signature(
         selection = dict(selection)
         selection["block_id"] = block_id
         selection["primitive_hits"] = primitive_hits
+        selection["spine_contract"] = (
+            block_spine_contract.get(block_id)
+            if isinstance(block_spine_contract, Mapping) and isinstance(block_spine_contract.get(block_id), Mapping)
+            else {}
+        )
+        selection.setdefault("spine_alignment_bonus", 0.0)
         primary = selection.get("primary")
         if isinstance(primary, dict):
             primary["copy_tr"] = _compose_copy(block_id, selection, primitive_hits)

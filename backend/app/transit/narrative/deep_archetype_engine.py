@@ -807,6 +807,9 @@ def build_period_core(
             derived_context = card_ctx.get("derived_context")
             if isinstance(derived_context, Mapping):
                 merged["derived_context"] = dict(derived_context)
+            for key in ("chapter_role", "story_score", "selection_index", "selection_mode"):
+                if key in card_ctx:
+                    merged[key] = card_ctx.get(key)
         selected_enriched.append(merged)
 
     house_counter: Counter[int] = Counter()
@@ -982,11 +985,20 @@ def build_daily_line(date: str, top_event: Mapping[str, Any] | None, context: Ma
 def build_active_event_cards(report: Mapping[str, Any], *, max_cards: int = 5) -> List[Dict[str, Any]]:
     items = report.get("display", {}).get("items", []) if isinstance(report.get("display"), Mapping) else []
     typed_items = [item for item in items if isinstance(item, Mapping) and _is_public_allowed(item)]
-    selected, _meta = select_event_ids(typed_items, max_cards=max_cards, natal=report.get("natal") if isinstance(report, Mapping) else None)
+    selected, selection_meta = select_event_ids(typed_items, max_cards=max_cards, natal=report.get("natal") if isinstance(report, Mapping) else None)
     context = {"natal": report.get("natal")} if isinstance(report, Mapping) else {}
     cards: List[Dict[str, Any]] = []
-    for event in selected[:max_cards]:
+    story_scores = selection_meta.get("story_scores") if isinstance(selection_meta.get("story_scores"), Mapping) else {}
+    chapter_roles = selection_meta.get("chapter_roles") if isinstance(selection_meta.get("chapter_roles"), Mapping) else {}
+    selection_mode = str(selection_meta.get("selection_mode") or "").strip()
+    for index, event in enumerate(selected[:max_cards]):
+        event_id = str(event.get("event_id") or "").strip()
         card = build_event_card(event, context=context)
+        if event_id:
+            card["story_score"] = story_scores.get(event_id)
+            card["chapter_role"] = dict(chapter_roles.get(event_id) or {})
+        card["selection_index"] = index
+        card["selection_mode"] = selection_mode
         cards.append(card)
     cards = _inject_cofeatured_links(cards, selected)
     cards = _apply_global_guidance_diversity(cards, selected)

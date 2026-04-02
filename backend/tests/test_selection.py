@@ -146,6 +146,8 @@ def test_selection_is_deterministic() -> None:
     assert meta_a["selected_ids"] == meta_b["selected_ids"]
     assert meta_a["cluster_keys"] == meta_b["cluster_keys"]
     assert meta_a["salience"] == meta_b["salience"]
+    assert meta_a["selection_mode"] == meta_b["selection_mode"]
+    assert meta_a["chapter_roles"] == meta_b["chapter_roles"]
 
 
 def test_selection_constraints_and_diversity() -> None:
@@ -226,3 +228,64 @@ def test_selection_excludes_blocked_public_points() -> None:
     ids = {item["event_id"] for item in selected}
     assert "evt_fortune_blocked" not in ids
     assert "evt_vertex_blocked" not in ids
+
+
+def test_selection_exposes_story_scores_and_chapter_roles() -> None:
+    selected, meta = select_event_ids(_events(), max_cards=5, natal=_natal_snapshot())
+    assert meta["selection_mode"] == "story_first_v2"
+    assert set(meta["story_scores"]).issuperset({item["event_id"] for item in selected})
+    assert set(meta["chapter_roles"]).issuperset({item["event_id"] for item in selected})
+    assert any(reason for reason in meta["reasons"].values() if any(str(tag).startswith("story:") for tag in reason))
+    assert meta["evaluation"]["selected_count"] == len(selected)
+
+
+def test_selection_personalization_can_break_close_story_ties() -> None:
+    events = [
+        {
+            "event_id": "evt_career_spine",
+            "scope": "transit_to_natal",
+            "transit_body": "Saturn",
+            "aspect": "conjunction",
+            "natal_point": "Sun",
+            "strength": 0.84,
+            "orb_deg": 0.4,
+            "phase": "applying",
+            "bucket": "long",
+            "tags": ["career"],
+            "houses": {"transit_in_natal_house": 10, "natal_point_house": 10},
+            "event_family": "aspect_event",
+            "importance_tier": "high",
+            "lasting_change_score": 0.82,
+            "chapter_opening": 0.22,
+            "is_structural": True,
+        },
+        {
+            "event_id": "evt_home_spine",
+            "scope": "transit_to_natal",
+            "transit_body": "Saturn",
+            "aspect": "conjunction",
+            "natal_point": "Moon",
+            "strength": 0.84,
+            "orb_deg": 0.4,
+            "phase": "applying",
+            "bucket": "long",
+            "tags": ["home"],
+            "houses": {"transit_in_natal_house": 4, "natal_point_house": 4},
+            "event_family": "aspect_event",
+            "importance_tier": "high",
+            "lasting_change_score": 0.82,
+            "chapter_opening": 0.22,
+            "is_structural": True,
+        },
+    ]
+    natal = {
+        "bodies": [
+            {"body": "Sun", "house": 10},
+            {"body": "Moon", "house": 10},
+            {"body": "Mercury", "house": 10},
+        ]
+    }
+
+    selected, meta = select_event_ids(events, max_cards=1, natal=natal)
+    assert selected[0]["event_id"] == "evt_career_spine"
+    assert meta["evaluation"]["avg_personalization_bonus"] > 0.0

@@ -223,6 +223,228 @@ def test_narrative_score_prefers_clear_house_and_guidance() -> None:
     )
 
 
+def test_delta_salience_prefers_peak_today_event() -> None:
+    peak_today = _raw_event(
+        "evt_peak_today",
+        transit_body="Mercury",
+        natal_point="Sun",
+        aspect="opposition",
+        bucket="short",
+        phase="exact",
+        orb_deg=0.2,
+        house=3,
+        exact_in_days=0,
+    )
+    peak_today["timing"] = {
+        "peak_date_utc": "2026-03-10T09:00:00+00:00",
+        "entry_date_utc": "2026-03-09T09:00:00+00:00",
+    }
+    far_flat = _raw_event(
+        "evt_far_flat",
+        transit_body="Mercury",
+        natal_point="Sun",
+        aspect="opposition",
+        bucket="long",
+        phase="separating",
+        orb_deg=1.9,
+        house=3,
+        exact_in_days=4,
+    )
+    far_flat["timing"] = {
+        "peak_date_utc": "2026-03-16T09:00:00+00:00",
+        "entry_date_utc": "2026-03-02T09:00:00+00:00",
+        "exit_date_utc": "2026-03-18T09:00:00+00:00",
+    }
+
+    assert daily_selection.compute_delta_salience_score(
+        peak_today,
+        "2026-03-10",
+        _context(peak_today),
+    ) > daily_selection.compute_delta_salience_score(
+        far_flat,
+        "2026-03-10",
+        _context(far_flat),
+    )
+
+
+def test_experience_clustering_collapses_similar_rows() -> None:
+    evt_a = _raw_event(
+        "evt_cluster_a",
+        transit_body="Mercury",
+        natal_point="Sun",
+        aspect="opposition",
+        bucket="short",
+        phase="exactish",
+        orb_deg=0.3,
+        house=3,
+    )
+    evt_b = _raw_event(
+        "evt_cluster_b",
+        transit_body="Mercury",
+        natal_point="Moon",
+        aspect="opposition",
+        bucket="short",
+        phase="applying",
+        orb_deg=0.5,
+        house=3,
+    )
+    evt_c = _raw_event(
+        "evt_distinct",
+        transit_body="Venus",
+        natal_point="MC",
+        aspect="trine",
+        bucket="short",
+        phase="exactish",
+        orb_deg=0.4,
+        house=10,
+    )
+
+    selection = daily_selection.select_daily_and_period_event_cards(
+        raw_events=[evt_a, evt_b, evt_c],
+        event_cards=[_materialized_card(evt_a), _materialized_card(evt_b), _materialized_card(evt_c)],
+        selected_date="2026-03-10",
+        selected_day_context={"labels": ["mind", "career"], "top_event_ids": ["evt_cluster_a"]},
+        natal=None,
+        event_v2_by_id={},
+    )
+
+    clusters = selection["daily_selection"]["selection_v3"]["experience_clusters"]
+    assert any(cluster["cluster_size"] == 2 for cluster in clusters)
+    assert any((card.get("cluster_size") or 0) >= 2 for card in selection["daily_event_cards"])
+
+
+def test_selection_exposes_selection_v3_meta_and_chapter_roles() -> None:
+    event = _raw_event(
+        "evt_structural",
+        transit_body="Saturn",
+        natal_point="MC",
+        aspect="conjunction",
+        bucket="long",
+        phase="exactish",
+        orb_deg=0.4,
+        house=10,
+        exact_in_days=0,
+    )
+    selection = daily_selection.select_daily_and_period_event_cards(
+        raw_events=[event],
+        event_cards=[_materialized_card(event)],
+        selected_date="2026-03-10",
+        selected_day_context={"labels": ["career"], "top_event_ids": ["evt_structural"]},
+        natal=None,
+        event_v2_by_id={
+            "evt_structural": {
+                "event_family": "station_event",
+                "importance_tier": "high",
+                "significance_score": 0.8,
+                "lasting_change_score": 0.82,
+                "chapter_opening": 0.44,
+                "repeat_pass_count": 1,
+                "is_structural": True,
+            }
+        },
+    )
+
+    selection_v3 = selection["daily_selection"]["selection_v3"]["feature_vectors"]["evt_structural"]
+    assert selection_v3["meaning"]["house_domain"] == "career"
+    assert selection_v3["chapter_role"]["role"] in {"builder", "peak", "opener"}
+    assert selection["period_event_cards"][0]["chapter_role"]["role"] in {"builder", "peak", "opener"}
+    assert "experience_clusters" in selection["daily_selection"]["selection_v3"]
+
+
+def test_narrative_score_rewards_specific_actionable_copy() -> None:
+    event = _raw_event(
+        "evt_quality",
+        transit_body="Mercury",
+        natal_point="Sun",
+        aspect="opposition",
+        bucket="short",
+        phase="exactish",
+        orb_deg=0.2,
+        house=3,
+    )
+    rich_preview = {
+        "felt_line_tr": "Söylemek isteyip aynı anda geri çekilebilirsin bugün.",
+        "why_it_feels_this_way_tr": "Zihin tarafında iki ayrı eğilim aynı anda çalışıyor.",
+        "guidance_micro_tr": "İlk cümleyi hemen gönderme; niyetini netleştir.",
+        "house_touchpoint_tr": "zihin ve iletişim",
+        "aspect_mode": "polarity",
+        "tone_face": "growth",
+    }
+    generic_preview = {
+        "felt_line_tr": "Bugün biraz farklı hissedebilirsin.",
+        "why_it_feels_this_way_tr": "Bazı etkiler seni zorlayabilir.",
+        "guidance_micro_tr": "Acele etme.",
+        "house_touchpoint_tr": "zihin ve iletişim",
+        "aspect_mode": "polarity",
+        "tone_face": "shadow",
+    }
+
+    rich_score = daily_selection.compute_narrative_score(
+        event,
+        "2026-03-10",
+        {
+            "config": daily_selection.load_daily_selection_config(),
+            "card": _materialized_card(event),
+            "preview": rich_preview,
+        },
+    )
+    generic_score = daily_selection.compute_narrative_score(
+        event,
+        "2026-03-10",
+        {
+            "config": daily_selection.load_daily_selection_config(),
+            "card": _materialized_card(event),
+            "preview": generic_preview,
+        },
+    )
+
+    assert rich_score > generic_score
+
+
+def test_daily_selection_uses_personalization_tie_break() -> None:
+    natal = {
+        "bodies": [
+            {"body": "Sun", "house": 10},
+            {"body": "Moon", "house": 10},
+            {"body": "Mercury", "house": 10},
+            {"body": "Venus", "house": 7},
+        ]
+    }
+    career = _raw_event(
+        "evt_career_pref",
+        transit_body="Mercury",
+        natal_point="Sun",
+        aspect="opposition",
+        bucket="short",
+        phase="exactish",
+        orb_deg=0.4,
+        house=10,
+    )
+    home = _raw_event(
+        "evt_home_pref",
+        transit_body="Mercury",
+        natal_point="Sun",
+        aspect="opposition",
+        bucket="short",
+        phase="exactish",
+        orb_deg=0.4,
+        house=4,
+    )
+
+    result = daily_selection.select_daily_and_period_event_cards(
+        raw_events=[career, home],
+        event_cards=[_materialized_card(career), _materialized_card(home)],
+        selected_date="2026-03-10",
+        selected_day_context={},
+        natal=natal,
+        event_v2_by_id={},
+    )
+
+    score_breakdown = result["daily_selection"]["score_breakdown"]
+    assert score_breakdown["evt_career_pref"]["personalization_score"] > score_breakdown["evt_home_pref"]["personalization_score"]
+    assert result["daily_event_cards"][0]["event_id"] == "evt_career_pref"
+
+
 def test_selector_uses_raw_pool_not_only_period_cards(monkeypatch) -> None:
     raw_daily = _raw_event(
         "evt_daily",
@@ -471,6 +693,12 @@ def test_selector_balance_does_not_return_only_shadow_when_flow_option_is_close(
 
 
 def test_fallback_prefers_higher_narrative_quality_when_no_true_daily_candidate(monkeypatch) -> None:
+    config = dict(daily_selection.load_daily_selection_config())
+    thresholds = dict(config.get("thresholds") or {})
+    thresholds["high_score_candidate_min"] = 1.5
+    config["thresholds"] = thresholds
+    monkeypatch.setattr(daily_selection, "load_daily_selection_config", lambda: config)
+
     weak_period = _raw_event(
         "evt_weak_period",
         transit_body="Neptune",

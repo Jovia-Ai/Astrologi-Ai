@@ -83,6 +83,39 @@ _CAREER_MICROS = [
     "İçinde olgunlaşan şeyi doğru anda dışarı çıkarırsın.",
 ]
 
+_SECTION_SLOT = {
+    "mind_system": "secondary_balancing_line",
+    "relationships": "relational_line",
+    "career_visibility": "work_visibility_line",
+}
+
+_PRIMITIVE_CHIP_TR = {
+    "self_definition": "Kimlik",
+    "visible_presence": "Görünürlük",
+    "inner_structure": "İç Yapı",
+    "originality_drive": "Özgünlük",
+    "big_picture_vision": "Vizyon",
+    "tone_sensitivity": "Ton Hassasiyeti",
+    "systems_thinking": "Sistem Zihni",
+    "inner_critic": "İç Standart",
+    "push_pull_drive": "İtme-Çekme",
+    "methodical_drive": "Yöntem",
+    "mental_structuring": "Zihinsel Düzen",
+    "intimacy_depth": "Derin Yakınlık",
+    "relational_security": "İlişki Güveni",
+    "graceful_affection": "Yumuşak Bağ",
+    "transformative_bonding": "Dönüştürücü Bağ",
+    "emotional_threshold": "Güven Eşiği",
+    "public_refinement": "Rafine Etki",
+    "visibility_sensitivity": "Görünürlük Eşiği",
+    "backstage_creation": "Perde Arkası",
+    "recharge_through_home": "İç Toparlanma",
+    "family_self_reliance": "Kendi Zemini",
+    "creation_luck": "Yaratım Akışı",
+    "network_luck": "Çevre Akışı",
+    "meaningful_expansion": "Anlamlı Büyüme",
+}
+
 
 def _house_ruler(graph: Mapping[str, Any], house: int) -> Mapping[str, Any]:
     house_rulers = graph.get("house_rulers")
@@ -214,6 +247,73 @@ def _build_thread_paragraph(one_liner: str, body: str, micro: str) -> str:
 
 def _family_line(options: Mapping[str, str], family: str, fallback: str) -> str:
     return str(options.get(family) or fallback).strip()
+
+
+def _spine_line(master_selector: Mapping[str, Any] | None, slot: str) -> Mapping[str, Any]:
+    identity_spine = (
+        master_selector.get("identity_spine")
+        if isinstance(master_selector, Mapping) and isinstance(master_selector.get("identity_spine"), Mapping)
+        else {}
+    )
+    payload = identity_spine.get(slot)
+    return payload if isinstance(payload, Mapping) else {}
+
+
+def _spine_chip_labels(line: Mapping[str, Any]) -> list[str]:
+    labels: list[str] = []
+    for primitive_id in line.get("source_primitives") or []:
+        label = _PRIMITIVE_CHIP_TR.get(str(primitive_id))
+        if label and label not in labels:
+            labels.append(label)
+        if len(labels) >= 2:
+            break
+    return labels
+
+
+def _spine_sentence(slot: str, line: Mapping[str, Any]) -> str:
+    labels = _spine_chip_labels(line)
+    phrase = " ve ".join(labels[:2]) if labels else str(line.get("label") or "").strip()
+    if not phrase:
+        return ""
+    if slot == "secondary_balancing_line":
+        return f"Burada asıl çalışan çizgi, {phrase.lower()} tarafını düzen kurdukça daha net hissetmen."
+    if slot == "relational_line":
+        return f"Bu alanda merkezde duran şey, {phrase.lower()} çizgisinin güven geldikçe açılması."
+    if slot == "work_visibility_line":
+        return f"Görünür tarafta fark yaratan şey, {phrase.lower()} hattının hazırlıkla birlikte güçlenmesi."
+    if slot == "shadow_protection_line":
+        return f"Zorlandığında seni toparlayan çizgi, {phrase.lower()} tarafının içerde zemin kurması."
+    return f"Bu başlıkta merkezde duran tema, {phrase.lower()} çizginin daha belirgin çalışması."
+
+
+def _apply_spine_to_sections(
+    sections: List[Dict[str, Any]],
+    *,
+    master_selector: Mapping[str, Any] | None,
+) -> List[Dict[str, Any]]:
+    aligned: List[Dict[str, Any]] = []
+    for section in sections:
+        if not isinstance(section, Mapping):
+            continue
+        item = dict(section)
+        slot = _SECTION_SLOT.get(str(item.get("id") or ""))
+        line = _spine_line(master_selector, slot or "")
+        if not slot or not line:
+            aligned.append(item)
+            continue
+        spine_sentence = _spine_sentence(slot, line)
+        body = str(item.get("body") or "").strip()
+        if spine_sentence and _semantic_overlap(body, spine_sentence) < 0.48:
+            item["body"] = _cleanup_text(f"{body} {spine_sentence}")
+        chips = list(item.get("chips") or [])
+        for label in _spine_chip_labels(line):
+            if label not in chips:
+                chips.append(label)
+            if len(chips) >= 4:
+                break
+        item["chips"] = chips[:4]
+        aligned.append(item)
+    return aligned
 
 
 def _sign_label(sign: str) -> str:
@@ -441,6 +541,8 @@ def build_sections_v2(
     chart_data: Mapping[str, Any],
     planets: List[Mapping[str, Any]],
     natal_graph: Mapping[str, Any],
+    master_selector: Mapping[str, Any] | None = None,
+    migration_mode: str = "legacy",
 ) -> List[Dict[str, Any]]:
     planets_map = _planet_positions(planets)
     angles = chart_data.get("angles")
@@ -474,7 +576,7 @@ def build_sections_v2(
     used_families.append(rel_family)
     career_family = select_rhythm_family(base_seed, "sections_v2", "career_visibility", used_families)
 
-    return [
+    sections = [
         _mind_section(
             seed=base_seed,
             asc_sign=asc_sign,
@@ -499,6 +601,12 @@ def build_sections_v2(
             family=career_family,
         ),
     ]
+    if migration_mode == "active":
+        return _apply_spine_to_sections(
+            sections,
+            master_selector=master_selector,
+        )
+    return sections
 
 
 def build_supporting_threads(
@@ -507,11 +615,15 @@ def build_supporting_threads(
     planets: List[Mapping[str, Any]],
     natal_graph: Mapping[str, Any],
     max_threads: int = 4,
+    master_selector: Mapping[str, Any] | None = None,
+    migration_mode: str = "legacy",
 ) -> List[Dict[str, Any]]:
     sections = build_sections_v2(
         chart_data=chart_data,
         planets=planets,
         natal_graph=natal_graph,
+        master_selector=master_selector,
+        migration_mode=migration_mode,
     )
     threads: List[Dict[str, Any]] = []
     for section in sections[: min(max_threads, 3)]:

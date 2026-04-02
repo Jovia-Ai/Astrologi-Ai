@@ -557,6 +557,9 @@ class EventCardDto {
     required this.eventKind,
     required this.importanceTier,
     required this.natalPromiseScore,
+    this.isPeriodDerived = false,
+    this.todayFacingFallback = false,
+    this.sourceHorizon = '',
     this.periodStory,
     this.storyTrackId,
   });
@@ -610,6 +613,9 @@ class EventCardDto {
   final String eventKind;
   final String importanceTier;
   final double? natalPromiseScore;
+  final bool isPeriodDerived;
+  final bool todayFacingFallback;
+  final String sourceHorizon;
   final PeriodStoryDto? periodStory;
   final String? storyTrackId;
 
@@ -624,6 +630,15 @@ class EventCardDto {
       return value.map((item) => item.toString()).toList();
     }
     return const <String>[];
+  }
+
+  static bool _bool(Map<String, dynamic> map, String a, [String? b]) {
+    final value = map[a] ?? (b != null ? map[b] : null);
+    if (value is bool) {
+      return value;
+    }
+    final normalized = value?.toString().trim().toLowerCase() ?? '';
+    return normalized == 'true' || normalized == '1' || normalized == 'yes';
   }
 
   static Map<String, String> _labels(Map<String, dynamic> map) {
@@ -698,6 +713,9 @@ class EventCardDto {
     String? eventKind,
     String? importanceTier,
     double? natalPromiseScore,
+    bool? isPeriodDerived,
+    bool? todayFacingFallback,
+    String? sourceHorizon,
     PeriodStoryDto? periodStory,
     String? storyTrackId,
   }) {
@@ -752,6 +770,9 @@ class EventCardDto {
       eventKind: eventKind ?? this.eventKind,
       importanceTier: importanceTier ?? this.importanceTier,
       natalPromiseScore: natalPromiseScore ?? this.natalPromiseScore,
+      isPeriodDerived: isPeriodDerived ?? this.isPeriodDerived,
+      todayFacingFallback: todayFacingFallback ?? this.todayFacingFallback,
+      sourceHorizon: sourceHorizon ?? this.sourceHorizon,
       periodStory: periodStory ?? this.periodStory,
       storyTrackId: storyTrackId ?? this.storyTrackId,
     );
@@ -849,6 +870,13 @@ class EventCardDto {
       natalPromiseScore: rawNatalPromise['score'] is num
           ? (rawNatalPromise['score'] as num).toDouble()
           : double.tryParse('${rawNatalPromise['score'] ?? ''}'),
+      isPeriodDerived: _bool(map, 'is_period_derived', 'isPeriodDerived'),
+      todayFacingFallback: _bool(
+        map,
+        'today_facing_fallback',
+        'todayFacingFallback',
+      ),
+      sourceHorizon: _s(map, 'source_horizon', 'sourceHorizon'),
       periodStory: map['period_story'] is Map
           ? PeriodStoryDto.fromMap(
               Map<String, dynamic>.from(map['period_story'] as Map),

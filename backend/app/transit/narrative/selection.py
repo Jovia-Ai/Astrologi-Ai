@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+import os
 from collections import Counter
 from typing import Any, Dict, List, Mapping, Sequence, Tuple
 
+from app.transit.narrative.chapter_role_engine import infer_chapter_role
+from app.transit.narrative.event_feature_vector import build_event_feature_vector
 from app.transit.narrative.hybrid_context import build_hybrid_event_context
+from app.transit.narrative.natal_promise import build_natal_promise
+from app.transit.narrative.personalization_context import extract_personalization_context
 from app.transit.narrative.point_policy import is_public_event, point_weight
+from app.transit.narrative.selection_evaluator import evaluate_period_selection
 
 ANGLE_PRIORITY = {"ASC": 0, "DSC": 1, "MC": 2, "IC": 3}
 DOMAIN_BY_HOUSE = {
@@ -24,10 +30,18 @@ PHASE_BOOST = {"exact": 1.0, "exactish": 0.95, "applying": 0.9, "separating": 0.
 BUCKET_BOOST = {"long": 1.0, "medium": 0.75, "short": 0.45}
 
 
+def _safe_float(value: Any, default: float = 0.0) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
 def select_event_ids(
     events: Sequence[Mapping[str, Any]],
     max_cards: int = 5,
     natal: Mapping[str, Any] | None = None,
+    focus_date: str | None = None,
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
     typed = [dict(item) for item in events if isinstance(item, Mapping)]
     typed = [item for item in typed if _is_public_allowed(item)]
@@ -44,7 +58,12 @@ def select_event_ids(
     house_counts: Counter[int] = Counter()
     covered_domains = set()
     hybrid_cache: Dict[str, Dict[str, Any]] = {}
+    natal_promise_cache: Dict[str, Dict[str, Any]] = {}
+    feature_vector_cache: Dict[str, Dict[str, Any]] = {}
+    chapter_role_cache: Dict[str, Dict[str, Any]] = {}
+    story_score_map: Dict[str, float] = {}
     salience_map: Dict[str, float] = {}
+    personalization_context = extract_personalization_context(natal)
 
     def _event_id(item: Mapping[str, Any]) -> str:
         return str(item.get("event_id") or "")
@@ -91,8 +110,14 @@ def select_event_ids(
     def _hybrid(item: Mapping[str, Any]) -> Dict[str, Any]:
         eid = _event_id(item)
         if eid not in hybrid_cache:
-            hybrid_cache[eid] = build_hybrid_event_context(item, natal or {}, natal_promise={})
+            hybrid_cache[eid] = build_hybrid_event_context(item, natal or {}, natal_promise=_natal_promise(item))
         return hybrid_cache[eid]
+
+    def _natal_promise(item: Mapping[str, Any]) -> Dict[str, Any]:
+        eid = _event_id(item)
+        if eid not in natal_promise_cache:
+            natal_promise_cache[eid] = build_natal_promise(item, natal or {})
+        return natal_promise_cache[eid]
 
     def _target_house(item: Mapping[str, Any]) -> int | None:
         hybrid = _hybrid(item)
@@ -164,6 +189,76 @@ def select_event_ids(
         )
         return round(min(1.0, max(0.0, score * policy_weight)), 4)
 
+    def _focus_date_for_item(item: Mapping[str, Any]) -> str:
+        if focus_date:
+            return str(focus_date)
+        timing = item.get("timing") if isinstance(item.get("timing"), Mapping) else {}
+        for key in ("peak_date_utc", "entry_date_utc", "exit_date_utc"):
+            raw = str(timing.get(key) or "").strip()
+            if raw:
+                return raw[:10]
+        return "2000-01-01"
+
+    def _feature_vector(item: Mapping[str, Any]) -> Dict[str, Any]:
+        eid = _event_id(item)
+        if eid not in feature_vector_cache:
+            feature_vector_cache[eid] = build_event_feature_vector(
+                item,
+                selected_date=_focus_date_for_item(item),
+                card=None,
+                selected_day_context={},
+                event_v2_meta=item,
+                preview={},
+                personalization_context=personalization_context,
+                config=None,
+            )
+        return feature_vector_cache[eid]
+
+    def _personalization_bonus(item: Mapping[str, Any]) -> float:
+        personalization = _feature_vector(item).get("personalization") if isinstance(_feature_vector(item).get("personalization"), Mapping) else {}
+        return round(
+            (0.03 * _safe_float(personalization.get("natal_hot_house_match"), 0.0))
+            + (0.025 * _safe_float(personalization.get("dominant_theme_match"), 0.0))
+            + (0.02 * _safe_float(personalization.get("lens_match"), 0.0))
+            + (0.015 * _safe_float(personalization.get("behavioral_history_match"), 0.0)),
+            4,
+        )
+
+    def _chapter_role(item: Mapping[str, Any]) -> Dict[str, Any]:
+        eid = _event_id(item)
+        if eid not in chapter_role_cache:
+            chapter_role_cache[eid] = infer_chapter_role(
+                item,
+                features=_feature_vector(item),
+            )
+        return chapter_role_cache[eid]
+
+    def _period_story_score(item: Mapping[str, Any]) -> float:
+        eid = _event_id(item)
+        if eid in story_score_map:
+            return story_score_map[eid]
+        features = _feature_vector(item)
+        meaning = features.get("meaning") if isinstance(features.get("meaning"), Mapping) else {}
+        strength = features.get("strength") if isinstance(features.get("strength"), Mapping) else {}
+        chapter = _chapter_role(item)
+        score = (
+            0.28 * _safe_float(meaning.get("structurality"), 0.0)
+            + 0.18 * _safe_float(meaning.get("lasting_change"), 0.0)
+            + 0.16 * _safe_float(strength.get("natal_resonance"), 0.0)
+            + 0.14 * _safe_float(meaning.get("chapter_opening"), 0.0)
+            + 0.10 * _safe_float(meaning.get("root_cause_weight"), 0.0)
+            + 0.08 * _safe_float(strength.get("angle_activation"), 0.0)
+            + 0.06 * (1.0 if str(item.get("bucket") or "").lower() == "long" else 0.55 if str(item.get("bucket") or "").lower() == "medium" else 0.18)
+            + 0.06 * _safe_float((chapter.get("score") or 0.0), 0.0)
+            + _personalization_bonus(item)
+        )
+        story_score_map[eid] = round(min(1.0, score), 4)
+        return story_score_map[eid]
+
+    def _story_mode_enabled() -> bool:
+        raw = str(os.getenv("JOVIA_PERIOD_SELECTION_V2", "1")).strip().lower()
+        return raw not in {"0", "false", "no", "off"}
+
     def _can_add(item: Mapping[str, Any]) -> Tuple[bool, str, str | None]:
         eid = _event_id(item)
         sig = _signature_key(item)
@@ -192,6 +287,7 @@ def select_event_ids(
             skipped.append({"event_id": _event_id(item), "reason": why, "dupe_of": dupe_of})
             return False
         eid = _event_id(item)
+        item["personalization_bonus"] = _personalization_bonus(item)
         selected.append(item)
         reasons.setdefault(eid, []).append(reason)
         sig = _signature_key(item)
@@ -204,6 +300,7 @@ def select_event_ids(
         covered_domains.add(_domain(item))
         salience_map[eid] = _salience(item)
         return True
+
     def _pick_best(pool: Sequence[Mapping[str, Any]]) -> Mapping[str, Any] | None:
         candidates = [item for item in pool if _event_id(item)]
         if not candidates:
@@ -213,57 +310,122 @@ def select_event_ids(
             key=lambda item: (-_salience(item), -_strength(item), str(item.get("event_id") or "")),
         )[0]
 
+    def _pick_story_best(pool: Sequence[Mapping[str, Any]], *, prefer_new_domain: bool = False) -> Mapping[str, Any] | None:
+        candidates = [item for item in pool if _event_id(item)]
+        if not candidates:
+            return None
+        return sorted(
+            candidates,
+            key=lambda item: (
+                -(
+                    _period_story_score(item)
+                    + (0.06 if prefer_new_domain and _domain(item) not in covered_domains else 0.0)
+                    + (0.03 if str(_chapter_role(item).get("role") or "") not in {str(_chapter_role(sel).get("role") or "") for sel in selected} else 0.0)
+                ),
+                -_salience(item),
+                str(item.get("event_id") or ""),
+            ),
+        )[0]
+
+    def _has_angle_selected() -> bool:
+        return any(str(item.get("scope") or "") == "transit_to_angles" for item in selected)
+
+    def _has_mind_selected() -> bool:
+        return any((_house(item) in {3, 9} or _target_house(item) in {3, 9}) for item in selected)
+
+    def _has_transform_selected() -> bool:
+        return any(str(item.get("transit_body") or "").lower() in OUTER_STACK for item in selected)
+
+    def _support_role_order(spine_role: str) -> List[str]:
+        mapping = {
+            "builder": ["opener", "peak", "integrator", "release"],
+            "opener": ["builder", "peak", "integrator", "release"],
+            "peak": ["builder", "release", "integrator", "opener"],
+            "release": ["builder", "integrator", "peak", "opener"],
+            "integrator": ["builder", "opener", "peak", "release"],
+        }
+        return mapping.get(spine_role, ["builder", "opener", "peak", "integrator"])
+
     selected_ids = {str(s.get("event_id") or "") for s in selected}
+
+    if _story_mode_enabled():
+        story_pool = sorted(
+            typed,
+            key=lambda item: (-_period_story_score(item), -_salience(item), str(item.get("event_id") or "")),
+        )
+        spine = _pick_story_best(story_pool, prefer_new_domain=True)
+        if spine is not None and len(selected) < max_cards:
+            if _add(dict(spine), "story:spine"):
+                selected_ids.add(_event_id(spine))
+
+        if selected:
+            spine_role = str(_chapter_role(selected[0]).get("role") or "builder")
+            for role in _support_role_order(spine_role):
+                if len(selected) >= min(max_cards, 3):
+                    break
+                role_pool = [
+                    item
+                    for item in typed
+                    if _event_id(item) not in selected_ids and str(_chapter_role(item).get("role") or "") == role
+                ]
+                best_role = _pick_story_best(role_pool, prefer_new_domain=True)
+                if best_role is not None and _add(dict(best_role), f"story:support:{role}"):
+                    selected_ids.add(_event_id(best_role))
 
     # Coverage anchors:
     # 1) angles (ASC/DSC prioritized)
-    angle_pool = [
-        item
-        for item in typed
-        if str(item.get("scope") or "") == "transit_to_angles"
-        and str(item.get("bucket") or "").lower() in {"long", "medium"}
-    ]
-    angle_pool = sorted(
-        angle_pool,
-        key=lambda item: (
-            -_salience(item),
-            ANGLE_PRIORITY.get(str(item.get("natal_point") or "").upper(), 9),
-            str(item.get("event_id") or ""),
-        ),
-    )
-    for candidate in angle_pool:
-        if len(selected) >= max_cards:
-            break
-        if _add(dict(candidate), "coverage:angles"):
-            selected_ids.add(_event_id(candidate))
-            break
+    if not _has_angle_selected():
+        angle_pool = [
+            item
+            for item in typed
+            if _event_id(item) not in selected_ids
+            and str(item.get("scope") or "") == "transit_to_angles"
+            and str(item.get("bucket") or "").lower() in {"long", "medium"}
+        ]
+        angle_pool = sorted(
+            angle_pool,
+            key=lambda item: (
+                -max(_salience(item), _period_story_score(item)),
+                ANGLE_PRIORITY.get(str(item.get("natal_point") or "").upper(), 9),
+                str(item.get("event_id") or ""),
+            ),
+        )
+        for candidate in angle_pool:
+            if len(selected) >= max_cards:
+                break
+            if _add(dict(candidate), "coverage:angles"):
+                selected_ids.add(_event_id(candidate))
+                break
 
     # 2) mind axis (3/9)
-    mind_pool = [
-        item
-        for item in typed
-        if _event_id(item) not in selected_ids
-        and (_house(item) in {3, 9} or _target_house(item) in {3, 9})
-    ]
-    best_mind = _pick_best(mind_pool)
-    if best_mind is not None and len(selected) < max_cards:
-        if _add(dict(best_mind), "coverage:mind_3_9"):
-            selected_ids.add(_event_id(best_mind))
+    if not _has_mind_selected():
+        mind_pool = [
+            item
+            for item in typed
+            if _event_id(item) not in selected_ids
+            and (_house(item) in {3, 9} or _target_house(item) in {3, 9})
+        ]
+        best_mind = _pick_story_best(mind_pool, prefer_new_domain=True)
+        if best_mind is not None and len(selected) < max_cards:
+            if _add(dict(best_mind), "coverage:mind_3_9"):
+                selected_ids.add(_event_id(best_mind))
 
     # 3) transform axis (Uranus/Pluto)
-    transform_pool = [
-        item
-        for item in typed
-        if _event_id(item) not in selected_ids and str(item.get("transit_body") or "").lower() in OUTER_STACK
-    ]
-    best_transform = _pick_best(transform_pool)
-    if best_transform is not None and len(selected) < max_cards:
-        if _add(dict(best_transform), "coverage:uranus_pluto"):
-            selected_ids.add(_event_id(best_transform))
+    if not _has_transform_selected():
+        transform_pool = [
+            item
+            for item in typed
+            if _event_id(item) not in selected_ids and str(item.get("transit_body") or "").lower() in OUTER_STACK
+        ]
+        best_transform = _pick_story_best(transform_pool, prefer_new_domain=True)
+        if best_transform is not None and len(selected) < max_cards:
+            if _add(dict(best_transform), "coverage:uranus_pluto"):
+                selected_ids.add(_event_id(best_transform))
 
     # Fill with salience + domain diversity + cluster uniqueness
     def _fill_score(item: Mapping[str, Any]) -> float:
         score = _salience(item)
+        story = _period_story_score(item)
         domain = _domain(item)
         if domain not in covered_domains:
             score += 0.06
@@ -274,6 +436,10 @@ def select_event_ids(
             score += 0.03
         if str(item.get("polarity") or "").lower() == "soft":
             score += 0.02
+        role = str(_chapter_role(item).get("role") or "")
+        if role and role not in {str(_chapter_role(sel).get("role") or "") for sel in selected}:
+            score += 0.04
+        score += 0.08 * story
         return score
 
     remaining = [item for item in typed if _event_id(item) not in selected_ids]
@@ -286,12 +452,19 @@ def select_event_ids(
             selected_ids.add(_event_id(item))
 
     meta = {
-        "selection_mode": "coverage_first_v1",
+        "selection_mode": "story_first_v2" if _story_mode_enabled() else "coverage_first_v1",
         "selected_ids": [str(item.get("event_id") or "") for item in selected],
         "reasons": reasons,
         "salience": salience_map,
+        "story_scores": {str(item.get("event_id") or ""): _period_story_score(item) for item in selected},
+        "chapter_roles": {str(item.get("event_id") or ""): _chapter_role(item) for item in selected},
         "cluster_keys": {str(item.get("event_id") or ""): _cluster_key(item) for item in selected},
         "skipped_due_to_dedup": skipped,
+        "evaluation": evaluate_period_selection(
+            selected=selected,
+            story_scores={str(item.get("event_id") or ""): _period_story_score(item) for item in selected},
+            chapter_roles={str(item.get("event_id") or ""): _chapter_role(item) for item in selected},
+        ),
     }
     return selected[:max_cards], meta
 

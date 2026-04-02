@@ -177,8 +177,8 @@ class NarrativeRepository {
   NarrativeRepository({ApiClient? client}) : _client = client ?? ApiClient();
 
   final ApiClient _client;
-  static const Duration _narrativeCacheTtl = Duration(seconds: 45);
-  static const Duration _transitSummaryCacheTtl = Duration(seconds: 30);
+  static const Duration _narrativeCacheTtl = Duration(minutes: 3);
+  static const Duration _transitSummaryCacheTtl = Duration(minutes: 2);
 
   Future<Map<String, dynamic>> fetchDailyNarrative({
     required Map<String, dynamic> profile,
@@ -703,8 +703,8 @@ class CalendarRepository {
   CalendarRepository({ApiClient? client}) : _client = client ?? ApiClient();
 
   final ApiClient _client;
-  static const Duration _calendarCacheTtl = Duration(seconds: 45);
-  static const Duration _bestTimesCacheTtl = Duration(seconds: 45);
+  static const Duration _calendarCacheTtl = Duration(minutes: 3);
+  static const Duration _bestTimesCacheTtl = Duration(minutes: 3);
 
   Future<Map<String, dynamic>> fetchCalendar({
     required Map<String, dynamic> profile,

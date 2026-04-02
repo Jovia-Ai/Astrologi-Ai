@@ -65,11 +65,10 @@ def julian_day(utc_dt: datetime) -> float:
 def fetch_location(city: str) -> LocationData:
     if not city:
         raise ApiError("City is required for location lookup.")
+    fallback = _fallback_location(city)
+    if fallback:
+        return fallback
     if not settings.opencage_api_key:
-        fallback = _fallback_location(city)
-        if fallback:
-            logger.warning("OpenCage key missing; using fallback location for %s", city)
-            return fallback
         raise ApiError("OPENCAGE_API_KEY not configured. Check your .env file.")
     params = {
         "q": city,
@@ -91,10 +90,6 @@ def fetch_location(city: str) -> LocationData:
             data = response.json()
             results = data.get("results", [])
             if not results:
-                fallback = _fallback_location(city)
-                if fallback:
-                    logger.warning("OpenCage returned no results; using fallback for %s", city)
-                    return fallback
                 raise ApiError("City not found via OpenCage.")
             first = results[0]
             geometry = first.get("geometry", {})
@@ -112,10 +107,6 @@ def fetch_location(city: str) -> LocationData:
             last_exc = exc
             time.sleep(0.5 * (attempt + 1))
 
-    fallback = _fallback_location(city)
-    if fallback:
-        logger.warning("OpenCage request failed; using fallback for %s", city)
-        return fallback
     raise ApiError("OpenCage request failed.") from last_exc
 
 

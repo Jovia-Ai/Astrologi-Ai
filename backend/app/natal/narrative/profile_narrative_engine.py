@@ -2,10 +2,22 @@ from __future__ import annotations
 
 import hashlib
 import os
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Mapping, Optional
 
+from .natal_selection_config import get_natal_selection_v3_config
 from .profile_narrative_engine_legacy import build_profile_narrative_legacy
 from .profile_narrative_engine_signature import build_profile_narrative_signature
+
+
+_PROFILE_BLOCK_SLOT = {
+    "identity_aura": "primary_identity_spine",
+    "mind_voice": "secondary_balancing_line",
+    "drive_rhythm": "secondary_balancing_line",
+    "love_depth": "relational_line",
+    "career_visibility": "work_visibility_line",
+    "home_roots": "shadow_protection_line",
+    "luck_creation": "work_visibility_line",
+}
 
 
 def _default_seed_key(chart: Dict[str, Any]) -> str:
@@ -43,6 +55,84 @@ def _select_engine(seed_key: str, engine_override: Optional[str]) -> str:
     return "signature" if (_hash_int(seed_key) % 100) < pct else "legacy"
 
 
+def _surface_migration_mode(*, include_debug: bool, explicit_mode: Optional[str]) -> str:
+    if explicit_mode in {"legacy", "shadow", "active"}:
+        return str(explicit_mode)
+    config = get_natal_selection_v3_config()
+    phase_flags = config.get("phase_flags") if isinstance(config.get("phase_flags"), Mapping) else {}
+    if bool(phase_flags.get("surface_migration_enabled")):
+        return "active"
+    if include_debug and bool(phase_flags.get("surface_migration_debug_only", True)):
+        return "shadow"
+    return "legacy"
+
+
+def _profile_block_spine_contract(master_selector: Mapping[str, Any] | None) -> Dict[str, Dict[str, Any]]:
+    identity_spine = (
+        master_selector.get("identity_spine")
+        if isinstance(master_selector, Mapping) and isinstance(master_selector.get("identity_spine"), Mapping)
+        else {}
+    )
+    contracts: Dict[str, Dict[str, Any]] = {}
+    for block_id, slot in _PROFILE_BLOCK_SLOT.items():
+        payload = identity_spine.get(slot) if isinstance(identity_spine.get(slot), Mapping) else {}
+        if not payload:
+            continue
+        contracts[block_id] = {
+            "slot": slot,
+            "line_id": str(payload.get("line_id") or ""),
+            "label": str(payload.get("label") or ""),
+            "source_primitives": list(payload.get("source_primitives") or []),
+            "counterweights": list(payload.get("counterweights") or []),
+            "contradiction_ids": list(payload.get("contradiction_ids") or []),
+            "confidence": float(payload.get("confidence") or 0.0),
+        }
+    return contracts
+
+
+def _signature_debug_map(payload: Mapping[str, Any]) -> Dict[str, Dict[str, Any]]:
+    internal = payload.get("profile_internal") if isinstance(payload.get("profile_internal"), Mapping) else {}
+    blocks = internal.get("blocks_debug") if isinstance(internal.get("blocks_debug"), list) else []
+    return {
+        str(block.get("id") or ""): dict(block)
+        for block in blocks
+        if isinstance(block, Mapping) and str(block.get("id") or "").strip()
+    }
+
+
+def _profile_spine_shadow_diff(
+    base_payload: Mapping[str, Any],
+    shadow_payload: Mapping[str, Any],
+) -> Dict[str, Any]:
+    base_map = _signature_debug_map(base_payload)
+    shadow_map = _signature_debug_map(shadow_payload)
+    changed_blocks = []
+    for block_id, shadow_block in shadow_map.items():
+        base_block = base_map.get(block_id, {})
+        base_signature = str(base_block.get("primary_signature_id") or "")
+        shadow_signature = str(shadow_block.get("primary_signature_id") or "")
+        if base_signature == shadow_signature and float(shadow_block.get("spine_alignment_bonus") or 0.0) <= float(base_block.get("spine_alignment_bonus") or 0.0):
+            continue
+        changed_blocks.append(
+            {
+                "block_id": block_id,
+                "legacy_signature_id": base_signature,
+                "shadow_signature_id": shadow_signature,
+                "legacy_spine_alignment_bonus": float(base_block.get("spine_alignment_bonus") or 0.0),
+                "shadow_spine_alignment_bonus": float(shadow_block.get("spine_alignment_bonus") or 0.0),
+                "target_slot": shadow_block.get("spine_target_slot"),
+                "target_line_id": shadow_block.get("spine_target_line_id"),
+            }
+        )
+    return {
+        "changed_blocks": changed_blocks,
+        "shadow_primary_signatures": {
+            block_id: str(block.get("primary_signature_id") or "")
+            for block_id, block in shadow_map.items()
+        },
+    }
+
+
 def build_profile_narrative(
     chart: Dict[str, Any],
     natal_graph: Dict[str, Any],
@@ -50,9 +140,16 @@ def build_profile_narrative(
     locale: str = "tr",
     engine_override: Optional[str] = None,
     seed_key: Optional[str] = None,
+    master_selector: Mapping[str, Any] | None = None,
+    migration_mode: Optional[str] = None,
 ) -> Dict[str, Any]:
     seed_material = seed_key or _default_seed_key(chart)
     engine = _select_engine(seed_material, engine_override)
+    resolved_migration_mode = _surface_migration_mode(
+        include_debug=include_debug,
+        explicit_mode=migration_mode,
+    )
+    block_spine_contract = _profile_block_spine_contract(master_selector)
 
     if engine == "legacy":
         out = build_profile_narrative_legacy(
@@ -62,6 +159,16 @@ def build_profile_narrative(
             seed_key=seed_material,
             locale=locale,
         )
+        if include_debug and block_spine_contract:
+            internal = out.get("profile_internal") if isinstance(out.get("profile_internal"), dict) else {}
+            internal["spine_migration"] = {
+                "mode": resolved_migration_mode,
+                "engine": engine,
+                "status": "legacy_engine_no_spine_rerank",
+                "target_contracts": block_spine_contract,
+                "changed_blocks": [],
+            }
+            out["profile_internal"] = internal
     else:
         out = build_profile_narrative_signature(
             chart,
@@ -69,7 +176,33 @@ def build_profile_narrative(
             include_debug=include_debug,
             seed_key=seed_material,
             locale=locale,
+            block_spine_contract=block_spine_contract if resolved_migration_mode == "active" else None,
         )
+        if include_debug and block_spine_contract:
+            internal = out.get("profile_internal") if isinstance(out.get("profile_internal"), dict) else {}
+            if resolved_migration_mode == "shadow":
+                shadow_payload = build_profile_narrative_signature(
+                    chart,
+                    natal_graph,
+                    include_debug=True,
+                    seed_key=seed_material,
+                    locale=locale,
+                    block_spine_contract=block_spine_contract,
+                )
+                internal["spine_migration"] = {
+                    "mode": "shadow",
+                    "engine": engine,
+                    "target_contracts": block_spine_contract,
+                    **_profile_spine_shadow_diff(out, shadow_payload),
+                }
+            else:
+                internal["spine_migration"] = {
+                    "mode": resolved_migration_mode,
+                    "engine": engine,
+                    "target_contracts": block_spine_contract,
+                    "changed_blocks": [],
+                }
+            out["profile_internal"] = internal
 
     if include_debug:
         internal = out.get("profile_internal") if isinstance(out.get("profile_internal"), dict) else {}
@@ -79,6 +212,7 @@ def build_profile_narrative(
                 continue
             block.setdefault("engine", engine)
             block.setdefault("seed_material", seed_material)
+            block.setdefault("migration_mode", resolved_migration_mode)
         out["profile_internal"] = internal
 
     return out

@@ -73,6 +73,7 @@
   "score_mix": {
     "strength": 0.45,
     "today": 0.35,
+    "delta_salience": 0.15,
     "narrative": 0.20
   },
   "strength_weights": {
@@ -95,7 +96,8 @@
     "selected_date_proximity_max": 0.14,
     "calendar_salience_max": 0.12,
     "surfaceability_max": 0.09,
-    "peak_shift_max": 0.10
+    "peak_shift_max": 0.10,
+    "delta_salience_max": 0.16
   },
   "narrative_weights": {
     "house_clarity_max": 0.25,
@@ -103,6 +105,11 @@
     "aspect_readability_max": 0.16,
     "humanizer_confidence_max": 0.23,
     "guidance_value_max": 0.18,
+    "specificity_max": 0.12,
+    "memorability_max": 0.10,
+    "actionability_max": 0.12,
+    "emotional_fit_max": 0.12,
+    "contrastability_max": 0.10,
     "house_anchor_penalty": 0.12
   },
   "narrative_clarity": {
@@ -151,5 +158,12 @@
   "balance": {
     "prefer_non_shadow_bonus": 0.05,
     "all_shadow_penalty": 0.03
+  },
+  "personalization": {
+    "natal_hot_house_bonus": 0.03,
+    "dominant_theme_bonus": 0.025,
+    "lens_bonus": 0.02,
+    "behavioral_history_bonus": 0.015,
+    "max_bonus": 0.06
   }
 }

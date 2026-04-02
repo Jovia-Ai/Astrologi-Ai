@@ -48,6 +48,22 @@ HOUSE_THEME_TR: Dict[int, str] = {
 
 ANGLE_TO_CUSP_HOUSE = {"ASC": 1, "DSC": 7, "MC": 10, "IC": 4}
 
+CHAPTER_ROLE_OPENING_TR = {
+    "opener": "Bu dönem kapıyı ilk aralayan hareket burada başlıyor.",
+    "builder": "Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor.",
+    "peak": "Bu dönem görünürlük kazanan eşik tam bu hatta toplanıyor.",
+    "release": "Bu dönem çözülmeye başlayan yük burada kendini belli ediyor.",
+    "integrator": "Bu dönem dağınık parçaları tek çizgide toplama ihtiyacı öne çıkıyor.",
+}
+
+CHAPTER_ROLE_BUILD_TR = {
+    "opener": "Süreç, ilk hamleyi bilinçli atmayı öğretiyor.",
+    "builder": "Süreç, kalıcı bir iskelet kurmayı öğretiyor.",
+    "peak": "Süreç, görünür olan şeyi yönetmeyi öğretiyor.",
+    "release": "Süreç, artık taşınmayan yükü bırakmayı öğretiyor.",
+    "integrator": "Süreç, dağılmış parçaları tek bir ritimde birleştirmeyi öğretiyor.",
+}
+
 
 @dataclass(frozen=True)
 class PeriodStoryContext:
@@ -150,7 +166,7 @@ def build_period_story(ctx: PeriodStoryContext) -> PeriodNarrative:
     track_id = infer_story_track_id(spine, root_causes)
     track_story = build_story_track_copy(track_id, spine)
 
-    opening = track_story.get("period_opening") or _build_period_opening(ctx, spine, supports)
+    opening = _with_chapter_role_opening(track_story.get("period_opening") or _build_period_opening(ctx, spine, supports), spine)
     big_picture = track_story.get("big_picture") or _build_big_picture(ctx, spine, supports)
     mechanism = _build_chain_paragraph(ctx, spine, supports)
     growth_edge = track_story.get("growth_edge") or _build_growth_edge(ctx, spine, supports)
@@ -170,6 +186,8 @@ def build_period_story(ctx: PeriodStoryContext) -> PeriodNarrative:
             "spine_event_id": str(spine.get("event_id") or ""),
             "support_event_ids": [str(e.get("event_id") or "") for e in supports],
             "track_id": track_id,
+            "spine_role": _chapter_role_name(spine),
+            "support_roles": [_chapter_role_name(event) for event in supports],
         },
     )
 
@@ -185,6 +203,15 @@ def _select_spine_and_supports(period_core: Mapping[str, Any]) -> Tuple[Dict[str
     if not events:
         return ({}, [])
 
+    def story_score(e: Mapping[str, Any]) -> float:
+        return _safe_float(e.get("story_score"), 0.0)
+
+    def selection_index(e: Mapping[str, Any]) -> int:
+        try:
+            return int(e.get("selection_index"))
+        except (TypeError, ValueError):
+            return 999
+
     def rank_key(e: Mapping[str, Any]) -> Tuple[float, float, int, int]:
         strength = _safe_float(e.get("strength"), 0.0)
         orb = _safe_float(e.get("orb_deg"), 999.0)
@@ -192,10 +219,38 @@ def _select_spine_and_supports(period_core: Mapping[str, Any]) -> Tuple[Dict[str
         phase = str(e.get("phase") or "").lower()
         bucket_score = 2 if bucket == "long" else (1 if bucket == "medium" else 0)
         phase_score = 2 if phase in {"exact", "exactish"} else (1 if phase == "applying" else 0)
-        return (strength, -orb, bucket_score, phase_score)
+        return (story_score(e), strength, -orb, bucket_score, phase_score, -selection_index(e))
 
     sorted_events = sorted(events, key=rank_key, reverse=True)
-    return (sorted_events[0], sorted_events[1:3])
+    spine = sorted_events[0]
+    used_ids = {str(spine.get("event_id") or "")}
+    supports: List[Dict[str, Any]] = []
+
+    for role in _support_role_order(_chapter_role_name(spine)):
+        candidate = next(
+            (
+                event
+                for event in sorted_events[1:]
+                if str(event.get("event_id") or "") not in used_ids and _chapter_role_name(event) == role
+            ),
+            None,
+        )
+        if candidate is not None:
+            supports.append(candidate)
+            used_ids.add(str(candidate.get("event_id") or ""))
+        if len(supports) >= 2:
+            break
+
+    if len(supports) < 2:
+        for event in sorted_events[1:]:
+            event_id = str(event.get("event_id") or "")
+            if event_id in used_ids:
+                continue
+            supports.append(event)
+            used_ids.add(event_id)
+            if len(supports) >= 2:
+                break
+    return (spine, supports)
 
 
 def _build_big_picture(
@@ -227,6 +282,7 @@ def _build_period_opening(
     start_house, end_house = _infer_start_end_houses(spine)
     start_scene = _period_life_scene(start_house, "full")
     end_scene = _period_life_scene(end_house, "short")
+    spine_role = _chapter_role_name(spine)
     support_line = ""
     if supports:
         support_house, support_target = _infer_start_end_houses(supports[0])
@@ -235,9 +291,23 @@ def _build_period_opening(
             f"{_period_life_scene(support_target, 'short')} alanına güç taşıyor."
         )
     return (
-        f"Bu dönem önce {start_scene} tarafını hassaslaştırıyor, sonra bunun etkisi {end_scene} alanında belirginleşiyor."
+        f"{CHAPTER_ROLE_OPENING_TR.get(spine_role, 'Bu dönem ana tema burada toplanıyor.')} "
+        f"Önce {start_scene} tarafını hassaslaştırıyor, sonra bunun etkisi {end_scene} alanında belirginleşiyor."
         f"{support_line}"
     ).strip()
+
+
+def _with_chapter_role_opening(opening: str, spine: Mapping[str, Any]) -> str:
+    role = _chapter_role_name(spine)
+    prefix = CHAPTER_ROLE_OPENING_TR.get(role, "").strip()
+    text = str(opening or "").strip()
+    if not prefix or not text:
+        return text or prefix
+    lowered = text.lower()
+    prefix_probe = prefix.split(".")[0].strip().lower()
+    if prefix_probe and prefix_probe in lowered:
+        return text
+    return f"{prefix} {text}".strip()
 
 
 def _build_growth_edge(
@@ -282,7 +352,25 @@ def _build_what_it_builds(
 ) -> str:
     promise_theme = _select_promise_theme(ctx.natal_promise, spine)
     skill_gain = _infer_skill_gain_tr(spine, promise_theme)
-    return f"Bu dönem sende {skill_gain} kasını geliştiriyor."
+    role_line = CHAPTER_ROLE_BUILD_TR.get(_chapter_role_name(spine), "")
+    return f"Bu dönem sende {skill_gain} kasını geliştiriyor. {role_line}".strip()
+
+
+def _chapter_role_name(event: Mapping[str, Any]) -> str:
+    chapter_role = event.get("chapter_role") if isinstance(event.get("chapter_role"), Mapping) else {}
+    role = str(chapter_role.get("role") or "").strip().lower()
+    return role or "builder"
+
+
+def _support_role_order(spine_role: str) -> List[str]:
+    mapping = {
+        "builder": ["opener", "peak", "integrator", "release"],
+        "opener": ["builder", "peak", "integrator", "release"],
+        "peak": ["builder", "release", "integrator", "opener"],
+        "release": ["builder", "integrator", "peak", "opener"],
+        "integrator": ["builder", "opener", "peak", "release"],
+    }
+    return mapping.get(spine_role, ["builder", "opener", "peak", "integrator"])
 
 
 def _build_chain_paragraph(

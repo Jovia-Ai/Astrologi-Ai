@@ -773,24 +773,42 @@ class _HomePageState extends ConsumerState<HomePage> {
     ).push(MaterialPageRoute<void>(builder: (_) => const CalendarHubPage()));
   }
 
-  void _openHomeDay(
+  Future<void> _openHomeDay(
     BuildContext context,
     Map<String, dynamic>? profile,
     DateTime day,
-  ) {
+  ) async {
     if (!_hasProfile(profile)) {
       _openTiming(context);
       return;
     }
-    Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute<void>(
-        builder: (_) => CalendarDayPage(
-          profile: profile!,
-          initialDate: DateTime(day.year, day.month, day.day),
-          source: 'home_preview',
-        ),
-      ),
+    final returnedDate = await Navigator.of(context, rootNavigator: true)
+        .push<DateTime>(
+          buildCalendarDayPageRoute<DateTime>(
+            context: context,
+            initialDate: DateTime(day.year, day.month, day.day),
+            source: 'home_preview',
+            builder: (_) => CalendarDayPage(
+              profile: profile!,
+              initialDate: DateTime(day.year, day.month, day.day),
+              source: 'home_preview',
+            ),
+          ),
+        );
+    if (!mounted || returnedDate == null) {
+      return;
+    }
+    final normalized = DateTime(
+      returnedDate.year,
+      returnedDate.month,
+      returnedDate.day,
     );
+    final today = DateTime.now();
+    final todayDate = DateTime(today.year, today.month, today.day);
+    final dayOffset = normalized.difference(todayDate).inDays;
+    if (dayOffset >= 0 && dayOffset < 7 && dayOffset != _selectedWeekIndex) {
+      setState(() => _selectedWeekIndex = dayOffset);
+    }
   }
 
   void _openPeriodDetails(BuildContext context, PeriodCardDto card) {

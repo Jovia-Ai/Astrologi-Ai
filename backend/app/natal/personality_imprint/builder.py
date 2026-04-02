@@ -18,11 +18,15 @@ def build_personality_imprint(
     natal_graph: Mapping[str, Any],
     locale: str = "tr",
     include_debug: bool = False,
+    master_selector: Mapping[str, Any] | None = None,
+    migration_mode: str | None = None,
 ) -> Dict[str, Any]:
     selection = select_personality_imprint_entries(
         planets=planets,
         aspects=aspects,
         natal_graph=natal_graph,
+        master_selector=master_selector,
+        migration_mode=migration_mode,
     )
     bundle_payload = build_signature_bundles(
         dominant_candidates=selection["ranked"],

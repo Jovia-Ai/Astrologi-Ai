@@ -75,6 +75,38 @@ void main() {
     },
   );
 
+  testWidgets(
+    'day page keeps a loading placeholder while swipe settles onto a new day',
+    (tester) async {
+      await _pumpHarness(
+        tester,
+        child: CalendarDayPage(
+          profile: fakeProfile,
+          initialDate: DateTime(2026, 3, 15),
+          dataSource: const _SlowCalendarDataSource(),
+          source: 'calendar_hub',
+        ),
+      );
+
+      await tester.pump();
+
+      expect(find.byKey(const ValueKey<String>('2026-03-15')), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey<String>('calendarDayLoadingPlaceholder')),
+        findsWidgets,
+      );
+
+      await tester.fling(find.byType(PageView), const Offset(-1000, 0), 1800);
+      await tester.pump(const Duration(milliseconds: 120));
+
+      expect(find.byKey(const ValueKey<String>('2026-03-16')), findsOneWidget);
+
+      await tester.pumpAndSettle(const Duration(milliseconds: 500));
+
+      expect(find.text('İç ses 16'), findsWidgets);
+    },
+  );
+
   testWidgets('profile preview strip selects a day, then opens via CTA', (
     tester,
   ) async {
@@ -223,6 +255,25 @@ void main() {
     expect(find.text('Bugun sakin'), findsNothing);
     expect(find.text('Secili gun sakin'), findsNothing);
   });
+
+  testWidgets('day page only shows markers for the selected day', (
+    tester,
+  ) async {
+    await _pumpHarness(
+      tester,
+      child: CalendarDayPage(
+        profile: fakeProfile,
+        initialDate: DateTime(2026, 3, 15),
+        dataSource: const _MultiMarkerCalendarDataSource(),
+        source: 'calendar_hub',
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    expect(find.text('Marker 15'), findsOneWidget);
+    expect(find.text('Marker 16'), findsNothing);
+  });
 }
 
 Future<void> _pumpHarness(WidgetTester tester, {required Widget child}) async {
@@ -264,7 +315,7 @@ class _FakeCalendarDataSource implements CalendarDataSource {
   }) async {
     return <String, dynamic>{
       'public': <String, dynamic>{
-        'period_core': _periodCoreMap(),
+        'period_core': _FakeCalendarDataSource._periodCoreMap(),
         'markers': <Map<String, dynamic>>[
           <String, dynamic>{
             'id': 'marker-${focusedDate.day}',
@@ -398,6 +449,55 @@ class _PeriodOnlyCalendarDataSource extends _FakeCalendarDataSource {
     ];
     base['public'] = publicRaw;
     return base;
+  }
+}
+
+class _SlowCalendarDataSource extends _FakeCalendarDataSource {
+  const _SlowCalendarDataSource();
+
+  @override
+  Future<Map<String, dynamic>> fetchDailyNarrative({
+    required Map<String, dynamic> profile,
+    required DateTime selectedDate,
+  }) async {
+    await Future<void>.delayed(const Duration(milliseconds: 360));
+    return super.fetchDailyNarrative(
+      profile: profile,
+      selectedDate: selectedDate,
+    );
+  }
+}
+
+class _MultiMarkerCalendarDataSource extends _FakeCalendarDataSource {
+  const _MultiMarkerCalendarDataSource();
+
+  @override
+  Future<Map<String, dynamic>> fetchCalendar({
+    required Map<String, dynamic> profile,
+    required DateTime focusedDate,
+    String include = 'markers,themes,intent_summary',
+  }) async {
+    return <String, dynamic>{
+      'public': <String, dynamic>{
+        'period_core': _FakeCalendarDataSource._periodCoreMap(),
+        'markers': <Map<String, dynamic>>[
+          <String, dynamic>{
+            'id': 'marker-15',
+            'date': '2026-03-15',
+            'title': 'Marker 15',
+            'summary': 'Marker ozeti 15',
+            'time_hint': 'Aksam',
+          },
+          <String, dynamic>{
+            'id': 'marker-16',
+            'date': '2026-03-16',
+            'title': 'Marker 16',
+            'summary': 'Marker ozeti 16',
+            'time_hint': 'Sabah',
+          },
+        ],
+      },
+    };
   }
 }
 

@@ -64,6 +64,12 @@ from app.natal.public_builder import build_public_natal_view
 from app.natal.natal_graph import build_natal_graph
 from app.natal.natal_graph_v2 import build_natal_graph_v2
 from app.natal.narrative.core_story_tr_natal import build_core_story_ui
+from app.natal.narrative.contradiction_engine import build_contradiction_signatures
+from app.natal.narrative.layer_arbitrator import arbitrate_natal_layers
+from app.natal.narrative.master_selector import build_master_natal_selector
+from app.natal.narrative.natal_feature_graph import build_natal_feature_graph
+from app.natal.narrative.natal_selection_config import get_natal_selection_v3_config
+from app.natal.narrative.primitive_engine_v2 import build_primitives_v2
 from app.natal.personality_imprint import build_personality_imprint
 from app.natal.narrative.profile_narrative_engine import build_profile_narrative
 from app.natal.supporting_threads_builder import build_sections_v2, build_supporting_threads
@@ -141,6 +147,21 @@ def _profile_fast_cache_key(request: NatalInterpretationRequest) -> str:
         ).encode("utf-8")
     ).hexdigest()
     return f"profile_fast:v1:{digest}"
+
+
+def _natal_selection_seed_key(chart_data: Mapping[str, Any]) -> str:
+    birth = str(
+        chart_data.get("birth_datetime")
+        or chart_data.get("birthDateTime")
+        or chart_data.get("birth_datetime_iso")
+        or ""
+    ).strip()
+    location = chart_data.get("location") if isinstance(chart_data.get("location"), Mapping) else {}
+    city = str(location.get("city") or (chart_data.get("birth") or {}).get("place") or "").strip()
+    angles = chart_data.get("angles") if isinstance(chart_data.get("angles"), Mapping) else {}
+    asc = str(angles.get("ascendant_sign") or angles.get("asc_sign") or "").strip()
+    mc = str(angles.get("midheaven_sign") or angles.get("mc_sign") or "").strip()
+    return f"{birth}|{city}|{asc}|{mc}"
 
 
 def _extract_fast_sign(planets: Sequence[Mapping[str, Any]], body: str) -> str:
@@ -540,6 +561,17 @@ def _prepare_payload_from_chart(
     profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     snapshots: Dict[str, Any] | None = {} if debug_mode else None
+    natal_selection_config = get_natal_selection_v3_config()
+    phase_flags = (
+        natal_selection_config.get("phase_flags")
+        if isinstance(natal_selection_config.get("phase_flags"), Mapping)
+        else {}
+    )
+    surface_migration_enabled = bool(phase_flags.get("surface_migration_enabled"))
+    surface_migration_shadow = debug_mode and not surface_migration_enabled and bool(
+        phase_flags.get("surface_migration_debug_only", True)
+    )
+    surface_migration_public_mode = "active" if surface_migration_enabled else "legacy"
 
     planets = serialize_planets(chart_data.get("planets", {}))
     angles = chart_data.get("angles") if isinstance(chart_data, Mapping) else None
@@ -561,6 +593,44 @@ def _prepare_payload_from_chart(
             )
     aspects = serialize_aspects(chart_data.get("aspects", []))
     natal_graph = build_natal_graph(chart_data=chart_data, planets=planets, aspects=aspects)
+    chart_for_selection = {
+        **dict(chart_data or {}),
+        "planets": list(planets or []),
+        "aspects": list(aspects or []),
+    }
+    natal_graph_v2_debug: Dict[str, Any] | None = None
+    natal_feature_graph_v2: Dict[str, Any] | None = None
+    primitive_scores_v2: Dict[str, Any] | None = None
+    contradiction_signatures_v1: Dict[str, Any] | None = None
+    master_selector_v1: Dict[str, Any] | None = None
+    layer_arbitration_v1: Dict[str, Any] | None = None
+    if debug_mode:
+        natal_graph_v2_debug = build_natal_graph_v2(
+            chart_for_selection,
+            natal_graph=natal_graph,
+        )
+        natal_feature_graph_v2 = build_natal_feature_graph(
+            chart_data=chart_for_selection,
+            planets=planets,
+            aspects=aspects,
+            natal_graph=natal_graph,
+            natal_graph_v2=natal_graph_v2_debug,
+        )
+        primitive_scores_v2 = build_primitives_v2(
+            chart_for_selection,
+            natal_graph=natal_graph,
+            natal_feature_graph=natal_feature_graph_v2,
+            natal_graph_v2=natal_graph_v2_debug,
+        )
+        contradiction_signatures_v1 = build_contradiction_signatures(
+            natal_feature_graph=natal_feature_graph_v2,
+            primitive_scores=primitive_scores_v2,
+        )
+        master_selector_v1 = build_master_natal_selector(
+            primitive_scores=primitive_scores_v2,
+            natal_feature_graph=natal_feature_graph_v2,
+            contradiction_signatures=contradiction_signatures_v1,
+        )
     interpretation, meta_info = rule_engine.interpret(planets=planets, aspects=aspects, return_meta=True)
     if snapshots is not None:
         snapshots["rule_engine_output_summary"] = _summarize_rule_engine(interpretation, meta_info)
@@ -670,6 +740,17 @@ def _prepare_payload_from_chart(
         pressure_index=pressure_support["pressure_index"],
         support_index=pressure_support["support_index"],
         axis_balance=pressure_support["axis_balance"],
+        master_selector=master_selector_v1,
+        contradiction_signatures=contradiction_signatures_v1,
+        natal_feature_graph=natal_feature_graph_v2,
+        primitive_scores=primitive_scores_v2,
+        seed_key=_natal_selection_seed_key(chart_data),
+        include_debug=debug_mode,
+    )
+    voice_profile_v2 = (
+        expression_profile.get("voice_profile_v2")
+        if isinstance(expression_profile.get("voice_profile_v2"), Mapping)
+        else None
     )
     narrative_fragments, phase2_snapshot = _build_phase2_fragment_payload(phase2_fragments)
     potential_count = 0
@@ -733,6 +814,7 @@ def _prepare_payload_from_chart(
         "tone": expression_profile.get("tone"),
         "sentence_length": expression_profile.get("sentence_length"),
         "fallback_mode": expression_profile.get("fallback_mode"),
+        "tone_source": expression_profile.get("tone_source"),
     }
     builder = JoviaSemanticNarrativeBuilder(
         SimpleNamespace(
@@ -815,20 +897,77 @@ def _prepare_payload_from_chart(
         "routing": routing_info,
         "natal_graph_compact": natal_graph.get("compact"),
     }
+    if natal_graph_v2_debug is not None:
+        debug_info["natal_graph_v2"] = natal_graph_v2_debug
+    if natal_feature_graph_v2 is not None:
+        debug_info["natal_feature_graph_v2"] = natal_feature_graph_v2
+    if primitive_scores_v2 is not None:
+        debug_info["primitive_scores"] = primitive_scores_v2
+        debug_info["old_vs_new_selection_diff"] = {
+            "primitive_ranking": primitive_scores_v2.get("ranking_diff") or {},
+        }
+    if contradiction_signatures_v1 is not None:
+        debug_info["contradiction_engine_v1"] = contradiction_signatures_v1
+        debug_info["contradiction_signatures"] = contradiction_signatures_v1.get("top_signatures") or []
+    if master_selector_v1 is not None:
+        debug_info["master_selector_v1"] = master_selector_v1
+        debug_info["selected_identity_spine"] = master_selector_v1.get("identity_spine")
+        old_vs_new = debug_info.get("old_vs_new_selection_diff") if isinstance(debug_info.get("old_vs_new_selection_diff"), Mapping) else {}
+        debug_info["old_vs_new_selection_diff"] = {
+            **dict(old_vs_new),
+            "selector_slots": {
+                slot: str((master_selector_v1.get(slot) or {}).get("line_id") or "")
+                for slot in (
+                    "primary_identity_spine",
+                    "secondary_balancing_line",
+                    "relational_line",
+                    "work_visibility_line",
+                    "shadow_protection_line",
+                )
+            },
+        }
+    if debug_mode:
+        debug_info.setdefault("selected_identity_spine", None)
+        debug_info.setdefault("contradiction_signatures", [])
+        debug_info.setdefault("cross_layer_consistency_scores", {})
+        debug_info.setdefault("rejected_or_demoted_blocks", [])
+        debug_info.setdefault("surface_migration_v1", {})
+        debug_info.setdefault("voice_profile_v2", None)
     if debug_mode:
         debug_info["warnings"] = warnings
         if snapshots:
             debug_info["snapshots"] = snapshots
+    if voice_profile_v2 is not None:
+        debug_info["voice_profile_v2"] = voice_profile_v2
+        old_vs_new = (
+            debug_info.get("old_vs_new_selection_diff")
+            if isinstance(debug_info.get("old_vs_new_selection_diff"), Mapping)
+            else {}
+        )
+        debug_info["old_vs_new_selection_diff"] = {
+            **dict(old_vs_new),
+            "voice_profile": {
+                "mode": str(voice_profile_v2.get("mode") or ""),
+                "tone_source": str(expression_profile.get("tone_source") or ""),
+                "tone": str(expression_profile.get("tone") or ""),
+                "sentence_length": str(expression_profile.get("sentence_length") or ""),
+                "mode_reason": str(((voice_profile_v2.get("debug") or {}).get("mode_reason") or "")),
+            },
+        }
     sections_v2 = build_sections_v2(
         chart_data=chart_data,
         planets=planets,
         natal_graph=natal_graph,
+        master_selector=master_selector_v1 if surface_migration_enabled else None,
+        migration_mode=surface_migration_public_mode,
     )
     supporting_threads = build_supporting_threads(
         chart_data=chart_data,
         planets=planets,
         natal_graph=natal_graph,
         max_threads=4,
+        master_selector=master_selector_v1 if surface_migration_enabled else None,
+        migration_mode=surface_migration_public_mode,
     )
     profile_narrative = build_profile_narrative(
         chart_data,
@@ -836,6 +975,8 @@ def _prepare_payload_from_chart(
         locale=(request.locale if request else "tr") or "tr",
         include_debug=debug_mode,
         engine_override=(profile_engine or "").strip().lower() or None,
+        master_selector=master_selector_v1,
+        migration_mode="active" if surface_migration_enabled else ("shadow" if surface_migration_shadow else "legacy"),
     )
     personality_imprint = build_personality_imprint(
         planets=planets,
@@ -843,7 +984,68 @@ def _prepare_payload_from_chart(
         natal_graph=natal_graph,
         locale=(request.locale if request else "tr") or "tr",
         include_debug=debug_mode,
+        master_selector=master_selector_v1,
+        migration_mode="active" if surface_migration_enabled else ("shadow" if surface_migration_shadow else "legacy"),
     )
+    if debug_mode:
+        profile_internal = profile_narrative.get("profile_internal") if isinstance(profile_narrative.get("profile_internal"), Mapping) else {}
+        imprint_debug = personality_imprint.get("selection_debug") if isinstance(personality_imprint.get("selection_debug"), Mapping) else {}
+        surface_migration_debug: Dict[str, Any] = {
+            "mode": "active" if surface_migration_enabled else ("shadow" if surface_migration_shadow else "legacy"),
+            "active": surface_migration_enabled,
+            "profile_narrative": (profile_internal.get("spine_migration") if isinstance(profile_internal.get("spine_migration"), Mapping) else {}),
+            "personality_imprint": (imprint_debug.get("spine_migration") if isinstance(imprint_debug.get("spine_migration"), Mapping) else {}),
+        }
+        if surface_migration_shadow:
+            surface_migration_debug["sections_v2_shadow"] = build_sections_v2(
+                chart_data=chart_data,
+                planets=planets,
+                natal_graph=natal_graph,
+                master_selector=master_selector_v1,
+                migration_mode="active",
+            )
+            surface_migration_debug["supporting_threads_shadow"] = build_supporting_threads(
+                chart_data=chart_data,
+                planets=planets,
+                natal_graph=natal_graph,
+                max_threads=4,
+                master_selector=master_selector_v1,
+                migration_mode="active",
+            )
+        debug_info["surface_migration_v1"] = surface_migration_debug
+    if debug_mode:
+        layer_arbitration_v1 = arbitrate_natal_layers(
+            master_selector=master_selector_v1,
+            surfaces={
+                "profile_narrative": profile_narrative,
+                "personality_imprint": personality_imprint,
+                "sections_v2": sections_v2,
+                "supporting_threads": supporting_threads,
+            },
+            primitive_scores=primitive_scores_v2,
+            contradiction_signatures=contradiction_signatures_v1,
+        )
+        debug_info["layer_arbitrator_v1"] = layer_arbitration_v1
+        debug_info["cross_layer_consistency_scores"] = layer_arbitration_v1.get("scores") or {}
+        debug_info["rejected_or_demoted_blocks"] = layer_arbitration_v1.get("rejected_or_demoted_blocks") or []
+        old_vs_new = (
+            debug_info.get("old_vs_new_selection_diff")
+            if isinstance(debug_info.get("old_vs_new_selection_diff"), Mapping)
+            else {}
+        )
+        layer_scores = layer_arbitration_v1.get("scores") if isinstance(layer_arbitration_v1.get("scores"), Mapping) else {}
+        debug_info["old_vs_new_selection_diff"] = {
+            **dict(old_vs_new),
+            "surface_conflicts": {
+                "overall_consistency": float(((layer_scores.get("overall") or {}) if isinstance(layer_scores.get("overall"), Mapping) else {}).get("consistency_score") or 0.0),
+                "rejected_count": len(layer_arbitration_v1.get("rejected_or_demoted_blocks") or []),
+                "surface_decisions": {
+                    surface: str((score_payload or {}).get("decision") or "")
+                    for surface, score_payload in layer_scores.items()
+                    if surface != "overall" and isinstance(score_payload, Mapping)
+                },
+            },
+        }
     return {
         "chart_data": chart_data,
         "metadata": _build_metadata(request, chart_data) if request else _build_metadata_from_chart(chart_data),
@@ -884,6 +1086,12 @@ def _prepare_payload_from_chart(
         "narrative_interpretation": narrative,
         "narrative_meta": narrative_meta,
         "expression_profile": expression_profile,
+        "_natal_graph_v2": natal_graph_v2_debug,
+        "_natal_feature_graph_v2": natal_feature_graph_v2,
+        "_primitive_scores_v2": primitive_scores_v2,
+        "_contradiction_signatures_v1": contradiction_signatures_v1,
+        "_master_selector_v1": master_selector_v1,
+        "_layer_arbitration_v1": layer_arbitration_v1,
     }
 
 
@@ -1112,6 +1320,42 @@ def _finalize_response(
         planets=base_payload.get("planets") or [],
         natal_graph=base_payload.get("natal_graph") or {},
     )
+    if debug_mode:
+        layer_arbitration_v1 = arbitrate_natal_layers(
+            master_selector=base_payload.get("_master_selector_v1") or {},
+            surfaces={
+                "core_story_ui": response.get("core_story_ui") or {},
+                "profile_narrative": response.get("profile_narrative") or {},
+                "personality_imprint": response.get("personality_imprint") or {},
+                "sections_v2": response.get("sections_v2") or [],
+                "supporting_threads": response.get("supporting_threads") or [],
+            },
+            primitive_scores=base_payload.get("_primitive_scores_v2") or {},
+            contradiction_signatures=base_payload.get("_contradiction_signatures_v1") or {},
+        )
+        debug_entry = response.get("debug")
+        if isinstance(debug_entry, dict):
+            debug_entry["layer_arbitrator_v1"] = layer_arbitration_v1
+            debug_entry["cross_layer_consistency_scores"] = layer_arbitration_v1.get("scores") or {}
+            debug_entry["rejected_or_demoted_blocks"] = layer_arbitration_v1.get("rejected_or_demoted_blocks") or []
+            old_vs_new = (
+                debug_entry.get("old_vs_new_selection_diff")
+                if isinstance(debug_entry.get("old_vs_new_selection_diff"), Mapping)
+                else {}
+            )
+            layer_scores = layer_arbitration_v1.get("scores") if isinstance(layer_arbitration_v1.get("scores"), Mapping) else {}
+            debug_entry["old_vs_new_selection_diff"] = {
+                **dict(old_vs_new),
+                "surface_conflicts": {
+                    "overall_consistency": float(((layer_scores.get("overall") or {}) if isinstance(layer_scores.get("overall"), Mapping) else {}).get("consistency_score") or 0.0),
+                    "rejected_count": len(layer_arbitration_v1.get("rejected_or_demoted_blocks") or []),
+                    "surface_decisions": {
+                        surface: str((score_payload or {}).get("decision") or "")
+                        for surface, score_payload in layer_scores.items()
+                        if surface != "overall" and isinstance(score_payload, Mapping)
+                    },
+                },
+            }
     response["data_quality"] = _build_data_quality_payload(
         response.get("core_story_plan") or {},
         base_payload.get("meta_summary") or {},
@@ -1120,7 +1364,7 @@ def _finalize_response(
     )
     if debug_mode:
         debug_entry = response.get("debug")
-        if isinstance(debug_entry, dict):
+        if isinstance(debug_entry, dict) and "natal_graph_v2" not in debug_entry:
             chart_for_v2 = {
                 **dict(base_payload.get("chart_data") or {}),
                 "planets": list(base_payload.get("planets") or []),

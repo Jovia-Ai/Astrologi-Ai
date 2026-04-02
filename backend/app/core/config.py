@@ -49,6 +49,11 @@ class Settings(BaseSettings):
     enable_timing_logs: bool = Field(default=True, validation_alias="ENABLE_TIMING_LOGS")
     global_transits_ttl_seconds: int = Field(default=3600, validation_alias="GLOBAL_TRANSITS_TTL_SECONDS")
     global_transits_stale_ttl_seconds: int = Field(default=43200, validation_alias="GLOBAL_TRANSITS_STALE_TTL_SECONDS")
+    transit_narrative_ttl_seconds: int = Field(default=900, validation_alias="TRANSIT_NARRATIVE_TTL_SECONDS")
+    transit_narrative_stale_ttl_seconds: int = Field(
+        default=1800,
+        validation_alias="TRANSIT_NARRATIVE_STALE_TTL_SECONDS",
+    )
     home_fast_ttl_seconds: int = Field(default=1800, validation_alias="HOME_FAST_TTL_SECONDS")
     home_fast_stale_ttl_seconds: int = Field(default=3600, validation_alias="HOME_FAST_STALE_TTL_SECONDS")
     home_deep_ttl_seconds: int = Field(default=7200, validation_alias="HOME_DEEP_TTL_SECONDS")

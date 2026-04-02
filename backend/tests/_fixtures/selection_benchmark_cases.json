@@ -1,0 +1,530 @@
+{
+  "cases": [
+    {
+      "id": "daily_personalized_career",
+      "type": "daily",
+      "selected_date": "2026-03-10",
+      "natal": {
+        "bodies": [
+          {"body": "Sun", "house": 10},
+          {"body": "Moon", "house": 10},
+          {"body": "Mercury", "house": 10},
+          {"body": "Venus", "house": 7}
+        ]
+      },
+      "raw_events": [
+        {
+          "event_id": "evt_career_pref",
+          "transit_body": "Mercury",
+          "natal_point": "Sun",
+          "aspect": "opposition",
+          "bucket": "short",
+          "phase": "exactish",
+          "orb_deg": 0.4,
+          "houses": {"transit_in_natal_house": 10, "natal_point_house": 10},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        },
+        {
+          "event_id": "evt_home_pref",
+          "transit_body": "Mercury",
+          "natal_point": "Sun",
+          "aspect": "opposition",
+          "bucket": "short",
+          "phase": "exactish",
+          "orb_deg": 0.4,
+          "houses": {"transit_in_natal_house": 4, "natal_point_house": 4},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        }
+      ],
+      "event_cards": [
+        {
+          "event_id": "evt_career_pref",
+          "transit_body": "Mercury",
+          "natal_point": "Sun",
+          "aspect": "opposition",
+          "bucket": "short",
+          "phase": "exactish",
+          "horizon": "daily",
+          "orb_deg": 0.4,
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"},
+          "derived_context": {"natal_target": {"house": 10}},
+          "scene": {"outcome_house": 10, "start_house": 10},
+          "natal_promise": {"score": 0.74},
+          "tags": {"exact_in_days": 1, "intensity": 0.68}
+        },
+        {
+          "event_id": "evt_home_pref",
+          "transit_body": "Mercury",
+          "natal_point": "Sun",
+          "aspect": "opposition",
+          "bucket": "short",
+          "phase": "exactish",
+          "horizon": "daily",
+          "orb_deg": 0.4,
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"},
+          "derived_context": {"natal_target": {"house": 4}},
+          "scene": {"outcome_house": 4, "start_house": 4},
+          "natal_promise": {"score": 0.74},
+          "tags": {"exact_in_days": 1, "intensity": 0.68}
+        }
+      ],
+      "expected": {
+        "daily_event_id": "evt_career_pref",
+        "used_period_fallback": false
+      }
+    },
+    {
+      "id": "daily_period_fallback_story",
+      "type": "daily",
+      "selected_date": "2026-03-10",
+      "raw_events": [
+        {
+          "event_id": "evt_story_period",
+          "transit_body": "Mercury",
+          "natal_point": "Sun",
+          "aspect": "opposition",
+          "bucket": "long",
+          "phase": "separating",
+          "orb_deg": 1.6,
+          "houses": {"transit_in_natal_house": 3, "natal_point_house": 3},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 4},
+          "timing": {"peak_date_utc": "2026-03-14T09:00:00+00:00", "entry_date_utc": "2026-03-13T09:00:00+00:00"}
+        }
+      ],
+      "event_cards": [],
+      "expected": {
+        "daily_event_id": "evt_story_period",
+        "used_period_fallback": true
+      }
+    },
+    {
+      "id": "daily_lunation_priority",
+      "type": "daily",
+      "selected_date": "2026-03-10",
+      "raw_events": [
+        {
+          "event_id": "evt_other",
+          "transit_body": "Mars",
+          "natal_point": "Mercury",
+          "aspect": "square",
+          "bucket": "short",
+          "phase": "exactish",
+          "orb_deg": 0.4,
+          "houses": {"transit_in_natal_house": 3, "natal_point_house": 3},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        },
+        {
+          "event_id": "evt_lunation",
+          "transit_body": "Sun",
+          "natal_point": "Moon",
+          "aspect": "conjunction",
+          "bucket": "long",
+          "phase": "exactish",
+          "orb_deg": 0.3,
+          "event_family": "lunation_trigger",
+          "event_subtype": "full_moon",
+          "houses": {"transit_in_natal_house": 4, "natal_point_house": 4},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 0},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        }
+      ],
+      "event_cards": [
+        {
+          "event_id": "evt_other",
+          "transit_body": "Mars",
+          "natal_point": "Mercury",
+          "aspect": "square",
+          "bucket": "short",
+          "phase": "exactish",
+          "horizon": "daily",
+          "orb_deg": 0.4,
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"},
+          "derived_context": {"natal_target": {"house": 3}},
+          "scene": {"outcome_house": 3, "start_house": 3},
+          "natal_promise": {"score": 0.74},
+          "tags": {"exact_in_days": 1, "intensity": 0.68}
+        },
+        {
+          "event_id": "evt_lunation",
+          "transit_body": "Sun",
+          "natal_point": "Moon",
+          "aspect": "conjunction",
+          "bucket": "long",
+          "phase": "exactish",
+          "horizon": "period",
+          "orb_deg": 0.3,
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"},
+          "derived_context": {"natal_target": {"house": 4}},
+          "scene": {"outcome_house": 4, "start_house": 4},
+          "natal_promise": {"score": 0.74},
+          "tags": {"exact_in_days": 0, "intensity": 0.68}
+        }
+      ],
+      "expected": {
+        "daily_event_id": "evt_lunation",
+        "used_period_fallback": false
+      }
+    },
+    {
+      "id": "daily_experience_cluster_balance",
+      "type": "daily",
+      "selected_date": "2026-03-10",
+      "selected_day_context": {"labels": ["mind", "career"], "top_event_ids": ["evt_cluster_a"]},
+      "raw_events": [
+        {
+          "event_id": "evt_cluster_a",
+          "transit_body": "Mercury",
+          "natal_point": "Sun",
+          "aspect": "opposition",
+          "bucket": "short",
+          "phase": "exactish",
+          "orb_deg": 0.3,
+          "houses": {"transit_in_natal_house": 3, "natal_point_house": 3},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        },
+        {
+          "event_id": "evt_cluster_b",
+          "transit_body": "Mercury",
+          "natal_point": "Moon",
+          "aspect": "opposition",
+          "bucket": "short",
+          "phase": "applying",
+          "orb_deg": 0.5,
+          "houses": {"transit_in_natal_house": 3, "natal_point_house": 3},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        },
+        {
+          "event_id": "evt_distinct",
+          "transit_body": "Venus",
+          "natal_point": "MC",
+          "aspect": "trine",
+          "bucket": "short",
+          "phase": "exactish",
+          "orb_deg": 0.4,
+          "houses": {"transit_in_natal_house": 10, "natal_point_house": 10},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        }
+      ],
+      "event_cards": [
+        {
+          "event_id": "evt_cluster_a",
+          "transit_body": "Mercury",
+          "natal_point": "Sun",
+          "aspect": "opposition",
+          "bucket": "short",
+          "phase": "exactish",
+          "horizon": "daily",
+          "orb_deg": 0.3,
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"},
+          "derived_context": {"natal_target": {"house": 3}},
+          "scene": {"outcome_house": 3, "start_house": 3},
+          "natal_promise": {"score": 0.74},
+          "tags": {"exact_in_days": 1, "intensity": 0.68}
+        },
+        {
+          "event_id": "evt_cluster_b",
+          "transit_body": "Mercury",
+          "natal_point": "Moon",
+          "aspect": "opposition",
+          "bucket": "short",
+          "phase": "applying",
+          "horizon": "daily",
+          "orb_deg": 0.5,
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"},
+          "derived_context": {"natal_target": {"house": 3}},
+          "scene": {"outcome_house": 3, "start_house": 3},
+          "natal_promise": {"score": 0.74},
+          "tags": {"exact_in_days": 1, "intensity": 0.68}
+        },
+        {
+          "event_id": "evt_distinct",
+          "transit_body": "Venus",
+          "natal_point": "MC",
+          "aspect": "trine",
+          "bucket": "short",
+          "phase": "exactish",
+          "horizon": "daily",
+          "orb_deg": 0.4,
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"},
+          "derived_context": {"natal_target": {"house": 10}},
+          "scene": {"outcome_house": 10, "start_house": 10},
+          "natal_promise": {"score": 0.74},
+          "tags": {"exact_in_days": 1, "intensity": 0.68}
+        }
+      ],
+      "expected": {
+        "daily_event_id": "evt_cluster_a",
+        "daily_contains": ["evt_distinct"],
+        "used_period_fallback": false
+      }
+    },
+    {
+      "id": "daily_raw_pool_over_period_only_cards",
+      "type": "daily",
+      "selected_date": "2026-03-10",
+      "selected_day_context": {"top_event_ids": ["evt_daily"]},
+      "raw_events": [
+        {
+          "event_id": "evt_daily",
+          "transit_body": "Moon",
+          "natal_point": "Mercury",
+          "aspect": "square",
+          "bucket": "short",
+          "phase": "exactish",
+          "orb_deg": 0.2,
+          "houses": {"transit_in_natal_house": 3, "natal_point_house": 3},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        },
+        {
+          "event_id": "evt_period",
+          "transit_body": "Saturn",
+          "natal_point": "Sun",
+          "aspect": "trine",
+          "bucket": "long",
+          "phase": "applying",
+          "orb_deg": 1.7,
+          "houses": {"transit_in_natal_house": 10, "natal_point_house": 10},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        }
+      ],
+      "event_cards": [
+        {
+          "event_id": "evt_period",
+          "transit_body": "Saturn",
+          "natal_point": "Sun",
+          "aspect": "trine",
+          "bucket": "long",
+          "phase": "applying",
+          "horizon": "period",
+          "orb_deg": 1.7,
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"},
+          "derived_context": {"natal_target": {"house": 10}},
+          "scene": {"outcome_house": 10, "start_house": 10},
+          "natal_promise": {"score": 0.74},
+          "tags": {"exact_in_days": 1, "intensity": 0.68}
+        }
+      ],
+      "expected": {
+        "daily_event_id": "evt_daily",
+        "used_period_fallback": false
+      }
+    },
+    {
+      "id": "daily_high_score_period_promote",
+      "type": "daily",
+      "selected_date": "2026-03-10",
+      "raw_events": [
+        {
+          "event_id": "evt_high_period",
+          "transit_body": "Moon",
+          "natal_point": "ASC",
+          "aspect": "opposition",
+          "bucket": "long",
+          "phase": "exact",
+          "orb_deg": 0.1,
+          "houses": {"transit_in_natal_house": 1, "natal_point_house": 1},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 0},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        }
+      ],
+      "event_cards": [],
+      "expected": {
+        "daily_event_id": "evt_high_period",
+        "used_period_fallback": false
+      }
+    },
+    {
+      "id": "daily_balance_prefers_flow_surface",
+      "type": "daily",
+      "selected_date": "2026-03-10",
+      "raw_events": [
+        {
+          "event_id": "evt_shadow",
+          "transit_body": "Moon",
+          "natal_point": "Mercury",
+          "aspect": "square",
+          "bucket": "short",
+          "phase": "exactish",
+          "orb_deg": 0.2,
+          "houses": {"transit_in_natal_house": 3, "natal_point_house": 3},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        },
+        {
+          "event_id": "evt_flow",
+          "transit_body": "Venus",
+          "natal_point": "Moon",
+          "aspect": "trine",
+          "bucket": "short",
+          "phase": "exactish",
+          "orb_deg": 0.24,
+          "houses": {"transit_in_natal_house": 7, "natal_point_house": 7},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        },
+        {
+          "event_id": "evt_shadow_2",
+          "transit_body": "Mars",
+          "natal_point": "Sun",
+          "aspect": "opposition",
+          "bucket": "short",
+          "phase": "exactish",
+          "orb_deg": 0.23,
+          "houses": {"transit_in_natal_house": 1, "natal_point_house": 1},
+          "ranking": {"tier": "main", "weight": 1.2, "exact_in_days": 1},
+          "timing": {"peak_date_utc": "2026-03-10T09:00:00+00:00", "entry_date_utc": "2026-03-09T09:00:00+00:00"}
+        }
+      ],
+      "event_cards": [],
+      "expected": {
+        "daily_contains": ["evt_flow"],
+        "used_period_fallback": false
+      }
+    },
+    {
+      "id": "period_story_spine",
+      "type": "period",
+      "max_cards": 1,
+      "natal": {
+        "bodies": [
+          {"body": "Sun", "house": 10},
+          {"body": "Moon", "house": 10},
+          {"body": "Mercury", "house": 10}
+        ]
+      },
+      "events": [
+        {
+          "event_id": "evt_career_spine",
+          "scope": "transit_to_natal",
+          "transit_body": "Saturn",
+          "aspect": "conjunction",
+          "natal_point": "Sun",
+          "strength": 0.84,
+          "orb_deg": 0.4,
+          "phase": "applying",
+          "bucket": "long",
+          "tags": ["career"],
+          "houses": {"transit_in_natal_house": 10, "natal_point_house": 10},
+          "event_family": "aspect_event",
+          "importance_tier": "high",
+          "lasting_change_score": 0.82,
+          "chapter_opening": 0.22,
+          "is_structural": true
+        },
+        {
+          "event_id": "evt_home_spine",
+          "scope": "transit_to_natal",
+          "transit_body": "Saturn",
+          "aspect": "conjunction",
+          "natal_point": "Moon",
+          "strength": 0.84,
+          "orb_deg": 0.4,
+          "phase": "applying",
+          "bucket": "long",
+          "tags": ["home"],
+          "houses": {"transit_in_natal_house": 4, "natal_point_house": 4},
+          "event_family": "aspect_event",
+          "importance_tier": "high",
+          "lasting_change_score": 0.82,
+          "chapter_opening": 0.22,
+          "is_structural": true
+        }
+      ],
+      "expected": {
+        "spine_event_id": "evt_career_spine"
+      }
+    },
+    {
+      "id": "period_coverage_safe_selection",
+      "type": "period",
+      "max_cards": 3,
+      "natal": {
+        "bodies": [
+          {"body": "Sun", "house": 1},
+          {"body": "Mercury", "house": 1},
+          {"body": "Mars", "house": 9},
+          {"body": "Saturn", "house": 3},
+          {"body": "Neptune", "house": 1},
+          {"body": "Pluto", "house": 11},
+          {"body": "Uranus", "house": 1}
+        ],
+        "angles": {
+          "ASC": {"point": "ASC", "sign": "Capricorn"},
+          "MC": {"point": "MC", "sign": "Libra"},
+          "DSC": {"point": "DSC", "sign": "Cancer"},
+          "IC": {"point": "IC", "sign": "Aries"}
+        }
+      },
+      "events": [
+        {
+          "event_id": "evt_neptune_asc",
+          "scope": "transit_to_angles",
+          "transit_body": "Neptune",
+          "aspect": "square",
+          "natal_point": "ASC",
+          "strength": 0.972,
+          "orb_deg": 0.17,
+          "phase": "exactish",
+          "bucket": "long",
+          "tags": ["self", "pressure", "friction"],
+          "houses": {"transit_in_natal_house": 3, "natal_point_house": null},
+          "polarity": "hard"
+        },
+        {
+          "event_id": "evt_uranus_mars",
+          "scope": "transit_to_natal",
+          "transit_body": "Uranus",
+          "aspect": "trine",
+          "natal_point": "Mars",
+          "strength": 0.965,
+          "orb_deg": 0.21,
+          "phase": "applying",
+          "bucket": "long",
+          "tags": ["career", "support", "flow"],
+          "houses": {"transit_in_natal_house": 5, "natal_point_house": 9},
+          "polarity": "soft"
+        },
+        {
+          "event_id": "evt_saturn_sun",
+          "scope": "transit_to_natal",
+          "transit_body": "Saturn",
+          "aspect": "square",
+          "natal_point": "Sun",
+          "strength": 0.85,
+          "orb_deg": 0.80,
+          "phase": "applying",
+          "bucket": "long",
+          "tags": ["self", "pressure", "friction"],
+          "houses": {"transit_in_natal_house": 3, "natal_point_house": 1},
+          "polarity": "hard"
+        },
+        {
+          "event_id": "evt_fortune_blocked",
+          "scope": "transit_to_natal",
+          "transit_body": "Fortune",
+          "aspect": "square",
+          "natal_point": "Sun",
+          "strength": 0.99,
+          "orb_deg": 0.2,
+          "phase": "applying",
+          "bucket": "long",
+          "tags": ["self", "pressure"],
+          "houses": {"transit_in_natal_house": 1, "natal_point_house": 1},
+          "polarity": "hard"
+        }
+      ],
+      "expected": {
+        "selected_contains": ["evt_neptune_asc", "evt_uranus_mars"],
+        "selected_not_contains": ["evt_fortune_blocked"]
+      }
+    }
+  ]
+}

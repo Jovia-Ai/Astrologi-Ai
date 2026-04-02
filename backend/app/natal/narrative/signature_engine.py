@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Mapping, Sequence
 from app.narrative.editorial_render_policy import semantic_overlap
 from app.natal.narrative.primitive_engine import build_primitives
 from app.natal.narrative.primitive_taxonomy_tr import TAXONOMY_V1_TR
+from app.natal.narrative.natal_selection_config import get_natal_selection_v3_config
 from app.natal.narrative.signature_taxonomy_tr import BLOCK_ALIAS_TO_TAXONOMY
 
 
@@ -665,6 +666,58 @@ def _slot_bonus(
     return score
 
 
+def _spine_alignment_bonus(
+    candidate: Mapping[str, Any],
+    *,
+    primitive_scores: Mapping[str, float],
+    taxonomy_block_id: str,
+    block_contract: Mapping[str, Any] | None,
+    slot: str,
+) -> float:
+    contract = block_contract if isinstance(block_contract, Mapping) else {}
+    target_primitives = {
+        str(item)
+        for item in contract.get("source_primitives") or []
+        if str(item).strip()
+    }
+    counterweights = {
+        str(item)
+        for item in contract.get("counterweights") or []
+        if str(item).strip()
+    }
+    if not target_primitives and not counterweights:
+        return 0.0
+    candidate_primitive_ids = _candidate_primitive_ids(candidate, taxonomy_block_id)
+    if not candidate_primitive_ids:
+        return 0.0
+    weights = (
+        (get_natal_selection_v3_config().get("weights") or {}).get("surface_migration_v1")
+        if isinstance(get_natal_selection_v3_config().get("weights"), Mapping)
+        else {}
+    )
+    direct_matches = [primitive_id for primitive_id in candidate_primitive_ids if primitive_id in target_primitives]
+    counter_matches = [primitive_id for primitive_id in candidate_primitive_ids if primitive_id in counterweights]
+    direct_bonus = sum(
+        float(weights.get("profile_direct_match_bonus") or 0.18) / max(len(candidate_primitive_ids), 1)
+        + float(primitive_scores.get(primitive_id) or 0.0) * 0.10
+        for primitive_id in direct_matches
+    )
+    counter_bonus = sum(
+        float(weights.get("profile_counterweight_bonus") or 0.08) / max(len(candidate_primitive_ids), 1)
+        + float(primitive_scores.get(primitive_id) or 0.0) * 0.04
+        for primitive_id in counter_matches
+    )
+    confidence_bonus = 0.0
+    if direct_matches or counter_matches:
+        confidence_bonus = float(contract.get("confidence") or 0.0) * float(weights.get("profile_confidence_bonus") or 0.06)
+    slot_multiplier = {
+        "spine": 1.0,
+        "spark": 0.72,
+        "tone": 0.58,
+    }.get(slot, 0.66)
+    return min(0.26, (direct_bonus + counter_bonus + confidence_bonus) * slot_multiplier)
+
+
 def _candidate_source_keys(candidate: Mapping[str, Any]) -> set[str]:
     keys: set[str] = set()
     for item in list(candidate.get("evidence") or []) + list(candidate.get("astro_tokens") or []):
@@ -727,6 +780,7 @@ def select_by_block(
     candidates: Sequence[Mapping[str, Any]],
     facts: Mapping[str, Any],
     primitive_hits: Sequence[Mapping[str, Any]] | None = None,
+    block_spine_contract: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> Dict[str, Dict[str, Any]]:
     by_block: Dict[str, List[Mapping[str, Any]]] = {block: [] for block in BLOCK_ORDER}
     for candidate in candidates:
@@ -745,6 +799,11 @@ def select_by_block(
     for block in BLOCK_ORDER:
         taxonomy_block_id = BLOCK_ALIAS_TO_TAXONOMY.get(block, block)
         taxonomy = TAXONOMY_BY_BLOCK_ID_TR.get(taxonomy_block_id, {})
+        spine_contract = (
+            block_spine_contract.get(block)
+            if isinstance(block_spine_contract, Mapping) and isinstance(block_spine_contract.get(block), Mapping)
+            else {}
+        )
         ranked = sorted(
             by_block.get(block) or [],
             key=lambda item: (
@@ -765,7 +824,14 @@ def select_by_block(
                     continue
                 if any(chip_counts.get(str(chip), 0) >= 2 for chip in candidate.get("chips") or []):
                     continue
-                slot_score = float(candidate.get("score") or 0.0) + _slot_bonus(candidate, primitive_scores, taxonomy, slot)
+                spine_alignment_bonus = _spine_alignment_bonus(
+                    candidate,
+                    primitive_scores=primitive_scores,
+                    taxonomy_block_id=taxonomy_block_id,
+                    block_contract=spine_contract,
+                    slot=slot,
+                )
+                slot_score = float(candidate.get("score") or 0.0) + _slot_bonus(candidate, primitive_scores, taxonomy, slot) + spine_alignment_bonus
                 if slot == "spine" and "identity_" in signature_id and block != "identity_aura":
                     slot_score -= 0.05
                 slot_score -= _diversity_penalty(
@@ -775,7 +841,12 @@ def select_by_block(
                     block=block,
                 )
                 if slot_score > best_score:
-                    best = dict(candidate)
+                    best = {
+                        **dict(candidate),
+                        "_spine_alignment_bonus": round(spine_alignment_bonus, 4),
+                        "_spine_target_line_id": str(spine_contract.get("line_id") or ""),
+                        "_spine_target_slot": str(spine_contract.get("slot") or ""),
+                    }
                     best_score = slot_score
             if best is not None:
                 used_ids.add(str(best.get("signature_id") or ""))
@@ -804,6 +875,8 @@ def select_by_block(
                 "area_signature": area,
                 "tone_modifier": tone,
                 "taxonomy_block_id": taxonomy_block_id,
+                "spine_contract": dict(spine_contract),
+                "spine_alignment_bonus": round(float((primary or {}).get("_spine_alignment_bonus") or 0.0), 4),
             }
 
     return selected

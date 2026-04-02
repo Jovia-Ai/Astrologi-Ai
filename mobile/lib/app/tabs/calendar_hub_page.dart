@@ -130,6 +130,7 @@ class CalendarDayBundle {
     required this.timeline,
     required this.periodCore,
     required this.wrongSource,
+    required this.hasNarrativeData,
   });
 
   final DateTime date;
@@ -144,6 +145,39 @@ class CalendarDayBundle {
   final TimelineDto? timeline;
   final PeriodCoreDto? periodCore;
   final bool wrongSource;
+  final bool hasNarrativeData;
+
+  CalendarDayBundle copyWith({
+    DateTime? date,
+    Map<String, NarrativeCalendarDay>? calendarDays,
+    NarrativeCalendarDay? selectedDayMeta,
+    List<EventCardDto>? dailyEventCards,
+    List<PeriodCardDto>? periodCards,
+    bool? usedPeriodFallback,
+    String? periodOnlyNote,
+    List<PeriodMarkerDto>? markers,
+    List<CalendarBestTimeItem>? bestTimes,
+    TimelineDto? timeline,
+    PeriodCoreDto? periodCore,
+    bool? wrongSource,
+    bool? hasNarrativeData,
+  }) {
+    return CalendarDayBundle(
+      date: date ?? this.date,
+      calendarDays: calendarDays ?? this.calendarDays,
+      selectedDayMeta: selectedDayMeta ?? this.selectedDayMeta,
+      dailyEventCards: dailyEventCards ?? this.dailyEventCards,
+      periodCards: periodCards ?? this.periodCards,
+      usedPeriodFallback: usedPeriodFallback ?? this.usedPeriodFallback,
+      periodOnlyNote: periodOnlyNote ?? this.periodOnlyNote,
+      markers: markers ?? this.markers,
+      bestTimes: bestTimes ?? this.bestTimes,
+      timeline: timeline ?? this.timeline,
+      periodCore: periodCore ?? this.periodCore,
+      wrongSource: wrongSource ?? this.wrongSource,
+      hasNarrativeData: hasNarrativeData ?? this.hasNarrativeData,
+    );
+  }
 
   String get summary {
     final human = _buildDailyHumanCardViewModel(
@@ -189,6 +223,214 @@ String _formatCalendarDayTitle(DateTime day) {
 
 String _formatCalendarShortWeekday(DateTime day) =>
     _kCalendarWeekdayLabels[day.weekday - 1];
+
+List<PeriodMarkerDto> _markersForSelectedDay(
+  List<PeriodMarkerDto> markers,
+  DateTime selectedDay,
+) {
+  final selectedKey = _calendarDayKey(selectedDay);
+  return [
+    for (final marker in markers)
+      if ((marker.raw['date'] ?? '').toString().trim() == selectedKey) marker,
+  ];
+}
+
+String _markerSemanticKind(PeriodMarkerDto marker) {
+  final phaseKind = (marker.raw['phase_kind'] ?? '')
+      .toString()
+      .trim()
+      .toLowerCase();
+  if (phaseKind.isNotEmpty) {
+    return phaseKind;
+  }
+  final kind = (marker.raw['kind'] ?? '').toString().trim().toLowerCase();
+  if (kind == 'aspect_peak') {
+    return 'full_moon';
+  }
+  final haystack = [
+    marker.title,
+    marker.summary,
+    marker.timeHint,
+    (marker.raw['label'] ?? '').toString(),
+  ].join(' ').toLowerCase();
+  if (haystack.contains('new moon') ||
+      haystack.contains('yeniay') ||
+      haystack.contains('yeni ay')) {
+    return 'new_moon';
+  }
+  if (haystack.contains('full moon') ||
+      haystack.contains('dolunay') ||
+      haystack.contains('dolun') ||
+      kind == 'aspect_peak') {
+    return 'full_moon';
+  }
+  if (haystack.contains('station') ||
+      haystack.contains('dura') ||
+      haystack.contains('yon degis')) {
+    return 'station';
+  }
+  if (haystack.contains('retro')) {
+    return 'retro';
+  }
+  if (haystack.contains('ingress') ||
+      haystack.contains('geciyor') ||
+      haystack.contains('yeni alan')) {
+    return 'ingress';
+  }
+  return kind.isNotEmpty ? kind : 'threshold';
+}
+
+String _markerGlyph(PeriodMarkerDto marker) {
+  switch (_markerSemanticKind(marker)) {
+    case 'station':
+      return '◉';
+    case 'ingress':
+      return '↗︎';
+    case 'retro':
+      return '↺';
+    case 'full_moon':
+      return '●';
+    case 'new_moon':
+      return '○';
+    default:
+      return '•';
+  }
+}
+
+String _markerShortLabel(PeriodMarkerDto marker) {
+  switch (_markerSemanticKind(marker)) {
+    case 'station':
+      return 'Yön değişimi';
+    case 'ingress':
+      return 'Yeni alan';
+    case 'retro':
+      return 'Geri akış';
+    case 'full_moon':
+      return 'Zirve';
+    case 'new_moon':
+      return 'Başlangıç';
+    default:
+      return 'Eşik';
+  }
+}
+
+String _markerSupportingLine(PeriodMarkerDto marker) {
+  final title = marker.title.trim();
+  if (title.isNotEmpty &&
+      title.toLowerCase() != _markerShortLabel(marker).toLowerCase()) {
+    return title;
+  }
+  final summary = marker.summary.trim();
+  if (summary.isNotEmpty) {
+    return summary.length > 56
+        ? '${summary.substring(0, 56).trimRight()}...'
+        : summary;
+  }
+  return '';
+}
+
+String _markerPreviewSummary(List<PeriodMarkerDto> markers) {
+  if (markers.isEmpty) {
+    return '';
+  }
+  if (markers.length == 1) {
+    return _markerShortLabel(markers.first).toLowerCase();
+  }
+  return 'birden fazla eşik';
+}
+
+Route<T> buildCalendarDayPageRoute<T>({
+  required BuildContext context,
+  required WidgetBuilder builder,
+  required DateTime initialDate,
+  required String source,
+}) {
+  const transitionDuration = Duration(milliseconds: 400);
+  const reverseTransitionDuration = Duration(milliseconds: 320);
+  return PageRouteBuilder<T>(
+    settings: RouteSettings(
+      name: 'calendar_day',
+      arguments: <String, String>{
+        'source': source,
+        'date': _calendarDayKey(initialDate),
+      },
+    ),
+    opaque: false,
+    transitionDuration: transitionDuration,
+    reverseTransitionDuration: reverseTransitionDuration,
+    pageBuilder: (routeContext, animation, secondaryAnimation) =>
+        builder(routeContext),
+    transitionsBuilder: (routeContext, animation, secondaryAnimation, child) {
+      final curved = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeInOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      );
+      final settle = CurvedAnimation(
+        parent: animation,
+        curve: const Interval(0.0, 0.88, curve: Curves.easeInOutCubic),
+        reverseCurve: Curves.easeInCubic,
+      );
+      final progress = curved.value.clamp(0.0, 1.0);
+      final viewportSize = MediaQuery.sizeOf(routeContext);
+      final horizontalInset = lerpDouble(26, 0, settle.value) ?? 0;
+      final verticalInset = lerpDouble(14, 0, settle.value) ?? 0;
+      final radius = lerpDouble(30, 0, settle.value) ?? 0;
+      final shadowBlur = lerpDouble(36, 0, settle.value) ?? 0;
+      final shadowSpread = lerpDouble(6, 0, settle.value) ?? 0;
+      final scrimOpacity = lerpDouble(0, 0.16, progress) ?? 0;
+      final slideOffset = Offset(
+        (lerpDouble(0.14, 0, curved.value) ?? 0) * viewportSize.width,
+        0,
+      );
+      final scale = lerpDouble(0.985, 1, curved.value) ?? 1;
+      return Stack(
+        fit: StackFit.expand,
+        children: [
+          IgnorePointer(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: scrimOpacity),
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(
+              horizontalInset,
+              verticalInset,
+              0,
+              verticalInset,
+            ),
+            child: Transform.translate(
+              offset: slideOffset,
+              child: Transform.scale(
+                scale: scale,
+                alignment: Alignment.centerRight,
+                child: DecoratedBox(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(radius),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.18 * progress),
+                        blurRadius: shadowBlur,
+                        spreadRadius: shadowSpread,
+                        offset: const Offset(-10, 8),
+                      ),
+                    ],
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(radius),
+                    child: child,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
 
 double _calendarWeekAnchorAlignmentY(
   List<DateTime> monthDays,
@@ -457,6 +699,65 @@ _DailyHumanCardViewModel _buildDailyHumanCardViewModel({
     houseTouchpointHint: houseTouchpointHint,
     isCritical: dayMeta?.isCritical == true,
   );
+}
+
+bool _isDailyCardBackedByPeriod(EventCardDto card) {
+  final sourceHorizon = card.sourceHorizon.trim().toLowerCase();
+  return card.isPeriodDerived ||
+      card.todayFacingFallback ||
+      sourceHorizon == 'period';
+}
+
+String _dailySectionBody(List<EventCardDto> cards, String periodOnlyNote) {
+  final note = periodOnlyNote.trim();
+  if (note.isNotEmpty) {
+    return note;
+  }
+  if (cards.any(_isDailyCardBackedByPeriod)) {
+    return 'Buradaki kartlardan bazisi kisa tetik degil; uzun suredir calisan temanin bugune dusen yuzu.';
+  }
+  return 'Bugun sende daha cok hissedilen sey burada aciliyor.';
+}
+
+String _dailyCardEyebrow(EventCardDto card, _DailyHumanCardViewModel human) {
+  if (_isDailyCardBackedByPeriod(card)) {
+    return 'Donemden bugune';
+  }
+  final signalLabel = human.signalLabel.trim();
+  if (signalLabel.isNotEmpty) {
+    return signalLabel;
+  }
+  return 'Bugun';
+}
+
+List<String> _dailyCardMeta(EventCardDto card, _DailyHumanCardViewModel human) {
+  final meta = <String>[];
+  if (_isDailyCardBackedByPeriod(card)) {
+    meta.add('Uzun suredir acik tema');
+    final signalLabel = human.signalLabel.trim();
+    if (signalLabel.isNotEmpty) {
+      meta.add(signalLabel);
+    }
+  }
+  for (final item in human.meta) {
+    final trimmed = item.trim();
+    if (trimmed.isEmpty || meta.contains(trimmed)) {
+      continue;
+    }
+    meta.add(trimmed);
+  }
+  return meta.take(3).toList(growable: false);
+}
+
+String _markerSectionTitle(List<PeriodMarkerDto> markers) {
+  return markers.length == 1 ? 'Bugunun isareti' : 'Bugunun isaretleri';
+}
+
+String _markerSectionBody(List<PeriodMarkerDto> markers) {
+  if (markers.length == 1) {
+    return 'Kisa gokyuzu esigi. Bu tek basina ana yorum degil; gunun dikkat ceken isareti.';
+  }
+  return 'Kisa gokyuzu isaretleri. Bunlar tam yorum degil; gunun dikkat ceken esikleri.';
 }
 
 double _scoreEventCardForToday(EventCardDto card, DateTime selectedDate) {
@@ -824,7 +1125,7 @@ Future<CalendarDayBundle> _loadCalendarDayBundle({
     periodCards: periodCards,
     usedPeriodFallback: selection.usedPeriodFallback,
     periodOnlyNote: selection.periodOnlyNote,
-    markers: periodCalendar.markers,
+    markers: _markersForSelectedDay(periodCalendar.markers, normalizedDate),
     bestTimes: narrativeBest.isNotEmpty ? narrativeBest : fallbackBest,
     timeline: narrative.timeline,
     periodCore: narrative.periodCore ?? periodCalendar.periodCore,
@@ -832,6 +1133,96 @@ Future<CalendarDayBundle> _loadCalendarDayBundle({
         (periodInNarrative || dailyCards.isEmpty) &&
         periodCards.isEmpty &&
         narrative.periodCore == null,
+    hasNarrativeData: true,
+  );
+}
+
+Map<String, NarrativeCalendarDay> _calendarDaysFromPayload(
+  Map<String, dynamic> data,
+) {
+  final calendarRaw = data['calendar'] is Map
+      ? Map<String, dynamic>.from(data['calendar'] as Map)
+      : data;
+  final daysRaw = calendarRaw['days'];
+  final out = <String, NarrativeCalendarDay>{};
+  if (daysRaw is! List) {
+    return out;
+  }
+  for (final item in daysRaw) {
+    if (item is! Map) {
+      continue;
+    }
+    final day = NarrativeCalendarDay.fromMap(Map<String, dynamic>.from(item));
+    if (day.date.isNotEmpty) {
+      out[day.date] = day;
+    }
+  }
+  return out;
+}
+
+CalendarDayBundle _calendarShellBundleFromPayload({
+  required Map<String, dynamic> calendarMap,
+  required DateTime selectedDay,
+}) {
+  final normalizedDate = TransitRequestBuilder.stripDate(selectedDay);
+  final calendarDays = _calendarDaysFromPayload(calendarMap);
+  final periodCalendar = PeriodCalendarDto.fromMap(calendarMap);
+  return CalendarDayBundle(
+    date: normalizedDate,
+    calendarDays: calendarDays,
+    selectedDayMeta: calendarDays[_calendarDayKey(normalizedDate)],
+    dailyEventCards: const <EventCardDto>[],
+    periodCards: periodCalendar.cards,
+    usedPeriodFallback: false,
+    periodOnlyNote: '',
+    markers: _markersForSelectedDay(periodCalendar.markers, normalizedDate),
+    bestTimes: const <CalendarBestTimeItem>[],
+    timeline: null,
+    periodCore: periodCalendar.periodCore,
+    wrongSource: periodCalendar.hasWrongSource,
+    hasNarrativeData: false,
+  );
+}
+
+CalendarDayBundle _hydrateCalendarBundleWithNarrative({
+  required CalendarDayBundle baseBundle,
+  required Map<String, dynamic> narrativeMap,
+}) {
+  final narrative = NarrativeResponse.fromMap(narrativeMap);
+  final narrativeBest = _extractBestTimesFromNarrativePayload(narrativeMap);
+  final selection = _deriveEventCardSelection(
+    narrative: narrative,
+    selectedDate: baseBundle.date,
+  );
+  final periodInNarrative =
+      selection.periodCards.isNotEmpty && selection.dailyCards.isEmpty;
+  final calendarDays = narrative.calendarDays.isNotEmpty
+      ? narrative.calendarDays
+      : baseBundle.calendarDays;
+  final periodCards = selection.periodCards.isNotEmpty
+      ? <PeriodCardDto>[
+          for (var index = 0; index < selection.periodCards.length; index++)
+            PeriodCardDto.fromEventCard(
+              eventCard: selection.periodCards[index],
+              index: index,
+            ),
+        ]
+      : baseBundle.periodCards;
+  return baseBundle.copyWith(
+    calendarDays: calendarDays,
+    selectedDayMeta: calendarDays[_calendarDayKey(baseBundle.date)],
+    dailyEventCards: selection.dailyCards,
+    periodCards: periodCards,
+    usedPeriodFallback: selection.usedPeriodFallback,
+    periodOnlyNote: selection.periodOnlyNote,
+    bestTimes: narrativeBest.isNotEmpty ? narrativeBest : baseBundle.bestTimes,
+    timeline: narrative.timeline,
+    periodCore: narrative.periodCore ?? baseBundle.periodCore,
+    wrongSource:
+        ((periodInNarrative || selection.dailyCards.isEmpty) &&
+        periodCards.isEmpty &&
+        (narrative.periodCore ?? baseBundle.periodCore) == null),
+    hasNarrativeData: true,
   );
 }
 
@@ -863,6 +1254,7 @@ class _CalendarHubPageState extends ConsumerState<CalendarHubPage>
   String? _error;
   CalendarDayBundle? _bundle;
   String? _lastProfileKey;
+  int _requestEpoch = 0;
 
   @override
   void initState() {
@@ -1074,7 +1466,10 @@ class _CalendarHubPageState extends ConsumerState<CalendarHubPage>
         : null;
     final returnedDate = await Navigator.of(context, rootNavigator: true)
         .push<DateTime>(
-          MaterialPageRoute<DateTime>(
+          buildCalendarDayPageRoute<DateTime>(
+            context: context,
+            initialDate: normalized,
+            source: 'calendar_hub',
             builder: (_) => CalendarDayPage(
               profile: profile,
               initialDate: normalized,
@@ -1132,23 +1527,57 @@ class _CalendarHubPageState extends ConsumerState<CalendarHubPage>
   }
 
   Future<void> _loadBundle(Map<String, dynamic> profile) async {
+    final requestDay = _selectedDay;
+    final requestKey = _calendarDayKey(requestDay);
+    final requestEpoch = ++_requestEpoch;
     setState(() {
       _loading = true;
       _error = null;
     });
     try {
-      final bundle = await _loadCalendarDayBundle(
-        dataSource: _dataSource,
+      final calendarMap = await _dataSource.fetchCalendar(
         profile: profile,
-        selectedDay: _selectedDay,
+        focusedDate: requestDay,
+        include: 'markers',
       );
-      if (!mounted) {
+      if (!mounted ||
+          requestEpoch != _requestEpoch ||
+          requestKey != _calendarDayKey(_selectedDay)) {
         return;
       }
+      final shellBundle = _calendarShellBundleFromPayload(
+        calendarMap: calendarMap,
+        selectedDay: requestDay,
+      );
       setState(() {
-        _bundle = bundle;
+        _bundle = shellBundle;
         _loading = false;
       });
+      () async {
+        try {
+          final narrativeMap = await _dataSource.fetchDailyNarrative(
+            profile: profile,
+            selectedDate: requestDay,
+          );
+          if (!mounted ||
+              requestEpoch != _requestEpoch ||
+              requestKey != _calendarDayKey(_selectedDay)) {
+            return;
+          }
+          final hydrated = _hydrateCalendarBundleWithNarrative(
+            baseBundle: shellBundle,
+            narrativeMap: narrativeMap,
+          );
+          if (!mounted ||
+              requestEpoch != _requestEpoch ||
+              requestKey != _calendarDayKey(_selectedDay)) {
+            return;
+          }
+          setState(() {
+            _bundle = hydrated;
+          });
+        } catch (_) {}
+      }();
     } on DioException catch (exc) {
       if (!mounted) {
         return;
@@ -1474,7 +1903,7 @@ class _PeriodEventCardsSection extends StatelessWidget {
           title: 'Uzun dönem bugün de etkili',
           body: note.trim().isNotEmpty
               ? note.trim()
-              : 'Bugünün arkasında çalışan daha uzun bir tema da burada duruyor.',
+              : 'Burasi bugunun kendisi degil; bugunu arkadan tasiyan daha uzun hikaye.',
         ),
         SizedBox(height: spacing.sectionToContent),
         for (var index = 0; index < periodCards.length; index++) ...[
@@ -1589,6 +2018,10 @@ class _ProfileCalendarPreviewStripState
                 ),
               ),
             ),
+          if (bundle?.markers.isNotEmpty == true) ...[
+            _CalendarMarkerPreviewRow(markers: bundle!.markers),
+            const SizedBox(height: 12),
+          ],
           Row(
             children: [
               Expanded(
@@ -1682,23 +2115,50 @@ class _ProfileCalendarPreviewStripState
       _error = null;
     });
     try {
-      final bundle = await _loadCalendarDayBundle(
-        dataSource: _dataSource,
+      final calendarMap = await _dataSource.fetchCalendar(
         profile: profile,
-        selectedDay: requestDay,
+        focusedDate: requestDay,
+        include: 'markers',
       );
       if (!mounted) {
         return;
       }
-      _bundleCache[requestKey] = bundle;
+      final shellBundle = _calendarShellBundleFromPayload(
+        calendarMap: calendarMap,
+        selectedDay: requestDay,
+      );
       if (requestEpoch != _requestEpoch ||
           requestKey != _calendarDayKey(_baseDay)) {
         return;
       }
+      _bundleCache[requestKey] = shellBundle;
       setState(() {
-        _bundle = bundle;
+        _bundle = shellBundle;
         _loading = false;
       });
+      () async {
+        try {
+          final narrativeMap = await _dataSource.fetchDailyNarrative(
+            profile: profile,
+            selectedDate: requestDay,
+          );
+          if (!mounted) {
+            return;
+          }
+          final hydrated = _hydrateCalendarBundleWithNarrative(
+            baseBundle: shellBundle,
+            narrativeMap: narrativeMap,
+          );
+          _bundleCache[requestKey] = hydrated;
+          if (requestEpoch != _requestEpoch ||
+              requestKey != _calendarDayKey(_baseDay)) {
+            return;
+          }
+          setState(() {
+            _bundle = hydrated;
+          });
+        } catch (_) {}
+      }();
     } catch (exc) {
       if (!mounted) {
         return;
@@ -1734,7 +2194,10 @@ class _ProfileCalendarPreviewStripState
     final dayKey = _calendarDayKey(day);
     final returned = await Navigator.of(context, rootNavigator: true)
         .push<DateTime>(
-          MaterialPageRoute<DateTime>(
+          buildCalendarDayPageRoute<DateTime>(
+            context: context,
+            initialDate: day,
+            source: 'profile_calendar_preview',
             builder: (_) => CalendarDayPage(
               profile: profile,
               initialDate: day,
@@ -2246,7 +2709,9 @@ class _CalendarDayPageState extends State<CalendarDayPage> {
 
   Future<void> _ensureLoaded(DateTime date) async {
     final key = _calendarDayKey(date);
-    if (_cache.containsKey(key) || _loadingKeys.contains(key)) {
+    final cached = _cache[key];
+    if ((cached != null && cached.hasNarrativeData) ||
+        _loadingKeys.contains(key)) {
       return;
     }
     setState(() => _loadingKeys.add(key));
@@ -2272,12 +2737,11 @@ class _CalendarDayPageState extends State<CalendarDayPage> {
   }
 
   void _prefetchNeighbors(DateTime center) {
-    _ensureLoaded(
-      TransitRequestBuilder.stripDate(center.subtract(const Duration(days: 1))),
-    );
-    _ensureLoaded(
-      TransitRequestBuilder.stripDate(center.add(const Duration(days: 1))),
-    );
+    for (final offset in <int>[-1, 1, -2, 2]) {
+      _ensureLoaded(
+        TransitRequestBuilder.stripDate(center.add(Duration(days: offset))),
+      );
+    }
   }
 
   @override
@@ -2309,10 +2773,30 @@ class _CalendarDayPageState extends State<CalendarDayPage> {
               child: const JoviaUiIcon(asset: JoviaUiAsset.back, size: 18),
             ),
           ),
-          title: Text(
-            'GUN',
-            style: profile.typography.navigationLabel(
-              color: profile.colors.text,
+          title: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 220),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeOutCubic,
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: animation,
+                child: SlideTransition(
+                  position: Tween<Offset>(
+                    begin: const Offset(0.0, 0.08),
+                    end: Offset.zero,
+                  ).animate(animation),
+                  child: child,
+                ),
+              );
+            },
+            child: Text(
+              _formatCalendarDayTitle(_activeDate),
+              key: ValueKey<String>(_calendarDayKey(_activeDate)),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: profile.typography.navigationLabel(
+                color: profile.colors.text,
+              ),
             ),
           ),
         ),
@@ -2321,6 +2805,7 @@ class _CalendarDayPageState extends State<CalendarDayPage> {
           child: PageView.builder(
             controller: _pageController,
             scrollDirection: Axis.horizontal,
+            allowImplicitScrolling: true,
             onPageChanged: (index) {
               final date = TransitRequestBuilder.stripDate(
                 widget.initialDate.add(Duration(days: index - _kInitialPage)),
@@ -2335,7 +2820,7 @@ class _CalendarDayPageState extends State<CalendarDayPage> {
               );
               final key = _calendarDayKey(date);
               final bundle = _cache[key];
-              final loading = _loadingKeys.contains(key) && bundle == null;
+              final loading = _loadingKeys.contains(key);
               return _CalendarDayPageContent(
                 date: date,
                 bundle: bundle,
@@ -2367,6 +2852,7 @@ class _CalendarDayPageContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final spacing = profile.spacing;
+    final showShellPlaceholder = loading && bundle == null;
     final heroHuman = _buildDailyHumanCardViewModel(
       card: bundle?.dailyEventCards.isNotEmpty == true
           ? bundle!.dailyEventCards.first
@@ -2420,14 +2906,35 @@ class _CalendarDayPageContent extends StatelessWidget {
             SizedBox(height: spacing.sectionToContent),
             const LinearProgressIndicator(),
           ],
+          if (showShellPlaceholder) ...[
+            SizedBox(height: spacing.majorSectionGap),
+            const _CalendarDayLoadingPlaceholder(),
+          ],
+          if (bundle != null && bundle!.markers.isNotEmpty) ...[
+            SizedBox(height: spacing.majorSectionGap),
+            _CalendarMarkerBand(
+              label: 'Sky',
+              title: _markerSectionTitle(bundle!.markers),
+              body: _markerSectionBody(bundle!.markers),
+              markers: bundle!.markers,
+              onOpenMarker: (marker) {
+                Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PeriodMarkerDetailPage(marker: marker),
+                  ),
+                );
+              },
+            ),
+          ],
           if (bundle != null && bundle!.dailyEventCards.isNotEmpty) ...[
             SizedBox(height: spacing.majorSectionGap),
             JoviaSectionHeader(
               label: 'Bugun',
               title: 'Bugünün vurgusu',
-              body: bundle!.usedPeriodFallback
-                  ? bundle!.periodOnlyNote
-                  : 'Bugün sende daha çok hissedilen şey burada açılıyor.',
+              body: _dailySectionBody(
+                bundle!.dailyEventCards,
+                bundle!.periodOnlyNote,
+              ),
             ),
             SizedBox(height: spacing.sectionToContent),
             for (final card in bundle!.dailyEventCards) ...[
@@ -2439,14 +2946,12 @@ class _CalendarDayPageContent extends StatelessWidget {
                     date: date,
                   );
                   return JoviaTopicSurface(
-                    eyebrow: human.signalLabel.isNotEmpty
-                        ? human.signalLabel
-                        : 'Bugun',
+                    eyebrow: _dailyCardEyebrow(card, human),
                     title: human.feltLine,
                     body: human.cardBody.isNotEmpty
                         ? human.cardBody
                         : 'Detaylar icin karti ac.',
-                    meta: human.meta,
+                    meta: _dailyCardMeta(card, human),
                     secondaryAction: MinimalCTAButton(
                       label: 'Detayi ac',
                       onTap: () {
@@ -2513,48 +3018,6 @@ class _CalendarDayPageContent extends StatelessWidget {
                   : 'Bu gun icin belirgin bir kart cikmadi. Sag-sol kaydirip komsu gunlere bakabilirsin.',
             ),
           ],
-          if (bundle != null && bundle!.markers.isNotEmpty) ...[
-            SizedBox(height: spacing.majorSectionGap),
-            JoviaReadingPanel(
-              label: 'Markers',
-              title: 'Gunun markerlari',
-              child: Column(
-                children: [
-                  for (
-                    var index = 0;
-                    index < bundle!.markers.length;
-                    index++
-                  ) ...[
-                    JoviaUtilityRow(
-                      title: bundle!.markers[index].title.isNotEmpty
-                          ? bundle!.markers[index].title
-                          : 'Gunluk marker',
-                      body: bundle!.markers[index].summary.isNotEmpty
-                          ? bundle!.markers[index].summary
-                          : (bundle!.markers[index].timeHint.isNotEmpty
-                                ? bundle!.markers[index].timeHint
-                                : 'Detaylar icin ac.'),
-                      trailing: const JoviaUiIcon(
-                        asset: JoviaUiAsset.chevronRight,
-                        size: 16,
-                      ),
-                      onTap: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => PeriodMarkerDetailPage(
-                              marker: bundle!.markers[index],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                    if (index != bundle!.markers.length - 1)
-                      const ThinDivider(),
-                  ],
-                ],
-              ),
-            ),
-          ],
           if (bundle != null &&
               (bundle!.timeline?.lines.isNotEmpty == true ||
                   bundle!.timeline?.summary.trim().isNotEmpty == true)) ...[
@@ -2588,6 +3051,329 @@ class _CalendarDayPageContent extends StatelessWidget {
             ),
           ],
         ],
+      ),
+    );
+  }
+}
+
+class _CalendarDayLoadingPlaceholder extends StatelessWidget {
+  const _CalendarDayLoadingPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final colors = profile.colors;
+    return Column(
+      key: const ValueKey<String>('calendarDayLoadingPlaceholder'),
+      children: [
+        _CalendarDayPlaceholderSurface(
+          height: 132,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: const [
+              _CalendarDayPlaceholderBar(widthFactor: 0.24, height: 12),
+              SizedBox(height: 18),
+              _CalendarDayPlaceholderBar(widthFactor: 0.82, height: 20),
+              SizedBox(height: 12),
+              _CalendarDayPlaceholderBar(widthFactor: 0.68, height: 20),
+              SizedBox(height: 16),
+              _CalendarDayPlaceholderBar(widthFactor: 0.46, height: 12),
+            ],
+          ),
+        ),
+        const SizedBox(height: 16),
+        _CalendarDayPlaceholderSurface(
+          height: 168,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _CalendarDayPlaceholderBar(widthFactor: 0.32, height: 12),
+              const SizedBox(height: 16),
+              for (var index = 0; index < 3; index++) ...[
+                Row(
+                  children: [
+                    Container(
+                      width: 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: colors.primary.withValues(alpha: 0.26),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _CalendarDayPlaceholderBar(
+                        widthFactor: index == 1 ? 0.7 : 0.88,
+                        height: 13,
+                      ),
+                    ),
+                  ],
+                ),
+                if (index != 2) const SizedBox(height: 18),
+              ],
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _CalendarDayPlaceholderSurface extends StatelessWidget {
+  const _CalendarDayPlaceholderSurface({
+    required this.height,
+    required this.child,
+  });
+
+  final double height;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return JoviaSurfaceCard(
+      radius: 30,
+      padding: const EdgeInsets.all(20),
+      color: profile.colors.panelSoft.withValues(alpha: 0.74),
+      child: SizedBox(height: height, width: double.infinity, child: child),
+    );
+  }
+}
+
+class _CalendarDayPlaceholderBar extends StatelessWidget {
+  const _CalendarDayPlaceholderBar({
+    required this.widthFactor,
+    required this.height,
+  });
+
+  final double widthFactor;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return FractionallySizedBox(
+      widthFactor: widthFactor,
+      alignment: Alignment.centerLeft,
+      child: Container(
+        height: height,
+        decoration: BoxDecoration(
+          color: profile.colors.text.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(999),
+        ),
+      ),
+    );
+  }
+}
+
+class _CalendarMarkerBand extends StatelessWidget {
+  const _CalendarMarkerBand({
+    required this.label,
+    required this.title,
+    required this.body,
+    required this.markers,
+    required this.onOpenMarker,
+  });
+
+  final String label;
+  final String title;
+  final String body;
+  final List<PeriodMarkerDto> markers;
+  final ValueChanged<PeriodMarkerDto> onOpenMarker;
+
+  @override
+  Widget build(BuildContext context) {
+    final visibleMarkers = markers.take(3).toList(growable: false);
+    final overflow = markers.length - visibleMarkers.length;
+    return JoviaReadingPanel(
+      label: label,
+      title: title,
+      body: body,
+      child: Wrap(
+        spacing: 10,
+        runSpacing: 10,
+        children: [
+          for (final marker in visibleMarkers)
+            _CalendarMarkerPill(
+              marker: marker,
+              onTap: () => onOpenMarker(marker),
+            ),
+          if (overflow > 0) _CalendarMarkerMorePill(count: overflow),
+        ],
+      ),
+    );
+  }
+}
+
+class _CalendarMarkerPreviewRow extends StatelessWidget {
+  const _CalendarMarkerPreviewRow({required this.markers});
+
+  final List<PeriodMarkerDto> markers;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final visibleMarkers = markers.take(3).toList(growable: false);
+    final overflow = markers.length - visibleMarkers.length;
+    return Row(
+      children: [
+        for (final marker in visibleMarkers) ...[
+          _CalendarMarkerGlyphChip(marker: marker),
+          const SizedBox(width: 6),
+        ],
+        if (overflow > 0)
+          Text(
+            '+$overflow',
+            style: profile.typography.meta.copyWith(
+              color: profile.colors.textLight,
+            ),
+          )
+        else if (visibleMarkers.isNotEmpty)
+          Flexible(
+            child: Text(
+              _markerPreviewSummary(visibleMarkers),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: profile.typography.meta.copyWith(
+                color: profile.colors.textLight,
+              ),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+class _CalendarMarkerGlyphChip extends StatelessWidget {
+  const _CalendarMarkerGlyphChip({required this.marker});
+
+  final PeriodMarkerDto marker;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final colors = profile.colors;
+    final critical =
+        _markerSemanticKind(marker) == 'station' ||
+        _markerSemanticKind(marker) == 'full_moon';
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(999),
+        color: (critical ? colors.warmAccent : colors.primary).withValues(
+          alpha: 0.12,
+        ),
+        border: Border.all(
+          color: (critical ? colors.warmAccent : colors.primary).withValues(
+            alpha: 0.22,
+          ),
+        ),
+      ),
+      child: Text(
+        _markerGlyph(marker),
+        style: profile.typography.meta.copyWith(
+          color: critical ? colors.warmAccent : colors.primary,
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          height: 1,
+        ),
+      ),
+    );
+  }
+}
+
+class _CalendarMarkerPill extends StatelessWidget {
+  const _CalendarMarkerPill({required this.marker, required this.onTap});
+
+  final PeriodMarkerDto marker;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final colors = profile.colors;
+    final detail = _markerSupportingLine(marker);
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        constraints: const BoxConstraints(minWidth: 124, maxWidth: 184),
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(18),
+          color: colors.surface.withValues(alpha: 0.62),
+          border: Border.all(color: colors.strokeSoft.withValues(alpha: 0.9)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  _markerGlyph(marker),
+                  style: profile.typography.meta.copyWith(
+                    color: colors.primary,
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    _markerShortLabel(marker),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: profile.typography.meta.copyWith(
+                      color: colors.text,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (detail.isNotEmpty) ...[
+              const SizedBox(height: 5),
+              Text(
+                detail,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: profile.typography.meta.copyWith(
+                  color: colors.textLight,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CalendarMarkerMorePill extends StatelessWidget {
+  const _CalendarMarkerMorePill({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        color: profile.colors.surface.withValues(alpha: 0.52),
+        border: Border.all(
+          color: profile.colors.strokeSoft.withValues(alpha: 0.84),
+        ),
+      ),
+      child: Text(
+        '+$count',
+        style: profile.typography.meta.copyWith(
+          color: profile.colors.textLight,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
@@ -2847,7 +3633,10 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
               index: index,
             ),
         ];
-        _dailyMarkers = periodCalendar.markers;
+        _dailyMarkers = _markersForSelectedDay(
+          periodCalendar.markers,
+          _selectedDay,
+        );
         _calendarDays = narrative.calendarDays;
         _dailyTimeline = narrative.timeline;
         _bestTimes = narrativeBest.isNotEmpty ? narrativeBest : fallbackBest;
@@ -3282,9 +4071,7 @@ class _DailyCalendarContent extends StatelessWidget {
           JoviaSectionHeader(
             label: 'Bugun',
             title: 'Bugünün vurgusu',
-            body: periodOnlyNote.trim().isNotEmpty
-                ? periodOnlyNote.trim()
-                : 'Bugün sende öne çıkan şey burada açılıyor.',
+            body: _dailySectionBody(eventCards, periodOnlyNote),
           ),
           SizedBox(height: spacing.sectionToContent),
           for (final card in eventCards)
@@ -3297,14 +4084,12 @@ class _DailyCalendarContent extends StatelessWidget {
                     date: selectedDay,
                   );
                   return JoviaTopicSurface(
-                    eyebrow: human.signalLabel.isNotEmpty
-                        ? human.signalLabel
-                        : 'Bugun',
+                    eyebrow: _dailyCardEyebrow(card, human),
                     title: human.feltLine,
                     body: human.cardBody.isNotEmpty
                         ? human.cardBody
                         : 'Detaylar icin karti ac.',
-                    meta: human.meta,
+                    meta: _dailyCardMeta(card, human),
                     secondaryAction: MinimalCTAButton(
                       label: 'Detayi ac',
                       onTap: () => onOpenEventCard(card),
@@ -3336,31 +4121,12 @@ class _DailyCalendarContent extends StatelessWidget {
         ],
         if (markers.isNotEmpty) ...[
           SizedBox(height: spacing.majorSectionGap),
-          JoviaReadingPanel(
-            label: 'Markers',
-            title: 'Gunluk markerlar',
-            child: Column(
-              children: [
-                for (var index = 0; index < markers.length; index++) ...[
-                  JoviaUtilityRow(
-                    title: markers[index].title.isNotEmpty
-                        ? markers[index].title
-                        : 'Gunluk marker',
-                    body: markers[index].summary.isNotEmpty
-                        ? markers[index].summary
-                        : (markers[index].timeHint.isNotEmpty
-                              ? markers[index].timeHint
-                              : 'Detaylar icin ac.'),
-                    trailing: const JoviaUiIcon(
-                      asset: JoviaUiAsset.chevronRight,
-                      size: 16,
-                    ),
-                    onTap: () => onOpenMarker(markers[index]),
-                  ),
-                  if (index != markers.length - 1) const ThinDivider(),
-                ],
-              ],
-            ),
+          _CalendarMarkerBand(
+            label: 'Sky',
+            title: _markerSectionTitle(markers),
+            body: _markerSectionBody(markers),
+            markers: markers,
+            onOpenMarker: onOpenMarker,
           ),
         ],
       ],
@@ -3771,31 +4537,6 @@ class _CalendarDayCell extends StatelessWidget {
                       height: 1,
                       color: colors.separator.withValues(alpha: 0.45),
                     ),
-                  if (!compact && critical) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      'peak',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: profile.typography.meta.copyWith(
-                        color: colors.warmAccent,
-                        fontSize: 10,
-                        height: 1.0,
-                      ),
-                    ),
-                  ] else if (!compact && signals > 0) ...[
-                    const SizedBox(height: 4),
-                    Text(
-                      '$signals etki',
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: profile.typography.meta.copyWith(
-                        color: colors.textLight,
-                        fontSize: 10,
-                        height: 1.0,
-                      ),
-                    ),
-                  ],
                 ],
               ),
             );

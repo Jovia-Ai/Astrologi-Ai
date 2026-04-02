@@ -106,3 +106,39 @@ def test_period_story_exposes_growth_and_build_fields() -> None:
     assert "öğrenme" in out.mechanism.lower() or "uzmanlaşma" in out.mechanism.lower()
     assert any(token in out.growth_edge.lower() for token in ("risk", "heves", "dağı", "ölçü"))
     assert "kasını" in out.what_it_builds.lower()
+
+
+def test_period_story_uses_chapter_role_in_opening_and_debug() -> None:
+    ctx = PeriodStoryContext(
+        period_core={
+            "featured_events": [
+                _event(
+                    event_id="evt_builder",
+                    transit_body="Saturn",
+                    aspect="conjunction",
+                    natal_point="MC",
+                    chapter_role={"role": "builder"},
+                    story_score=0.92,
+                    selection_index=0,
+                    houses={"transit_in_natal_house": 10, "natal_point_house": 10},
+                ),
+                _event(
+                    event_id="evt_peak",
+                    transit_body="Mars",
+                    aspect="square",
+                    natal_point="Moon",
+                    chapter_role={"role": "peak"},
+                    story_score=0.74,
+                    selection_index=1,
+                    houses={"transit_in_natal_house": 4, "natal_point_house": 4},
+                ),
+            ]
+        },
+        chart_snapshot={},
+        natal_promise={},
+    )
+
+    out = build_period_story(ctx)
+    assert "omurga" in out.period_opening.lower() or "kalıcı" in out.period_opening.lower()
+    assert out.debug["spine_role"] == "builder"
+    assert "peak" in out.debug["support_roles"]

@@ -1,0 +1,368 @@
+{
+  "cases": [
+    {
+      "id": "golden_daily_2026_03_04_top_pick",
+      "type": "daily",
+      "surface": "daily",
+      "severity": "high",
+      "artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-03-04_istanbul_birth_istanbul_transit.json",
+      "expected": {
+        "daily_event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+        "daily_contains": ["9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87"],
+        "fallback_expected": false,
+        "clustering_expected": true,
+        "personalization_expected": true
+      },
+      "tags": ["golden", "real-day", "period-coherence", "clustering", "shadow-heavy"],
+      "notes": "Real March 4 daily surface. Protects the top pick and the current two-card daily balance.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_daily_2026_03_04_temporal_contrast",
+      "type": "daily",
+      "surface": "daily",
+      "severity": "high",
+      "artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-03-04_istanbul_birth_istanbul_transit.json",
+      "expected": {
+        "daily_event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+        "daily_not_contains": ["88bc98188b2f7931360493237881969004d50662"]
+      },
+      "tags": ["golden", "real-day", "temporal-contrast", "edge-case"],
+      "notes": "Peak-today card should stay above the neighboring repetitive candidate that clustering suppresses.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_daily_2026_03_04_cluster_collapse",
+      "type": "daily",
+      "surface": "clustering",
+      "severity": "high",
+      "artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-03-04_istanbul_birth_istanbul_transit.json",
+      "expected": {
+        "daily_contains": ["9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87"],
+        "daily_not_contains": ["88bc98188b2f7931360493237881969004d50662"],
+        "clustering_expected": true
+      },
+      "tags": ["golden", "real-day", "clustering", "edge-case"],
+      "notes": "Cluster support should stay behind the chosen card instead of appearing as a repetitive second card.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_daily_2026_03_04_blocked_point_exclusion",
+      "type": "daily",
+      "surface": "daily",
+      "severity": "medium",
+      "artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-03-04_istanbul_birth_istanbul_transit.json",
+      "expected": {
+        "daily_not_contains": [
+          "db86b0ffbedecd69cb2ee894b2212a0eeb6d0460",
+          "a2b383aedbc9565686fe40c58443f4e7f2b0e3db",
+          "34f0320ff436d76d3112157b8fa34d91dc0b5c27"
+        ]
+      },
+      "tags": ["golden", "real-day", "blocked-point", "edge-case"],
+      "notes": "Blocked or noisy public points should not leak into the daily surface on this day.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_daily_2026_03_04_period_promotion_without_fallback",
+      "type": "daily",
+      "surface": "fallback",
+      "severity": "high",
+      "artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-03-04_istanbul_birth_istanbul_transit.json",
+      "expected": {
+        "daily_contains": ["8eecaebaead4cc9960c3bbccfdf830adae644db6", "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87"],
+        "fallback_expected": false
+      },
+      "tags": ["golden", "real-day", "fallback", "period-promotion"],
+      "notes": "Daily should stay filled by promoted period-quality cards without tripping hard fallback mode.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_period_2026_03_04_spine",
+      "type": "period",
+      "surface": "period",
+      "severity": "high",
+      "artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-03-04_istanbul_birth_istanbul_transit.json",
+      "expected": {
+        "spine_event_id": "6d348040a74b96fe0049e71a4dc5ef02064a0bb5",
+        "selected_contains": [
+          "4f022aff91a1e6ad15cdb8962a6fd660338d94bc",
+          "0a40de18772071d6e2ca06709fe0e4437c0a0071"
+        ],
+        "minimum_distinct_roles": 3,
+        "personalization_expected": true
+      },
+      "tags": ["golden", "real-window", "period-coherence", "personalization"],
+      "notes": "Real March 4 period window. Keeps the story-first spine and the current support shape intact.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_period_2026_03_04_transform_supports",
+      "type": "period",
+      "surface": "period",
+      "severity": "high",
+      "artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-03-04_istanbul_birth_istanbul_transit.json",
+      "expected": {
+        "support_contains": [
+          "4f022aff91a1e6ad15cdb8962a6fd660338d94bc",
+          "0a40de18772071d6e2ca06709fe0e4437c0a0071"
+        ],
+        "selected_any_of": [
+          "ac0ef32998cf21d07f6e0583da3ece07828b7118",
+          "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19"
+        ]
+      },
+      "tags": ["golden", "real-window", "transform-line", "support-diversity"],
+      "notes": "Transform line support should remain visible around the March 4 spine instead of collapsing into only one tone.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_period_2026_03_04_role_diversity",
+      "type": "period",
+      "surface": "period",
+      "severity": "medium",
+      "artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-03-04_istanbul_birth_istanbul_transit.json",
+      "expected": {
+        "minimum_distinct_roles": 3
+      },
+      "tags": ["golden", "real-window", "support-diversity", "period-coherence"],
+      "notes": "Period support set should keep at least three chapter roles so the month does not flatten into one note.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_period_2026_03_04_blocked_point_exclusion",
+      "type": "period",
+      "surface": "blocked-point",
+      "severity": "medium",
+      "artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-03-04_istanbul_birth_istanbul_transit.json",
+      "expected": {
+        "selected_not_contains": [
+          "db86b0ffbedecd69cb2ee894b2212a0eeb6d0460",
+          "a2b383aedbc9565686fe40c58443f4e7f2b0e3db",
+          "34f0320ff436d76d3112157b8fa34d91dc0b5c27"
+        ],
+        "support_not_contains": [
+          "db86b0ffbedecd69cb2ee894b2212a0eeb6d0460"
+        ]
+      },
+      "tags": ["golden", "real-window", "blocked-point", "edge-case"],
+      "notes": "The period set should stay on structural events and keep blocked-point noise out of the selected support list.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_combined_2026_03_04_product_surface",
+      "type": "combined",
+      "surface": "combined",
+      "severity": "high",
+      "artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-03-04_istanbul_birth_istanbul_transit.json",
+      "expected": {
+        "daily_event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+        "spine_event_id": "6d348040a74b96fe0049e71a4dc5ef02064a0bb5",
+        "daily_contains": ["9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87"],
+        "support_contains": ["4f022aff91a1e6ad15cdb8962a6fd660338d94bc"],
+        "fallback_expected": false,
+        "clustering_expected": true,
+        "personalization_expected": true,
+        "minimum_distinct_roles": 3
+      },
+      "tags": ["golden", "real-day", "real-window", "period-coherence", "clustering", "personalization"],
+      "notes": "March 4 full product surface. Daily and period should still feel like one coherent chapter.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_daily_2026_02_28_top_pick",
+      "type": "daily",
+      "surface": "daily",
+      "severity": "high",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "daily_event_id": "f331c043ca99474688982f52bdedfc269d826628",
+        "daily_contains": ["000d44829c7464411c233a240dd0bbed0a32e149"],
+        "fallback_expected": false,
+        "clustering_expected": true,
+        "personalization_expected": false
+      },
+      "tags": ["golden", "real-day", "low-signal", "flow-shadow-balance"],
+      "notes": "Real February 28 day. The low-signal but still meaningful Moon-led day should stay readable and balanced.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_daily_2026_02_28_flow_shadow_balance",
+      "type": "daily",
+      "surface": "daily",
+      "severity": "medium",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "daily_contains": [
+          "f331c043ca99474688982f52bdedfc269d826628",
+          "000d44829c7464411c233a240dd0bbed0a32e149"
+        ],
+        "clustering_expected": true
+      },
+      "tags": ["golden", "real-day", "flow-shadow-balance", "contrast-rich"],
+      "notes": "Daily should keep both the softer flow card and the sharper friction card instead of flattening to one tone.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_daily_2026_02_28_temporal_contrast",
+      "type": "daily",
+      "surface": "daily",
+      "severity": "high",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "daily_event_id": "f331c043ca99474688982f52bdedfc269d826628",
+        "daily_not_contains": ["89cc8bfcb64717a7219cbb2f0cf3258186d2be63"]
+      },
+      "tags": ["golden", "real-day", "temporal-contrast", "edge-case"],
+      "notes": "A clear peak-day Moon trine should outrank noisier separating node contact candidates.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_daily_2026_02_28_blocked_point_exclusion",
+      "type": "daily",
+      "surface": "blocked-point",
+      "severity": "medium",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "daily_not_contains": [
+          "054015c35ee0cc08522720b44be62c56edf26f6e",
+          "dfd197cfe5517797ceaa8a026b9eaecf49e794ab",
+          "126acd8e5314e979b220187ef3025fa3d734224a"
+        ]
+      },
+      "tags": ["golden", "real-day", "blocked-point", "edge-case"],
+      "notes": "Blocked public points and utility noise should stay out of the daily surface on a subtle day.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_daily_2026_02_28_no_personalization_bias",
+      "type": "daily",
+      "surface": "personalization",
+      "severity": "medium",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "personalization_expected": false,
+        "fallback_expected": false
+      },
+      "tags": ["golden", "real-day", "personalization", "edge-case"],
+      "notes": "This day should not suddenly look personalized if future tie-break tuning becomes too strong.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_period_2026_02_28_spine",
+      "type": "period",
+      "surface": "period",
+      "severity": "high",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "spine_event_id": "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+        "selected_contains": [
+          "4f022aff91a1e6ad15cdb8962a6fd660338d94bc",
+          "0a40de18772071d6e2ca06709fe0e4437c0a0071"
+        ],
+        "minimum_distinct_roles": 3,
+        "personalization_expected": false
+      },
+      "tags": ["golden", "real-window", "period-coherence", "angle-heavy"],
+      "notes": "Real February 28 period window. Protects the current spine and the structural angle-heavy support shape.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_period_2026_02_28_angle_supports",
+      "type": "period",
+      "surface": "period",
+      "severity": "high",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "support_contains": [
+          "4f022aff91a1e6ad15cdb8962a6fd660338d94bc",
+          "8fda7250e063a60c06cf6aa9cc81250bc8ffe4a2"
+        ],
+        "selected_any_of": [
+          "0a40de18772071d6e2ca06709fe0e4437c0a0071",
+          "00367b9186db3623c54d603685ae71d30bbe4894"
+        ]
+      },
+      "tags": ["golden", "real-window", "angle-heavy", "support-diversity"],
+      "notes": "The period set should keep both Neptune/DSC and Saturn/ASC style structural supports around the spine.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_period_2026_02_28_role_diversity",
+      "type": "period",
+      "surface": "period",
+      "severity": "medium",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "minimum_distinct_roles": 3
+      },
+      "tags": ["golden", "real-window", "support-diversity", "period-coherence"],
+      "notes": "Role diversity should hold even on an older artifact shape.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_period_2026_02_28_blocked_point_exclusion",
+      "type": "period",
+      "surface": "blocked-point",
+      "severity": "medium",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "selected_not_contains": [
+          "054015c35ee0cc08522720b44be62c56edf26f6e",
+          "dfd197cfe5517797ceaa8a026b9eaecf49e794ab",
+          "126acd8e5314e979b220187ef3025fa3d734224a"
+        ],
+        "support_not_contains": [
+          "054015c35ee0cc08522720b44be62c56edf26f6e"
+        ]
+      },
+      "tags": ["golden", "real-window", "blocked-point", "edge-case"],
+      "notes": "Older raw artifacts still should not promote Fortune/Vertex noise into the selected period set.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_period_2026_02_28_no_personalization_bias",
+      "type": "period",
+      "surface": "personalization",
+      "severity": "medium",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "personalization_expected": false
+      },
+      "tags": ["golden", "real-window", "personalization", "edge-case"],
+      "notes": "Period spine should not start drifting because personalization suddenly dominates legacy-style windows.",
+      "watchlist_related": true
+    },
+    {
+      "id": "golden_combined_2026_02_28_product_surface",
+      "type": "combined",
+      "surface": "combined",
+      "severity": "high",
+      "raw_artifact_path": "../_artifacts/transits_raw_1996-12-28_2026-02-28.json",
+      "event_cards_artifact_path": "../_artifacts/transit_core_current_full_1996-12-28_2026-02-28.json",
+      "expected": {
+        "daily_event_id": "f331c043ca99474688982f52bdedfc269d826628",
+        "spine_event_id": "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+        "daily_contains": ["000d44829c7464411c233a240dd0bbed0a32e149"],
+        "support_contains": ["4f022aff91a1e6ad15cdb8962a6fd660338d94bc"],
+        "fallback_expected": false,
+        "clustering_expected": true,
+        "personalization_expected": false,
+        "minimum_distinct_roles": 3
+      },
+      "tags": ["golden", "real-day", "real-window", "low-signal", "period-coherence", "support-diversity"],
+      "notes": "February 28 full product surface. A subtle daily and a structural period should still feel consistent together.",
+      "watchlist_related": true
+    }
+  ]
+}

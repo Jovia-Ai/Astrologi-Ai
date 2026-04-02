@@ -16,6 +16,7 @@ from time import perf_counter
 from fastapi import APIRouter, Header, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.core.config import settings
 from app.engine.transit_engine import (
     build_transit_event_timing,
     build_transit_report,
@@ -54,6 +55,7 @@ from app.transit.observability import (
     generate_snapshot_id,
     inject_snapshot_meta,
 )
+from app.services.performance.cache_store import default_cache_store, utc_now
 
 router = APIRouter(tags=["transits"])
 logger = logging.getLogger(__name__)
@@ -74,6 +76,52 @@ def _payload_size_bytes(payload: Any) -> int:
             default=_json_safe,
         ).encode("utf-8")
     )
+
+
+def _transit_narrative_cache_enabled() -> bool:
+    return settings.transit_narrative_ttl_seconds > 0
+
+
+def _transit_narrative_cache_key(request: "TransitNarrativeRequest") -> str:
+    payload = {
+        "birth_date": request.birth_date.strip(),
+        "birth_time": request.birth_time.strip(),
+        "birth_place": request.birth_place.strip().lower(),
+        "start": request.start.strip(),
+        "end": request.end.strip(),
+        "tz": request.tz.strip(),
+        "transit_place": (request.transit_place or request.birth_place).strip().lower(),
+        "lens": request.lens.strip().lower(),
+        "intent": str(request.intent or "").strip().lower(),
+        "sub_intent": str(request.sub_intent or "").strip().lower(),
+        "selected_date": str(request.selected_date or "").strip(),
+        "include_best_times": bool(request.include_best_times),
+        "top": int(request.top),
+        "window": int(request.window),
+        "debug": bool(request.debug),
+        "version": "v1",
+    }
+    digest = hashlib.sha1(
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            sort_keys=True,
+        ).encode("utf-8")
+    ).hexdigest()
+    return f"transit_narrative:{payload['version']}:{digest}"
+
+
+def _annotate_transit_narrative_debug(
+    response: Dict[str, Any],
+    *,
+    cache_status: str,
+    cache_key: str,
+) -> None:
+    debug_payload = response.get("debug")
+    if not isinstance(debug_payload, dict):
+        return
+    debug_payload["cache_status"] = cache_status
+    debug_payload["cache_key"] = cache_key
 
 
 def _trace_logs_enabled() -> bool:
@@ -244,6 +292,8 @@ def _log_transit_timing(
     request: "TransitNarrativeRequest",
     response: Mapping[str, Any],
     duration_ms: float,
+    cache_status: str = "not_cached",
+    cache_key: str | None = None,
 ) -> None:
     if not _trace_logs_enabled():
         return
@@ -255,7 +305,7 @@ def _log_transit_timing(
         json.dumps(
             {
                 "endpoint": endpoint,
-                "cache_status": "not_cached",
+                "cache_status": cache_status,
                 "duration_ms": round(duration_ms, 3),
                 "range_start": start_date.isoformat(),
                 "range_end": end_date.isoformat(),
@@ -270,6 +320,7 @@ def _log_transit_timing(
                 "top": int(request.top),
                 "window": int(request.window),
                 "payload_bytes": _payload_size_bytes(response),
+                **({"cache_key": cache_key} if cache_key else {}),
             },
             ensure_ascii=False,
             sort_keys=True,
@@ -2020,6 +2071,42 @@ def build_transit_narrative(
                 "message": "start must be earlier than or equal to end.",
             },
         )
+    cache_key = _transit_narrative_cache_key(request)
+    if _transit_narrative_cache_enabled():
+        lookup = default_cache_store.get(cache_key, now=utc_now())
+        if lookup.status in {"hit", "stale"} and lookup.entry is not None:
+            response = copy.deepcopy(dict(lookup.entry.value or {}))
+            _annotate_transit_narrative_debug(
+                response,
+                cache_status=lookup.status,
+                cache_key=cache_key,
+            )
+            response = _finalize_route_response(
+                response,
+                endpoint="/transit/narrative",
+                snapshot_id=snapshot_id,
+                client_trace_id=client_trace_id,
+                client_surface=client_surface,
+                duration_ms=(perf_counter() - started) * 1000.0,
+                extra_log_fields={
+                    "range_start": start_date.isoformat(),
+                    "range_end": end_date.isoformat(),
+                    "range_days": (end_date - start_date).days + 1,
+                    "selected_date": request.selected_date,
+                    "include_best_times": bool(request.include_best_times),
+                    "cache_status": lookup.status,
+                    "cache_key": cache_key,
+                },
+            )
+            _log_transit_timing(
+                endpoint="/transit/narrative",
+                request=request,
+                response=response,
+                duration_ms=(perf_counter() - started) * 1000.0,
+                cache_status=lookup.status,
+                cache_key=cache_key,
+            )
+            return response
 
     payload = build_transit_calendar_public(
         birth_date=request.birth_date,
@@ -2291,6 +2378,19 @@ def build_transit_narrative(
             response["best_times"] = best_times_public
         if best_times_internal is not None:
             response["best_times_internal"] = best_times_internal
+    _annotate_transit_narrative_debug(
+        response,
+        cache_status="miss",
+        cache_key=cache_key,
+    )
+    if _transit_narrative_cache_enabled():
+        default_cache_store.set(
+            cache_key,
+            copy.deepcopy(response),
+            ttl_seconds=settings.transit_narrative_ttl_seconds,
+            stale_ttl_seconds=settings.transit_narrative_stale_ttl_seconds,
+            now=utc_now(),
+        )
     response = _finalize_route_response(
         response,
         endpoint="/transit/narrative",
@@ -2304,6 +2404,8 @@ def build_transit_narrative(
             "range_days": (end_date - start_date).days + 1,
             "selected_date": request.selected_date,
             "include_best_times": bool(request.include_best_times),
+            "cache_status": "miss",
+            "cache_key": cache_key,
         },
     )
     _log_transit_timing(
@@ -2311,6 +2413,8 @@ def build_transit_narrative(
         request=request,
         response=response,
         duration_ms=(perf_counter() - started) * 1000.0,
+        cache_status="miss",
+        cache_key=cache_key,
     )
     return response
 

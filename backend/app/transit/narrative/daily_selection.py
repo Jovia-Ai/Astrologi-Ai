@@ -12,8 +12,13 @@ from app.transit.narrative.daily_humanizer_tr import (
     house_touchpoint_from_event,
     humanize_event_card_tr,
 )
+from app.transit.narrative.chapter_role_engine import infer_chapter_role
 from app.transit.narrative.deep_archetype_engine import build_event_card
+from app.transit.narrative.event_feature_vector import build_event_feature_vector
+from app.transit.narrative.experience_clusterer import cluster_daily_experience_rows
+from app.transit.narrative.personalization_context import extract_personalization_context
 from app.transit.narrative.point_policy import is_public_event, normalize_point_token
+from app.transit.narrative.selection_evaluator import evaluate_daily_selection
 
 CONFIG_PATH = Path(__file__).resolve().parents[4] / "config" / "transit" / "daily_selection.yaml"
 
@@ -92,6 +97,7 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     "score_mix": {
         "strength": 0.45,
         "today": 0.35,
+        "delta_salience": 0.15,
         "narrative": 0.20,
     },
     "strength_weights": {
@@ -115,6 +121,7 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "calendar_salience_max": 0.12,
         "surfaceability_max": 0.09,
         "peak_shift_max": 0.10,
+        "delta_salience_max": 0.16,
     },
     "narrative_weights": {
         "house_clarity_max": 0.25,
@@ -122,6 +129,11 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "aspect_readability_max": 0.16,
         "humanizer_confidence_max": 0.23,
         "guidance_value_max": 0.18,
+        "specificity_max": 0.12,
+        "memorability_max": 0.10,
+        "actionability_max": 0.12,
+        "emotional_fit_max": 0.12,
+        "contrastability_max": 0.10,
         "house_anchor_penalty": 0.12,
     },
     "narrative_clarity": {
@@ -170,6 +182,13 @@ DEFAULT_CONFIG: Dict[str, Any] = {
     "balance": {
         "prefer_non_shadow_bonus": 0.05,
         "all_shadow_penalty": 0.03,
+    },
+    "personalization": {
+        "natal_hot_house_bonus": 0.03,
+        "dominant_theme_bonus": 0.025,
+        "lens_bonus": 0.02,
+        "behavioral_history_bonus": 0.015,
+        "max_bonus": 0.06,
     },
 }
 
@@ -613,6 +632,66 @@ def _guidance_value(preview: Mapping[str, Any]) -> float:
     return 0.76
 
 
+def _specificity_ratio(preview: Mapping[str, Any]) -> float:
+    house_touchpoint = str(preview.get("house_touchpoint_tr") or "").strip().lower()
+    felt = str(preview.get("felt_line_tr") or "").strip().lower()
+    why = str(preview.get("why_it_feels_this_way_tr") or "").strip().lower()
+    score = 0.0
+    if house_touchpoint:
+        score += 0.4
+        tokens = [token for token in house_touchpoint.replace("ve", " ").split() if len(token) >= 4]
+        if any(token in f"{felt} {why}" for token in tokens):
+            score += 0.35
+    if any(token in felt for token in ("bugün", "bir yanın", "karşı", "dengen", "görünür", "yakınlık", "konuş")):
+        score += 0.25
+    return round(min(1.0, score), 4)
+
+
+def _memorability_ratio(preview: Mapping[str, Any]) -> float:
+    felt = str(preview.get("felt_line_tr") or "").strip()
+    words = [word for word in felt.split() if word]
+    if not words:
+        return 0.0
+    unique_ratio = len({word.lower().strip(".,!?") for word in words}) / max(1, len(words))
+    score = 0.45 + (0.35 if 5 <= len(words) <= 14 else 0.16)
+    score += 0.20 * unique_ratio
+    return round(min(1.0, score), 4)
+
+
+def _actionability_ratio(preview: Mapping[str, Any]) -> float:
+    guidance = str(preview.get("guidance_micro_tr") or "").strip().lower()
+    if not guidance:
+        return 0.0
+    score = _guidance_value(preview) * 0.7
+    if any(token in guidance for token in ("verme", "aç", "seç", "bekle", "netleştir", "yavaşla", "bırak", "koru")):
+        score += 0.3
+    return round(min(1.0, score), 4)
+
+
+def _emotional_fit_ratio(preview: Mapping[str, Any], mode: str) -> float:
+    face = str(preview.get("tone_face") or "").strip().lower()
+    pairs = {
+        "friction": {"shadow": 1.0, "growth": 0.88, "flow": 0.54},
+        "polarity": {"shadow": 0.92, "growth": 1.0, "flow": 0.62},
+        "concentration": {"shadow": 0.86, "growth": 0.94, "flow": 0.66},
+        "flow": {"flow": 1.0, "growth": 0.82, "shadow": 0.48},
+        "opening": {"growth": 1.0, "flow": 0.88, "shadow": 0.56},
+        "mixed": {"growth": 0.72, "flow": 0.70, "shadow": 0.68},
+    }
+    return round(_safe_float((pairs.get(mode) or {}).get(face), 0.6), 4)
+
+
+def _contrastability_ratio(preview: Mapping[str, Any], *, house: int | None, mode: str) -> float:
+    score = 0.45
+    if house in {3, 4, 7, 8, 10}:
+        score += 0.20
+    if mode in {"friction", "polarity", "concentration", "flow", "opening"}:
+        score += 0.20
+    if _house_anchor_visible(preview):
+        score += 0.15
+    return round(min(1.0, score), 4)
+
+
 def _house_anchor_visible(preview: Mapping[str, Any]) -> bool:
     house_touchpoint = str(preview.get("house_touchpoint_tr") or "").strip().lower()
     if not house_touchpoint:
@@ -645,6 +724,11 @@ def _narrative_metrics(preview: Mapping[str, Any], *, house: int | None, body: s
     why_quality = _sentence_quality(why)
     guidance_quality = _sentence_quality(guidance)
     guidance_value = _guidance_value(preview)
+    specificity_ratio = _specificity_ratio(preview)
+    memorability_ratio = _memorability_ratio(preview)
+    actionability_ratio = _actionability_ratio(preview)
+    emotional_fit_ratio = _emotional_fit_ratio(preview, mode)
+    contrastability_ratio = _contrastability_ratio(preview, house=house, mode=mode)
 
     humanizer_confidence = round(
         (
@@ -663,6 +747,11 @@ def _narrative_metrics(preview: Mapping[str, Any], *, house: int | None, body: s
         "planet_feel_ratio": _safe_float(planet_weights.get(body, planet_weights.get("default", 0.6)), default=0.6),
         "aspect_readability_ratio": _safe_float(aspect_weights.get(mode, aspect_weights.get("mixed", 0.6)), default=0.6),
         "guidance_value_ratio": guidance_value,
+        "specificity_ratio": specificity_ratio,
+        "memorability_ratio": memorability_ratio,
+        "actionability_ratio": actionability_ratio,
+        "emotional_fit_ratio": emotional_fit_ratio,
+        "contrastability_ratio": contrastability_ratio,
         "humanizer_confidence": humanizer_confidence,
         "house_anchor_visible": 1.0 if house_visible else 0.0,
         "redundancy_key": f"{preview.get('house_touchpoint_tr')}|{preview.get('aspect_mode')}|{preview.get('tone_face')}|{body}",
@@ -748,20 +837,74 @@ def compute_narrative_score(event: Mapping[str, Any], selected_date: str, contex
         + _safe_float(weights.get("aspect_readability_max"), 0.16) * _safe_float(metrics.get("aspect_readability_ratio"), 0.6)
         + _safe_float(weights.get("humanizer_confidence_max"), 0.23) * _safe_float(metrics.get("humanizer_confidence"), 0.5)
         + _safe_float(weights.get("guidance_value_max"), 0.18) * _safe_float(metrics.get("guidance_value_ratio"), 0.5)
+        + _safe_float(weights.get("specificity_max"), 0.12) * _safe_float(metrics.get("specificity_ratio"), 0.5)
+        + _safe_float(weights.get("memorability_max"), 0.10) * _safe_float(metrics.get("memorability_ratio"), 0.5)
+        + _safe_float(weights.get("actionability_max"), 0.12) * _safe_float(metrics.get("actionability_ratio"), 0.5)
+        + _safe_float(weights.get("emotional_fit_max"), 0.12) * _safe_float(metrics.get("emotional_fit_ratio"), 0.5)
+        + _safe_float(weights.get("contrastability_max"), 0.10) * _safe_float(metrics.get("contrastability_ratio"), 0.5)
     )
     if _safe_float(metrics.get("house_anchor_visible"), 0.0) < 0.5:
         score -= _safe_float(weights.get("house_anchor_penalty"), 0.12)
     return round(max(0.0, score), 4)
 
 
-def compute_final_daily_score(*, strength_score: float, today_score: float, narrative_score: float, config: Mapping[str, Any]) -> float:
+def compute_delta_salience_score(event: Mapping[str, Any], selected_date: str, context: Mapping[str, Any]) -> float:
+    ctx = build_scoring_context(event, selected_date=selected_date, context=context)
+    config = ctx["config"]
+    today_weights = config.get("today_weights") if isinstance(config.get("today_weights"), Mapping) else {}
+    max_weight = _safe_float(today_weights.get("delta_salience_max"), 0.16)
+    event_id = str(event.get("event_id") or "").strip()
+    feature_vector = build_event_feature_vector(
+        event,
+        selected_date=selected_date,
+        card=ctx["card"],
+        selected_day_context=ctx.get("selected_day_context"),
+        preview=ctx["preview"],
+        narrative_metrics=ctx["narrative_metrics"],
+        event_v2_meta=(ctx.get("event_v2_by_id") or {}).get(event_id) if isinstance(ctx.get("event_v2_by_id"), Mapping) else None,
+        config=None,
+    )
+    time = feature_vector.get("time") if isinstance(feature_vector.get("time"), Mapping) else {}
+    score = 0.0
+    if bool(time.get("is_peaking_today")):
+        score += 0.10
+    if bool(time.get("is_rising_today")):
+        score += 0.08
+    if bool(time.get("is_releasing_today")):
+        score += 0.06
+    score += 0.06 * max(0.0, _safe_float(time.get("delta_vs_yesterday"), 0.0))
+    score += 0.04 * max(0.0, _safe_float(time.get("delta_vs_tomorrow"), 0.0))
+    return round(min(max_weight, score), 4)
+
+
+def compute_final_daily_score(
+    *,
+    strength_score: float,
+    today_score: float,
+    narrative_score: float,
+    delta_salience_score: float = 0.0,
+    config: Mapping[str, Any],
+) -> float:
     mix = config.get("score_mix") if isinstance(config.get("score_mix"), Mapping) else {}
     return round(
         (_safe_float(mix.get("strength"), 0.45) * strength_score)
         + (_safe_float(mix.get("today"), 0.35) * today_score)
+        + (_safe_float(mix.get("delta_salience"), 0.15) * delta_salience_score)
         + (_safe_float(mix.get("narrative"), 0.20) * narrative_score),
         4,
     )
+
+
+def _personalization_score(feature_vector: Mapping[str, Any], config: Mapping[str, Any]) -> float:
+    weights = config.get("personalization") if isinstance(config.get("personalization"), Mapping) else {}
+    personalization = feature_vector.get("personalization") if isinstance(feature_vector.get("personalization"), Mapping) else {}
+    score = (
+        _safe_float(weights.get("natal_hot_house_bonus"), 0.03) * _safe_float(personalization.get("natal_hot_house_match"), 0.0)
+        + _safe_float(weights.get("dominant_theme_bonus"), 0.025) * _safe_float(personalization.get("dominant_theme_match"), 0.0)
+        + _safe_float(weights.get("lens_bonus"), 0.02) * _safe_float(personalization.get("lens_match"), 0.0)
+        + _safe_float(weights.get("behavioral_history_bonus"), 0.015) * _safe_float(personalization.get("behavioral_history_match"), 0.0)
+    )
+    return round(min(_safe_float(weights.get("max_bonus"), 0.06), score), 4)
 
 
 def _is_short_window(item: Mapping[str, Any], card: Mapping[str, Any] | None, config: Mapping[str, Any]) -> bool:
@@ -813,6 +956,7 @@ def _build_row(
     natal: Mapping[str, Any] | None,
     event_v2_by_id: Mapping[str, Mapping[str, Any]],
     config: Mapping[str, Any],
+    personalization_context: Mapping[str, Any],
 ) -> Dict[str, Any]:
     card = _materialize_card(
         item,
@@ -833,11 +977,30 @@ def _build_row(
     strength_score = compute_strength_score(item, selected_date, context)
     today_score = compute_today_score(item, selected_date, context)
     narrative_score = compute_narrative_score(item, selected_date, context)
+    delta_salience_score = compute_delta_salience_score(item, selected_date, context)
     final_score = compute_final_daily_score(
         strength_score=strength_score,
         today_score=today_score,
         narrative_score=narrative_score,
+        delta_salience_score=delta_salience_score,
         config=config,
+    )
+    event_id = str(item.get("event_id") or "").strip()
+    feature_vector = build_event_feature_vector(
+        item,
+        selected_date=selected_date,
+        card=context["card"],
+        selected_day_context=selected_day_context,
+        event_v2_meta=event_v2_by_id.get(event_id) if event_id else None,
+        preview=context["preview"],
+        narrative_metrics=context["narrative_metrics"],
+        personalization_context=personalization_context,
+        config=None,
+    )
+    personalization_score = _personalization_score(feature_vector, config)
+    chapter_role = infer_chapter_role(
+        item,
+        features=feature_vector,
     )
 
     thresholds = config.get("thresholds") if isinstance(config.get("thresholds"), Mapping) else {}
@@ -846,7 +1009,6 @@ def _build_row(
     eligible_today_min = _safe_float(thresholds.get("eligible_today_min"), 0.12)
     eligible_narrative_min = _safe_float(thresholds.get("eligible_narrative_min"), 0.12)
 
-    event_id = str(item.get("event_id") or "").strip()
     top_event_ids = {str(token).strip() for token in (selected_day_context.get("top_event_ids") or []) if str(token).strip()}
     explicit_lunation = _is_explicit_lunation(item, context["card"])
     short_window = _is_short_window(item, context["card"], config)
@@ -894,13 +1056,19 @@ def _build_row(
         "strength_score": strength_score,
         "today_score": today_score,
         "narrative_score": narrative_score,
-        "score": final_score,
+        "delta_salience_score": delta_salience_score,
+        "personalization_score": personalization_score,
+        "score": round(final_score + personalization_score, 4),
         "score_breakdown": {
             "strength_score": strength_score,
             "today_score": today_score,
             "narrative_score": narrative_score,
+            "delta_salience_score": delta_salience_score,
+            "personalization_score": personalization_score,
             "humanizer_confidence": humanizer_confidence,
         },
+        "feature_vector": feature_vector,
+        "chapter_role": chapter_role,
         "short_window": short_window,
         "explicit_lunation": explicit_lunation,
         "selected_day_top_event": event_id in top_event_ids,
@@ -909,6 +1077,19 @@ def _build_row(
         "eligible": eligible,
         "redundancy_key": str(context["narrative_metrics"].get("redundancy_key") or ""),
     }
+
+
+def _cluster_daily_rows(rows: Sequence[Mapping[str, Any]], *, config: Mapping[str, Any]) -> List[Dict[str, Any]]:
+    clusters = cluster_daily_experience_rows(rows, config=config)
+    clustered_rows: List[Dict[str, Any]] = []
+    for cluster in clusters:
+        representative = dict(cluster.get("representative_row") or {})
+        representative["cluster_key"] = cluster.get("cluster_key")
+        representative["cluster_score"] = cluster.get("cluster_score")
+        representative["cluster_size"] = cluster.get("cluster_size")
+        representative["cluster_support_event_ids"] = list(cluster.get("support_event_ids") or [])
+        clustered_rows.append(representative)
+    return clustered_rows
 
 
 def _rerank_daily_rows(rows: List[Dict[str, Any]], *, max_daily_cards: int, config: Mapping[str, Any]) -> List[Dict[str, Any]]:
@@ -957,6 +1138,48 @@ def _rerank_daily_rows(rows: List[Dict[str, Any]], *, max_daily_cards: int, conf
     return selected
 
 
+def _selection_v3_meta(row: Mapping[str, Any]) -> Dict[str, Any]:
+    feature_vector = row.get("feature_vector") if isinstance(row.get("feature_vector"), Mapping) else {}
+    strength = feature_vector.get("strength") if isinstance(feature_vector.get("strength"), Mapping) else {}
+    time = feature_vector.get("time") if isinstance(feature_vector.get("time"), Mapping) else {}
+    meaning = feature_vector.get("meaning") if isinstance(feature_vector.get("meaning"), Mapping) else {}
+    personalization = feature_vector.get("personalization") if isinstance(feature_vector.get("personalization"), Mapping) else {}
+    redundancy = feature_vector.get("redundancy") if isinstance(feature_vector.get("redundancy"), Mapping) else {}
+    chapter_role = row.get("chapter_role") if isinstance(row.get("chapter_role"), Mapping) else {}
+    return {
+        "chapter_role": dict(chapter_role),
+        "strength": {
+            "orb_proximity": strength.get("orb_proximity"),
+            "phase_salience": strength.get("phase_salience"),
+            "angle_activation": strength.get("angle_activation"),
+            "event_family_salience": strength.get("event_family_salience"),
+            "natal_resonance": strength.get("natal_resonance"),
+        },
+        "time": {
+            "selected_date_distance": time.get("selected_date_distance"),
+            "peak_distance": time.get("peak_distance"),
+            "delta_vs_yesterday": time.get("delta_vs_yesterday"),
+            "delta_vs_tomorrow": time.get("delta_vs_tomorrow"),
+            "is_rising_today": time.get("is_rising_today"),
+            "is_peaking_today": time.get("is_peaking_today"),
+            "is_releasing_today": time.get("is_releasing_today"),
+        },
+        "meaning": {
+            "house_domain": meaning.get("house_domain"),
+            "aspect_mode": meaning.get("aspect_mode"),
+            "structurality": meaning.get("structurality"),
+            "chapter_opening": meaning.get("chapter_opening"),
+            "lasting_change": meaning.get("lasting_change"),
+            "root_cause_weight": meaning.get("root_cause_weight"),
+            "surfaceability": meaning.get("surfaceability"),
+            "specificity": meaning.get("specificity"),
+            "memorability": meaning.get("memorability"),
+        },
+        "personalization": dict(personalization),
+        "redundancy": dict(redundancy),
+    }
+
+
 def select_daily_and_period_event_cards(
     *,
     raw_events: Sequence[Mapping[str, Any]],
@@ -974,6 +1197,7 @@ def select_daily_and_period_event_cards(
     meaningful_event_min = _safe_float(thresholds.get("meaningful_event_min"), 0.42)
 
     selected_day_context = dict(selected_day_context or {})
+    personalization_context = extract_personalization_context(natal, selected_day_context=selected_day_context)
     event_card_index = {
         str(card.get("event_id") or "").strip(): dict(card)
         for card in event_cards
@@ -1005,9 +1229,20 @@ def select_daily_and_period_event_cards(
             natal=natal,
             event_v2_by_id=v2_index,
             config=config,
+            personalization_context=personalization_context,
         )
         for item in candidate_items_by_id.values()
     ]
+    feature_map = {
+        str(row.get("event_id") or ""): dict(row.get("feature_vector") or {})
+        for row in scored_rows
+        if str(row.get("event_id") or "")
+    }
+    row_by_event_id = {
+        str(row.get("event_id") or ""): row
+        for row in scored_rows
+        if str(row.get("event_id") or "")
+    }
     scored_rows.sort(
         key=lambda row: (
             -int(row["explicit_lunation"]),
@@ -1019,7 +1254,9 @@ def select_daily_and_period_event_cards(
     )
 
     qualified_rows = [row for row in scored_rows if row["qualifies"] and row["meaningful"]]
-    daily_rows = _rerank_daily_rows(qualified_rows, max_daily_cards=max_daily_cards, config=config)
+    experience_clusters = cluster_daily_experience_rows(qualified_rows, config=config)
+    clustered_rows = _cluster_daily_rows(qualified_rows, config=config)
+    daily_rows = _rerank_daily_rows(clustered_rows, max_daily_cards=max_daily_cards, config=config)
 
     used_period_fallback = False
     if not daily_rows:
@@ -1036,6 +1273,10 @@ def select_daily_and_period_event_cards(
     for row in daily_rows:
         card = dict(row["card"])
         card["daily_score"] = row["score"]
+        card["chapter_role"] = dict(row.get("chapter_role") or {})
+        card["cluster_key"] = row.get("cluster_key")
+        card["cluster_size"] = row.get("cluster_size")
+        card["cluster_support_event_ids"] = list(row.get("cluster_support_event_ids") or [])
         daily_cards.append(
             generate_daily_from_event(
                 card,
@@ -1055,7 +1296,10 @@ def select_daily_and_period_event_cards(
         if not event_id or horizon != "period" or event_id in period_ids:
             continue
         period_ids.add(event_id)
-        period_cards.append(dict(card))
+        period_card = dict(card)
+        if event_id in row_by_event_id:
+            period_card["chapter_role"] = dict(row_by_event_id[event_id].get("chapter_role") or {})
+        period_cards.append(period_card)
         if len(period_cards) >= max_period_cards:
             break
 
@@ -1065,7 +1309,9 @@ def select_daily_and_period_event_cards(
         if row["event_id"] in period_ids or len(period_cards) >= max_period_cards:
             continue
         period_ids.add(row["event_id"])
-        period_cards.append(dict(row["card"]))
+        period_card = dict(row["card"])
+        period_card["chapter_role"] = dict(row.get("chapter_role") or {})
+        period_cards.append(period_card)
 
     return {
         "daily_event_cards": daily_cards,
@@ -1092,14 +1338,43 @@ def select_daily_and_period_event_cards(
                     "strength_score": row["strength_score"],
                     "today_score": row["today_score"],
                     "narrative_score": row["narrative_score"],
+                    "delta_salience_score": row.get("delta_salience_score"),
+                    "personalization_score": row.get("personalization_score"),
                     "final_daily_score": row["score"],
                     "rerank_score": row.get("rerank_score"),
                     "rerank_penalties": row.get("rerank_penalties", []),
                     "source_horizon": row["source_horizon"],
                     "tone_face": row["tone_face"],
                     "aspect_mode": row["aspect_mode"],
+                    "cluster_key": row.get("cluster_key"),
+                    "cluster_size": row.get("cluster_size"),
                 }
                 for row in scored_rows[:10]
+            },
+            "selection_v3": {
+                "feature_vectors": {
+                    str(row["event_id"]): _selection_v3_meta(row)
+                    for row in scored_rows[:10]
+                },
+                "chapter_roles": {
+                    str(event_id): dict(row_by_event_id[event_id].get("chapter_role") or {})
+                    for event_id in list(row_by_event_id.keys())[:10]
+                },
+                "experience_clusters": [
+                    {
+                        "cluster_key": str(cluster.get("cluster_key") or ""),
+                        "cluster_score": cluster.get("cluster_score"),
+                        "cluster_size": cluster.get("cluster_size"),
+                        "representative_event_id": str((cluster.get("representative_row") or {}).get("event_id") or ""),
+                        "support_event_ids": list(cluster.get("support_event_ids") or []),
+                    }
+                    for cluster in experience_clusters[:10]
+                ],
+                "evaluation": evaluate_daily_selection(
+                    scored_rows=scored_rows,
+                    daily_rows=daily_rows,
+                    used_period_fallback=used_period_fallback,
+                ),
             },
         },
     }
