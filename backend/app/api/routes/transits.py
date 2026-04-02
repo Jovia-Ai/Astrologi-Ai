@@ -99,6 +99,7 @@ def _transit_narrative_cache_key(request: "TransitNarrativeRequest") -> str:
         "top": int(request.top),
         "window": int(request.window),
         "debug": bool(request.debug),
+        "response_mode": str(request.response_mode or "full").strip().lower(),
         "version": "v1",
     }
     digest = hashlib.sha1(
@@ -122,6 +123,35 @@ def _annotate_transit_narrative_debug(
         return
     debug_payload["cache_status"] = cache_status
     debug_payload["cache_key"] = cache_key
+
+
+def _normalize_narrative_response_mode(value: str | None) -> str:
+    normalized = str(value or "").strip().lower()
+    if normalized in {"public_only", "public", "preview"}:
+        return "public_only"
+    return "full"
+
+
+def _empty_public_narrative_payload() -> Dict[str, Any]:
+    return {
+        "period_core": {},
+        "event_cards": [],
+        "daily_event_cards": [],
+        "period_event_cards": [],
+        "daily_selection": {},
+        "period_peak_timeline": [],
+        "timeline": {},
+        "multi_event": {
+            "schema_version": "astro_event.v2",
+            "personal_transit_rail": [],
+            "structural_chapter_rail": [],
+            "solar_year_frame": {},
+            "events_by_id": {},
+        },
+        "personal_transit_rail": [],
+        "structural_chapter_rail": [],
+        "solar_year_frame": {},
+    }
 
 
 def _trace_logs_enabled() -> bool:
@@ -179,8 +209,8 @@ def _human_day_tone_label(
     return "sakin"
 
 
-def _humanize_event_card(card: Mapping[str, Any]) -> Dict[str, Any]:
-    return humanize_event_card_tr(card)
+def _humanize_event_card(card: Mapping[str, Any], *, lens: str = "general") -> Dict[str, Any]:
+    return humanize_event_card_tr(card, lens=lens)
 
 
 def _selected_day_context_from_calendar(
@@ -237,6 +267,7 @@ def _select_daily_and_period_event_cards(
     selected_day_context: Mapping[str, Any] | None = None,
     natal: Mapping[str, Any] | None = None,
     event_v2_by_id: Mapping[str, Mapping[str, Any]] | None = None,
+    lens: str = "general",
 ) -> Dict[str, Any]:
     return build_daily_event_buckets(
         raw_events=raw_events,
@@ -245,6 +276,7 @@ def _select_daily_and_period_event_cards(
         selected_day_context=selected_day_context,
         natal=natal,
         event_v2_by_id=event_v2_by_id,
+        lens=lens,
     )
 
 
@@ -1448,6 +1480,7 @@ class TransitNarrativeRequest(BaseModel):
     top: int = 10
     window: int = 3
     debug: bool = False
+    response_mode: str = "full"
 
 
 class SolarYearFrameRequest(BaseModel):
@@ -1502,7 +1535,7 @@ def _build_narrative_public_payload(
     )
     event_v2_by_id = _event_v2_index(core_response)
     event_cards = [
-        _humanize_event_card(card)
+        _humanize_event_card(card, lens=request.lens)
         for card in (public_payload.get("event_cards") or [])
         if isinstance(card, Mapping)
     ]
@@ -1513,6 +1546,7 @@ def _build_narrative_public_payload(
         selected_day_context=selected_day_context,
         natal=core_response.get("natal") if isinstance(core_response.get("natal"), Mapping) else None,
         event_v2_by_id=event_v2_by_id,
+        lens=request.lens,
     )
     period_peak_timeline = []
     for item in (public_payload.get("period_peak_timeline") or []):
@@ -1521,7 +1555,7 @@ def _build_narrative_public_payload(
         timeline_item = dict(item)
         event_card = timeline_item.get("event_card")
         if isinstance(event_card, Mapping):
-            timeline_item["event_card"] = _humanize_event_card(event_card)
+            timeline_item["event_card"] = _humanize_event_card(event_card, lens=request.lens)
         period_peak_timeline.append(timeline_item)
     include_public_coverage = str(os.getenv("PERIOD_COVERAGE_PUBLIC", "0")).strip().lower() in {"1", "true", "yes", "on"}
     return {
@@ -2061,6 +2095,7 @@ def build_transit_narrative(
 ) -> Dict[str, Any]:
     started = perf_counter()
     snapshot_id = generate_snapshot_id()
+    response_mode = _normalize_narrative_response_mode(request.response_mode)
     start_date = _parse_iso_date(request.start, field_name="start")
     end_date = _parse_iso_date(request.end, field_name="end")
     if start_date > end_date:
@@ -2094,6 +2129,7 @@ def build_transit_narrative(
                     "range_days": (end_date - start_date).days + 1,
                     "selected_date": request.selected_date,
                     "include_best_times": bool(request.include_best_times),
+                    "response_mode": response_mode,
                     "cache_status": lookup.status,
                     "cache_key": cache_key,
                 },
@@ -2107,6 +2143,110 @@ def build_transit_narrative(
                 cache_key=cache_key,
             )
             return response
+
+    if response_mode == "public_only":
+        response: Dict[str, Any] = {
+            "range": {
+                "start": start_date.isoformat(),
+                "end": end_date.isoformat(),
+                "tz": request.tz,
+            },
+        }
+        period_coverage_debug: Dict[str, Any] = {}
+        period_selection_debug: Dict[str, Any] = {}
+        period_root_causes_debug: List[Dict[str, Any]] = []
+        public_events_debug: List[Dict[str, Any]] = []
+        try:
+            signature = inspect.signature(_build_narrative_public_payload)
+            if "selected_day_context" in signature.parameters:
+                response["public"] = _build_narrative_public_payload(
+                    request,
+                    start_date,
+                    selected_day_context={},
+                )
+            else:  # pragma: no cover - compatibility for monkeypatched test doubles
+                response["public"] = _build_narrative_public_payload(request, start_date)
+            if isinstance(response.get("public"), Mapping):
+                period_coverage_debug = dict(response["public"].get("_period_coverage") or {})
+                response["public"].pop("_period_coverage", None)
+                period_selection_debug = dict(response["public"].get("_period_selection") or {})
+                response["public"].pop("_period_selection", None)
+                period_root_causes_debug = [
+                    dict(item)
+                    for item in (response["public"].get("_period_root_causes") or [])
+                    if isinstance(item, Mapping)
+                ]
+                response["public"].pop("_period_root_causes", None)
+                public_events_debug = [
+                    dict(item)
+                    for item in (response["public"].get("_events_debug") or [])
+                    if isinstance(item, Mapping)
+                ]
+                response["public"].pop("_events_debug", None)
+        except Exception:  # pragma: no cover - defensive; keep lightweight surface resilient
+            logger.exception("transit narrative public-only payload failed")
+            response["public"] = _empty_public_narrative_payload()
+
+        if request.debug:
+            public_payload = response.get("public", {}) if isinstance(response.get("public"), Mapping) else {}
+            response["debug"] = {
+                "response_mode": response_mode,
+                "best_times_enabled": False,
+                "period_coverage": period_coverage_debug,
+                "period_selection": period_selection_debug,
+                "period_root_causes": period_root_causes_debug,
+                "events_debug": public_events_debug,
+                "selected_day_public": {
+                    "date": str(request.selected_date or start_date.isoformat()),
+                    "daily_event_cards_count": len((public_payload.get("daily_event_cards") or [])),
+                    "period_event_cards_count": len((public_payload.get("period_event_cards") or [])),
+                    "legacy_event_cards_count": len((public_payload.get("event_cards") or [])),
+                    "daily_selection": dict(public_payload.get("daily_selection") or {}),
+                    "micro_summary_tr": "",
+                    "micro_summary_source": "public_only",
+                },
+            }
+
+        _annotate_transit_narrative_debug(
+            response,
+            cache_status="miss",
+            cache_key=cache_key,
+        )
+        if _transit_narrative_cache_enabled():
+            default_cache_store.set(
+                cache_key,
+                copy.deepcopy(response),
+                ttl_seconds=settings.transit_narrative_ttl_seconds,
+                stale_ttl_seconds=settings.transit_narrative_stale_ttl_seconds,
+                now=utc_now(),
+            )
+        response = _finalize_route_response(
+            response,
+            endpoint="/transit/narrative",
+            snapshot_id=snapshot_id,
+            client_trace_id=client_trace_id,
+            client_surface=client_surface,
+            duration_ms=(perf_counter() - started) * 1000.0,
+            extra_log_fields={
+                "range_start": start_date.isoformat(),
+                "range_end": end_date.isoformat(),
+                "range_days": (end_date - start_date).days + 1,
+                "selected_date": request.selected_date,
+                "include_best_times": False,
+                "response_mode": response_mode,
+                "cache_status": "miss",
+                "cache_key": cache_key,
+            },
+        )
+        _log_transit_timing(
+            endpoint="/transit/narrative",
+            request=request,
+            response=response,
+            duration_ms=(perf_counter() - started) * 1000.0,
+            cache_status="miss",
+            cache_key=cache_key,
+        )
+        return response
 
     payload = build_transit_calendar_public(
         birth_date=request.birth_date,
@@ -2404,6 +2544,7 @@ def build_transit_narrative(
             "range_days": (end_date - start_date).days + 1,
             "selected_date": request.selected_date,
             "include_best_times": bool(request.include_best_times),
+            "response_mode": response_mode,
             "cache_status": "miss",
             "cache_key": cache_key,
         },

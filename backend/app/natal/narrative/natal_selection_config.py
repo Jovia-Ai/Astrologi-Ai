@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict
 
@@ -98,6 +97,9 @@ _DEFAULT_CONFIG: Dict[str, Any] = {
     },
 }
 
+_CONFIG_CACHE: Dict[str, Any] | None = None
+_CONFIG_CACHE_MTIME_NS: int | None = None
+
 
 def _merge_dicts(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, Any]:
     merged: Dict[str, Any] = dict(base)
@@ -114,13 +116,25 @@ def _config_path() -> Path:
     return Path(__file__).resolve().parents[2] / "config" / "natal" / "natal_selection_v3.yaml"
 
 
-@lru_cache(maxsize=1)
 def get_natal_selection_v3_config() -> Dict[str, Any]:
+    global _CONFIG_CACHE
+    global _CONFIG_CACHE_MTIME_NS
     path = _config_path()
+    try:
+        stat = path.stat()
+        mtime_ns = int(stat.st_mtime_ns)
+    except Exception:
+        mtime_ns = None
+
+    if _CONFIG_CACHE is not None and _CONFIG_CACHE_MTIME_NS == mtime_ns:
+        return dict(_CONFIG_CACHE)
+
     try:
         parsed = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
     except Exception:
         parsed = {}
     config = _merge_dicts(_DEFAULT_CONFIG, parsed if isinstance(parsed, dict) else {})
     config["config_path"] = str(path)
-    return config
+    _CONFIG_CACHE = dict(config)
+    _CONFIG_CACHE_MTIME_NS = mtime_ns
+    return dict(config)

@@ -374,3 +374,38 @@ def test_transit_narrative_uses_route_cache(monkeypatch) -> None:
     assert first["debug"]["cache_status"] == "miss"
     assert second["debug"]["cache_status"] == "hit"
     assert first["meta"]["snapshot_id"] != second["meta"]["snapshot_id"]
+
+
+def test_transit_narrative_public_only_skips_calendar_assembly(monkeypatch) -> None:
+    monkeypatch.setattr(
+        transits,
+        "build_transit_calendar_public",
+        lambda **_: pytest.fail("calendar assembly should be skipped for public_only"),
+    )
+    monkeypatch.setattr(
+        transits,
+        "_build_narrative_public_payload",
+        lambda _request, _start_date, selected_day_context=None: {
+            "period_core": {"title": "Relationship core"},
+            "daily_event_cards": [{"event_id": "evt_daily"}],
+            "period_event_cards": [{"event_id": "evt_period"}],
+            "daily_selection": {"daily_count": 1, "period_count": 1},
+            "event_cards": [{"event_id": "evt_daily"}],
+            "period_peak_timeline": [],
+            "timeline": {"summary": "line"},
+        },
+    )
+
+    response = transits.build_transit_narrative(
+        _request(
+            selected_date="2026-03-10",
+            response_mode="public_only",
+            start="2026-03-10",
+            end="2026-03-10",
+        )
+    )
+
+    assert response["public"]["period_core"]["title"] == "Relationship core"
+    assert response["public"]["daily_event_cards"][0]["event_id"] == "evt_daily"
+    assert "calendar" not in response
+    assert response["range"]["start"] == "2026-03-10"

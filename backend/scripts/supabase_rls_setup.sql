@@ -1,4 +1,4 @@
--- Supabase RLS setup for profiles, birth_data, astro_settings.
+-- Supabase RLS setup for profiles, birth_data, astro_settings, archetype_profiles.
 -- Run in Supabase SQL Editor.
 
 begin;
@@ -23,6 +23,7 @@ alter table public.profiles
 alter table public.profiles enable row level security;
 alter table public.birth_data enable row level security;
 alter table public.astro_settings enable row level security;
+alter table if exists public.archetype_profiles enable row level security;
 
 -- 3) Replace policies (idempotent)
 drop policy if exists "profiles_select_own" on public.profiles;
@@ -75,5 +76,32 @@ create policy "astro_settings_update_own"
 on public.astro_settings for update
 using (auth.uid()::text = user_id::text)
 with check (auth.uid()::text = user_id::text);
+
+do $$
+begin
+  if exists (
+    select 1
+    from information_schema.tables
+    where table_schema = 'public'
+      and table_name = 'archetype_profiles'
+  ) then
+    drop policy if exists "archetype_profiles_select_own" on public.archetype_profiles;
+    drop policy if exists "archetype_profiles_insert_own" on public.archetype_profiles;
+    drop policy if exists "archetype_profiles_update_own" on public.archetype_profiles;
+
+    create policy "archetype_profiles_select_own"
+    on public.archetype_profiles for select
+    using (auth.uid() = user_id);
+
+    create policy "archetype_profiles_insert_own"
+    on public.archetype_profiles for insert
+    with check (auth.uid() = user_id);
+
+    create policy "archetype_profiles_update_own"
+    on public.archetype_profiles for update
+    using (auth.uid() = user_id)
+    with check (auth.uid() = user_id);
+  end if;
+end $$;
 
 commit;

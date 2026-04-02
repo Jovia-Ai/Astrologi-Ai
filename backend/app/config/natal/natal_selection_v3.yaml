@@ -2,22 +2,22 @@ engine_version: natal_selection_v3_config_v1
 
 phase_flags:
   feature_foundation_debug: true
-  master_selector_enabled: false
-  master_selector_debug_only: true
-  contradiction_engine_enabled: false
-  contradiction_engine_debug_only: true
-  layer_arbitration_enabled: false
+  master_selector_enabled: true
+  master_selector_debug_only: false
+  contradiction_engine_enabled: true
+  contradiction_engine_debug_only: false
+  layer_arbitration_enabled: true
   layer_arbitration_debug_only: true
-  surface_migration_enabled: false
-  surface_migration_debug_only: true
-  voice_profile_enabled: false
-  voice_profile_debug_only: true
+  surface_migration_enabled: true
+  surface_migration_debug_only: false
+  voice_profile_enabled: true
+  voice_profile_debug_only: false
 
 rollouts:
   profile_narrative_selector_rollout_pct: 0
   personality_imprint_selector_rollout_pct: 0
   supporting_threads_selector_rollout_pct: 0
-  voice_profile_rollout_pct: 0
+  voice_profile_rollout_pct: 100
 
 thresholds:
   motif_min_score: 0.18

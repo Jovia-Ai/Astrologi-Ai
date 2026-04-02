@@ -11,7 +11,7 @@ from types import SimpleNamespace
 from typing import Any, Dict, List, Mapping, Sequence
 
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from pydantic import BaseModel, ConfigDict, Field
 
 from app.ai.narrative.formatter import (
@@ -63,6 +63,12 @@ from app.engine.astro_normalize import aspect_strength, clamp01
 from app.natal.public_builder import build_public_natal_view
 from app.natal.natal_graph import build_natal_graph
 from app.natal.natal_graph_v2 import build_natal_graph_v2
+from app.natal.archetype_profile import build_archetype_profile, get_archetype_runtime_versions
+from app.natal.archetype_question_bank import (
+    build_public_question_bank,
+    current_question_bank_version,
+    score_archetype_answers,
+)
 from app.natal.narrative.core_story_tr_natal import build_core_story_ui
 from app.natal.narrative.contradiction_engine import build_contradiction_signatures
 from app.natal.narrative.layer_arbitrator import arbitrate_natal_layers
@@ -74,6 +80,13 @@ from app.natal.personality_imprint import build_personality_imprint
 from app.natal.narrative.profile_narrative_engine import build_profile_narrative
 from app.natal.supporting_threads_builder import build_sections_v2, build_supporting_threads
 from app.services.performance.cache_store import default_cache_store, utc_now
+from app.services.profiles import (
+    build_archetype_answers_hash,
+    build_archetype_birth_hash,
+    get_current_archetype_profile,
+    upsert_current_archetype_profile,
+)
+from app.services.supabase import supabase
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +120,55 @@ class NatalInterpretationRequest(BaseModel):
     birth_time: str = Field(..., description="Birth time in HH:MM format.")
     birth_place: str = Field(..., description="City + country or recognizable location label.")
     locale: str | None = None
+
+
+class ArchetypeAnswer(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    item_id: str | None = Field(default=None, description="Optional item identifier.")
+    archetype_id: str | None = Field(
+        default=None,
+        description="Optional direct archetype target for fallback scoring when item-bank answers are not used.",
+    )
+    value: float = Field(..., description="Answer value. Supports 0-1, 1-5, or 0-100 scales.")
+    weight: float | None = Field(default=None, description="Optional answer weight.")
+
+
+class ArchetypeProfileRequest(NatalInterpretationRequest):
+    birth_time_confidence: str | None = Field(
+        default="exact",
+        description="Birth time confidence. Example: exact, rounded, estimated, unknown.",
+    )
+    answer_consistency: float | None = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="Optional precomputed answer consistency score.",
+    )
+    answers: list[ArchetypeAnswer] = Field(default_factory=list)
+    test_scores: Dict[str, float] | None = Field(
+        default=None,
+        description="Optional pre-aggregated archetype scores keyed by archetype id.",
+    )
+    context_scores: Dict[str, float] | None = Field(
+        default=None,
+        description="Optional extra context scores keyed by archetype id.",
+    )
+
+
+def _get_optional_supabase_user_id(authorization: str | None = Header(default=None)) -> str | None:
+    if not authorization or not authorization.lower().startswith("bearer "):
+        return None
+    token = authorization.split(" ", 1)[1].strip()
+    if not token:
+        return None
+    try:
+        user_res = supabase.auth.get_user(token)
+    except Exception:
+        return None
+    if not user_res or not user_res.user:
+        return None
+    return user_res.user.id
 
 
 def _log_natal_timing(
@@ -275,6 +337,171 @@ def _build_profile_fast_payload(
     }
 
 
+def _normalize_archetype_score(value: Any) -> float:
+    number = _safe_float(value)
+    if 0.0 <= number <= 1.0:
+        return clamp01(number)
+    if 1.0 <= number <= 5.0:
+        return clamp01((number - 1.0) / 4.0)
+    if 0.0 <= number <= 100.0:
+        return clamp01(number / 100.0)
+    return clamp01(number)
+
+
+def _coerce_test_scores(
+    *,
+    answers: Sequence[ArchetypeAnswer] | None,
+    test_scores: Mapping[str, Any] | None,
+) -> Dict[str, float]:
+    if isinstance(test_scores, Mapping) and test_scores:
+        return {
+            str(key).strip(): round(_normalize_archetype_score(value), 4)
+            for key, value in test_scores.items()
+            if str(key).strip()
+        }
+
+    totals: Dict[str, float] = {}
+    weights: Dict[str, float] = {}
+    for answer in answers or []:
+        archetype_id = str(answer.archetype_id or "").strip()
+        if not archetype_id:
+            continue
+        normalized = _normalize_archetype_score(answer.value)
+        weight = max(_safe_float(answer.weight, 1.0), 0.0) or 1.0
+        totals[archetype_id] = float(totals.get(archetype_id) or 0.0) + (normalized * weight)
+        weights[archetype_id] = float(weights.get(archetype_id) or 0.0) + weight
+
+    return {
+        archetype_id: round(clamp01(total / max(weights.get(archetype_id, 1.0), 1e-6)), 4)
+        for archetype_id, total in totals.items()
+        if archetype_id and weights.get(archetype_id)
+    }
+
+
+def _normalize_answers_for_storage(answers: Sequence[ArchetypeAnswer] | None) -> List[Dict[str, Any]]:
+    normalized: List[Dict[str, Any]] = []
+    for answer in answers or []:
+        if hasattr(answer, "model_dump"):
+            payload = answer.model_dump(exclude_none=True)
+        else:
+            payload = answer.dict(exclude_none=True)
+        normalized.append(dict(payload))
+    return normalized
+
+
+def _resolve_archetype_inputs(request: ArchetypeProfileRequest) -> Dict[str, Any]:
+    if isinstance(request.test_scores, Mapping) and request.test_scores:
+        return {
+            "scores": _coerce_test_scores(
+                answers=request.answers,
+                test_scores=request.test_scores,
+            ),
+            "answer_consistency": request.answer_consistency,
+            "answered_count": 0,
+            "input_mode": "test_scores",
+            "question_bank_version": None,
+            "question_debug": {},
+        }
+
+    question_payload = score_archetype_answers(request.answers)
+    question_scores = (
+        question_payload.get("scores")
+        if isinstance(question_payload.get("scores"), Mapping)
+        else {}
+    )
+    if question_scores:
+        return {
+            "scores": {
+                str(key).strip(): round(_normalize_archetype_score(value), 4)
+                for key, value in question_scores.items()
+                if str(key).strip()
+            },
+            "answer_consistency": (
+                request.answer_consistency
+                if request.answer_consistency is not None
+                else question_payload.get("answer_consistency")
+            ),
+            "answered_count": int(_safe_float(question_payload.get("answered_count"))),
+            "input_mode": "item_bank",
+            "question_bank_version": question_payload.get("question_bank_version"),
+            "question_debug": question_payload.get("debug") or {},
+        }
+
+    direct_scores = _coerce_test_scores(
+        answers=request.answers,
+        test_scores=None,
+    )
+    if direct_scores:
+        return {
+            "scores": direct_scores,
+            "answer_consistency": request.answer_consistency,
+            "answered_count": len(list(request.answers or [])),
+            "input_mode": "answers",
+            "question_bank_version": None,
+            "question_debug": {},
+        }
+
+    return {
+        "scores": {},
+        "answer_consistency": request.answer_consistency,
+        "answered_count": 0,
+        "input_mode": "chart_only",
+        "question_bank_version": None,
+        "question_debug": {},
+    }
+
+
+def _response_from_persisted_snapshot(
+    row: Mapping[str, Any],
+    *,
+    storage_status: str,
+) -> Dict[str, Any]:
+    payload = row.get("final_profile") if isinstance(row.get("final_profile"), Mapping) else {}
+    response = dict(payload or {})
+    snapshot = response.get("snapshot") if isinstance(response.get("snapshot"), Mapping) else {}
+    response["snapshot"] = {
+        **dict(snapshot),
+        "persisted": True,
+        "storage_status": storage_status,
+        "computed_at": row.get("computed_at"),
+        "birth_data_hash": row.get("birth_data_hash"),
+        "answers_hash": row.get("answers_hash"),
+        "input_mode": row.get("input_mode") or response.get("input_mode") or "chart_only",
+    }
+    return response
+
+
+def _stored_snapshot_is_current(
+    row: Mapping[str, Any],
+    *,
+    birth_data_hash: str,
+    answers_hash: str | None,
+    has_new_inputs: bool,
+) -> bool:
+    runtime_versions = get_archetype_runtime_versions()
+    if str(row.get("birth_data_hash") or "") != birth_data_hash:
+        return False
+    for key, value in runtime_versions.items():
+        if str(row.get(key) or "") != value:
+            return False
+    stored_question_bank = str(row.get("question_bank_version") or "")
+    if stored_question_bank and stored_question_bank != current_question_bank_version():
+        return False
+    if not has_new_inputs:
+        return True
+    return bool(answers_hash and str(row.get("answers_hash") or "") == answers_hash)
+
+
+def _build_archetype_ui_sections(payload: Mapping[str, Any]) -> Dict[str, Any]:
+    return {
+        "identity": list(payload.get("top_archetypes") or []),
+        "protection": dict(payload.get("shadow_archetype") or {}),
+        "tension": dict(payload.get("primary_contradiction") or {}),
+        "confidence": dict(payload.get("confidence") or {}),
+        "slots": dict(payload.get("slots") or {}),
+    }
+
+
 def _log_profile_fast_timing(
     *,
     request: NatalInterpretationRequest,
@@ -348,6 +575,173 @@ def profile_fast(
         cache_key=cache_key,
         chart_compute_ms=timing["chart_compute_ms"],
         serialization_ms=timing["serialization_ms"],
+    )
+    return response
+
+
+@router.get("/profile/archetype/questions")
+def profile_archetype_questions(
+    locale: str = "tr",
+) -> Dict[str, Any]:
+    return build_public_question_bank(locale=locale or "tr")
+
+
+@router.post("/profile/archetype")
+def profile_archetype(
+    request: ArchetypeProfileRequest,
+    persist: bool = False,
+    force_refresh: bool = False,
+    include_debug: bool = False,
+    current_user_id: str | None = Depends(_get_optional_supabase_user_id),
+) -> Dict[str, Any]:
+    started = perf_counter()
+    normalized_inputs = _resolve_archetype_inputs(request)
+    normalized_test_scores = normalized_inputs["scores"]
+    resolved_answer_consistency = normalized_inputs["answer_consistency"]
+    answered_count = int(_safe_float(normalized_inputs.get("answered_count")))
+    question_bank_version = normalized_inputs.get("question_bank_version")
+    input_mode = str(normalized_inputs.get("input_mode") or "chart_only")
+    normalized_answers = _normalize_answers_for_storage(request.answers)
+    birth_data_hash = build_archetype_birth_hash(
+        birth_date=request.birth_date,
+        birth_time=request.birth_time,
+        birth_place=request.birth_place,
+    )
+    answers_hash = build_archetype_answers_hash(
+        answers=normalized_answers,
+        test_scores=normalized_test_scores,
+        context_scores=request.context_scores,
+    )
+    has_new_inputs = bool(normalized_answers or normalized_test_scores or request.context_scores)
+    if persist and current_user_id and not force_refresh:
+        stored = get_current_archetype_profile(current_user_id)
+        if stored and _stored_snapshot_is_current(
+            stored,
+            birth_data_hash=birth_data_hash,
+            answers_hash=answers_hash,
+            has_new_inputs=has_new_inputs,
+        ):
+            response = _response_from_persisted_snapshot(stored, storage_status="hit")
+            _log_natal_timing(
+                endpoint="/profile/archetype",
+                request=request,
+                response=response,
+                duration_ms=(perf_counter() - started) * 1000.0,
+            )
+            return response
+
+    base_payload = _prepare_payload(
+        request,
+        premium_mode=False,
+        debug_mode=True,
+    )
+    primitive_scores = (
+        base_payload.get("_primitive_scores_v2")
+        if isinstance(base_payload.get("_primitive_scores_v2"), Mapping)
+        else {}
+    )
+    master_selector = (
+        base_payload.get("_master_selector_v1")
+        if isinstance(base_payload.get("_master_selector_v1"), Mapping)
+        else {}
+    )
+    contradiction_signatures = (
+        base_payload.get("_contradiction_signatures_v1")
+        if isinstance(base_payload.get("_contradiction_signatures_v1"), Mapping)
+        else {}
+    )
+    natal_feature_graph = (
+        base_payload.get("_natal_feature_graph_v2")
+        if isinstance(base_payload.get("_natal_feature_graph_v2"), Mapping)
+        else {}
+    )
+    if not primitive_scores:
+        raise HTTPException(status_code=500, detail="Archetype scoring inputs are unavailable")
+
+    archetype_payload = build_archetype_profile(
+        primitive_scores=primitive_scores,
+        master_selector=master_selector,
+        contradiction_signatures=contradiction_signatures,
+        natal_feature_graph=natal_feature_graph,
+        test_scores=normalized_test_scores,
+        context_scores=request.context_scores or {},
+        birth_time_confidence=(request.birth_time_confidence or "exact"),
+        answer_consistency=resolved_answer_consistency,
+    )
+    response = {
+        "metadata": base_payload.get("metadata") or {},
+        "engine_version": archetype_payload.get("engine_version"),
+        "taxonomy_version": archetype_payload.get("taxonomy_version"),
+        "fusion_version": archetype_payload.get("fusion_version"),
+        "question_bank_version": question_bank_version or current_question_bank_version(),
+        "input_mode": input_mode,
+        "chart_prior": archetype_payload.get("chart_prior") or {},
+        "test_scores": archetype_payload.get("test_scores") or [],
+        "top_archetypes": archetype_payload.get("top_archetypes") or [],
+        "shadow_archetype": archetype_payload.get("shadow_archetype") or {},
+        "primary_contradiction": archetype_payload.get("primary_contradiction") or {},
+        "confidence": archetype_payload.get("confidence") or {},
+        "slots": archetype_payload.get("slots") or {},
+        "ui_sections": _build_archetype_ui_sections(archetype_payload),
+        "question_summary": {
+            "available": True,
+            "has_test_result": bool(archetype_payload.get("test_scores")),
+            "answered_count": answered_count,
+            "input_mode": input_mode,
+        },
+        "snapshot": {
+            "persisted": bool(persist and current_user_id),
+            "storage_status": "not_persisted",
+            "computed_at": None,
+            "birth_data_hash": birth_data_hash,
+            "answers_hash": answers_hash,
+            "input_mode": input_mode,
+        },
+    }
+    if persist and current_user_id:
+        try:
+            stored = upsert_current_archetype_profile(
+                {
+                    "user_id": current_user_id,
+                    "birth_data_hash": birth_data_hash,
+                    "answers_hash": answers_hash,
+                    "raw_answers": normalized_answers,
+                    "test_scores": normalized_test_scores,
+                    "context_scores": request.context_scores or {},
+                    "chart_prior": response.get("chart_prior") or {},
+                    "final_profile": response,
+                    "engine_version": response.get("engine_version"),
+                    "taxonomy_version": response.get("taxonomy_version"),
+                    "fusion_version": response.get("fusion_version"),
+                    "question_bank_version": question_bank_version,
+                    "input_mode": input_mode,
+                }
+            )
+            response["snapshot"] = {
+                **dict(response.get("snapshot") or {}),
+                "persisted": True,
+                "storage_status": "saved",
+                "computed_at": stored.get("computed_at"),
+            }
+        except Exception as exc:  # pragma: no cover - environment specific
+            logger.warning("Failed to persist archetype snapshot: %s", exc)
+            response["snapshot"] = {
+                **dict(response.get("snapshot") or {}),
+                "persisted": False,
+                "storage_status": "save_failed",
+            }
+    if include_debug:
+        response["debug"] = {
+            "archetype": archetype_payload.get("debug") or {},
+            "input_mode": input_mode,
+            "normalized_test_scores": normalized_test_scores,
+            "question_debug": normalized_inputs.get("question_debug") or {},
+        }
+    _log_natal_timing(
+        endpoint="/profile/archetype",
+        request=request,
+        response=response,
+        duration_ms=(perf_counter() - started) * 1000.0,
     )
     return response
 
@@ -567,11 +961,25 @@ def _prepare_payload_from_chart(
         if isinstance(natal_selection_config.get("phase_flags"), Mapping)
         else {}
     )
+    master_selector_enabled = bool(phase_flags.get("master_selector_enabled"))
+    contradiction_engine_enabled = bool(phase_flags.get("contradiction_engine_enabled"))
+    layer_arbitration_enabled = bool(phase_flags.get("layer_arbitration_enabled"))
+    voice_profile_enabled = bool(phase_flags.get("voice_profile_enabled"))
     surface_migration_enabled = bool(phase_flags.get("surface_migration_enabled"))
     surface_migration_shadow = debug_mode and not surface_migration_enabled and bool(
         phase_flags.get("surface_migration_debug_only", True)
     )
     surface_migration_public_mode = "active" if surface_migration_enabled else "legacy"
+    selection_runtime_enabled = any(
+        (
+            debug_mode,
+            master_selector_enabled,
+            contradiction_engine_enabled,
+            layer_arbitration_enabled,
+            surface_migration_enabled,
+            voice_profile_enabled,
+        )
+    )
 
     planets = serialize_planets(chart_data.get("planets", {}))
     angles = chart_data.get("angles") if isinstance(chart_data, Mapping) else None
@@ -604,7 +1012,7 @@ def _prepare_payload_from_chart(
     contradiction_signatures_v1: Dict[str, Any] | None = None
     master_selector_v1: Dict[str, Any] | None = None
     layer_arbitration_v1: Dict[str, Any] | None = None
-    if debug_mode:
+    if selection_runtime_enabled:
         natal_graph_v2_debug = build_natal_graph_v2(
             chart_for_selection,
             natal_graph=natal_graph,

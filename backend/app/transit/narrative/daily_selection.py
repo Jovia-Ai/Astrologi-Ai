@@ -930,6 +930,7 @@ def _materialize_card(
     existing_by_id: Mapping[str, Mapping[str, Any]],
     natal: Mapping[str, Any] | None,
     event_v2_by_id: Mapping[str, Mapping[str, Any]],
+    lens: str = "general",
 ) -> Dict[str, Any]:
     event_id = str(item.get("event_id") or "").strip()
     if event_id and event_id in existing_by_id:
@@ -944,7 +945,7 @@ def _materialize_card(
                 merged[key] = source.get(key)
     if isinstance(event_meta, Mapping):
         merged["astro_event"] = dict(event_meta)
-    return humanize_event_card_tr(merged)
+    return humanize_event_card_tr(merged, lens=lens)
 
 
 def _build_row(
@@ -957,12 +958,14 @@ def _build_row(
     event_v2_by_id: Mapping[str, Mapping[str, Any]],
     config: Mapping[str, Any],
     personalization_context: Mapping[str, Any],
+    lens: str = "general",
 ) -> Dict[str, Any]:
     card = _materialize_card(
         item,
         existing_by_id=existing_by_id,
         natal=natal,
         event_v2_by_id=event_v2_by_id,
+        lens=lens,
     )
     context = build_scoring_context(
         item,
@@ -970,7 +973,7 @@ def _build_row(
         context={
             "config": config,
             "card": card,
-            "preview": humanize_event_card_tr(card),
+            "preview": humanize_event_card_tr(card, lens=lens),
             "selected_day_context": selected_day_context,
         },
     )
@@ -1188,6 +1191,7 @@ def select_daily_and_period_event_cards(
     selected_day_context: Mapping[str, Any] | None = None,
     natal: Mapping[str, Any] | None = None,
     event_v2_by_id: Mapping[str, Mapping[str, Any]] | None = None,
+    lens: str = "general",
 ) -> Dict[str, Any]:
     config = load_daily_selection_config()
     thresholds = config.get("thresholds") if isinstance(config.get("thresholds"), Mapping) else {}
@@ -1197,6 +1201,8 @@ def select_daily_and_period_event_cards(
     meaningful_event_min = _safe_float(thresholds.get("meaningful_event_min"), 0.42)
 
     selected_day_context = dict(selected_day_context or {})
+    if str(lens).strip():
+        selected_day_context.setdefault("lens", str(lens).strip())
     personalization_context = extract_personalization_context(natal, selected_day_context=selected_day_context)
     event_card_index = {
         str(card.get("event_id") or "").strip(): dict(card)
@@ -1230,6 +1236,7 @@ def select_daily_and_period_event_cards(
             event_v2_by_id=v2_index,
             config=config,
             personalization_context=personalization_context,
+            lens=lens,
         )
         for item in candidate_items_by_id.values()
     ]
@@ -1283,6 +1290,7 @@ def select_daily_and_period_event_cards(
                 score=row["score"],
                 is_period_derived=bool(used_period_fallback or row["source_horizon"] != "daily"),
                 force_daily_horizon=True,
+                lens=lens,
             )
         )
 

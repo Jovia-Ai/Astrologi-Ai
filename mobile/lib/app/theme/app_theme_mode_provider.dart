@@ -23,7 +23,7 @@ class JoviaThemeModeController extends Notifier<JoviaThemeMode> {
         ?.toString()
         .trim()
         .toLowerCase();
-    return raw == 'light' ? JoviaThemeMode.light : JoviaThemeMode.dark;
+    return raw == 'dark' ? JoviaThemeMode.dark : JoviaThemeMode.light;
   }
 
   Future<void> setMode(JoviaThemeMode mode) async {

@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/theme/app_theme_mode_provider.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/astro/astro_theme_extension.dart';
 import 'package:mobile/design/astro/astro_theme_generator.dart';
 import 'package:mobile/design/astro/element_scores.dart';
@@ -1571,7 +1572,7 @@ class _IdentitySpotlightCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        data.label.toUpperCase(),
+                        turkishToUpper(data.label),
                         style: profile.typography.eyebrow.copyWith(
                           color: profile.colors.textLight,
                           letterSpacing: 1.6,

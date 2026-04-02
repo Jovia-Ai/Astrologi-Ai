@@ -84,25 +84,25 @@ class ProfileColors {
   Color get statusReceding => const Color(0xFF8FA1B5);
 
   static const ProfileColors light = ProfileColors(
-    bg: Color(0xFFEFF3F6),
-    surface: Color(0xFFF8FBFD),
-    text: Color(0xFF182028),
-    muted: Color(0xFF667480),
-    textLight: Color(0xFF95A3AE),
-    primary: Color(0xFFAABAC7),
-    lime: Color(0xFFF1F5F8),
-    lavender: Color(0xFFE9EFF4),
-    border: Color(0x2A8EA0AF),
-    strokeSoft: Color(0x1F8EA0AF),
-    separator: Color(0x1A8EA0AF),
-    auraStops: <Color>[Color(0xFFEFF3F6), Color(0xFFF5F8FB), Color(0xFFF8FBFD)],
-    chipBg: Color(0xE6F7FAFC),
-    chipBorder: Color(0x339EAFBD),
-    warmAccent: Color(0xFFB8C7D4),
-    heroText: Color(0xFF182028),
-    heroBase: Color(0xFFE7EDF2),
-    neonPink: Color(0xFFDDE6F2),
-    neonCyan: Color(0xFFDDE8EC),
+    bg: Color(0xFFFDFDFD),
+    surface: Color(0xFFFFFFFF),
+    text: Color(0xFF171717),
+    muted: Color(0xFF777777),
+    textLight: Color(0xFFA0A0A0),
+    primary: Color(0xFFDCCEFF),
+    lime: Color(0xFFE9FFC5),
+    lavender: Color(0xFFF3EEFF),
+    border: Color(0x14000000),
+    strokeSoft: Color(0x12000000),
+    separator: Color(0x0A000000),
+    auraStops: <Color>[Color(0xFFFFFFFF), Color(0xFFF9FAFC), Color(0xFFFFFFFF)],
+    chipBg: Color(0xFFFFFFFF),
+    chipBorder: Color(0x14000000),
+    warmAccent: Color(0xFFD8FF72),
+    heroText: Color(0xFF171717),
+    heroBase: Color(0xFFF7F8FB),
+    neonPink: Color(0xFFF8EFFF),
+    neonCyan: Color(0xFFEFFFF4),
   );
 
   static const ProfileColors dark = ProfileColors(
@@ -147,10 +147,10 @@ class ProfileRadii {
   double get heroRadius => large;
 
   static const ProfileRadii standard = ProfileRadii(
-    small: 14,
-    medium: 22,
-    large: 30,
-    pillRadius: 18,
+    small: 16,
+    medium: 28,
+    large: 36,
+    pillRadius: 20,
   );
 }
 
@@ -217,12 +217,12 @@ class ProfileSpacing {
     xs: 8,
     sm: 12,
     md: 16,
-    step20: 20,
-    lg: 24,
-    xl: 32,
-    xxl: 40,
-    xxxl: 48,
-    heroGap: 56,
+    step20: 24,
+    lg: 28,
+    xl: 36,
+    xxl: 44,
+    xxxl: 56,
+    heroGap: 68,
   );
 }
 
@@ -238,16 +238,16 @@ class ProfileShadows {
 
   static const ProfileShadows soft = ProfileShadows(
     cardShadow: BoxShadow(
-      color: Color(0x26141F28),
-      blurRadius: 30,
-      offset: Offset(0, 18),
-      spreadRadius: -20,
+      color: Color(0x140F151A),
+      blurRadius: 26,
+      offset: Offset(0, 14),
+      spreadRadius: -18,
     ),
     floatingShadow: BoxShadow(
-      color: Color(0x33212B35),
-      blurRadius: 40,
-      offset: Offset(0, 24),
-      spreadRadius: -24,
+      color: Color(0x1A0F151A),
+      blurRadius: 36,
+      offset: Offset(0, 20),
+      spreadRadius: -22,
     ),
   );
 }

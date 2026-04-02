@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:mobile/app/api/api_client.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
 
 // Screen -> endpoint -> keys
 // CalendarHub/Daily -> POST /transit/narrative -> public.event_cards, public.best_times
@@ -85,10 +86,19 @@ class TransitRequestBuilder {
   static Map<String, dynamic> buildNarrativePayload({
     required Map<String, dynamic> profile,
     required DateTime selectedDate,
+    String lens = 'general',
+    bool focusedRange = false,
+    bool includeBestTimes = true,
+    String responseMode = 'full',
   }) {
     final month = stripDate(selectedDate);
-    final start = fmtDate(DateTime(month.year, month.month, 1));
-    final end = fmtDate(DateTime(month.year, month.month + 1, 0));
+    final selected = fmtDate(selectedDate);
+    final start = focusedRange
+        ? selected
+        : fmtDate(DateTime(month.year, month.month, 1));
+    final end = focusedRange
+        ? selected
+        : fmtDate(DateTime(month.year, month.month + 1, 0));
     final place = resolvePlace(profile);
 
     return <String, dynamic>{
@@ -100,11 +110,14 @@ class TransitRequestBuilder {
       'transit_place': place,
       'start': start,
       'end': end,
-      'selected_date': fmtDate(selectedDate),
+      'selected_date': selected,
       'tz': (profile['timezone'] ?? 'Europe/Istanbul').toString().trim(),
       'intent': 'general',
-      'include_best_times': true,
-      'lens': 'general',
+      'include_best_times': includeBestTimes,
+      'lens': lens.trim().isNotEmpty ? lens.trim() : 'general',
+      'response_mode': responseMode.trim().isNotEmpty
+          ? responseMode.trim()
+          : 'full',
     };
   }
 
@@ -183,13 +196,23 @@ class NarrativeRepository {
   Future<Map<String, dynamic>> fetchDailyNarrative({
     required Map<String, dynamic> profile,
     required DateTime selectedDate,
+    String lens = 'general',
+    bool focusedRange = false,
+    bool includeBestTimes = true,
+    String responseMode = 'full',
+    Duration? receiveTimeout,
   }) async {
     final response = await _client.post(
       '/transit/narrative',
       data: TransitRequestBuilder.buildNarrativePayload(
         profile: profile,
         selectedDate: selectedDate,
+        lens: lens,
+        focusedRange: focusedRange,
+        includeBestTimes: includeBestTimes,
+        responseMode: responseMode,
       ),
+      receiveTimeout: receiveTimeout,
       cacheTtl: _narrativeCacheTtl,
     );
     return TransitRequestBuilder.asMap(response.data);
@@ -256,27 +279,27 @@ class SkyFeedItemDto {
     final tagsRaw = map['tags'];
     final bodiesRaw = map['bodies'];
     return SkyFeedItemDto(
-      id: (map['id'] ?? '').toString(),
-      slug: (map['slug'] ?? '').toString(),
-      eventType: (map['event_type'] ?? '').toString(),
-      title: ((map['short_title_tr'] ?? map['title_tr']) ?? '').toString(),
-      shortTitle: (map['short_title_tr'] ?? '').toString(),
-      summary: (map['summary_tr'] ?? '').toString(),
-      badge: (map['badge_tr'] ?? '').toString(),
-      relativeTiming: (map['relative_timing_tr'] ?? '').toString(),
-      phase: (map['phase'] ?? '').toString(),
-      status: (map['status'] ?? '').toString(),
-      startsAt: (map['starts_at'] ?? '').toString(),
-      exactAt: (map['exact_at'] ?? '').toString(),
-      endsAt: (map['ends_at'] ?? '').toString(),
+      id: _skyRawString(map, 'id'),
+      slug: _skyRawString(map, 'slug'),
+      eventType: _skyRawString(map, 'event_type'),
+      title: _skyString(map, 'short_title_tr', 'title_tr'),
+      shortTitle: _skyString(map, 'short_title_tr'),
+      summary: _skyString(map, 'summary_tr'),
+      badge: _skyString(map, 'badge_tr'),
+      relativeTiming: _skyString(map, 'relative_timing_tr'),
+      phase: _skyRawString(map, 'phase'),
+      status: _skyRawString(map, 'status'),
+      startsAt: _skyRawString(map, 'starts_at'),
+      exactAt: _skyRawString(map, 'exact_at'),
+      endsAt: _skyRawString(map, 'ends_at'),
       tags: tagsRaw is List
-          ? [for (final tag in tagsRaw) tag.toString()]
+          ? normalizeTurkishTextList(tagsRaw)
           : const <String>[],
       bodies: bodiesRaw is List
-          ? [for (final body in bodiesRaw) body.toString()]
+          ? normalizeTurkishTextList(bodiesRaw)
           : const <String>[],
-      aspect: (map['aspect'] ?? '').toString(),
-      sign: (map['sign'] ?? '').toString(),
+      aspect: _skyRawString(map, 'aspect'),
+      sign: _skyString(map, 'sign'),
       personalizationCta: map['personalization_cta'] is Map
           ? Map<String, dynamic>.from(map['personalization_cta'] as Map)
           : const <String, dynamic>{},
@@ -319,7 +342,7 @@ class SkyNowDto {
       }
     }
     return SkyNowDto(
-      summary: (map['summary_tr'] ?? '').toString(),
+      summary: _skyString(map, 'summary_tr'),
       chips: chips,
       items: items,
     );
@@ -744,6 +767,14 @@ String _skyString(Map<String, dynamic> map, String a, [String? b]) {
   if (value == null) {
     return '';
   }
+  return normalizeTurkishText(value.toString().trim());
+}
+
+String _skyRawString(Map<String, dynamic> map, String a, [String? b]) {
+  final value = map[a] ?? (b == null ? null : map[b]);
+  if (value == null) {
+    return '';
+  }
   return value.toString().trim();
 }
 
@@ -752,10 +783,7 @@ List<String> _skyStringList(Map<String, dynamic> map, String a, [String? b]) {
   if (value is! List) {
     return const <String>[];
   }
-  return value
-      .map((item) => item.toString().trim())
-      .where((item) => item.isNotEmpty)
-      .toList(growable: false);
+  return normalizeTurkishTextList(value);
 }
 
 double? _skyDouble(Map<String, dynamic> map, String a, [String? b]) {
@@ -796,7 +824,7 @@ String _skyFirstString(List<String> values) {
 String _skyHookFromText(String raw) {
   final trimmed = raw.trim();
   if (trimmed.isEmpty) {
-    return 'Su an gokyuzunde kolektif tonu degistiren bir baslik calisiyor.';
+    return 'Şu an gökyüzünde kolektif tonu değiştiren bir başlık çalışıyor.';
   }
   final cut = trimmed.split(RegExp(r'[.!?]')).first.trim();
   final candidate = cut.isEmpty ? trimmed : cut;
@@ -808,17 +836,17 @@ String _skyHookFromText(String raw) {
 String _skyTypeChip(String eventType, {String fallback = ''}) {
   switch (eventType.trim()) {
     case 'ingress':
-      return 'Burc gecisi';
+      return 'Burç geçişi';
     case 'lunation_full_moon':
       return 'Dolunay';
     case 'lunation_new_moon':
       return 'Yeniay';
     case 'exact_aspect_major':
-      return 'Exact aci';
+      return 'Exact açı';
     case 'eclipse':
       return 'Tutulma';
     case 'retrograde_start':
-      return 'Retro basliyor';
+      return 'Retro başlıyor';
     case 'retrograde_end':
       return 'Retro bitiyor';
     default:
@@ -833,7 +861,7 @@ String _skyTimingChip(String relativeTiming) {
   }
   final lower = trimmed.toLowerCase();
   if (lower.contains('right now')) {
-    return 'Su anda';
+    return 'Şu anda';
   }
   if (lower.contains('this week')) {
     return 'Bu hafta';
@@ -852,8 +880,9 @@ String _skyMeaningChipFromText(String raw) {
   if (lower.contains('venus') ||
       lower.contains('taurus') ||
       lower.contains('libra') ||
-      lower.contains('iliski')) {
-    return 'Iliskiler';
+      lower.contains('iliski') ||
+      lower.contains('ilişki')) {
+    return 'İlişkiler';
   }
   if (lower.contains('para') ||
       lower.contains('money') ||
@@ -862,8 +891,9 @@ String _skyMeaningChipFromText(String raw) {
   }
   if (lower.contains('sun') ||
       lower.contains('leo') ||
-      lower.contains('gorunur')) {
-    return 'Gorunurluk';
+      lower.contains('gorunur') ||
+      lower.contains('görünür')) {
+    return 'Görünürlük';
   }
   if (lower.contains('mercury') ||
       lower.contains('gemini') ||
@@ -873,8 +903,9 @@ String _skyMeaningChipFromText(String raw) {
   }
   if (lower.contains('moon') ||
       lower.contains('cancer') ||
-      lower.contains('yakin')) {
-    return 'Yakinlik';
+      lower.contains('yakin') ||
+      lower.contains('yakın')) {
+    return 'Yakınlık';
   }
   if (lower.contains('saturn') ||
       lower.contains('capricorn') ||

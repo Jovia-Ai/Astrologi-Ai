@@ -3,6 +3,7 @@ class SupabaseTables {
 
   static const String profiles = 'profiles';
   static const String birthData = 'birth_data';
+  static const String archetypeProfiles = 'archetype_profiles';
 
   static const String peopleProfiles = 'people_profiles';
   static const String people = 'people';

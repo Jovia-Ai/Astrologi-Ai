@@ -83,11 +83,14 @@ def test_natal_selection_v3_config_scaffold_loads() -> None:
     config = get_natal_selection_v3_config()
 
     assert config["engine_version"] == "natal_selection_v3_config_v1"
-    assert config["phase_flags"]["master_selector_enabled"] is False
+    assert config["phase_flags"]["master_selector_enabled"] is True
+    assert config["phase_flags"]["contradiction_engine_enabled"] is True
+    assert config["phase_flags"]["surface_migration_enabled"] is True
+    assert config["phase_flags"]["voice_profile_enabled"] is True
     assert config["phase_flags"]["layer_arbitration_debug_only"] is True
-    assert config["phase_flags"]["surface_migration_debug_only"] is True
-    assert config["phase_flags"]["voice_profile_debug_only"] is True
-    assert config["rollouts"]["voice_profile_rollout_pct"] == 0
+    assert config["phase_flags"]["surface_migration_debug_only"] is False
+    assert config["phase_flags"]["voice_profile_debug_only"] is False
+    assert config["rollouts"]["voice_profile_rollout_pct"] == 100
     assert config["weights"]["planet_salience"]["chart_ruler_centrality"] > 0.0
 
 
@@ -307,7 +310,7 @@ def test_voice_profile_resolver_builds_shadow_axes_and_expression_preview() -> N
     )
 
     assert voice_profile["engine_version"] == "voice_profile_v2"
-    assert voice_profile["mode"] == "shadow"
+    assert voice_profile["mode"] == "active"
     assert voice_profile["axes"]["direct_vs_reflective"]["label"]
     assert voice_profile["axes"]["warm_vs_restrained"]["label"]
     assert voice_profile["derived_expression"]["tone"] in {"soft", "neutral", "firm"}
@@ -377,7 +380,7 @@ def test_voice_profile_rollout_is_chart_stable_across_golden_artifacts() -> None
     assert observed_modes
 
 
-def test_prepare_payload_from_chart_exposes_phase2_debug_hooks_without_behavior_switch() -> None:
+def test_prepare_payload_from_chart_exposes_active_selection_debug_hooks() -> None:
     chart = _artifact_chart()
 
     payload = _prepare_payload_from_chart(
@@ -400,15 +403,30 @@ def test_prepare_payload_from_chart_exposes_phase2_debug_hooks_without_behavior_
     assert debug["cross_layer_consistency_scores"]["profile_narrative"]["block_count"] > 0
     assert "surface_conflicts" in debug["old_vs_new_selection_diff"]
     assert isinstance(debug["rejected_or_demoted_blocks"], list)
-    assert debug["surface_migration_v1"]["mode"] == "shadow"
-    assert debug["surface_migration_v1"]["profile_narrative"]["mode"] == "shadow"
-    assert debug["surface_migration_v1"]["personality_imprint"]["mode"] == "shadow"
-    assert debug["surface_migration_v1"]["sections_v2_shadow"]
-    assert debug["surface_migration_v1"]["supporting_threads_shadow"]
+    assert debug["surface_migration_v1"]["mode"] == "active"
+    assert debug["surface_migration_v1"]["active"] is True
+    assert debug["surface_migration_v1"]["profile_narrative"]["mode"] == "active"
+    assert debug["surface_migration_v1"]["personality_imprint"]["mode"] == "active"
     assert debug["voice_profile_v2"]["engine_version"] == "voice_profile_v2"
-    assert debug["voice_profile_v2"]["mode"] == "shadow"
+    assert debug["voice_profile_v2"]["mode"] == "active"
     assert debug["expression_profile"]["voice_profile_v2"]["engine_version"] == "voice_profile_v2"
-    assert debug["old_vs_new_selection_diff"]["voice_profile"]["mode"] == "shadow"
+    assert debug["old_vs_new_selection_diff"]["voice_profile"]["mode"] == "active"
+
+
+def test_prepare_payload_from_chart_applies_spine_and_voice_in_public_mode() -> None:
+    chart = _artifact_chart()
+
+    payload = _prepare_payload_from_chart(
+        chart,
+        premium_mode=False,
+        debug_mode=False,
+    )
+
+    assert payload["expression_profile"]["tone_source"] == "voice_profile_v2"
+    assert payload["profile_narrative"]["profile_public"]["blocks"]
+    assert payload["personality_imprint"]["entries"]
+    assert payload["sections_v2"]
+    assert payload["supporting_threads"]
 
 
 def test_prepare_payload_from_chart_uses_voice_profile_when_rollout_is_active() -> None:
@@ -446,6 +464,6 @@ def test_final_response_includes_core_story_in_arbitration_debug() -> None:
     debug = response["debug"]
     assert debug["layer_arbitrator_v1"]["engine_version"] == "layer_arbitrator_v1"
     assert debug["cross_layer_consistency_scores"]["core_story_ui"]["block_count"] == 1
-    assert debug["surface_migration_v1"]["mode"] == "shadow"
+    assert debug["surface_migration_v1"]["mode"] == "active"
     assert debug["voice_profile_v2"]["engine_version"] == "voice_profile_v2"
     assert "overall" in debug["cross_layer_consistency_scores"]

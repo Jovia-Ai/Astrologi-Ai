@@ -6,6 +6,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, Mapping, Sequence
 
+from app.transit.narrative.semantic_projection import normalize_lens
+
 CONFIG_PATH = Path(__file__).resolve().parents[4] / "config" / "transit" / "selection_v3_config.yaml"
 
 DEFAULT_CONFIG: Dict[str, Any] = {
@@ -123,6 +125,23 @@ def _safe_int(value: Any) -> int | None:
         return int(value) if value is not None else None
     except (TypeError, ValueError):
         return None
+
+
+def _preview_lens_match(preview_map: Mapping[str, Any], lens: str) -> float:
+    normalized_lens = normalize_lens(lens)
+    if normalized_lens in {"", "general"}:
+        return 0.0
+    lens_projection = preview_map.get("lens_projection") if isinstance(preview_map.get("lens_projection"), Mapping) else {}
+    projected_scores = lens_projection.get("projected_scores") if isinstance(lens_projection.get("projected_scores"), Mapping) else {}
+    domain_scores = preview_map.get("domain_scores") if isinstance(preview_map.get("domain_scores"), Mapping) else {}
+    for source in (projected_scores, domain_scores):
+        raw = source.get(normalized_lens)
+        if raw is None and normalized_lens == "relationships":
+            raw = source.get("relationship")
+        if raw is None:
+            continue
+        return max(0.0, min(1.0, _safe_float(raw, 0.0)))
+    return 0.0
 
 
 def _date_head(value: Any) -> str:
@@ -558,7 +577,10 @@ def build_event_feature_vector(
 
     natal_hot_house_match = 1.0 if primary_house in hot_houses else 0.0
     dominant_theme_match = 1.0 if house_domain in dominant_domains else 0.0
-    lens_match = 1.0 if lens and lens in {house_domain, aspect_mode, family, subtype} else 0.0
+    lens_match = _preview_lens_match(preview_map, lens)
+    if lens_match == 0.0:
+        normalized_lens = normalize_lens(lens)
+        lens_match = 1.0 if normalized_lens and normalized_lens in {house_domain, aspect_mode, family, subtype} else 0.0
     behavioral_history_match = 1.0 if house_domain in behavioral_domains else 0.0
 
     feature_vector = {

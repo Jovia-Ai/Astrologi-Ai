@@ -20,12 +20,144 @@ import 'package:mobile/app/widgets/forum_social_preview_strip.dart';
 import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/source_guards.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/design/astro/astro_theme_extension.dart';
 import 'package:mobile/design/astro/astro_theme_generator.dart';
 import 'package:mobile/design/astro/element_scores.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+
+String _firstHomeTextValue(Iterable<String?> values) {
+  for (final value in values) {
+    final trimmed = value?.trim() ?? '';
+    if (trimmed.isNotEmpty) {
+      return trimmed;
+    }
+  }
+  return '';
+}
+
+EventCardDto _promoteHomePeriodEventToDaily(EventCardDto card) {
+  final feltLine = _firstHomeTextValue([
+    card.feltLineTr,
+    card.headline,
+    card.title,
+    card.signatureTr,
+  ]);
+  final whyLine = _firstHomeTextValue([
+    card.whyItFeelsThisWayTr,
+    card.opening,
+    card.essence,
+    card.whyNow,
+  ]);
+  final guidanceLine = _firstHomeTextValue([
+    card.guidanceMicroTr,
+    if (card.guidance.isNotEmpty) card.guidance.first,
+    card.whatItBuilds,
+    card.asks,
+  ]);
+  final signalLabel = _firstHomeTextValue([
+    card.signalLabelTr,
+    card.timeHintTr,
+    card.signatureTr,
+    'Bugün öne çıkan tema bu.',
+  ]);
+  return card.copyWith(
+    horizon: 'daily',
+    feltLineTr: feltLine,
+    whyItFeelsThisWayTr: whyLine,
+    guidanceMicroTr: guidanceLine,
+    signalLabelTr: signalLabel,
+  );
+}
+
+PeriodCardDto _buildHomePeriodCoreFallbackCard(PeriodCoreDto periodCore) {
+  return PeriodCardDto(
+    id: 'home-period-core',
+    title: periodCore.title.trim().isNotEmpty
+        ? periodCore.title.trim()
+        : 'Aktif dönem',
+    subtitle: periodCore.coreStory.trim().isNotEmpty
+        ? periodCore.coreStory.trim()
+        : (periodCore.bigPicture.trim().isNotEmpty
+              ? periodCore.bigPicture.trim()
+              : 'Bu dönemde arkada çalışan transit teması burada açılıyor.'),
+    timeHint: periodCore.upperMeaning.trim(),
+  );
+}
+
+class HomeTransitSnapshot {
+  const HomeTransitSnapshot({
+    required this.periodCore,
+    required this.periodCards,
+    required this.dailyCards,
+    required this.todayDayMeta,
+  });
+
+  final PeriodCoreDto? periodCore;
+  final List<PeriodCardDto> periodCards;
+  final List<EventCardDto> dailyCards;
+  final NarrativeCalendarDay? todayDayMeta;
+}
+
+HomeTransitSnapshot buildHomeTransitSnapshot({
+  required NarrativeResponse narrative,
+  required DateTime today,
+}) {
+  final todayKey = TransitRequestBuilder.fmtDate(
+    TransitRequestBuilder.stripDate(today),
+  );
+  final dailyCards = narrative.dailyEventCards.isNotEmpty
+      ? narrative.dailyEventCards
+      : pickDailyEventCards(
+          narrative.eventCards,
+          context: 'Home/Gunun Karti/Fallback',
+        );
+  final periodEvents = narrative.periodEventCards.isNotEmpty
+      ? narrative.periodEventCards
+      : pickPeriodEventCards(
+          narrative.eventCards,
+          context: 'Home/Donem Kartlari/Fallback',
+        );
+  final fallbackDailyCards = dailyCards.isNotEmpty
+      ? dailyCards
+      : (periodEvents.isNotEmpty
+            ? <EventCardDto>[_promoteHomePeriodEventToDaily(periodEvents.first)]
+            : const <EventCardDto>[]);
+  final periodCards = <PeriodCardDto>[
+    for (var i = 0; i < periodEvents.length; i++)
+      PeriodCardDto.fromEventCard(eventCard: periodEvents[i], index: i),
+  ];
+  if (periodCards.isEmpty && narrative.periodCore != null) {
+    periodCards.add(_buildHomePeriodCoreFallbackCard(narrative.periodCore!));
+  }
+  return HomeTransitSnapshot(
+    periodCore: narrative.periodCore,
+    periodCards: periodCards,
+    dailyCards: fallbackDailyCards,
+    todayDayMeta: narrative.calendarDays[todayKey],
+  );
+}
+
+String buildHomeDefaultHeroBody({
+  EventCardDto? todayDailyCard,
+  PeriodCardDto? activeCard,
+  PeriodCoreDto? periodCore,
+  required String natalSummary,
+  required bool loading,
+}) {
+  return _firstHomeTextValue([
+    todayDailyCard?.opening,
+    todayDailyCard?.essence,
+    activeCard?.subtitle,
+    periodCore?.coreStory,
+    periodCore?.bigPicture,
+    natalSummary,
+    if (loading) 'Bugünün hikayesi yükleniyor...',
+    'Bugün için kısa yorum henüz hazır değil.',
+  ]);
+}
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -40,6 +172,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   static const Duration _skyCacheTtl = Duration(seconds: 60);
 
   bool _loading = false;
+  int _homeLoadVersion = 0;
   String? _error;
   bool _coreStoryExpanded = false;
   String _coreStory = '';
@@ -55,6 +188,18 @@ class _HomePageState extends ConsumerState<HomePage> {
   String? _lastKey;
   int _selectedWeekIndex = 0;
   final NarrativeRepository _narrativeRepository = NarrativeRepository();
+
+  String _firstHomeText(Iterable<String?> values) {
+    return _firstHomeTextValue(values);
+  }
+
+  EventCardDto _promotePeriodEventForHome(EventCardDto card) {
+    return _promoteHomePeriodEventToDaily(card);
+  }
+
+  PeriodCardDto _buildPeriodCoreFallbackCard(PeriodCoreDto periodCore) {
+    return _buildHomePeriodCoreFallbackCard(periodCore);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,23 +237,33 @@ class _HomePageState extends ConsumerState<HomePage> {
               ? _skyFeedItems.first
               : null;
           final displayName = _displayName(profile, user);
-          final defaultHeroBody = _coreStory.trim().isNotEmpty
-              ? _coreStory.trim()
-              : (_loading
-                    ? 'Bugunun hikayesi yukleniyor...'
-                    : 'Bugun icin kisa yorum henuz hazir degil.');
           final activeCard = _periodCards.isNotEmpty
               ? _periodCards.first
               : null;
           final todayDailyCard = _todayDailyCards.isNotEmpty
               ? _todayDailyCards.first
               : null;
+          final defaultHeroBody = buildHomeDefaultHeroBody(
+            todayDailyCard: todayDailyCard,
+            activeCard: activeCard,
+            periodCore: _periodCore,
+            natalSummary: _coreStory,
+            loading: _loading,
+          );
           final fallbackTitle = activeCard?.title.trim().isNotEmpty == true
-              ? activeCard?.title ?? 'Bugunun acilisi'
-              : 'Bugunun acilisi';
+              ? activeCard?.title ?? 'Bugünün açılışı'
+              : _firstHomeText([
+                  todayDailyCard?.feltLineTr,
+                  todayDailyCard?.headline,
+                  'Bugünün açılışı',
+                ]);
           final fallbackPrompt = activeCard?.subtitle.trim().isNotEmpty == true
-              ? activeCard?.subtitle ?? 'Bugun bende ne aciliyor?'
-              : 'Bugun bende ne aciliyor?';
+              ? activeCard?.subtitle ?? 'Bugün bende ne açılıyor?'
+              : _firstHomeText([
+                  todayDailyCard?.signalLabelTr,
+                  todayDailyCard?.houseTouchpointHintTr,
+                  'Bugün bende ne açılıyor?',
+                ]);
           final dailyCards = _periodCards.take(3).toList(growable: false);
           final collectiveCard = _periodCards.length > 1
               ? _periodCards[1]
@@ -167,24 +322,20 @@ class _HomePageState extends ConsumerState<HomePage> {
           );
 
           return DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: Theme.of(context).brightness == Brightness.dark
-                    ? <Color>[
+            decoration: Theme.of(context).brightness == Brightness.dark
+                ? BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: <Color>[
                         const Color(0xFF09080F),
                         const Color(0xFF120F1A),
                         colors.bg,
-                      ]
-                    : <Color>[
-                        const Color(0xFFF5F0FF),
-                        const Color(0xFFFFFBFF),
-                        colors.bg,
                       ],
-                stops: const <double>[0, 0.36, 1],
-              ),
-            ),
+                      stops: const <double>[0, 0.36, 1],
+                    ),
+                  )
+                : const BoxDecoration(color: Colors.white),
             child: JoviaPageScaffold(
               child: ListView(
                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 24),
@@ -348,13 +499,13 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   Color _homeAccentForIndex(int index) {
     const accents = <Color>[
-      Color(0xFFFFB84D),
-      Color(0xFF8AB6FF),
-      Color(0xFFE79BFF),
-      Color(0xFF88E6D7),
-      Color(0xFFFF9EBC),
-      Color(0xFFC0A4FF),
-      Color(0xFFFFD780),
+      Color(0xFFD8FF72),
+      Color(0xFFD8CBFF),
+      Color(0xFFEBA5FF),
+      Color(0xFFA6F0CF),
+      Color(0xFFFFB4D5),
+      Color(0xFFCAB4FF),
+      Color(0xFFB9FF8C),
     ];
     return accents[index % accents.length];
   }
@@ -548,162 +699,145 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   Future<void> _loadHomeData(Map<String, dynamic> profile) async {
+    final requestVersion = ++_homeLoadVersion;
     setState(() {
       _loading = true;
       _error = null;
     });
 
+    final client = ApiClient(baseUrl: _baseUrl);
+    final natalPayload = _buildNatalPayload(profile);
+
+    await Future.wait<void>([
+      _loadNarrativeSection(profile: profile, requestVersion: requestVersion),
+      _loadSkySection(
+        client: client,
+        profile: profile,
+        requestVersion: requestVersion,
+      ),
+      _loadNatalSection(
+        client: client,
+        natalPayload: natalPayload,
+        requestVersion: requestVersion,
+      ),
+    ]);
+  }
+
+  bool _isActiveHomeLoad(int requestVersion) =>
+      mounted && requestVersion == _homeLoadVersion;
+
+  Future<void> _loadNarrativeSection({
+    required Map<String, dynamic> profile,
+    required int requestVersion,
+  }) async {
     try {
-      final client = ApiClient(baseUrl: _baseUrl);
-      final natalPayload = _buildNatalPayload(profile);
-
-      final responses = await Future.wait<dynamic>([
-        client.post(
-          '/interpret/ui',
-          data: natalPayload,
-          cacheTtl: _natalCacheTtl,
-        ),
-        client.get(
-          '/sky/now',
-          queryParameters: <String, dynamic>{
-            'tz': _resolveTimezone(profile),
-            'limit': 4,
-          },
-          cacheTtl: _skyCacheTtl,
-        ),
-        _narrativeRepository.fetchDailyNarrative(
-          profile: profile,
-          selectedDate: DateTime.now(),
-        ),
-      ]);
-
-      final interpretMap = _asMap((responses[0] as Response<dynamic>).data);
-      final skyMap = _asMap((responses[1] as Response<dynamic>).data);
-      final periodMap = TransitRequestBuilder.asMap(responses[2]);
+      final periodMap = await _narrativeRepository.fetchDailyNarrative(
+        profile: profile,
+        selectedDate: DateTime.now(),
+      );
       final periodNarrative = NarrativeResponse.fromMap(periodMap);
-      final todayKey = TransitRequestBuilder.fmtDate(
-        TransitRequestBuilder.stripDate(DateTime.now()),
+      final snapshot = buildHomeTransitSnapshot(
+        narrative: periodNarrative,
+        today: DateTime.now(),
       );
-      final dailyCards = periodNarrative.dailyEventCards.isNotEmpty
-          ? periodNarrative.dailyEventCards
-          : pickDailyEventCards(
-              periodNarrative.eventCards,
-              context: 'Home/Gunun Karti',
-            );
-      final periodEvents = pickPeriodEventCards(
-        periodNarrative.eventCards,
-        context: 'Home/Donem Kartlari',
-      );
-      final periodCards = <PeriodCardDto>[
-        for (var i = 0; i < periodEvents.length; i++)
-          PeriodCardDto.fromEventCard(eventCard: periodEvents[i], index: i),
-      ];
 
+      if (!_isActiveHomeLoad(requestVersion)) {
+        return;
+      }
+
+      setState(() {
+        _periodCore = snapshot.periodCore;
+        _periodCards = snapshot.periodCards;
+        _todayDailyCards = snapshot.dailyCards;
+        _todayDayMeta = snapshot.todayDayMeta;
+        _loading = false;
+        _error = null;
+      });
+    } catch (e) {
+      if (!_isActiveHomeLoad(requestVersion)) {
+        return;
+      }
+      setState(() {
+        _loading = false;
+        if (_periodCards.isEmpty && _todayDailyCards.isEmpty) {
+          _error = 'Home verisi alinamadi: $e';
+        }
+      });
+    }
+  }
+
+  Future<void> _loadSkySection({
+    required ApiClient client,
+    required Map<String, dynamic> profile,
+    required int requestVersion,
+  }) async {
+    try {
+      final response = await client.get(
+        '/sky/now',
+        queryParameters: <String, dynamic>{
+          'tz': _resolveTimezone(profile),
+          'limit': 4,
+        },
+        cacheTtl: _skyCacheTtl,
+      );
+      final skyMap = _asMap((response).data);
+      if (!_isActiveHomeLoad(requestVersion)) {
+        return;
+      }
+      setState(() {
+        _skyFeedSummary = _extractSkySummary(skyMap);
+        _skyFeedItems = _extractSkyFeedItems(skyMap);
+      });
+    } catch (e) {
+      debugPrint('Home sky load skipped: $e');
+    }
+  }
+
+  Future<void> _loadNatalSection({
+    required ApiClient client,
+    required Map<String, dynamic> natalPayload,
+    required int requestVersion,
+  }) async {
+    try {
+      final response = await _fetchNatalInterpretResponse(
+        client: client,
+        natalPayload: natalPayload,
+      );
+      final interpretMap = _asMap(response.data);
       final summary = _extractNatalSummary(interpretMap);
       final sun = _toTrSign(_extractPlanetSign(interpretMap, 'Sun'));
       final moon = _toTrSign(_extractPlanetSign(interpretMap, 'Moon'));
       final rising = _toTrSign(_extractRisingSign(interpretMap));
-
-      if (!mounted) {
+      if (!_isActiveHomeLoad(requestVersion)) {
         return;
       }
-
       setState(() {
         _coreStory = summary;
         _sunSign = sun;
         _moonSign = moon;
         _risingSign = rising;
-        _periodCore = periodNarrative.periodCore;
-        _periodCards = periodCards;
-        _todayDailyCards = dailyCards;
-        _todayDayMeta = periodNarrative.calendarDays[todayKey];
-        _skyFeedSummary = _extractSkySummary(skyMap);
-        _skyFeedItems = _extractSkyFeedItems(skyMap);
-        _loading = false;
       });
-    } on DioException catch (_) {
-      // Fallback: keep page useful if /interpret/ui is not ready.
-      await _loadWithFallbackEndpoints(profile);
     } catch (e) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _loading = false;
-        _error = e.toString();
-      });
+      debugPrint('Home natal load skipped: $e');
     }
   }
 
-  Future<void> _loadWithFallbackEndpoints(Map<String, dynamic> profile) async {
+  Future<Response<dynamic>> _fetchNatalInterpretResponse({
+    required ApiClient client,
+    required Map<String, dynamic> natalPayload,
+  }) async {
     try {
-      final client = ApiClient(baseUrl: _baseUrl);
-      final natalPayload = _buildNatalPayload(profile);
-
-      final responses = await Future.wait<dynamic>([
-        client.post('/interpret', data: natalPayload, cacheTtl: _natalCacheTtl),
-        client.get(
-          '/sky/now',
-          queryParameters: <String, dynamic>{
-            'tz': _resolveTimezone(profile),
-            'limit': 4,
-          },
-          cacheTtl: _skyCacheTtl,
-        ),
-        _narrativeRepository.fetchDailyNarrative(
-          profile: profile,
-          selectedDate: DateTime.now(),
-        ),
-      ]);
-
-      final interpretMap = _asMap((responses[0] as Response<dynamic>).data);
-      final skyMap = _asMap((responses[1] as Response<dynamic>).data);
-      final periodMap = TransitRequestBuilder.asMap(responses[2]);
-      final periodNarrative = NarrativeResponse.fromMap(periodMap);
-      final todayKey = TransitRequestBuilder.fmtDate(
-        TransitRequestBuilder.stripDate(DateTime.now()),
+      return await client.post(
+        '/interpret/ui',
+        data: natalPayload,
+        cacheTtl: _natalCacheTtl,
       );
-      final dailyCards = periodNarrative.dailyEventCards.isNotEmpty
-          ? periodNarrative.dailyEventCards
-          : pickDailyEventCards(
-              periodNarrative.eventCards,
-              context: 'Home/Gunun Karti/Fallback',
-            );
-      final periodEvents = pickPeriodEventCards(
-        periodNarrative.eventCards,
-        context: 'Home/Donem Kartlari/Fallback',
+    } on DioException {
+      return client.post(
+        '/interpret',
+        data: natalPayload,
+        cacheTtl: _natalCacheTtl,
       );
-      final periodCards = <PeriodCardDto>[
-        for (var i = 0; i < periodEvents.length; i++)
-          PeriodCardDto.fromEventCard(eventCard: periodEvents[i], index: i),
-      ];
-
-      if (!mounted) {
-        return;
-      }
-
-      setState(() {
-        _coreStory = _extractNatalSummary(interpretMap);
-        _sunSign = _toTrSign(_extractPlanetSign(interpretMap, 'Sun'));
-        _moonSign = _toTrSign(_extractPlanetSign(interpretMap, 'Moon'));
-        _risingSign = _toTrSign(_extractRisingSign(interpretMap));
-        _periodCore = periodNarrative.periodCore;
-        _periodCards = periodCards;
-        _todayDailyCards = dailyCards;
-        _todayDayMeta = periodNarrative.calendarDays[todayKey];
-        _skyFeedSummary = _extractSkySummary(skyMap);
-        _skyFeedItems = _extractSkyFeedItems(skyMap);
-        _loading = false;
-        _error = null;
-      });
-    } catch (e) {
-      if (!mounted) {
-        return;
-      }
-      setState(() {
-        _loading = false;
-        _error = 'Home verisi alinamadi: $e';
-      });
     }
   }
 
@@ -843,7 +977,7 @@ class _HomePageState extends ConsumerState<HomePage> {
     // TODO: Swap this derived source with /sky/now when backend endpoint is available.
     if (cards.isEmpty) {
       return const _SkyBulletin(
-        summary: 'Bugun gokyuzu sakin.',
+        summary: 'Bugün gökyüzü sakin.',
         chips: <String>['Kolektif', 'Gozlem'],
         highlights: <_SkyHighlight>[],
       );
@@ -911,15 +1045,15 @@ class _HomePageState extends ConsumerState<HomePage> {
   String _collectiveSummary(List<String> chips) {
     final lower = chips.map((e) => e.toLowerCase()).toSet();
     String first =
-        'Bu donemde kolektif ritimde yavas ama kalici degisimler one cikiyor.';
+        'Bu dönemde kolektif ritimde yavaş ama kalıcı değişimler öne çıkıyor.';
     if (lower.contains('donusum')) {
-      first = 'Kolektif alanda donusum ve yeniden yapilanma etkisi belirgin.';
+      first = 'Kolektif alanda dönüşüm ve yeniden yapılanma etkisi belirgin.';
     } else if (lower.contains('yapi')) {
       first =
-          'Yapi, sinir ve sorumluluk temalari kolektif alanda agirlik kazaniyor.';
+          'Yapı, sınır ve sorumluluk temaları kolektif alanda ağırlık kazanıyor.';
     } else if (lower.contains('degisim')) {
       first =
-          'Degisim ve yenilenme basliklari genel atmosferde daha gorunur durumda.';
+          'Değişim ve yenilenme başlıkları genel atmosferde daha görünür durumda.';
     }
 
     String second = 'Hizdan cok sureklilik ve planli adimlar destekleniyor.';
@@ -1375,14 +1509,17 @@ class _HomeReferenceAvatar extends StatelessWidget {
       height: 46,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFFFC89A), Color(0xFFA78BFA)],
+          colors: [
+            profile.colors.warmAccent,
+            profile.colors.primary.withValues(alpha: 0.9),
+          ],
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFFA78BFA).withValues(alpha: 0.22),
+            color: profile.colors.warmAccent.withValues(alpha: 0.24),
             blurRadius: 16,
             offset: const Offset(0, 10),
             spreadRadius: -10,
@@ -1397,7 +1534,7 @@ class _HomeReferenceAvatar extends StatelessWidget {
             alignment: Alignment.center,
             child: (imageUrl ?? '').trim().isEmpty
                 ? Text(
-                    fallbackLabel.toUpperCase(),
+                    turkishToUpper(fallbackLabel),
                     style: profile.typography.body.copyWith(
                       color: profile.colors.text,
                       fontWeight: FontWeight.w700,
@@ -1407,7 +1544,7 @@ class _HomeReferenceAvatar extends StatelessWidget {
                     imageUrl!,
                     fit: BoxFit.cover,
                     errorBuilder: (_, _, _) => Text(
-                      fallbackLabel.toUpperCase(),
+                      turkishToUpper(fallbackLabel),
                       style: profile.typography.body.copyWith(
                         color: profile.colors.text,
                         fontWeight: FontWeight.w700,
@@ -1507,16 +1644,18 @@ class _HomeReferenceHeroCard extends StatelessWidget {
       fontSize: 13,
       height: 1.34,
     );
-    final surfaceGradient = <Color>[
-      Color.alphaBlend(
-        profile.colors.lavender.withValues(alpha: isDark ? 0.14 : 0.18),
-        profile.colors.panelStrong,
-      ),
-      Color.alphaBlend(
-        Colors.white.withValues(alpha: isDark ? 0.02 : 0.42),
-        profile.colors.panelSoft,
-      ),
-    ];
+    final surfaceGradient = isDark
+        ? <Color>[
+            Color.alphaBlend(
+              profile.colors.primary.withValues(alpha: 0.16),
+              profile.colors.heroBase,
+            ),
+            Color.alphaBlend(
+              Colors.white.withValues(alpha: 0.02),
+              profile.colors.surface,
+            ),
+          ]
+        : const <Color>[Color(0xFFFFFFFF), Color(0xFFF8F9FC)];
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -1555,8 +1694,14 @@ class _HomeReferenceHeroCard extends StatelessWidget {
           ),
           child: JoviaSurfaceCard(
             radius: 34,
-            color: Colors.transparent,
+            backgroundColor: isDark
+                ? Colors.transparent
+                : const Color(0xFFFFFFFF),
+            borderColor: isDark
+                ? Colors.transparent
+                : profile.colors.strokeSoft.withValues(alpha: 0.72),
             padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+            shadow: false,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1597,7 +1742,7 @@ class _HomeReferenceHeroCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(22),
                     color: isDark
                         ? Colors.white.withValues(alpha: 0.04)
-                        : Colors.white.withValues(alpha: 0.5),
+                        : Colors.white,
                     border: Border.all(
                       color: profile.colors.strokeSoft,
                       width: 1,
@@ -1658,11 +1803,11 @@ class _HomeHeroButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(999),
             color: isDark
                 ? Colors.white.withValues(alpha: 0.92)
-                : const Color(0xFF17131E),
+                : profile.colors.warmAccent,
             border: Border.all(
               color: isDark
                   ? Colors.white.withValues(alpha: 0.1)
-                  : Colors.black.withValues(alpha: 0.08),
+                  : profile.colors.chipBorder,
             ),
           ),
           child: Row(
@@ -1671,7 +1816,9 @@ class _HomeHeroButton extends StatelessWidget {
               Text(
                 'Aç',
                 style: profile.typography.buttonLabel.copyWith(
-                  color: isDark ? const Color(0xFF17131E) : Colors.white,
+                  color: isDark
+                      ? const Color(0xFF17131E)
+                      : profile.colors.heroText,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -1679,7 +1826,9 @@ class _HomeHeroButton extends StatelessWidget {
               Icon(
                 Icons.arrow_outward_rounded,
                 size: 14,
-                color: isDark ? const Color(0xFF17131E) : Colors.white,
+                color: isDark
+                    ? const Color(0xFF17131E)
+                    : profile.colors.heroText,
               ),
             ],
           ),
@@ -1744,14 +1893,14 @@ class _HomeWeekDayChip extends StatelessWidget {
         color: item.isSelected
             ? (isDark
                   ? Colors.white.withValues(alpha: 0.96)
-                  : const Color(0xFF17131E))
+                  : profile.colors.warmAccent)
             : item.isToday
             ? (isDark
                   ? Colors.white.withValues(alpha: 0.08)
-                  : Colors.white.withValues(alpha: 0.74))
+                  : profile.colors.surface)
             : (isDark
                   ? Colors.white.withValues(alpha: 0.05)
-                  : Colors.white.withValues(alpha: 0.58)),
+                  : profile.colors.surface.withValues(alpha: 0.82)),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: item.isSelected
@@ -1788,12 +1937,12 @@ class _HomeWeekDayChip extends StatelessWidget {
             item.weekdayLabel,
             style: context.profileTheme.typography.micro.copyWith(
               color: item.isSelected
-                  ? (isDark ? const Color(0xFF16131D) : Colors.white)
+                  ? (isDark ? const Color(0xFF16131D) : profile.colors.heroText)
                   : item.isToday
                   ? item.accent.withValues(alpha: isDark ? 0.88 : 0.94)
                   : (isDark
                         ? Colors.white.withValues(alpha: 0.76)
-                        : const Color(0xFF746C87)),
+                        : profile.colors.textLight),
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -1802,8 +1951,8 @@ class _HomeWeekDayChip extends StatelessWidget {
             '${item.dayNumber}',
             style: context.profileTheme.typography.body.copyWith(
               color: item.isSelected
-                  ? (isDark ? const Color(0xFF16131D) : Colors.white)
-                  : (isDark ? Colors.white : const Color(0xFF16131D)),
+                  ? (isDark ? const Color(0xFF16131D) : profile.colors.heroText)
+                  : (isDark ? Colors.white : profile.colors.text),
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -2136,30 +2285,122 @@ class _HomeCardPalette {
     required this.foreground,
     required this.surface,
     required this.chip,
+    required this.wash,
+    required this.illustration,
   });
 
   const _HomeCardPalette.sunset()
-    : background = const <Color>[Color(0xFFFFC15A), Color(0xFFFFAE45)],
-      foreground = const Color(0xFF1C1407),
-      surface = const Color(0x40FFFFFF),
-      chip = const Color(0xFFFFE2AA);
+    : background = const <Color>[Color(0xFFEFFFF0), Color(0xFFD8FF72)],
+      foreground = const Color(0xFF1A1A14),
+      surface = const Color(0xFFFFFFFF),
+      chip = const Color(0xFFEAECEF),
+      wash = JoviaColorAsset.wash08,
+      illustration = JoviaIllustrationAsset.sunGrowth;
 
   const _HomeCardPalette.sky()
-    : background = const <Color>[Color(0xFFB6D3FF), Color(0xFF8BB8FF)],
-      foreground = const Color(0xFF12203D),
-      surface = const Color(0x42FFFFFF),
-      chip = const Color(0xFFDCEAFF);
+    : background = const <Color>[Color(0xFFF6F2FF), Color(0xFFE0D3FF)],
+      foreground = const Color(0xFF1D1A27),
+      surface = const Color(0xFFFFFFFF),
+      chip = const Color(0xFFEAE6F5),
+      wash = JoviaColorAsset.wash11,
+      illustration = JoviaIllustrationAsset.planet;
 
   const _HomeCardPalette.candy()
-    : background = const <Color>[Color(0xFFF9B7FF), Color(0xFFE9A3FF)],
-      foreground = const Color(0xFF33153A),
-      surface = const Color(0x42FFFFFF),
-      chip = const Color(0xFFFFD8FF);
+    : background = const <Color>[Color(0xFFFFF1FB), Color(0xFFF2D5FF)],
+      foreground = const Color(0xFF281A26),
+      surface = const Color(0xFFFFFFFF),
+      chip = const Color(0xFFEFE7F4),
+      wash = JoviaColorAsset.wash09,
+      illustration = JoviaIllustrationAsset.layers;
 
   final List<Color> background;
   final Color foreground;
   final Color surface;
   final Color chip;
+  final JoviaColorAsset wash;
+  final JoviaIllustrationAsset illustration;
+}
+
+class _HomeGalleryIllustrationPanel extends StatelessWidget {
+  const _HomeGalleryIllustrationPanel({
+    required this.palette,
+    required this.height,
+    this.compact = false,
+  });
+
+  final _HomeCardPalette palette;
+  final double height;
+  final bool compact;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final radius = compact ? 24.0 : 28.0;
+    final illustrationSize = compact ? 62.0 : height * 0.7;
+    return Container(
+      height: height,
+      width: double.infinity,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: palette.background,
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: JoviaColorWash(
+                asset: palette.wash,
+                opacity: compact ? 0.18 : 0.24,
+                alignment: Alignment.topCenter,
+              ),
+            ),
+            Positioned(
+              right: compact ? -10 : -6,
+              top: compact ? -8 : -4,
+              child: Container(
+                width: compact ? 54 : 72,
+                height: compact ? 54 : 72,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white.withValues(alpha: 0.22),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: compact ? 2 : 6,
+              child: Center(
+                child: JoviaIllustrationAccent(
+                  asset: palette.illustration,
+                  width: illustrationSize,
+                  height: illustrationSize,
+                  opacity: 0.96,
+                ),
+              ),
+            ),
+            Positioned(
+              left: compact ? 10 : 14,
+              bottom: compact ? 10 : 14,
+              child: Container(
+                width: compact ? 16 : 24,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: profile.colors.surface.withValues(alpha: 0.85),
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 }
 
 class _HomeColorPlanCard extends StatelessWidget {
@@ -2186,6 +2427,26 @@ class _HomeColorPlanCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final panelHeight = tall
+        ? 164.0
+        : compact
+        ? 84.0
+        : 104.0;
+    final minHeight = tall
+        ? 292.0
+        : compact
+        ? 156.0
+        : 178.0;
+    final titleStyle = profile.typography.card.copyWith(
+      color: palette.foreground,
+      fontSize: tall
+          ? 22
+          : compact
+          ? 16.5
+          : 18.5,
+      height: 1.12,
+      fontWeight: FontWeight.w600,
+    );
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: 1),
       duration: Duration(milliseconds: tall ? 620 : 700),
@@ -2199,127 +2460,99 @@ class _HomeColorPlanCard extends StatelessWidget {
           ),
         );
       },
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(28),
-          child: Container(
-            constraints: BoxConstraints(minHeight: tall ? 212 : 100),
-            padding: EdgeInsets.fromLTRB(
-              compact ? 14 : 16,
-              compact ? 14 : 16,
-              compact ? 14 : 16,
-              compact ? 14 : 16,
-            ),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: palette.background,
+      child: JoviaPressable(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(32),
+        child: Container(
+          constraints: BoxConstraints(minHeight: minHeight),
+          padding: EdgeInsets.all(compact ? 12 : 14),
+          decoration: BoxDecoration(
+            color: palette.surface,
+            borderRadius: BorderRadius.circular(32),
+            border: Border.all(color: palette.chip.withValues(alpha: 0.96)),
+            boxShadow: [
+              BoxShadow(
+                color: palette.background.last.withValues(alpha: 0.16),
+                blurRadius: 26,
+                offset: const Offset(0, 16),
+                spreadRadius: -20,
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: palette.background.last.withValues(alpha: 0.24),
-                  blurRadius: 24,
-                  offset: const Offset(0, 16),
-                  spreadRadius: -18,
-                ),
-              ],
-            ),
-            child: Stack(
-              children: [
-                Positioned(
-                  right: -16,
-                  top: -12,
-                  child: Container(
-                    width: compact ? 68 : 84,
-                    height: compact ? 68 : 84,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.white.withValues(alpha: 0.18),
+            ],
+          ),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final canUseFlexibleGap = constraints.hasBoundedHeight;
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _HomeGalleryIllustrationPanel(
+                    palette: palette,
+                    height: panelHeight,
+                    compact: compact,
+                  ),
+                  SizedBox(height: compact ? 12 : 14),
+                  Text(
+                    turkishToUpper(metaTop.trim().isEmpty ? 'Şimdi' : metaTop),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: profile.typography.monoEyebrow.copyWith(
+                      color: palette.foreground.withValues(alpha: 0.62),
+                      fontSize: 10.8,
+                      letterSpacing: 1.5,
                     ),
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 5,
-                      ),
-                      decoration: BoxDecoration(
-                        color: palette.surface,
-                        borderRadius: BorderRadius.circular(999),
-                      ),
-                      child: Text(
-                        metaTop,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: profile.typography.micro.copyWith(
-                          color: palette.foreground.withValues(alpha: 0.82),
-                          fontSize: 11,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 14),
-                    ConstrainedBox(
-                      constraints: BoxConstraints(
-                        maxWidth: compact ? 150 : 180,
-                      ),
-                      child: Text(
-                        title,
-                        maxLines: compact ? 2 : 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: profile.typography.section.copyWith(
-                          color: palette.foreground,
-                          fontSize: compact ? 19 : 25,
-                          height: 1.08,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
+                  const SizedBox(height: 8),
+                  Text(
+                    title,
+                    maxLines: compact ? 2 : 3,
+                    overflow: TextOverflow.ellipsis,
+                    style: titleStyle,
+                  ),
+                  if (body.trim().isNotEmpty) ...[
+                    const SizedBox(height: 8),
                     Text(
                       body,
-                      maxLines: compact ? 2 : 4,
+                      maxLines: tall
+                          ? 3
+                          : compact
+                          ? 2
+                          : 2,
                       overflow: TextOverflow.ellipsis,
                       style: profile.typography.bodyCompact.copyWith(
-                        color: palette.foreground.withValues(alpha: 0.82),
-                        fontSize: compact ? 12.8 : 13.6,
+                        color: palette.foreground.withValues(alpha: 0.78),
+                        fontSize: compact ? 12.8 : 13.4,
                         height: 1.45,
                       ),
                     ),
-                    SizedBox(height: compact ? 16 : 24),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            footer,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: profile.typography.metaSoft.copyWith(
-                              color: palette.foreground.withValues(alpha: 0.88),
-                              fontWeight: FontWeight.w600,
-                              fontSize: compact ? 11.8 : 12.4,
-                            ),
+                  ],
+                  if (canUseFlexibleGap) const Spacer(),
+                  const SizedBox(height: 14),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          footer,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: profile.typography.metaSoft.copyWith(
+                            color: palette.foreground.withValues(alpha: 0.82),
+                            fontWeight: FontWeight.w600,
+                            fontSize: compact ? 11.8 : 12.4,
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Icon(
-                          Icons.arrow_outward_rounded,
-                          color: palette.foreground,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      ),
+                      const SizedBox(width: 10),
+                      Icon(
+                        Icons.arrow_outward_rounded,
+                        color: palette.foreground,
+                        size: 18,
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
@@ -2370,11 +2603,11 @@ class _HomeReferenceTimingCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(26),
               color: isDark
                   ? Colors.white.withValues(alpha: 0.06)
-                  : Colors.white.withValues(alpha: 0.82),
+                  : profile.colors.surface,
               border: Border.all(
                 color: isDark
                     ? Colors.white.withValues(alpha: 0.08)
-                    : Colors.black.withValues(alpha: 0.05),
+                    : profile.colors.strokeSoft,
               ),
             ),
             child: Row(
@@ -2406,12 +2639,12 @@ class _HomeReferenceTimingCard extends StatelessWidget {
                   width: 42,
                   height: 42,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFA78BFA).withValues(alpha: 0.18),
+                    color: profile.colors.primary.withValues(alpha: 0.34),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Icon(
+                  child: Icon(
                     Icons.calendar_month_rounded,
-                    color: Color(0xFF7B5AF8),
+                    color: profile.colors.heroText,
                   ),
                 ),
               ],
@@ -2540,7 +2773,7 @@ class _HomeOpeningHeroCard extends StatelessWidget {
           children: [
             const SizedBox(height: 196),
             Text(
-              'BUGUNUN ACILISI',
+              turkishToUpper('Bugünün açılışı'),
               style: profile.typography.monoEyebrow.copyWith(
                 color: profile.colors.textLight,
                 fontSize: 11.5,
@@ -2588,7 +2821,7 @@ class _HomeOpeningHeroCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Bugunun acilis sorusu',
+                          'Bugünün açılış sorusu',
                           style: profile.typography.monoEyebrow.copyWith(
                             color: profile.colors.textLight,
                             fontSize: 11.5,
@@ -2780,7 +3013,7 @@ class _HomeEditorialLine extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              label.toUpperCase(),
+              turkishToUpper(label),
               textAlign: TextAlign.center,
               style: profile.typography.monoEyebrow.copyWith(
                 color: profile.colors.textLight,
@@ -2892,7 +3125,7 @@ class _HomeDailyUpdateStrip extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        meta.toUpperCase(),
+                        turkishToUpper(meta),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: context.profileTheme.typography.monoEyebrow
@@ -3009,7 +3242,9 @@ class _HomeActiveThemeCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  timeHint.isNotEmpty ? timeHint.toUpperCase() : 'SIMDI AKTIF',
+                  timeHint.isNotEmpty
+                      ? turkishToUpper(timeHint)
+                      : turkishToUpper('Şimdi aktif'),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: context.profileTheme.typography.monoEyebrow.copyWith(
@@ -3099,7 +3334,7 @@ class _HomeCollectivePulseCard extends StatelessWidget {
             ? bulletin.summary
             : _blurbFromCard(fallbackCard));
     final title =
-        skyItem?.title ?? (cardTitle.isNotEmpty ? cardTitle : 'Acik konular');
+        skyItem?.title ?? (cardTitle.isNotEmpty ? cardTitle : 'Açık konular');
     return JoviaSurfaceCard(
       radius: 34,
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
@@ -3272,19 +3507,19 @@ class _HomeSkyEventList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Acik konular',
+                'Açık konular',
                 style: context.profileTheme.typography.cardTitle,
               ),
               const SizedBox(height: 10),
               Text(
-                'Kolektifte su an calisan tum basliklara buradan gir.',
+                'Kolektifte şu an çalışan tüm başlıklara buradan gir.',
                 style: context.profileTheme.typography.bodyCompact.copyWith(
                   color: context.profileTheme.colors.textLight,
                 ),
               ),
               const SizedBox(height: 16),
               MinimalCTAButton(
-                label: 'Tum konular',
+                label: 'Tüm konular',
                 emphasized: true,
                 onTap: onOpenAll,
               ),

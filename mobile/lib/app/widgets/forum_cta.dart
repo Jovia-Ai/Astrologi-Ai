@@ -10,6 +10,7 @@ class ForumCTA extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: DecoratedBox(
@@ -18,13 +19,15 @@ class ForumCTA extends StatelessWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Color.alphaBlend(
-                profile.colors.lavender.withValues(alpha: 0.12),
-                profile.colors.panelStrong,
-              ),
-              profile.colors.panelSoft,
-            ],
+            colors: isDark
+                ? [
+                    Color.alphaBlend(
+                      profile.colors.lavender.withValues(alpha: 0.12),
+                      profile.colors.panelStrong,
+                    ),
+                    profile.colors.panelSoft,
+                  ]
+                : const <Color>[Color(0xFFFFFFFF), Color(0xFFF8F9FC)],
           ),
           border: Border.all(color: profile.colors.strokeSoft, width: 1.05),
         ),
@@ -37,7 +40,12 @@ class ForumCTA extends StatelessWidget {
           },
           child: JoviaSurfaceCard(
             radius: 28,
-            color: Colors.transparent,
+            backgroundColor: isDark
+                ? Colors.transparent
+                : const Color(0xFFFFFFFF),
+            borderColor: isDark
+                ? profile.colors.strokeSoft
+                : profile.colors.strokeSoft.withValues(alpha: 0.72),
             padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
             child: Stack(
               children: [

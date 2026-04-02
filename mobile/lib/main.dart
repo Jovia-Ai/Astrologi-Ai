@@ -28,7 +28,7 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = supabaseReady
         ? ref.watch(joviaThemeModeProvider)
-        : JoviaThemeMode.dark;
+        : JoviaThemeMode.light;
     final lightTheme = withProfileTheme(
       ThemeData(brightness: Brightness.light, useMaterial3: true),
       profileTheme: ProfileTheme.light(),

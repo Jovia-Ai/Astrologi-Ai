@@ -1,4 +1,10 @@
 import 'package:flutter/foundation.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
+
+String _tr(dynamic value) => normalizeTurkishText(value?.toString() ?? '');
+
+List<String> _trList(Iterable<dynamic> values) =>
+    normalizeTurkishTextList(values);
 
 class NarrativeCopy {
   const NarrativeCopy({
@@ -15,10 +21,10 @@ class NarrativeCopy {
 
   factory NarrativeCopy.fromMap(Map<String, dynamic> map) {
     return NarrativeCopy(
-      title: (map['title'] ?? '').toString(),
-      short: (map['short'] ?? '').toString(),
-      medium: (map['medium'] ?? '').toString(),
-      long: (map['long'] ?? '').toString(),
+      title: _tr(map['title']),
+      short: _tr(map['short']),
+      medium: _tr(map['medium']),
+      long: _tr(map['long']),
     );
   }
 }
@@ -102,7 +108,7 @@ class NarrativeScreen {
         : <NarrativeBlock>[];
 
     return NarrativeScreen(
-      title: (map['title'] ?? '').toString(),
+      title: _tr(map['title']),
       blocks: blocks,
       eventsCount: (map['events_count'] ?? 0) as int,
       signalsCount: (map['signals_count'] ?? 0) as int,
@@ -151,18 +157,13 @@ class NarrativeCalendarDay {
       signalsCount: (map['signals_count'] ?? 0) as int,
       hasSignals: (map['has_signals'] ?? false) == true,
       isCritical: (map['is_critical'] ?? false) == true,
-      labels: labelsRaw is List
-          ? [for (final l in labelsRaw) l.toString()]
-          : const <String>[],
+      labels: labelsRaw is List ? _trList(labelsRaw) : const <String>[],
       criticalReasons: map['critical_reasons'] is List
-          ? [
-              for (final reason in map['critical_reasons'] as List)
-                reason.toString(),
-            ]
+          ? _trList(map['critical_reasons'] as List)
           : const <String>[],
-      signalLabelTr: (map['signal_label_tr'] ?? '').toString(),
-      toneLabelTr: (map['tone_label_tr'] ?? '').toString(),
-      microSummaryTr: (map['micro_summary_tr'] ?? '').toString(),
+      signalLabelTr: _tr(map['signal_label_tr']),
+      toneLabelTr: _tr(map['tone_label_tr']),
+      microSummaryTr: _tr(map['micro_summary_tr']),
     );
   }
 }
@@ -182,23 +183,162 @@ List<EventCardDto> _parseEventCardsByKey(
   return _parseEventCardsFromAny(publicRaw[key]);
 }
 
+String _cleanNarrativePreviewText(String value) {
+  return normalizeTurkishText(value);
+}
+
+String _normalizeNarrativePreviewText(String value) {
+  return _cleanNarrativePreviewText(
+    value
+        .toLowerCase()
+        .replaceAll(RegExp(r'[^\w\s]', unicode: true), ' ')
+        .replaceAll(RegExp(r'\s+'), ' '),
+  );
+}
+
+String _firstNarrativePreviewValue(Iterable<String> values) {
+  for (final value in values) {
+    final cleaned = _cleanNarrativePreviewText(value);
+    if (cleaned.isNotEmpty) {
+      return cleaned;
+    }
+  }
+  return '';
+}
+
+bool _isNarrativePreviewDuplicateText(String left, String right) {
+  final normalizedLeft = _normalizeNarrativePreviewText(left);
+  final normalizedRight = _normalizeNarrativePreviewText(right);
+  if (normalizedLeft.isEmpty || normalizedRight.isEmpty) {
+    return false;
+  }
+  if (normalizedLeft == normalizedRight) {
+    return true;
+  }
+  final shorter = normalizedLeft.length <= normalizedRight.length
+      ? normalizedLeft
+      : normalizedRight;
+  final longer = shorter == normalizedLeft ? normalizedRight : normalizedLeft;
+  return shorter.length >= 18 && longer.contains(shorter);
+}
+
+List<String> _dedupeNarrativePreviewTexts(
+  Iterable<String> values, {
+  int limit = 3,
+}) {
+  final out = <String>[];
+  for (final value in values) {
+    final cleaned = _cleanNarrativePreviewText(value);
+    if (cleaned.isEmpty) {
+      continue;
+    }
+    final duplicate = out.any(
+      (existing) => _isNarrativePreviewDuplicateText(existing, cleaned),
+    );
+    if (duplicate) {
+      continue;
+    }
+    out.add(cleaned);
+    if (out.length >= limit) {
+      break;
+    }
+  }
+  return out;
+}
+
+bool _narrativePreviewListsOverlap(List<String> left, List<String> right) {
+  if (left.isEmpty || right.isEmpty) {
+    return false;
+  }
+  var matchCount = 0;
+  var leadMatch = false;
+  for (var leftIndex = 0; leftIndex < left.length; leftIndex++) {
+    for (var rightIndex = 0; rightIndex < right.length; rightIndex++) {
+      if (!_isNarrativePreviewDuplicateText(
+        left[leftIndex],
+        right[rightIndex],
+      )) {
+        continue;
+      }
+      matchCount += 1;
+      if (leftIndex == 0 && rightIndex == 0) {
+        leadMatch = true;
+      }
+      break;
+    }
+  }
+  return matchCount >= 2 || (leadMatch && matchCount >= 1);
+}
+
+List<String> _eventCardPreviewTexts(EventCardDto card) {
+  return _dedupeNarrativePreviewTexts([
+    _firstNarrativePreviewValue([
+      card.feltLineTr,
+      card.headline,
+      card.title,
+      card.signatureTr,
+    ]),
+    _firstNarrativePreviewValue([
+      card.opening,
+      card.essence,
+      card.whyNow,
+      card.bigPicture,
+    ]),
+    _firstNarrativePreviewValue([
+      card.timeHintTr,
+      card.signatureTr,
+      card.houseTouchpointHintTr,
+      card.eventFamily,
+    ]),
+  ]);
+}
+
+bool _eventCardsAreNarrativeDuplicates(EventCardDto left, EventCardDto right) {
+  final leftEventId = left.eventId.trim();
+  final rightEventId = right.eventId.trim();
+  if (leftEventId.isNotEmpty && leftEventId == rightEventId) {
+    return true;
+  }
+  return _narrativePreviewListsOverlap(
+    _eventCardPreviewTexts(left),
+    _eventCardPreviewTexts(right),
+  );
+}
+
+List<EventCardDto> _dedupeEventCards(Iterable<EventCardDto> cards) {
+  final out = <EventCardDto>[];
+  for (final card in cards) {
+    if (_eventCardPreviewTexts(card).isEmpty) {
+      continue;
+    }
+    final duplicate = out.any(
+      (existing) => _eventCardsAreNarrativeDuplicates(existing, card),
+    );
+    if (duplicate) {
+      continue;
+    }
+    out.add(card);
+  }
+  return out;
+}
+
 List<EventCardDto> _parseEventCardsFromAny(dynamic raw) {
   if (raw is List) {
-    return [
+    return _dedupeEventCards([
       for (final card in raw)
         if (card is Map) EventCardDto.fromMap(Map<String, dynamic>.from(card)),
-    ];
+    ]);
   }
 
   if (raw is Map) {
     final map = Map<String, dynamic>.from(raw);
     final items = map['items'] ?? map['cards'];
     if (items is List) {
-      return [
+      return _dedupeEventCards([
         for (final card in items)
           if (card is Map)
             EventCardDto.fromMap(Map<String, dynamic>.from(card)),
-      ];
+      ]);
     }
   }
 
@@ -221,7 +361,7 @@ class DailySelectionDto {
   factory DailySelectionDto.fromMap(Map<String, dynamic> map) {
     return DailySelectionDto(
       usedPeriodFallback: (map['used_period_fallback'] ?? false) == true,
-      periodOnlyNote: (map['period_only_note'] ?? '').toString(),
+      periodOnlyNote: _tr(map['period_only_note']),
       dailyCount: map['daily_count'] is int
           ? map['daily_count'] as int
           : int.tryParse((map['daily_count'] ?? '').toString()) ?? 0,
@@ -366,10 +506,7 @@ class PeriodCoreTagDto {
   final String value;
 
   factory PeriodCoreTagDto.fromMap(Map<String, dynamic> map) {
-    return PeriodCoreTagDto(
-      type: (map['type'] ?? '').toString(),
-      value: (map['value'] ?? '').toString(),
-    );
+    return PeriodCoreTagDto(type: _tr(map['type']), value: _tr(map['value']));
   }
 }
 
@@ -393,11 +530,11 @@ class PeriodCoreDto {
   factory PeriodCoreDto.fromMap(Map<String, dynamic> map) {
     final tagsRaw = map['tags'];
     return PeriodCoreDto(
-      title: (map['title'] ?? '').toString(),
-      coreStory: (map['core_story'] ?? '').toString(),
-      upperMeaning: (map['upper_meaning'] ?? '').toString(),
-      bigPicture: (map['big_picture'] ?? '').toString(),
-      mechanism: (map['mechanism'] ?? '').toString(),
+      title: _tr(map['title']),
+      coreStory: _tr(map['core_story']),
+      upperMeaning: _tr(map['upper_meaning']),
+      bigPicture: _tr(map['big_picture']),
+      mechanism: _tr(map['mechanism']),
       tags: tagsRaw is List
           ? [
               for (final tag in tagsRaw)
@@ -436,13 +573,12 @@ class PeriodStoryDto {
 
   factory PeriodStoryDto.fromMap(Map<String, dynamic> map) {
     return PeriodStoryDto(
-      title: (map['title'] ?? '').toString(),
-      lead: (map['lead'] ?? '').toString(),
-      bigPicture: (map['big_picture'] ?? '').toString(),
-      mechanism: (map['mechanism'] ?? '').toString(),
-      contribution: (map['contribution'] ?? map['upper_meaning'] ?? '')
-          .toString(),
-      upperMeaning: (map['upper_meaning'] ?? '').toString(),
+      title: _tr(map['title']),
+      lead: _tr(map['lead']),
+      bigPicture: _tr(map['big_picture']),
+      mechanism: _tr(map['mechanism']),
+      contribution: _tr(map['contribution'] ?? map['upper_meaning']),
+      upperMeaning: _tr(map['upper_meaning']),
     );
   }
 }
@@ -464,9 +600,9 @@ class EventCardTagDto {
 
   factory EventCardTagDto.fromMap(Map<String, dynamic> map) {
     return EventCardTagDto(
-      duration: (map['duration'] ?? '').toString(),
-      phase: (map['phase'] ?? '').toString(),
-      domain: (map['domain'] ?? '').toString(),
+      duration: _tr(map['duration']),
+      phase: _tr(map['phase']),
+      domain: _tr(map['domain']),
       intensity: ((map['intensity'] ?? 0) as num).toDouble(),
       exactInDays: map['exact_in_days'] is int
           ? map['exact_in_days'] as int
@@ -501,7 +637,7 @@ class EventCardTimingDto {
           .toString(),
       exitDateUtc: (map['exit_date_utc'] ?? map['exitDateUtc'] ?? '')
           .toString(),
-      timingNote: (map['timing_note'] ?? map['timingNote'] ?? '').toString(),
+      timingNote: _tr(map['timing_note'] ?? map['timingNote']),
     );
   }
 }
@@ -546,6 +682,9 @@ class EventCardDto {
     required this.derivedContext,
     required this.scene,
     required this.narrativeProvenance,
+    required this.semanticCore,
+    required this.domainScores,
+    required this.lensProjection,
     required this.feltLineTr,
     required this.whyItFeelsThisWayTr,
     required this.guidanceMicroTr,
@@ -602,6 +741,9 @@ class EventCardDto {
   final Map<String, dynamic> derivedContext;
   final Map<String, dynamic> scene;
   final Map<String, dynamic> narrativeProvenance;
+  final Map<String, dynamic> semanticCore;
+  final Map<String, dynamic> domainScores;
+  final Map<String, dynamic> lensProjection;
   final String feltLineTr;
   final String whyItFeelsThisWayTr;
   final String guidanceMicroTr;
@@ -645,7 +787,7 @@ class EventCardDto {
     final value = map['section_labels'];
     if (value is Map) {
       final out = <String, String>{};
-      value.forEach((k, v) => out[k.toString()] = v.toString());
+      value.forEach((k, v) => out[k.toString()] = _tr(v));
       return out;
     }
     return const <String, String>{};
@@ -702,6 +844,9 @@ class EventCardDto {
     Map<String, dynamic>? derivedContext,
     Map<String, dynamic>? scene,
     Map<String, dynamic>? narrativeProvenance,
+    Map<String, dynamic>? semanticCore,
+    Map<String, dynamic>? domainScores,
+    Map<String, dynamic>? lensProjection,
     String? feltLineTr,
     String? whyItFeelsThisWayTr,
     String? guidanceMicroTr,
@@ -758,6 +903,9 @@ class EventCardDto {
       derivedContext: derivedContext ?? this.derivedContext,
       scene: scene ?? this.scene,
       narrativeProvenance: narrativeProvenance ?? this.narrativeProvenance,
+      semanticCore: semanticCore ?? this.semanticCore,
+      domainScores: domainScores ?? this.domainScores,
+      lensProjection: lensProjection ?? this.lensProjection,
       feltLineTr: feltLineTr ?? this.feltLineTr,
       whyItFeelsThisWayTr: whyItFeelsThisWayTr ?? this.whyItFeelsThisWayTr,
       guidanceMicroTr: guidanceMicroTr ?? this.guidanceMicroTr,
@@ -807,32 +955,32 @@ class EventCardDto {
       phase: _s(map, 'phase'),
       bucket: _s(map, 'bucket'),
       orbDeg: rawOrb is num ? rawOrb.toDouble() : double.tryParse('$rawOrb'),
-      headline: headline,
-      opening: opening,
-      essence: essence,
-      asks: asks,
-      watchout: watchout,
-      whatItBuilds: whatItBuilds,
-      technicalNote: _s(map, 'technical_note', 'extra_line'),
-      title: headline.trim().isNotEmpty ? headline : _s(map, 'title'),
+      headline: _tr(headline),
+      opening: _tr(opening),
+      essence: _tr(essence),
+      asks: _tr(asks),
+      watchout: _tr(watchout),
+      whatItBuilds: _tr(whatItBuilds),
+      technicalNote: _tr(_s(map, 'technical_note', 'extra_line')),
+      title: _tr(headline.trim().isNotEmpty ? headline : _s(map, 'title')),
       signature: _s(map, 'signature'),
-      signatureTr: _s(map, 'signature_tr', 'signatureTr'),
-      teaser: opening,
-      bigPicture: essence,
-      mechanism: _s(map, 'mechanism'),
+      signatureTr: _tr(_s(map, 'signature_tr', 'signatureTr')),
+      teaser: _tr(opening),
+      bigPicture: _tr(essence),
+      mechanism: _tr(_s(map, 'mechanism')),
       horizon: _s(map, 'horizon'),
       tone: _s(map, 'tone'),
       sectionLabels: _labels(map),
-      whyNow: _s(map, 'why_now', 'whyNow'),
-      conflict: essence,
-      shadow: watchout,
-      upper: asks,
-      extraLine: _s(map, 'extra_line', 'extraLine'),
-      timeHint: _s(map, 'time_hint', 'timeHint'),
-      timeHintTr: _s(map, 'time_hint_tr', 'timeHintTr'),
-      guidance: _ls(map, 'guidance'),
-      watchOut: _ls(map, 'watch_out', 'watchOut'),
-      hookTags: _ls(map, 'hook_tags', 'hookTags'),
+      whyNow: _tr(_s(map, 'why_now', 'whyNow')),
+      conflict: _tr(essence),
+      shadow: _tr(watchout),
+      upper: _tr(asks),
+      extraLine: _tr(_s(map, 'extra_line', 'extraLine')),
+      timeHint: _tr(_s(map, 'time_hint', 'timeHint')),
+      timeHintTr: _tr(_s(map, 'time_hint_tr', 'timeHintTr')),
+      guidance: _trList(_ls(map, 'guidance')),
+      watchOut: _trList(_ls(map, 'watch_out', 'watchOut')),
+      hookTags: _trList(_ls(map, 'hook_tags', 'hookTags')),
       timing: EventCardTimingDto.fromMap(
         map['timing'] is Map
             ? Map<String, dynamic>.from(map['timing'] as Map)
@@ -849,20 +997,21 @@ class EventCardDto {
         'narrative_provenance',
         'narrativeProvenance',
       ),
-      feltLineTr: _s(map, 'felt_line_tr', 'feltLineTr'),
-      whyItFeelsThisWayTr: _s(
-        map,
-        'why_it_feels_this_way_tr',
-        'whyItFeelsThisWayTr',
+      semanticCore: _dynamicMap(map, 'semantic_core', 'semanticCore'),
+      domainScores: _dynamicMap(map, 'domain_scores', 'domainScores'),
+      lensProjection: _dynamicMap(map, 'lens_projection', 'lensProjection'),
+      feltLineTr: _tr(_s(map, 'felt_line_tr', 'feltLineTr')),
+      whyItFeelsThisWayTr: _tr(
+        _s(map, 'why_it_feels_this_way_tr', 'whyItFeelsThisWayTr'),
       ),
-      guidanceMicroTr: _s(map, 'guidance_micro_tr', 'guidanceMicroTr'),
-      signalLabelTr: _s(map, 'signal_label_tr', 'signalLabelTr'),
-      toneLabelTr: _s(map, 'tone_label_tr', 'toneLabelTr'),
-      houseTouchpointTr: _s(map, 'house_touchpoint_tr', 'houseTouchpointTr'),
-      houseTouchpointHintTr: _s(
-        map,
-        'house_touchpoint_hint_tr',
-        'houseTouchpointHintTr',
+      guidanceMicroTr: _tr(_s(map, 'guidance_micro_tr', 'guidanceMicroTr')),
+      signalLabelTr: _tr(_s(map, 'signal_label_tr', 'signalLabelTr')),
+      toneLabelTr: _tr(_s(map, 'tone_label_tr', 'toneLabelTr')),
+      houseTouchpointTr: _tr(
+        _s(map, 'house_touchpoint_tr', 'houseTouchpointTr'),
+      ),
+      houseTouchpointHintTr: _tr(
+        _s(map, 'house_touchpoint_hint_tr', 'houseTouchpointHintTr'),
       ),
       eventFamily: _s(map, 'event_family', 'eventFamily'),
       eventKind: _s(map, 'event_kind', 'eventKind'),
@@ -930,14 +1079,14 @@ class PeriodPeakTimelineItemDto {
     if (signature.isNotEmpty) {
       return signature;
     }
-    return 'Period etkisi';
+    return 'Dönem etkisi';
   }
 
   factory PeriodPeakTimelineItemDto.fromMap(Map<String, dynamic> map) {
     return PeriodPeakTimelineItemDto(
       eventId: (map['event_id'] ?? map['eventId'] ?? '').toString(),
-      title: (map['title'] ?? '').toString(),
-      signatureTr: (map['signature_tr'] ?? map['signatureTr'] ?? '').toString(),
+      title: _tr(map['title']),
+      signatureTr: _tr(map['signature_tr'] ?? map['signatureTr']),
       peakDateUtc: (map['peak_date_utc'] ?? map['peakDateUtc'] ?? '')
           .toString(),
       entryDateUtc: (map['entry_date_utc'] ?? map['entryDateUtc'] ?? '')
@@ -946,7 +1095,7 @@ class PeriodPeakTimelineItemDto {
           .toString(),
       bucket: (map['bucket'] ?? '').toString(),
       phase: (map['phase'] ?? '').toString(),
-      timeHintTr: (map['time_hint_tr'] ?? map['timeHintTr'] ?? '').toString(),
+      timeHintTr: _tr(map['time_hint_tr'] ?? map['timeHintTr']),
       eventCard: map['event_card'] is Map
           ? EventCardDto.fromMap(
               Map<String, dynamic>.from(map['event_card'] as Map),
@@ -973,10 +1122,8 @@ class TimelineDto {
     final linesRaw = map['lines'];
     return TimelineDto(
       date: (map['date'] ?? '').toString(),
-      summary: (map['summary'] ?? '').toString(),
-      lines: linesRaw is List
-          ? [for (final line in linesRaw) line.toString()]
-          : const <String>[],
+      summary: _tr(map['summary']),
+      lines: linesRaw is List ? _trList(linesRaw) : const <String>[],
       dotIntensity: (map['dot_intensity'] ?? 0) as int,
     );
   }
@@ -1031,9 +1178,9 @@ class PeriodMarkerDto {
             .trim();
     return PeriodMarkerDto(
       id: id,
-      title: title,
-      summary: summary,
-      timeHint: timeHint,
+      title: _tr(title),
+      summary: _tr(summary),
+      timeHint: _tr(timeHint),
       raw: map,
     );
   }
@@ -1096,9 +1243,9 @@ class PeriodThemeDto {
             .trim();
     return PeriodThemeDto(
       id: id.isNotEmpty ? id : 'theme-$index',
-      title: title.isNotEmpty ? title : 'Tema ${index + 1}',
-      summary: summary,
-      timeHint: timeHint,
+      title: _tr(title.isNotEmpty ? title : 'Tema ${index + 1}'),
+      summary: _tr(summary),
+      timeHint: _tr(timeHint),
       raw: map,
     );
   }
@@ -1153,16 +1300,16 @@ class IntentSummaryDto {
         .toList();
     final title = _intentTitle(intent, index: index);
     final summary = topDates.isEmpty
-        ? '$title icin bu donemde takip edilecek pencereler var.'
-        : '$title odagi icin one cikan gunler: ${topDates.join(', ')}.';
+        ? '$title için bu dönemde takip edilecek pencereler var.'
+        : '$title odağı için öne çıkan günler: ${topDates.join(', ')}.';
     final timeHint = topRatings.isEmpty
         ? ''
         : 'Puanlar: ${topRatings.join(' / ')}';
     return IntentSummaryDto(
       intent: intent,
-      title: title,
-      summary: summary,
-      timeHint: timeHint,
+      title: _tr(title),
+      summary: _tr(summary),
+      timeHint: _tr(timeHint),
       raw: map,
     );
   }
@@ -1170,13 +1317,13 @@ class IntentSummaryDto {
   static String _intentTitle(String intent, {required int index}) {
     switch (intent) {
       case 'beauty_care':
-        return 'Bakim ve Beden';
+        return 'Bakım ve Beden';
       case 'business':
-        return 'Is ve Uretim';
+        return 'İş ve Üretim';
       case 'money':
         return 'Para ve Kaynak';
       case 'relationship':
-        return 'Iliski ve Uyum';
+        return 'İlişki ve Uyum';
       default:
         return intent.trim().isNotEmpty ? intent : 'Niyet ${index + 1}';
     }
@@ -1223,7 +1370,7 @@ class PeriodCardDto {
       id: eventCard.eventId.isNotEmpty ? eventCard.eventId : 'event-$index',
       title: eventCard.title.trim().isNotEmpty
           ? eventCard.title.trim()
-          : 'Period',
+          : 'Dönem',
       subtitle: pickFirst([
         eventCard.opening,
         eventCard.essence,
@@ -1231,7 +1378,7 @@ class PeriodCardDto {
         eventCard.whyNow,
         story?.lead ?? '',
         story?.bigPicture ?? '',
-        'Bu donemin ana akisi.',
+        'Bu dönemin ana akışı.',
       ]),
       timeHint: pickFirst([
         eventCard.timeHintTr,
@@ -1252,10 +1399,10 @@ class PeriodCardDto {
     final periodUpperMeaning = periodCore?.upperMeaning.trim() ?? '';
     final title = marker.title.isNotEmpty
         ? marker.title
-        : (periodTitle.isNotEmpty ? periodTitle : 'Period');
+        : (periodTitle.isNotEmpty ? periodTitle : 'Dönem');
     final subtitle = marker.summary.isNotEmpty
         ? marker.summary
-        : (periodStory.isNotEmpty ? periodStory : 'Bu donemin ana temasi.');
+        : (periodStory.isNotEmpty ? periodStory : 'Bu dönemin ana teması.');
     final timeHint = marker.timeHint.isNotEmpty
         ? marker.timeHint
         : (periodUpperMeaning.isNotEmpty ? periodUpperMeaning : '');
@@ -1278,7 +1425,7 @@ class PeriodCardDto {
       title: theme.title,
       subtitle: theme.summary.isNotEmpty
           ? theme.summary
-          : 'Bu donemde one cikan tema.',
+          : 'Bu dönemde öne çıkan tema.',
       timeHint: theme.timeHint,
       eventCard: null,
       theme: theme,
@@ -1300,6 +1447,46 @@ class PeriodCardDto {
       intentSummary: intentSummary,
     );
   }
+}
+
+List<String> _periodCardPreviewTexts(PeriodCardDto card) {
+  return _dedupeNarrativePreviewTexts([
+    card.title,
+    card.subtitle,
+    card.timeHint,
+  ]);
+}
+
+bool _periodCardsAreNarrativeDuplicates(
+  PeriodCardDto left,
+  PeriodCardDto right,
+) {
+  final leftId = left.id.trim();
+  final rightId = right.id.trim();
+  if (leftId.isNotEmpty && leftId == rightId) {
+    return true;
+  }
+  return _narrativePreviewListsOverlap(
+    _periodCardPreviewTexts(left),
+    _periodCardPreviewTexts(right),
+  );
+}
+
+List<PeriodCardDto> _dedupePeriodCards(Iterable<PeriodCardDto> cards) {
+  final out = <PeriodCardDto>[];
+  for (final card in cards) {
+    if (_periodCardPreviewTexts(card).isEmpty) {
+      continue;
+    }
+    final duplicate = out.any(
+      (existing) => _periodCardsAreNarrativeDuplicates(existing, card),
+    );
+    if (duplicate) {
+      continue;
+    }
+    out.add(card);
+  }
+  return out;
 }
 
 @immutable
@@ -1353,7 +1540,7 @@ class PeriodDetailNarrativeDto {
 }
 
 String _cleanDetailText(String value) {
-  return value.replaceAll(RegExp(r'\s+'), ' ').trim();
+  return normalizeTurkishText(value);
 }
 
 String _protectDetailOrdinals(String value) {
@@ -1510,6 +1697,66 @@ List<String> _uniqueDetailLabels(List<String> values, {int limit = 3}) {
   return out;
 }
 
+List<PeriodDetailSectionDto> _dedupeDetailSections(
+  Iterable<PeriodDetailSectionDto> sections, {
+  List<String> avoid = const <String>[],
+}) {
+  final out = <PeriodDetailSectionDto>[];
+  final seenBodies = <String>[...avoid];
+  for (final section in sections) {
+    final title = _cleanDetailText(section.title);
+    final body = _mergeDistinctSnippets(
+      <String>[section.body],
+      avoid: seenBodies,
+      maxSentences: 3,
+    );
+    if (title.isEmpty || body.isEmpty) {
+      continue;
+    }
+    final duplicate = out.any(
+      (existing) =>
+          _isDetailDuplicate(title, <String>[existing.title]) &&
+          _isDetailDuplicate(body, <String>[existing.body]),
+    );
+    if (duplicate) {
+      continue;
+    }
+    out.add(PeriodDetailSectionDto(title: title, body: body));
+    seenBodies.add(body);
+  }
+  return out;
+}
+
+List<PeriodDetailMetaRowDto> _dedupeDetailMetaRows(
+  Iterable<PeriodDetailMetaRowDto> rows, {
+  List<String> avoid = const <String>[],
+}) {
+  final out = <PeriodDetailMetaRowDto>[];
+  final seenValues = <String>[...avoid];
+  for (final row in rows) {
+    final label = _cleanDetailText(row.label);
+    final value = _mergeDistinctSnippets(
+      <String>[row.value],
+      avoid: seenValues,
+      maxSentences: 2,
+    );
+    if (label.isEmpty || value.isEmpty) {
+      continue;
+    }
+    final duplicate = out.any(
+      (existing) =>
+          _isDetailDuplicate(label, <String>[existing.label]) &&
+          _isDetailDuplicate(value, <String>[existing.value]),
+    );
+    if (duplicate) {
+      continue;
+    }
+    out.add(PeriodDetailMetaRowDto(label: label, value: value));
+    seenValues.add(value);
+  }
+  return out;
+}
+
 class _DetailSourceValue {
   const _DetailSourceValue({required this.value, required this.source});
 
@@ -1559,35 +1806,56 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
       final summary = _firstDistinctSnippet([
         subtitle,
         periodCore?.coreStory ?? '',
-        'Bu donemde one cikan tema burada toplanir.',
+        'Bu dönemde öne çıkan tema burada toplanır.',
       ], maxSentences: 2);
       final timingNote = _firstDistinctSnippet(
         [timeHint],
         avoid: <String>[summary],
         maxSentences: 2,
       );
+      final sections = _dedupeDetailSections(
+        <PeriodDetailSectionDto>[
+          PeriodDetailSectionDto(
+            title: 'Bu dönemin özü',
+            body: summary.isNotEmpty
+                ? summary
+                : 'Bu döneme ait özet anlatım bulunamadı.',
+          ),
+        ],
+        avoid: <String>[summary, timingNote],
+      );
+      final metaRows = _dedupeDetailMetaRows(
+        <PeriodDetailMetaRowDto>[
+          if (timeHint.trim().isNotEmpty)
+            PeriodDetailMetaRowDto(label: 'Zaman', value: timeHint.trim()),
+        ],
+        avoid: <String>[
+          summary,
+          timingNote,
+          ...sections.map((section) => section.body),
+        ],
+      );
       return PeriodDetailNarrativeDto(
         eyebrow: eyebrow,
-        headline: title.trim().isNotEmpty ? title.trim() : 'Donem',
+        headline: title.trim().isNotEmpty ? title.trim() : 'Dönem',
         summary: summary.isNotEmpty
             ? summary
-            : 'Bu doneme ait ozet anlatim bulunamadi.',
+            : 'Bu döneme ait özet anlatım bulunamadı.',
         timingNote: timingNote,
         umbrellaTitle: '',
         umbrellaBody: '',
         chips: const <String>[],
-        sections: <PeriodDetailSectionDto>[
-          PeriodDetailSectionDto(
-            title: 'Bu donemin ozu',
-            body: summary.isNotEmpty
-                ? summary
-                : 'Bu doneme ait ozet anlatim bulunamadi.',
-          ),
-        ],
-        metaRows: <PeriodDetailMetaRowDto>[
-          if (timeHint.trim().isNotEmpty)
-            PeriodDetailMetaRowDto(label: 'Zaman', value: timeHint.trim()),
-        ],
+        sections: sections.isNotEmpty
+            ? sections
+            : <PeriodDetailSectionDto>[
+                PeriodDetailSectionDto(
+                  title: 'Bu dönemin özü',
+                  body: summary.isNotEmpty
+                      ? summary
+                      : 'Bu döneme ait özet anlatım bulunamadı.',
+                ),
+              ],
+        metaRows: metaRows,
         detailRendererVersion: 'period_detail_v3',
         routeSource: routeSource,
         sectionSources: const <String, String>{
@@ -1662,7 +1930,7 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
         _DetailSourceCandidate(source: 'event.upper', value: event.upper),
         _DetailSourceCandidate(
           source: 'event.guidance',
-          value: _listToNarrative(event.guidance, prefix: 'Kucuk pratik:'),
+          value: _listToNarrative(event.guidance, prefix: 'Küçük pratik:'),
         ),
       ],
       avoid: <String>[
@@ -1697,7 +1965,7 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
           source: 'event.watch_out',
           value: _listToNarrative(
             event.watchOut,
-            prefix: 'Bunu zorlastiran sey genelde su olur:',
+            prefix: 'Bunu zorlaştıran şey genelde şu olur:',
           ),
         ),
       ],
@@ -1736,11 +2004,11 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
       maxSentences: 2,
     );
 
-    final sections = <PeriodDetailSectionDto>[
+    final rawSections = <PeriodDetailSectionDto>[
       if (essence.value.isNotEmpty)
-        PeriodDetailSectionDto(title: 'Bu donemin ozu', body: essence.value),
+        PeriodDetailSectionDto(title: 'Bu dönemin özü', body: essence.value),
       if (mechanism.value.isNotEmpty)
-        PeriodDetailSectionDto(title: 'Nasil calisiyor', body: mechanism.value),
+        PeriodDetailSectionDto(title: 'Nasıl çalışıyor', body: mechanism.value),
       if (asks.value.isNotEmpty)
         PeriodDetailSectionDto(title: 'Senden ne istiyor', body: asks.value),
       if (watchout.value.isNotEmpty)
@@ -1750,32 +2018,57 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
         ),
       if (builds.value.isNotEmpty)
         PeriodDetailSectionDto(
-          title: 'Sende neyi gelistiriyor',
+          title: 'Sende neyi geliştiriyor',
           body: builds.value,
         ),
     ];
 
-    final metaRows = <PeriodDetailMetaRowDto>[
-      if (event.signatureTr.trim().isNotEmpty)
-        PeriodDetailMetaRowDto(label: 'Etki', value: event.signatureTr.trim()),
-      if (timing.value.trim().isNotEmpty)
-        PeriodDetailMetaRowDto(label: 'Zaman', value: timing.value.trim()),
-      if (event.technicalNote.trim().isNotEmpty)
-        PeriodDetailMetaRowDto(
-          label: 'Teknik not',
-          value: event.technicalNote.trim(),
-        ),
-    ];
+    final sections = _dedupeDetailSections(
+      rawSections,
+      avoid: <String>[opening.value, umbrellaBody.value],
+    );
+    final timingNote = _mergeDistinctSnippets(
+      <String>[timing.value],
+      avoid: <String>[
+        opening.value,
+        umbrellaBody.value,
+        ...sections.map((section) => section.body),
+      ],
+      maxSentences: 2,
+    );
+    final metaRows = _dedupeDetailMetaRows(
+      <PeriodDetailMetaRowDto>[
+        if (event.signatureTr.trim().isNotEmpty)
+          PeriodDetailMetaRowDto(
+            label: 'Etki',
+            value: event.signatureTr.trim(),
+          ),
+        if (timing.value.trim().isNotEmpty)
+          PeriodDetailMetaRowDto(label: 'Zaman', value: timing.value.trim()),
+        if (event.technicalNote.trim().isNotEmpty)
+          PeriodDetailMetaRowDto(
+            label: 'Teknik not',
+            value: event.technicalNote.trim(),
+          ),
+      ],
+      avoid: <String>[
+        headline.value,
+        opening.value,
+        umbrellaBody.value,
+        timingNote,
+        ...sections.map((section) => section.body),
+      ],
+    );
 
     return PeriodDetailNarrativeDto(
       eyebrow: umbrellaTitle.value,
-      headline: headline.value.isNotEmpty ? headline.value : 'Donem',
+      headline: headline.value.isNotEmpty ? headline.value : 'Dönem',
       summary: opening.value.isNotEmpty
           ? opening.value
           : (subtitle.trim().isNotEmpty
                 ? subtitle.trim()
-                : 'Bu doneme ait ozet anlatim bulunamadi.'),
-      timingNote: timing.value,
+                : 'Bu döneme ait özet anlatım bulunamadı.'),
+      timingNote: timingNote,
       umbrellaTitle: umbrellaTitle.value,
       umbrellaBody: umbrellaBody.value,
       chips: _uniqueDetailLabels([
@@ -1787,10 +2080,10 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
           ? sections
           : <PeriodDetailSectionDto>[
               PeriodDetailSectionDto(
-                title: 'Bu donemin ozu',
+                title: 'Bu dönemin özü',
                 body: subtitle.trim().isNotEmpty
                     ? subtitle.trim()
-                    : 'Bu doneme ait ozet anlatim bulunamadi.',
+                    : 'Bu döneme ait özet anlatım bulunamadı.',
               ),
             ],
       metaRows: metaRows,
@@ -1906,21 +2199,23 @@ class PeriodCalendarDto {
           markers.add(
             PeriodMarkerDto(
               id: (mapItem['event_id'] ?? '').toString().trim(),
-              title:
-                  (interpretation['headline'] ??
-                          interpretation['headline_short'] ??
-                          mapItem['label'] ??
-                          '')
-                      .toString()
-                      .trim(),
-              summary: (interpretation['summary'] ?? '').toString().trim(),
-              timeHint:
-                  (interpretation['time_hint'] ??
-                          timing['timing_note'] ??
-                          mapItem['phase'] ??
-                          '')
-                      .toString()
-                      .trim(),
+              title: _tr(
+                (interpretation['headline'] ??
+                        interpretation['headline_short'] ??
+                        mapItem['label'] ??
+                        '')
+                    .toString()
+                    .trim(),
+              ),
+              summary: _tr((interpretation['summary'] ?? '').toString().trim()),
+              timeHint: _tr(
+                (interpretation['time_hint'] ??
+                        timing['timing_note'] ??
+                        mapItem['phase'] ??
+                        '')
+                    .toString()
+                    .trim(),
+              ),
               raw: mapItem,
             ),
           );
@@ -1950,10 +2245,10 @@ class PeriodCalendarDto {
           id: 'period-core',
           title: periodCore.title.trim().isNotEmpty
               ? periodCore.title.trim()
-              : 'Bu Donemin Ana Temasi',
+              : 'Bu Dönemin Ana Teması',
           subtitle: periodCore.coreStory.trim().isNotEmpty
               ? periodCore.coreStory.trim()
-              : 'Bu donem icin period ozeti bulunamadi.',
+              : 'Bu dönem için period özeti bulunamadı.',
           timeHint: periodCore.upperMeaning.trim(),
           eventCard: null,
         ),
@@ -1989,7 +2284,7 @@ class PeriodCalendarDto {
       markers: markers,
       themes: themes,
       intentSummaries: intentSummaries,
-      cards: cards,
+      cards: _dedupePeriodCards(cards),
       hasWrongSource: hasWrongSource,
     );
   }

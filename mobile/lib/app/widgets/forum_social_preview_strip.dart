@@ -5,6 +5,7 @@ import 'package:mobile/app/forum/forum_models.dart';
 import 'package:mobile/app/forum/forum_providers.dart';
 import 'package:mobile/app/tabs/forum_page.dart';
 import 'package:mobile/app/tabs/forum_post_detail_page.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
@@ -103,7 +104,7 @@ class _ForumPreviewCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      _categoryLabel(post.category).toUpperCase(),
+                      turkishToUpper(_categoryLabel(post.category)),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: profile.typography.monoEyebrow.copyWith(

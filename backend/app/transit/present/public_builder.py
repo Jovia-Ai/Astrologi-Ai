@@ -12,37 +12,38 @@ from app.transit.narrative.deep_archetype_engine import (
     build_period_core,
     pick_top_event,
 )
+from app.transit.narrative.text_quality_tr import tr_normalize
 
 from .public_models import Block, PublicEvent, PublicPeriod, PublicPeriodSpace, PublicPeriodSummary, PublicTransitResponse
 
 SIGN_TR = {
-    "Aries": "Koc",
-    "Taurus": "Boga",
-    "Gemini": "Ikizler",
-    "Cancer": "Yengec",
+    "Aries": "Koç",
+    "Taurus": "Boğa",
+    "Gemini": "İkizler",
+    "Cancer": "Yengeç",
     "Leo": "Aslan",
-    "Virgo": "Basak",
+    "Virgo": "Başak",
     "Libra": "Terazi",
     "Scorpio": "Akrep",
     "Sagittarius": "Yay",
-    "Capricorn": "Oglak",
+    "Capricorn": "Oğlak",
     "Aquarius": "Kova",
-    "Pisces": "Balik",
+    "Pisces": "Balık",
 }
 
 HOUSE_LABEL_TR = {
-    1: "benlik/durus",
-    2: "ozdeger/maddi duzen",
-    3: "zihin/iletisim",
-    4: "ev/ic guven",
-    5: "yaraticilik/keyif",
-    6: "rutin/saglik",
-    7: "iliskiler/ortaklik",
-    8: "paylasim/donusum",
-    9: "inanc/ufuk",
-    10: "kariyer/gorunurluk",
+    1: "benlik/duruş",
+    2: "özdeğer/maddi düzen",
+    3: "zihin/iletişim",
+    4: "ev/iç güven",
+    5: "yaratıcılık/keyif",
+    6: "rutin/sağlık",
+    7: "ilişkiler/ortaklık",
+    8: "paylaşım/dönüşüm",
+    9: "inanç/ufuk",
+    10: "kariyer/görünürlük",
     11: "topluluk/hedefler",
-    12: "bilincalti/cozulme",
+    12: "bilinçaltı/çözülme",
 }
 
 ASPECT_SYMBOL = {
@@ -89,6 +90,164 @@ PUBLIC_EVENT_V2_FIELDS = (
     "importance_label_tr",
     "copy_mode",
 )
+
+_EVENT_CARD_DISPLAY_TEXT_KEYS = frozenset(
+    {
+        "headline",
+        "opening",
+        "essence",
+        "asks",
+        "watchout",
+        "what_it_builds",
+        "technical_note",
+        "title",
+        "signature_tr",
+        "teaser",
+        "big_picture",
+        "mechanism",
+        "why_now",
+        "conflict",
+        "shadow",
+        "upper",
+        "upper_meaning",
+        "extra_line",
+        "time_hint",
+        "time_hint_tr",
+        "felt_line_tr",
+        "why_it_feels_this_way_tr",
+        "guidance_micro_tr",
+        "signal_label_tr",
+        "tone_label_tr",
+        "house_touchpoint_tr",
+        "house_touchpoint_hint_tr",
+        "period_opening",
+        "core_story",
+        "summary",
+        "one_liner",
+        "lead",
+        "growth_edge",
+        "relational_or_life_expression",
+        "contribution",
+    }
+)
+_EVENT_CARD_DISPLAY_LIST_KEYS = frozenset({"guidance", "watch_out", "hook_tags"})
+_PERIOD_STORY_TEXT_KEYS = frozenset(
+    {
+        "title",
+        "lead",
+        "period_opening",
+        "big_picture",
+        "mechanism",
+        "growth_edge",
+        "relational_or_life_expression",
+        "what_it_builds",
+        "contribution",
+        "upper_meaning",
+    }
+)
+
+
+def _normalize_display_text(value: Any) -> Any:
+    if not isinstance(value, str):
+        return value
+    text = " ".join(value.split()).strip()
+    if not text:
+        return ""
+    try:
+        return tr_normalize(text)
+    except Exception:
+        return text
+
+
+def _normalize_display_list(values: Any) -> Any:
+    if not isinstance(values, list):
+        return values
+    out: List[Any] = []
+    for item in values:
+        if isinstance(item, str):
+            normalized = _normalize_display_text(item)
+            if normalized:
+                out.append(normalized)
+        else:
+            out.append(item)
+    return out
+
+
+def _normalize_period_story_copy(story: Mapping[str, Any]) -> Dict[str, Any]:
+    out = dict(story)
+    for key in _PERIOD_STORY_TEXT_KEYS:
+        if key in out:
+            out[key] = _normalize_display_text(out.get(key))
+    return out
+
+
+def _normalize_event_card_copy(card: Mapping[str, Any]) -> Dict[str, Any]:
+    out = dict(card)
+    for key in _EVENT_CARD_DISPLAY_TEXT_KEYS:
+        if key in out:
+            out[key] = _normalize_display_text(out.get(key))
+    for key in _EVENT_CARD_DISPLAY_LIST_KEYS:
+        if key in out:
+            out[key] = _normalize_display_list(out.get(key))
+    section_labels = out.get("section_labels")
+    if isinstance(section_labels, Mapping):
+        out["section_labels"] = {
+            str(key): _normalize_display_text(value)
+            for key, value in section_labels.items()
+        }
+    timing = out.get("timing")
+    if isinstance(timing, Mapping):
+        timing_out = dict(timing)
+        if "timing_note" in timing_out:
+            timing_out["timing_note"] = _normalize_display_text(
+                timing_out.get("timing_note")
+            )
+        out["timing"] = timing_out
+    period_story = out.get("period_story")
+    if isinstance(period_story, Mapping):
+        out["period_story"] = _normalize_period_story_copy(period_story)
+    return out
+
+
+def _normalize_period_core_copy(period_core: Mapping[str, Any]) -> Dict[str, Any]:
+    out = dict(period_core)
+    for key in _PERIOD_STORY_TEXT_KEYS | {"core_story"}:
+        if key in out:
+            out[key] = _normalize_display_text(out.get(key))
+    tags = out.get("tags")
+    if isinstance(tags, list):
+        normalized_tags: List[Any] = []
+        for item in tags:
+            if not isinstance(item, Mapping):
+                normalized_tags.append(item)
+                continue
+            tag_out = dict(item)
+            if "value" in tag_out:
+                tag_out["value"] = _normalize_display_text(tag_out.get("value"))
+            if "label" in tag_out:
+                tag_out["label"] = _normalize_display_text(tag_out.get("label"))
+            normalized_tags.append(tag_out)
+        out["tags"] = normalized_tags
+    story_tracks = out.get("story_tracks")
+    if isinstance(story_tracks, Mapping):
+        out["story_tracks"] = {
+            str(track_id): _normalize_period_story_copy(track_story)
+            if isinstance(track_story, Mapping)
+            else track_story
+            for track_id, track_story in story_tracks.items()
+        }
+    return out
+
+
+def _normalize_timeline_copy(timeline: Mapping[str, Any]) -> Dict[str, Any]:
+    out = dict(timeline)
+    if "summary" in out:
+        out["summary"] = _normalize_display_text(out.get("summary"))
+    if "title" in out:
+        out["title"] = _normalize_display_text(out.get("title"))
+    if "lines" in out:
+        out["lines"] = _normalize_display_list(out.get("lines"))
+    return out
 
 
 def _split_sentences(text: str) -> List[str]:
@@ -166,7 +325,7 @@ def _normalize_guidance(items: List[str]) -> List[str]:
         if norm in seen:
             continue
         seen.add(norm)
-        out.append(text)
+        out.append(_normalize_display_text(text))
         if len(out) >= 3:
             break
     return out
@@ -183,7 +342,7 @@ def _normalize_watch(items: List[str]) -> List[str]:
         if norm in seen:
             continue
         seen.add(norm)
-        out.append(text)
+        out.append(_normalize_display_text(text))
         if len(out) >= 2:
             break
     return out
@@ -413,11 +572,13 @@ def build_public_event(item: Dict[str, Any], *, headline_override: str | None = 
     tier = (item.get("ranking") or {}).get("tier") or "support"
     severity_tag = _severity_tag(item)
 
-    headline = headline_override or _pick_headline(interp)
-    summary = _ensure_two_sentences(compose_event_summary_from_item(item, voice_style="you"))
+    headline = _normalize_display_text(headline_override or _pick_headline(interp))
+    summary = _normalize_display_text(
+        _ensure_two_sentences(compose_event_summary_from_item(item, voice_style="you"))
+    )
     if not summary.strip():
-        summary = _pick_summary(interp, tier)
-    time_hint = str(interp.get("time_hint") or "").strip()
+        summary = _normalize_display_text(_pick_summary(interp, tier))
+    time_hint = _normalize_display_text(str(interp.get("time_hint") or "").strip())
     phase = str(item.get("phase") or "").strip() or None
     duration = str(item.get("bucket") or "").strip() or None
     houses = item.get("houses") if isinstance(item.get("houses"), dict) else {}
@@ -426,12 +587,14 @@ def build_public_event(item: Dict[str, Any], *, headline_override: str | None = 
         overlay_house_int = int(overlay_house) if overlay_house is not None else None
     except (TypeError, ValueError):
         overlay_house_int = None
-    upper_meaning = compose_upper_meaning_line(
-        transit_body=str(item.get("transit_body") or ""),
-        natal_target=str(item.get("natal_point") or ""),
-        house_overlay=overlay_house_int,
-        seed=abs(hash((event_id, headline, tier))) % (2**31),
-        voice_style="you",
+    upper_meaning = _normalize_display_text(
+        compose_upper_meaning_line(
+            transit_body=str(item.get("transit_body") or ""),
+            natal_target=str(item.get("natal_point") or ""),
+            house_overlay=overlay_house_int,
+            seed=abs(hash((event_id, headline, tier))) % (2**31),
+            voice_style="you",
+        )
     )
 
     blocks: List[Block] = []
@@ -444,9 +607,9 @@ def build_public_event(item: Dict[str, Any], *, headline_override: str | None = 
         blocks.append(Block(type="upper_meaning", text=upper_meaning))
     insight_pack = build_insight_pack(item, voice_style="you")
     insight_items = [
-        {"key": "conflict", "text": str(insight_pack.get("conflict") or "")},
-        {"key": "shadow", "text": str(insight_pack.get("shadow") or "")},
-        {"key": "upper", "text": str(insight_pack.get("upper") or "")},
+        {"key": "conflict", "text": _normalize_display_text(str(insight_pack.get("conflict") or ""))},
+        {"key": "shadow", "text": _normalize_display_text(str(insight_pack.get("shadow") or ""))},
+        {"key": "upper", "text": _normalize_display_text(str(insight_pack.get("upper") or ""))},
     ]
     blocks.append(Block(type="insight_pack", items=insight_items))
     if time_hint:
@@ -614,12 +777,14 @@ def _build_period_peak_timeline(
         if not event_id or event_id in used_ids:
             continue
         card = build_event_card(item, context={"natal": natal})
-        card = _enrich_period_story(
-            card,
-            period_core=period_core,
-            global_period_story=global_period_story,
-            story_tracks=story_tracks,
-            event_story_map=event_story_map,
+        card = _normalize_event_card_copy(
+            _enrich_period_story(
+                card,
+                period_core=period_core,
+                global_period_story=global_period_story,
+                story_tracks=story_tracks,
+                event_story_map=event_story_map,
+            )
         )
         if str(card.get("horizon") or "").strip().lower() != "period":
             continue
@@ -637,14 +802,18 @@ def _build_period_peak_timeline(
         out.append(
             {
                 "event_id": event_id,
-                "title": title,
-                "signature_tr": str(card.get("signature_tr") or card.get("signature") or "").strip(),
+                "title": _normalize_display_text(title),
+                "signature_tr": _normalize_display_text(
+                    str(card.get("signature_tr") or card.get("signature") or "").strip()
+                ),
                 "peak_date_utc": str(timing.get("peak_date_utc") or "").strip(),
                 "entry_date_utc": str(timing.get("entry_date_utc") or "").strip(),
                 "exit_date_utc": str(timing.get("exit_date_utc") or "").strip(),
                 "bucket": str(card.get("bucket") or item.get("bucket") or "").strip(),
                 "phase": str(card.get("phase") or item.get("phase") or "").strip(),
-                "time_hint_tr": str(card.get("time_hint_tr") or card.get("time_hint") or "").strip(),
+                "time_hint_tr": _normalize_display_text(
+                    str(card.get("time_hint_tr") or card.get("time_hint") or "").strip()
+                ),
                 "event_card": card,
             }
         )
@@ -660,11 +829,11 @@ def build_public_period(response: Dict[str, Any]) -> PublicPeriod:
     period_space = None
     if isinstance(period_space_raw, dict):
         period_space = PublicPeriodSpace(
-            label=period_space_raw.get("label"),
-            one_liner=period_space_raw.get("one_liner"),
+            label=_normalize_display_text(period_space_raw.get("label")),
+            one_liner=_normalize_display_text(period_space_raw.get("one_liner")),
         )
 
-    core_story = presentable.get("core_story") or summary.get("one_liner")
+    core_story = _normalize_display_text(presentable.get("core_story") or summary.get("one_liner"))
     top_item = ((response.get("display") or {}).get("items") or [None])[0]
     upper_meaning = ""
     if isinstance(top_item, dict):
@@ -681,13 +850,13 @@ def build_public_period(response: Dict[str, Any]) -> PublicPeriod:
             seed=abs(hash((str(core_story or ""), str(top_item.get("event_id") or "")))) % (2**31),
         )
     if upper_meaning:
-        core_story = f"{(core_story or '').strip()} {upper_meaning}".strip()
+        core_story = _normalize_display_text(f"{(core_story or '').strip()} {upper_meaning}".strip())
     main_theme = summary.get("main_theme") or "identity"
     return PublicPeriod(
         core_story=core_story,
         summary=PublicPeriodSummary(
-            main_theme=main_theme,
-            one_liner=(summary.get("one_liner") or core_story),
+            main_theme=_normalize_display_text(main_theme),
+            one_liner=_normalize_display_text(summary.get("one_liner") or core_story),
         ),
         period_space=period_space,
     )
@@ -703,8 +872,13 @@ def build_public_response(response: Dict[str, Any]) -> Dict[str, Any]:
         else {}
     )
     event_v2_by_id = _event_v2_index(response)
-    event_cards = build_active_event_cards(response, max_cards=5)
-    period_core = build_period_core(response, event_cards=event_cards)
+    event_cards = [
+        _normalize_event_card_copy(card)
+        for card in build_active_event_cards(response, max_cards=5)
+    ]
+    period_core = _normalize_period_core_copy(
+        build_period_core(response, event_cards=event_cards)
+    )
     global_period_story = _global_period_story(period_core)
     story_tracks = period_core.get("story_tracks") if isinstance(period_core.get("story_tracks"), dict) else {}
     event_story_map = (
@@ -716,18 +890,22 @@ def build_public_response(response: Dict[str, Any]) -> Dict[str, Any]:
         enriched_cards: List[Dict[str, Any]] = []
         for card in event_cards:
             enriched_cards.append(
-                _enrich_period_story(
+                _normalize_event_card_copy(
+                    _enrich_period_story(
                     card,
                     period_core=period_core,
                     global_period_story=global_period_story,
                     story_tracks=story_tracks,
                     event_story_map=event_story_map,
                 )
+                )
             )
         event_cards = enriched_cards
     if event_v2_by_id and event_cards:
         event_cards = [
-            _merge_event_v2(card, event_v2_by_id.get(str(card.get("event_id") or "").strip()))
+            _normalize_event_card_copy(
+                _merge_event_v2(card, event_v2_by_id.get(str(card.get("event_id") or "").strip()))
+            )
             for card in event_cards
         ]
     period_peak_timeline = _build_period_peak_timeline(
@@ -736,10 +914,12 @@ def build_public_response(response: Dict[str, Any]) -> Dict[str, Any]:
         period_core=period_core,
     )
     period_peak_timeline = _merge_period_peak_timeline_v2(period_peak_timeline, event_v2_by_id)
-    timeline = build_daily_line(
+    timeline = _normalize_timeline_copy(
+        build_daily_line(
         str(response.get("transit_date") or ""),
         pick_top_event(response),
         context={"period_core": period_core},
+        )
     )
     debug_events = []
     recent_headlines: List[str] = []

@@ -13,9 +13,12 @@ import 'package:mobile/app/people/person_profile.dart';
 import 'package:mobile/app/people/people_providers.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/profile/profile_repository.dart';
+import 'package:mobile/app/tabs/profile_archetype_page.dart';
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
 import 'package:mobile/app/tabs/profile_detail_flow_page.dart';
+import 'package:mobile/app/tabs/profile_relationship_preview.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/design/astro/astro_theme_extension.dart';
 import 'package:mobile/design/astro/astro_theme_generator.dart';
@@ -33,6 +36,158 @@ const Color _kProfilePosterLilac = Color(0xFFB58DFF);
 const Color _kProfilePosterBlush = Color(0xFFFFC5E7);
 const Color _kProfilePosterMint = Color(0xFF9EF0E7);
 const Color _kProfilePosterButter = Color(0xFFFFE5A4);
+
+@immutable
+class _ProfilePosterPalette {
+  const _ProfilePosterPalette({
+    required this.isDark,
+    required this.bg,
+    required this.surface,
+    required this.surfaceSoft,
+    required this.surfaceDeep,
+    required this.surfaceStrong,
+    required this.stroke,
+    required this.text,
+    required this.textSoft,
+    required this.muted,
+    required this.accent,
+    required this.accentSoft,
+    required this.accentWarm,
+    required this.butter,
+    required this.iconSurface,
+    required this.iconBorder,
+    required this.divider,
+    required this.glow,
+  });
+
+  final bool isDark;
+  final Color bg;
+  final Color surface;
+  final Color surfaceSoft;
+  final Color surfaceDeep;
+  final Color surfaceStrong;
+  final Color stroke;
+  final Color text;
+  final Color textSoft;
+  final Color muted;
+  final Color accent;
+  final Color accentSoft;
+  final Color accentWarm;
+  final Color butter;
+  final Color iconSurface;
+  final Color iconBorder;
+  final Color divider;
+  final Color glow;
+}
+
+_ProfilePosterPalette _profilePosterPalette(BuildContext context) {
+  final profile = context.profileTheme;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  if (isDark) {
+    return _ProfilePosterPalette(
+      isDark: true,
+      bg: _kProfilePosterBg,
+      surface: _kProfilePosterSurface,
+      surfaceSoft: _kProfilePosterSurfaceSoft,
+      surfaceDeep: const Color(0xFF09080B),
+      surfaceStrong: const Color(0xFF181513),
+      stroke: _kProfilePosterStroke,
+      text: const Color(0xFFF5F2EE),
+      textSoft: Colors.white.withValues(alpha: 0.86),
+      muted: _kProfilePosterMuted,
+      accent: _kProfilePosterAccent,
+      accentSoft: _kProfilePosterMint,
+      accentWarm: _kProfilePosterBlush,
+      butter: _kProfilePosterButter,
+      iconSurface: const Color(0xFF111315),
+      iconBorder: Colors.white.withValues(alpha: 0.08),
+      divider: Colors.white.withValues(alpha: 0.08),
+      glow: _kProfilePosterLilac.withValues(alpha: 0.12),
+    );
+  }
+  return _ProfilePosterPalette(
+    isDark: false,
+    bg: profile.colors.bg,
+    surface: profile.colors.surface,
+    surfaceSoft: Color.alphaBlend(
+      profile.colors.lavender.withValues(alpha: 0.42),
+      profile.colors.surface,
+    ),
+    surfaceDeep: Color.alphaBlend(
+      profile.colors.heroBase.withValues(alpha: 0.92),
+      profile.colors.surface,
+    ),
+    surfaceStrong: Color.alphaBlend(
+      profile.colors.primary.withValues(alpha: 0.18),
+      profile.colors.surface,
+    ),
+    stroke: Color.alphaBlend(
+      Colors.black.withValues(alpha: 0.02),
+      profile.colors.borderSubtle.withValues(alpha: 0.96),
+    ),
+    text: profile.colors.text,
+    textSoft: profile.colors.text.withValues(alpha: 0.84),
+    muted: profile.colors.muted,
+    accent: const Color(0xFF8F73FF),
+    accentSoft: Color.alphaBlend(
+      profile.colors.lime.withValues(alpha: 0.72),
+      Colors.white,
+    ),
+    accentWarm: Color.alphaBlend(
+      profile.colors.neonPink.withValues(alpha: 0.82),
+      Colors.white,
+    ),
+    butter: Color.alphaBlend(
+      profile.colors.lime.withValues(alpha: 0.44),
+      Colors.white,
+    ),
+    iconSurface: Color.alphaBlend(
+      profile.colors.lavender.withValues(alpha: 0.52),
+      profile.colors.surface,
+    ),
+    iconBorder: Color.alphaBlend(
+      Colors.black.withValues(alpha: 0.02),
+      profile.colors.borderSubtle,
+    ),
+    divider: Colors.black.withValues(alpha: 0.08),
+    glow: const Color(0x148F73FF),
+  );
+}
+
+ProfileDetailTone? _profilePosterResolvedTone(
+  BuildContext context,
+  ProfileDetailTone? tone,
+) {
+  if (tone == null || Theme.of(context).brightness == Brightness.dark) {
+    return tone;
+  }
+  final palette = _profilePosterPalette(context);
+  return ProfileDetailTone(
+    background: Color.alphaBlend(
+      tone.accentSoft.withValues(alpha: 0.12),
+      palette.surfaceDeep,
+    ),
+    surface: Color.alphaBlend(
+      tone.accent.withValues(alpha: 0.06),
+      palette.surface,
+    ),
+    surfaceStrong: Color.alphaBlend(
+      tone.accentSoft.withValues(alpha: 0.16),
+      palette.surfaceSoft,
+    ),
+    accent: tone.accent,
+    accentSoft: Color.alphaBlend(
+      tone.accentSoft.withValues(alpha: 0.48),
+      Colors.white,
+    ),
+    stroke: Color.alphaBlend(
+      tone.accent.withValues(alpha: 0.14),
+      palette.stroke,
+    ),
+    glow: tone.accent.withValues(alpha: 0.12),
+    mutedText: palette.muted,
+  );
+}
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({
@@ -54,6 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
   static const String _baseUrl = 'http://127.0.0.1:5000';
   static const Duration _natalCacheTtl = Duration(minutes: 5);
   static const Duration _fastProfileCacheTtl = Duration(minutes: 5);
+  static const String _natalPayloadVersion = 'natal_profile_v3_2026_04_02';
 
   final _nameController = TextEditingController();
   final _birthDateController = TextEditingController();
@@ -82,6 +238,10 @@ class _ProfilePageState extends State<ProfilePage> {
   String _risingSign = '—';
   _ProfileIdentityContext? _identityContext;
   String? _lastNatalKey;
+  bool _isArchetypeSummaryLoading = false;
+  String? _archetypeSummaryError;
+  Map<String, dynamic>? _archetypeSummary;
+  String? _lastArchetypeSummaryKey;
   int _segmentIndex = 0;
 
   @override
@@ -152,6 +312,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   _didSeed = true;
                 }
                 _maybeLoadNatalInterpretation(profile);
+                _maybeLoadArchetypeSummary(
+                  profile,
+                  repo: repo,
+                  currentUserId: uid,
+                );
               }
 
               final displayName = _displayName(profile);
@@ -252,7 +417,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 locationLabel,
                 _profileAgeLabel(profile),
               ].where((item) => item.trim().isNotEmpty).join(' • ');
-              final isDark = Theme.of(context).brightness == Brightness.dark;
+              final posterPalette = _profilePosterPalette(context);
               final isOwnProfile =
                   !widget.readOnly &&
                   (widget.viewedUserId == null || widget.viewedUserId == uid);
@@ -291,10 +456,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       repo: repo,
                       currentUserEmail: currentUserEmail,
                     );
-              final profileStats = <_ProfileStatItem>[
-                _ProfileStatItem(value: '$followingCount', label: 'Takip'),
-                _ProfileStatItem(value: '$followerCount', label: 'Takipçi'),
-              ];
               final editorialStatementTitle = _profilePosterEditorialTitle(
                 identityHeadline: identityHeadline,
                 heroNarrativeCard: heroNarrativeCard,
@@ -394,6 +555,12 @@ class _ProfilePageState extends State<ProfilePage> {
                         rulerHouse: _identityContext?.rulerHouse,
                         element: elementScores.dominant,
                         risingSign: _risingSign,
+                        onTap: () => _openIdentityFlow(
+                          displayName: displayName,
+                          headline: identityHeadline,
+                          summary: identitySummary,
+                          drivers: identityDrivers,
+                        ),
                       ),
                     ),
                     if (editorialStatementTitle.trim().isNotEmpty ||
@@ -405,6 +572,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: _ProfilePosterEditorialStatement(
                             title: editorialStatementTitle,
                             body: editorialStatementBody,
+                            onTap: () => _openIdentityFlow(
+                              displayName: displayName,
+                              headline: identityHeadline,
+                              summary: identitySummary,
+                              drivers: identityDrivers,
+                            ),
                           ),
                         ),
                       ),
@@ -508,6 +681,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ],
+                    ] else if (_segmentIndex == 1) ...[
+                      ProfileRelationshipPreview(profile: profile),
                     ] else ...[
                       ProfileCalendarPreviewStrip(
                         profileOverride: widget.profileOverride,
@@ -539,39 +714,39 @@ class _ProfilePageState extends State<ProfilePage> {
                           'Bu ekran core story, profile narrative ve insight alanlarıyla doluyor. Doğum tarihini, saati ve yeri tamamladığında içerik otomatik açılır.',
                     ),
                   ] else ...[
-                    _ProfileIdentityHeaderCard(
-                      displayName: displayName,
-                      username: username,
-                      avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
-                      isAvatarUploading: _isAvatarUploading,
-                      onAvatarEdit: widget.readOnly
-                          ? null
-                          : _pickAndUploadAvatar,
-                      dominantElementLabel: dominantElementLabel,
-                      sunSign: _sunSign,
-                      moonSign: _moonSign,
-                      risingSign: _risingSign,
-                      stats: profileStats,
-                    ),
                     if (_identityContext != null) ...[
-                      const SizedBox(height: 20),
                       _ProfileIdentityQuickSection(
                         contextData: _identityContext!,
                         dominantElementLabel: dominantElementLabel,
+                        onTap: () => _openIdentityFlow(
+                          displayName: displayName,
+                          headline: identityHeadline,
+                          summary: identitySummary,
+                          drivers: identityDrivers,
+                        ),
                       ),
+                      const SizedBox(height: 20),
                     ],
                     if (editorialStatementTitle.trim().isNotEmpty ||
                         editorialStatementBody.trim().isNotEmpty) ...[
-                      const SizedBox(height: 24),
-                      JoviaReadingPanel(
-                        label: 'Kimlik ekseni',
-                        title: editorialStatementTitle.trim().isNotEmpty
-                            ? editorialStatementTitle
-                            : 'Kimlik ekseni',
-                        body: editorialStatementBody,
+                      JoviaPressable(
+                        onTap: () => _openIdentityFlow(
+                          displayName: displayName,
+                          headline: identityHeadline,
+                          summary: identitySummary,
+                          drivers: identityDrivers,
+                        ),
+                        borderRadius: BorderRadius.circular(24),
+                        child: JoviaReadingPanel(
+                          label: 'Kimlik ekseni',
+                          title: editorialStatementTitle.trim().isNotEmpty
+                              ? editorialStatementTitle
+                              : 'Kimlik ekseni',
+                          body: editorialStatementBody,
+                        ),
                       ),
+                      const SizedBox(height: 24),
                     ],
-                    const SizedBox(height: 24),
                     Center(
                       child: ConstrainedBox(
                         constraints: const BoxConstraints(maxWidth: 248),
@@ -604,8 +779,31 @@ class _ProfilePageState extends State<ProfilePage> {
                                     : 'İmza Katmanları',
                                 cards: allSignatureCards,
                               ),
+                        onOpenPlacementCard: (card) => _openSignatureFlow(
+                          title: imprintHeadline.isNotEmpty
+                              ? imprintHeadline
+                              : 'İmza Katmanları',
+                          cards: allSignatureCards,
+                          selected: card,
+                        ),
+                        onOpenNarrativeCard: (card) =>
+                            _openNarrativeFlow(selectedCard: card),
+                        onOpenInsightModule: (module) =>
+                            _openInsightFlow(module: module),
+                        onOpenSupportingThread: (thread) => _openSideThemesFlow(
+                          items: sideThemes,
+                          selected: thread,
+                        ),
+                        onOpenSummary: () => _openIdentityFlow(
+                          displayName: displayName,
+                          headline: identityHeadline,
+                          summary: identitySummary,
+                          drivers: identityDrivers,
+                        ),
                         readOnly: widget.readOnly,
                       )
+                    else if (_segmentIndex == 1)
+                      ProfileRelationshipPreview(profile: profile)
                     else
                       ProfileCalendarPreviewStrip(
                         profileOverride: widget.profileOverride,
@@ -624,14 +822,15 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         Expanded(
                           child: _ProfilePosterFooterButton(
-                            label: _segmentIndex == 0
-                                ? 'Timing akışını aç'
-                                : 'Harita akışına dön',
+                            label: switch (_segmentIndex) {
+                              0 => 'Iliski akisini ac',
+                              1 => 'Timing akisini ac',
+                              _ => 'Harita akisina don',
+                            },
                             emphasized: true,
                             onTap: () {
                               setState(
-                                () =>
-                                    _segmentIndex = _segmentIndex == 0 ? 1 : 0,
+                                () => _segmentIndex = (_segmentIndex + 1) % 3,
                               );
                             },
                           ),
@@ -639,91 +838,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       ],
                     );
 
-              if (!isDark) {
-                final profileTheme = context.profileTheme;
-                return Scaffold(
-                  backgroundColor: profileTheme.colors.bg,
-                  body: DecoratedBox(
-                    decoration: BoxDecoration(color: profileTheme.colors.bg),
-                    child: JoviaPageScaffold(
-                      padding: const EdgeInsets.fromLTRB(20, 14, 20, 28),
-                      child: ListView(
-                        padding: EdgeInsets.zero,
-                        children: [
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 72,
-                                child: widget.readOnly
-                                    ? Align(
-                                        alignment: Alignment.centerLeft,
-                                        child: JoviaGlassIconButton(
-                                          onTap: () => Navigator.of(
-                                            context,
-                                            rootNavigator: true,
-                                          ).maybePop(),
-                                          child: const JoviaUiIcon(
-                                            asset: JoviaUiAsset.back,
-                                            size: 18,
-                                          ),
-                                        ),
-                                      )
-                                    : Text(
-                                        'PROFIL',
-                                        style: profileTheme.typography.eyebrow
-                                            .copyWith(
-                                              color: profileTheme.colors.text,
-                                              fontSize: 13,
-                                              fontWeight: FontWeight.w700,
-                                              letterSpacing: 2.4,
-                                            ),
-                                      ),
-                              ),
-                              Expanded(
-                                child: Text(
-                                  username,
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: profileTheme.typography.micro.copyWith(
-                                    color: profileTheme.colors.text,
-                                    fontSize: 13.5,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                width: 72,
-                                child: Align(
-                                  alignment: Alignment.centerRight,
-                                  child: profileMenuTap == null
-                                      ? const SizedBox(width: 40, height: 40)
-                                      : JoviaGlassIconButton(
-                                          onTap: profileMenuTap,
-                                          child: const JoviaUiIcon(
-                                            asset: JoviaUiAsset.menuStack,
-                                            size: 18,
-                                          ),
-                                        ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          lightContentView,
-                          const SizedBox(height: 20),
-                          footer,
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              }
-
               return Scaffold(
-                backgroundColor: _kProfilePosterBg,
+                backgroundColor: posterPalette.bg,
                 body: ColoredBox(
-                  color: _kProfilePosterBg,
+                  color: posterPalette.bg,
                   child: Stack(
                     children: [
                       JoviaPageScaffold(
@@ -773,12 +891,56 @@ class _ProfilePageState extends State<ProfilePage> {
                                 drivers: identityDrivers,
                               ),
                             ),
+                            if (profile != null) ...[
+                              const SizedBox(height: 18),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: _ProfilePosterArchetypeEntryCard(
+                                  title: 'Arketipini Gor',
+                                  body: _hasBirthData(profile)
+                                      ? 'Haritandaki aktif kimlik, koruma ve gerilim cizgilerini tek bir deneyimde ac.'
+                                      : 'Dogum tarihi, saati ve yerini tamamladiginda arketip deneyimi buradan acilacak.',
+                                  ctaLabel: _hasBirthData(profile)
+                                      ? 'Arketipini gor'
+                                      : 'Dogum verini tamamla',
+                                  onTap: () => _openArchetypeExperience(
+                                    profile: profile,
+                                    displayName: displayName,
+                                  ),
+                                ),
+                              ),
+                              if (_isArchetypeSummaryLoading ||
+                                  _archetypeSummary != null ||
+                                  (_archetypeSummaryError ?? '')
+                                      .trim()
+                                      .isNotEmpty) ...[
+                                const SizedBox(height: 14),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  child: _ProfilePosterArchetypeSnapshotCard(
+                                    isLoading: _isArchetypeSummaryLoading,
+                                    error: _archetypeSummaryError,
+                                    payload: _archetypeSummary,
+                                    onTap: () => _openArchetypeExperience(
+                                      profile: profile,
+                                      displayName: displayName,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
                             const SizedBox(height: 24),
                             Padding(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 16,
                               ),
-                              child: darkContentView,
+                              child: posterPalette.isDark
+                                  ? darkContentView
+                                  : lightContentView,
                             ),
                             const SizedBox(height: 20),
                             Padding(
@@ -1102,7 +1264,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ? country
               : (country.isEmpty ? city : '$city, $country'));
     final key =
-        '${profile['birth_date']}|${profile['birth_time']}|$place|${profile['timezone'] ?? ''}';
+        '${profile['birth_date']}|${profile['birth_time']}|$place|${profile['timezone'] ?? ''}|$_natalPayloadVersion';
     if (_lastNatalKey == key) {
       return;
     }
@@ -1113,6 +1275,70 @@ class _ProfilePageState extends State<ProfilePage> {
       }
       _loadNatalInterpretation(profile);
     });
+  }
+
+  void _maybeLoadArchetypeSummary(
+    Map<String, dynamic> profile, {
+    required ProfileRepository repo,
+    required String? currentUserId,
+  }) {
+    if (currentUserId == null || !_hasBirthData(profile) || widget.readOnly) {
+      return;
+    }
+    final viewedUserId = (widget.viewedUserId ?? '').trim();
+    if (viewedUserId.isNotEmpty && viewedUserId != currentUserId) {
+      return;
+    }
+    final city = (profile['city'] ?? '').toString().trim();
+    final country = (profile['country'] ?? '').toString().trim();
+    final placeRaw = (profile['place'] ?? '').toString().trim();
+    final place = placeRaw.isNotEmpty
+        ? placeRaw
+        : (city.isEmpty
+              ? country
+              : (country.isEmpty ? city : '$city, $country'));
+    final key =
+        '$currentUserId|${profile['birth_date']}|${profile['birth_time']}|$place';
+    if (_lastArchetypeSummaryKey == key) {
+      return;
+    }
+    _lastArchetypeSummaryKey = key;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      _loadArchetypeSummary(userId: currentUserId, repo: repo);
+    });
+  }
+
+  Future<void> _loadArchetypeSummary({
+    required String userId,
+    required ProfileRepository repo,
+  }) async {
+    setState(() {
+      _isArchetypeSummaryLoading = true;
+      _archetypeSummaryError = null;
+    });
+
+    try {
+      final payload = await repo.getArchetypeProfile(userId);
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _archetypeSummary = payload;
+        _isArchetypeSummaryLoading = false;
+        _archetypeSummaryError = null;
+      });
+    } catch (e) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _isArchetypeSummaryLoading = false;
+        _archetypeSummaryError = 'Arketip ozeti alinamadi.';
+      });
+    }
   }
 
   Future<void> _loadNatalInterpretation(Map<String, dynamic> profile) async {
@@ -1131,6 +1357,7 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
       'birth_place': place,
       'locale': 'tr',
+      'client_surface_version': _natalPayloadVersion,
     };
 
     setState(() {
@@ -3110,6 +3337,56 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Future<void> _openArchetypeExperience({
+    required Map<String, dynamic> profile,
+    required String displayName,
+  }) async {
+    if (!_hasBirthData(profile)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Arketip deneyimi icin once dogum tarihi, saati ve yeri gerekli.',
+            ),
+          ),
+        );
+      }
+      return;
+    }
+    final city = (profile['city'] ?? '').toString().trim();
+    final country = (profile['country'] ?? '').toString().trim();
+    final placeRaw = (profile['place'] ?? '').toString().trim();
+    final place = placeRaw.isNotEmpty
+        ? placeRaw
+        : (city.isEmpty
+              ? country
+              : (country.isEmpty ? city : '$city, $country'));
+    final payload = <String, dynamic>{
+      'birth_date': (profile['birth_date'] ?? '').toString().trim(),
+      'birth_time': _normalizeBirthTime(
+        (profile['birth_time'] ?? '').toString(),
+      ),
+      'birth_place': place,
+      'locale': 'tr',
+      'birth_time_confidence': 'exact',
+    };
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (context) => ProfileArchetypeExperiencePage(
+          displayName: displayName,
+          requestPayload: payload,
+          baseUrl: _baseUrl,
+        ),
+      ),
+    );
+    if (!mounted) {
+      return;
+    }
+    setState(() {
+      _lastArchetypeSummaryKey = null;
+    });
+  }
+
   void _openIdentityFlow({
     required String displayName,
     required String headline,
@@ -3278,6 +3555,7 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       builder: (sheetContext) {
+        final palette = _profilePosterPalette(sheetContext);
         return Padding(
           padding: EdgeInsets.fromLTRB(
             profile.spacing.lg,
@@ -3286,17 +3564,17 @@ class _ProfilePageState extends State<ProfilePage> {
             MediaQuery.of(sheetContext).viewInsets.bottom + profile.spacing.lg,
           ),
           child: JoviaSurfaceCard(
-            backgroundColor: _kProfilePosterSurface,
-            borderColor: _kProfilePosterStroke,
+            backgroundColor: palette.surface,
+            borderColor: palette.stroke,
             radius: 28,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    label.toUpperCase(),
+                    turkishToUpper(label),
                     style: profile.typography.eyebrow.copyWith(
-                      color: _kProfilePosterAccent,
+                      color: palette.accent,
                       letterSpacing: 1.5,
                     ),
                   ),
@@ -3304,7 +3582,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Text(
                     title,
                     style: profile.typography.card.copyWith(
-                      color: Colors.white,
+                      color: palette.text,
                       fontSize: 26,
                       height: 1.1,
                     ),
@@ -3313,7 +3591,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   Text(
                     resolvedBody,
                     style: profile.typography.body.copyWith(
-                      color: Colors.white.withValues(alpha: 0.86),
+                      color: palette.textSoft,
                       height: 1.65,
                     ),
                   ),
@@ -3322,7 +3600,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     Text(
                       micro!,
                       style: profile.typography.micro.copyWith(
-                        color: _kProfilePosterMuted,
+                        color: palette.muted,
                       ),
                     ),
                   ],
@@ -3811,6 +4089,7 @@ class _ProfilePosterTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Row(
       children: [
         SizedBox(
@@ -3820,17 +4099,17 @@ class _ProfilePosterTopBar extends StatelessWidget {
                   alignment: Alignment.centerLeft,
                   child: _ProfilePosterIconButton(
                     onTap: onLeadingTap,
-                    child: const JoviaUiIcon(
+                    child: JoviaUiIcon(
                       asset: JoviaUiAsset.back,
                       size: 18,
-                      color: Colors.white,
+                      color: palette.text,
                     ),
                   ),
                 )
               : Text(
                   'PROFIL',
                   style: profile.typography.eyebrow.copyWith(
-                    color: Colors.white,
+                    color: palette.text,
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 2.4,
@@ -3844,7 +4123,7 @@ class _ProfilePosterTopBar extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: profile.typography.micro.copyWith(
-              color: Colors.white.withValues(alpha: 0.92),
+              color: palette.textSoft,
               fontSize: 13.5,
               fontWeight: FontWeight.w600,
             ),
@@ -3858,10 +4137,10 @@ class _ProfilePosterTopBar extends StatelessWidget {
                 ? const SizedBox(width: 40, height: 40)
                 : _ProfilePosterIconButton(
                     onTap: onActionTap,
-                    child: const JoviaUiIcon(
+                    child: JoviaUiIcon(
                       asset: JoviaUiAsset.menuStack,
                       size: 18,
-                      color: Colors.white,
+                      color: palette.text,
                     ),
                   ),
           ),
@@ -3905,19 +4184,40 @@ class _ProfilePosterHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final content = Container(
       constraints: const BoxConstraints(minHeight: 180),
       padding: const EdgeInsets.fromLTRB(20, 26, 20, 26),
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
-          colors: <Color>[
-            Color(0xFF090807),
-            Color(0xFF12100F),
-            Color(0xFF161312),
-          ],
+          colors: palette.isDark
+              ? const <Color>[
+                  Color(0xFF090807),
+                  Color(0xFF12100F),
+                  Color(0xFF161312),
+                ]
+              : <Color>[
+                  Colors.white,
+                  palette.surfaceDeep,
+                  Color.alphaBlend(
+                    palette.accentSoft.withValues(alpha: 0.34),
+                    Colors.white,
+                  ),
+                ],
         ),
+        border: palette.isDark ? null : Border.all(color: palette.stroke),
+        boxShadow: palette.isDark
+            ? null
+            : [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.05),
+                  blurRadius: 26,
+                  offset: const Offset(0, 16),
+                  spreadRadius: -22,
+                ),
+              ],
       ),
       child: Stack(
         children: [
@@ -3931,21 +4231,23 @@ class _ProfilePosterHeader extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.white.withValues(alpha: 0.08),
+                    (palette.isDark ? Colors.white : palette.accent).withValues(
+                      alpha: palette.isDark ? 0.08 : 0.12,
+                    ),
                     Colors.transparent,
                   ],
                 ),
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             right: 14,
             top: 14,
             child: JoviaIllustrationAccent(
               asset: JoviaIllustrationAsset.sunGrowth,
               width: 84,
               height: 84,
-              opacity: 0.82,
+              opacity: palette.isDark ? 0.82 : 0.56,
             ),
           ),
           Row(
@@ -3968,7 +4270,7 @@ class _ProfilePosterHeader extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: profile.typography.heroName.copyWith(
-                        color: const Color(0xFFF5F2EE),
+                        color: palette.text,
                         fontWeight: FontWeight.w600,
                         height: 0.94,
                       ),
@@ -4000,7 +4302,7 @@ class _ProfilePosterHeader extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: profile.typography.micro.copyWith(
-                          color: Colors.white.withValues(alpha: 0.48),
+                          color: palette.muted,
                           fontSize: 12.8,
                           fontWeight: FontWeight.w600,
                         ),
@@ -4040,14 +4342,17 @@ class _ProfilePosterFollowStatsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
 
     Widget stat(int count, String label) {
       final child = Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.05),
+          color: palette.isDark
+              ? Colors.white.withValues(alpha: 0.05)
+              : palette.surfaceDeep,
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+          border: Border.all(color: palette.stroke),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
@@ -4055,7 +4360,7 @@ class _ProfilePosterFollowStatsRow extends StatelessWidget {
             Text(
               '$count',
               style: profile.typography.micro.copyWith(
-                color: Colors.white,
+                color: palette.text,
                 fontSize: 13.3,
                 fontWeight: FontWeight.w800,
               ),
@@ -4064,7 +4369,7 @@ class _ProfilePosterFollowStatsRow extends StatelessWidget {
             Text(
               label,
               style: profile.typography.micro.copyWith(
-                color: Colors.white.withValues(alpha: 0.82),
+                color: palette.textSoft,
                 fontSize: 12.2,
                 fontWeight: FontWeight.w600,
               ),
@@ -4137,7 +4442,7 @@ class _ProfilePosterFollowStatsRow extends StatelessWidget {
                           ? '${people.first.name} profiline git'
                           : '${people.length} arkadaş profiline bak',
                       style: profile.typography.micro.copyWith(
-                        color: Colors.white.withValues(alpha: 0.72),
+                        color: palette.muted,
                         fontSize: 12.4,
                         fontWeight: FontWeight.w600,
                       ),
@@ -4179,16 +4484,17 @@ class _ProfilePosterMainHeadline extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label.toUpperCase(),
+            turkishToUpper(label),
             textAlign: TextAlign.left,
             style: profile.typography.monoEyebrow.copyWith(
-              color: const Color(0xFFF5F2EE),
+              color: palette.text,
               fontSize: 21,
               fontWeight: FontWeight.w700,
             ),
@@ -4198,7 +4504,7 @@ class _ProfilePosterMainHeadline extends StatelessWidget {
             _multilineTitle(),
             textAlign: TextAlign.left,
             style: profile.typography.bodyReading.copyWith(
-              color: const Color(0xFFF5F2EE),
+              color: palette.text,
               fontSize: 17.2,
               fontWeight: FontWeight.w500,
               height: 1.5,
@@ -4219,15 +4525,18 @@ class _ProfilePosterSectionTag extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = _profilePosterPalette(context);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
-        color: context.profileTheme.colors.buttonSecondary,
+        color: palette.isDark
+            ? context.profileTheme.colors.buttonSecondary
+            : palette.surfaceDeep,
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: context.profileTheme.colors.hairline),
+        border: Border.all(color: palette.stroke),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.18),
+            color: Colors.black.withValues(alpha: palette.isDark ? 0.18 : 0.06),
             blurRadius: 18,
             offset: const Offset(0, 10),
             spreadRadius: -14,
@@ -4237,7 +4546,7 @@ class _ProfilePosterSectionTag extends StatelessWidget {
       child: Text(
         label,
         style: context.profileTheme.typography.buttonLabel.copyWith(
-          color: Colors.white,
+          color: palette.text,
           fontWeight: FontWeight.w700,
           fontSize: 12.8,
           letterSpacing: 0.08,
@@ -4251,23 +4560,26 @@ class _ProfilePosterEditorialStatement extends StatelessWidget {
   const _ProfilePosterEditorialStatement({
     required this.title,
     required this.body,
+    this.onTap,
   });
 
   final String title;
   final String body;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return Column(
+    final palette = _profilePosterPalette(context);
+    final content = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         if (title.trim().isNotEmpty)
           Text(
-            title.toUpperCase(),
+            turkishToUpper(title),
             textAlign: TextAlign.center,
             style: profile.typography.monoEyebrow.copyWith(
-              color: const Color(0xFFF5F2EE),
+              color: palette.text,
               fontWeight: FontWeight.w700,
               fontSize: 15.6,
               letterSpacing: 0.9,
@@ -4282,13 +4594,24 @@ class _ProfilePosterEditorialStatement extends StatelessWidget {
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
             style: profile.typography.bodyReading.copyWith(
-              color: Colors.white.withValues(alpha: 0.88),
+              color: palette.textSoft,
               fontSize: 15,
               height: 1.58,
             ),
           ),
         ],
       ],
+    );
+    if (onTap == null) {
+      return content;
+    }
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        child: content,
+      ),
     );
   }
 }
@@ -4309,12 +4632,13 @@ class _ProfilePosterIdentitySummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       decoration: BoxDecoration(
-        color: _kProfilePosterSurface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: _kProfilePosterStroke),
+        border: Border.all(color: palette.stroke),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -4331,7 +4655,7 @@ class _ProfilePosterIdentitySummaryCard extends StatelessWidget {
           Text(
             headline.trim().isNotEmpty ? headline.trim() : 'Kimlik okuması',
             style: profile.typography.section.copyWith(
-              color: Colors.white,
+              color: palette.text,
               fontSize: 24,
               height: 1.12,
             ),
@@ -4343,7 +4667,7 @@ class _ProfilePosterIdentitySummaryCard extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: profile.typography.bodyReading.copyWith(
-                color: Colors.white.withValues(alpha: 0.84),
+                color: palette.textSoft,
                 fontSize: 15.2,
                 height: 1.55,
               ),
@@ -4379,6 +4703,7 @@ class _ProfilePosterQuickInfoRow extends StatelessWidget {
     required this.rulerHouse,
     required this.element,
     required this.risingSign,
+    this.onTap,
   });
 
   final String dominantElementLabel;
@@ -4387,6 +4712,7 @@ class _ProfilePosterQuickInfoRow extends StatelessWidget {
   final int? rulerHouse;
   final AstroElement element;
   final String risingSign;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -4406,7 +4732,7 @@ class _ProfilePosterQuickInfoRow extends StatelessWidget {
                     ? '$risingSign yöneticisi'
                     : 'Harita omurgası'));
     final rulerBody = rulerHouse == null ? '' : '$rulerHouse. ev vurgusu';
-    return ConstrainedBox(
+    final content = ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 300),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -4434,6 +4760,14 @@ class _ProfilePosterQuickInfoRow extends StatelessWidget {
         ],
       ),
     );
+    if (onTap == null) {
+      return content;
+    }
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(26),
+      child: content,
+    );
   }
 }
 
@@ -4442,11 +4776,12 @@ class _ProfilePosterSaturnSeal extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const base = Color(0xFFF5F2EE);
+    final palette = _profilePosterPalette(context);
+    final base = palette.text;
     Widget dot(double size) => Container(
       width: size,
       height: size,
-      decoration: const BoxDecoration(color: base, shape: BoxShape.circle),
+      decoration: BoxDecoration(color: base, shape: BoxShape.circle),
     );
 
     return SizedBox(
@@ -4497,6 +4832,7 @@ class _MiniSignatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
       child: Column(
@@ -4507,7 +4843,7 @@ class _MiniSignatureCard extends StatelessWidget {
           Text(
             'AURA',
             style: profile.typography.monoEyebrow.copyWith(
-              color: _kProfilePosterMuted,
+              color: palette.muted,
               fontSize: 11.5,
               letterSpacing: 1.95,
             ),
@@ -4519,7 +4855,7 @@ class _MiniSignatureCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: profile.typography.card.copyWith(
-              color: Colors.white,
+              color: palette.text,
               fontSize: 15.6,
               fontWeight: FontWeight.w700,
               height: 1.25,
@@ -4533,7 +4869,7 @@ class _MiniSignatureCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: profile.typography.micro.copyWith(
-                color: _kProfilePosterMuted,
+                color: palette.muted,
                 fontSize: 12.5,
                 height: 1.45,
               ),
@@ -4561,6 +4897,7 @@ class _ProfilePosterStructuredSnapshotCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
       child: Column(
@@ -4569,9 +4906,9 @@ class _ProfilePosterStructuredSnapshotCard extends StatelessWidget {
           art,
           const SizedBox(height: 8),
           Text(
-            overline.toUpperCase(),
+            turkishToUpper(overline),
             style: profile.typography.monoEyebrow.copyWith(
-              color: _kProfilePosterMuted,
+              color: palette.muted,
               fontSize: 11.5,
               letterSpacing: 1.95,
             ),
@@ -4583,7 +4920,7 @@ class _ProfilePosterStructuredSnapshotCard extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: profile.typography.body.copyWith(
-              color: Colors.white,
+              color: palette.text,
               fontSize: 14.9,
               fontWeight: FontWeight.w700,
               height: 1.42,
@@ -4597,7 +4934,7 @@ class _ProfilePosterStructuredSnapshotCard extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               textAlign: TextAlign.center,
               style: profile.typography.micro.copyWith(
-                color: _kProfilePosterMuted,
+                color: palette.muted,
                 fontSize: 12.5,
                 height: 1.45,
               ),
@@ -4622,8 +4959,12 @@ class _ProfilePosterModeSwitch extends StatelessWidget {
   Widget build(BuildContext context) {
     return JoviaSegmentedControl<int>(
       value: currentIndex,
-      options: const <int>[0, 1],
-      labelBuilder: (value) => value == 0 ? 'Natal' : 'Timing',
+      options: const <int>[0, 1, 2],
+      labelBuilder: (value) => switch (value) {
+        0 => 'Natal',
+        1 => 'Iliski',
+        _ => 'Timing',
+      },
       onChanged: onChanged,
     );
   }
@@ -4656,17 +4997,20 @@ class _ProfilePosterPortraitToken extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = _profilePosterPalette(context);
     return SizedBox(
       width: 118,
       height: 138,
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28),
-          color: _kProfilePosterSurfaceSoft,
-          border: Border.all(color: _kProfilePosterStroke),
+          color: palette.surfaceSoft,
+          border: Border.all(color: palette.stroke),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
+              color: Colors.black.withValues(
+                alpha: palette.isDark ? 0.2 : 0.05,
+              ),
               blurRadius: 18,
               offset: const Offset(0, 12),
               spreadRadius: -18,
@@ -4721,6 +5065,7 @@ class _ProfilePosterLeadSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final bullets = _profilePosterBullets(
       body.trim().isNotEmpty ? body : intro,
     );
@@ -4793,11 +5138,9 @@ class _ProfilePosterLeadSection extends StatelessWidget {
                     width: portraitWidth,
                     height: portraitHeight,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF181513),
+                      color: palette.surfaceStrong,
                       borderRadius: BorderRadius.circular(portraitRadius),
-                      border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.08),
-                      ),
+                      border: Border.all(color: palette.stroke),
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(portraitRadius - 1),
@@ -4842,9 +5185,9 @@ class _ProfilePosterLeadSection extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title.toUpperCase(),
+                      turkishToUpper(title),
                       style: profile.typography.monoEyebrow.copyWith(
-                        color: _kProfilePosterMuted.withValues(alpha: 0.7),
+                        color: palette.muted.withValues(alpha: 0.88),
                         fontSize: 11.4,
                         letterSpacing: 1.8,
                       ),
@@ -4855,7 +5198,7 @@ class _ProfilePosterLeadSection extends StatelessWidget {
                       child: Text(
                         leadLine,
                         style: monoStyle(
-                          color: const Color(0xFFF5F2EE),
+                          color: palette.text,
                           fontSize: compact ? 16.6 : 18.0,
                           height: 1.42,
                           letterSpacing: 0.04,
@@ -4869,7 +5212,7 @@ class _ProfilePosterLeadSection extends StatelessWidget {
                         child: Text(
                           subtitleText,
                           style: monoStyle(
-                            color: const Color(0xFFF2ECE4),
+                            color: palette.textSoft,
                             fontSize: compact ? 14.4 : 15.2,
                             height: 1.62,
                           ),
@@ -4892,7 +5235,7 @@ class _ProfilePosterLeadSection extends StatelessWidget {
                           child: Text(
                             normalizedBody[index],
                             style: monoStyle(
-                              color: const Color(0xFFF2ECE4),
+                              color: palette.textSoft,
                               fontSize: compact ? 14.7 : 15.4,
                               height: 1.66,
                             ),
@@ -4947,6 +5290,7 @@ class _ProfilePosterInlineCta extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -4959,27 +5303,25 @@ class _ProfilePosterInlineCta extends StatelessWidget {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(999),
-            color: Colors.white.withValues(alpha: 0.08),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+            color: palette.isDark
+                ? Colors.white.withValues(alpha: 0.08)
+                : palette.surfaceDeep,
+            border: Border.all(color: palette.stroke),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                label.toUpperCase(),
+                turkishToUpper(label),
                 style: profile.typography.monoEyebrow.copyWith(
-                  color: Colors.white,
+                  color: palette.text,
                   fontSize: compact ? 10.6 : 11.2,
                   fontWeight: FontWeight.w700,
                   letterSpacing: compact ? 1.18 : 1.38,
                 ),
               ),
               const SizedBox(width: 8),
-              const Icon(
-                Icons.arrow_outward_rounded,
-                size: 14,
-                color: Colors.white,
-              ),
+              Icon(Icons.arrow_outward_rounded, size: 14, color: palette.text),
             ],
           ),
         ),
@@ -5033,6 +5375,7 @@ class _ProfilePosterFeatureCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return JoviaPressable(
       onTap: onTap,
       borderRadius: BorderRadius.circular(22),
@@ -5041,71 +5384,93 @@ class _ProfilePosterFeatureCard extends StatelessWidget {
         height: 164,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(22),
-          color: const Color(0xFF050505),
-          border: Border.all(color: _kProfilePosterStroke, width: 1.1),
+          color: palette.surface,
+          border: Border.all(color: palette.stroke, width: 1.1),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
+              color: Colors.black.withValues(
+                alpha: palette.isDark ? 0.2 : 0.05,
+              ),
               blurRadius: 18,
               offset: const Offset(0, 12),
               spreadRadius: -18,
             ),
           ],
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(20),
-          child: Stack(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 12, 12, 14),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Positioned.fill(
-                child: JoviaColorWash(
-                  asset: JoviaColorAsset.wash05,
-                  opacity: 0.1,
-                ),
-              ),
-              Positioned(
-                right: -6,
-                top: 2,
-                child: JoviaIllustrationAccent(
-                  asset: asset,
-                  width: 92,
-                  height: 92,
-                  opacity: 0.94,
-                ),
-              ),
-              Positioned(
-                left: 10,
-                right: 10,
-                bottom: 10,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title.toUpperCase(),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: profile.typography.card.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16.2,
-                        height: 1.14,
+              Container(
+                height: 92,
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(18),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Color.alphaBlend(
+                        color.withValues(alpha: palette.isDark ? 0.24 : 0.16),
+                        palette.surfaceStrong,
                       ),
-                    ),
-                    if (subtitle.trim().isNotEmpty) ...[
-                      const SizedBox(height: 6),
-                      Text(
-                        subtitle,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: profile.typography.metaSoft.copyWith(
-                          color: Colors.white.withValues(alpha: 0.72),
-                          fontSize: 12.2,
-                          height: 1.42,
+                      Color.alphaBlend(
+                        palette.accentSoft.withValues(
+                          alpha: palette.isDark ? 0.12 : 0.18,
+                        ),
+                        palette.surfaceSoft,
+                      ),
+                    ],
+                  ),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(18),
+                  child: Stack(
+                    children: [
+                      Positioned.fill(
+                        child: JoviaColorWash(
+                          asset: JoviaColorAsset.wash05,
+                          opacity: palette.isDark ? 0.1 : 0.14,
+                        ),
+                      ),
+                      Center(
+                        child: JoviaIllustrationAccent(
+                          asset: asset,
+                          width: 84,
+                          height: 84,
+                          opacity: 0.94,
                         ),
                       ),
                     ],
-                  ],
+                  ),
                 ),
               ),
+              const SizedBox(height: 14),
+              Text(
+                title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: profile.typography.card.copyWith(
+                  color: palette.text,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16.2,
+                  height: 1.14,
+                ),
+              ),
+              if (subtitle.trim().isNotEmpty) ...[
+                const SizedBox(height: 6),
+                Text(
+                  subtitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: profile.typography.metaSoft.copyWith(
+                    color: palette.muted,
+                    fontSize: 12.2,
+                    height: 1.42,
+                  ),
+                ),
+              ],
             ],
           ),
         ),
@@ -5122,6 +5487,7 @@ class _ProfilePosterPeopleStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return JoviaSurfaceCard(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       child: Column(
@@ -5130,16 +5496,14 @@ class _ProfilePosterPeopleStrip extends StatelessWidget {
           Text(
             'ONLINE ARKADAŞLARIN',
             style: profile.typography.eyebrow.copyWith(
-              color: _kProfilePosterMuted,
+              color: palette.muted,
               letterSpacing: 1.3,
             ),
           ),
           const SizedBox(height: 8),
           Text(
             'Daha sakin bir sosyal halka',
-            style: profile.typography.cardTitle.copyWith(
-              color: const Color(0xFFF5F2EE),
-            ),
+            style: profile.typography.cardTitle.copyWith(color: palette.text),
           ),
           const SizedBox(height: 14),
           SingleChildScrollView(
@@ -5178,11 +5542,12 @@ class _ProfilePosterMiniAvatar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final parts = name.trim().split(RegExp(r'\s+'));
     final initials = parts
         .where((item) => item.isNotEmpty)
         .take(2)
-        .map((item) => item.characters.first.toUpperCase())
+        .map((item) => turkishToUpper(item.characters.first))
         .join();
     return SizedBox(
       width: size,
@@ -5197,18 +5562,15 @@ class _ProfilePosterMiniAvatar extends StatelessWidget {
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    tint.withValues(alpha: 0.34),
-                    const Color(0xFF121111),
-                  ],
+                  colors: [tint.withValues(alpha: 0.34), palette.surfaceDeep],
                 ),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                border: Border.all(color: palette.stroke),
               ),
               alignment: Alignment.center,
               child: Text(
                 initials.isEmpty ? '•' : initials,
                 style: profile.typography.micro.copyWith(
-                  color: const Color(0xFFF5F2EE),
+                  color: palette.text,
                   fontWeight: FontWeight.w800,
                 ),
               ),
@@ -5224,7 +5586,7 @@ class _ProfilePosterMiniAvatar extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: tint.withValues(alpha: 0.9),
                   shape: BoxShape.circle,
-                  border: Border.all(color: _kProfilePosterBg, width: 2),
+                  border: Border.all(color: palette.bg, width: 2),
                 ),
               ),
             ),
@@ -5252,6 +5614,7 @@ class _ProfilePosterVisualHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final resolvedSummary = summary.trim().isNotEmpty
         ? summary.trim()
         : 'Kimlik aksın profil anlatısından açılıyor.';
@@ -5259,9 +5622,9 @@ class _ProfilePosterVisualHero extends StatelessWidget {
       height: 220,
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       decoration: BoxDecoration(
-        color: _kProfilePosterSurface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: _kProfilePosterStroke),
+        border: Border.all(color: palette.stroke),
       ),
       child: Stack(
         children: [
@@ -5291,19 +5654,19 @@ class _ProfilePosterVisualHero extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  dominantElementLabel.toUpperCase(),
+                  turkishToUpper(dominantElementLabel),
                   style: profile.typography.eyebrow.copyWith(
-                    color: _kProfilePosterAccent,
+                    color: palette.accent,
                     letterSpacing: 1.5,
                   ),
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  title.toUpperCase(),
+                  turkishToUpper(title),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: profile.typography.card.copyWith(
-                    color: Colors.white,
+                    color: palette.text,
                     fontSize: 28,
                     height: 1.04,
                   ),
@@ -5314,7 +5677,7 @@ class _ProfilePosterVisualHero extends StatelessWidget {
                   maxLines: 4,
                   overflow: TextOverflow.ellipsis,
                   style: profile.typography.bodyCompact.copyWith(
-                    color: Colors.white.withValues(alpha: 0.82),
+                    color: palette.textSoft,
                     height: 1.45,
                   ),
                 ),
@@ -5328,7 +5691,7 @@ class _ProfilePosterVisualHero extends StatelessWidget {
               kind: JoviaDividerVariant.profileReadingBreak.kind,
               width: 74,
               opacity: 0.22,
-              color: Colors.white.withValues(alpha: 0.5),
+              color: palette.textSoft.withValues(alpha: 0.58),
             ),
           ),
         ],
@@ -5345,6 +5708,7 @@ class _ProfilePosterIconButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = _profilePosterPalette(context);
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -5354,9 +5718,9 @@ class _ProfilePosterIconButton extends StatelessWidget {
           width: 38,
           height: 38,
           decoration: BoxDecoration(
-            color: const Color(0xFF111315),
+            color: palette.iconSurface,
             borderRadius: BorderRadius.circular(18),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+            border: Border.all(color: palette.iconBorder),
           ),
           child: Center(child: child),
         ),
@@ -5374,25 +5738,26 @@ class _ProfilePosterMessageCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       decoration: BoxDecoration(
-        color: _kProfilePosterSurface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: _kProfilePosterStroke),
+        border: Border.all(color: palette.stroke),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: profile.typography.card.copyWith(color: Colors.white),
+            style: profile.typography.card.copyWith(color: palette.text),
           ),
           const SizedBox(height: 8),
           Text(
             body,
             style: profile.typography.bodyCompact.copyWith(
-              color: _kProfilePosterMuted,
+              color: palette.muted,
               height: 1.5,
             ),
           ),
@@ -5408,21 +5773,22 @@ class _ProfilePosterLoadingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       decoration: BoxDecoration(
-        color: _kProfilePosterSurface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: _kProfilePosterStroke),
+        border: Border.all(color: palette.stroke),
       ),
       child: Row(
         children: [
-          const SizedBox(
+          SizedBox(
             width: 20,
             height: 20,
             child: CircularProgressIndicator(
               strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(_kProfilePosterAccent),
+              valueColor: AlwaysStoppedAnimation<Color>(palette.accent),
             ),
           ),
           const SizedBox(width: 12),
@@ -5430,7 +5796,7 @@ class _ProfilePosterLoadingCard extends StatelessWidget {
             child: Text(
               'Profil anlatısı backend yorumundan çekiliyor...',
               style: profile.typography.bodyCompact.copyWith(
-                color: Colors.white.withValues(alpha: 0.84),
+                color: palette.textSoft,
               ),
             ),
           ),
@@ -5466,6 +5832,7 @@ class _NarrativeCardLarge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final textBlocks = <String>[
       if (intro.trim().isNotEmpty) intro.trim(),
       ..._profilePosterBullets(body.trim().isNotEmpty ? body : intro).take(2),
@@ -5538,7 +5905,7 @@ class _NarrativeCardLarge extends StatelessWidget {
                 ),
                 const SizedBox(height: 14),
                 Text(
-                  eyebrow.toUpperCase(),
+                  turkishToUpper(eyebrow),
                   style: profile.typography.monoEyebrow.copyWith(
                     color: profile.colors.textLight,
                     fontSize: 11.5,
@@ -5549,7 +5916,7 @@ class _NarrativeCardLarge extends StatelessWidget {
                 Text(
                   title,
                   style: profile.typography.section.copyWith(
-                    color: const Color(0xFFF5F2EE),
+                    color: palette.text,
                     fontSize: 24,
                     height: 1.1,
                   ),
@@ -5564,7 +5931,7 @@ class _NarrativeCardLarge extends StatelessWidget {
                     Text(
                       visibleBlocks[index],
                       style: profile.typography.bodyReading.copyWith(
-                        color: const Color(0xFFF0EAE2),
+                        color: palette.textSoft,
                         fontSize: 15.2,
                         height: 1.58,
                       ),
@@ -5618,13 +5985,14 @@ class _NarrativeCardStructured extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final bullets = _profilePosterBullets(
       body.trim().isNotEmpty ? body : intro,
     ).take(3).toList();
     return JoviaSurfaceCard(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-      backgroundColor: _kProfilePosterSurface,
-      borderColor: _kProfilePosterStroke,
+      backgroundColor: palette.surface,
+      borderColor: palette.stroke,
       radius: 24,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -5633,7 +6001,7 @@ class _NarrativeCardStructured extends StatelessWidget {
             width: 3,
             height: 160,
             decoration: BoxDecoration(
-              color: _kProfilePosterAccent,
+              color: palette.accent,
               borderRadius: BorderRadius.circular(999),
             ),
           ),
@@ -5655,7 +6023,7 @@ class _NarrativeCardStructured extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      eyebrow.toUpperCase(),
+                      turkishToUpper(eyebrow),
                       style: profile.typography.monoEyebrow.copyWith(
                         color: profile.colors.warmAccent,
                         fontSize: 11.5,
@@ -5666,7 +6034,7 @@ class _NarrativeCardStructured extends StatelessWidget {
                     Text(
                       title,
                       style: profile.typography.section.copyWith(
-                        color: Colors.white,
+                        color: palette.text,
                         fontSize: 22,
                         height: 1.12,
                       ),
@@ -5678,7 +6046,7 @@ class _NarrativeCardStructured extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: profile.typography.bodyReading.copyWith(
-                          color: Colors.white.withValues(alpha: 0.86),
+                          color: palette.textSoft,
                           fontSize: 14.8,
                           height: 1.52,
                         ),
@@ -5747,12 +6115,13 @@ class _NarrativeCardImageLed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final bullets = _profilePosterBullets(
       body.trim().isNotEmpty ? body : intro,
     ).take(2).toList();
     return JoviaSurfaceCard(
-      backgroundColor: _kProfilePosterSurface,
-      borderColor: _kProfilePosterStroke,
+      backgroundColor: palette.surface,
+      borderColor: palette.stroke,
       radius: 28,
       padding: EdgeInsets.zero,
       child: Column(
@@ -5767,14 +6136,23 @@ class _NarrativeCardImageLed extends StatelessWidget {
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  const Color(0xFF050505),
-                  Color.alphaBlend(
-                    _kProfilePosterAccent.withValues(alpha: 0.08),
-                    const Color(0xFF070605),
-                  ),
-                  const Color(0xFF050505),
-                ],
+                colors: palette.isDark
+                    ? [
+                        const Color(0xFF050505),
+                        Color.alphaBlend(
+                          palette.accent.withValues(alpha: 0.08),
+                          const Color(0xFF070605),
+                        ),
+                        const Color(0xFF050505),
+                      ]
+                    : [
+                        palette.surfaceDeep,
+                        Color.alphaBlend(
+                          palette.accentWarm.withValues(alpha: 0.3),
+                          palette.surfaceStrong,
+                        ),
+                        palette.surface,
+                      ],
               ),
             ),
             child: Stack(
@@ -5803,9 +6181,9 @@ class _NarrativeCardImageLed extends StatelessWidget {
                   left: 18,
                   top: 18,
                   child: Text(
-                    eyebrow.toUpperCase(),
+                    turkishToUpper(eyebrow),
                     style: profile.typography.monoEyebrow.copyWith(
-                      color: _kProfilePosterMuted,
+                      color: palette.muted,
                       fontSize: 11.5,
                       letterSpacing: 1.75,
                     ),
@@ -5818,7 +6196,7 @@ class _NarrativeCardImageLed extends StatelessWidget {
                   child: Text(
                     title,
                     style: profile.typography.editorialHeadline.copyWith(
-                      color: Colors.white,
+                      color: palette.text,
                       fontSize: 28,
                       height: 1.02,
                     ),
@@ -5838,7 +6216,7 @@ class _NarrativeCardImageLed extends StatelessWidget {
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: profile.typography.bodyReading.copyWith(
-                      color: Colors.white.withValues(alpha: 0.88),
+                      color: palette.textSoft,
                       fontSize: 15.2,
                       height: 1.52,
                     ),
@@ -5849,7 +6227,7 @@ class _NarrativeCardImageLed extends StatelessWidget {
                     Text(
                       bullets[index],
                       style: profile.typography.bodyCompact.copyWith(
-                        color: _kProfilePosterMuted,
+                        color: palette.muted,
                         height: 1.5,
                       ),
                     ),
@@ -5893,13 +6271,14 @@ class _ProfilePosterNextCardPreview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     if (nextLabel.trim().isEmpty) {
       return const SizedBox.shrink();
     }
     return Text(
       'Sıradaki: $nextLabel',
       style: profile.typography.metaSoft.copyWith(
-        color: Colors.white.withValues(alpha: 0.58),
+        color: palette.muted,
         fontWeight: FontWeight.w600,
       ),
     );
@@ -5930,6 +6309,7 @@ class _ProfilePosterNarrativeSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final bullets = _profilePosterBullets(
       body.trim().isNotEmpty ? body : intro,
     );
@@ -5968,7 +6348,7 @@ class _ProfilePosterNarrativeSection extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  eyebrow.toUpperCase(),
+                  turkishToUpper(eyebrow),
                   style: profile.typography.monoEyebrow.copyWith(
                     color: profile.colors.warmAccent,
                     fontSize: 11.5,
@@ -5977,9 +6357,9 @@ class _ProfilePosterNarrativeSection extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  title.toUpperCase(),
+                  turkishToUpper(title),
                   style: profile.typography.section.copyWith(
-                    color: Colors.white,
+                    color: palette.text,
                     fontSize: 24,
                     height: 1.12,
                   ),
@@ -5989,7 +6369,7 @@ class _ProfilePosterNarrativeSection extends StatelessWidget {
                   Text(
                     intro.trim(),
                     style: profile.typography.bodyReading.copyWith(
-                      color: Colors.white.withValues(alpha: 0.82),
+                      color: palette.textSoft,
                       fontSize: 15.2,
                       height: 1.58,
                     ),
@@ -6039,13 +6419,14 @@ class _ProfilePosterPlacementsStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'YERLEŞİM VE AÇILAR',
           style: profile.typography.monoEyebrow.copyWith(
-            color: _kProfilePosterMuted,
+            color: palette.muted,
             fontSize: 11.0,
             letterSpacing: 1.7,
           ),
@@ -6054,7 +6435,7 @@ class _ProfilePosterPlacementsStrip extends StatelessWidget {
         Text(
           sectionTitle,
           style: profile.typography.section.copyWith(
-            color: Colors.white,
+            color: palette.text,
             fontWeight: FontWeight.w700,
             fontSize: 19,
             height: 1.16,
@@ -6106,13 +6487,14 @@ class _ProfilePosterThreadSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'YAN TEMALAR',
           style: profile.typography.monoEyebrow.copyWith(
-            color: _kProfilePosterMuted,
+            color: palette.muted,
             fontSize: 11.0,
             letterSpacing: 1.7,
           ),
@@ -6134,7 +6516,7 @@ class _ProfilePosterThreadSection extends StatelessWidget {
                         Text(
                           items[index].title,
                           style: profile.typography.card.copyWith(
-                            color: Colors.white,
+                            color: palette.text,
                             fontWeight: FontWeight.w700,
                             fontSize: 17,
                             height: 1.24,
@@ -6146,7 +6528,7 @@ class _ProfilePosterThreadSection extends StatelessWidget {
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: profile.typography.metaSoft.copyWith(
-                            color: _kProfilePosterMuted,
+                            color: palette.muted,
                             fontSize: 13.2,
                             height: 1.55,
                           ),
@@ -6155,17 +6537,17 @@ class _ProfilePosterThreadSection extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  const JoviaUiIcon(
+                  JoviaUiIcon(
                     asset: JoviaUiAsset.chevronRight,
                     size: 16,
-                    color: _kProfilePosterAccent,
+                    color: palette.accent,
                   ),
                 ],
               ),
             ),
           ),
           if (index != items.length - 1)
-            Divider(color: Colors.white.withValues(alpha: 0.08), height: 18),
+            Divider(color: palette.divider, height: 18),
         ],
         const SizedBox(height: 14),
         Align(
@@ -6196,6 +6578,7 @@ class _ProfilePosterInsightEntryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return JoviaPressable(
       onTap: onTap,
       borderRadius: BorderRadius.circular(28),
@@ -6206,17 +6589,17 @@ class _ProfilePosterInsightEntryCard extends StatelessWidget {
             Text(
               'GÖLGE & BÜYÜME',
               style: profile.typography.monoEyebrow.copyWith(
-                color: _kProfilePosterMuted,
+                color: palette.muted,
                 fontSize: 11.0,
                 letterSpacing: 1.7,
               ),
             ),
             const SizedBox(height: 12),
             Text(
-              title.toUpperCase(),
+              turkishToUpper(title),
               textAlign: TextAlign.center,
               style: profile.typography.section.copyWith(
-                color: Colors.white,
+                color: palette.text,
                 fontSize: 19,
                 height: 1.18,
               ),
@@ -6229,7 +6612,7 @@ class _ProfilePosterInsightEntryCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: profile.typography.bodyReading.copyWith(
-                  color: _kProfilePosterMuted,
+                  color: palette.muted,
                   fontSize: 13.8,
                   height: 1.66,
                 ),
@@ -6240,14 +6623,14 @@ class _ProfilePosterInsightEntryCard extends StatelessWidget {
               kind: JoviaDividerVariant.detailBreak.kind,
               width: 88,
               opacity: 0.24,
-              color: _kProfilePosterAccent,
+              color: palette.accent,
             ),
             const SizedBox(height: 16),
             Container(
               width: 62,
               height: 62,
-              decoration: const BoxDecoration(
-                color: _kProfilePosterAccent,
+              decoration: BoxDecoration(
+                color: palette.accent,
                 shape: BoxShape.circle,
               ),
               child: Center(
@@ -6261,15 +6644,332 @@ class _ProfilePosterInsightEntryCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Text(
-              ctaLabel.toUpperCase(),
+              turkishToUpper(ctaLabel),
               style: profile.typography.monoEyebrow.copyWith(
-                color: Colors.white,
+                color: palette.text,
                 fontSize: 11.5,
                 letterSpacing: 1.7,
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ProfilePosterArchetypeEntryCard extends StatelessWidget {
+  const _ProfilePosterArchetypeEntryCard({
+    required this.title,
+    required this.body,
+    required this.ctaLabel,
+    required this.onTap,
+  });
+
+  final String title;
+  final String body;
+  final String ctaLabel;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(30),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.alphaBlend(const Color(0x26FF8A4C), palette.surfaceStrong),
+              Color.alphaBlend(const Color(0x209EF0E7), palette.surface),
+            ],
+          ),
+          border: Border.all(color: palette.stroke, width: 1.1),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'ARKETIP PORTALI',
+                    style: profile.typography.monoEyebrow.copyWith(
+                      color: palette.accent,
+                      fontSize: 11.0,
+                      letterSpacing: 1.7,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    title,
+                    style: profile.typography.section.copyWith(
+                      color: palette.text,
+                      fontSize: 24,
+                      height: 1.05,
+                    ),
+                  ),
+                  if (body.trim().isNotEmpty) ...[
+                    const SizedBox(height: 10),
+                    Text(
+                      body,
+                      style: profile.typography.bodyReading.copyWith(
+                        color: palette.textSoft,
+                        fontSize: 14.3,
+                        height: 1.58,
+                      ),
+                    ),
+                  ],
+                  const SizedBox(height: 16),
+                  MinimalCTAButton(
+                    label: ctaLabel,
+                    onTap: onTap,
+                    emphasized: true,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 16),
+            SizedBox(
+              width: 88,
+              height: 88,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Container(
+                    width: 88,
+                    height: 88,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: palette.accent.withValues(alpha: 0.16),
+                    ),
+                  ),
+                  Container(
+                    width: 58,
+                    height: 58,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: palette.surface,
+                      border: Border.all(color: palette.stroke),
+                    ),
+                    child: Center(
+                      child: JoviaIllustrationAccent(
+                        asset: JoviaIllustrationAsset.planet,
+                        width: 34,
+                        height: 34,
+                        opacity: 1,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfilePosterArchetypeSnapshotCard extends StatelessWidget {
+  const _ProfilePosterArchetypeSnapshotCard({
+    required this.isLoading,
+    required this.error,
+    required this.payload,
+    required this.onTap,
+  });
+
+  final bool isLoading;
+  final String? error;
+  final Map<String, dynamic>? payload;
+  final VoidCallback onTap;
+
+  static Map<String, dynamic> _asMap(dynamic value) {
+    if (value is Map<String, dynamic>) {
+      return value;
+    }
+    if (value is Map) {
+      return value.map(
+        (key, dynamic nestedValue) => MapEntry(key.toString(), nestedValue),
+      );
+    }
+    return const <String, dynamic>{};
+  }
+
+  static List<Map<String, dynamic>> _asListOfMaps(dynamic value) {
+    if (value is! List) {
+      return const <Map<String, dynamic>>[];
+    }
+    return value
+        .whereType<Map>()
+        .map(
+          (item) => item.map(
+            (key, dynamic nestedValue) => MapEntry(key.toString(), nestedValue),
+          ),
+        )
+        .toList(growable: false);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
+    final data = payload ?? const <String, dynamic>{};
+    final topArchetypes = _asListOfMaps(data['top_archetypes']);
+    final primary = topArchetypes.isNotEmpty
+        ? topArchetypes.first
+        : const <String, dynamic>{};
+    final questionSummary = _asMap(data['question_summary']);
+    final confidence = _asMap(data['confidence']);
+    final hasTestResult = questionSummary['has_test_result'] == true;
+    final primaryLabel = (primary['label'] ?? '').toString().trim();
+    final score = double.tryParse((confidence['global'] ?? '').toString());
+    final scoreLabel = score == null ? '' : '%${(score * 100).round()}';
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+      decoration: BoxDecoration(
+        color: palette.surface,
+        borderRadius: BorderRadius.circular(28),
+        border: Border.all(color: palette.stroke),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Text(
+                'KAYITLI ARKETIP',
+                style: profile.typography.monoEyebrow.copyWith(
+                  color: palette.accent,
+                  fontSize: 11.2,
+                  letterSpacing: 1.7,
+                ),
+              ),
+              const Spacer(),
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: palette.surfaceSoft,
+                  borderRadius: BorderRadius.circular(999),
+                  border: Border.all(color: palette.stroke),
+                ),
+                child: Text(
+                  hasTestResult ? 'Testli sonuc' : 'Harita katmani',
+                  style: profile.typography.meta.copyWith(
+                    color: palette.textSoft,
+                    fontSize: 11.2,
+                    height: 1.0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          if (isLoading && payload == null)
+            Text(
+              'Kayitli arketip okunuyor.',
+              style: profile.typography.bodyReading.copyWith(
+                color: palette.textSoft,
+                fontSize: 14.2,
+                height: 1.5,
+              ),
+            )
+          else if ((error ?? '').trim().isNotEmpty && payload == null)
+            Text(
+              error!,
+              style: profile.typography.bodyReading.copyWith(
+                color: palette.textSoft,
+                fontSize: 14.2,
+                height: 1.5,
+              ),
+            )
+          else if (payload == null || topArchetypes.isEmpty)
+            Text(
+              'Henuz kayitli bir arketip sonucu yok. Butondan deneyimi acip sonucu olusturabilirsin.',
+              style: profile.typography.bodyReading.copyWith(
+                color: palette.textSoft,
+                fontSize: 14.2,
+                height: 1.5,
+              ),
+            )
+          else ...[
+            Text(
+              primaryLabel.isNotEmpty ? primaryLabel : 'Arketip sonucu hazir',
+              style: profile.typography.section.copyWith(
+                color: palette.text,
+                fontSize: 23,
+                height: 1.06,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              hasTestResult
+                  ? 'Bu profil kayitli test cevaplari ve natal katmanin birlikte okunmasiyla olustu.'
+                  : 'Bu kayit su an test degil, natal katman uzerinden uretilmis ilk arketip okumasini gosteriyor.',
+              style: profile.typography.bodyReading.copyWith(
+                color: palette.textSoft,
+                fontSize: 14.1,
+                height: 1.56,
+              ),
+            ),
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: topArchetypes.take(3).map((item) {
+                final label = (item['label'] ?? '').toString().trim();
+                if (label.isEmpty) {
+                  return const SizedBox.shrink();
+                }
+                return Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
+                  decoration: BoxDecoration(
+                    color: palette.surfaceSoft,
+                    borderRadius: BorderRadius.circular(999),
+                    border: Border.all(color: palette.stroke),
+                  ),
+                  child: Text(
+                    label,
+                    style: profile.typography.meta.copyWith(
+                      color: palette.text,
+                      fontSize: 12.0,
+                      height: 1.0,
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+            if (scoreLabel.isNotEmpty) ...[
+              const SizedBox(height: 14),
+              Text(
+                'Guven skoru $scoreLabel',
+                style: profile.typography.meta.copyWith(
+                  color: palette.muted,
+                  fontSize: 12.4,
+                ),
+              ),
+            ],
+          ],
+          const SizedBox(height: 16),
+          MinimalCTAButton(
+            label: payload == null ? 'Sonucu olustur' : 'Detayi ac',
+            onTap: onTap,
+            emphasized: true,
+          ),
+        ],
       ),
     );
   }
@@ -6293,6 +6993,7 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final core = periodCore;
     final previewPeaks = peaks.take(2).toList();
     final summary = core == null
@@ -6305,9 +7006,9 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
       decoration: BoxDecoration(
-        color: _kProfilePosterSurface,
+        color: palette.surface,
         borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: _kProfilePosterStroke),
+        border: Border.all(color: palette.stroke),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -6340,7 +7041,7 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
                   ? core.title.trim()
                   : 'Şu anki dönem',
               style: profile.typography.section.copyWith(
-                color: Colors.white,
+                color: palette.text,
                 fontSize: 24,
                 height: 1.12,
               ),
@@ -6352,7 +7053,7 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis,
                 style: profile.typography.bodyReading.copyWith(
-                  color: Colors.white.withValues(alpha: 0.84),
+                  color: palette.textSoft,
                   fontSize: 15.2,
                   height: 1.54,
                 ),
@@ -6363,7 +7064,7 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
               Text(
                 'Yaklaşan pikler',
                 style: profile.typography.monoEyebrow.copyWith(
-                  color: _kProfilePosterMuted,
+                  color: palette.muted,
                   fontSize: 11.5,
                   letterSpacing: 1.7,
                 ),
@@ -6372,10 +7073,7 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
               for (var index = 0; index < previewPeaks.length; index++) ...[
                 _ProfilePosterPeakRow(item: previewPeaks[index]),
                 if (index != previewPeaks.length - 1)
-                  Divider(
-                    color: Colors.white.withValues(alpha: 0.08),
-                    height: 18,
-                  ),
+                  Divider(color: palette.divider, height: 18),
               ],
             ],
           ],
@@ -6402,6 +7100,7 @@ class _ProfilePosterPeakRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final hint = item.timeHintTr.trim();
     final subtitle = item.signatureTr.trim().isNotEmpty
         ? item.signatureTr.trim()
@@ -6413,8 +7112,8 @@ class _ProfilePosterPeakRow extends StatelessWidget {
           width: 8,
           height: 8,
           margin: const EdgeInsets.only(top: 6),
-          decoration: const BoxDecoration(
-            color: _kProfilePosterAccent,
+          decoration: BoxDecoration(
+            color: palette.accent,
             shape: BoxShape.circle,
           ),
         ),
@@ -6426,7 +7125,7 @@ class _ProfilePosterPeakRow extends StatelessWidget {
               Text(
                 item.displayTitle,
                 style: profile.typography.body.copyWith(
-                  color: Colors.white,
+                  color: palette.text,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -6437,7 +7136,7 @@ class _ProfilePosterPeakRow extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: profile.typography.micro.copyWith(
-                    color: _kProfilePosterMuted,
+                    color: palette.muted,
                     height: 1.4,
                   ),
                 ),
@@ -6459,6 +7158,7 @@ class _ProfilePosterAstroItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final resolved = value.trim().isEmpty ? '—' : value.trim();
     final icon = switch (label.toLowerCase()) {
       'güneş' || 'gunes' => Icons.wb_sunny_outlined,
@@ -6469,12 +7169,12 @@ class _ProfilePosterAstroItem extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(icon, size: 16, color: const Color(0xFFF5F2EE)),
+        Icon(icon, size: 16, color: palette.text),
         const SizedBox(width: 6),
         Text(
           resolved,
           style: profile.typography.micro.copyWith(
-            color: Colors.white.withValues(alpha: 0.9),
+            color: palette.textSoft,
             fontSize: 13.5,
             fontWeight: FontWeight.w600,
           ),
@@ -6492,6 +7192,7 @@ class _ProfilePosterBullet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -6500,8 +7201,8 @@ class _ProfilePosterBullet extends StatelessWidget {
           child: Container(
             width: 5,
             height: 5,
-            decoration: const BoxDecoration(
-              color: _kProfilePosterAccent,
+            decoration: BoxDecoration(
+              color: palette.accent,
               shape: BoxShape.circle,
             ),
           ),
@@ -6511,7 +7212,7 @@ class _ProfilePosterBullet extends StatelessWidget {
           child: Text(
             text,
             style: profile.typography.bodyCompact.copyWith(
-              color: Colors.white.withValues(alpha: 0.82),
+              color: palette.textSoft,
               height: 1.55,
             ),
           ),
@@ -6535,24 +7236,31 @@ class _ProfilePosterChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
     final isAccent = tone == _ProfilePosterChipTone.accent;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
         color: isAccent
-            ? _kProfilePosterLilac.withValues(alpha: 0.18)
-            : Colors.white.withValues(alpha: 0.08),
+            ? palette.accent.withValues(alpha: palette.isDark ? 0.18 : 0.14)
+            : (palette.isDark
+                  ? Colors.white.withValues(alpha: 0.08)
+                  : palette.surfaceDeep),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(
           color: isAccent
-              ? _kProfilePosterLilac.withValues(alpha: 0.42)
-              : Colors.white.withValues(alpha: 0.24),
+              ? palette.accent.withValues(alpha: palette.isDark ? 0.42 : 0.22)
+              : (palette.isDark
+                    ? Colors.white.withValues(alpha: 0.24)
+                    : palette.stroke),
           width: 1,
         ),
         boxShadow: [
           if (isAccent)
             BoxShadow(
-              color: _kProfilePosterLilac.withValues(alpha: 0.18),
+              color: palette.accent.withValues(
+                alpha: palette.isDark ? 0.18 : 0.08,
+              ),
               blurRadius: 18,
               offset: const Offset(0, 8),
               spreadRadius: -10,
@@ -6562,7 +7270,7 @@ class _ProfilePosterChip extends StatelessWidget {
       child: Text(
         label,
         style: profile.typography.buttonLabel.copyWith(
-          color: isAccent ? Colors.white : Colors.white.withValues(alpha: 0.90),
+          color: isAccent ? palette.text : palette.textSoft,
           fontSize: 12.0,
           fontWeight: FontWeight.w500,
           letterSpacing: 0.02,
@@ -6683,15 +7391,15 @@ class _ProfileLilacGlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final resolvedTone = tone;
-    final accent = resolvedTone?.accent ?? _kProfilePosterLilac;
-    final accentSoft = resolvedTone?.accentSoft ?? _kProfilePosterMint;
-    final accentWarm = resolvedTone?.mutedText ?? _kProfilePosterBlush;
-    final surface = resolvedTone?.surface ?? const Color(0xFF151218);
-    final surfaceDeep = resolvedTone?.background ?? const Color(0xFF09080B);
-    final glow =
-        resolvedTone?.glow ?? _kProfilePosterLilac.withValues(alpha: 0.12);
-    final stroke = resolvedTone?.stroke ?? Colors.white.withValues(alpha: 0.16);
+    final palette = _profilePosterPalette(context);
+    final resolvedTone = _profilePosterResolvedTone(context, tone);
+    final accent = resolvedTone?.accent ?? palette.accent;
+    final accentSoft = resolvedTone?.accentSoft ?? palette.accentSoft;
+    final accentWarm = resolvedTone?.mutedText ?? palette.accentWarm;
+    final surface = resolvedTone?.surface ?? palette.surface;
+    final surfaceDeep = resolvedTone?.background ?? palette.surfaceDeep;
+    final glow = resolvedTone?.glow ?? palette.glow;
+    final stroke = resolvedTone?.stroke ?? palette.stroke;
     final card = _ProfileCardEntrance(
       sequence: sequence,
       child: ClipRRect(
@@ -6722,13 +7430,19 @@ class _ProfileLilacGlassCard extends StatelessWidget {
               ),
               boxShadow: [
                 BoxShadow(
-                  color: glow.withValues(alpha: strongerGlow ? 0.44 : 0.84),
+                  color: glow.withValues(
+                    alpha: strongerGlow
+                        ? (palette.isDark ? 0.44 : 0.18)
+                        : (palette.isDark ? 0.84 : 0.12),
+                  ),
                   blurRadius: strongerGlow ? 32 : 24,
                   offset: const Offset(0, 18),
                   spreadRadius: -22,
                 ),
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.24),
+                  color: Colors.black.withValues(
+                    alpha: palette.isDark ? 0.24 : 0.06,
+                  ),
                   blurRadius: 24,
                   offset: const Offset(0, 16),
                   spreadRadius: -18,
@@ -6744,9 +7458,13 @@ class _ProfileLilacGlassCard extends StatelessWidget {
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                         colors: [
-                          Colors.white.withValues(alpha: 0.08),
+                          Colors.white.withValues(
+                            alpha: palette.isDark ? 0.08 : 0.38,
+                          ),
                           Colors.transparent,
-                          Colors.white.withValues(alpha: 0.02),
+                          Colors.white.withValues(
+                            alpha: palette.isDark ? 0.02 : 0.08,
+                          ),
                         ],
                       ),
                     ),
@@ -6773,8 +7491,10 @@ class _ProfileLilacGlassCard extends StatelessWidget {
                   from: const Alignment(1.06, -1.08),
                   to: const Alignment(0.92, -0.92),
                   size: strongerGlow ? 156 : 110,
-                  colors: [_kProfilePosterButter, accentSoft],
-                  opacity: strongerGlow ? 0.12 : 0.08,
+                  colors: [palette.butter, accentSoft],
+                  opacity: strongerGlow
+                      ? (palette.isDark ? 0.12 : 0.08)
+                      : (palette.isDark ? 0.08 : 0.06),
                 ),
                 Positioned(
                   left: 16,
@@ -6801,7 +7521,9 @@ class _ProfileLilacGlassCard extends StatelessWidget {
                           begin: Alignment.topCenter,
                           end: Alignment.bottomCenter,
                           colors: [
-                            Colors.white.withValues(alpha: 0.24),
+                            Colors.white.withValues(
+                              alpha: palette.isDark ? 0.24 : 0.52,
+                            ),
                             Colors.transparent,
                           ],
                         ),
@@ -6845,7 +7567,8 @@ class _ProfilePosterMiniCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    final resolvedTone = tone;
+    final palette = _profilePosterPalette(context);
+    final resolvedTone = _profilePosterResolvedTone(context, tone);
     return _ProfileLilacGlassCard(
       onTap: onTap,
       radius: 22,
@@ -6901,17 +7624,16 @@ class _ProfilePosterMiniCard extends StatelessWidget {
                               (resolvedTone?.accent ?? _kProfilePosterLilac)
                                   .withValues(alpha: 0.32),
                               resolvedTone?.surfaceStrong ??
-                                  const Color(0xFF262031),
+                                  palette.surfaceStrong,
                             ),
                             Color.alphaBlend(
                               (resolvedTone?.accentSoft ?? _kProfilePosterMint)
                                   .withValues(alpha: 0.16),
-                              resolvedTone?.surface ?? const Color(0xFF15121D),
+                              resolvedTone?.surface ?? palette.surfaceSoft,
                             ),
                             Color.alphaBlend(
-                              _kProfilePosterButter.withValues(alpha: 0.22),
-                              resolvedTone?.background ??
-                                  const Color(0xFF241F20),
+                              palette.butter.withValues(alpha: 0.22),
+                              resolvedTone?.background ?? palette.surfaceDeep,
                             ),
                           ],
                         ),
@@ -6931,7 +7653,7 @@ class _ProfilePosterMiniCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: profile.typography.card.copyWith(
-                        color: Colors.white,
+                        color: palette.text,
                         fontWeight: FontWeight.w700,
                         fontSize: 16.5,
                         height: 1.28,
@@ -6943,7 +7665,7 @@ class _ProfilePosterMiniCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: profile.typography.metaSoft.copyWith(
-                        color: resolvedTone?.mutedText ?? _kProfilePosterMuted,
+                        color: resolvedTone?.mutedText ?? palette.muted,
                         fontSize: 12.6,
                         height: 1.58,
                       ),
@@ -6983,6 +7705,7 @@ class _ProfilePosterDashedRail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final palette = _profilePosterPalette(context);
     return LayoutBuilder(
       builder: (context, constraints) {
         final dashCount = (constraints.maxHeight / 14).floor().clamp(4, 18);
@@ -6994,7 +7717,7 @@ class _ProfilePosterDashedRail extends StatelessWidget {
               width: 2,
               height: 8,
               decoration: BoxDecoration(
-                color: _kProfilePosterAccent.withValues(alpha: 0.9),
+                color: palette.accent.withValues(alpha: 0.9),
                 borderRadius: BorderRadius.circular(999),
               ),
             ),
@@ -7660,10 +8383,12 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
   const _ProfileIdentityQuickSection({
     required this.contextData,
     required this.dominantElementLabel,
+    this.onTap,
   });
 
   final _ProfileIdentityContext contextData;
   final String dominantElementLabel;
+  final VoidCallback? onTap;
 
   String _auraTitle() {
     final normalized = dominantElementLabel.trim();
@@ -7706,7 +8431,7 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
       );
     }
 
-    return Column(
+    final content = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Align(
@@ -7731,6 +8456,14 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
         const SizedBox(height: 16),
         Row(children: cards),
       ],
+    );
+    if (onTap == null) {
+      return content;
+    }
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(24),
+      child: content,
     );
   }
 }
@@ -7764,7 +8497,7 @@ class _ProfileIdentityMiniCard extends StatelessWidget {
             _ProfileIdentityMiniArt(kind: kind),
             const SizedBox(height: 18),
             Text(
-              label.toUpperCase(),
+              turkishToUpper(label),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: profile.typography.eyebrow.copyWith(
@@ -7888,6 +8621,11 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
     required this.placementCards,
     required this.insightModules,
     required this.onOpenPlacementFlow,
+    required this.onOpenPlacementCard,
+    required this.onOpenNarrativeCard,
+    required this.onOpenInsightModule,
+    required this.onOpenSupportingThread,
+    this.onOpenSummary,
     required this.readOnly,
   });
 
@@ -7899,20 +8637,33 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
   final List<_ProfileNarrativeCard> placementCards;
   final List<_ProfileInsightModule> insightModules;
   final VoidCallback? onOpenPlacementFlow;
+  final ValueChanged<_ProfileNarrativeCard> onOpenPlacementCard;
+  final ValueChanged<_ProfileNarrativeCard> onOpenNarrativeCard;
+  final ValueChanged<_ProfileInsightModule> onOpenInsightModule;
+  final ValueChanged<_SupportingThreadItem> onOpenSupportingThread;
+  final VoidCallback? onOpenSummary;
   final bool readOnly;
 
   @override
   Widget build(BuildContext context) {
     final placementPreviewCards = placementCards.take(3).toList();
+    final hasEditorialNarrative =
+        placementPreviewCards.isNotEmpty ||
+        insightModules.isNotEmpty ||
+        primaryCards.isNotEmpty;
     final showSummaryPanel =
-        isLoading ||
-        (error ?? '').trim().isNotEmpty ||
-        summary.trim().isNotEmpty;
+        !hasEditorialNarrative &&
+        (isLoading ||
+            (error ?? '').trim().isNotEmpty ||
+            summary.trim().isNotEmpty);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         if (placementPreviewCards.isNotEmpty) ...[
-          _ProfileEditorialFlow(cards: placementPreviewCards),
+          _ProfileEditorialFlow(
+            cards: placementPreviewCards,
+            onOpenCard: onOpenPlacementCard,
+          ),
           if (onOpenPlacementFlow != null) ...[
             const SizedBox(height: 10),
             Align(
@@ -7929,28 +8680,34 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
           for (final module in insightModules) ...[
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: _ProfileInsightModuleCard(module: module),
+              child: _ProfileInsightModuleCard(
+                module: module,
+                onTap: () => onOpenInsightModule(module),
+              ),
             ),
             if (module != insightModules.last) const SizedBox(height: 18),
           ],
         ],
         if (primaryCards.isNotEmpty) ...[
           const SizedBox(height: 24),
-          _ProfileEditorialFlow(cards: primaryCards),
+          _ProfileEditorialFlow(
+            cards: primaryCards,
+            onOpenCard: onOpenNarrativeCard,
+          ),
         ],
         if (showSummaryPanel) ...[
-          if (placementCards.isNotEmpty ||
-              insightModules.isNotEmpty ||
-              primaryCards.isNotEmpty)
-            const SizedBox(height: 24),
-          JoviaReadingPanel(
-            label: 'Natal',
-            title: 'Ana okuma',
-            large: true,
-            child: _ProfileRecoverySummaryBlock(
-              isLoading: isLoading,
-              error: error,
-              summary: summary,
+          JoviaPressable(
+            onTap: onOpenSummary,
+            borderRadius: BorderRadius.circular(24),
+            child: JoviaReadingPanel(
+              label: 'Natal',
+              title: 'Ana okuma',
+              large: true,
+              child: _ProfileRecoverySummaryBlock(
+                isLoading: isLoading,
+                error: error,
+                summary: summary,
+              ),
             ),
           ),
         ],
@@ -7966,9 +8723,14 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
                   index < supportingThreads.length;
                   index++
                 ) ...[
-                  JoviaUtilityRow(
-                    title: supportingThreads[index].title,
-                    body: supportingThreads[index].oneLiner,
+                  JoviaPressable(
+                    onTap: () =>
+                        onOpenSupportingThread(supportingThreads[index]),
+                    borderRadius: BorderRadius.circular(16),
+                    child: JoviaUtilityRow(
+                      title: supportingThreads[index].title,
+                      body: supportingThreads[index].oneLiner,
+                    ),
                   ),
                   if (index != supportingThreads.length - 1) ...[
                     const SizedBox(height: 10),
@@ -7986,29 +8748,31 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
 }
 
 class _ProfileEditorialFlow extends StatelessWidget {
-  const _ProfileEditorialFlow({required this.cards});
+  const _ProfileEditorialFlow({required this.cards, required this.onOpenCard});
 
   final List<_ProfileNarrativeCard> cards;
+  final ValueChanged<_ProfileNarrativeCard> onOpenCard;
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final compact = constraints.maxWidth < 390;
+        final resolvedMaxWidth = constraints.maxWidth < 390
+            ? constraints.maxWidth
+            : 560.0;
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             for (var index = 0; index < cards.length; index++) ...[
-              Padding(
-                padding: compact || index == 0
-                    ? EdgeInsets.zero
-                    : EdgeInsets.only(
-                        left: index.isOdd ? 18 : 0,
-                        right: index.isOdd ? 0 : 18,
-                      ),
-                child: _ProfileEditorialCard(
-                  card: cards[index],
-                  featured: index == 0,
+              Align(
+                alignment: Alignment.center,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: resolvedMaxWidth),
+                  child: _ProfileEditorialCard(
+                    card: cards[index],
+                    featured: index == 0,
+                    onTap: () => onOpenCard(cards[index]),
+                  ),
                 ),
               ),
               if (index != cards.length - 1)
@@ -8066,76 +8830,153 @@ class _ProfileRecoverySummaryBlock extends StatelessWidget {
 }
 
 class _ProfileEditorialCard extends StatelessWidget {
-  const _ProfileEditorialCard({required this.card, this.featured = false});
+  const _ProfileEditorialCard({
+    required this.card,
+    this.featured = false,
+    this.onTap,
+  });
 
   final _ProfileNarrativeCard card;
   final bool featured;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return _ProfileLilacGlassCard(
-      radius: featured ? 30 : 26,
-      sequence: 2 + _profileAnimationSeed(card.title),
-      strongerGlow: featured,
-      padding: EdgeInsets.fromLTRB(
-        featured ? 22 : 18,
-        featured ? 22 : 18,
-        featured ? 22 : 18,
-        featured ? 20 : 18,
+    final title = _displayTitleForCard(card);
+    final ruleColor = profile.colors.text.withValues(alpha: 0.14);
+    final paperTint = featured
+        ? const Color(0xFFF6F1E7)
+        : const Color(0xFFF8F4EC);
+    final content = DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white,
+            Color.alphaBlend(paperTint.withValues(alpha: 0.38), Colors.white),
+            Colors.white,
+          ],
+        ),
+        border: Border(
+          top: BorderSide(color: ruleColor, width: 1),
+          bottom: BorderSide(color: ruleColor, width: 1),
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (card.eyebrow.trim().isNotEmpty) ...[
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          featured ? 18 : 14,
+          featured ? 30 : 24,
+          featured ? 18 : 14,
+          featured ? 28 : 22,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (card.eyebrow.trim().isNotEmpty) ...[
+              Container(width: featured ? 96 : 82, height: 1, color: ruleColor),
+              const SizedBox(height: 12),
+              Text(
+                turkishToUpper(card.eyebrow),
+                textAlign: TextAlign.center,
+                style: profile.typography.monoEyebrow.copyWith(
+                  color: profile.colors.textLight.withValues(alpha: 0.92),
+                  fontSize: 11.2,
+                  letterSpacing: 2.2,
+                ),
+              ),
+              const SizedBox(height: 14),
+            ],
             Text(
-              card.eyebrow.toUpperCase(),
-              style: profile.typography.eyebrow.copyWith(
-                color: Colors.white.withValues(alpha: 0.74),
-                letterSpacing: 1.45,
+              title,
+              textAlign: TextAlign.center,
+              style: profile.typography
+                  .headlineFor(title, color: profile.colors.text)
+                  .copyWith(
+                    fontSize: featured ? 42 : 34,
+                    height: featured ? 1.04 : 1.08,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: featured ? -1.08 : -0.72,
+                  ),
+            ),
+            const SizedBox(height: 14),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: featured ? 440 : 400),
+              child: Text(
+                card.previewBody,
+                maxLines: featured ? 8 : 5,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: profile.typography.bodyReading.copyWith(
+                  color: profile.colors.text.withValues(alpha: 0.76),
+                  fontSize: featured ? 16.6 : 15.2,
+                  height: featured ? 1.62 : 1.66,
+                ),
               ),
             ),
-            const SizedBox(height: 10),
+            if (card.chips.isNotEmpty) ...[
+              const SizedBox(height: 18),
+              Wrap(
+                alignment: WrapAlignment.center,
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  for (final chip in card.chips)
+                    _ProfileEditorialChip(label: chip),
+                ],
+              ),
+            ],
+            const SizedBox(height: 2),
           ],
-          Text(
-            _displayTitleForCard(card),
-            style: profile.typography.card.copyWith(
-              color: Colors.white,
-              fontSize: featured ? 30 : 22,
-              height: 1.08,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            card.previewBody,
-            maxLines: featured ? 8 : 5,
-            overflow: TextOverflow.ellipsis,
-            style: profile.typography.bodyCompact.copyWith(
-              color: Colors.white.withValues(alpha: 0.86),
-              height: 1.45,
-            ),
-          ),
-          if (card.chips.isNotEmpty) ...[
-            const SizedBox(height: 14),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final chip in card.chips) JoviaMetaPill(label: chip),
-              ],
-            ),
-          ],
-        ],
+        ),
+      ),
+    );
+    if (onTap == null) {
+      return content;
+    }
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(featured ? 28 : 22),
+      child: content,
+    );
+  }
+}
+
+class _ProfileEditorialChip extends StatelessWidget {
+  const _ProfileEditorialChip({required this.label});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F5EE),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: profile.colors.text.withValues(alpha: 0.08),
+          width: 1,
+        ),
+      ),
+      child: Text(
+        label,
+        style: profile.typography.buttonLabel.copyWith(
+          color: profile.colors.text,
+          fontWeight: FontWeight.w600,
+        ),
       ),
     );
   }
 }
 
 class _ProfileInsightModuleCard extends StatelessWidget {
-  const _ProfileInsightModuleCard({required this.module});
+  const _ProfileInsightModuleCard({required this.module, this.onTap});
 
   final _ProfileInsightModule module;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -8152,7 +8993,7 @@ class _ProfileInsightModuleCard extends StatelessWidget {
       chips: const [],
       astroSources: const [],
     );
-    return _ProfileEditorialCard(card: card);
+    return _ProfileEditorialCard(card: card, onTap: onTap);
   }
 }
 

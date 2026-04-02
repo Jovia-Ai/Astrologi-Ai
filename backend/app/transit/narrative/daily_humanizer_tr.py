@@ -2,6 +2,11 @@ from __future__ import annotations
 
 from typing import Any, Dict, Mapping
 
+from app.transit.narrative.semantic_projection import (
+    build_semantic_projection,
+    normalize_lens,
+)
+
 HOUSE_PACKS_TR: dict[int, dict[str, Any]] = {
     1: {
         "touchpoint": "kendini ortaya koyma biçimin",
@@ -337,27 +342,115 @@ def _enforce_house_visibility(lines: list[str], pack: Mapping[str, Any]) -> list
     return [lines[0], why, lines[2]]
 
 
+def _relationship_house_context(house: int | None) -> str:
+    mapping = {
+        1: "kendi duruşunda",
+        3: "konuşma ve mesajlaşma tarafında",
+        4: "güvende hissetme alanında",
+        5: "çekim ve kalp açıklığında",
+        7: "karşı tarafla aranda",
+        8: "yakınlık ve güven tarafında",
+        12: "daha içte ve özel bir yerde",
+    }
+    return mapping.get(house, "ilişki tarafında")
+
+
+def _relationship_channel_line(core: Mapping[str, Any]) -> str:
+    source_house = _safe_int(core.get("source_house"))
+    target_house = _safe_int(core.get("target_house"))
+    if source_house == 3:
+        return "Bunu en çok konuşma, mesajlaşma ya da niyetini söyleme tarafında hissedebilirsin."
+    if source_house == 7:
+        return "Karşı tarafın sözü, beklentisi ya da varlığı bunu daha görünür kılıyor."
+    if source_house == 12:
+        return "Bu dışarıdan çok içeride çalışan bir hareket gibi ilerliyor."
+    if source_house == 1:
+        return "Mesele kadar onu nasıl taşıdığın da belirleyici oluyor."
+    if target_house == 12:
+        return "Yakınlık burada daha çok sessiz, özel ve içte yaşanıyor."
+    if target_house == 8:
+        return "Yakınlıkla güven ihtiyacı birbirine daha yakın duruyor."
+    if target_house == 5:
+        return "Kalbinin neye açıldığını daha net hissedebilirsin."
+    if target_house == 7:
+        return "Karşı taraf aynası duyguyu daha görünür hale getiriyor."
+    return "Bunun nasıl ilerlediği kadar nasıl hissettirdiği de önemli hale geliyor."
+
+
+def _relationship_guidance_line(mode: str) -> str:
+    if mode == "flow":
+        return "Yumuşayan şeyi hemen tanım koymaya zorlama."
+    if mode == "opening":
+        return "Açılan alanı aceleyle büyütmeye çalışma."
+    if mode == "polarity":
+        return "İlk tepkiyi nihai karar sanma."
+    if mode == "concentration":
+        return "Tek meseleyi bütün ilişkinin yerine koyma."
+    return "Hem sınırı hem teması aynı cümlede tutmaya çalış."
+
+
+def _relationship_daily_lines(core: Mapping[str, Any], mode: str) -> list[str]:
+    target_house = _safe_int(core.get("target_house"))
+    context = _relationship_house_context(target_house)
+    if mode == "flow":
+        felt = {
+            12: "Yakınlık şu an daha çok içte büyüyor bugün.",
+            7: "Karşı tarafla arandaki akış biraz daha doğal bugün.",
+            8: "Yakınlık ve güven tarafı daha yumuşak akabilir bugün.",
+            5: "Çekim ve kalp açıklığı daha rahat akıyor bugün.",
+        }.get(target_house, f"{context[:1].upper() + context[1:]} yumuşayan bir alan var bugün.")
+    elif mode == "opening":
+        felt = {
+            12: "İlişkide içte kalan bir alan hafifçe açılıyor bugün.",
+            7: "Karşı tarafla aranda küçük ama gerçek bir açıklık doğuyor bugün.",
+            8: "Yakınlıkta küçük ama işe yarayan bir açıklık var bugün.",
+            5: "Çekim tarafında küçük bir açılma mümkün bugün.",
+        }.get(target_house, "İlişkide küçük ama gerçek bir alan açılıyor bugün.")
+    elif mode == "polarity":
+        felt = {
+            7: "İlişkide bir yanın yaklaşırken bir yanın mesafe isteyebilir bugün.",
+            1: "İlişkide açılmak isterken aynı anda kendini korumak da isteyebilirsin bugün.",
+        }.get(target_house, "Yakınlık isterken aynı anda geri çekilmek de isteyebilirsin bugün.")
+    elif mode == "concentration":
+        felt = "İlişkide tek bir mesele fazla yer kaplayabilir bugün."
+    else:
+        felt = "İlişkide temas ve sınır aynı anda sürtebilir bugün."
+    why = _relationship_channel_line(core)
+    guidance = _relationship_guidance_line(mode)
+    return [felt, why, guidance]
+
+
 def generate_daily_from_event(
     event: Mapping[str, Any],
     *,
     score: float | None = None,
     is_period_derived: bool = False,
     force_daily_horizon: bool = False,
+    lens: str = "general",
 ) -> Dict[str, Any]:
     out = dict(event)
     pack = _house_pack(out)
     trigger = _trigger_family_from_event(out)
     mode = aspect_mode_from_event(out)
+    projection = build_semantic_projection(out, lens=lens)
+    semantic_core = projection.get("semantic_core") if isinstance(projection.get("semantic_core"), Mapping) else {}
+    lens_projection = projection.get("lens_projection") if isinstance(projection.get("lens_projection"), Mapping) else {}
     score_value = max(0.0, float(score or out.get("daily_score") or 0.0))
     face = _select_tone_face(mode, score_value, is_period_derived=is_period_derived)
-    lines = _enforce_house_visibility(
-        [
-            _felt_line(pack, trigger, mode),
-            _why_line(pack, trigger, mode, face),
-            _guidance_line(pack, trigger, mode, face),
-        ],
-        pack,
+    relationship_score = float(
+        ((lens_projection.get("projected_scores") or {}).get("relationships") or 0.0)
     )
+    if normalize_lens(lens) == "relationships" and relationship_score >= 0.42:
+        lines = _relationship_daily_lines(semantic_core, mode)
+    else:
+        lines = _enforce_house_visibility(
+            [
+                _felt_line(pack, trigger, mode),
+                _why_line(pack, trigger, mode, face),
+                _guidance_line(pack, trigger, mode, face),
+            ],
+            pack,
+        )
 
     source_horizon = str(out.get("source_horizon") or out.get("horizon") or "").strip().lower()
     if force_daily_horizon:
@@ -375,6 +468,9 @@ def generate_daily_from_event(
     out["tone_face"] = face
     out["is_period_derived"] = bool(is_period_derived)
     out["today_facing_fallback"] = bool(is_period_derived)
+    out["semantic_core"] = semantic_core
+    out["domain_scores"] = projection.get("domain_scores") or {}
+    out["lens_projection"] = lens_projection
     return out
 
 
@@ -383,6 +479,7 @@ def humanize_event_card_tr(
     *,
     score: float | None = None,
     is_period_derived: bool | None = None,
+    lens: str = "general",
 ) -> Dict[str, Any]:
     derived = bool(is_period_derived)
     if is_period_derived is None:
@@ -393,6 +490,7 @@ def humanize_event_card_tr(
         score=score,
         is_period_derived=derived,
         force_daily_horizon=False,
+        lens=lens,
     )
 
 

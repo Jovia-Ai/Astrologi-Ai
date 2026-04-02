@@ -62,3 +62,39 @@ def test_house_anchor_visibility_and_period_fallback_flags() -> None:
     assert any(token in merged for token in ("karşı", "arada", "denge", "mesafe"))
     for banned in ("mercury", "venus", "square", "trine", "sextile", "opposition", "conjunction", "transit", "orb"):
         assert banned not in merged
+
+
+def test_relationship_lens_uses_venus_affinity_before_house_only_language() -> None:
+    out = generate_daily_from_event(
+        {
+            "event_id": "evt_rel_venus_12",
+            "transit_body": "Sun",
+            "natal_point": "Venus",
+            "aspect": "trine",
+            "bucket": "medium",
+            "phase": "exactish",
+            "horizon": "period",
+            "houses": {
+                "transit_in_natal_house": 3,
+                "natal_point_house": 12,
+            },
+            "scene": {"start_house": 3, "outcome_house": 12},
+            "derived_context": {
+                "natal_target": {
+                    "house": 12,
+                    "rulership_houses": [5, 10],
+                }
+            },
+            "natal_promise": {"score": 0.9},
+        },
+        score=0.88,
+        lens="relationship",
+    )
+
+    assert out["semantic_core"]["target_affinity"] == "relationships"
+    assert out["semantic_core"]["target_house_domain"] == "inner"
+    assert out["semantic_core"]["source_house_domain"] == "mind"
+    assert out["domain_scores"]["relationships"] > out["domain_scores"]["inner"]
+    assert out["lens_projection"]["primary_domain"] == "relationships"
+    assert "Yakınlık" in out["felt_line_tr"]
+    assert "İçe çekildiğin yerde" not in out["felt_line_tr"]

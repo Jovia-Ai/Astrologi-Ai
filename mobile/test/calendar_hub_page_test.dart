@@ -4,6 +4,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
+
+String tr(String value) => normalizeTurkishText(value);
+
+String trUpper(String value) => turkishToUpper(tr(value));
 
 void main() {
   const fakeProfile = <String, dynamic>{
@@ -131,7 +136,7 @@ void main() {
     expect(find.text('İç ses 17'), findsWidgets);
     expect(find.byKey(const ValueKey<String>('calendarDayBack')), findsNothing);
 
-    await tester.tap(find.text('Gunu ac').first);
+    await tester.tap(find.text('Günü aç').first);
     await tester.pumpAndSettle();
 
     expect(
@@ -225,8 +230,55 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Bugünün vurgusu'), findsOneWidget);
-    expect(find.text('Uzun dönem bugün de etkili'), findsOneWidget);
+    expect(find.text(trUpper('Şimdi ne oluyor')), findsOneWidget);
+    expect(find.text(trUpper('Nereye gidiyor')), findsOneWidget);
+    expect(find.text(trUpper('Derinde çalışan şey')), findsOneWidget);
+  });
+
+  testWidgets('day page does not repeat the same human copy across sections', (
+    tester,
+  ) async {
+    await _pumpHarness(
+      tester,
+      child: CalendarHubPage(
+        profileOverride: fakeProfile,
+        dataSource: _FakeCalendarDataSource(),
+        initialSelectedDay: DateTime(2026, 3, 15),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('calendarDayCell_2026-03-15')),
+      warnIfMissed: false,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Ritim 15\nAçılış 15'), findsNothing);
+  });
+
+  testWidgets('day page hides duplicated transit cards on the same page', (
+    tester,
+  ) async {
+    await _pumpHarness(
+      tester,
+      child: CalendarHubPage(
+        profileOverride: fakeProfile,
+        dataSource: _DuplicateCardsCalendarDataSource(),
+        initialSelectedDay: DateTime(2026, 3, 15),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('calendarDayCell_2026-03-15')),
+      warnIfMissed: false,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.text(trUpper('Ayrıca çalışan tema')), findsNothing);
   });
 
   testWidgets('period-only days do not fall back to empty state', (
@@ -249,11 +301,11 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('Bugünün vurgusu'), findsOneWidget);
-    expect(find.text('Uzun dönem bugün de etkili'), findsOneWidget);
+    expect(find.text(trUpper('Şimdi ne oluyor')), findsOneWidget);
+    expect(find.text(trUpper('Nereye gidiyor')), findsOneWidget);
     expect(find.textContaining('kısa vadeli bir tetikten çok'), findsWidgets);
-    expect(find.text('Bugun sakin'), findsNothing);
-    expect(find.text('Secili gun sakin'), findsNothing);
+    expect(find.text(tr('Bugun sakin')), findsNothing);
+    expect(find.text(tr('Secili gun sakin')), findsNothing);
   });
 
   testWidgets('day page only shows markers for the selected day', (
@@ -269,6 +321,9 @@ void main() {
       ),
     );
 
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Neden bu önemli?').first);
     await tester.pumpAndSettle();
 
     expect(find.text('Marker 15'), findsOneWidget);
@@ -441,6 +496,40 @@ class _PeriodOnlyCalendarDataSource extends _FakeCalendarDataSource {
     );
     final publicRaw = Map<String, dynamic>.from(base['public'] as Map);
     publicRaw['event_cards'] = <Map<String, dynamic>>[
+      _FakeCalendarDataSource._eventCardMap(
+        selectedDate,
+        horizon: 'period',
+        prefix: 'Period',
+      ),
+    ];
+    base['public'] = publicRaw;
+    return base;
+  }
+}
+
+class _DuplicateCardsCalendarDataSource extends _FakeCalendarDataSource {
+  const _DuplicateCardsCalendarDataSource();
+
+  @override
+  Future<Map<String, dynamic>> fetchDailyNarrative({
+    required Map<String, dynamic> profile,
+    required DateTime selectedDate,
+  }) async {
+    final base = await super.fetchDailyNarrative(
+      profile: profile,
+      selectedDate: selectedDate,
+    );
+    final publicRaw = Map<String, dynamic>.from(base['public'] as Map);
+    publicRaw['daily_event_cards'] = <Map<String, dynamic>>[
+      _FakeCalendarDataSource._eventCardMap(selectedDate, horizon: 'day'),
+      _FakeCalendarDataSource._eventCardMap(selectedDate, horizon: 'day'),
+    ];
+    publicRaw['period_event_cards'] = <Map<String, dynamic>>[
+      _FakeCalendarDataSource._eventCardMap(
+        selectedDate,
+        horizon: 'period',
+        prefix: 'Period',
+      ),
       _FakeCalendarDataSource._eventCardMap(
         selectedDate,
         horizon: 'period',

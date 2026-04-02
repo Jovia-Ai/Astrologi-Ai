@@ -185,6 +185,35 @@ class ProfileRepository {
     _invalidateProfile(userId);
   }
 
+  Future<Map<String, dynamic>?> getArchetypeProfile(String userId) async {
+    try {
+      final row = await _client
+          .from(SupabaseTables.archetypeProfiles)
+          .select('user_id,computed_at,input_mode,final_profile')
+          .eq('user_id', userId)
+          .limit(1)
+          .maybeSingle();
+      if (row == null) {
+        return null;
+      }
+      final finalProfile = row['final_profile'];
+      if (finalProfile is! Map) {
+        return null;
+      }
+      final payload = Map<String, dynamic>.from(finalProfile);
+      final snapshot = payload['snapshot'];
+      payload['snapshot'] = <String, dynamic>{
+        if (snapshot is Map) ...Map<String, dynamic>.from(snapshot),
+        'persisted': true,
+        'computed_at': row['computed_at'],
+        'input_mode': row['input_mode'] ?? payload['input_mode'],
+      };
+      return payload;
+    } catch (_) {
+      return null;
+    }
+  }
+
   void _invalidateProfile(String userId) {
     _profileCache.remove(userId);
     _inflight.remove(userId);

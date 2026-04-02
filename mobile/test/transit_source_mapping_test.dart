@@ -1,6 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/source_guards.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
+
+String tr(String value) => normalizeTurkishText(value);
 
 void main() {
   group('Transit source-of-truth mapping', () {
@@ -98,7 +101,7 @@ void main() {
       );
       expect(
         periodCards.first.opening,
-        'Sozlerin tonda kayma yarattigi bir donem.',
+        tr('Sozlerin tonda kayma yarattigi bir donem.'),
       );
     });
 
@@ -129,7 +132,7 @@ void main() {
       final periodCards = pickPeriodEventCards(narrative.eventCards);
       expect(narrative.periodCore?.title, 'Ana Tema');
       expect(periodCards, hasLength(1));
-      expect(periodCards.first.title, 'Donem karti');
+      expect(periodCards.first.title, tr('Donem karti'));
     });
 
     test('Period calendar keeps markers as support source', () {
@@ -200,7 +203,7 @@ void main() {
       expect(fromThemes.cards, isNotEmpty);
       expect(fromThemes.cards.first.title, 'Yapı');
       expect(fromIntent.cards, isNotEmpty);
-      expect(fromIntent.cards.first.title, 'Iliski ve Uyum');
+      expect(fromIntent.cards.first.title, tr('Iliski ve Uyum'));
     });
 
     test('Source guards reject swapped DTOs', () {
@@ -233,6 +236,15 @@ void main() {
         'upper': 'Legacy upper',
         'shadow': 'Legacy shadow',
         'watch_out': ['Legacy risk'],
+        'semantic_core': {
+          'target_affinity': 'relationships',
+          'target_house_domain': 'inner',
+        },
+        'domain_scores': {'relationships': 0.81, 'inner': 0.77},
+        'lens_projection': {
+          'lens': 'relationships',
+          'primary_domain': 'relationships',
+        },
         'tags': {
           'phase': 'peak',
           'duration': 'months',
@@ -240,20 +252,94 @@ void main() {
         },
       });
 
-      expect(card.title, 'Netlik Cizgisi');
-      expect(card.opening, 'Dogru cumle dogru anda daha cok onem kazaniyor.');
+      expect(card.title, tr('Netlik Cizgisi'));
+      expect(
+        card.opening,
+        tr('Dogru cumle dogru anda daha cok onem kazaniyor.'),
+      );
       expect(
         card.essence,
-        'Mesele sadece ne soyledigin degil, neyin acik kaldigi.',
+        tr('Mesele sadece ne soyledigin degil, neyin acik kaldigi.'),
       );
-      expect(card.asks, 'Daha acik ve sakin kurmani istiyor.');
-      expect(card.watchout, 'Imayla ilerlemek yanlis okumayi artirabilir.');
+      expect(card.asks, tr('Daha acik ve sakin kurmani istiyor.'));
+      expect(card.watchout, tr('Imayla ilerlemek yanlis okumayi artirabilir.'));
       expect(
         card.whatItBuilds,
-        'Bu donem sende net ifade kasini gelistiriyor.',
+        tr('Bu donem sende net ifade kasini gelistiriyor.'),
       );
       expect(card.technicalNote, '3. evden 7. eve kare.');
+      expect(card.semanticCore['target_affinity'], 'relationships');
+      expect(card.domainScores['relationships'], 0.81);
+      expect(card.lensProjection['primary_domain'], 'relationships');
     });
+
+    test(
+      'NarrativeResponse dedupes repeated transit cards in the same payload',
+      () {
+        final narrative = NarrativeResponse.fromMap({
+          'public': {
+            'daily_event_cards': [
+              {
+                'event_id': 'evt_daily_a',
+                'headline': 'Ic ses aciliyor',
+                'opening': 'Ayni tema bugunde daha cok hissediliyor.',
+                'signature_tr': 'Gunluk vurgu',
+                'horizon': 'day',
+                'tags': {'phase': 'peak'},
+              },
+              {
+                'event_id': 'evt_daily_b',
+                'headline': 'Ic ses aciliyor',
+                'opening': 'Ayni tema bugunde daha cok hissediliyor.',
+                'signature_tr': 'Gunluk vurgu',
+                'horizon': 'day',
+                'tags': {'phase': 'peak'},
+              },
+            ],
+            'period_event_cards': [
+              {
+                'event_id': 'evt_period_a',
+                'headline': 'Uzun tema',
+                'opening': 'Ayni donem vurgusu burada tekrar ediyor.',
+                'signature_tr': 'Donem',
+                'horizon': 'period',
+                'tags': {'phase': 'peak'},
+              },
+              {
+                'event_id': 'evt_period_b',
+                'headline': 'Uzun tema',
+                'opening': 'Ayni donem vurgusu burada tekrar ediyor.',
+                'signature_tr': 'Donem',
+                'horizon': 'period',
+                'tags': {'phase': 'peak'},
+              },
+            ],
+            'event_cards': [
+              {
+                'event_id': 'evt_public_a',
+                'headline': 'Ana akis',
+                'opening': 'Bu metin listede iki kez donmemeli.',
+                'signature_tr': 'Ana vurgu',
+                'horizon': 'day',
+                'tags': {'phase': 'peak'},
+              },
+              {
+                'event_id': 'evt_public_b',
+                'headline': 'Ana akis',
+                'opening': 'Bu metin listede iki kez donmemeli.',
+                'signature_tr': 'Ana vurgu',
+                'horizon': 'day',
+                'tags': {'phase': 'peak'},
+              },
+            ],
+          },
+        });
+
+        expect(narrative.dailyEventCards, hasLength(1));
+        expect(narrative.periodEventCards, hasLength(1));
+        expect(narrative.eventCards, hasLength(1));
+      },
+    );
 
     test('Period detail narrative keeps event body separate from umbrella story', () {
       final eventCard = EventCardDto.fromMap({
@@ -305,36 +391,40 @@ void main() {
       );
 
       expect(detail.summary, eventCard.opening);
-      expect(detail.umbrellaBody, contains('buyuk donem'));
+      expect(detail.umbrellaBody, contains(tr('buyuk donem')));
       expect(
         detail.sections
-            .firstWhere((section) => section.title == 'Bu donemin ozu')
+            .firstWhere((section) => section.title == tr('Bu donemin ozu'))
             .body,
         eventCard.essence,
       );
       expect(
         detail.sections
-            .firstWhere((section) => section.title == 'Nasil calisiyor')
+            .firstWhere((section) => section.title == tr('Nasil calisiyor'))
             .body,
         eventCard.mechanism,
       );
       expect(
         detail.sections
-            .firstWhere((section) => section.title == 'Senden ne istiyor')
+            .firstWhere((section) => section.title == tr('Senden ne istiyor'))
             .body,
         eventCard.asks,
       );
       expect(
         detail.sections
-            .firstWhere((section) => section.title == 'Dikkat edilmesi gereken')
+            .firstWhere(
+              (section) => section.title == tr('Dikkat edilmesi gereken'),
+            )
             .body,
         eventCard.watchout,
       );
       expect(
         detail.sections
-            .firstWhere((section) => section.title == 'Sende neyi gelistiriyor')
+            .firstWhere(
+              (section) => section.title == tr('Sende neyi gelistiriyor'),
+            )
             .body,
-        'Bu donem sende yakin baglarda net kalabilme kasini gelistiriyor.',
+        tr('Bu donem sende yakin baglarda net kalabilme kasini gelistiriyor.'),
       );
       expect(detail.sectionSources['opening'], 'event.opening');
       expect(detail.sectionSources['umbrella'], 'period_story.lead');
@@ -347,6 +437,35 @@ void main() {
         ),
         isTrue,
       );
+    });
+
+    test('Period detail does not repeat timing note in technical rows', () {
+      final eventCard = EventCardDto.fromMap({
+        'event_id': 'evt_timing_repeat',
+        'headline': 'Ton Ayari',
+        'opening': 'Iliski tonunda ince ayar gereken bir donem.',
+        'essence': 'Mesele ne dediginden cok nasil duyuldugunda aciliyor.',
+        'mechanism': 'Yuzeyde kucuk ton farklari buyuyebiliyor.',
+        'asks': 'Cumleyi daha acik ve yumusak kurmani istiyor.',
+        'watchout': 'Imaya yaslanmak yanlis okumayi buyutebilir.',
+        'what_it_builds': 'net ve sakin ifade kasini',
+        'technical_note': '3. evden 7. eve kare.',
+        'signature_tr': 'Ince ayar',
+        'time_hint_tr': 'Mart boyunca',
+        'tags': {
+          'phase': 'applying',
+          'duration': 'months',
+          'domain': 'relationships',
+        },
+      });
+
+      final detail = PeriodCardDto.fromEventCard(
+        eventCard: eventCard,
+        index: 0,
+      ).buildDetailNarrative(periodCore: null, routeSource: 'test');
+
+      expect(detail.timingNote, 'Mart boyunca');
+      expect(detail.metaRows.where((row) => row.label == 'Zaman'), isEmpty);
     });
   });
 }

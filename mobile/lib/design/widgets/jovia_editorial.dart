@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_assets.dart';
 
@@ -66,7 +67,7 @@ class JoviaPageScaffold extends StatelessWidget {
   const JoviaPageScaffold({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.fromLTRB(20, 16, 20, 28),
+    this.padding = const EdgeInsets.fromLTRB(24, 20, 24, 32),
   });
 
   final Widget child;
@@ -106,7 +107,7 @@ class _JoviaPressableState extends State<JoviaPressable> {
 
   @override
   Widget build(BuildContext context) {
-    final radius = widget.borderRadius ?? BorderRadius.circular(18);
+    final radius = widget.borderRadius ?? BorderRadius.circular(24);
     return AnimatedScale(
       scale: _pressed ? widget.pressedScale : 1,
       duration: const Duration(milliseconds: 120),
@@ -138,11 +139,11 @@ class JoviaSurfaceCard extends StatelessWidget {
   const JoviaSurfaceCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(18),
+    this.padding = const EdgeInsets.all(20),
     this.color,
     this.backgroundColor,
     this.borderColor,
-    this.radius = 22,
+    this.radius = 28,
     this.shadow = true,
   });
 
@@ -158,7 +159,7 @@ class JoviaSurfaceCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final base = backgroundColor ?? color ?? profile.colors.panelStrong;
+    final base = backgroundColor ?? color ?? profile.colors.surface;
     final stroke = borderColor ?? profile.colors.strokeSoft;
     final topBlend = Color.alphaBlend(
       Colors.white.withValues(alpha: isDark ? 0.14 : 0.72),
@@ -269,7 +270,7 @@ class JoviaProfileTopBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(
-                label.toUpperCase(),
+                turkishToUpper(label),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: profile.typography.monoEyebrow.copyWith(
@@ -339,7 +340,7 @@ class JoviaSectionHeader extends StatelessWidget {
       children: [
         if (resolvedLabel.isNotEmpty) ...[
           Text(
-            resolvedLabel.toUpperCase(),
+            turkishToUpper(resolvedLabel),
             style: profile.typography.monoEyebrow.copyWith(
               color: profile.colors.textLight,
               letterSpacing: variant == JoviaSectionHeaderVariant.editorial
@@ -500,7 +501,7 @@ class JoviaTopicSurface extends StatelessWidget {
           children: [
             if (resolvedEyebrow.isNotEmpty) ...[
               Text(
-                resolvedEyebrow.toUpperCase(),
+                turkishToUpper(resolvedEyebrow),
                 style: profile.typography.eyebrow.copyWith(
                   color: profile.colors.textLight,
                   letterSpacing: 1.4,
@@ -731,7 +732,7 @@ class JoviaUtilityRow extends StatelessWidget {
                 children: [
                   if (resolvedLabel.isNotEmpty) ...[
                     Text(
-                      resolvedLabel.toUpperCase(),
+                      turkishToUpper(resolvedLabel),
                       style: profile.typography.eyebrow.copyWith(
                         color: profile.colors.textLight,
                         letterSpacing: 1.3,
@@ -1179,7 +1180,7 @@ class JoviaEditorialHeroBlock extends StatelessWidget {
                   if (resolvedLabel.isNotEmpty)
                     Expanded(
                       child: Text(
-                        resolvedLabel.toUpperCase(),
+                        turkishToUpper(resolvedLabel),
                         style: profile.typography.eyebrow.copyWith(
                           color: profile.colors.textLight,
                           letterSpacing: 1.5,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
@@ -648,7 +649,7 @@ class ProfileDetailCatalogPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        title.toUpperCase(),
+                        turkishToUpper(title),
                         style: profile.typography.monoEyebrow.copyWith(
                           color: pageTone.accent,
                           fontSize: 11.5,
@@ -755,7 +756,7 @@ class _ProfileDetailCatalogCard extends StatelessWidget {
                 children: [
                   if (item.eyebrow.trim().isNotEmpty) ...[
                     Text(
-                      item.eyebrow.toUpperCase(),
+                      turkishToUpper(item.eyebrow),
                       style: profile.typography.monoEyebrow.copyWith(
                         color: item.tone.accent,
                         fontSize: 11.0,
@@ -1683,7 +1684,7 @@ class _DetailPlaybackTopBar extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                flowTitle.toUpperCase(),
+                turkishToUpper(flowTitle),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: profile.typography.monoEyebrow.copyWith(
@@ -1857,7 +1858,7 @@ class _DetailGlancePlaybackCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              page.eyebrow.toUpperCase(),
+              turkishToUpper(page.eyebrow),
               style: profile.typography.monoEyebrow.copyWith(
                 color: profile.colors.warmAccent,
                 fontSize: 11.5,
@@ -2034,7 +2035,7 @@ class _DetailStructuredBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    page.eyebrow.toUpperCase(),
+                    turkishToUpper(page.eyebrow),
                     style: profile.typography.monoEyebrow.copyWith(
                       color: profile.colors.textLight,
                       fontSize: 11.5,
@@ -2187,7 +2188,7 @@ class _DetailSplitBody extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          page.eyebrow.toUpperCase(),
+          turkishToUpper(page.eyebrow),
           style: profile.typography.monoEyebrow.copyWith(
             color: profile.colors.warmAccent,
             fontSize: 11.5,
@@ -2346,7 +2347,7 @@ class _DetailSymbolPlaybackCard extends StatelessWidget {
           Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              page.eyebrow.toUpperCase(),
+              turkishToUpper(page.eyebrow),
               style: profile.typography.monoEyebrow.copyWith(
                 color: profile.colors.textLight,
                 fontSize: 11.5,
@@ -2420,7 +2421,7 @@ class _DetailPortalPlaybackCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            page.eyebrow.toUpperCase(),
+            turkishToUpper(page.eyebrow),
             style: profile.typography.monoEyebrow.copyWith(
               color: profile.colors.warmAccent,
               fontSize: 11.5,
@@ -2485,7 +2486,7 @@ class _DetailTextSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          page.eyebrow.toUpperCase(),
+          turkishToUpper(page.eyebrow),
           style: profile.typography.monoEyebrow.copyWith(
             color: profile.colors.warmAccent,
             fontSize: 11.5,

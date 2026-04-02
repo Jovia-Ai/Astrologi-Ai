@@ -32,16 +32,16 @@ class ProfileTypography {
   TextStyle get body => bodyLarge;
   TextStyle get label => chipLabel;
   TextStyle get heroName => heroEditorial.copyWith(
-    fontSize: 26,
-    height: 1.06,
-    fontWeight: FontWeight.w600,
-    letterSpacing: -0.42,
+    fontSize: 28,
+    height: 1.04,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.56,
   );
   TextStyle get editorialHeadline => heroEditorial.copyWith(
-    fontSize: 32,
-    height: 1.08,
-    fontWeight: FontWeight.w600,
-    letterSpacing: -0.62,
+    fontSize: 38,
+    height: 1.06,
+    fontWeight: FontWeight.w500,
+    letterSpacing: -0.96,
   );
   TextStyle get monoEyebrow =>
       sectionLabel.copyWith(fontWeight: FontWeight.w700, letterSpacing: 2.35);
@@ -119,50 +119,54 @@ class ProfileTypography {
   }) {
     return ProfileTypography(
       sectionLabel: TextStyle(
-        fontSize: 11.5,
-        height: 16 / 11.5,
+        fontSize: 11,
+        height: 15 / 11,
         fontWeight: FontWeight.w700,
         color: mutedLabelColor,
-        letterSpacing: 1.9,
+        letterSpacing: 1.7,
       ),
       pageTitle: TextStyle(
-        fontSize: 28,
-        height: 33 / 28,
-        fontWeight: FontWeight.w600,
+        fontFamily: 'Baskerville',
+        fontFamilyFallback: ['Times New Roman', 'Georgia'],
+        fontSize: 36,
+        height: 40 / 36,
+        fontWeight: FontWeight.w500,
         color: textColor,
-        letterSpacing: -0.58,
+        letterSpacing: -1.24,
       ),
       sectionTitle: TextStyle(
-        fontSize: 22,
-        height: 28 / 22,
-        fontWeight: FontWeight.w600,
+        fontFamily: 'Baskerville',
+        fontFamilyFallback: ['Times New Roman', 'Georgia'],
+        fontSize: 30,
+        height: 34 / 30,
+        fontWeight: FontWeight.w500,
         color: textColor,
-        letterSpacing: -0.34,
+        letterSpacing: -0.9,
       ),
       cardTitle: TextStyle(
         fontSize: 18,
         height: 24 / 18,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w500,
         color: textColor,
-        letterSpacing: -0.26,
+        letterSpacing: -0.22,
       ),
       bodyLarge: TextStyle(
         fontSize: 15.5,
-        height: 28 / 15.5,
+        height: 26 / 15.5,
         fontWeight: FontWeight.w400,
         color: textColor,
         letterSpacing: -0.08,
       ),
       bodyCompact: TextStyle(
         fontSize: 14.5,
-        height: 24 / 14.5,
+        height: 22 / 14.5,
         fontWeight: FontWeight.w400,
         color: textColor,
         letterSpacing: -0.05,
       ),
       meta: TextStyle(
-        fontSize: 12.5,
-        height: 18 / 12.5,
+        fontSize: 13,
+        height: 18 / 13,
         fontWeight: FontWeight.w500,
         color: secondaryColor,
         letterSpacing: 0.01,
@@ -175,11 +179,13 @@ class ProfileTypography {
         letterSpacing: 0.02,
       ),
       heroEditorial: TextStyle(
-        fontSize: 32,
-        height: 38 / 32,
-        fontWeight: FontWeight.w600,
+        fontFamily: 'Baskerville',
+        fontFamilyFallback: ['Times New Roman', 'Georgia'],
+        fontSize: 52,
+        height: 54 / 52,
+        fontWeight: FontWeight.w500,
         color: textColor,
-        letterSpacing: -0.62,
+        letterSpacing: -1.72,
       ),
     );
   }

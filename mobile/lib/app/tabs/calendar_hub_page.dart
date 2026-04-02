@@ -11,6 +11,7 @@ import 'package:mobile/app/tabs/period_marker_detail_page.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/period_peak_timeline_widget.dart';
 import 'package:mobile/app/timing/source_guards.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
@@ -19,24 +20,24 @@ enum CalendarViewportMode { month, week }
 
 const List<String> _kCalendarMonthNames = <String>[
   'Ocak',
-  'Subat',
+  'Şubat',
   'Mart',
   'Nisan',
-  'Mayis',
+  'Mayıs',
   'Haziran',
   'Temmuz',
-  'Agustos',
-  'Eylul',
+  'Ağustos',
+  'Eylül',
   'Ekim',
-  'Kasim',
-  'Aralik',
+  'Kasım',
+  'Aralık',
 ];
 
 const List<String> _kCalendarWeekdayNames = <String>[
   'Pazartesi',
-  'Sali',
-  'Carsamba',
-  'Persembe',
+  'Salı',
+  'Çarşamba',
+  'Perşembe',
   'Cuma',
   'Cumartesi',
   'Pazar',
@@ -193,7 +194,7 @@ class CalendarDayBundle {
     if (timelineSummary.isNotEmpty) {
       return _condenseCalendarCopy(timelineSummary, maxChars: 180);
     }
-    return 'Secili gune dokunup gunun ritmini, kartlarini ve uzun donem etkisini ac.';
+    return 'Seçili güne dokunup günün ritmini, kartlarını ve uzun dönem etkisini aç.';
   }
 
   String get headline {
@@ -471,7 +472,7 @@ List<List<DateTime>> _calendarWeekRows(List<DateTime> monthDays) {
 }
 
 String _condenseCalendarCopy(String text, {int maxChars = 220}) {
-  final trimmed = text.trim();
+  final trimmed = normalizeTurkishText(text);
   if (trimmed.isEmpty) {
     return '';
   }
@@ -527,6 +528,223 @@ class _EventCardSelectionResult {
   final List<EventCardDto> periodCards;
   final bool usedPeriodFallback;
   final String periodOnlyNote;
+}
+
+String _normalizeTransitPageText(String value) {
+  return value
+      .toLowerCase()
+      .replaceAll(RegExp(r'[^\w\s]', unicode: true), ' ')
+      .replaceAll(RegExp(r'\s+'), ' ')
+      .trim();
+}
+
+String _firstTransitPageText(Iterable<String> values) {
+  for (final value in values) {
+    final cleaned = value.trim();
+    if (cleaned.isNotEmpty) {
+      return cleaned;
+    }
+  }
+  return '';
+}
+
+bool _isTransitPageDuplicateText(String left, String right) {
+  final normalizedLeft = _normalizeTransitPageText(left);
+  final normalizedRight = _normalizeTransitPageText(right);
+  if (normalizedLeft.isEmpty || normalizedRight.isEmpty) {
+    return false;
+  }
+  if (normalizedLeft == normalizedRight) {
+    return true;
+  }
+  final shorter = normalizedLeft.length <= normalizedRight.length
+      ? normalizedLeft
+      : normalizedRight;
+  final longer = shorter == normalizedLeft ? normalizedRight : normalizedLeft;
+  return shorter.length >= 18 && longer.contains(shorter);
+}
+
+List<String> _dedupeTransitPageTexts(Iterable<String> values, {int limit = 3}) {
+  final out = <String>[];
+  for (final value in values) {
+    final cleaned = value.trim();
+    if (cleaned.isEmpty) {
+      continue;
+    }
+    final duplicate = out.any(
+      (existing) => _isTransitPageDuplicateText(existing, cleaned),
+    );
+    if (duplicate) {
+      continue;
+    }
+    out.add(cleaned);
+    if (out.length >= limit) {
+      break;
+    }
+  }
+  return out;
+}
+
+List<String> _expandedTransitPageTexts(
+  Iterable<String> values, {
+  int limit = 12,
+}) {
+  final expanded = <String>[];
+  for (final value in values) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      continue;
+    }
+    expanded.add(trimmed);
+    for (final part in trimmed.split('\n')) {
+      final line = part.trim();
+      if (line.isNotEmpty) {
+        expanded.add(line);
+      }
+    }
+  }
+  return _dedupeTransitPageTexts(expanded, limit: limit);
+}
+
+bool _transitPageTextListsOverlap(List<String> left, List<String> right) {
+  if (left.isEmpty || right.isEmpty) {
+    return false;
+  }
+  var matchCount = 0;
+  var leadMatch = false;
+  for (var leftIndex = 0; leftIndex < left.length; leftIndex++) {
+    for (var rightIndex = 0; rightIndex < right.length; rightIndex++) {
+      if (!_isTransitPageDuplicateText(left[leftIndex], right[rightIndex])) {
+        continue;
+      }
+      matchCount += 1;
+      if (leftIndex == 0 && rightIndex == 0) {
+        leadMatch = true;
+      }
+      break;
+    }
+  }
+  return matchCount >= 2 || (leadMatch && matchCount >= 1);
+}
+
+List<String> _eventCardSelectionTexts(EventCardDto card) {
+  return _dedupeTransitPageTexts([
+    _firstTransitPageText([
+      card.feltLineTr,
+      card.headline,
+      card.title,
+      card.signatureTr,
+    ]),
+    _firstTransitPageText([
+      card.opening,
+      card.essence,
+      card.whyNow,
+      card.bigPicture,
+    ]),
+    _firstTransitPageText([
+      card.timeHintTr,
+      card.signatureTr,
+      card.houseTouchpointHintTr,
+      card.eventFamily,
+    ]),
+  ]);
+}
+
+bool _eventCardsSharePageMeaning(EventCardDto left, EventCardDto right) {
+  final leftEventId = left.eventId.trim();
+  final rightEventId = right.eventId.trim();
+  if (leftEventId.isNotEmpty && leftEventId == rightEventId) {
+    return true;
+  }
+  return _transitPageTextListsOverlap(
+    _eventCardSelectionTexts(left),
+    _eventCardSelectionTexts(right),
+  );
+}
+
+bool _eventAndPeriodSharePageMeaning(EventCardDto event, EventCardDto period) {
+  return _transitPageTextListsOverlap(
+    _eventCardSelectionTexts(event),
+    _eventCardSelectionTexts(period),
+  );
+}
+
+List<EventCardDto> _dedupeEventCardSelection(
+  Iterable<EventCardDto> cards, {
+  Iterable<EventCardDto> avoid = const <EventCardDto>[],
+}) {
+  final out = <EventCardDto>[];
+  for (final card in cards) {
+    if (_eventCardSelectionTexts(card).isEmpty) {
+      continue;
+    }
+    final duplicateInAvoid = avoid.any(
+      (existing) => _eventAndPeriodSharePageMeaning(existing, card),
+    );
+    if (duplicateInAvoid) {
+      continue;
+    }
+    final duplicate = out.any(
+      (existing) => _eventCardsSharePageMeaning(existing, card),
+    );
+    if (duplicate) {
+      continue;
+    }
+    out.add(card);
+  }
+  return out;
+}
+
+List<String> _periodCardPageTexts(PeriodCardDto card) {
+  return _dedupeTransitPageTexts([card.title, card.subtitle, card.timeHint]);
+}
+
+bool _periodCardsSharePageMeaning(PeriodCardDto left, PeriodCardDto right) {
+  final leftId = left.id.trim();
+  final rightId = right.id.trim();
+  if (leftId.isNotEmpty && leftId == rightId) {
+    return true;
+  }
+  return _transitPageTextListsOverlap(
+    _periodCardPageTexts(left),
+    _periodCardPageTexts(right),
+  );
+}
+
+bool _periodCardDuplicatesEventCard(
+  PeriodCardDto periodCard,
+  EventCardDto card,
+) {
+  return _transitPageTextListsOverlap(
+    _periodCardPageTexts(periodCard),
+    _eventCardSelectionTexts(card),
+  );
+}
+
+List<PeriodCardDto> _dedupeRenderedPeriodCards(
+  Iterable<PeriodCardDto> cards, {
+  Iterable<EventCardDto> avoidEvents = const <EventCardDto>[],
+}) {
+  final out = <PeriodCardDto>[];
+  for (final card in cards) {
+    if (_periodCardPageTexts(card).isEmpty) {
+      continue;
+    }
+    final duplicateInAvoid = avoidEvents.any(
+      (eventCard) => _periodCardDuplicatesEventCard(card, eventCard),
+    );
+    if (duplicateInAvoid) {
+      continue;
+    }
+    final duplicate = out.any(
+      (existing) => _periodCardsSharePageMeaning(existing, card),
+    );
+    if (duplicate) {
+      continue;
+    }
+    out.add(card);
+  }
+  return out;
 }
 
 String _firstNonEmpty(Iterable<String?> values) {
@@ -594,7 +812,7 @@ bool _looksTechnicalAstroCopy(String text) {
 }
 
 String _safeHumanLine(String text) {
-  final trimmed = text.trim();
+  final trimmed = normalizeTurkishText(text);
   if (trimmed.isEmpty || _looksTechnicalAstroCopy(trimmed)) {
     return '';
   }
@@ -708,32 +926,35 @@ bool _isDailyCardBackedByPeriod(EventCardDto card) {
       sourceHorizon == 'period';
 }
 
+// ignore: unused_element
 String _dailySectionBody(List<EventCardDto> cards, String periodOnlyNote) {
   final note = periodOnlyNote.trim();
   if (note.isNotEmpty) {
     return note;
   }
   if (cards.any(_isDailyCardBackedByPeriod)) {
-    return 'Buradaki kartlardan bazisi kisa tetik degil; uzun suredir calisan temanin bugune dusen yuzu.';
+    return 'Buradaki kartlardan bazısı kısa tetik değil; uzun süredir çalışan temanın bugüne düşen yüzü.';
   }
-  return 'Bugun sende daha cok hissedilen sey burada aciliyor.';
+  return 'Bugün sende daha çok hissedilen şey burada açılıyor.';
 }
 
+// ignore: unused_element
 String _dailyCardEyebrow(EventCardDto card, _DailyHumanCardViewModel human) {
   if (_isDailyCardBackedByPeriod(card)) {
-    return 'Donemden bugune';
+    return 'Dönemden bugüne';
   }
   final signalLabel = human.signalLabel.trim();
   if (signalLabel.isNotEmpty) {
     return signalLabel;
   }
-  return 'Bugun';
+  return 'Bugün';
 }
 
+// ignore: unused_element
 List<String> _dailyCardMeta(EventCardDto card, _DailyHumanCardViewModel human) {
   final meta = <String>[];
   if (_isDailyCardBackedByPeriod(card)) {
-    meta.add('Uzun suredir acik tema');
+    meta.add('Uzun süredir açık tema');
     final signalLabel = human.signalLabel.trim();
     if (signalLabel.isNotEmpty) {
       meta.add(signalLabel);
@@ -749,15 +970,273 @@ List<String> _dailyCardMeta(EventCardDto card, _DailyHumanCardViewModel human) {
   return meta.take(3).toList(growable: false);
 }
 
-String _markerSectionTitle(List<PeriodMarkerDto> markers) {
-  return markers.length == 1 ? 'Bugunun isareti' : 'Bugunun isaretleri';
+String _joinNarrativeLines(
+  Iterable<String?> values, {
+  int maxLines = 2,
+  int maxChars = 220,
+  List<String> avoid = const <String>[],
+}) {
+  final lines = <String>[];
+  final expandedAvoid = _expandedTransitPageTexts(avoid);
+  for (final value in values) {
+    final trimmed = normalizeTurkishText(value?.trim() ?? '');
+    if (trimmed.isEmpty) {
+      continue;
+    }
+    final condensed = _condenseCalendarCopy(trimmed, maxChars: maxChars);
+    if (condensed.isEmpty || lines.contains(condensed)) {
+      continue;
+    }
+    final duplicateInAvoid = expandedAvoid.any(
+      (existing) => _isTransitPageDuplicateText(existing, condensed),
+    );
+    if (duplicateInAvoid) {
+      continue;
+    }
+    final duplicateInLines = lines.any(
+      (existing) => _isTransitPageDuplicateText(existing, condensed),
+    );
+    if (duplicateInLines) {
+      continue;
+    }
+    lines.add(condensed);
+    if (lines.length >= maxLines) {
+      break;
+    }
+  }
+  return lines.join('\n');
 }
 
+String _firstDistinctTransitPageText(
+  Iterable<String?> values, {
+  List<String> avoid = const <String>[],
+}) {
+  final expandedAvoid = _expandedTransitPageTexts(avoid);
+  for (final value in values) {
+    final trimmed = value?.trim() ?? '';
+    if (trimmed.isEmpty) {
+      continue;
+    }
+    final duplicate = expandedAvoid.any(
+      (existing) => _isTransitPageDuplicateText(existing, trimmed),
+    );
+    if (duplicate) {
+      continue;
+    }
+    return trimmed;
+  }
+  return '';
+}
+
+String _editorialCurrentBody({
+  required _DailyHumanCardViewModel human,
+  EventCardDto? card,
+  TimelineDto? timeline,
+  String fallback = '',
+  List<String> avoid = const <String>[],
+}) {
+  return _firstDistinctTransitPageText([
+    _joinNarrativeLines([
+      _safeHumanLine(card?.opening ?? ''),
+      _safeHumanLine(card?.essence ?? ''),
+      human.whyLine,
+    ], avoid: avoid),
+    _safeHumanLine(timeline?.summary ?? ''),
+    fallback,
+    'Bugünün ritmi burada biraz daha okunur hale geliyor.',
+  ], avoid: avoid);
+}
+
+String _editorialChangeBody({
+  required _DailyHumanCardViewModel human,
+  EventCardDto? card,
+  List<String> avoid = const <String>[],
+}) {
+  return _firstDistinctTransitPageText([
+    _joinNarrativeLines([
+      _safeHumanLine(card?.whatItBuilds ?? ''),
+      human.houseTouchpointHint,
+      human.guidanceLine,
+      _safeHumanLine(card?.asks ?? ''),
+    ], avoid: avoid),
+    human.houseTouchpointHint,
+    human.guidanceLine,
+    'Bunun sende hangi tarafta daha çok belli olduğuna bak.',
+  ], avoid: avoid);
+}
+
+String _editorialDirectionBody({
+  required String periodOnlyNote,
+  required TimelineDto? timeline,
+  required PeriodCoreDto? periodCore,
+  EventCardDto? card,
+  List<String> avoid = const <String>[],
+}) {
+  return _firstDistinctTransitPageText([
+    _joinNarrativeLines([
+      periodOnlyNote,
+      periodCore?.coreStory,
+      periodCore?.bigPicture,
+      _safeHumanLine(card?.whatItBuilds ?? ''),
+      _safeHumanLine(timeline?.summary ?? ''),
+    ], avoid: avoid),
+    periodOnlyNote,
+    _safeHumanLine(periodCore?.coreStory ?? ''),
+    'Tema burada bitmiyor; önündeki günlerde biraz daha şekil kazanacak.',
+  ], avoid: avoid);
+}
+
+String _editorialSecondaryBody({
+  required _DailyHumanCardViewModel human,
+  required EventCardDto card,
+  List<String> avoid = const <String>[],
+}) {
+  return _firstDistinctTransitPageText([
+    _joinNarrativeLines([
+      human.whyLine,
+      human.guidanceLine,
+      _safeHumanLine(card.opening),
+    ], avoid: avoid),
+    human.guidanceLine,
+    'Bu da arka planda beraber çalışan ikinci bir katman.',
+  ], avoid: avoid);
+}
+
+String _formatEditorialShortDate(String raw) {
+  final value = raw.trim();
+  if (value.length < 10) {
+    return '';
+  }
+  final parsed = DateTime.tryParse(value.substring(0, 10));
+  if (parsed == null) {
+    return '';
+  }
+  return '${parsed.day} ${_kCalendarMonthNames[parsed.month - 1]}';
+}
+
+String _editorialPhaseLabel(EventCardDto? card) {
+  final phase = card?.phase.trim().toLowerCase() ?? '';
+  return switch (phase) {
+    'applying' => 'Yoğunlaşıyor',
+    'exact' || 'exactish' => 'Bugün zirvede',
+    'separating' => 'Çözülmeye geçiyor',
+    _ => '',
+  };
+}
+
+String _editorialTimingWindow(EventCardDto? card) {
+  if (card == null) {
+    return '';
+  }
+  final start = _formatEditorialShortDate(card.timing.entryDateUtc);
+  final peak = _formatEditorialShortDate(card.timing.peakDateUtc);
+  final end = _formatEditorialShortDate(card.timing.exitDateUtc);
+  if (start.isNotEmpty && end.isNotEmpty) {
+    return '$start - $end';
+  }
+  if (peak.isNotEmpty) {
+    return 'Zirve $peak';
+  }
+  if (start.isNotEmpty) {
+    return 'Başlangıç $start';
+  }
+  return '';
+}
+
+String _editorialTimingLine(EventCardDto? card) {
+  return _firstNonEmpty([
+    _joinNarrativeLines(
+      [
+        card?.timeHintTr,
+        card?.timeHint,
+        card?.timing.timingNote,
+        _editorialTimingWindow(card),
+        _editorialPhaseLabel(card),
+      ],
+      maxLines: 1,
+      maxChars: 120,
+    ),
+    '',
+  ]);
+}
+
+List<String> _editorialEvidenceLines({
+  required _DailyHumanCardViewModel human,
+  required List<CalendarBestTimeItem> bestTimes,
+  required String periodOnlyNote,
+  required EventCardDto? primaryCard,
+  required PeriodCoreDto? periodCore,
+  List<String> avoid = const <String>[],
+}) {
+  final lines = <String>[];
+  final expandedAvoid = _expandedTransitPageTexts(avoid);
+  void addLine(String value) {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty || lines.contains(trimmed)) {
+      return;
+    }
+    final duplicateInAvoid = expandedAvoid.any(
+      (existing) => _isTransitPageDuplicateText(existing, trimmed),
+    );
+    if (duplicateInAvoid) {
+      return;
+    }
+    final duplicateInLines = lines.any(
+      (existing) => _isTransitPageDuplicateText(existing, trimmed),
+    );
+    if (duplicateInLines) {
+      return;
+    }
+    lines.add(trimmed);
+  }
+
+  addLine(human.houseTouchpointHint);
+  if (periodOnlyNote.trim().isNotEmpty) {
+    addLine(periodOnlyNote.trim());
+  }
+  final timingLine = _editorialTimingLine(primaryCard);
+  if (timingLine.isNotEmpty) {
+    addLine('Zaman: $timingLine');
+  }
+  if (periodCore?.coreStory.trim().isNotEmpty == true) {
+    addLine(periodCore!.coreStory.trim());
+  }
+  if (bestTimes.isNotEmpty) {
+    addLine(
+      'Bu hafta iyi pencere: ${bestTimes.take(2).map((item) => item.label.trim()).where((item) => item.isNotEmpty).join(' • ')}',
+    );
+  }
+  return lines;
+}
+
+bool _hasEditorialDayContent({
+  required List<EventCardDto> eventCards,
+  required List<PeriodCardDto> periodCards,
+  required List<PeriodMarkerDto> markers,
+  required List<CalendarBestTimeItem> bestTimes,
+  required TimelineDto? timeline,
+  required PeriodCoreDto? periodCore,
+}) {
+  return eventCards.isNotEmpty ||
+      periodCards.isNotEmpty ||
+      markers.isNotEmpty ||
+      bestTimes.isNotEmpty ||
+      periodCore != null ||
+      timeline?.summary.trim().isNotEmpty == true ||
+      timeline?.lines.isNotEmpty == true;
+}
+
+// ignore: unused_element
+String _markerSectionTitle(List<PeriodMarkerDto> markers) {
+  return markers.length == 1 ? 'Bugünün işareti' : 'Bugünün işaretleri';
+}
+
+// ignore: unused_element
 String _markerSectionBody(List<PeriodMarkerDto> markers) {
   if (markers.length == 1) {
-    return 'Kisa gokyuzu esigi. Bu tek basina ana yorum degil; gunun dikkat ceken isareti.';
+    return 'Kısa gökyüzü eşiği. Bu tek başına ana yorum değil; günün dikkat çeken işareti.';
   }
-  return 'Kisa gokyuzu isaretleri. Bunlar tam yorum degil; gunun dikkat ceken esikleri.';
+  return 'Kısa gökyüzü işaretleri. Bunlar tam yorum değil; günün dikkat çeken eşikleri.';
 }
 
 double _scoreEventCardForToday(EventCardDto card, DateTime selectedDate) {
@@ -900,11 +1379,38 @@ _EventCardSelectionResult _deriveEventCardSelection({
 }) {
   if (narrative.dailyEventCards.isNotEmpty ||
       narrative.periodEventCards.isNotEmpty) {
+    final dailyCards = _dedupeEventCardSelection(narrative.dailyEventCards);
+    final periodCards = _dedupeEventCardSelection(
+      narrative.periodEventCards,
+      avoid: dailyCards,
+    );
+    if (dailyCards.isNotEmpty) {
+      return _EventCardSelectionResult(
+        dailyCards: dailyCards,
+        periodCards: periodCards,
+        usedPeriodFallback:
+            narrative.dailySelection?.usedPeriodFallback == true,
+        periodOnlyNote: narrative.dailySelection?.periodOnlyNote.trim() ?? '',
+      );
+    }
+    if (periodCards.isNotEmpty) {
+      return _EventCardSelectionResult(
+        dailyCards: <EventCardDto>[
+          _convertPeriodToDaily(periodCards.first, selectedDate),
+        ],
+        periodCards: periodCards,
+        usedPeriodFallback: true,
+        periodOnlyNote:
+            narrative.dailySelection?.periodOnlyNote.trim().isNotEmpty == true
+            ? narrative.dailySelection!.periodOnlyNote.trim()
+            : 'Bugün kısa vadeli bir tetikten çok, arkada çalışan tema öne çıkıyor.',
+      );
+    }
     return _EventCardSelectionResult(
-      dailyCards: narrative.dailyEventCards,
-      periodCards: narrative.periodEventCards,
-      usedPeriodFallback: narrative.dailySelection?.usedPeriodFallback == true,
-      periodOnlyNote: narrative.dailySelection?.periodOnlyNote.trim() ?? '',
+      dailyCards: const <EventCardDto>[],
+      periodCards: const <EventCardDto>[],
+      usedPeriodFallback: false,
+      periodOnlyNote: '',
     );
   }
 
@@ -913,14 +1419,19 @@ _EventCardSelectionResult _deriveEventCardSelection({
       (card: card, score: _scoreEventCardForToday(card, selectedDate)),
   ]..sort((a, b) => b.score.compareTo(a.score));
 
-  final dailyCards = <EventCardDto>[
-    for (final entry in scored)
-      if (entry.card.horizon.trim().toLowerCase() != 'period') entry.card,
-  ].take(2).toList(growable: false);
-  final periodCards = <EventCardDto>[
-    for (final entry in scored)
-      if (entry.card.horizon.trim().toLowerCase() == 'period') entry.card,
-  ].take(3).toList(growable: false);
+  final dailyCards = _dedupeEventCardSelection(
+    <EventCardDto>[
+      for (final entry in scored)
+        if (entry.card.horizon.trim().toLowerCase() != 'period') entry.card,
+    ].take(2).toList(growable: false),
+  );
+  final periodCards = _dedupeEventCardSelection(
+    <EventCardDto>[
+      for (final entry in scored)
+        if (entry.card.horizon.trim().toLowerCase() == 'period') entry.card,
+    ].take(3).toList(growable: false),
+    avoid: dailyCards,
+  );
 
   if (dailyCards.isNotEmpty) {
     return _EventCardSelectionResult(
@@ -1108,13 +1619,13 @@ Future<CalendarDayBundle> _loadCalendarDayBundle({
     selectedDate: normalizedDate,
   );
   final dailyCards = selection.dailyCards;
-  final periodCards = <PeriodCardDto>[
+  final periodCards = _dedupeRenderedPeriodCards(<PeriodCardDto>[
     for (var index = 0; index < selection.periodCards.length; index++)
       PeriodCardDto.fromEventCard(
         eventCard: selection.periodCards[index],
         index: index,
       ),
-  ];
+  ], avoidEvents: dailyCards);
   final periodInNarrative =
       selection.periodCards.isNotEmpty && selection.dailyCards.isEmpty;
   return CalendarDayBundle(
@@ -1172,7 +1683,7 @@ CalendarDayBundle _calendarShellBundleFromPayload({
     calendarDays: calendarDays,
     selectedDayMeta: calendarDays[_calendarDayKey(normalizedDate)],
     dailyEventCards: const <EventCardDto>[],
-    periodCards: periodCalendar.cards,
+    periodCards: _dedupeRenderedPeriodCards(periodCalendar.cards),
     usedPeriodFallback: false,
     periodOnlyNote: '',
     markers: _markersForSelectedDay(periodCalendar.markers, normalizedDate),
@@ -1200,14 +1711,17 @@ CalendarDayBundle _hydrateCalendarBundleWithNarrative({
       ? narrative.calendarDays
       : baseBundle.calendarDays;
   final periodCards = selection.periodCards.isNotEmpty
-      ? <PeriodCardDto>[
+      ? _dedupeRenderedPeriodCards(<PeriodCardDto>[
           for (var index = 0; index < selection.periodCards.length; index++)
             PeriodCardDto.fromEventCard(
               eventCard: selection.periodCards[index],
               index: index,
             ),
-        ]
-      : baseBundle.periodCards;
+        ], avoidEvents: selection.dailyCards)
+      : _dedupeRenderedPeriodCards(
+          baseBundle.periodCards,
+          avoidEvents: selection.dailyCards,
+        );
   return baseBundle.copyWith(
     calendarDays: calendarDays,
     selectedDayMeta: calendarDays[_calendarDayKey(baseBundle.date)],
@@ -1339,7 +1853,7 @@ class _CalendarHubPageState extends ConsumerState<CalendarHubPage>
                 label: 'Timing',
                 title: 'Birlesik takvim',
                 body:
-                    'Ay ve hafta akisini ayni yuzde takip et. Bir gune dokundugunda o gunun sayfasi acilir; uzun donem etkisi baglam olarak korunur.',
+                    'Ay ve hafta akışını aynı yüzde takip et. Bir güne dokunduğunda o günün sayfası açılır; uzun dönem etkisi bağlam olarak korunur.',
                 variant: JoviaSectionHeaderVariant.editorial,
               ),
               SizedBox(height: spacing.sectionToContent),
@@ -1655,8 +2169,8 @@ class _UnifiedCalendarPanel extends StatelessWidget {
           ? _formatCalendarMonthTitle(selectedDay)
           : '${_formatCalendarMonthTitle(selectedDay)} • Hafta',
       body: isMonth
-          ? 'Ay gorunumunden bir gune dokunup o gunun sayfasina gec.'
-          : 'Hafta gorunumunde secili haftaya odaklan, gunu acip detayda sag-sol ilerle.',
+          ? 'Ay görünümünden bir güne dokunup o günün sayfasına geç.'
+          : 'Hafta görünümünde seçili haftaya odaklan, günü açıp detayda sağ-sol ilerle.',
       large: true,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1794,12 +2308,12 @@ class _SelectedDayHeroCard extends StatelessWidget {
       date: day,
     );
     return JoviaEditorialHeroBlock(
-      label: 'Gunun temasi',
+      label: 'Günün teması',
       title: human.feltLine,
       body: human.heroBody.isNotEmpty
           ? human.heroBody
           : (bundle?.summary ??
-                'Bir gune dokundugunda o gunun kartlari, markerlari ve uzun donem baglami ayrintili acilir.'),
+                'Bir güne dokunduğunda o günün kartları, markerları ve uzun dönem bağlamı ayrıntılı açılır.'),
       large: true,
       footer: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1822,7 +2336,7 @@ class _SelectedDayHeroCard extends StatelessWidget {
           const SizedBox(height: 14),
           SizedBox(
             width: double.infinity,
-            child: JoviaPrimaryButton(label: 'Gunu ac', onTap: onOpenDay),
+            child: JoviaPrimaryButton(label: 'Günü aç', onTap: onOpenDay),
           ),
         ],
       ),
@@ -1848,12 +2362,12 @@ class _LongTermEffectBand extends StatelessWidget {
         ? periodCore!.coreStory.trim()
         : (periodCore?.bigPicture.trim().isNotEmpty == true
               ? periodCore!.bigPicture.trim()
-              : 'Bu gunun arkasinda calisan daha uzun bir donem etkisi var.');
+              : 'Bu günün arkasında çalışan daha uzun bir dönem etkisi var.');
     return JoviaReadingPanel(
       label: 'Baglam',
       title: periodCore?.title.trim().isNotEmpty == true
           ? periodCore!.title.trim()
-          : 'Uzun donem etkisi',
+          : 'Uzun dönem etkisi',
       body: _condenseCalendarCopy(summary, maxChars: 220),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -1870,7 +2384,7 @@ class _LongTermEffectBand extends StatelessWidget {
             )
           else
             Text(
-              'Gunun arka planinda calisan donem hikayesini gun sayfasinda daha uzun okuyabilirsin.',
+              'Günün arka planında çalışan dönem hikayesini gün sayfasında daha uzun okuyabilirsin.',
               style: profile.typography.bodyCompact.copyWith(
                 color: profile.colors.muted,
               ),
@@ -1881,6 +2395,535 @@ class _LongTermEffectBand extends StatelessWidget {
   }
 }
 
+class _CalendarEditorialSurface extends StatelessWidget {
+  const _CalendarEditorialSurface({
+    required this.date,
+    required this.selectedSummary,
+    required this.dayMeta,
+    required this.eventCards,
+    required this.periodCards,
+    required this.periodOnlyNote,
+    required this.markers,
+    required this.bestTimes,
+    required this.timeline,
+    required this.periodCore,
+    this.onOpenEventCard,
+    this.onOpenPeriodCard,
+    this.onOpenMarker,
+  });
+
+  final DateTime date;
+  final String selectedSummary;
+  final NarrativeCalendarDay? dayMeta;
+  final List<EventCardDto> eventCards;
+  final List<PeriodCardDto> periodCards;
+  final String periodOnlyNote;
+  final List<PeriodMarkerDto> markers;
+  final List<CalendarBestTimeItem> bestTimes;
+  final TimelineDto? timeline;
+  final PeriodCoreDto? periodCore;
+  final ValueChanged<EventCardDto>? onOpenEventCard;
+  final ValueChanged<PeriodCardDto>? onOpenPeriodCard;
+  final ValueChanged<PeriodMarkerDto>? onOpenMarker;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final colors = profile.colors;
+    final typo = profile.typography;
+    final primaryCard = eventCards.isNotEmpty ? eventCards.first : null;
+    final secondaryCard = eventCards.length > 1 ? eventCards[1] : null;
+    final leadPeriod = periodCards.isNotEmpty ? periodCards.first : null;
+    final human = _buildDailyHumanCardViewModel(
+      card: primaryCard,
+      dayMeta: dayMeta,
+      date: date,
+    );
+    final secondaryHuman = secondaryCard == null
+        ? null
+        : _buildDailyHumanCardViewModel(
+            card: secondaryCard,
+            dayMeta: dayMeta,
+            date: date,
+          );
+    final hook = _firstNonEmpty([
+      human.feltLine,
+      selectedSummary,
+      _formatCalendarDayTitle(date),
+    ]);
+    final lead = _firstNonEmpty([
+      _safeHumanLine(selectedSummary),
+      _safeHumanLine(timeline?.summary ?? ''),
+      human.guidanceLine,
+      human.whyLine,
+    ]);
+    final currentBody = _editorialCurrentBody(
+      human: human,
+      card: primaryCard,
+      timeline: timeline,
+      fallback: selectedSummary,
+      avoid: <String>[lead],
+    );
+    final changeBody = _editorialChangeBody(
+      human: human,
+      card: primaryCard,
+      avoid: <String>[lead, currentBody],
+    );
+    final directionBody = _editorialDirectionBody(
+      periodOnlyNote: periodOnlyNote,
+      timeline: timeline,
+      periodCore: periodCore,
+      card: primaryCard,
+      avoid: <String>[lead, currentBody, changeBody],
+    );
+    final timingLine = _editorialTimingLine(primaryCard);
+    final secondaryTiming = _editorialTimingLine(secondaryCard);
+    final metaLine = _joinNarrativeLines(
+      [
+        '${date.day} ${_kCalendarMonthNames[date.month - 1]}',
+        if (human.signalLabel.trim().isNotEmpty) human.signalLabel.trim(),
+        timingLine,
+      ],
+      maxLines: 1,
+      maxChars: 140,
+    );
+    final bestTimeLine = bestTimes.isEmpty
+        ? ''
+        : 'Bu hafta: ${bestTimes.map((item) => item.label.trim()).where((item) => item.isNotEmpty).take(2).join(' • ')}';
+    final evidenceLines = _editorialEvidenceLines(
+      human: human,
+      bestTimes: bestTimes,
+      periodOnlyNote: periodOnlyNote,
+      primaryCard: primaryCard,
+      periodCore: periodCore,
+      avoid: <String>[
+        lead,
+        currentBody,
+        changeBody,
+        directionBody,
+        bestTimeLine,
+      ],
+    );
+    final hasPrimaryAction = primaryCard != null && onOpenEventCard != null;
+    final hasPeriodAction = leadPeriod != null && onOpenPeriodCard != null;
+    return JoviaSurfaceCard(
+      padding: const EdgeInsets.fromLTRB(20, 22, 20, 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          JoviaEditorialHeroBlock(
+            surface: false,
+            label: 'Ana tema',
+            title: hook,
+            body: lead,
+            large: true,
+            titleMaxLines: 4,
+            bodyMaxLines: 6,
+            accent: JoviaIllustrationAccent(
+              asset: (dayMeta?.isCritical ?? false)
+                  ? JoviaIllustrationAsset.sunGrowth
+                  : JoviaIllustrationAsset.planet,
+              width: 68,
+              height: 68,
+              opacity: 0.72,
+            ),
+            footer: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (metaLine.isNotEmpty)
+                  Text(
+                    metaLine,
+                    style: typo.meta.copyWith(
+                      color: colors.textLight,
+                      height: 1.45,
+                    ),
+                  ),
+                if (bestTimeLine.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    bestTimeLine,
+                    style: typo.meta.copyWith(
+                      color: colors.textLight.withValues(alpha: 0.92),
+                      height: 1.45,
+                    ),
+                  ),
+                ],
+                if (primaryCard != null &&
+                    (primaryCard.timing.hasAny ||
+                        primaryCard.phase.trim().isNotEmpty)) ...[
+                  const SizedBox(height: 14),
+                  _EditorialMiniTimeline(card: primaryCard),
+                ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          const ThinDivider(),
+          const SizedBox(height: 16),
+          _EditorialNarrativeSection(
+            label: 'Şimdi ne oluyor',
+            body: currentBody,
+          ),
+          const SizedBox(height: 16),
+          const ThinDivider(),
+          const SizedBox(height: 16),
+          _EditorialNarrativeSection(
+            label: 'Bu sende neyi değiştiriyor',
+            body: changeBody,
+          ),
+          const SizedBox(height: 16),
+          const ThinDivider(),
+          const SizedBox(height: 16),
+          _EditorialNarrativeSection(
+            label: 'Nereye gidiyor',
+            body: directionBody,
+            child: leadPeriod == null
+                ? null
+                : Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: JoviaUtilityRow(
+                      label: 'Derinde çalışan şey',
+                      title: leadPeriod.title,
+                      body: _condenseCalendarCopy(
+                        leadPeriod.subtitle,
+                        maxChars: 180,
+                      ),
+                      meta: [
+                        if (leadPeriod.timeHint.trim().isNotEmpty)
+                          leadPeriod.timeHint.trim(),
+                      ],
+                      trailing: const JoviaUiIcon(
+                        asset: JoviaUiAsset.chevronRight,
+                        size: 16,
+                      ),
+                      onTap: onOpenPeriodCard == null
+                          ? null
+                          : () => onOpenPeriodCard!(leadPeriod),
+                    ),
+                  ),
+          ),
+          if (secondaryCard != null && secondaryHuman != null) ...[
+            const SizedBox(height: 16),
+            const ThinDivider(),
+            const SizedBox(height: 12),
+            JoviaUtilityRow(
+              label: 'Ayrıca çalışan tema',
+              title: secondaryHuman.feltLine,
+              body: _editorialSecondaryBody(
+                human: secondaryHuman,
+                card: secondaryCard,
+                avoid: <String>[lead, currentBody, changeBody, directionBody],
+              ),
+              meta: [if (secondaryTiming.isNotEmpty) secondaryTiming],
+              trailing: const JoviaUiIcon(
+                asset: JoviaUiAsset.chevronRight,
+                size: 16,
+              ),
+              onTap: onOpenEventCard == null
+                  ? null
+                  : () => onOpenEventCard!(secondaryCard),
+            ),
+          ],
+          if (evidenceLines.isNotEmpty || markers.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            const ThinDivider(),
+            const SizedBox(height: 8),
+            _EditorialWhyItMattersDisclosure(
+              lines: evidenceLines,
+              markers: markers,
+              onOpenMarker: onOpenMarker,
+            ),
+          ],
+          if (hasPrimaryAction || hasPeriodAction) ...[
+            const SizedBox(height: 16),
+            const ThinDivider(),
+            const SizedBox(height: 16),
+            Wrap(
+              spacing: 10,
+              runSpacing: 10,
+              children: [
+                if (hasPrimaryAction)
+                  MinimalCTAButton(
+                    label: 'Ana temayı aç',
+                    onTap: () => onOpenEventCard!(primaryCard),
+                  ),
+                if (hasPeriodAction)
+                  MinimalCTAButton(
+                    label: 'Dönemi aç',
+                    onTap: () => onOpenPeriodCard!(leadPeriod),
+                  ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _EditorialNarrativeSection extends StatelessWidget {
+  const _EditorialNarrativeSection({
+    required this.label,
+    required this.body,
+    this.child,
+  });
+
+  final String label;
+  final String body;
+  final Widget? child;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          turkishToUpper(label),
+          style: profile.typography.monoEyebrow.copyWith(
+            color: profile.colors.textLight,
+            letterSpacing: 1.65,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          body,
+          style: profile.typography.bodyCompact.copyWith(
+            color: profile.colors.text,
+            height: 1.56,
+          ),
+        ),
+        if (child != null) ...[child!],
+      ],
+    );
+  }
+}
+
+class _EditorialMiniTimeline extends StatelessWidget {
+  const _EditorialMiniTimeline({required this.card});
+
+  final EventCardDto card;
+
+  static const List<String> _stages = <String>[
+    'Başladı',
+    'Yoğunlaşıyor',
+    'Zirve',
+    'Çözülüyor',
+  ];
+
+  int _activeStage() {
+    final phase = card.phase.trim().toLowerCase();
+    return switch (phase) {
+      'exact' || 'exactish' => 2,
+      'separating' => 3,
+      'applying' => 1,
+      _ => card.timing.entryDateUtc.trim().isNotEmpty ? 0 : 1,
+    };
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final activeStage = _activeStage();
+    return Row(
+      children: [
+        for (var index = 0; index < _stages.length; index++) ...[
+          _EditorialMiniTimelineNode(
+            label: _stages[index],
+            active: index <= activeStage,
+            emphasized: index == activeStage,
+          ),
+          if (index != _stages.length - 1)
+            Expanded(
+              child: Container(
+                height: 1,
+                margin: const EdgeInsets.only(bottom: 18),
+                color: profile.colors.strokeSoft.withValues(
+                  alpha: index < activeStage ? 0.95 : 0.56,
+                ),
+              ),
+            ),
+        ],
+      ],
+    );
+  }
+}
+
+class _EditorialMiniTimelineNode extends StatelessWidget {
+  const _EditorialMiniTimelineNode({
+    required this.label,
+    required this.active,
+    required this.emphasized,
+  });
+
+  final String label;
+  final bool active;
+  final bool emphasized;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final colors = profile.colors;
+    final nodeColor = emphasized
+        ? colors.primary
+        : active
+        ? colors.text
+        : colors.textLight;
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: emphasized ? 9 : 7,
+          height: emphasized ? 9 : 7,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: nodeColor.withValues(alpha: emphasized ? 0.92 : 0.78),
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          label,
+          style: profile.typography.meta.copyWith(
+            color: nodeColor,
+            fontWeight: emphasized ? FontWeight.w700 : FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EditorialWhyItMattersDisclosure extends StatefulWidget {
+  const _EditorialWhyItMattersDisclosure({
+    required this.lines,
+    required this.markers,
+    this.onOpenMarker,
+  });
+
+  final List<String> lines;
+  final List<PeriodMarkerDto> markers;
+  final ValueChanged<PeriodMarkerDto>? onOpenMarker;
+
+  @override
+  State<_EditorialWhyItMattersDisclosure> createState() =>
+      _EditorialWhyItMattersDisclosureState();
+}
+
+class _EditorialWhyItMattersDisclosureState
+    extends State<_EditorialWhyItMattersDisclosure> {
+  bool _expanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final colors = profile.colors;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        JoviaPressable(
+          onTap: () => setState(() => _expanded = !_expanded),
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    'Neden bu önemli?',
+                    style: profile.typography.cardTitle.copyWith(
+                      fontSize: 17,
+                      color: colors.text,
+                    ),
+                  ),
+                ),
+                Icon(
+                  _expanded ? Icons.remove : Icons.add,
+                  size: 18,
+                  color: colors.textLight,
+                ),
+              ],
+            ),
+          ),
+        ),
+        AnimatedCrossFade(
+          duration: const Duration(milliseconds: 180),
+          crossFadeState: _expanded
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          firstChild: const SizedBox.shrink(),
+          secondChild: Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                for (final line in widget.lines.take(4)) ...[
+                  Text(
+                    line,
+                    style: profile.typography.bodyCompact.copyWith(
+                      color: colors.textLight,
+                      height: 1.5,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                ],
+                if (widget.markers.isNotEmpty)
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final marker in widget.markers.take(3))
+                        _EditorialMarkerLink(
+                          marker: marker,
+                          onTap: widget.onOpenMarker == null
+                              ? null
+                              : () => widget.onOpenMarker!(marker),
+                        ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _EditorialMarkerLink extends StatelessWidget {
+  const _EditorialMarkerLink({required this.marker, this.onTap});
+
+  final PeriodMarkerDto marker;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(999),
+          color: profile.colors.surface.withValues(alpha: 0.52),
+          border: Border.all(
+            color: profile.colors.strokeSoft.withValues(alpha: 0.84),
+          ),
+        ),
+        child: Text(
+          marker.title.trim().isNotEmpty
+              ? marker.title.trim()
+              : _markerShortLabel(marker),
+          style: profile.typography.meta.copyWith(
+            color: profile.colors.textLight,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ignore: unused_element
 class _PeriodEventCardsSection extends StatelessWidget {
   const _PeriodEventCardsSection({
     required this.periodCards,
@@ -1899,11 +2942,11 @@ class _PeriodEventCardsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         JoviaSectionHeader(
-          label: 'Uzun donem',
+          label: 'Uzun dönem',
           title: 'Uzun dönem bugün de etkili',
           body: note.trim().isNotEmpty
               ? note.trim()
-              : 'Burasi bugunun kendisi degil; bugunu arkadan tasiyan daha uzun hikaye.',
+              : 'Burası bugünün kendisi değil; bugünü arkadan taşıyan daha uzun hikaye.',
         ),
         SizedBox(height: spacing.sectionToContent),
         for (var index = 0; index < periodCards.length; index++) ...[
@@ -2026,14 +3069,14 @@ class _ProfileCalendarPreviewStripState
             children: [
               Expanded(
                 child: MinimalCTAButton(
-                  label: 'Gunu ac',
+                  label: 'Günü aç',
                   onTap: () => _openDayPage(profile!, _baseDay),
                 ),
               ),
               const SizedBox(width: 10),
               Expanded(
                 child: JoviaPrimaryButton(
-                  label: 'Takvimi ac',
+                  label: 'Takvimi aç',
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute<void>(
@@ -2076,7 +3119,7 @@ class _ProfileCalendarPreviewStripState
           if (bundle?.periodCore != null) ...[
             const SizedBox(height: 14),
             Text(
-              'Uzun donem etkisi: ${bundle!.periodCore!.title.trim().isNotEmpty ? bundle.periodCore!.title.trim() : 'arka planda aktif'}',
+              'Uzun dönem etkisi: ${bundle!.periodCore!.title.trim().isNotEmpty ? bundle.periodCore!.title.trim() : 'arka planda aktif'}',
               style: context.profileTheme.typography.metaSoft.copyWith(
                 color: context.profileTheme.colors.textLight,
               ),
@@ -2264,10 +3307,10 @@ class _ProfileCalendarPreviewStripState
     final body = human.heroBody.isNotEmpty
         ? human.heroBody
         : (bundle?.summary ??
-              'Yakin gunleri hizlica tara, bir gune dokunup gun sayfasina gec.');
+              'Yakın günleri hızlıca tara, bir güne dokunup gün sayfasına geç.');
     return _PreviewHeroData(
       contentKey: selectedKey,
-      label: 'Gunun temasi',
+      label: 'Günün teması',
       title: title,
       body: body,
       isCritical:
@@ -2335,7 +3378,7 @@ class _ProfileCalendarPreviewHero extends StatelessWidget {
           SizedBox(
             height: _heroTextSlotHeight(labelStyle, 1),
             child: _PreviewHeroAnimatedText(
-              text: label.toUpperCase(),
+              text: turkishToUpper(label),
               textStyle: labelStyle,
               maxLines: 1,
               delay: Duration.zero,
@@ -2853,13 +3896,16 @@ class _CalendarDayPageContent extends StatelessWidget {
     final profile = context.profileTheme;
     final spacing = profile.spacing;
     final showShellPlaceholder = loading && bundle == null;
-    final heroHuman = _buildDailyHumanCardViewModel(
-      card: bundle?.dailyEventCards.isNotEmpty == true
-          ? bundle!.dailyEventCards.first
-          : null,
-      dayMeta: bundle?.selectedDayMeta,
-      date: date,
-    );
+    final hasEditorialContent =
+        bundle != null &&
+        _hasEditorialDayContent(
+          eventCards: bundle!.dailyEventCards,
+          periodCards: bundle!.periodCards,
+          markers: bundle!.markers,
+          bestTimes: bundle!.bestTimes,
+          timeline: bundle!.timeline,
+          periodCore: bundle!.periodCore,
+        );
     return JoviaPageScaffold(
       padding: EdgeInsets.fromLTRB(
         spacing.pageHorizontal,
@@ -2870,38 +3916,6 @@ class _CalendarDayPageContent extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          JoviaEditorialHeroBlock(
-            label: 'Gun',
-            title: heroHuman.feltLine,
-            body: heroHuman.heroBody.isNotEmpty
-                ? heroHuman.heroBody
-                : (bundle?.summary ??
-                      'Bu gunun kartlari ve baglami yuklenirken bekleniyor.'),
-            large: true,
-            accent: JoviaIllustrationAccent(
-              asset: (bundle?.selectedDayMeta?.isCritical ?? false)
-                  ? JoviaIllustrationAsset.sunGrowth
-                  : JoviaIllustrationAsset.planet,
-              width: 72,
-              height: 72,
-              opacity: 0.82,
-            ),
-            footer: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _CalendarInfoPill(
-                  label: '${date.day} ${_kCalendarMonthNames[date.month - 1]}',
-                  highlighted: true,
-                ),
-                if (heroHuman.signalLabel.isNotEmpty)
-                  _CalendarInfoPill(
-                    label: heroHuman.signalLabel,
-                    highlighted: heroHuman.isCritical,
-                  ),
-              ],
-            ),
-          ),
           if (loading) ...[
             SizedBox(height: spacing.sectionToContent),
             const LinearProgressIndicator(),
@@ -2910,13 +3924,46 @@ class _CalendarDayPageContent extends StatelessWidget {
             SizedBox(height: spacing.majorSectionGap),
             const _CalendarDayLoadingPlaceholder(),
           ],
-          if (bundle != null && bundle!.markers.isNotEmpty) ...[
+          if (bundle != null && hasEditorialContent) ...[
             SizedBox(height: spacing.majorSectionGap),
-            _CalendarMarkerBand(
-              label: 'Sky',
-              title: _markerSectionTitle(bundle!.markers),
-              body: _markerSectionBody(bundle!.markers),
+            _CalendarEditorialSurface(
+              date: date,
+              selectedSummary: bundle!.summary.trim().isNotEmpty
+                  ? bundle!.summary.trim()
+                  : 'Bu günün ana okuması hazırlanıyor.',
+              dayMeta: bundle!.selectedDayMeta,
+              eventCards: bundle!.dailyEventCards,
+              periodCards: bundle!.periodCards,
+              periodOnlyNote: bundle!.periodOnlyNote,
               markers: bundle!.markers,
+              bestTimes: bundle!.bestTimes,
+              timeline: bundle!.timeline,
+              periodCore: bundle!.periodCore,
+              onOpenEventCard: (card) {
+                Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PeriodDetailPage(
+                      card: PeriodCardDto.fromEventCard(
+                        eventCard: card,
+                        index: 0,
+                      ),
+                      periodCore: bundle!.periodCore,
+                      routeSource: '${source}_day_card',
+                    ),
+                  ),
+                );
+              },
+              onOpenPeriodCard: (card) {
+                Navigator.of(context, rootNavigator: true).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => PeriodDetailPage(
+                      card: card,
+                      periodCore: bundle!.periodCore,
+                      routeSource: '${source}_day_period',
+                    ),
+                  ),
+                );
+              },
               onOpenMarker: (marker) {
                 Navigator.of(context, rootNavigator: true).push(
                   MaterialPageRoute<void>(
@@ -2926,128 +3973,13 @@ class _CalendarDayPageContent extends StatelessWidget {
               },
             ),
           ],
-          if (bundle != null && bundle!.dailyEventCards.isNotEmpty) ...[
-            SizedBox(height: spacing.majorSectionGap),
-            JoviaSectionHeader(
-              label: 'Bugun',
-              title: 'Bugünün vurgusu',
-              body: _dailySectionBody(
-                bundle!.dailyEventCards,
-                bundle!.periodOnlyNote,
-              ),
-            ),
-            SizedBox(height: spacing.sectionToContent),
-            for (final card in bundle!.dailyEventCards) ...[
-              Builder(
-                builder: (context) {
-                  final human = _buildDailyHumanCardViewModel(
-                    card: card,
-                    dayMeta: bundle!.selectedDayMeta,
-                    date: date,
-                  );
-                  return JoviaTopicSurface(
-                    eyebrow: _dailyCardEyebrow(card, human),
-                    title: human.feltLine,
-                    body: human.cardBody.isNotEmpty
-                        ? human.cardBody
-                        : 'Detaylar icin karti ac.',
-                    meta: _dailyCardMeta(card, human),
-                    secondaryAction: MinimalCTAButton(
-                      label: 'Detayi ac',
-                      onTap: () {
-                        Navigator.of(context, rootNavigator: true).push(
-                          MaterialPageRoute<void>(
-                            builder: (_) => PeriodDetailPage(
-                              card: PeriodCardDto.fromEventCard(
-                                eventCard: card,
-                                index: 0,
-                              ),
-                              periodCore: null,
-                              routeSource: '${source}_day_card',
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-              SizedBox(height: spacing.sectionToContent),
-            ],
-          ],
-          if (bundle != null && bundle!.periodCards.isNotEmpty) ...[
-            SizedBox(height: spacing.majorSectionGap),
-            _PeriodEventCardsSection(
-              periodCards: bundle!.periodCards,
-              note: bundle!.periodOnlyNote,
-              onOpenPeriodCard: (card) {
-                Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => PeriodDetailPage(
-                      card: card,
-                      periodCore: bundle!.periodCore,
-                      routeSource: '${source}_day_period',
-                    ),
-                  ),
-                );
-              },
-            ),
-          ] else if (bundle != null && bundle!.periodCore != null) ...[
-            SizedBox(height: spacing.majorSectionGap),
-            _LongTermEffectBand(
-              periodCore: bundle!.periodCore,
-              periodCards: bundle!.periodCards,
-              onOpenPeriodCard: (card) {
-                Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => PeriodDetailPage(
-                      card: card,
-                      periodCore: bundle!.periodCore,
-                      routeSource: '${source}_day_period',
-                    ),
-                  ),
-                );
-              },
-            ),
-          ] else if (!loading) ...[
+          if (bundle != null && !hasEditorialContent && !loading) ...[
             SizedBox(height: spacing.majorSectionGap),
             EmptyStateBlock(
-              title: 'Bugun sakin',
+              title: 'Bugün sakin',
               body: bundle?.timeline?.summary.trim().isNotEmpty == true
                   ? bundle!.timeline!.summary.trim()
                   : 'Bu gun icin belirgin bir kart cikmadi. Sag-sol kaydirip komsu gunlere bakabilirsin.',
-            ),
-          ],
-          if (bundle != null &&
-              (bundle!.timeline?.lines.isNotEmpty == true ||
-                  bundle!.timeline?.summary.trim().isNotEmpty == true)) ...[
-            SizedBox(height: spacing.majorSectionGap),
-            JoviaReadingPanel(
-              label: 'Flow',
-              title: 'Gunun akis notlari',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (bundle!.timeline?.summary.trim().isNotEmpty == true)
-                    Text(
-                      bundle!.timeline!.summary.trim(),
-                      style: profile.typography.bodyCompact.copyWith(
-                        color: profile.colors.text,
-                      ),
-                    ),
-                  for (final line
-                      in bundle!.timeline?.lines.take(4) ??
-                          const <String>[]) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      line,
-                      style: profile.typography.bodyCompact.copyWith(
-                        color: profile.colors.muted,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
             ),
           ],
         ],
@@ -3166,6 +4098,7 @@ class _CalendarDayPlaceholderBar extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _CalendarMarkerBand extends StatelessWidget {
   const _CalendarMarkerBand({
     required this.label,
@@ -3540,11 +4473,11 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
     if (selectedMeta?.microSummaryTr.trim().isNotEmpty == true) {
       return _condenseCopy(selectedMeta!.microSummaryTr.trim(), maxChars: 180);
     }
-    return 'Secili gune dokunup event kartlarini, markerlari ve gunun ritmini asagida takip et.';
+    return 'Seçili güne dokunup event kartlarını, markerları ve günün ritmini aşağıda takip et.';
   }
 
   String _condenseCopy(String text, {int maxChars = 220}) {
-    final trimmed = text.trim();
+    final trimmed = normalizeTurkishText(text);
     if (trimmed.isEmpty) {
       return '';
     }
@@ -3626,13 +4559,13 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
       }
       setState(() {
         _dailyEventCards = selection.dailyCards;
-        _periodEventCards = <PeriodCardDto>[
+        _periodEventCards = _dedupeRenderedPeriodCards(<PeriodCardDto>[
           for (var index = 0; index < selection.periodCards.length; index++)
             PeriodCardDto.fromEventCard(
               eventCard: selection.periodCards[index],
               index: index,
             ),
-        ];
+        ], avoidEvents: _dailyEventCards);
         _dailyMarkers = _markersForSelectedDay(
           periodCalendar.markers,
           _selectedDay,
@@ -3894,40 +4827,18 @@ class _DailyCalendarContent extends StatelessWidget {
   final ValueChanged<EventCardDto> onOpenEventCard;
   final ValueChanged<PeriodMarkerDto> onOpenMarker;
 
-  static const List<String> _monthNames = <String>[
-    'Ocak',
-    'Subat',
-    'Mart',
-    'Nisan',
-    'Mayis',
-    'Haziran',
-    'Temmuz',
-    'Agustos',
-    'Eylul',
-    'Ekim',
-    'Kasim',
-    'Aralik',
-  ];
-
-  static const List<String> _weekdayNames = <String>[
-    'Pazartesi',
-    'Sali',
-    'Carsamba',
-    'Persembe',
-    'Cuma',
-    'Cumartesi',
-    'Pazar',
-  ];
-
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final spacing = profile.spacing;
     final typo = profile.typography;
-    final heroHuman = _buildDailyHumanCardViewModel(
-      card: eventCards.isNotEmpty ? eventCards.first : null,
-      dayMeta: selectedDayMeta,
-      date: selectedDay,
+    final hasEditorialContent = _hasEditorialDayContent(
+      eventCards: eventCards,
+      periodCards: periodCards,
+      markers: markers,
+      bestTimes: bestTimes,
+      timeline: timeline,
+      periodCore: null,
     );
 
     return ListView(
@@ -3940,51 +4851,6 @@ class _DailyCalendarContent extends StatelessWidget {
           onPickDate: onPickDate,
           onSelectDay: onSelectDay,
           onShiftMonth: onShiftMonth,
-        ),
-        SizedBox(height: spacing.majorSectionGap),
-        JoviaReadingPanel(
-          label: 'Day',
-          title: _selectedDayTitle(selectedDay),
-          body: heroHuman.heroBody.isNotEmpty
-              ? heroHuman.heroBody
-              : selectedSummary,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  _CalendarInfoPill(
-                    label:
-                        '${selectedDay.day} ${_monthNames[selectedDay.month - 1]}',
-                    highlighted: true,
-                  ),
-                  if (heroHuman.signalLabel.isNotEmpty)
-                    _CalendarInfoPill(
-                      label: heroHuman.signalLabel,
-                      highlighted: heroHuman.isCritical,
-                    ),
-                  if (timeline?.lines.isNotEmpty == true)
-                    _CalendarInfoPill(
-                      label: '${timeline!.lines.length} okuma notu',
-                    ),
-                ],
-              ),
-              if (selectedDayMeta != null && selectedDayMeta!.labels.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(top: 12),
-                  child: Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      for (final label in selectedDayMeta!.labels.take(4))
-                        _CalendarInfoPill(label: label),
-                    ],
-                  ),
-                ),
-            ],
-          ),
         ),
         if (loading) ...[
           SizedBox(height: spacing.sectionToContent),
@@ -3999,21 +4865,6 @@ class _DailyCalendarContent extends StatelessWidget {
             ),
           ),
         ],
-        if (bestTimes.isNotEmpty) ...[
-          SizedBox(height: spacing.majorSectionGap),
-          JoviaReadingPanel(
-            label: 'Timing',
-            title: 'Gun icin iyi pencereler',
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                for (final item in bestTimes)
-                  _CalendarInfoPill(label: item.label, highlighted: true),
-              ],
-            ),
-          ),
-        ],
         if (kDebugMode && wrongSource)
           Padding(
             padding: const EdgeInsets.only(top: 8),
@@ -4022,90 +4873,20 @@ class _DailyCalendarContent extends StatelessWidget {
               style: typo.meta.copyWith(color: Colors.orange),
             ),
           ),
-        if (timeline != null &&
-            eventCards.isEmpty &&
-            (timeline!.lines.isNotEmpty || timeline!.summary.trim().isNotEmpty))
-          Padding(
-            padding: EdgeInsets.only(top: spacing.majorSectionGap),
-            child: JoviaReadingPanel(
-              label: 'Flow',
-              title: 'Gunluk akis',
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (timeline!.summary.trim().isNotEmpty)
-                    Text(
-                      timeline!.summary.trim(),
-                      style: typo.bodyCompact.copyWith(
-                        color: profile.colors.text,
-                      ),
-                    ),
-                  for (final line in timeline!.lines.take(3)) ...[
-                    const SizedBox(height: 6),
-                    Text(
-                      line,
-                      style: typo.bodyCompact.copyWith(
-                        color: profile.colors.muted,
-                      ),
-                    ),
-                  ],
-                ],
-              ),
-            ),
-          ),
-        if (!loading &&
-            eventCards.isEmpty &&
-            periodCards.isEmpty &&
-            error == null)
-          Padding(
-            padding: EdgeInsets.only(top: spacing.majorSectionGap),
-            child: EmptyStateBlock(
-              title: 'Secili gun sakin',
-              body: timeline?.summary.trim().isNotEmpty == true
-                  ? timeline!.summary.trim()
-                  : 'Bu gun icin belirgin event karti yok. Takvimden baska bir gun secip akisi kontrol edebilirsin.',
-            ),
-          ),
-        if (eventCards.isNotEmpty) ...[
+        if (hasEditorialContent) ...[
           SizedBox(height: spacing.majorSectionGap),
-          JoviaSectionHeader(
-            label: 'Bugun',
-            title: 'Bugünün vurgusu',
-            body: _dailySectionBody(eventCards, periodOnlyNote),
-          ),
-          SizedBox(height: spacing.sectionToContent),
-          for (final card in eventCards)
-            if (assertDailySource(card, context: 'CalendarHub/Daily')) ...[
-              Builder(
-                builder: (context) {
-                  final human = _buildDailyHumanCardViewModel(
-                    card: card,
-                    dayMeta: selectedDayMeta,
-                    date: selectedDay,
-                  );
-                  return JoviaTopicSurface(
-                    eyebrow: _dailyCardEyebrow(card, human),
-                    title: human.feltLine,
-                    body: human.cardBody.isNotEmpty
-                        ? human.cardBody
-                        : 'Detaylar icin karti ac.',
-                    meta: _dailyCardMeta(card, human),
-                    secondaryAction: MinimalCTAButton(
-                      label: 'Detayi ac',
-                      onTap: () => onOpenEventCard(card),
-                    ),
-                    onTap: () => onOpenEventCard(card),
-                  );
-                },
-              ),
-              SizedBox(height: spacing.sectionToContent),
-            ],
-        ],
-        if (periodCards.isNotEmpty) ...[
-          SizedBox(height: spacing.majorSectionGap),
-          _PeriodEventCardsSection(
+          _CalendarEditorialSurface(
+            date: selectedDay,
+            selectedSummary: selectedSummary,
+            dayMeta: selectedDayMeta,
+            eventCards: eventCards,
             periodCards: periodCards,
-            note: periodOnlyNote,
+            periodOnlyNote: periodOnlyNote,
+            markers: markers,
+            bestTimes: bestTimes,
+            timeline: timeline,
+            periodCore: null,
+            onOpenEventCard: onOpenEventCard,
             onOpenPeriodCard: (card) {
               Navigator.of(context, rootNavigator: true).push(
                 MaterialPageRoute<void>(
@@ -4117,26 +4898,21 @@ class _DailyCalendarContent extends StatelessWidget {
                 ),
               );
             },
-          ),
-        ],
-        if (markers.isNotEmpty) ...[
-          SizedBox(height: spacing.majorSectionGap),
-          _CalendarMarkerBand(
-            label: 'Sky',
-            title: _markerSectionTitle(markers),
-            body: _markerSectionBody(markers),
-            markers: markers,
             onOpenMarker: onOpenMarker,
           ),
         ],
+        if (!loading && !hasEditorialContent && error == null)
+          Padding(
+            padding: EdgeInsets.only(top: spacing.majorSectionGap),
+            child: EmptyStateBlock(
+              title: 'Secili gun sakin',
+              body: timeline?.summary.trim().isNotEmpty == true
+                  ? timeline!.summary.trim()
+                  : 'Bu gun icin belirgin event karti yok. Takvimden baska bir gun secip akisi kontrol edebilirsin.',
+            ),
+          ),
       ],
     );
-  }
-
-  String _selectedDayTitle(DateTime day) {
-    final weekday = _weekdayNames[day.weekday - 1];
-    final month = _monthNames[day.month - 1];
-    return '$weekday, ${day.day} $month';
   }
 }
 
@@ -4716,11 +5492,11 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
           children: [
             JoviaSectionHeader(
               label: 'Timing',
-              title: 'Sana ozel zamanlama',
+              title: 'Sana özel zamanlama',
               body: _condenseCopy(
                 _periodCore?.coreStory.trim().isNotEmpty == true
                     ? _periodCore!.coreStory.trim()
-                    : 'Onunde acilan donemleri burada daha sakin bir sirayla okuyabilirsin.',
+                    : 'Önünde açılan dönemleri burada daha sakin bir sırayla okuyabilirsin.',
               ),
             ),
             SizedBox(height: profileTheme.spacing.sectionToContent),
@@ -4729,7 +5505,7 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
                 label: 'Period',
                 title: _periodCore!.title.trim().isNotEmpty
                     ? _periodCore!.title.trim()
-                    : 'Bu donemin ana temasi',
+                    : 'Bu dönemin ana teması',
                 body: _condenseCopy(
                   _periodCore!.coreStory.trim().isNotEmpty
                       ? _periodCore!.coreStory.trim()
@@ -4750,14 +5526,14 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
             ],
             if (_loading && visibleCards.isEmpty)
               const EmptyStateBlock(
-                title: 'Timing hazirlaniyor',
-                body: 'Kisisel donemlerin editoryal listesi yukleniyor.',
+                title: 'Timing hazırlanıyor',
+                body: 'Kişisel dönemlerin editoryal listesi yükleniyor.',
               )
             else if (!_loading && visibleCards.isEmpty)
               const EmptyStateBlock(
-                title: 'Secili donem yok',
+                title: 'Seçili dönem yok',
                 body:
-                    'Aktif period kartlari hazir oldugunda burada goreceksin.',
+                    'Aktif period kartları hazır olduğunda burada göreceksin.',
               )
             else
               Column(
@@ -4796,7 +5572,7 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
               ),
             SizedBox(height: profileTheme.spacing.majorSectionGap),
             JoviaPrimaryButton(
-              label: 'Takvimi ac',
+              label: 'Takvimi aç',
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute<void>(
@@ -4811,14 +5587,14 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
               SizedBox(height: profileTheme.spacing.majorSectionGap),
               JoviaReadingPanel(
                 label: 'Timeline',
-                title: 'Kisa peak listesi',
+                title: 'Kısa peak listesi',
                 child: PeriodPeakTimelineWidget(
                   items: _periodPeakTimeline,
                   compact: true,
                   framed: false,
-                  title: 'Kisa peak listesi',
+                  title: 'Kısa peak listesi',
                   subtitle:
-                      'Onundeki etkilerin guclendigi tarihleri sirayla takip et.',
+                      'Önündeki etkilerin güçlendiği tarihleri sırayla takip et.',
                   onTapItem: (item) => _openTimelineDetail(context, item),
                 ),
               ),
@@ -4876,13 +5652,13 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
           if (!_loading && cards.isEmpty)
             JoviaReadingPanel(
               label: 'Period',
-              title: 'Donem karti bulunamadi',
-              body: 'Period marker/kart bulunamadi.',
+              title: 'Dönem kartı bulunamadı',
+              body: 'Period marker/kart bulunamadı.',
             ),
           if (cards.isNotEmpty) ...[
             JoviaReadingPanel(
               label: 'Timing',
-              title: 'Donem kartlari',
+              title: 'Dönem kartları',
               child: Column(
                 children: [
                   for (var index = 0; index < cards.length; index++)
@@ -4950,10 +5726,10 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
         narrative.eventCards,
         context: 'CalendarHub/Period',
       );
-      final narrativeCards = <PeriodCardDto>[
+      final narrativeCards = _dedupeRenderedPeriodCards(<PeriodCardDto>[
         for (var i = 0; i < periodEvents.length; i++)
           PeriodCardDto.fromEventCard(eventCard: periodEvents[i], index: i),
-      ];
+      ]);
       PeriodCalendarDto calendar = const PeriodCalendarDto(
         periodCore: null,
         markers: <PeriodMarkerDto>[],
@@ -5022,13 +5798,13 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
   String _friendlyPeriodError(DioException exc) {
     if (exc.type == DioExceptionType.receiveTimeout ||
         exc.type == DioExceptionType.connectionTimeout) {
-      return 'Transit ozeti zamaninda donmedi. Donem ekranini hafiflettim; tekrar dener misin?';
+      return 'Transit özeti zamanında dönmedi. Dönem ekranını hafiflettim; tekrar dener misin?';
     }
     final status = exc.response?.statusCode;
     if (status == 422) {
-      return 'Gonderilen tarih veya profil alanlari gecersiz (422).';
+      return 'Gönderilen tarih veya profil alanları geçersiz (422).';
     }
-    return exc.message ?? 'Period veri alinamadi.';
+    return exc.message ?? 'Period veri alınamadı.';
   }
 
   void _openTimelineDetail(
@@ -5052,7 +5828,7 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
   }
 
   String _condenseCopy(String text, {int maxChars = 220}) {
-    final trimmed = text.trim();
+    final trimmed = normalizeTurkishText(text);
     if (trimmed.isEmpty) {
       return '';
     }
@@ -5089,14 +5865,14 @@ class _PeriodCoreHero extends StatelessWidget {
             Text(
               core?.title.trim().isNotEmpty == true
                   ? core!.title.trim()
-                  : 'Bu Donemin Ana Temasi',
+                  : 'Bu Dönemin Ana Teması',
               style: typo.cardTitle.copyWith(color: colors.text),
             ),
             const SizedBox(height: 8),
             Text(
               core?.coreStory.trim().isNotEmpty == true
                   ? core!.coreStory.trim()
-                  : 'Period ozeti henuz hazir degil.',
+                  : 'Period özeti henüz hazır değil.',
               style: typo.bodyCompact.copyWith(color: colors.muted),
             ),
           ],

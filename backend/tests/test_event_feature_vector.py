@@ -115,3 +115,49 @@ def test_chapter_role_prefers_builder_for_structural_long_event() -> None:
 
     assert chapter_role["role"] == "builder"
     assert chapter_role["scores"]["builder"] > chapter_role["scores"]["opener"]
+
+
+def test_feature_vector_uses_preview_domain_scores_for_lens_match() -> None:
+    event = _event(
+        "evt_relationship_lens",
+        transit_body="Jupiter",
+        natal_point="Mercury",
+        aspect="opposition",
+        bucket="medium",
+        phase="applying",
+        house=7,
+    )
+    card = _card(event)
+    card["houses"] = {"transit_in_natal_house": 7, "natal_point_house": 1}
+    card["scene"] = {"start_house": 7, "outcome_house": 1}
+
+    feature_vector = build_event_feature_vector(
+        event,
+        selected_date="2026-04-03",
+        card=card,
+        preview={
+            **_preview(
+                felt="Karşı tarafın sözü duruşunu yeniden düşündürebilir bugün.",
+                why="İlişkide iki tarafın ihtiyacı aynı anda konuşuyor.",
+                guidance="İlk tepkiyi nihai karar sanma.",
+                house_touchpoint="karşı tarafla arandaki çizgi",
+            ),
+            "domain_scores": {
+                "relationships": 0.58,
+                "mind": 0.44,
+                "identity": 0.41,
+            },
+            "lens_projection": {
+                "lens": "relationships",
+                "primary_domain": "relationships",
+                "projected_scores": {
+                    "relationships": 0.81,
+                    "mind": 0.39,
+                    "identity": 0.33,
+                },
+            },
+        },
+        personalization_context={"lens": "relationship"},
+    )
+
+    assert feature_vector["personalization"]["lens_match"] >= 0.8

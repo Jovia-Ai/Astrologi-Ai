@@ -1,16 +1,48 @@
 """Profile persistence helpers."""
 from __future__ import annotations
 
-from datetime import datetime
+import hashlib
+import json
+from datetime import datetime, timezone
 from typing import Any, Dict, List, Mapping
 
-from app.services.supabase import supabase
+from app.services.supabase import supabase, supabase_admin
+
+_ARCHETYPE_TABLE = "archetype_profiles"
+
+
+def _utc_now() -> datetime:
+    return datetime.now(timezone.utc)
+
+
+def _to_mapping(value: Any) -> Dict[str, Any]:
+    if isinstance(value, Mapping):
+        return dict(value)
+    if hasattr(value, "model_dump"):
+        payload = value.model_dump(exclude_none=True)
+        if isinstance(payload, Mapping):
+            return dict(payload)
+    if hasattr(value, "dict"):
+        payload = value.dict(exclude_none=True)
+        if isinstance(payload, Mapping):
+            return dict(payload)
+    return {}
+
+
+def _stable_json(value: Any) -> str:
+    return json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        default=lambda item: item.isoformat() if isinstance(item, datetime) else str(item),
+    )
 
 
 def serialise_profile(document: Mapping[str, Any]) -> Dict[str, Any]:
     """Ensure Supabase payloads use ISO strings for datetimes."""
     result = dict(document)
-    for key in ("created_at", "updated_at"):
+    for key in ("created_at", "updated_at", "computed_at"):
         value = result.get(key)
         if isinstance(value, datetime):
             result[key] = value.isoformat()
@@ -184,3 +216,83 @@ def update_settings(user_id: str, data: Mapping[str, Any]) -> Dict[str, Any] | N
     if isinstance(payload, dict) and payload:
         return payload
     return get_settings(user_id)
+
+
+def build_archetype_birth_hash(*, birth_date: str, birth_time: str, birth_place: str) -> str:
+    seed = "|".join(
+        [
+            str(birth_date or "").strip(),
+            str(birth_time or "").strip(),
+            str(birth_place or "").strip().lower(),
+        ]
+    )
+    return hashlib.sha256(seed.encode("utf-8")).hexdigest()
+
+
+def build_archetype_answers_hash(
+    *,
+    answers: List[Any] | None = None,
+    test_scores: Mapping[str, Any] | None = None,
+    context_scores: Mapping[str, Any] | None = None,
+) -> str | None:
+    normalized_answers = []
+    for answer in answers or []:
+        payload = _to_mapping(answer)
+        if payload:
+            normalized_answers.append(payload)
+    normalized_scores = dict(test_scores or {})
+    normalized_context = dict(context_scores or {})
+    if not normalized_answers and not normalized_scores and not normalized_context:
+        return None
+    stable_payload = {
+        "answers": sorted(
+            normalized_answers,
+            key=lambda item: (
+                str(item.get("item_id") or ""),
+                str(item.get("archetype_id") or ""),
+                str(item.get("value") or ""),
+            ),
+        ),
+        "context_scores": normalized_context,
+        "test_scores": normalized_scores,
+    }
+    return hashlib.sha256(_stable_json(stable_payload).encode("utf-8")).hexdigest()
+
+
+def get_current_archetype_profile(user_id: str) -> Dict[str, Any] | None:
+    try:
+        response = (
+            supabase_admin.table(_ARCHETYPE_TABLE)
+            .select("*")
+            .eq("user_id", user_id)
+            .limit(1)
+            .execute()
+        )
+    except Exception:
+        return None
+    payload = response.data or []
+    if isinstance(payload, list):
+        row = payload[0] if payload else None
+    else:
+        row = payload
+    if not isinstance(row, Mapping):
+        return None
+    return serialise_profile(row)
+
+
+def upsert_current_archetype_profile(document: Mapping[str, Any]) -> Dict[str, Any]:
+    payload = dict(document)
+    now = _utc_now()
+    payload["updated_at"] = now
+    payload.setdefault("computed_at", now)
+    response = (
+        supabase_admin.table(_ARCHETYPE_TABLE)
+        .upsert(payload, on_conflict="user_id")
+        .execute()
+    )
+    data = response.data or []
+    if isinstance(data, list) and data:
+        return serialise_profile(data[0])
+    if isinstance(data, Mapping) and data:
+        return serialise_profile(data)
+    return serialise_profile(payload)

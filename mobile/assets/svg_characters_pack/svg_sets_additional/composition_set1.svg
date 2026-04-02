@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1436" height="876" viewBox="0 0 1436 876">
+  <rect width="100%" height="100%" fill="#efefef"/>
+  
+<!-- blue arch -->
+<path d="M220 390 A400 320 0 0 1 1048 390 L900 390 A250 170 0 0 0 368 390 Z" fill="#5867f0"/>
+
+    <circle cx="590" cy="150" r="16" fill="white"/>
+    <circle cx="665" cy="150" r="16" fill="white"/>
+    <circle cx="582" cy="150" r="9.6" fill="#1c135b"/>
+    <circle cx="673" cy="150" r="9.6" fill="#1c135b"/>
+<path d="M610 160 Q627 178 644 160" stroke="#1c135b" stroke-width="6" fill="none" stroke-linecap="round"/>
+
+<!-- pink circle -->
+<circle cx="233" cy="432" r="90" fill="#e4a0ef"/>
+
+    <circle cx="230" cy="430" r="18" fill="white"/>
+    <circle cx="300" cy="430" r="18" fill="white"/>
+    <circle cx="220" cy="430" r="10.799999999999999" fill="#1c135b"/>
+    <circle cx="310" cy="430" r="10.799999999999999" fill="#1c135b"/>
+<circle cx="272" cy="452" r="8" fill="none" stroke="#1c135b" stroke-width="4"/>
+
+<!-- orange triangle -->
+<path d="M430 525 L582 257 L735 525 Z" fill="#ff6a2f"/>
+
+    <circle cx="560" cy="445" r="16" fill="white"/>
+    <circle cx="655" cy="445" r="16" fill="white"/>
+    <circle cx="552" cy="445" r="9.6" fill="#1c135b"/>
+    <circle cx="663" cy="445" r="9.6" fill="#1c135b"/>
+<path d="M610 458 Q620 470 635 458" stroke="#1c135b" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+<!-- green trapezoid -->
+<path d="M60 526 L763 526 L662 773 L163 773 Z" fill="#118d74"/>
+
+    <circle cx="378" cy="622" r="18" fill="white"/>
+    <circle cx="468" cy="622" r="18" fill="white"/>
+    <circle cx="369" cy="622" r="10.799999999999999" fill="#1c135b"/>
+    <circle cx="477" cy="622" r="10.799999999999999" fill="#1c135b"/>
+<path d="M398 642 Q412 655 428 642" stroke="#1c135b" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M355 598 L387 599" stroke="#1c135b" stroke-width="10" stroke-linecap="round"/>
+<path d="M470 589 L500 601" stroke="#1c135b" stroke-width="10" stroke-linecap="round"/>
+
+<!-- yellow square -->
+<rect x="705" y="391" width="383" height="382" rx="8" fill="#f5b640"/>
+
+    <circle cx="895" cy="550" r="18" fill="white"/>
+    <circle cx="980" cy="550" r="18" fill="white"/>
+    <circle cx="885" cy="550" r="10.799999999999999" fill="#1c135b"/>
+    <circle cx="990" cy="550" r="10.799999999999999" fill="#1c135b"/>
+<path d="M912 585 Q924 567 942 582" stroke="#1c135b" stroke-width="5" fill="none" stroke-linecap="round"/>
+<path d="M942 581 Q953 592 967 584" stroke="#1c135b" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+<!-- orange rounded -->
+<path d="M1106 521 Q1106 432 1198 432 L1208 432 Q1299 432 1299 521 L1299 772 L1106 772 Z" fill="#ff6a2f"/>
+
+    <circle cx="1168" cy="518" r="18" fill="white"/>
+    <circle cx="1235" cy="518" r="18" fill="white"/>
+    <circle cx="1159" cy="518" r="10.799999999999999" fill="#1c135b"/>
+    <circle cx="1244" cy="518" r="10.799999999999999" fill="#1c135b"/>
+<path d="M1150 492 L1170 507" stroke="#1c135b" stroke-width="10" stroke-linecap="round"/>
+<path d="M1243 508 L1262 492" stroke="#1c135b" stroke-width="10" stroke-linecap="round"/>
+<path d="M1191 528 L1216 528" stroke="#1c135b" stroke-width="5" stroke-linecap="round"/>
+
+</svg>

@@ -55,7 +55,7 @@ class ProfileTheme extends ThemeExtension<ProfileTheme> {
     );
   }
 
-  static final _fallback = ProfileTheme.dark();
+  static final _fallback = ProfileTheme.light();
 
   static ProfileTheme fallback() => _fallback;
 
@@ -296,18 +296,18 @@ ThemeData withProfileTheme(ThemeData base, {ProfileTheme? profileTheme}) {
       surface: resolved.colors.surface,
       primary: resolved.colors.primary,
       onSurface: resolved.colors.text,
-      onPrimary: Colors.white,
+      onPrimary: resolved.colors.heroText,
       secondary: resolved.colors.primary,
       outline: resolved.colors.strokeSoft,
       outlineVariant: resolved.colors.separator,
     ),
     cardTheme: CardThemeData(
-      color: resolved.colors.panelSoft,
+      color: resolved.colors.surface,
       elevation: 0,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(resolved.radii.cardRadius),
-        side: BorderSide(color: resolved.colors.hairline),
+        side: BorderSide(color: resolved.colors.strokeSoft),
       ),
     ),
     appBarTheme: AppBarTheme(

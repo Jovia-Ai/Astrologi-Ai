@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/app/forum/forum_models.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
 
 /// Reusable forum post card.
 /// Displays post header, title, body preview, and footer actions.
@@ -90,11 +91,7 @@ class _ForumPostCardState extends State<ForumPostCard>
               ),
             ),
             const SizedBox(height: 10),
-            _PostFooter(
-              post: post,
-              likeScale: _likeScale,
-              onLike: _handleLike,
-            ),
+            _PostFooter(post: post, likeScale: _likeScale, onLike: _handleLike),
           ],
         ),
       ),
@@ -193,7 +190,7 @@ class _CategoryBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: Text(
-        label.toUpperCase(),
+        turkishToUpper(label),
         style: TextStyle(
           fontSize: 9,
           color: fg,
@@ -246,7 +243,11 @@ class _PostFooter extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 16),
-        const Icon(Icons.chat_bubble_outline, size: 13, color: Color(0xFF383838)),
+        const Icon(
+          Icons.chat_bubble_outline,
+          size: 13,
+          color: Color(0xFF383838),
+        ),
         const SizedBox(width: 4),
         Text(
           '${post.replyCount}',

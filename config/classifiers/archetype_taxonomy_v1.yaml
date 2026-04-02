@@ -1,0 +1,195 @@
+{
+  "version": "1.1.0",
+  "last_updated": "2026-04-02",
+  "notes": "Archetypes are derived from the existing natal primitive system. This taxonomy is designed for multi-archetype output, not single-label typing.",
+  "result_shape": {
+    "top_archetypes": 3,
+    "shadow_archetypes": 1,
+    "primary_contradictions": 1
+  },
+  "archetypes": [
+    {
+      "id": "builder",
+      "label_tr": "Kurucu",
+      "motto_tr": "Bir seyin omurgasi yoksa, onu kur.",
+      "portrait_tr": "Kurucu arketipi dunyayi oldugu gibi birakmaktan kolay kolay memnun olmaz. Daginik olani toparlamak, yarim kalani tamamlamak ve belirsiz olana bicim vermek ister. Onun gucu ilhamdan cok istikrardan gelir; cunku biliyordur ki kalici seyler heyecanla degil, omurga ile ayakta kalir. Sorumluluk onun icin yuk oldugu kadar kimliktir de.",
+      "gift_tr": "Kurucu yuk tasiyabilir, sistem kurabilir ve bir seyi dagilmadan ileri goturebilir. Guven veren yani, sozunden once emegiyle gorunur.",
+      "fear_tr": "Onun en buyuk korkusu dagilmak, yarim kalmak ve emeginin ciddiye alinmamasidir.",
+      "shadow_tr": "Golgeye dustugunde yapi kurma arzusu kontrole donebilir. Her seyi omzunda tasimaya kalkar, esnemeyi zayiflik sanir ve hayatin organik akisiyla kavga etmeye baslar.",
+      "relationship_tr": "Iliskide sevgisini buyuk laflarla degil, sureklilik ve emekle gosterir. Onun dili sadakat, sorumluluk ve orada kalabilme gucudur.",
+      "work_style_tr": "Iste surec kuran, duzeni toparlayan ve sonuca sahip cikan kisidir. Bir seyin sadece parlak degil, isler ve kalici olmasini ister.",
+      "growth_tr": "Buyume dersi, her seyi tek basina ayakta tutmak yerine bazen akisa, yardima ve esnemeye de yer acabilmektir.",
+      "slot_biases": ["primary_identity_spine", "work_visibility_line"],
+      "question_families": ["structure_preference", "responsibility_style", "execution_style"],
+      "primitive_weights": {
+        "self_definition": 0.30,
+        "inner_structure": 0.28,
+        "methodical_drive": 0.20,
+        "public_refinement": 0.14,
+        "visible_presence": 0.08
+      },
+      "shadow_pressure": ["inner_critic"],
+      "supports_contradictions": ["structure_vs_originality", "composure_vs_internal_pressure"]
+    },
+    {
+      "id": "visionary",
+      "label_tr": "Vizyoner",
+      "motto_tr": "Hayal edilebiliyorsa, baska bir duzen mumkundur.",
+      "portrait_tr": "Vizyoner icin dunya bitmis bir hikaye degildir; her sey yeniden dusunulebilir, yeniden adlandirilabilir, yeniden kurulabilir. O, henuz kimsenin gormedigi ihtimali sezer ve mevcut olana son soz gibi bakmaz. Hayal gucu onun kacis alani degil, ileri gorusudur. Baskalari sinir gordugunde, o hala acilmamis bir kapi arar.",
+      "gift_tr": "Vizyoner yeni bir yon, yeni bir dil ve yeni bir anlam acabilir. Onun varligi ortama hareket, genisleme ve ilham getirir.",
+      "fear_tr": "Siradanlik, tekrara hapsolmak ve henuz dogmamis bir ihtimali kaybetmek onun temel korkusudur.",
+      "shadow_tr": "Golgeye dustugunde mevcut olani kucumseyebilir, baslamayi bitirmekten daha cazip bulabilir ve her yeni fikri nihai kurtulus sanabilir. O zaman ufuk genisledikce zemin kaybolur.",
+      "relationship_tr": "Iliskide onu canli tutan sey zihinsel hareket, ilham ve birlikte buyume duygusudur. Durgunlukta cabuk solar, canlandigi yerde ise baskalarina da nefes acabilir.",
+      "work_style_tr": "Iste sinir zorlayan, yeni yon gosteren ve daha buyuk resmi goren kisidir. Eski kaliplari sadece surdurmek icin surdurmek ona gore degildir.",
+      "growth_tr": "Buyume dersi, yeni olani cagirmak kadar onu dunyada tutacak sabri ve yapisal disiplini de gelistirmektir.",
+      "slot_biases": ["primary_identity_spine", "secondary_balancing_line", "work_visibility_line"],
+      "question_families": ["novelty_vs_structure", "future_pull", "meaning_orientation"],
+      "primitive_weights": {
+        "originality_drive": 0.32,
+        "big_picture_vision": 0.28,
+        "meaningful_expansion": 0.24,
+        "visible_presence": 0.16
+      },
+      "shadow_pressure": ["push_pull_drive"],
+      "supports_contradictions": ["structure_vs_originality", "visibility_vs_private_preparation"]
+    },
+    {
+      "id": "analyst",
+      "label_tr": "Analist",
+      "motto_tr": "Gercek, gozden kacan ayrintida saklanir.",
+      "portrait_tr": "Analist icin dunya yuzeyde gorundugunden daha karmasik ve daha anlamli bir yerdir. O, desenleri gorur, eksik halkalari fark eder ve baskalarinin hizla gectigi yerde durup neyin neden calistigini anlamak ister. Zihni sadece bilgi toplamaz; duzenler, ayiklar, sinar. Dusunce onun icin savunma da guc de olabilir.",
+      "gift_tr": "Analist karmasik olani ayiklayabilir, daginik olani modele cevirebilir ve hatayi daha buyumeden fark edebilir. Onun zekasi, seye sadece bakmakta degil; onu okumakta yatar.",
+      "fear_tr": "Yanilmak, yuzeysel kalmak ve kontrol edemedigi bir karmasanin icinde kaybolmak onun derin korkularindandir.",
+      "shadow_tr": "Golgeye dustugunde asiri inceleme felce donusebilir. Her ihtimali hesaplamaya calisirken hareket gecikir, zihni korumak isterken hayatla araya sogukluk girebilir.",
+      "relationship_tr": "Iliskide guveni hizli duygusalliktan cok tutarlilik, aciklik ve zihinsel netlik uzerinden kurar. Birini anlamadan tamamen acilmakta zorlanabilir.",
+      "work_style_tr": "Iste sistem kurar, hatayi bulur, eksigi gorur ve dusunce omurgasi saglar. Krizde bile sogukkanli kalabilmesi, onu degerli bir cozum ortaigi yapar.",
+      "growth_tr": "Buyume dersi, her seyi kusursuz anlamadan da hayata katilabilmek ve bazen cevaptan once temasa izin verebilmektir.",
+      "slot_biases": ["secondary_balancing_line", "shadow_protection_line"],
+      "question_families": ["decision_style", "mental_precision", "error_avoidance"],
+      "primitive_weights": {
+        "mental_structuring": 0.32,
+        "systems_thinking": 0.30,
+        "tone_sensitivity": 0.18,
+        "inner_structure": 0.20
+      },
+      "shadow_pressure": ["inner_critic"],
+      "supports_contradictions": ["composure_vs_internal_pressure", "structure_vs_originality"]
+    },
+    {
+      "id": "connector",
+      "label_tr": "Bag Kurucu",
+      "motto_tr": "Insanlar arasindaki bag, soylenenden once hissedilir.",
+      "portrait_tr": "Bag Kurucu arketipi insanlari sadece birey olarak degil, aralarindaki akisla birlikte okur. Kim nerede sertlesiyor, kim nasil aciliyor, hangi soz hangi kalbe dokunur; bunlari icgudusel olarak hisseder. Onun dunyasinda temas, ait olma ve bag kurma bir luks degil, yasamin kendisidir. Yalnizca baglanmak istemez; bagin gercekten yasadigini hissetmek ister.",
+      "gift_tr": "Bag Kurucu insanlari birbirine yaklastirabilir, kopan bir dili yumusatabilir ve bir ortami daha yasanir hale getirebilir. Onun sicakligi yuzeysel degil, birlestiricidir.",
+      "fear_tr": "Dislanmak, duygusal kopukluk ve gercek temasin yerini rol yapmanin almasi onun temel korkularindandir.",
+      "shadow_tr": "Golgeye dustugunde baskalarini fazla tasiyabilir, kendi merkezini iliski icinde kaybedebilir ve huzuru korumak icin gercegi erteleyebilir. Bazen bagi korumak isterken kendini arka plana atar.",
+      "relationship_tr": "Iliskide hizlica sicaklik kurabilir, baskasinin ihtiyacini sezer ve aradaki kopruyu canli tutmak ister. Ama derin guven olmadan surekli veren tarafa da kayabilir.",
+      "work_style_tr": "Iste insanlar, ekip dinamigi, iletisim ve uyum onun guclu alanidir. Sadece ne yapildigina degil, insanlarin bunu birlikte nasil yaptigina da bakar.",
+      "growth_tr": "Buyume dersi, bag kurarken kendini kaybetmemek ve uyumu korurken kendi gercegini de masada tutabilmektir.",
+      "slot_biases": ["relational_line", "work_visibility_line"],
+      "question_families": ["bonding_style", "social_flow", "repair_style"],
+      "primitive_weights": {
+        "graceful_affection": 0.30,
+        "relational_security": 0.28,
+        "network_luck": 0.22,
+        "visible_presence": 0.20
+      },
+      "shadow_pressure": ["emotional_threshold"],
+      "supports_contradictions": ["closeness_vs_threshold", "visibility_vs_private_preparation"]
+    },
+    {
+      "id": "guardian",
+      "label_tr": "Koruyucu",
+      "motto_tr": "Korunmayan sey buyuyemez.",
+      "portrait_tr": "Koruyucu arketipi hayata once guvenlik, sadakat ve dayanma kapasitesi uzerinden yaklasir. Onun ilk refleksi parlamak degil, kollamak; acele etmek degil, saglamlastirmaktir. Insanlari, alanlari ve duygulari tutma becerisi vardir. Cunku bilir ki kirilgan olan sey, ancak guvende oldugunda gercekten acilabilir.",
+      "gift_tr": "Koruyucu kriz aninda dagilmaz; toparlar, tutar ve alan acar. Onun gucu gosteristen degil, dayanma ve koruma kapasitesinden gelir.",
+      "fear_tr": "Savunmasiz kalmak, ihmal edilmek ve iceri aldigi seyin duzensiz ya da guvensiz cikmasi onu derinden sarsar.",
+      "shadow_tr": "Golgeye dustugunde koruma istegi duvara donebilir. Fazla tetikte olabilir, duygusal esigi yukseltir ve hayati tehdit okumaya basladiginda yumusakligini saklar.",
+      "relationship_tr": "Iliskide once guven ister. Acildiginda cok sahip cikan, kollayan ve kalici bag kuran biri olabilir; ama tehdit hissettiginde geri cekilmesi de hizlidir.",
+      "work_style_tr": "Iste sorumluluk alir, istikrar saglar ve baskalarinin guvenle is gorebilecegi bir alan yaratir. Onun varligi daginik yapilari sakinlestirir.",
+      "growth_tr": "Buyume dersi, kendini korumakla hayata kapanmak arasindaki farki ogrenmek ve guvenin bazen kontrollu risk de istedigini hatirlamaktir.",
+      "slot_biases": ["shadow_protection_line", "relational_line"],
+      "question_families": ["stress_regulation", "repair_style", "safety_needs"],
+      "primitive_weights": {
+        "recharge_through_home": 0.28,
+        "family_self_reliance": 0.20,
+        "emotional_threshold": 0.28,
+        "relational_security": 0.24
+      },
+      "shadow_pressure": ["inner_critic", "backstage_creation"],
+      "supports_contradictions": ["closeness_vs_threshold", "composure_vs_internal_pressure"]
+    },
+    {
+      "id": "depthkeeper",
+      "label_tr": "Derinlik Tutucusu",
+      "motto_tr": "Gercek yakinlik, yuzeyi gecmeye cesaret eder.",
+      "portrait_tr": "Derinlik Tutucusu icin hayat yuzeyde olanla sinirli degildir. O, insanlarin soylediginden cok sakladigini duyar; hafiflikten cok hakikate cekilir. Bag kurdugunda onu donusturen, sarsan ve degistiren bir yogunluk arar. Bu arketip kolay acilmaz, ama acildiginda temas sathin altina gecer.",
+      "gift_tr": "Derinlik Tutucusu sahiciligi sezebilir, psikolojik derinligi okuyabilir ve baskalarinin kacindigi alanlarda kalabilir. Onun bagi yuzeyde degil, kokte kurulur.",
+      "fear_tr": "Ihanet, yuzeysellik ve gercegin yerine rol konmasi onun icin siradan bir hayal kirikligi degil, guvenin yikilmasidir.",
+      "shadow_tr": "Golgeye dustugunde sinanma istegi asiri kontrol haline gelebilir. Yakinligi isterken esigi o kadar yukseltir ki, ozledigi seyi kendisi de geciktirir.",
+      "relationship_tr": "Iliskide yogunluk, sadakat ve gercek aciklik arar. Onunla kurulan bag hafif olmayabilir ama sahici oldugunda son derece donusturucudur.",
+      "work_style_tr": "Iste yuzeyde kalan seyle yetinmez; kokeni, motivasyonu ve sakli dinamikleri anlamak ister. Arastirma, psikoloji, strateji ve derin analiz alanlarinda guclu olabilir.",
+      "growth_tr": "Buyume dersi, derinlik ihtiyacini korkuyla karistirmamak ve guvenin sadece sinamayla degil, yumusaklikla da kurulabildigini gormektir.",
+      "slot_biases": ["relational_line", "shadow_protection_line"],
+      "question_families": ["closeness_boundary", "trust_depth", "transformational_bonding"],
+      "primitive_weights": {
+        "intimacy_depth": 0.34,
+        "transformative_bonding": 0.28,
+        "emotional_threshold": 0.20,
+        "backstage_creation": 0.18
+      },
+      "shadow_pressure": ["emotional_threshold"],
+      "supports_contradictions": ["closeness_vs_threshold", "visibility_vs_private_preparation"]
+    },
+    {
+      "id": "performer",
+      "label_tr": "Gorunen",
+      "motto_tr": "Gorunmek, sadece bakilmak degil; iz birakmaktir.",
+      "portrait_tr": "Gorunen arketipi sahneyle, ifade ile ve etkiyle beslenir. Onun icin var olmak bir bakima yanki birakmaktir; hissettigini, bildigini ya da yarattigini gorunur kilmak ister. Dikkat onun icin her zaman bos bir arzu degil, canlilik kaynagidir. Goruldugunde acilir, yanki buldugunda daha cok parlar.",
+      "gift_tr": "Gorunen insanlari etkileyebilir, bir mesaji tasiyabilir ve bir alani kendi varligiyla canlandirabilir. Karizma onun yuzeysel susu degil, ifadesinin uzantisidir.",
+      "fear_tr": "Gorulmeden gecmek, siradanlasmak ve butun emegine ragmen etkisiz kalmak onun buyuk korkularindandir.",
+      "shadow_tr": "Golgeye dustugunde onay acligi artabilir, imaj ozun onune gecebilir ve dikkat kaybi sanki varlik kaybiymis gibi hissedilebilir. O zaman ifade, bag kurmaktan cok kanit sunmaya doner.",
+      "relationship_tr": "Iliskide canli, dikkat cekici ve ifade gucu yuksek bir enerjisi vardir. Ama gercek yakinlik icin sahnenin arkasinda da ayni kadar rahat olmayi ogrenmesi gerekir.",
+      "work_style_tr": "Iste sunum, marka, gorunurluk, yaratici ifade ve etki alanlarinda parlar. Bir seyin sadece iyi olmasi degil, hissedilmesi ve hatirlanmasi da onun icin onemlidir.",
+      "growth_tr": "Buyume dersi, gorunurlugu bir ispat araci degil, hakiki ifadenin dogal uzantisi haline getirmektir.",
+      "slot_biases": ["work_visibility_line", "primary_identity_spine"],
+      "question_families": ["visibility_preference", "expression_style", "audience_energy"],
+      "primitive_weights": {
+        "visible_presence": 0.30,
+        "public_refinement": 0.26,
+        "creation_luck": 0.24,
+        "network_luck": 0.20
+      },
+      "shadow_pressure": ["visibility_sensitivity"],
+      "supports_contradictions": ["visibility_vs_private_preparation", "composure_vs_internal_pressure"]
+    },
+    {
+      "id": "catalyst",
+      "label_tr": "Tetikleyici",
+      "motto_tr": "Bazi hayatlar dusunerek degil, ateslenerek acilir.",
+      "portrait_tr": "Tetikleyici arketipi durgunlugu kolay kolay tasimaz. O, hareketi sever; degisimi cagirir, gerilimi hisseder ve enerjiyi durdugu yerden koparip ileri tasimak ister. Bazen bir fikir, bazen bir isyan, bazen yalnizca cesur bir adim olarak belirir. Onun varligi bir alani uyandirabilir, cunku o hayata itki verir.",
+      "gift_tr": "Tetikleyici harekete gecirir, cesaret bulastirir ve statik kalan seylere yeni bir ivme kazandirir. Onun enerjisi baskalarina da baslama gucu verebilir.",
+      "fear_tr": "Sikisip kalmak, edilgenlesmek ve enerjisinin bogulmasi onun icin neredeyse ruhsal bir daralmadir.",
+      "shadow_tr": "Golgeye dustugunde hiz bilgeligin onune gecebilir. Kivraklik dusunmeden once atilmaya, degisim arzusu ise yakip gecmeye donebilir; o zaman hareket ilerleme degil, surekli kopus olur.",
+      "relationship_tr": "Iliskide canli, dogrudan ve atesli bir enerji getirir. Ama sabir ve ritim kurulmuyorsa, ayni hiz bagin kendisini de yorabilir.",
+      "work_style_tr": "Iste hizli karar, yeni baslangic, risk alma ve momentum yaratma alaninda gucludur. Durgun ekipleri canlandirabilir, ama sureklilik ortaklariyla daha da guclenir.",
+      "growth_tr": "Buyume dersi, her kivilcimin yangin olmak zorunda olmadigini ve gercek etkinin bazen hiz kadar yon de istedigini anlamaktir.",
+      "slot_biases": ["primary_identity_spine", "secondary_balancing_line"],
+      "question_families": ["action_bias", "change_tolerance", "conflict_activation"],
+      "primitive_weights": {
+        "push_pull_drive": 0.26,
+        "originality_drive": 0.28,
+        "methodical_drive": 0.22,
+        "self_definition": 0.24
+      },
+      "shadow_pressure": ["push_pull_drive"],
+      "supports_contradictions": ["structure_vs_originality", "composure_vs_internal_pressure"]
+    }
+  ],
+  "contradiction_labels": {
+    "structure_vs_originality": "Yapi ile ozgurluk ayni anda calisiyor.",
+    "visibility_vs_private_preparation": "Gorunme istegi var ama once iceride hazirlanma ihtiyaci da guclu.",
+    "closeness_vs_threshold": "Yakinlik istiyor ama guven esigi yuksek.",
+    "composure_vs_internal_pressure": "Disaridan toplu, iceriden yuk tasiyan bir cizgi."
+  }
+}
