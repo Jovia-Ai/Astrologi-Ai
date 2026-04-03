@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/app/forum/forum_models.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
+import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 /// Reusable forum post card.
 /// Displays post header, title, body preview, and footer actions.
@@ -11,12 +13,14 @@ class ForumPostCard extends StatefulWidget {
     required this.onTap,
     required this.onLike,
     this.animationIndex = 0,
+    this.showFullBody = false,
   });
 
   final ForumPost post;
   final VoidCallback onTap;
   final VoidCallback onLike;
   final int animationIndex;
+  final bool showFullBody;
 
   @override
   State<ForumPostCard> createState() => _ForumPostCardState();
@@ -54,45 +58,58 @@ class _ForumPostCardState extends State<ForumPostCard>
   @override
   Widget build(BuildContext context) {
     final post = widget.post;
-    return GestureDetector(
-      onTap: widget.onTap,
-      behavior: HitTestBehavior.opaque,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: const BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: Color(0xFF0E0E0E), width: 0.5),
+    final activeTransit = (post.activeTransit ?? '').trim();
+    final profile = context.profileTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: JoviaPressable(
+        onTap: widget.onTap,
+        borderRadius: BorderRadius.circular(30),
+        child: JoviaSurfaceCard(
+          radius: 30,
+          padding: const EdgeInsets.fromLTRB(18, 18, 18, 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _PostHeader(post: post),
+              if (activeTransit.isNotEmpty) ...[
+                const SizedBox(height: 12),
+                _TransitRibbon(text: activeTransit),
+              ],
+              const SizedBox(height: 14),
+              Text(
+                post.title,
+                style: profile.typography.card.copyWith(
+                  color: profile.colors.text,
+                  fontSize: 17.4,
+                  height: 1.24,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: -0.18,
+                ),
+              ),
+              const SizedBox(height: 9),
+              Text(
+                post.body,
+                maxLines: widget.showFullBody ? null : 4,
+                overflow: widget.showFullBody
+                    ? TextOverflow.visible
+                    : TextOverflow.ellipsis,
+                style: profile.typography.bodyCompact.copyWith(
+                  color: profile.colors.textLight,
+                  fontSize: 13.8,
+                  height: 1.55,
+                ),
+              ),
+              const SizedBox(height: 14),
+              const ThinDivider(),
+              const SizedBox(height: 12),
+              _PostFooter(
+                post: post,
+                likeScale: _likeScale,
+                onLike: _handleLike,
+              ),
+            ],
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _PostHeader(post: post),
-            const SizedBox(height: 10),
-            Text(
-              post.title,
-              style: const TextStyle(
-                fontFamily: 'Georgia',
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFFE0E0E0),
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              post.body,
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(
-                fontSize: 12,
-                color: Color(0xFF606060),
-                height: 1.5,
-              ),
-            ),
-            const SizedBox(height: 10),
-            _PostFooter(post: post, likeScale: _likeScale, onLike: _handleLike),
-          ],
         ),
       ),
     );
@@ -105,17 +122,45 @@ class _PostHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final secondaryLine = [
+      if (post.userSunSign.trim().isNotEmpty) post.userSunSign.trim(),
+      if (post.userRisingSign.trim().isNotEmpty)
+        'Yukselen ${post.userRisingSign.trim()}',
+    ].join(' • ');
+    final base = post.avatarColor;
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CircleAvatar(
-          radius: 16,
-          backgroundColor: post.avatarColor,
-          child: Text(
-            post.initials,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFFE0E0E0),
+        Container(
+          width: 38,
+          height: 38,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                Color.alphaBlend(
+                  Colors.white.withValues(alpha: 0.22),
+                  base.withValues(alpha: 0.92),
+                ),
+                Color.alphaBlend(
+                  profile.colors.lavender.withValues(alpha: 0.24),
+                  base,
+                ),
+              ],
+            ),
+            border: Border.all(color: profile.colors.strokeSoft),
+          ),
+          child: Center(
+            child: Text(
+              post.initials,
+              style: profile.typography.buttonLabel.copyWith(
+                fontSize: 11.2,
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),
@@ -126,19 +171,20 @@ class _PostHeader extends StatelessWidget {
             children: [
               Text(
                 post.userDisplayName,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFF888888),
-                  fontWeight: FontWeight.w500,
+                style: profile.typography.metaSoft.copyWith(
+                  color: profile.colors.text,
+                  fontSize: 12.4,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
-              if (post.userSunSign.isNotEmpty)
+              if (secondaryLine.isNotEmpty)
                 Text(
-                  post.userSunSign,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: Color(0xFF444444),
-                    letterSpacing: 0.5,
+                  secondaryLine,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: profile.typography.meta.copyWith(
+                    fontSize: 11,
+                    color: profile.colors.textLight,
                   ),
                 ),
             ],
@@ -180,22 +226,40 @@ class _CategoryBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
     final bg = _bgColors[category] ?? const Color(0x19888888);
-    final fg = _textColors[category] ?? const Color(0xFF666666);
+    final fg = _textColors[category] ?? profile.colors.text;
     final label = _labels[category] ?? category;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
       decoration: BoxDecoration(
-        color: bg,
-        borderRadius: BorderRadius.circular(4),
+        color: Color.alphaBlend(
+          fg.withValues(alpha: 0.08),
+          profile.colors.surface,
+        ),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(
+          color: Color.alphaBlend(
+            fg.withValues(alpha: 0.22),
+            profile.colors.strokeSoft,
+          ),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: bg.withValues(alpha: 0.16),
+            blurRadius: 14,
+            offset: const Offset(0, 8),
+            spreadRadius: -10,
+          ),
+        ],
       ),
       child: Text(
         turkishToUpper(label),
         style: TextStyle(
-          fontSize: 9,
+          fontSize: 9.6,
           color: fg,
-          fontWeight: FontWeight.w600,
-          letterSpacing: 0.8,
+          fontWeight: FontWeight.w700,
+          letterSpacing: 0.92,
         ),
       ),
     );
@@ -215,48 +279,67 @@ class _PostFooter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
     return Row(
       children: [
-        GestureDetector(
+        JoviaPressable(
           onTap: onLike,
+          borderRadius: BorderRadius.circular(999),
           child: ScaleTransition(
             scale: likeScale,
-            child: Row(
-              children: [
-                Icon(
-                  post.isLikedByMe ? Icons.favorite : Icons.favorite_border,
-                  size: 14,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              decoration: BoxDecoration(
+                color: post.isLikedByMe
+                    ? Color.alphaBlend(
+                        profile.colors.neonPink.withValues(alpha: 0.3),
+                        profile.colors.surface,
+                      )
+                    : profile.colors.buttonSecondary.withValues(alpha: 0.82),
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(
                   color: post.isLikedByMe
-                      ? const Color(0xFFC060C0)
-                      : const Color(0xFF444444),
+                      ? profile.colors.primary.withValues(alpha: 0.2)
+                      : profile.colors.strokeSoft,
                 ),
-                const SizedBox(width: 4),
-                Text(
-                  '${post.likeCount}',
-                  style: const TextStyle(
-                    fontSize: 11,
-                    color: Color(0xFF444444),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    post.isLikedByMe ? Icons.favorite : Icons.favorite_border,
+                    size: 14,
+                    color: post.isLikedByMe
+                        ? const Color(0xFFB45F87)
+                        : profile.colors.textLight,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 5),
+                  Text(
+                    '${post.likeCount}',
+                    style: profile.typography.metaSoft.copyWith(
+                      fontSize: 11.5,
+                      color: post.isLikedByMe
+                          ? profile.colors.text
+                          : profile.colors.textLight,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-        const SizedBox(width: 16),
-        const Icon(
-          Icons.chat_bubble_outline,
-          size: 13,
-          color: Color(0xFF383838),
-        ),
-        const SizedBox(width: 4),
-        Text(
-          '${post.replyCount}',
-          style: const TextStyle(fontSize: 11, color: Color(0xFF444444)),
+        const SizedBox(width: 8),
+        _FooterPill(
+          icon: Icons.chat_bubble_outline_rounded,
+          label: '${post.replyCount}',
         ),
         const Spacer(),
         Text(
           _timeAgo(post.createdAt),
-          style: const TextStyle(fontSize: 10, color: Color(0xFF333333)),
+          style: profile.typography.meta.copyWith(
+            fontSize: 11.2,
+            color: profile.colors.textLight,
+          ),
         ),
       ],
     );
@@ -269,5 +352,89 @@ class _PostFooter extends StatelessWidget {
     if (diff.inHours < 24) return '${diff.inHours}s';
     if (diff.inDays < 7) return '${diff.inDays}g';
     return '${(diff.inDays / 7).floor()}h';
+  }
+}
+
+class _TransitRibbon extends StatelessWidget {
+  const _TransitRibbon({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Color.alphaBlend(
+              profile.colors.warmAccent.withValues(alpha: 0.14),
+              profile.colors.surface,
+            ),
+            Color.alphaBlend(
+              profile.colors.primary.withValues(alpha: 0.08),
+              profile.colors.heroBase,
+            ),
+          ],
+        ),
+        border: Border.all(color: profile.colors.strokeSoft),
+      ),
+      child: Row(
+        children: [
+          const JoviaUiIcon(asset: JoviaUiAsset.orbitPlanet, size: 15),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Text(
+              text,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: profile.typography.metaSoft.copyWith(
+                color: profile.colors.textLight,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _FooterPill extends StatelessWidget {
+  const _FooterPill({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      decoration: BoxDecoration(
+        color: profile.colors.buttonSecondary.withValues(alpha: 0.82),
+        borderRadius: BorderRadius.circular(999),
+        border: Border.all(color: profile.colors.strokeSoft),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 13.5, color: profile.colors.textLight),
+          const SizedBox(width: 5),
+          Text(
+            label,
+            style: profile.typography.metaSoft.copyWith(
+              fontSize: 11.5,
+              color: profile.colors.textLight,
+              fontWeight: FontWeight.w700,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

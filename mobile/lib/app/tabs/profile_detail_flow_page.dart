@@ -4,10 +4,6 @@ import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
-const Color _kDetailFlowBg = Color(0xFF0A0A0A);
-const Color _kDetailFlowText = Color(0xFFF5F2EE);
-const Color _kDetailFlowAccent = Color(0xFFFF8A4C);
-
 const Duration _kDetailPlaybackAutoplay = Duration(seconds: 7);
 const Duration _kDetailPlaybackPageTurn = Duration(milliseconds: 280);
 
@@ -43,6 +39,62 @@ const ProfileDetailTone _kDefaultProfileDetailTone = ProfileDetailTone(
   glow: Color(0x33B58DFF),
   mutedText: Color(0xFFD3CBDD),
 );
+
+ProfileDetailTone _detailToneForPlaybackPage(
+  _ProfileDetailPlaybackPageData page,
+) {
+  return profileDetailToneForSignature(
+    title: page.title,
+    summary: '${page.intro} ${page.bodyBlocks.join(' ')} ${page.whyText}',
+    eyebrow: page.eyebrow,
+  );
+}
+
+Color _detailPageBackground(BuildContext context, ProfileDetailTone tone) {
+  final profile = context.profileTheme;
+  return Color.alphaBlend(
+    tone.accent.withValues(
+      alpha: Theme.of(context).brightness == Brightness.dark ? 0.18 : 0.08,
+    ),
+    profile.colors.bg,
+  );
+}
+
+Color _detailCardBackground(
+  BuildContext context,
+  ProfileDetailTone tone, {
+  bool emphasized = false,
+}) {
+  final profile = context.profileTheme;
+  final base = Color.alphaBlend(
+    tone.accent.withValues(alpha: emphasized ? 0.1 : 0.06),
+    profile.colors.surface,
+  );
+  return Color.alphaBlend(
+    tone.accentSoft.withValues(alpha: emphasized ? 0.08 : 0.04),
+    base,
+  );
+}
+
+Color _detailInsetBackground(
+  BuildContext context,
+  ProfileDetailTone tone, {
+  bool highlighted = false,
+}) {
+  return Color.alphaBlend(
+    (highlighted ? tone.accent : tone.accentSoft).withValues(
+      alpha: highlighted ? 0.16 : 0.08,
+    ),
+    context.profileTheme.colors.panelSoft,
+  );
+}
+
+Color _detailStrokeColor(BuildContext context, ProfileDetailTone tone) {
+  return Color.alphaBlend(
+    tone.accent.withValues(alpha: 0.16),
+    context.profileTheme.colors.strokeSoft,
+  );
+}
 
 ProfileDetailTone profileDetailToneForSignature({
   required String title,
@@ -308,9 +360,9 @@ class ProfileDetailPage extends StatelessWidget {
     final profile = context.profileTheme;
     final firstScene = scenes.isNotEmpty ? scenes.first : null;
     return Scaffold(
-      backgroundColor: tone.background,
+      backgroundColor: profile.colors.bg,
       body: ColoredBox(
-        color: tone.background,
+        color: profile.colors.bg,
         child: SafeArea(
           bottom: false,
           child: JoviaPageScaffold(
@@ -412,20 +464,11 @@ class _ProfileDetailSceneCard extends StatelessWidget {
     final profile = context.profileTheme;
     final hasIntro = scene.intro.trim().isNotEmpty;
     final hasWhy = scene.whyText.trim().isNotEmpty;
-    return Container(
-      decoration: BoxDecoration(
-        color: tone.surface,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: tone.stroke),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 26,
-            offset: const Offset(0, 18),
-            color: tone.glow,
-            spreadRadius: -20,
-          ),
-        ],
-      ),
+    return JoviaSurfaceCard(
+      radius: 28,
+      padding: EdgeInsets.zero,
+      backgroundColor: _detailCardBackground(context, tone, emphasized: true),
+      borderColor: _detailStrokeColor(context, tone),
       child: Stack(
         children: [
           Positioned(
@@ -478,7 +521,7 @@ class _ProfileDetailSceneCard extends StatelessWidget {
                           Text(
                             scene.title,
                             style: profile.typography.section.copyWith(
-                              color: _kDetailFlowText,
+                              color: profile.colors.text,
                               fontSize: 26,
                               height: 1.08,
                             ),
@@ -512,14 +555,16 @@ class _ProfileDetailSceneCard extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
                       decoration: BoxDecoration(
-                        color: tone.surfaceStrong,
+                        color: _detailInsetBackground(context, tone),
                         borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: tone.stroke),
+                        border: Border.all(
+                          color: _detailStrokeColor(context, tone),
+                        ),
                       ),
                       child: Text(
                         block,
                         style: profile.typography.bodyCompact.copyWith(
-                          color: _kDetailFlowText,
+                          color: profile.colors.text,
                           height: 1.6,
                         ),
                       ),
@@ -592,7 +637,7 @@ class _ProfileDetailThemeChip extends StatelessWidget {
       child: Text(
         label,
         style: profile.typography.buttonLabel.copyWith(
-          color: _kDetailFlowText,
+          color: profile.colors.text,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -621,9 +666,9 @@ class ProfileDetailCatalogPage extends StatelessWidget {
         ? items.first.tone
         : _kDefaultProfileDetailTone;
     return Scaffold(
-      backgroundColor: pageTone.background,
+      backgroundColor: profile.colors.bg,
       body: ColoredBox(
-        color: pageTone.background,
+        color: profile.colors.bg,
         child: SafeArea(
           bottom: false,
           child: JoviaPageScaffold(
@@ -638,13 +683,14 @@ class ProfileDetailCatalogPage extends StatelessWidget {
                   reserveTrailingSpace: true,
                 ),
                 const SizedBox(height: 18),
-                Container(
-                  padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-                  decoration: BoxDecoration(
-                    color: pageTone.surface,
-                    borderRadius: BorderRadius.circular(28),
-                    border: Border.all(color: pageTone.stroke),
+                JoviaSurfaceCard(
+                  radius: 28,
+                  backgroundColor: _detailCardBackground(
+                    context,
+                    pageTone,
+                    emphasized: true,
                   ),
+                  borderColor: _detailStrokeColor(context, pageTone),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -660,7 +706,7 @@ class ProfileDetailCatalogPage extends StatelessWidget {
                       Text(
                         'Kişilik imzası kartları',
                         style: profile.typography.section.copyWith(
-                          color: _kDetailFlowText,
+                          color: profile.colors.text,
                           fontSize: 24,
                           height: 1.08,
                         ),
@@ -707,21 +753,10 @@ class _ProfileDetailCatalogCard extends StatelessWidget {
     return JoviaPressable(
       onTap: onTap,
       borderRadius: BorderRadius.circular(24),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-        decoration: BoxDecoration(
-          color: item.tone.surface,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: item.tone.stroke),
-          boxShadow: [
-            BoxShadow(
-              color: item.tone.glow,
-              blurRadius: 24,
-              offset: const Offset(0, 16),
-              spreadRadius: -18,
-            ),
-          ],
-        ),
+      child: JoviaSurfaceCard(
+        radius: 24,
+        backgroundColor: _detailCardBackground(context, item.tone),
+        borderColor: _detailStrokeColor(context, item.tone),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -768,7 +803,7 @@ class _ProfileDetailCatalogCard extends StatelessWidget {
                   Text(
                     item.title,
                     style: profile.typography.card.copyWith(
-                      color: _kDetailFlowText,
+                      color: profile.colors.text,
                       fontWeight: FontWeight.w700,
                       fontSize: 18,
                       height: 1.22,
@@ -914,12 +949,15 @@ class _ProfileDetailFlowPageState extends State<ProfileDetailFlowPage>
   @override
   Widget build(BuildContext context) {
     final activePage = _currentPage;
+    final activeTone = _detailToneForPlaybackPage(activePage);
+    final background = _detailPageBackground(context, activeTone);
     return Scaffold(
-      backgroundColor: _kDetailFlowBg,
+      backgroundColor: background,
       body: ColoredBox(
-        color: _kDetailFlowBg,
+        color: background,
         child: Stack(
           children: [
+            _DetailFlowBackdrop(tone: activeTone),
             NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (notification is ScrollStartNotification &&
@@ -1672,11 +1710,7 @@ class _DetailPlaybackTopBar extends StatelessWidget {
         JoviaGlassIconButton(
           onTap: () => Navigator.of(context).maybePop(),
           size: 42,
-          child: const JoviaUiIcon(
-            asset: JoviaUiAsset.back,
-            size: 18,
-            color: _kDetailFlowText,
-          ),
+          child: const JoviaUiIcon(asset: JoviaUiAsset.back, size: 18),
         ),
         const SizedBox(width: 12),
         Expanded(
@@ -1830,6 +1864,137 @@ class _DetailVariantSurface extends StatelessWidget {
   }
 }
 
+class _DetailFlowBackdrop extends StatelessWidget {
+  const _DetailFlowBackdrop({required this.tone});
+
+  final ProfileDetailTone tone;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return IgnorePointer(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  _detailPageBackground(context, tone),
+                  profile.colors.bg,
+                  Color.alphaBlend(
+                    tone.accentSoft.withValues(alpha: 0.08),
+                    profile.colors.bg,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: -110,
+            right: -72,
+            child: Container(
+              width: 240,
+              height: 240,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    tone.accent.withValues(alpha: 0.18),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: -92,
+            bottom: -128,
+            child: Container(
+              width: 260,
+              height: 260,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    tone.accentSoft.withValues(alpha: 0.16),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _DetailSurfaceCard extends StatelessWidget {
+  const _DetailSurfaceCard({
+    required this.child,
+    required this.tone,
+    this.padding = const EdgeInsets.all(20),
+    this.radius = 30,
+  });
+
+  final Widget child;
+  final ProfileDetailTone tone;
+  final EdgeInsetsGeometry padding;
+  final double radius;
+
+  @override
+  Widget build(BuildContext context) {
+    return JoviaSurfaceCard(
+      radius: radius,
+      padding: EdgeInsets.zero,
+      backgroundColor: _detailCardBackground(context, tone, emphasized: true),
+      borderColor: _detailStrokeColor(context, tone),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -20,
+            top: -24,
+            child: Container(
+              width: 120,
+              height: 120,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    tone.accent.withValues(alpha: 0.16),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: -30,
+            bottom: -38,
+            child: Container(
+              width: 138,
+              height: 138,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    tone.accentSoft.withValues(alpha: 0.12),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(padding: padding, child: child),
+        ],
+      ),
+    );
+  }
+}
+
 class _DetailGlancePlaybackCard extends StatelessWidget {
   const _DetailGlancePlaybackCard({
     required this.page,
@@ -1842,15 +2007,13 @@ class _DetailGlancePlaybackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final tone = _detailToneForPlaybackPage(page);
     final bodyText = page.bodyBlocks.isNotEmpty
         ? page.bodyBlocks.first
         : page.intro.trim();
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF050505),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: profile.colors.strokeSoft),
-      ),
+    return _DetailSurfaceCard(
+      tone: tone,
+      radius: 30,
       padding: const EdgeInsets.fromLTRB(24, 24, 24, 22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -1924,19 +2087,18 @@ class _DetailPosterPlaybackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.profileTheme;
+    final tone = _detailToneForPlaybackPage(page);
     final content = _DetailTextSection(
       page: page,
+      tone: tone,
       titleSize: 34,
       isLastOverallPage: isLastOverallPage,
       scrollable: page.requiresOverflowScroll,
     );
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF050505),
-        borderRadius: BorderRadius.circular(32),
-        border: Border.all(color: profile.colors.strokeSoft),
-      ),
+    return _DetailSurfaceCard(
+      tone: tone,
+      radius: 32,
+      padding: EdgeInsets.zero,
       child: Stack(
         children: [
           Positioned(
@@ -1980,23 +2142,22 @@ class _DetailStructuredPlaybackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.profileTheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF050505),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: profile.colors.strokeSoft),
-      ),
+    final tone = _detailToneForPlaybackPage(page);
+    return _DetailSurfaceCard(
+      tone: tone,
+      radius: 30,
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: page.requiresOverflowScroll
           ? SingleChildScrollView(
               child: _DetailStructuredBody(
                 page: page,
+                tone: tone,
                 isLastOverallPage: isLastOverallPage,
               ),
             )
           : _DetailStructuredBody(
               page: page,
+              tone: tone,
               isLastOverallPage: isLastOverallPage,
             ),
     );
@@ -2006,10 +2167,12 @@ class _DetailStructuredPlaybackCard extends StatelessWidget {
 class _DetailStructuredBody extends StatelessWidget {
   const _DetailStructuredBody({
     required this.page,
+    required this.tone,
     required this.isLastOverallPage,
   });
 
   final _ProfileDetailPlaybackPageData page;
+  final ProfileDetailTone tone;
   final bool isLastOverallPage;
 
   @override
@@ -2025,7 +2188,7 @@ class _DetailStructuredBody extends StatelessWidget {
               width: 3,
               height: 74,
               decoration: BoxDecoration(
-                color: _kDetailFlowAccent,
+                color: tone.accent,
                 borderRadius: BorderRadius.circular(999),
               ),
             ),
@@ -2080,9 +2243,9 @@ class _DetailStructuredBody extends StatelessWidget {
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
               decoration: BoxDecoration(
-                color: const Color(0xFF0A0908),
+                color: _detailInsetBackground(context, tone),
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: profile.colors.strokeSoft),
+                border: Border.all(color: _detailStrokeColor(context, tone)),
               ),
               child: Text(
                 page.bodyBlocks[index],
@@ -2102,13 +2265,13 @@ class _DetailStructuredBody extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: page.chips
-                .map((chip) => _DetailChip(label: chip))
+                .map((chip) => _DetailChip(label: chip, tone: tone))
                 .toList(),
           ),
         ],
         if (page.whyText.trim().isNotEmpty) ...[
           const SizedBox(height: 16),
-          _DetailWhyBlock(text: page.whyText),
+          _DetailWhyBlock(text: page.whyText, tone: tone),
         ],
         const SizedBox(height: 16),
         _DetailPageFooter(page: page, isLastOverallPage: isLastOverallPage),
@@ -2128,7 +2291,7 @@ class _DetailSplitPlaybackCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.profileTheme;
+    final tone = _detailToneForPlaybackPage(page);
     final leftText = page.bodyBlocks.isNotEmpty
         ? page.bodyBlocks.first
         : page.intro;
@@ -2138,17 +2301,15 @@ class _DetailSplitPlaybackCard extends StatelessWidget {
     final extraBlocks = page.bodyBlocks.length > 2
         ? page.bodyBlocks.skip(2).toList(growable: false)
         : const <String>[];
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF050505),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: profile.colors.strokeSoft),
-      ),
+    return _DetailSurfaceCard(
+      tone: tone,
+      radius: 30,
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
       child: page.requiresOverflowScroll
           ? SingleChildScrollView(
               child: _DetailSplitBody(
                 page: page,
+                tone: tone,
                 leftText: leftText,
                 rightText: rightText,
                 extraBlocks: extraBlocks,
@@ -2157,6 +2318,7 @@ class _DetailSplitPlaybackCard extends StatelessWidget {
             )
           : _DetailSplitBody(
               page: page,
+              tone: tone,
               leftText: leftText,
               rightText: rightText,
               extraBlocks: extraBlocks,
@@ -2169,6 +2331,7 @@ class _DetailSplitPlaybackCard extends StatelessWidget {
 class _DetailSplitBody extends StatelessWidget {
   const _DetailSplitBody({
     required this.page,
+    required this.tone,
     required this.leftText,
     required this.rightText,
     required this.extraBlocks,
@@ -2176,6 +2339,7 @@ class _DetailSplitBody extends StatelessWidget {
   });
 
   final _ProfileDetailPlaybackPageData page;
+  final ProfileDetailTone tone;
   final String leftText;
   final String rightText;
   final List<String> extraBlocks;
@@ -2223,7 +2387,11 @@ class _DetailSplitBody extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: _DetailSplitPane(title: 'Bir tarafı', body: leftText),
+              child: _DetailSplitPane(
+                title: 'Bir tarafı',
+                body: leftText,
+                tone: tone,
+              ),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -2231,6 +2399,7 @@ class _DetailSplitBody extends StatelessWidget {
                 title: 'Diğer tarafı',
                 body: rightText.isNotEmpty ? rightText : page.intro,
                 highlighted: true,
+                tone: tone,
               ),
             ),
           ],
@@ -2255,7 +2424,7 @@ class _DetailSplitBody extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: page.chips
-                .map((chip) => _DetailChip(label: chip))
+                .map((chip) => _DetailChip(label: chip, tone: tone))
                 .toList(),
           ),
         ],
@@ -2270,11 +2439,13 @@ class _DetailSplitPane extends StatelessWidget {
   const _DetailSplitPane({
     required this.title,
     required this.body,
+    required this.tone,
     this.highlighted = false,
   });
 
   final String title;
   final String body;
+  final ProfileDetailTone tone;
   final bool highlighted;
 
   @override
@@ -2283,17 +2454,12 @@ class _DetailSplitPane extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
       decoration: BoxDecoration(
-        color: highlighted
-            ? Color.alphaBlend(
-                profile.colors.warmAccent.withValues(alpha: 0.04),
-                const Color(0xFF080706),
-              )
-            : const Color(0xFF080706),
+        color: _detailInsetBackground(context, tone, highlighted: highlighted),
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
           color: highlighted
-              ? profile.colors.warmAccent.withValues(alpha: 0.24)
-              : profile.colors.strokeSoft,
+              ? _detailStrokeColor(context, tone)
+              : _detailStrokeColor(context, tone),
         ),
       ),
       child: Column(
@@ -2301,9 +2467,7 @@ class _DetailSplitPane extends StatelessWidget {
           Text(
             title,
             style: profile.typography.buttonLabel.copyWith(
-              color: highlighted
-                  ? profile.colors.warmAccent
-                  : profile.colors.textLight,
+              color: highlighted ? tone.accent : profile.colors.textLight,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -2334,12 +2498,10 @@ class _DetailSymbolPlaybackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF050505),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: profile.colors.strokeSoft),
-      ),
+    final tone = _detailToneForPlaybackPage(page);
+    return _DetailSurfaceCard(
+      tone: tone,
+      radius: 30,
       padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -2410,12 +2572,10 @@ class _DetailPortalPlaybackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFF050505),
-        borderRadius: BorderRadius.circular(30),
-        border: Border.all(color: profile.colors.strokeSoft),
-      ),
+    final tone = _detailToneForPlaybackPage(page);
+    return _DetailSurfaceCard(
+      tone: tone,
+      radius: 30,
       padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2469,12 +2629,14 @@ class _DetailPortalPlaybackCard extends StatelessWidget {
 class _DetailTextSection extends StatelessWidget {
   const _DetailTextSection({
     required this.page,
+    required this.tone,
     required this.titleSize,
     required this.isLastOverallPage,
     this.scrollable = false,
   });
 
   final _ProfileDetailPlaybackPageData page;
+  final ProfileDetailTone tone;
   final double titleSize;
   final bool isLastOverallPage;
   final bool scrollable;
@@ -2532,14 +2694,14 @@ class _DetailTextSection extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: page.chips
-                .map((chip) => _DetailChip(label: chip))
+                .map((chip) => _DetailChip(label: chip, tone: tone))
                 .toList(),
           ),
         ],
         if ((page.bodyBlocks.isEmpty && page.intro.trim().isEmpty) &&
             page.whyText.trim().isNotEmpty) ...[
           const SizedBox(height: 18),
-          _DetailWhyBlock(text: page.whyText),
+          _DetailWhyBlock(text: page.whyText, tone: tone),
         ],
         if (scrollable) const SizedBox(height: 18) else const Spacer(),
         _DetailPageFooter(page: page, isLastOverallPage: isLastOverallPage),
@@ -2549,9 +2711,10 @@ class _DetailTextSection extends StatelessWidget {
 }
 
 class _DetailWhyBlock extends StatelessWidget {
-  const _DetailWhyBlock({required this.text});
+  const _DetailWhyBlock({required this.text, required this.tone});
 
   final String text;
+  final ProfileDetailTone tone;
 
   @override
   Widget build(BuildContext context) {
@@ -2559,9 +2722,9 @@ class _DetailWhyBlock extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
       decoration: BoxDecoration(
-        color: const Color(0xFF0A0908),
+        color: _detailInsetBackground(context, tone),
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: profile.colors.strokeSoft),
+        border: Border.all(color: _detailStrokeColor(context, tone)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -2569,7 +2732,7 @@ class _DetailWhyBlock extends StatelessWidget {
           Text(
             'Neden burada',
             style: profile.typography.buttonLabel.copyWith(
-              color: profile.colors.warmAccent,
+              color: tone.accent,
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -2634,9 +2797,10 @@ _DetailFooterKind _detailFooterKind(
 }
 
 class _DetailChip extends StatelessWidget {
-  const _DetailChip({required this.label});
+  const _DetailChip({required this.label, required this.tone});
 
   final String label;
+  final ProfileDetailTone tone;
 
   @override
   Widget build(BuildContext context) {
@@ -2644,9 +2808,9 @@ class _DetailChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
-        color: const Color(0xFF0E0B09),
+        color: _detailInsetBackground(context, tone),
         borderRadius: BorderRadius.circular(999),
-        border: Border.all(color: profile.colors.strokeSoft),
+        border: Border.all(color: _detailStrokeColor(context, tone)),
       ),
       child: Text(
         label,

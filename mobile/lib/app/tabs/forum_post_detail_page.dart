@@ -5,6 +5,8 @@ import 'package:mobile/app/forum/forum_models.dart';
 import 'package:mobile/app/forum/forum_providers.dart';
 import 'package:mobile/app/widgets/forum_compose_bar.dart';
 import 'package:mobile/app/widgets/forum_post_card.dart';
+import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 class ForumPostDetailPage extends ConsumerStatefulWidget {
   const ForumPostDetailPage({super.key, required this.post});
@@ -130,55 +132,72 @@ class _ForumPostDetailPageState extends ConsumerState<ForumPostDetailPage> {
   @override
   Widget build(BuildContext context) {
     final post = _post ?? widget.post;
+    final profile = context.profileTheme;
+    final spacing = profile.spacing;
     return Scaffold(
-      backgroundColor: const Color(0xFF050505),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF050505),
-        foregroundColor: Colors.white,
-        elevation: 0,
-        title: const Text('Konu'),
-      ),
-      body: RefreshIndicator(
-        onRefresh: _load,
-        child: ListView(
-          padding: const EdgeInsets.only(bottom: 96),
-          children: [
-            ForumPostCard(post: post, onTap: () {}, onLike: _toggleLike),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
-              child: Text(
-                'Yanitlar',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
+      backgroundColor: profile.colors.bg,
+      body: JoviaPageScaffold(
+        padding: EdgeInsets.fromLTRB(
+          spacing.pageHorizontal,
+          spacing.xs,
+          spacing.pageHorizontal,
+          0,
+        ),
+        child: RefreshIndicator(
+          onRefresh: _load,
+          color: profile.colors.primary,
+          backgroundColor: profile.colors.surface,
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.only(bottom: 104),
+            children: [
+              JoviaReveal(
+                child: const JoviaProfileTopBar(
+                  label: 'Forum',
+                  centerText: 'Konu',
+                  reserveTrailingSpace: true,
                 ),
               ),
-            ),
-            if (_loading)
-              const Padding(
-                padding: EdgeInsets.all(24),
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (_error != null)
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text(
-                  _error!,
-                  style: const TextStyle(color: Color(0xFFBDB6C9)),
-                ),
-              )
-            else if (_replies.isEmpty)
-              const Padding(
-                padding: EdgeInsets.fromLTRB(16, 8, 16, 8),
-                child: Text(
-                  'Henuz yanit yok. Ilk sesi sen birak.',
-                  style: TextStyle(color: Color(0xFF8C8795)),
-                ),
-              )
-            else
-              for (final reply in _replies) _ReplyTile(reply: reply),
-          ],
+              SizedBox(height: spacing.s24),
+              ForumPostCard(
+                post: post,
+                onTap: () {},
+                onLike: _toggleLike,
+                showFullBody: true,
+              ),
+              SizedBox(height: spacing.s8),
+              const JoviaSectionHeader(
+                label: 'Yanitlar',
+                title: 'Akisa eklenen sesler',
+              ),
+              SizedBox(height: spacing.s12),
+              if (_loading)
+                const Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Center(child: CircularProgressIndicator()),
+                )
+              else if (_error != null)
+                JoviaSurfaceCard(
+                  child: Text(
+                    _error!,
+                    style: profile.typography.bodyCompact.copyWith(
+                      color: profile.colors.textLight,
+                    ),
+                  ),
+                )
+              else if (_replies.isEmpty)
+                JoviaSurfaceCard(
+                  child: Text(
+                    'Henuz yanit yok. Ilk sesi sen birak.',
+                    style: profile.typography.bodyCompact.copyWith(
+                      color: profile.colors.textLight,
+                    ),
+                  ),
+                )
+              else
+                for (final reply in _replies) _ReplyTile(reply: reply),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: ForumComposeBar(
@@ -196,58 +215,80 @@ class _ReplyTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: const Color(0xFF101012),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: const Color(0xFF1D1D21)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              CircleAvatar(
-                radius: 15,
-                backgroundColor: const Color(0xFF2A2437),
-                child: Text(
-                  reply.initials,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
+    final profile = context.profileTheme;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: JoviaSurfaceCard(
+        radius: 24,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color.alphaBlend(
+                          Colors.white.withValues(alpha: 0.2),
+                          profile.colors.primary.withValues(alpha: 0.82),
+                        ),
+                        Color.alphaBlend(
+                          profile.colors.lavender.withValues(alpha: 0.22),
+                          profile.colors.primary,
+                        ),
+                      ],
+                    ),
+                    border: Border.all(color: profile.colors.strokeSoft),
+                  ),
+                  child: Center(
+                    child: Text(
+                      reply.initials,
+                      style: profile.typography.buttonLabel.copyWith(
+                        color: Colors.white,
+                        fontSize: 10.5,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: Text(
-                  reply.userDisplayName,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    reply.userDisplayName,
+                    style: profile.typography.metaSoft.copyWith(
+                      color: profile.colors.text,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ),
-              Text(
-                _timeAgo(reply.createdAt),
-                style: const TextStyle(color: Color(0xFF706A7D), fontSize: 11),
-              ),
-            ],
-          ),
-          const SizedBox(height: 10),
-          Text(
-            reply.body,
-            style: const TextStyle(
-              color: Color(0xFFD2CDD9),
-              fontSize: 13,
-              height: 1.45,
+                Text(
+                  _timeAgo(reply.createdAt),
+                  style: profile.typography.meta.copyWith(
+                    color: profile.colors.textLight,
+                    fontSize: 11,
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+            const SizedBox(height: 10),
+            Text(
+              reply.body,
+              style: profile.typography.bodyCompact.copyWith(
+                color: profile.colors.textLight,
+                fontSize: 13.6,
+                height: 1.5,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -301,6 +342,7 @@ class _ReplyComposeSheetState extends State<_ReplyComposeSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
     return Padding(
       padding: EdgeInsets.fromLTRB(
         16,
@@ -308,58 +350,83 @@ class _ReplyComposeSheetState extends State<_ReplyComposeSheet> {
         16,
         MediaQuery.of(context).viewInsets.bottom + 16,
       ),
-      child: Material(
-        color: const Color(0xFF0F0F11),
-        borderRadius: BorderRadius.circular(24),
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Yanit birak',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
+      child: JoviaSurfaceCard(
+        radius: 28,
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const JoviaEditorialHeroBlock(
+              label: 'Yanit',
+              title: 'Yanit birak',
+              body: 'Konuya kisa ama net bir yorum ekle.',
+              glyph: JoviaUiIcon(asset: JoviaUiAsset.editPen, size: 18),
+              surface: false,
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: _controller,
+              maxLength: 300,
+              minLines: 4,
+              maxLines: 6,
+              style: profile.typography.bodyCompact.copyWith(
+                color: profile.colors.text,
               ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: _controller,
-                maxLength: 300,
-                minLines: 4,
-                maxLines: 6,
-                style: const TextStyle(color: Colors.white),
-                decoration: const InputDecoration(
-                  hintText: 'Ne dusunuyorsun?',
-                  hintStyle: TextStyle(color: Color(0xFF6F6A7A)),
-                  filled: true,
-                  fillColor: Color(0xFF151519),
-                  border: OutlineInputBorder(),
-                ),
+              decoration: _replyInputDecoration(context),
+            ),
+            const SizedBox(height: 14),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: _submitting ? null : _submit,
+                child: _submitting
+                    ? const SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Yanitla'),
               ),
-              const SizedBox(height: 14),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: _submitting ? null : _submit,
-                  child: _submitting
-                      ? const SizedBox(
-                          height: 18,
-                          width: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Yanitla'),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+InputDecoration _replyInputDecoration(BuildContext context) {
+  final profile = context.profileTheme;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final fillColor = Color.alphaBlend(
+    profile.colors.heroBase.withValues(alpha: isDark ? 0.38 : 0.54),
+    profile.colors.surface,
+  );
+  final borderColor = profile.colors.strokeSoft.withValues(
+    alpha: isDark ? 0.94 : 0.86,
+  );
+  return InputDecoration(
+    hintText: 'Ne dusunuyorsun?',
+    hintStyle: profile.typography.bodyCompact.copyWith(
+      color: profile.colors.textLight,
+    ),
+    filled: true,
+    fillColor: fillColor,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+    border: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(18),
+      borderSide: BorderSide(color: borderColor),
+    ),
+    enabledBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(18),
+      borderSide: BorderSide(color: borderColor),
+    ),
+    focusedBorder: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(18),
+      borderSide: BorderSide(color: profile.colors.primary, width: 1.2),
+    ),
+  );
 }
 
 String _timeAgo(DateTime dt) {

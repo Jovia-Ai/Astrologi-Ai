@@ -2,7 +2,6 @@ import 'dart:math' as math;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/app/onboarding/onboarding_birth_page.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
@@ -12,8 +11,6 @@ import 'user_bootstrap.dart';
 
 const String _kLoginTitle = 'Tekrar hos geldin';
 const String _kLoginBody = 'Hesabina gir ve kaldigin yerden devam et.';
-const String _kDarkLogoAsset = 'ios/Flutter/assets/logo/shou_logo.svg';
-const String _kLightLogoAsset = 'ios/Flutter/assets/logo/shou_logo_light.svg';
 const double _kLoginMaxContentWidth = 460;
 const double _kLogoWidthFactor = 0.25;
 const double _kLogoMinWidth = 92;
@@ -224,10 +221,7 @@ class _LoginPageState extends State<LoginPage> {
                             children: [
                               SizedBox(height: spacing.s20),
                               JoviaReveal(
-                                child: _LoginBrandHeader(
-                                  logoWidth: logoWidth,
-                                  isDark: isDark,
-                                ),
+                                child: _LoginBrandHeader(logoWidth: logoWidth),
                               ),
                               SizedBox(height: spacing.s32 + spacing.s8),
                               JoviaReveal(
@@ -497,20 +491,23 @@ class _LoginPageState extends State<LoginPage> {
 }
 
 class _LoginBrandHeader extends StatelessWidget {
-  const _LoginBrandHeader({required this.logoWidth, required this.isDark});
+  const _LoginBrandHeader({required this.logoWidth});
 
   final double logoWidth;
-  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    final logoAsset = isDark ? _kDarkLogoAsset : _kLightLogoAsset;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SvgPicture.asset(logoAsset, width: logoWidth, fit: BoxFit.contain),
+        JoviaBrandMark(
+          width: logoWidth,
+          opacity: 0.96,
+          alignment: Alignment.center,
+          color: profile.colors.heroText,
+        ),
         SizedBox(height: profile.spacing.s24),
         Text(
           _kLoginTitle,

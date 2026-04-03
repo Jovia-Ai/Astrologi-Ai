@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_app_menu_scope.dart';
 import 'package:mobile/design/widgets/jovia_assets.dart';
 
 export 'package:mobile/design/widgets/jovia_assets.dart';
@@ -77,7 +78,259 @@ class JoviaPageScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       top: false,
-      child: Padding(padding: padding, child: child),
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          const _JoviaAmbientBackdrop(),
+          Padding(padding: padding, child: child),
+        ],
+      ),
+    );
+  }
+}
+
+class _JoviaAmbientBackdrop extends StatelessWidget {
+  const _JoviaAmbientBackdrop();
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final base = Color.alphaBlend(
+      profile.colors.heroBase.withValues(alpha: isDark ? 0.76 : 0.9),
+      profile.colors.bg,
+    );
+    return IgnorePointer(
+      child: ClipRect(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color.alphaBlend(
+                      Colors.white.withValues(alpha: isDark ? 0.04 : 0.66),
+                      base,
+                    ),
+                    base,
+                    Color.alphaBlend(
+                      profile.colors.lavender.withValues(
+                        alpha: isDark ? 0.1 : 0.14,
+                      ),
+                      profile.colors.bg,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Positioned(
+              top: -112,
+              right: -84,
+              child: _GlowOrb(
+                color: profile.colors.primary.withValues(
+                  alpha: isDark ? 0.14 : 0.16,
+                ),
+                size: 240,
+                stretch: 1.44,
+                rotation: -0.22,
+                blurFactor: 0.3,
+              ),
+            ),
+            Positioned(
+              left: -138,
+              bottom: -164,
+              child: _GlowOrb(
+                color: profile.colors.warmAccent.withValues(
+                  alpha: isDark ? 0.12 : 0.18,
+                ),
+                size: 268,
+                stretch: 1.42,
+                rotation: 0.18,
+                blurFactor: 0.3,
+              ),
+            ),
+            Positioned(
+              left: -24,
+              top: 32,
+              child: _GlowOrb(
+                color: profile.colors.primary.withValues(
+                  alpha: isDark ? 0.2 : 0.16,
+                ),
+                size: 178,
+                stretch: 1.28,
+                rotation: -0.32,
+              ),
+            ),
+            Positioned(
+              top: 132,
+              right: -56,
+              child: _GlowOrb(
+                color: profile.colors.warmAccent.withValues(
+                  alpha: isDark ? 0.18 : 0.22,
+                ),
+                size: 156,
+                stretch: 1.2,
+                rotation: 0.24,
+              ),
+            ),
+            Positioned(
+              right: -24,
+              bottom: 52,
+              child: _GlowOrb(
+                color: profile.colors.lavender.withValues(
+                  alpha: isDark ? 0.2 : 0.18,
+                ),
+                size: 144,
+                stretch: 1.36,
+                rotation: -0.18,
+              ),
+            ),
+            Positioned(
+              top: 54,
+              right: 18,
+              child: Opacity(
+                opacity: isDark ? 0.08 : 0.12,
+                child: const JoviaIllustrationAccent(
+                  asset: JoviaIllustrationAsset.dots,
+                  width: 78,
+                  height: 78,
+                ),
+              ),
+            ),
+            Positioned(
+              left: 12,
+              bottom: 12,
+              child: Opacity(
+                opacity: isDark ? 0.05 : 0.08,
+                child: const JoviaIllustrationAccent(
+                  asset: JoviaIllustrationAsset.layers,
+                  width: 64,
+                  height: 64,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _GlowOrb extends StatelessWidget {
+  const _GlowOrb({
+    required this.color,
+    required this.size,
+    this.stretch = 1,
+    this.rotation = 0,
+    this.blurFactor = 0.22,
+  });
+
+  final Color color;
+  final double size;
+  final double stretch;
+  final double rotation;
+  final double blurFactor;
+
+  @override
+  Widget build(BuildContext context) {
+    final width = size * stretch;
+    return Transform.rotate(
+      angle: rotation,
+      child: ImageFiltered(
+        imageFilter: ImageFilter.blur(
+          sigmaX: size * blurFactor,
+          sigmaY: size * blurFactor,
+        ),
+        child: Container(
+          width: width,
+          height: size,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(size),
+            gradient: RadialGradient(
+              colors: [
+                color,
+                color.withValues(alpha: 0.24),
+                color.withValues(alpha: 0),
+              ],
+              stops: const [0, 0.44, 1],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _JoviaHeroBackdrop extends StatelessWidget {
+  const _JoviaHeroBackdrop({required this.large});
+
+  final bool large;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final base = Color.alphaBlend(
+      profile.colors.heroBase.withValues(alpha: isDark ? 0.72 : 0.84),
+      profile.colors.surface,
+    );
+
+    return IgnorePointer(
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color.alphaBlend(
+                    Colors.white.withValues(alpha: isDark ? 0.06 : 0.7),
+                    base,
+                  ),
+                  base,
+                  Color.alphaBlend(
+                    profile.colors.lavender.withValues(
+                      alpha: isDark ? 0.1 : 0.14,
+                    ),
+                    profile.colors.surface,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            top: large ? -42 : -28,
+            right: large ? -24 : -18,
+            child: _GlowOrb(
+              color: profile.colors.primary.withValues(
+                alpha: isDark ? 0.16 : 0.14,
+              ),
+              size: large ? 118 : 96,
+              stretch: 1.28,
+              rotation: -0.24,
+              blurFactor: 0.28,
+            ),
+          ),
+          Positioned(
+            left: large ? -34 : -26,
+            bottom: large ? -48 : -38,
+            child: _GlowOrb(
+              color: profile.colors.warmAccent.withValues(
+                alpha: isDark ? 0.14 : 0.16,
+              ),
+              size: large ? 126 : 102,
+              stretch: 1.32,
+              rotation: 0.2,
+              blurFactor: 0.28,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -204,6 +457,51 @@ class JoviaSurfaceCard extends StatelessWidget {
           child: Stack(
             children: [
               Positioned(
+                top: -54,
+                right: -46,
+                child: IgnorePointer(
+                  child: _GlowOrb(
+                    color: profile.colors.primary.withValues(
+                      alpha: isDark ? 0.16 : 0.14,
+                    ),
+                    size: 124,
+                    stretch: 1.12,
+                    rotation: 0.32,
+                    blurFactor: 0.28,
+                  ),
+                ),
+              ),
+              Positioned(
+                left: -48,
+                bottom: -72,
+                child: IgnorePointer(
+                  child: _GlowOrb(
+                    color: profile.colors.warmAccent.withValues(
+                      alpha: isDark ? 0.14 : 0.16,
+                    ),
+                    size: 132,
+                    stretch: 1.24,
+                    rotation: -0.24,
+                    blurFactor: 0.28,
+                  ),
+                ),
+              ),
+              Positioned(
+                right: 18,
+                bottom: -42,
+                child: IgnorePointer(
+                  child: _GlowOrb(
+                    color: profile.colors.lavender.withValues(
+                      alpha: isDark ? 0.12 : 0.14,
+                    ),
+                    size: 86,
+                    stretch: 1.18,
+                    rotation: 0.16,
+                    blurFactor: 0.26,
+                  ),
+                ),
+              ),
+              Positioned(
                 left: 0,
                 right: 0,
                 top: 0,
@@ -255,7 +553,11 @@ class JoviaProfileTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final center = (centerText ?? '').trim();
-    final trailingAsset = actionAsset;
+    final menuScope = JoviaAppMenuScope.maybeOf(context);
+    final effectiveOnActionTap = onActionTap ?? menuScope?.openMenu;
+    final trailingAsset =
+        actionAsset ??
+        (effectiveOnActionTap != null ? JoviaUiAsset.menuStack : null);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -297,11 +599,11 @@ class JoviaProfileTopBar extends StatelessWidget {
           ),
         ),
         const SizedBox(width: 12),
-        if (onActionTap != null && trailingAsset != null)
+        if (effectiveOnActionTap != null && trailingAsset != null)
           Tooltip(
             message: actionTooltip ?? '',
             child: JoviaGlassIconButton(
-              onTap: onActionTap,
+              onTap: effectiveOnActionTap,
               size: 50,
               child: JoviaUiIcon(asset: trailingAsset, size: 18),
             ),
@@ -1153,8 +1455,24 @@ class JoviaEditorialHeroBlock extends StatelessWidget {
     final profile = context.profileTheme;
     final resolvedLabel = (label ?? '').trim();
     final resolvedBody = (body ?? '').trim();
-    final backgroundLayer = background;
-    final accentWidget = accent;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final surfaceVariant = large
+        ? JoviaEditorialSurfaceVariant.homeHero
+        : JoviaEditorialSurfaceVariant.readingSurface;
+    final fallbackIllustration =
+        JoviaEditorialArtResolver.illustrationForSurface(surfaceVariant);
+    final backgroundLayer =
+        background ?? (surface ? _JoviaHeroBackdrop(large: large) : null);
+    final accentWidget =
+        accent ??
+        (surface && fallbackIllustration != null
+            ? JoviaIllustrationAccent(
+                asset: fallbackIllustration,
+                width: large ? 96 : 76,
+                height: large ? 96 : 76,
+                opacity: isDark ? 0.14 : 0.22,
+              )
+            : null);
     final glyphWidget = glyph;
     final footerWidget = footer;
     final content = Stack(
@@ -1384,26 +1702,36 @@ class JoviaBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    final shellColor = Theme.of(context).brightness == Brightness.dark
-        ? const Color(0xFFF3EEE8)
-        : profile.colors.surface;
-    final shellBorder = Theme.of(context).brightness == Brightness.dark
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final shellColor = Color.alphaBlend(
+      profile.colors.heroBase.withValues(alpha: isDark ? 0.7 : 0.62),
+      profile.colors.surface,
+    );
+    final shellBorder = isDark
         ? const Color(0x26FFFFFF)
         : profile.colors.border.withValues(alpha: 0.74);
     return SafeArea(
       top: false,
       child: Container(
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-        constraints: const BoxConstraints(minHeight: 78),
-        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+        constraints: const BoxConstraints(minHeight: 88),
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
             colors: [
+              Color.alphaBlend(
+                Colors.white.withValues(alpha: isDark ? 0.1 : 0.78),
+                shellColor,
+              ),
               shellColor,
-              Color.alphaBlend(const Color(0x0D000000), shellColor),
+              Color.alphaBlend(
+                profile.colors.primary.withValues(alpha: isDark ? 0.18 : 0.08),
+                shellColor,
+              ),
             ],
+            stops: const [0, 0.58, 1],
           ),
           borderRadius: BorderRadius.circular(36),
           border: Border.all(color: shellBorder, width: 1),
@@ -1416,20 +1744,69 @@ class JoviaBottomNavBar extends StatelessWidget {
             ),
           ],
         ),
-        child: Row(
+        child: Stack(
           children: [
-            for (var index = 0; index < items.length; index++)
-              Expanded(
-                child: JoviaPressable(
-                  onTap: () => onTap(index),
-                  borderRadius: BorderRadius.circular(22),
-                  child: _BottomNavCell(
-                    item: items[index],
-                    selected: index == currentIndex,
-                    profile: profile,
+            Positioned(
+              left: 10,
+              top: -14,
+              child: _GlowOrb(
+                color: profile.colors.primary.withValues(
+                  alpha: isDark ? 0.16 : 0.12,
+                ),
+                size: 84,
+                stretch: 1.56,
+                rotation: -0.24,
+                blurFactor: 0.26,
+              ),
+            ),
+            Positioned(
+              right: 16,
+              bottom: -18,
+              child: _GlowOrb(
+                color: profile.colors.warmAccent.withValues(
+                  alpha: isDark ? 0.16 : 0.14,
+                ),
+                size: 92,
+                stretch: 1.4,
+                rotation: 0.18,
+                blurFactor: 0.26,
+              ),
+            ),
+            Positioned(
+              left: 0,
+              right: 0,
+              top: 0,
+              child: IgnorePointer(
+                child: Container(
+                  height: 1,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Colors.transparent,
+                        Colors.white.withValues(alpha: isDark ? 0.12 : 0.82),
+                        Colors.transparent,
+                      ],
+                    ),
                   ),
                 ),
               ),
+            ),
+            Row(
+              children: [
+                for (var index = 0; index < items.length; index++)
+                  Expanded(
+                    child: JoviaPressable(
+                      onTap: () => onTap(index),
+                      borderRadius: BorderRadius.circular(24),
+                      child: _BottomNavCell(
+                        item: items[index],
+                        selected: index == currentIndex,
+                        profile: profile,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
           ],
         ),
       ),
@@ -1450,14 +1827,24 @@ class _BottomNavCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final showLabel = !item.prominent && (item.showLabel || selected);
     final iconColor = item.prominent
-        ? Colors.white
+        ? profile.colors.heroText
         : selected
-        ? const Color(0xFF171311)
-        : const Color(0xFF91877D);
+        ? profile.colors.text
+        : (isDark ? const Color(0xFF90A0AF) : const Color(0xFF91877D));
+    final selectedStart = Color.alphaBlend(
+      profile.colors.warmAccent.withValues(alpha: isDark ? 0.12 : 0.24),
+      profile.colors.surface,
+    );
+    final selectedEnd = Color.alphaBlend(
+      profile.colors.primary.withValues(alpha: isDark ? 0.18 : 0.14),
+      profile.colors.heroBase,
+    );
 
     return SizedBox(
-      height: item.prominent ? 70 : (item.showLabel ? 60 : 48),
+      height: item.prominent ? 74 : 68,
       child: Align(
         alignment: Alignment.bottomCenter,
         child: Transform.translate(
@@ -1468,25 +1855,56 @@ class _BottomNavCell extends StatelessWidget {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 220),
                 curve: Curves.easeOutCubic,
-                width: item.prominent ? 64 : 36,
-                height: item.prominent ? 64 : 36,
+                width: item.prominent ? 66 : (selected ? 46 : 38),
+                height: item.prominent ? 66 : (selected ? 46 : 38),
                 decoration: BoxDecoration(
-                  color: item.prominent
-                      ? const Color(0xFF111111)
+                  gradient: item.prominent
+                      ? LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color.alphaBlend(
+                              Colors.white.withValues(
+                                alpha: isDark ? 0.12 : 0.42,
+                              ),
+                              profile.colors.warmAccent,
+                            ),
+                            Color.alphaBlend(
+                              profile.colors.primary.withValues(
+                                alpha: isDark ? 0.36 : 0.64,
+                              ),
+                              profile.colors.heroBase,
+                            ),
+                          ],
+                        )
                       : selected
-                      ? const Color(0x14171311)
-                      : Colors.transparent,
+                      ? LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [selectedStart, selectedEnd],
+                        )
+                      : null,
+                  color: !item.prominent && !selected
+                      ? Colors.transparent
+                      : null,
                   shape: BoxShape.circle,
                   border: !item.prominent && selected
-                      ? Border.all(color: const Color(0x1A171311), width: 1)
+                      ? Border.all(
+                          color: Colors.white.withValues(
+                            alpha: isDark ? 0.16 : 0.72,
+                          ),
+                          width: 1,
+                        )
                       : null,
-                  boxShadow: item.prominent
+                  boxShadow: item.prominent || selected
                       ? [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.3),
-                            blurRadius: 26,
+                            color: Colors.black.withValues(
+                              alpha: item.prominent ? 0.24 : 0.12,
+                            ),
+                            blurRadius: item.prominent ? 30 : 20,
                             offset: const Offset(0, 12),
-                            spreadRadius: -14,
+                            spreadRadius: item.prominent ? -14 : -16,
                           ),
                         ]
                       : const [],
@@ -1501,19 +1919,37 @@ class _BottomNavCell extends StatelessWidget {
                   ),
                 ),
               ),
-              if (item.showLabel) ...[
+              if (showLabel) ...[
                 const SizedBox(height: 6),
-                Text(
-                  item.label,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: profile.typography.micro.copyWith(
-                    color: selected
-                        ? const Color(0xFF171311)
-                        : const Color(0xFF8F867D),
-                    fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                    fontSize: 10,
-                    letterSpacing: 0.02,
+                SizedBox(
+                  height: 14,
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOutCubic,
+                    opacity: showLabel ? 1 : 0,
+                    child: AnimatedSlide(
+                      duration: const Duration(milliseconds: 220),
+                      curve: Curves.easeOutCubic,
+                      offset: showLabel ? Offset.zero : const Offset(0, 0.18),
+                      child: Text(
+                        item.label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: profile.typography
+                            .navigationLabel(
+                              color: selected
+                                  ? profile.colors.text
+                                  : (isDark
+                                        ? const Color(0xFF90A0AF)
+                                        : const Color(0xFF8F867D)),
+                            )
+                            .copyWith(
+                              fontSize: 10.5,
+                              fontWeight: FontWeight.w700,
+                              letterSpacing: 0.78,
+                            ),
+                      ),
+                    ),
                   ),
                 ),
               ],

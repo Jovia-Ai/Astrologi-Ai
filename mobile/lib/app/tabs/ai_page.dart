@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_app_menu_scope.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 class AiPage extends StatefulWidget {
@@ -96,7 +97,12 @@ class _AiPageState extends State<AiPage> {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
-                child: JoviaReveal(child: _AiTopBar(onMoreTap: () {})),
+                child: JoviaReveal(
+                  child: _AiTopBar(
+                    onMoreTap: () =>
+                        JoviaAppMenuScope.maybeOf(context)?.openMenu(),
+                  ),
+                ),
               ),
               SizedBox(height: profile.spacing.s12),
               Expanded(

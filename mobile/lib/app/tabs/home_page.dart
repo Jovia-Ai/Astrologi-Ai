@@ -12,12 +12,10 @@ import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
 import 'package:mobile/app/tabs/period_detail_page.dart';
-import 'package:mobile/app/tabs/profile_page.dart';
 import 'package:mobile/app/tabs/sky_event_detail_page.dart';
 import 'package:mobile/app/tabs/sky_event_feed_page.dart';
 import 'package:mobile/app/widgets/forum_cta.dart';
 import 'package:mobile/app/widgets/forum_social_preview_strip.dart';
-import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/source_guards.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
@@ -26,6 +24,7 @@ import 'package:mobile/design/astro/astro_theme_extension.dart';
 import 'package:mobile/design/astro/astro_theme_generator.dart';
 import 'package:mobile/design/astro/element_scores.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_app_menu_scope.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 String _firstHomeTextValue(Iterable<String?> values) {
@@ -344,7 +343,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                     displayName: displayName,
                     avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
                     dateLabel: _formatHomeToday(DateTime.now()),
-                    onActionTap: () => _showHomeMenu(context),
+                    onActionTap: () =>
+                        JoviaAppMenuScope.maybeOf(context)?.openMenu(),
                   ),
                   const SizedBox(height: 18),
                   _HomeReferenceHeroCard(
@@ -1135,106 +1135,6 @@ class _HomePageState extends ConsumerState<HomePage> {
         .toList();
   }
 
-  Future<void> _showHomeMenu(BuildContext context) async {
-    final profile = context.profileTheme;
-    await showModalBottomSheet<void>(
-      context: context,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return Consumer(
-          builder: (context, ref, _) {
-            final currentMode = ref.watch(joviaThemeModeProvider);
-            return Padding(
-              padding: EdgeInsets.all(profile.spacing.lg),
-              child: JoviaSurfaceCard(
-                padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-                radius: 30,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    JoviaEditorialHeroBlock(
-                      label: 'Quick control',
-                      title: 'Menü',
-                      body:
-                          'Profil, görünüm ve temel ayarlara daha premium bir panelden eriş.',
-                      surface: false,
-                      accent: const JoviaIllustrationAccent(
-                        asset: JoviaIllustrationAsset.layers,
-                        width: 70,
-                        height: 70,
-                        opacity: 0.74,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    JoviaSurfaceCard(
-                      radius: 24,
-                      padding: const EdgeInsets.all(14),
-                      child: JoviaUtilityRow(
-                        label: 'Profile',
-                        title: 'Profili düzenle',
-                        body: 'Profil ekranına git ve bilgilerini güncelle.',
-                        leading: const JoviaUiIcon(
-                          asset: JoviaUiAsset.profileComet,
-                          size: 18,
-                        ),
-                        onTap: () {
-                          Navigator.of(sheetContext).pop();
-                          Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (_) => const ProfilePage(),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Tema modu',
-                      style: profile.typography.eyebrow.copyWith(
-                        color: profile.colors.textLight,
-                        letterSpacing: 1.45,
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    JoviaModeSwitch<JoviaThemeMode>(
-                      value: currentMode,
-                      leadingValue: JoviaThemeMode.dark,
-                      leadingLabel: 'Dark',
-                      trailingValue: JoviaThemeMode.light,
-                      trailingLabel: 'Light',
-                      onChanged: (mode) {
-                        ref.read(joviaThemeModeProvider.notifier).setMode(mode);
-                      },
-                    ),
-                    const SizedBox(height: 16),
-                    JoviaSurfaceCard(
-                      radius: 24,
-                      padding: const EdgeInsets.all(14),
-                      child: JoviaUtilityRow(
-                        label: 'Session',
-                        title: 'Çıkış yap',
-                        body: 'Mevcut oturumu kapat ve giriş ekranına dön.',
-                        leading: const JoviaUiIcon(
-                          asset: JoviaUiAsset.profileComet,
-                          size: 18,
-                        ),
-                        onTap: () async {
-                          Navigator.of(sheetContext).pop();
-                          await Supabase.instance.client.auth.signOut();
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   Map<String, dynamic> _asMap(dynamic data) {
     if (data == null) {
       return <String, dynamic>{};
@@ -1482,9 +1382,13 @@ class _HomeReferenceHeader extends StatelessWidget {
             ),
           ),
           _HomeReferenceActionButton(
-            icon: Icons.search_rounded,
             onTap: onActionTap,
             isDark: isDark,
+            child: JoviaUiIcon(
+              asset: JoviaUiAsset.menuStack,
+              size: 18,
+              color: isDark ? Colors.white : const Color(0xFF16141A),
+            ),
           ),
         ],
       ),
@@ -1560,12 +1464,12 @@ class _HomeReferenceAvatar extends StatelessWidget {
 
 class _HomeReferenceActionButton extends StatelessWidget {
   const _HomeReferenceActionButton({
-    required this.icon,
+    required this.child,
     required this.onTap,
     required this.isDark,
   });
 
-  final IconData icon;
+  final Widget child;
   final VoidCallback onTap;
   final bool isDark;
 
@@ -1590,11 +1494,7 @@ class _HomeReferenceActionButton extends StatelessWidget {
                   : Colors.black.withValues(alpha: 0.06),
             ),
           ),
-          child: Icon(
-            icon,
-            size: 20,
-            color: isDark ? Colors.white : const Color(0xFF16141A),
-          ),
+          child: Center(child: child),
         ),
       ),
     );

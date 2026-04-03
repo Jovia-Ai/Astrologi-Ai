@@ -79,3 +79,5 @@ def test_supporting_threads_builder_returns_ui_threads() -> None:
     assert all("görünürlük adımları" not in str(t.get("paragraph") or "").lower() for t in threads)
     assert all(" senden" not in str(t.get("micro") or "").lower() for t in threads)
     assert all("çok tipik" not in str(t.get("micro") or "").lower() for t in threads)
+    assert all("vurgusu belirsizliği" not in str(t.get("body") or "").lower() for t in threads)
+    assert "Satürn 3. evde ve Koç'ta" in str(threads[0].get("body") or "")

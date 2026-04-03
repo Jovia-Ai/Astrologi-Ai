@@ -9,6 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/people/friend_profile_page.dart';
+import 'package:mobile/app/people/people_list_page.dart';
 import 'package:mobile/app/people/person_profile.dart';
 import 'package:mobile/app/people/people_providers.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
@@ -19,7 +20,7 @@ import 'package:mobile/app/tabs/profile_detail_flow_page.dart';
 import 'package:mobile/app/tabs/profile_relationship_preview.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
-import 'package:mobile/app/theme/app_theme_mode_provider.dart';
+import 'package:mobile/app/widgets/jovia_app_menu_drawer.dart';
 import 'package:mobile/design/astro/astro_theme_extension.dart';
 import 'package:mobile/design/astro/astro_theme_generator.dart';
 import 'package:mobile/design/astro/element_scores.dart';
@@ -211,6 +212,7 @@ class _ProfilePageState extends State<ProfilePage> {
   static const Duration _fastProfileCacheTtl = Duration(minutes: 5);
   static const String _natalPayloadVersion = 'natal_profile_v3_2026_04_02';
 
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   final _nameController = TextEditingController();
   final _birthDateController = TextEditingController();
   final _birthTimeController = TextEditingController();
@@ -449,13 +451,7 @@ class _ProfilePageState extends State<ProfilePage> {
               final peoplePreview = connectedPeople.take(4).toList();
               final profileMenuTap = widget.readOnly || uid == null
                   ? null
-                  : () => _showProfileMenu(
-                      context: context,
-                      ref: ref,
-                      uid: uid,
-                      repo: repo,
-                      currentUserEmail: currentUserEmail,
-                    );
+                  : () => _scaffoldKey.currentState?.openEndDrawer();
               final editorialStatementTitle = _profilePosterEditorialTitle(
                 identityHeadline: identityHeadline,
                 heroNarrativeCard: heroNarrativeCard,
@@ -839,7 +835,51 @@ class _ProfilePageState extends State<ProfilePage> {
                     );
 
               return Scaffold(
+                key: _scaffoldKey,
                 backgroundColor: posterPalette.bg,
+                endDrawerEnableOpenDragGesture: false,
+                endDrawer: profileMenuTap == null
+                    ? null
+                    : JoviaAppMenuDrawer(
+                        onEditProfile: (context, profile) => _showSettingsSheet(
+                          context: context,
+                          ref: ref,
+                          uid: uid!,
+                          repo: repo,
+                          currentUserEmail: currentUserEmail,
+                        ),
+                        onOpenPeople: (context, profile) async {
+                          await Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) => const PeopleListPage(),
+                            ),
+                          );
+                        },
+                        onOpenCalendar: (context, profile) async {
+                          await Navigator.of(context).push(
+                            MaterialPageRoute<void>(
+                              builder: (_) =>
+                                  CalendarHubPage(profileOverride: profile),
+                            ),
+                          );
+                        },
+                        onOpenArchetype: (context, profile) async {
+                          if (profile == null || !_hasBirthData(profile)) {
+                            await _showSettingsSheet(
+                              context: context,
+                              ref: ref,
+                              uid: uid!,
+                              repo: repo,
+                              currentUserEmail: currentUserEmail,
+                            );
+                            return;
+                          }
+                          await _openArchetypeExperience(
+                            profile: profile,
+                            displayName: displayName,
+                          );
+                        },
+                      ),
                 body: ColoredBox(
                   color: posterPalette.bg,
                   child: Stack(
@@ -1626,127 +1666,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Future<void> _showProfileMenu({
-    required BuildContext context,
-    required WidgetRef ref,
-    required String uid,
-    required ProfileRepository repo,
-    required String? currentUserEmail,
-  }) async {
-    final profile = context.profileTheme;
-    await showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (sheetContext) {
-        return Consumer(
-          builder: (context, ref, _) {
-            final currentMode = ref.watch(joviaThemeModeProvider);
-            final maxHeight = MediaQuery.of(sheetContext).size.height * 0.82;
-            return SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(profile.spacing.lg),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxHeight: maxHeight),
-                  child: JoviaSurfaceCard(
-                    padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-                    radius: 30,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          JoviaEditorialHeroBlock(
-                            label: 'Control center',
-                            title: 'Profil menüsü',
-                            body:
-                                'Ayarlar, görünüm modu ve profil düzeni için daha rafine bir panel.',
-                            surface: false,
-                            accent: const JoviaIllustrationAccent(
-                              asset: JoviaIllustrationAsset.planet,
-                              width: 70,
-                              height: 70,
-                              opacity: 0.76,
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          JoviaSurfaceCard(
-                            radius: 24,
-                            padding: const EdgeInsets.all(14),
-                            child: JoviaUtilityRow(
-                              label: 'Settings',
-                              title: 'Profili düzenle',
-                              body:
-                                  'İsim, doğum bilgileri ve diğer ayarları aç.',
-                              leading: const JoviaUiIcon(
-                                asset: JoviaUiAsset.settingsRings,
-                                size: 18,
-                              ),
-                              onTap: () {
-                                Navigator.of(sheetContext).pop();
-                                _showSettingsSheet(
-                                  context: context,
-                                  ref: ref,
-                                  uid: uid,
-                                  repo: repo,
-                                  currentUserEmail: currentUserEmail,
-                                );
-                              },
-                            ),
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            'Tema modu',
-                            style: profile.typography.eyebrow.copyWith(
-                              color: profile.colors.textLight,
-                              letterSpacing: 1.45,
-                            ),
-                          ),
-                          const SizedBox(height: 10),
-                          JoviaModeSwitch<JoviaThemeMode>(
-                            value: currentMode,
-                            leadingValue: JoviaThemeMode.dark,
-                            leadingLabel: 'Dark',
-                            trailingValue: JoviaThemeMode.light,
-                            trailingLabel: 'Light',
-                            onChanged: (mode) {
-                              ref
-                                  .read(joviaThemeModeProvider.notifier)
-                                  .setMode(mode);
-                            },
-                          ),
-                          const SizedBox(height: 16),
-                          JoviaSurfaceCard(
-                            radius: 24,
-                            padding: const EdgeInsets.all(14),
-                            child: JoviaUtilityRow(
-                              label: 'Session',
-                              title: 'Çıkış yap',
-                              body:
-                                  'Mevcut oturumu kapat ve giriş ekranına dön.',
-                              leading: const JoviaUiIcon(
-                                asset: JoviaUiAsset.profileComet,
-                                size: 18,
-                              ),
-                              onTap: () async {
-                                Navigator.of(sheetContext).pop();
-                                await Supabase.instance.client.auth.signOut();
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-
   Future<void> _showConnectionsSheet(List<PersonProfile> people) async {
     if (people.isEmpty) {
       return;
@@ -2323,6 +2242,7 @@ class _ProfilePageState extends State<ProfilePage> {
               'title': item['title'],
               'one_liner': item['subtitle'],
               'paragraph': item['body'],
+              'detail_blocks': item['detail_blocks'],
               'chips': item['chips'],
             }),
           )
@@ -3143,14 +3063,23 @@ class _ProfilePageState extends State<ProfilePage> {
     _SupportingThreadItem item, {
     int index = 0,
   }) {
+    final slideBlocks = item.detailBlocks
+        .map((item) => item.trim())
+        .where((item) => item.isNotEmpty)
+        .toList(growable: false);
     final bodyText = item.paragraph.isNotEmpty ? item.paragraph : item.oneLiner;
-    final blocks = _detailBlocksFromText(bodyText);
+    final blocks = slideBlocks.isNotEmpty
+        ? slideBlocks
+        : _detailBlocksFromText(bodyText);
     final totalLength = [
       item.title,
       item.oneLiner,
       bodyText,
       ...item.chips,
     ].join(' ').trim().length;
+    if (slideBlocks.length >= 4) {
+      return ProfileDetailSceneVariant.glance;
+    }
     if (_containsAny([item.title, item.oneLiner].join(' '), const [
           'zihin',
           'iliş',
@@ -3219,16 +3148,22 @@ class _ProfilePageState extends State<ProfilePage> {
     _SupportingThreadItem item, {
     required ProfileDetailSceneVariant variant,
   }) {
+    final detailBlocks = item.detailBlocks
+        .map((item) => item.trim())
+        .where((item) => item.isNotEmpty)
+        .toList(growable: false);
     return ProfileDetailSceneData(
       id: item.id.isNotEmpty ? item.id : item.title,
       eyebrow: 'Yan tema',
       title: item.title,
       intro: item.oneLiner,
-      bodyBlocks: _detailBlocksFromText(
-        item.paragraph.isNotEmpty ? item.paragraph : item.oneLiner,
-      ),
+      bodyBlocks: detailBlocks.isNotEmpty
+          ? detailBlocks
+          : _detailBlocksFromText(
+              item.paragraph.isNotEmpty ? item.paragraph : item.oneLiner,
+            ),
       chips: item.chips,
-      whyText: _whyTextForThread(item),
+      whyText: detailBlocks.length >= 4 ? '' : _whyTextForThread(item),
       illustrationAsset: JoviaIllustrationAsset.layers,
       variant: variant,
     );
@@ -3635,6 +3570,7 @@ class _SupportingThreadItem {
   final String title;
   final String oneLiner;
   final String paragraph;
+  final List<String> detailBlocks;
   final List<String> chips;
 
   const _SupportingThreadItem({
@@ -3642,6 +3578,7 @@ class _SupportingThreadItem {
     required this.title,
     required this.oneLiner,
     required this.paragraph,
+    required this.detailBlocks,
     required this.chips,
   });
 
@@ -3656,6 +3593,7 @@ class _SupportingThreadItem {
       title: s('title'),
       oneLiner: s('one_liner'),
       paragraph: s('paragraph'),
+      detailBlocks: _sanitizeUserFacingParagraphs(map['detail_blocks'], max: 8),
       chips: readList('chips'),
     );
   }
@@ -6678,21 +6616,15 @@ class _ProfilePosterArchetypeEntryCard extends StatelessWidget {
     return JoviaPressable(
       onTap: onTap,
       borderRadius: BorderRadius.circular(30),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(30),
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color.alphaBlend(const Color(0x26FF8A4C), palette.surfaceStrong),
-              Color.alphaBlend(const Color(0x209EF0E7), palette.surface),
-            ],
-          ),
-          border: Border.all(color: palette.stroke, width: 1.1),
+      child: JoviaSurfaceCard(
+        radius: 30,
+        backgroundColor: Color.alphaBlend(
+          const Color(0x26FF8A4C),
+          palette.surfaceStrong,
         ),
+        borderColor: palette.stroke,
         child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: Column(
@@ -6727,10 +6659,22 @@ class _ProfilePosterArchetypeEntryCard extends StatelessWidget {
                     ),
                   ],
                   const SizedBox(height: 16),
-                  MinimalCTAButton(
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      const JoviaMetaPill(label: 'Kimlik akisi'),
+                      JoviaMetaPill(label: ctaLabel),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  JoviaPrimaryButton(
                     label: ctaLabel,
                     onTap: onTap,
-                    emphasized: true,
+                    leading: const JoviaUiIcon(
+                      asset: JoviaUiAsset.orbitPlanet,
+                      size: 16,
+                    ),
                   ),
                 ],
               ),
@@ -6755,7 +6699,17 @@ class _ProfilePosterArchetypeEntryCard extends StatelessWidget {
                     height: 58,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: palette.surface,
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: [
+                          Colors.white.withValues(alpha: 0.9),
+                          Color.alphaBlend(
+                            palette.accent.withValues(alpha: 0.18),
+                            palette.surface,
+                          ),
+                        ],
+                      ),
                       border: Border.all(color: palette.stroke),
                     ),
                     child: Center(
@@ -6832,13 +6786,10 @@ class _ProfilePosterArchetypeSnapshotCard extends StatelessWidget {
     final score = double.tryParse((confidence['global'] ?? '').toString());
     final scoreLabel = score == null ? '' : '%${(score * 100).round()}';
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-      decoration: BoxDecoration(
-        color: palette.surface,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: palette.stroke),
-      ),
+    return JoviaSurfaceCard(
+      radius: 28,
+      backgroundColor: palette.surface,
+      borderColor: palette.stroke,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -6853,24 +6804,8 @@ class _ProfilePosterArchetypeSnapshotCard extends StatelessWidget {
                 ),
               ),
               const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: palette.surfaceSoft,
-                  borderRadius: BorderRadius.circular(999),
-                  border: Border.all(color: palette.stroke),
-                ),
-                child: Text(
-                  hasTestResult ? 'Testli sonuc' : 'Harita katmani',
-                  style: profile.typography.meta.copyWith(
-                    color: palette.textSoft,
-                    fontSize: 11.2,
-                    height: 1.0,
-                  ),
-                ),
+              JoviaMetaPill(
+                label: hasTestResult ? 'Testli sonuc' : 'Harita katmani',
               ),
             ],
           ),
@@ -6926,48 +6861,27 @@ class _ProfilePosterArchetypeSnapshotCard extends StatelessWidget {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: topArchetypes.take(3).map((item) {
-                final label = (item['label'] ?? '').toString().trim();
-                if (label.isEmpty) {
-                  return const SizedBox.shrink();
-                }
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 8,
-                  ),
-                  decoration: BoxDecoration(
-                    color: palette.surfaceSoft,
-                    borderRadius: BorderRadius.circular(999),
-                    border: Border.all(color: palette.stroke),
-                  ),
-                  child: Text(
-                    label,
-                    style: profile.typography.meta.copyWith(
-                      color: palette.text,
-                      fontSize: 12.0,
-                      height: 1.0,
+              children: [
+                for (final item in topArchetypes.take(3))
+                  if ((item['label'] ?? '').toString().trim().isNotEmpty)
+                    JoviaMetaPill(
+                      label: (item['label'] ?? '').toString().trim(),
                     ),
-                  ),
-                );
-              }).toList(),
+              ],
             ),
             if (scoreLabel.isNotEmpty) ...[
               const SizedBox(height: 14),
-              Text(
-                'Guven skoru $scoreLabel',
-                style: profile.typography.meta.copyWith(
-                  color: palette.muted,
-                  fontSize: 12.4,
-                ),
-              ),
+              JoviaMetaPill(label: 'Guven skoru $scoreLabel'),
             ],
           ],
           const SizedBox(height: 16),
-          MinimalCTAButton(
+          JoviaPrimaryButton(
             label: payload == null ? 'Sonucu olustur' : 'Detayi ac',
             onTap: onTap,
-            emphasized: true,
+            leading: const JoviaUiIcon(
+              asset: JoviaUiAsset.orbitPlanet,
+              size: 16,
+            ),
           ),
         ],
       ),
@@ -7391,6 +7305,7 @@ class _ProfileLilacGlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
     final palette = _profilePosterPalette(context);
     final resolvedTone = _profilePosterResolvedTone(context, tone);
     final accent = resolvedTone?.accent ?? palette.accent;
@@ -7400,6 +7315,30 @@ class _ProfileLilacGlassCard extends StatelessWidget {
     final surfaceDeep = resolvedTone?.background ?? palette.surfaceDeep;
     final glow = resolvedTone?.glow ?? palette.glow;
     final stroke = resolvedTone?.stroke ?? palette.stroke;
+    final base = Color.alphaBlend(
+      accent.withValues(
+        alpha: palette.isDark
+            ? (strongerGlow ? 0.14 : 0.1)
+            : (strongerGlow ? 0.08 : 0.05),
+      ),
+      surface,
+    );
+    final topBlend = Color.alphaBlend(
+      Colors.white.withValues(alpha: palette.isDark ? 0.14 : 0.92),
+      base,
+    );
+    final midBlend = Color.alphaBlend(
+      accentSoft.withValues(alpha: strongerGlow ? 0.1 : 0.06),
+      base,
+    );
+    final bottomBlend = Color.alphaBlend(
+      accentWarm.withValues(alpha: strongerGlow ? 0.1 : 0.05),
+      surfaceDeep,
+    );
+    final outline = Color.alphaBlend(
+      accent.withValues(alpha: palette.isDark ? 0.14 : 0.1),
+      stroke,
+    );
     final card = _ProfileCardEntrance(
       sequence: sequence,
       child: ClipRRect(
@@ -7409,43 +7348,23 @@ class _ProfileLilacGlassCard extends StatelessWidget {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(radius),
-              border: Border.all(color: stroke, width: 1.1),
+              border: Border.all(color: outline, width: 1.1),
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color.alphaBlend(
-                    accent.withValues(alpha: strongerGlow ? 0.22 : 0.14),
-                    surface,
-                  ),
-                  Color.alphaBlend(
-                    accentSoft.withValues(alpha: strongerGlow ? 0.12 : 0.08),
-                    surfaceDeep,
-                  ),
-                  Color.alphaBlend(
-                    accentWarm.withValues(alpha: strongerGlow ? 0.14 : 0.08),
-                    surface,
-                  ),
-                ],
+                colors: [topBlend, midBlend, bottomBlend],
               ),
               boxShadow: [
+                profile.shadows.cardShadow,
                 BoxShadow(
                   color: glow.withValues(
-                    alpha: strongerGlow
-                        ? (palette.isDark ? 0.44 : 0.18)
-                        : (palette.isDark ? 0.84 : 0.12),
+                    alpha: palette.isDark
+                        ? (strongerGlow ? 0.18 : 0.12)
+                        : (strongerGlow ? 0.14 : 0.08),
                   ),
-                  blurRadius: strongerGlow ? 32 : 24,
-                  offset: const Offset(0, 18),
-                  spreadRadius: -22,
-                ),
-                BoxShadow(
-                  color: Colors.black.withValues(
-                    alpha: palette.isDark ? 0.24 : 0.06,
-                  ),
-                  blurRadius: 24,
+                  blurRadius: strongerGlow ? 28 : 20,
                   offset: const Offset(0, 16),
-                  spreadRadius: -18,
+                  spreadRadius: -20,
                 ),
               ],
             ),
@@ -7459,11 +7378,11 @@ class _ProfileLilacGlassCard extends StatelessWidget {
                         end: Alignment.bottomRight,
                         colors: [
                           Colors.white.withValues(
-                            alpha: palette.isDark ? 0.08 : 0.38,
+                            alpha: palette.isDark ? 0.06 : 0.34,
                           ),
                           Colors.transparent,
                           Colors.white.withValues(
-                            alpha: palette.isDark ? 0.02 : 0.08,
+                            alpha: palette.isDark ? 0.02 : 0.06,
                           ),
                         ],
                       ),
@@ -7476,7 +7395,7 @@ class _ProfileLilacGlassCard extends StatelessWidget {
                   to: const Alignment(-0.72, -0.58),
                   size: strongerGlow ? 210 : 156,
                   colors: [accentSoft, accent],
-                  opacity: strongerGlow ? 0.20 : 0.14,
+                  opacity: strongerGlow ? 0.16 : 0.1,
                 ),
                 _ProfileAnimatedOrb(
                   sequence: sequence + 1,
@@ -7484,7 +7403,7 @@ class _ProfileLilacGlassCard extends StatelessWidget {
                   to: const Alignment(0.78, 0.88),
                   size: strongerGlow ? 240 : 170,
                   colors: [accentWarm, accent],
-                  opacity: strongerGlow ? 0.24 : 0.16,
+                  opacity: strongerGlow ? 0.18 : 0.12,
                 ),
                 _ProfileAnimatedOrb(
                   sequence: sequence + 2,
@@ -7493,8 +7412,8 @@ class _ProfileLilacGlassCard extends StatelessWidget {
                   size: strongerGlow ? 156 : 110,
                   colors: [palette.butter, accentSoft],
                   opacity: strongerGlow
-                      ? (palette.isDark ? 0.12 : 0.08)
-                      : (palette.isDark ? 0.08 : 0.06),
+                      ? (palette.isDark ? 0.1 : 0.06)
+                      : (palette.isDark ? 0.06 : 0.04),
                 ),
                 Positioned(
                   left: 16,

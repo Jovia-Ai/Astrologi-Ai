@@ -109,74 +109,54 @@ class _ProfileArchetypeExperiencePageState
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final spacing = profile.spacing;
     final resultTop = _asListOfMaps(_payload['top_archetypes']);
     final chartOnly = _asListOfMaps(_payload['test_scores']).isEmpty;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF09070D),
-      body: DecoratedBox(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: <Color>[
-              Color(0xFF09070D),
-              Color(0xFF130F1C),
-              Color(0xFF0D1218),
-            ],
-          ),
+      backgroundColor: profile.colors.bg,
+      body: JoviaPageScaffold(
+        padding: EdgeInsets.fromLTRB(
+          spacing.pageHorizontal,
+          spacing.xs,
+          spacing.pageHorizontal,
+          spacing.lg,
         ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -80,
-              right: -40,
-              child: _GlowBlob(color: const Color(0x33FF8A4C), size: 220),
-            ),
-            Positioned(
-              left: -60,
-              bottom: 110,
-              child: _GlowBlob(color: const Color(0x338FD4FF), size: 200),
-            ),
-            SafeArea(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 650),
-                switchInCurve: Curves.easeOutCubic,
-                switchOutCurve: Curves.easeInCubic,
-                child: _isLoading
-                    ? _ArchetypeLoadingView(
-                        key: const ValueKey<String>('loading'),
-                        displayName: widget.displayName,
-                        activeStep: _activeStep,
-                        steps: _loadingSteps,
-                        animation: _orbController,
-                      )
-                    : _error != null
-                    ? _ArchetypeErrorView(
-                        key: const ValueKey<String>('error'),
-                        error: _error!,
-                        onRetry: () {
-                          setState(() {
-                            _isLoading = true;
-                            _error = null;
-                            _activeStep = 0;
-                          });
-                          unawaited(_load());
-                        },
-                      )
-                    : _ArchetypeResultView(
-                        key: ValueKey<String>(
-                          'result:${resultTop.isEmpty ? 'empty' : resultTop.first['id'] ?? 'top'}',
-                        ),
-                        displayName: widget.displayName,
-                        payload: _payload,
-                        chartOnly: chartOnly,
-                        onClose: () => Navigator.of(context).maybePop(),
-                        monoStyle: profile.typography.monoEyebrow,
-                      ),
-              ),
-            ),
-          ],
+        child: AnimatedSwitcher(
+          duration: const Duration(milliseconds: 650),
+          switchInCurve: Curves.easeOutCubic,
+          switchOutCurve: Curves.easeInCubic,
+          child: _isLoading
+              ? _ArchetypeLoadingView(
+                  key: const ValueKey<String>('loading'),
+                  displayName: widget.displayName,
+                  activeStep: _activeStep,
+                  steps: _loadingSteps,
+                  animation: _orbController,
+                )
+              : _error != null
+              ? _ArchetypeErrorView(
+                  key: const ValueKey<String>('error'),
+                  error: _error!,
+                  onRetry: () {
+                    setState(() {
+                      _isLoading = true;
+                      _error = null;
+                      _activeStep = 0;
+                    });
+                    unawaited(_load());
+                  },
+                )
+              : _ArchetypeResultView(
+                  key: ValueKey<String>(
+                    'result:${resultTop.isEmpty ? 'empty' : resultTop.first['id'] ?? 'top'}',
+                  ),
+                  displayName: widget.displayName,
+                  payload: _payload,
+                  chartOnly: chartOnly,
+                  onClose: () => Navigator.of(context).maybePop(),
+                  monoStyle: profile.typography.monoEyebrow,
+                ),
         ),
       ),
     );
@@ -200,82 +180,77 @@ class _ArchetypeLoadingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(22, 18, 22, 26),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+    final spacing = profile.spacing;
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        const JoviaProfileTopBar(
+          label: 'Arketip',
+          centerText: 'Kimlik haritasi',
+          reserveTrailingSpace: true,
+        ),
+        SizedBox(height: spacing.s24),
+        JoviaEditorialHeroBlock(
+          label: 'Arketip akisi',
+          title: 'Arketip alanin aciliyor',
+          body:
+              '$displayName icin kimlik, koruma ve gerilim cizgileri tek bir akista toparlaniyor.',
+          large: true,
+          bodyMaxLines: 8,
+          glyph: const JoviaUiIcon(asset: JoviaUiAsset.orbitPlanet, size: 18),
+          footer: Wrap(
+            spacing: 8,
+            runSpacing: 8,
             children: [
-              MinimalCTAButton(
-                label: 'Kapat',
-                onTap: () => Navigator.of(context).maybePop(),
-                glassy: true,
-              ),
-              const Spacer(),
+              const JoviaMetaPill(label: 'Canli analiz'),
+              JoviaMetaPill(label: steps[activeStep]),
+            ],
+          ),
+        ),
+        SizedBox(height: spacing.s20),
+        JoviaSurfaceCard(
+          radius: 32,
+          child: Column(
+            children: [
+              Center(child: _ArchetypeLoadingOrb(animation: animation)),
+              const SizedBox(height: 18),
               Text(
-                'ARKETIP AKISI',
-                style: profile.typography.monoEyebrow.copyWith(
-                  color: const Color(0xFFD7CFDE),
-                  fontSize: 11.2,
-                  letterSpacing: 1.8,
+                steps[activeStep],
+                textAlign: TextAlign.center,
+                style: profile.typography.section.copyWith(
+                  color: profile.colors.text,
+                  fontSize: 24,
+                  height: 1.08,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Katmanlar birbiriyle eslesirken sonuc kartlari hazirlaniyor.',
+                textAlign: TextAlign.center,
+                style: profile.typography.bodyCompact.copyWith(
+                  color: profile.colors.textLight,
+                  height: 1.56,
                 ),
               ),
             ],
           ),
-          const Spacer(),
-          Center(child: _ArchetypeLoadingOrb(animation: animation)),
-          const SizedBox(height: 28),
-          Center(
-            child: Text(
-              'Arketip alanin aciliyor',
-              textAlign: TextAlign.center,
-              style: profile.typography.editorialHeadline.copyWith(
-                color: Colors.white,
-                fontSize: 34,
-                height: 0.98,
-              ),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 320),
-              child: Text(
-                '$displayName icin kimlik, koruma ve gerilim cizgileri tek bir akista toparlaniyor.',
-                textAlign: TextAlign.center,
-                style: profile.typography.bodyReading.copyWith(
-                  color: const Color(0xFFD5CDDD),
-                  fontSize: 15,
-                  height: 1.62,
+        ),
+        SizedBox(height: spacing.s16),
+        JoviaSurfaceCard(
+          child: Column(
+            children: [
+              for (var index = 0; index < steps.length; index++) ...[
+                _ArchetypeLoadingStep(
+                  label: steps[index],
+                  isActive: index == activeStep,
+                  isPassed: index < activeStep,
                 ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 26),
-          Container(
-            padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(28),
-              color: Colors.white.withValues(alpha: 0.05),
-              border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-            ),
-            child: Column(
-              children: [
-                for (var index = 0; index < steps.length; index++) ...[
-                  _ArchetypeLoadingStep(
-                    label: steps[index],
-                    isActive: index == activeStep,
-                    isPassed: index < activeStep,
-                  ),
-                  if (index != steps.length - 1) const SizedBox(height: 12),
-                ],
+                if (index != steps.length - 1) const SizedBox(height: 12),
               ],
-            ),
+            ],
           ),
-          const Spacer(),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -299,6 +274,7 @@ class _ArchetypeResultView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final spacing = profile.spacing;
     final topArchetypes = _asListOfMaps(payload['top_archetypes']);
     final shadow = _asMap(payload['shadow_archetype']);
     final contradiction = _asMap(payload['primary_contradiction']);
@@ -324,27 +300,15 @@ class _ArchetypeResultView extends StatelessWidget {
 
     return ListView(
       key: const ValueKey<String>('result-scroll'),
-      padding: const EdgeInsets.fromLTRB(22, 18, 22, 28),
+      padding: EdgeInsets.zero,
       children: [
-        Row(
-          children: [
-            MinimalCTAButton(
-              label: 'Profiline don',
-              onTap: onClose,
-              glassy: true,
-            ),
-            const Spacer(),
-            Text(
-              'ARKETIP SONUCU',
-              style: monoStyle.copyWith(
-                color: const Color(0xFFD7CFDE),
-                fontSize: 11.2,
-                letterSpacing: 1.8,
-              ),
-            ),
-          ],
+        JoviaProfileTopBar(
+          label: 'Arketip',
+          centerText: 'Sonucun hazir',
+          onBackTap: onClose,
+          reserveTrailingSpace: true,
         ),
-        const SizedBox(height: 22),
+        SizedBox(height: spacing.s24),
         _ArchetypeHeroCard(
           displayName: displayName,
           primary: primary,
@@ -352,28 +316,22 @@ class _ArchetypeResultView extends StatelessWidget {
           chartOnly: chartOnly,
         ),
         if (_hasNarrative(primary)) ...[
-          const SizedBox(height: 24),
-          Text(
-            'Bu Cizginin Dili',
-            style: profile.typography.section.copyWith(
-              color: Colors.white,
-              fontSize: 24,
-              height: 1.06,
-            ),
+          SizedBox(height: spacing.s24),
+          const JoviaSectionHeader(
+            label: 'Okuma katmani',
+            title: 'Bu cizginin dili',
+            variant: JoviaSectionHeaderVariant.editorial,
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: spacing.sm),
           _ArchetypeNarrativePanel(item: primary),
         ],
-        const SizedBox(height: 26),
-        Text(
-          'Aktif Arketiplerin',
-          style: profile.typography.section.copyWith(
-            color: Colors.white,
-            fontSize: 24,
-            height: 1.06,
-          ),
+        SizedBox(height: spacing.s24),
+        const JoviaSectionHeader(
+          label: 'Aktif cizgiler',
+          title: 'Arketiplerinin agirlik sirasi',
+          variant: JoviaSectionHeaderVariant.editorial,
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: spacing.sm),
         for (var index = 0; index < topArchetypes.length; index++) ...[
           _ArchetypeRankCard(
             rank: index + 1,
@@ -383,7 +341,7 @@ class _ArchetypeResultView extends StatelessWidget {
           if (index != topArchetypes.length - 1) const SizedBox(height: 12),
         ],
         if (shadow.isNotEmpty) ...[
-          const SizedBox(height: 24),
+          SizedBox(height: spacing.s24),
           _MetaBlock(
             eyebrow: 'KORUYUCU CIZGI',
             title: _readString(shadow['label']),
@@ -391,33 +349,30 @@ class _ArchetypeResultView extends StatelessWidget {
                 ? _readString(shadow['shadow_tr'])
                 : 'Stres arttiginda ya da alanini koruman gerektiginde ilk devreye giren savunma dili burada toplanir.',
             score: _readDouble(shadow['score']),
-            accent: const Color(0xFF81D9C8),
+            accent: profile.colors.primary,
             illustrationAsset: JoviaIllustrationAsset.blocks,
           ),
         ],
         if (contradiction.isNotEmpty) ...[
-          const SizedBox(height: 18),
+          SizedBox(height: spacing.s16),
           _MetaBlock(
             eyebrow: 'ANA GERILIM',
             title: _readString(contradiction['label']),
             body:
                 'Sende ayni anda calisan iki yon buradan okunuyor. Bu alan profilin neden tek renk davranmadigini anlatir.',
             score: _readDouble(contradiction['score']),
-            accent: const Color(0xFFFFA06C),
+            accent: profile.colors.warmAccent,
             illustrationAsset: JoviaIllustrationAsset.planet,
           ),
         ],
         if (slots.isNotEmpty) ...[
-          const SizedBox(height: 24),
-          Text(
-            'Rol Dagilimi',
-            style: profile.typography.section.copyWith(
-              color: Colors.white,
-              fontSize: 23,
-              height: 1.06,
-            ),
+          SizedBox(height: spacing.s24),
+          const JoviaSectionHeader(
+            label: 'Rol dagilimi',
+            title: 'Hangi arketip hangi rolde calisiyor',
+            variant: JoviaSectionHeaderVariant.editorial,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: spacing.sm),
           Wrap(
             spacing: 10,
             runSpacing: 10,
@@ -433,35 +388,38 @@ class _ArchetypeResultView extends StatelessWidget {
           ),
         ],
         if (confidence.isNotEmpty) ...[
-          const SizedBox(height: 24),
-          Text(
-            'Guven Skoru',
-            style: profile.typography.section.copyWith(
-              color: Colors.white,
-              fontSize: 23,
-              height: 1.06,
+          SizedBox(height: spacing.s24),
+          const JoviaSectionHeader(
+            label: 'Okuma netligi',
+            title: 'Guven skoru',
+            variant: JoviaSectionHeaderVariant.editorial,
+          ),
+          SizedBox(height: spacing.sm),
+          JoviaSurfaceCard(
+            child: Column(
+              children: [
+                _ConfidenceBar(
+                  label: 'Genel',
+                  value: _readDouble(confidence['global']),
+                  color: profile.colors.warmAccent,
+                ),
+                const SizedBox(height: 12),
+                _ConfidenceBar(
+                  label: 'Harita',
+                  value: _readDouble(confidence['chart']),
+                  color: profile.colors.primary,
+                ),
+                if (!chartOnly) ...[
+                  const SizedBox(height: 12),
+                  _ConfidenceBar(
+                    label: 'Test',
+                    value: _readDouble(confidence['test']),
+                    color: profile.colors.lime,
+                  ),
+                ],
+              ],
             ),
           ),
-          const SizedBox(height: 14),
-          _ConfidenceBar(
-            label: 'Genel',
-            value: _readDouble(confidence['global']),
-            color: const Color(0xFFFFC165),
-          ),
-          const SizedBox(height: 10),
-          _ConfidenceBar(
-            label: 'Harita',
-            value: _readDouble(confidence['chart']),
-            color: const Color(0xFF8FD4FF),
-          ),
-          if (!chartOnly) ...[
-            const SizedBox(height: 10),
-            _ConfidenceBar(
-              label: 'Test',
-              value: _readDouble(confidence['test']),
-              color: const Color(0xFF88E8B0),
-            ),
-          ],
         ],
       ],
     );
@@ -491,119 +449,98 @@ class _ArchetypeHeroCard extends StatelessWidget {
     final score = _readDouble(primary['score']);
     final motto = _readString(primary['motto_tr']);
     final portrait = _readString(primary['portrait_tr']);
-    return Container(
+    final accent = profile.colors.warmAccent;
+    final chips = <String>[
+      primaryLabel,
+      if (secondaryLabel.isNotEmpty) secondaryLabel,
+      chartOnly ? 'Harita temelli' : 'Fusion profil',
+    ];
+
+    return JoviaSurfaceCard(
+      radius: 34,
       padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(34),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: <Color>[
-            Color(0xFF1D1328),
-            Color(0xFF26191C),
-            Color(0xFF101E24),
-          ],
-        ),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x3312151F),
-            blurRadius: 40,
-            offset: Offset(0, 24),
-            spreadRadius: -24,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
+          Positioned(
+            top: -16,
+            right: -6,
+            child: Opacity(
+              opacity: 0.2,
+              child: JoviaIllustrationAccent(
+                asset: JoviaIllustrationAsset.planet,
+                width: 104,
+                height: 104,
+                opacity: Theme.of(context).brightness == Brightness.dark
+                    ? 0.2
+                    : 0.28,
+              ),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                width: 64,
-                height: 64,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFFFF8A4C),
-                  boxShadow: [
-                    BoxShadow(
-                      color: const Color(0x66FF8A4C),
-                      blurRadius: 28,
-                      offset: const Offset(0, 12),
-                      spreadRadius: -12,
-                    ),
-                  ],
-                ),
-                child: const Center(
-                  child: Icon(
-                    Icons.auto_awesome_rounded,
-                    color: Colors.white,
-                    size: 30,
+              Row(
+                children: [
+                  _ArchetypeGlyph(accent: accent),
+                  const Spacer(),
+                  _ScoreBadge(value: score, color: accent),
+                ],
+              ),
+              const SizedBox(height: 20),
+              if (motto.isNotEmpty) ...[
+                Text(
+                  motto,
+                  style: profile.typography.monoEyebrow.copyWith(
+                    color: accent,
+                    fontSize: 11.4,
+                    letterSpacing: 1.7,
                   ),
                 ),
+                const SizedBox(height: 10),
+              ],
+              Text(
+                '$primaryLabel sende one cikiyor',
+                style: profile.typography.editorialHeadline.copyWith(
+                  color: profile.colors.text,
+                  fontSize: 30,
+                  height: 0.98,
+                ),
               ),
-              const Spacer(),
-              _ScoreBadge(value: score),
+              const SizedBox(height: 12),
+              Text(
+                portrait.isNotEmpty
+                    ? portrait
+                    : (chartOnly
+                          ? '$displayName icin bu ilk okuma su an sadece haritandaki omurgadan geliyor.'
+                          : '$displayName icin harita ve test ayni eksende bulusturuldu; en guclu cizgi burada toplaniyor.'),
+                style: profile.typography.bodyReading.copyWith(
+                  color: profile.colors.textLight,
+                  fontSize: 15.2,
+                  height: 1.62,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                chartOnly
+                    ? 'Bu yorum simdilik harita omurgasi uzerinden okunuyor.'
+                    : 'Bu yorum harita ve test katmaninin birlikte okunmasiyla olustu.',
+                style: profile.typography.metaSoft.copyWith(
+                  color: profile.colors.textLight,
+                  fontSize: 12.8,
+                  height: 1.45,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final chip in chips)
+                    _HeroChip(label: chip, color: accent),
+                ],
+              ),
             ],
           ),
-          const SizedBox(height: 20),
-          if (motto.isNotEmpty) ...[
-            Text(
-              motto,
-              style: profile.typography.monoEyebrow.copyWith(
-                color: const Color(0xFFFFD7B8),
-                fontSize: 11.4,
-                letterSpacing: 1.6,
-              ),
-            ),
-            const SizedBox(height: 10),
-          ],
-          Text(
-            '$primaryLabel sende one cikiyor',
-            style: profile.typography.editorialHeadline.copyWith(
-              color: Colors.white,
-              fontSize: 31,
-              height: 0.98,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            portrait.isNotEmpty
-                ? portrait
-                : (chartOnly
-                      ? '$displayName icin bu ilk okuma su an sadece haritandaki omurgadan geliyor.'
-                      : '$displayName icin harita ve test ayni eksende bulusturuldu; en guclu cizgi burada toplaniyor.'),
-            style: profile.typography.bodyReading.copyWith(
-              color: const Color(0xFFD6CDDD),
-              fontSize: 15.2,
-              height: 1.62,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            chartOnly
-                ? 'Bu yorum simdilik harita omurgasi uzerinden okunuyor.'
-                : 'Bu yorum harita ve test katmaninin birlikte okunmasiyla olustu.',
-            style: profile.typography.metaSoft.copyWith(
-              color: const Color(0xFFBFB4CB),
-              fontSize: 12.8,
-              height: 1.45,
-            ),
-          ),
-          if (secondaryLabel.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: [
-                _HeroChip(label: primaryLabel),
-                _HeroChip(label: secondaryLabel),
-                _HeroChip(
-                  label: chartOnly ? 'Harita temelli' : 'Fusion profil',
-                ),
-              ],
-            ),
-          ],
         ],
       ),
     );
@@ -626,29 +563,33 @@ class _ArchetypeRankCard extends StatelessWidget {
     final profile = context.profileTheme;
     final split = _asMap(item['source_split']);
     final gift = _readString(item['gift_tr']);
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        color: Colors.white.withValues(alpha: 0.05),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-      ),
+    final accent = _archetypeRankAccent(context, rank);
+
+    return JoviaSurfaceCard(
+      radius: 26,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 38,
-            height: 38,
+            width: 42,
+            height: 42,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: const Color(0x1FFF8A4C),
-              border: Border.all(color: const Color(0x55FF8A4C)),
+              borderRadius: BorderRadius.circular(16),
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withValues(alpha: 0.84),
+                  _tintedSurface(context, accent, 0.18),
+                ],
+              ),
+              border: Border.all(color: accent.withValues(alpha: 0.22)),
             ),
             child: Center(
               child: Text(
                 '$rank',
                 style: profile.typography.buttonLabel.copyWith(
-                  color: Colors.white,
+                  color: profile.colors.text,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -659,28 +600,39 @@ class _ArchetypeRankCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  _readString(item['label']),
-                  style: profile.typography.section.copyWith(
-                    color: Colors.white,
-                    fontSize: 20,
-                    height: 1.08,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        _readString(item['label']),
+                        style: profile.typography.section.copyWith(
+                          color: profile.colors.text,
+                          fontSize: 20,
+                          height: 1.08,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _ScoreBadge(
+                      value: _readDouble(item['score']),
+                      color: accent,
+                    ),
+                  ],
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: 8),
                 Text(
                   gift.isNotEmpty
                       ? gift
                       : (chartOnly
                             ? 'Su an bu skor haritandaki kimlik ve rol sinyallerinden uretiliyor.'
                             : 'Harita, test ve baglamsal agirliklar tek skorda bulusuyor.'),
-                  style: profile.typography.metaSoft.copyWith(
-                    color: const Color(0xFFCEC4D7),
-                    fontSize: 13.4,
-                    height: 1.5,
+                  style: profile.typography.bodyCompact.copyWith(
+                    color: profile.colors.textLight,
+                    height: 1.54,
                   ),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 12),
                 Wrap(
                   spacing: 8,
                   runSpacing: 8,
@@ -688,15 +640,18 @@ class _ArchetypeRankCard extends StatelessWidget {
                     _MiniMetric(
                       label: 'Toplam',
                       value: _readDouble(item['score']),
+                      color: accent,
                     ),
                     _MiniMetric(
                       label: 'Harita',
                       value: _readDouble(split['chart_prior']),
+                      color: profile.colors.primary,
                     ),
                     if (!chartOnly)
                       _MiniMetric(
                         label: 'Test',
                         value: _readDouble(split['test_score']),
+                        color: profile.colors.lime,
                       ),
                   ],
                 ),
@@ -721,60 +676,45 @@ class _ArchetypeNarrativePanel extends StatelessWidget {
     final relationship = _readString(item['relationship_tr']);
     final workStyle = _readString(item['work_style_tr']);
     final growth = _readString(item['growth_tr']);
+    final lines = <Widget>[
+      if (fear.isNotEmpty)
+        _NarrativeLine(
+          label: 'TEMEL KORKU',
+          body: fear,
+          accent: context.profileTheme.colors.warmAccent,
+        ),
+      if (shadow.isNotEmpty)
+        _NarrativeLine(
+          label: 'GOLGEDE',
+          body: shadow,
+          accent: const Color(0xFFF28B82),
+        ),
+      if (relationship.isNotEmpty)
+        _NarrativeLine(
+          label: 'ILISKIDE',
+          body: relationship,
+          accent: context.profileTheme.colors.primary,
+        ),
+      if (workStyle.isNotEmpty)
+        _NarrativeLine(
+          label: 'ISTE',
+          body: workStyle,
+          accent: context.profileTheme.colors.lime,
+        ),
+      if (growth.isNotEmpty)
+        _NarrativeLine(
+          label: 'BUYUME DERSI',
+          body: growth,
+          accent: context.profileTheme.colors.lavender,
+        ),
+    ];
 
-    return Container(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
-        color: Colors.white.withValues(alpha: 0.05),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-      ),
+    return JoviaSurfaceCard(
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (fear.isNotEmpty)
-            _NarrativeLine(
-              label: 'TEMEL KORKU',
-              body: fear,
-              accent: const Color(0xFFFFC165),
-            ),
-          if (shadow.isNotEmpty) ...[
-            if (fear.isNotEmpty) const SizedBox(height: 14),
-            _NarrativeLine(
-              label: 'GOLGEDE',
-              body: shadow,
-              accent: const Color(0xFFFF9A7A),
-            ),
-          ],
-          if (relationship.isNotEmpty) ...[
-            if (fear.isNotEmpty || shadow.isNotEmpty)
-              const SizedBox(height: 14),
-            _NarrativeLine(
-              label: 'ILISKIDE',
-              body: relationship,
-              accent: const Color(0xFF8FD4FF),
-            ),
-          ],
-          if (workStyle.isNotEmpty) ...[
-            if (fear.isNotEmpty || shadow.isNotEmpty || relationship.isNotEmpty)
-              const SizedBox(height: 14),
-            _NarrativeLine(
-              label: 'ISTE',
-              body: workStyle,
-              accent: const Color(0xFF88E8B0),
-            ),
-          ],
-          if (growth.isNotEmpty) ...[
-            if (fear.isNotEmpty ||
-                shadow.isNotEmpty ||
-                relationship.isNotEmpty ||
-                workStyle.isNotEmpty)
-              const SizedBox(height: 14),
-            _NarrativeLine(
-              label: 'BUYUME DERSI',
-              body: growth,
-              accent: const Color(0xFFFFD89B),
-            ),
+          for (var index = 0; index < lines.length; index++) ...[
+            lines[index],
+            if (index != lines.length - 1) const SizedBox(height: 12),
           ],
         ],
       ),
@@ -796,27 +736,35 @@ class _NarrativeLine extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: profile.typography.monoEyebrow.copyWith(
-            color: accent,
-            fontSize: 10.9,
-            letterSpacing: 1.7,
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(22),
+        color: accent.withValues(alpha: 0.08),
+        border: Border.all(color: accent.withValues(alpha: 0.18)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: profile.typography.monoEyebrow.copyWith(
+              color: accent,
+              fontSize: 10.9,
+              letterSpacing: 1.7,
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          body,
-          style: profile.typography.bodyReading.copyWith(
-            color: const Color(0xFFD2C8DB),
-            fontSize: 14.4,
-            height: 1.6,
+          const SizedBox(height: 8),
+          Text(
+            body,
+            style: profile.typography.bodyCompact.copyWith(
+              color: profile.colors.text,
+              height: 1.58,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -841,20 +789,14 @@ class _MetaBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
-        color: Colors.white.withValues(alpha: 0.05),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
-      ),
-      child: Row(
+    return JoviaSurfaceCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
+          Row(
+            children: [
+              Expanded(
+                child: Text(
                   eyebrow,
                   style: profile.typography.monoEyebrow.copyWith(
                     color: accent,
@@ -862,50 +804,56 @@ class _MetaBlock extends StatelessWidget {
                     letterSpacing: 1.7,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  title,
-                  style: profile.typography.section.copyWith(
-                    color: Colors.white,
-                    fontSize: 22,
-                    height: 1.1,
-                  ),
-                ),
-                if (body.trim().isNotEmpty) ...[
-                  const SizedBox(height: 10),
-                  Text(
-                    body,
-                    style: profile.typography.bodyReading.copyWith(
-                      color: const Color(0xFFD1C8D9),
-                      fontSize: 14.4,
-                      height: 1.58,
-                    ),
-                  ),
-                ],
-              ],
-            ),
+              ),
+              _ScoreBadge(value: score, color: accent),
+            ],
           ),
-          const SizedBox(width: 18),
-          Column(
+          const SizedBox(height: 14),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 62,
-                height: 62,
+                width: 58,
+                height: 58,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: accent,
+                  color: accent.withValues(alpha: 0.16),
                 ),
                 child: Center(
                   child: JoviaIllustrationAccent(
                     asset: illustrationAsset,
-                    width: 34,
-                    height: 34,
-                    opacity: 1,
+                    width: 30,
+                    height: 30,
+                    opacity: 0.9,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
-              _ScoreBadge(value: score),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: profile.typography.section.copyWith(
+                        color: profile.colors.text,
+                        fontSize: 22,
+                        height: 1.1,
+                      ),
+                    ),
+                    if (body.trim().isNotEmpty) ...[
+                      const SizedBox(height: 10),
+                      Text(
+                        body,
+                        style: profile.typography.bodyCompact.copyWith(
+                          color: profile.colors.textLight,
+                          height: 1.58,
+                        ),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
             ],
           ),
         ],
@@ -921,6 +869,7 @@ class _ArchetypeLoadingOrb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
     return AnimatedBuilder(
       animation: animation,
       builder: (context, _) {
@@ -941,8 +890,8 @@ class _ArchetypeLoadingOrb extends StatelessWidget {
                     shape: BoxShape.circle,
                     gradient: RadialGradient(
                       colors: [
-                        const Color(0x26FF8A4C),
-                        const Color(0x1417D4FF),
+                        profile.colors.warmAccent.withValues(alpha: 0.18),
+                        profile.colors.primary.withValues(alpha: 0.1),
                         Colors.transparent,
                       ],
                     ),
@@ -956,18 +905,16 @@ class _ArchetypeLoadingOrb extends StatelessWidget {
                   height: 186,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white.withValues(alpha: 0.08),
-                    ),
+                    border: Border.all(color: profile.colors.strokeSoft),
                   ),
                   child: Align(
                     alignment: Alignment.topCenter,
                     child: Container(
                       width: 18,
                       height: 18,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Color(0xFFFF8A4C),
+                        color: profile.colors.warmAccent,
                       ),
                     ),
                   ),
@@ -980,16 +927,18 @@ class _ArchetypeLoadingOrb extends StatelessWidget {
                   height: 136,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0x668FD4FF)),
+                    border: Border.all(
+                      color: profile.colors.primary.withValues(alpha: 0.55),
+                    ),
                   ),
                   child: Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       width: 14,
                       height: 14,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Color(0xFF8FD4FF),
+                        color: profile.colors.primary,
                       ),
                     ),
                   ),
@@ -1000,16 +949,17 @@ class _ArchetypeLoadingOrb extends StatelessWidget {
                 height: 90,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: const Color(0xFF120F19),
-                  border: Border.all(
-                    color: Colors.white.withValues(alpha: 0.08),
-                  ),
+                  color: _tintedSurface(context, profile.colors.lavender, 0.08),
+                  border: Border.all(color: profile.colors.strokeSoft),
                 ),
-                child: const Center(
+                child: Center(
                   child: Icon(
                     Icons.auto_awesome_rounded,
                     size: 40,
-                    color: Color(0xFFFFE3A8),
+                    color: Color.alphaBlend(
+                      Colors.white.withValues(alpha: 0.16),
+                      profile.colors.warmAccent,
+                    ),
                   ),
                 ),
               ),
@@ -1036,19 +986,24 @@ class _ArchetypeLoadingStep extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final accent = isPassed
-        ? const Color(0xFF88E8B0)
+        ? profile.colors.lime
         : isActive
-        ? const Color(0xFFFFC165)
-        : Colors.white.withValues(alpha: 0.18);
+        ? profile.colors.warmAccent
+        : profile.colors.textLight.withValues(alpha: 0.4);
     return AnimatedContainer(
       duration: const Duration(milliseconds: 280),
       padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(18),
-        color: isActive
-            ? Colors.white.withValues(alpha: 0.06)
-            : Colors.white.withValues(alpha: 0.03),
-        border: Border.all(color: accent),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: isActive ? 0.92 : 0.74),
+            _tintedSurface(context, accent, isActive ? 0.14 : 0.08),
+          ],
+        ),
+        border: Border.all(color: accent.withValues(alpha: 0.22)),
       ),
       child: Row(
         children: [
@@ -1061,10 +1016,9 @@ class _ArchetypeLoadingStep extends StatelessWidget {
           Expanded(
             child: Text(
               label,
-              style: profile.typography.metaSoft.copyWith(
-                color: Colors.white,
-                fontSize: 13.6,
-                fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
+              style: profile.typography.buttonLabel.copyWith(
+                color: profile.colors.text,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w600,
               ),
             ),
           ),
@@ -1087,45 +1041,61 @@ class _ArchetypeErrorView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 22),
-        child: Container(
-          padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(28),
-            color: Colors.white.withValues(alpha: 0.06),
-            border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+    final spacing = profile.spacing;
+    return ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        const JoviaProfileTopBar(
+          label: 'Arketip',
+          centerText: 'Akis durdu',
+          reserveTrailingSpace: true,
+        ),
+        SizedBox(height: spacing.s24),
+        const JoviaEditorialHeroBlock(
+          label: 'Arketip akisi',
+          title: 'Akis bir yerde takildi',
+          body: 'Ayni analizi yeniden cagirip kartlari tekrar kurabiliriz.',
+          large: true,
+          glyph: JoviaUiIcon(asset: JoviaUiAsset.orbitPlanet, size: 18),
+          footer: Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [JoviaMetaPill(label: 'Tekrar denenebilir')],
           ),
+        ),
+        SizedBox(height: spacing.s20),
+        JoviaSurfaceCard(
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 'Arketip akisi acilamadi',
                 style: profile.typography.section.copyWith(
-                  color: Colors.white,
+                  color: profile.colors.text,
                   fontSize: 24,
                 ),
               ),
               const SizedBox(height: 12),
               Text(
                 error,
-                textAlign: TextAlign.center,
-                style: profile.typography.bodyReading.copyWith(
-                  color: const Color(0xFFD7CEDF),
+                style: profile.typography.bodyCompact.copyWith(
+                  color: profile.colors.textLight,
                   height: 1.58,
                 ),
               ),
               const SizedBox(height: 18),
-              MinimalCTAButton(
+              JoviaPrimaryButton(
                 label: 'Tekrar dene',
                 onTap: onRetry,
-                emphasized: true,
+                leading: const JoviaUiIcon(
+                  asset: JoviaUiAsset.orbitPlanet,
+                  size: 16,
+                ),
               ),
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 }
@@ -1152,7 +1122,7 @@ class _ConfidenceBar extends StatelessWidget {
             Text(
               label,
               style: profile.typography.buttonLabel.copyWith(
-                color: Colors.white,
+                color: profile.colors.text,
                 fontWeight: FontWeight.w700,
               ),
             ),
@@ -1160,7 +1130,7 @@ class _ConfidenceBar extends StatelessWidget {
             Text(
               _scoreText(value),
               style: profile.typography.metaSoft.copyWith(
-                color: const Color(0xFFD4CADC),
+                color: profile.colors.textLight,
               ),
             ),
           ],
@@ -1168,11 +1138,29 @@ class _ConfidenceBar extends StatelessWidget {
         const SizedBox(height: 8),
         ClipRRect(
           borderRadius: BorderRadius.circular(999),
-          child: LinearProgressIndicator(
-            value: value.clamp(0.0, 1.0),
-            minHeight: 10,
-            backgroundColor: Colors.white.withValues(alpha: 0.08),
-            valueColor: AlwaysStoppedAnimation<Color>(color),
+          child: Container(
+            height: 12,
+            decoration: BoxDecoration(
+              color: profile.colors.chipBg,
+              border: Border.all(color: profile.colors.strokeSoft),
+              borderRadius: BorderRadius.circular(999),
+            ),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: FractionallySizedBox(
+                widthFactor: value.clamp(0.0, 1.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.centerLeft,
+                      end: Alignment.centerRight,
+                      colors: [color.withValues(alpha: 0.66), color],
+                    ),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+            ),
           ),
         ),
       ],
@@ -1181,10 +1169,15 @@ class _ConfidenceBar extends StatelessWidget {
 }
 
 class _MiniMetric extends StatelessWidget {
-  const _MiniMetric({required this.label, required this.value});
+  const _MiniMetric({
+    required this.label,
+    required this.value,
+    required this.color,
+  });
 
   final String label;
   final double value;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -1192,14 +1185,16 @@ class _MiniMetric extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        color: Colors.white.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(999),
+        color: color.withValues(alpha: 0.1),
+        border: Border.all(color: color.withValues(alpha: 0.18)),
       ),
       child: Text(
         '$label ${_scoreText(value)}',
         style: profile.typography.metaSoft.copyWith(
-          color: const Color(0xFFD3CBDC),
+          color: profile.colors.text,
           fontSize: 12.4,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -1207,9 +1202,10 @@ class _MiniMetric extends StatelessWidget {
 }
 
 class _ScoreBadge extends StatelessWidget {
-  const _ScoreBadge({required this.value});
+  const _ScoreBadge({required this.value, required this.color});
 
   final double value;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -1218,13 +1214,20 @@ class _ScoreBadge extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        color: Colors.white.withValues(alpha: 0.08),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.09)),
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            Colors.white.withValues(alpha: 0.86),
+            color.withValues(alpha: 0.14),
+          ],
+        ),
+        border: Border.all(color: color.withValues(alpha: 0.22)),
       ),
       child: Text(
         _scoreText(value),
         style: profile.typography.buttonLabel.copyWith(
-          color: Colors.white,
+          color: profile.colors.text,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -1233,9 +1236,10 @@ class _ScoreBadge extends StatelessWidget {
 }
 
 class _HeroChip extends StatelessWidget {
-  const _HeroChip({required this.label});
+  const _HeroChip({required this.label, required this.color});
 
   final String label;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -1244,13 +1248,13 @@ class _HeroChip extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(10, 8, 10, 8),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(999),
-        color: Colors.white.withValues(alpha: 0.08),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+        color: color.withValues(alpha: 0.1),
+        border: Border.all(color: color.withValues(alpha: 0.16)),
       ),
       child: Text(
         label,
         style: profile.typography.metaSoft.copyWith(
-          color: const Color(0xFFEEE7F6),
+          color: profile.colors.text,
           fontSize: 12.2,
           fontWeight: FontWeight.w600,
         ),
@@ -1268,32 +1272,80 @@ class _SlotPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    return Container(
-      width: 160,
-      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        color: Colors.white.withValues(alpha: 0.05),
-        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
+    final accent = _slotAccent(context, label);
+    return SizedBox(
+      width: 164,
+      child: JoviaSurfaceCard(
+        radius: 20,
+        padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
+        backgroundColor: _tintedSurface(context, accent, 0.07),
+        borderColor: accent.withValues(alpha: 0.18),
+        shadow: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: profile.typography.monoEyebrow.copyWith(
+                color: accent,
+                fontSize: 10.6,
+                letterSpacing: 1.5,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              value,
+              style: profile.typography.buttonLabel.copyWith(
+                color: profile.colors.text,
+                fontSize: 14,
+                height: 1.25,
+              ),
+            ),
+          ],
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    );
+  }
+}
+
+class _ArchetypeGlyph extends StatelessWidget {
+  const _ArchetypeGlyph({required this.accent});
+
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 68,
+      height: 68,
+      child: Stack(
+        alignment: Alignment.center,
         children: [
-          Text(
-            label,
-            style: profile.typography.monoEyebrow.copyWith(
-              color: const Color(0xFFFFC165),
-              fontSize: 10.6,
-              letterSpacing: 1.5,
+          Container(
+            width: 68,
+            height: 68,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: accent.withValues(alpha: 0.16),
             ),
           ),
-          const SizedBox(height: 6),
-          Text(
-            value,
-            style: profile.typography.buttonLabel.copyWith(
-              color: Colors.white,
-              fontSize: 14,
-              height: 1.25,
+          Container(
+            width: 48,
+            height: 48,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Colors.white.withValues(alpha: 0.88),
+                  _tintedSurface(context, accent, 0.18),
+                ],
+              ),
+              border: Border.all(color: accent.withValues(alpha: 0.24)),
+            ),
+            child: const Center(
+              child: JoviaUiIcon(asset: JoviaUiAsset.orbitPlanet, size: 22),
             ),
           ),
         ],
@@ -1302,25 +1354,43 @@ class _SlotPill extends StatelessWidget {
   }
 }
 
-class _GlowBlob extends StatelessWidget {
-  const _GlowBlob({required this.color, required this.size});
-
-  final Color color;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return IgnorePointer(
-      child: Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          gradient: RadialGradient(colors: <Color>[color, Colors.transparent]),
-        ),
-      ),
-    );
+Color _archetypeRankAccent(BuildContext context, int rank) {
+  final colors = context.profileTheme.colors;
+  switch (rank) {
+    case 1:
+      return colors.warmAccent;
+    case 2:
+      return colors.primary;
+    case 3:
+      return colors.lavender;
+    default:
+      return colors.textLight;
   }
+}
+
+Color _slotAccent(BuildContext context, String label) {
+  final colors = context.profileTheme.colors;
+  final lower = label.toLowerCase();
+  if (lower.contains('kimlik')) {
+    return colors.warmAccent;
+  }
+  if (lower.contains('denge') || lower.contains('iliski')) {
+    return colors.primary;
+  }
+  if (lower.contains('koruma')) {
+    return colors.lime;
+  }
+  if (lower.contains('gorunurluk')) {
+    return colors.lavender;
+  }
+  return colors.textLight;
+}
+
+Color _tintedSurface(BuildContext context, Color tint, double alpha) {
+  return Color.alphaBlend(
+    tint.withValues(alpha: alpha),
+    context.profileTheme.colors.surface,
+  );
 }
 
 Map<String, dynamic> _asMap(dynamic value) {

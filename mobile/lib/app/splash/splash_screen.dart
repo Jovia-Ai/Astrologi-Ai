@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile/design/widgets/jovia_assets.dart';
 
 const Duration kSplashMotionDuration = Duration(milliseconds: 920);
 const Duration kSplashFadeDuration = Duration(milliseconds: 220);
@@ -9,7 +9,6 @@ const double kSplashLogoMaxWidth = 420;
 const double kSplashInitialScale = 0.92;
 const double kSplashPeakScale = 1.02;
 const double kSplashInitialOffsetY = 16;
-const String kSplashLogoAsset = 'ios/Flutter/assets/logo/shou_logo.svg';
 const Color kSplashBackgroundColor = Color(0xFF000000);
 
 class SplashScreen extends StatefulWidget {
@@ -169,35 +168,11 @@ class _SplashLogo extends StatelessWidget {
           BoxShadow(color: Color.fromRGBO(255, 255, 255, 0.05), blurRadius: 30),
         ],
       ),
-      child: SvgPicture.asset(
-        kSplashLogoAsset,
-        fit: BoxFit.contain,
-        errorBuilder: (context, error, stackTrace) {
-          // TODO: Replace fallback if the SVG asset path changes.
-          return const _SplashLogoFallback();
-        },
-      ),
-    );
-  }
-}
-
-class _SplashLogoFallback extends StatelessWidget {
-  const _SplashLogoFallback();
-
-  @override
-  Widget build(BuildContext context) {
-    return const AspectRatio(
-      aspectRatio: 2.7,
-      child: Center(
-        child: Text(
-          'SHOU',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 44,
-            fontWeight: FontWeight.w700,
-            letterSpacing: 5.2,
-          ),
-        ),
+      child: JoviaBrandMark(
+        width: width,
+        alignment: Alignment.center,
+        opacity: 1,
+        color: Colors.white,
       ),
     );
   }

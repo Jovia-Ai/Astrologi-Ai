@@ -6,6 +6,8 @@ import 'package:mobile/app/forum/forum_providers.dart';
 import 'package:mobile/app/tabs/forum_post_detail_page.dart';
 import 'package:mobile/app/widgets/forum_compose_bar.dart';
 import 'package:mobile/app/widgets/forum_post_card.dart';
+import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 const List<String> _forumCategories = <String>[
   'all',
@@ -54,82 +56,81 @@ class _ForumPageState extends ConsumerState<ForumPage> {
   Widget build(BuildContext context) {
     final state = ref.watch(forumNotifierProvider);
     final notifier = ref.read(forumNotifierProvider.notifier);
+    final profile = context.profileTheme;
+    final spacing = profile.spacing;
 
     return Scaffold(
-      backgroundColor: const Color(0xFF050505),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF050505),
-        foregroundColor: Colors.white,
-        elevation: 0,
-        title: const Text('Forum'),
-      ),
-      body: RefreshIndicator(
-        onRefresh: () => notifier.loadPosts(refresh: true),
-        child: CustomScrollView(
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(16, 10, 16, 8),
-                child: _ForumHero(activeTransit: state.activeTransit),
-              ),
-            ),
-            SliverToBoxAdapter(
-              child: SizedBox(
-                height: 44,
-                child: ListView.separated(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _forumCategories.length,
-                  separatorBuilder: (_, _) => const SizedBox(width: 8),
-                  itemBuilder: (context, index) {
-                    final category = _forumCategories[index];
-                    final selected = state.selectedCategory == category;
-                    return FilterChip(
-                      selected: selected,
-                      onSelected: (_) => notifier.selectCategory(category),
-                      label: Text(_forumCategoryLabel(category)),
-                      selectedColor: const Color(0xFF1F1A2E),
-                      backgroundColor: const Color(0xFF111111),
-                      checkmarkColor: const Color(0xFFC3A7FF),
-                      labelStyle: TextStyle(
-                        color: selected
-                            ? const Color(0xFFE7DAFF)
-                            : const Color(0xFFB8B8B8),
+      backgroundColor: profile.colors.bg,
+      body: JoviaPageScaffold(
+        padding: EdgeInsets.fromLTRB(
+          spacing.pageHorizontal,
+          spacing.xs,
+          spacing.pageHorizontal,
+          0,
+        ),
+        child: RefreshIndicator(
+          color: profile.colors.primary,
+          backgroundColor: profile.colors.surface,
+          onRefresh: () => notifier.loadPosts(refresh: true),
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    JoviaReveal(
+                      child: JoviaProfileTopBar(
+                        label: 'Forum',
+                        centerText: 'Toplulugun akisi',
+                        onActionTap: () => _openComposeSheet(context, state),
+                        actionAsset: JoviaUiAsset.plusCrosshair,
+                        actionTooltip: 'Yeni konu',
                       ),
-                      side: BorderSide(
-                        color: selected
-                            ? const Color(0xFF3E335B)
-                            : const Color(0xFF242424),
+                    ),
+                    SizedBox(height: spacing.s24),
+                    JoviaReveal(
+                      delay: const Duration(milliseconds: 20),
+                      child: _ForumHero(
+                        activeTransit: state.activeTransit,
+                        selectedCategory: state.selectedCategory,
+                        postCount: state.posts.length,
                       ),
-                    );
-                  },
+                    ),
+                    SizedBox(height: spacing.s20),
+                    JoviaReveal(
+                      delay: const Duration(milliseconds: 60),
+                      child: _ForumCategoryStrip(
+                        categories: _forumCategories,
+                        selectedCategory: state.selectedCategory,
+                        onSelect: notifier.selectCategory,
+                      ),
+                    ),
+                    SizedBox(height: spacing.s20),
+                  ],
                 ),
               ),
-            ),
-            if (state.isLoading && state.posts.isEmpty)
-              const SliverFillRemaining(
-                hasScrollBody: false,
-                child: Center(child: CircularProgressIndicator()),
-              )
-            else if (state.error != null && state.posts.isEmpty)
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: _ForumErrorState(
-                  message: state.error!,
-                  onRetry: () => notifier.loadPosts(refresh: true),
-                ),
-              )
-            else if (state.posts.isEmpty)
-              SliverFillRemaining(
-                hasScrollBody: false,
-                child: _ForumEmptyState(
-                  onCompose: () => _openComposeSheet(context, state),
-                ),
-              )
-            else
-              SliverPadding(
-                padding: const EdgeInsets.fromLTRB(0, 12, 0, 96),
-                sliver: SliverList.builder(
+              if (state.isLoading && state.posts.isEmpty)
+                const SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _ForumLoadingState(),
+                )
+              else if (state.error != null && state.posts.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _ForumErrorState(
+                    message: state.error!,
+                    onRetry: () => notifier.loadPosts(refresh: true),
+                  ),
+                )
+              else if (state.posts.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: _ForumEmptyState(
+                    onCompose: () => _openComposeSheet(context, state),
+                  ),
+                )
+              else
+                SliverList.builder(
                   itemCount: state.posts.length,
                   itemBuilder: (context, index) {
                     final post = state.posts[index];
@@ -147,8 +148,9 @@ class _ForumPageState extends ConsumerState<ForumPage> {
                     );
                   },
                 ),
-              ),
-          ],
+              const SliverToBoxAdapter(child: SizedBox(height: 104)),
+            ],
+          ),
         ),
       ),
       bottomNavigationBar: ForumComposeBar(
@@ -160,55 +162,170 @@ class _ForumPageState extends ConsumerState<ForumPage> {
 }
 
 class _ForumHero extends StatelessWidget {
-  const _ForumHero({required this.activeTransit});
+  const _ForumHero({
+    required this.activeTransit,
+    required this.selectedCategory,
+    required this.postCount,
+  });
 
   final String activeTransit;
+  final String selectedCategory;
+  final int postCount;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFF18131F), Color(0xFF0F0E12)],
-        ),
-        border: Border.all(color: const Color(0xFF24212A)),
+    final cleanedTransit = activeTransit.trim();
+    final statusLabel = postCount == 0
+        ? 'Akis hazirlaniyor'
+        : '$postCount baslik';
+    return JoviaEditorialHeroBlock(
+      label: 'Toplulugun nabzi',
+      title: 'Haritani forumun diliyle konustur',
+      body: cleanedTransit.isEmpty
+          ? 'Transit, iliski ve golge basliklarini daha yumusak, editoryal bir akista takip et.'
+          : cleanedTransit,
+      large: true,
+      glyph: const JoviaUiIcon(asset: JoviaUiAsset.chatOrbit, size: 18),
+      accent: const JoviaIllustrationAccent(
+        asset: JoviaIllustrationAsset.layers,
+        width: 96,
+        height: 96,
+        opacity: 0.22,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      footer: Wrap(
+        spacing: 8,
+        runSpacing: 8,
         children: [
-          const Text(
-            'Toplulugun nabzi',
-            style: TextStyle(
-              color: Color(0xFF8F889E),
-              fontSize: 11,
-              letterSpacing: 1.2,
-              fontWeight: FontWeight.w600,
+          JoviaMetaPill(label: statusLabel),
+          JoviaMetaPill(label: _forumHeroCategoryLabel(selectedCategory)),
+          if (cleanedTransit.isNotEmpty)
+            JoviaMetaPill(
+              label: cleanedTransit.length > 38
+                  ? '${cleanedTransit.substring(0, 38).trim()}...'
+                  : cleanedTransit,
             ),
-          ),
-          const SizedBox(height: 10),
-          const Text(
-            'Haritani ve anlik gundemi forumun diliyle konustur.',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 22,
-              fontWeight: FontWeight.w700,
-              height: 1.2,
-            ),
-          ),
-          const SizedBox(height: 10),
-          Text(
-            activeTransit.trim().isEmpty ? 'Gokyuzu hareketli' : activeTransit,
-            style: const TextStyle(
-              color: Color(0xFFC8C1D6),
-              fontSize: 13,
-              height: 1.45,
-            ),
-          ),
         ],
+      ),
+    );
+  }
+}
+
+class _ForumCategoryStrip extends StatelessWidget {
+  const _ForumCategoryStrip({
+    required this.categories,
+    required this.selectedCategory,
+    required this.onSelect,
+  });
+
+  final List<String> categories;
+  final String selectedCategory;
+  final ValueChanged<String> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 46,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: categories.length,
+        separatorBuilder: (_, _) => const SizedBox(width: 8),
+        itemBuilder: (context, index) {
+          final category = categories[index];
+          return _ForumCategoryPill(
+            category: category,
+            selected: selectedCategory == category,
+            onTap: () => onSelect(category),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _ForumCategoryPill extends StatelessWidget {
+  const _ForumCategoryPill({
+    required this.category,
+    required this.selected,
+    this.onTap,
+  });
+
+  final String category;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final accent = _forumCategoryAccent(context, category);
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final fill = selected
+        ? Color.alphaBlend(
+            accent.withValues(alpha: isDark ? 0.18 : 0.14),
+            profile.colors.surface,
+          )
+        : Color.alphaBlend(
+            Colors.white.withValues(alpha: isDark ? 0.04 : 0.54),
+            profile.colors.heroBase,
+          );
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(999),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 180),
+        curve: Curves.easeOutCubic,
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(999),
+          gradient: selected
+              ? LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Color.alphaBlend(
+                      Colors.white.withValues(alpha: isDark ? 0.08 : 0.72),
+                      fill,
+                    ),
+                    fill,
+                  ],
+                )
+              : null,
+          color: selected ? null : fill,
+          border: Border.all(
+            color: selected
+                ? accent.withValues(alpha: 0.24)
+                : profile.colors.strokeSoft,
+          ),
+          boxShadow: selected
+              ? [
+                  BoxShadow(
+                    color: accent.withValues(alpha: 0.12),
+                    blurRadius: 18,
+                    offset: const Offset(0, 10),
+                    spreadRadius: -14,
+                  ),
+                ]
+              : const [],
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(shape: BoxShape.circle, color: accent),
+            ),
+            const SizedBox(width: 8),
+            Text(
+              _forumCategoryLabel(category),
+              style: profile.typography.buttonLabel.copyWith(
+                color: selected
+                    ? profile.colors.text
+                    : profile.colors.textLight,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -268,6 +385,8 @@ class _ForumComposeSheetState extends State<_ForumComposeSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final activeTransit = widget.activeTransit.trim();
     return Padding(
       padding: EdgeInsets.fromLTRB(
         16,
@@ -275,75 +394,104 @@ class _ForumComposeSheetState extends State<_ForumComposeSheet> {
         16,
         MediaQuery.of(context).viewInsets.bottom + 16,
       ),
-      child: Material(
-        color: const Color(0xFF0F0F11),
-        borderRadius: BorderRadius.circular(24),
-        child: Padding(
-          padding: const EdgeInsets.all(18),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                'Foruma bir sey birak',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                ),
+      child: JoviaSurfaceCard(
+        radius: 30,
+        padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            JoviaEditorialHeroBlock(
+              label: 'Yeni konu',
+              title: 'Foruma bir sey birak',
+              body: activeTransit.isEmpty
+                  ? 'Toplulugun tonunu acacak bir baslik ve kisa bir metin yaz.'
+                  : 'Aktif tema: $activeTransit',
+              glyph: const JoviaUiIcon(asset: JoviaUiAsset.editPen, size: 18),
+              accent: const JoviaIllustrationAccent(
+                asset: JoviaIllustrationAsset.layers,
+                width: 74,
+                height: 74,
+                opacity: 0.22,
               ),
-              const SizedBox(height: 8),
-              Text(
-                'Aktif tema: ${widget.activeTransit}',
-                style: const TextStyle(color: Color(0xFF9791A5), fontSize: 12),
+              surface: false,
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _titleController,
+              maxLength: 120,
+              style: profile.typography.bodyCompact.copyWith(
+                color: profile.colors.text,
               ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: _titleController,
-                maxLength: 120,
-                style: const TextStyle(color: Colors.white),
-                decoration: _forumInputDecoration('Baslik'),
+              decoration: _forumInputDecoration(context, 'Baslik'),
+            ),
+            const SizedBox(height: 10),
+            TextField(
+              controller: _bodyController,
+              maxLength: 600,
+              minLines: 4,
+              maxLines: 6,
+              style: profile.typography.bodyCompact.copyWith(
+                color: profile.colors.text,
               ),
-              const SizedBox(height: 10),
-              TextField(
-                controller: _bodyController,
-                maxLength: 600,
-                minLines: 4,
-                maxLines: 6,
-                style: const TextStyle(color: Colors.white),
-                decoration: _forumInputDecoration('Ne paylasmak istiyorsun?'),
+              decoration: _forumInputDecoration(
+                context,
+                'Ne paylasmak istiyorsun?',
               ),
-              const SizedBox(height: 8),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final category in _forumCategories.skip(1))
-                    ChoiceChip(
-                      selected: _category == category,
-                      label: Text(_forumCategoryLabel(category)),
-                      onSelected: (_) => setState(() {
-                        _category = category;
-                      }),
-                    ),
-                ],
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                for (final category in _forumCategories.skip(1))
+                  _ForumCategoryPill(
+                    category: category,
+                    selected: _category == category,
+                    onTap: () => setState(() {
+                      _category = category;
+                    }),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 18),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton(
+                onPressed: _submitting ? null : _submit,
+                child: _submitting
+                    ? const SizedBox(
+                        height: 18,
+                        width: 18,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Text('Paylas'),
               ),
-              const SizedBox(height: 16),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton(
-                  onPressed: _submitting ? null : _submit,
-                  child: _submitting
-                      ? const SizedBox(
-                          height: 18,
-                          width: 18,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Text('Paylas'),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ForumLoadingState extends StatelessWidget {
+  const _ForumLoadingState();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: JoviaSurfaceCard(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const CircularProgressIndicator(),
+            const SizedBox(height: 16),
+            Text(
+              'Forum akisi yukleniyor.',
+              style: context.profileTheme.typography.cardTitle,
+            ),
+          ],
         ),
       ),
     );
@@ -357,37 +505,40 @@ class _ForumEmptyState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
+      child: JoviaSurfaceCard(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(
-              Icons.forum_outlined,
-              color: Color(0xFF7A7488),
-              size: 36,
-            ),
-            const SizedBox(height: 12),
-            const Text(
-              'Forum daha yeni aciliyor.',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
+            Container(
+              width: 52,
+              height: 52,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: profile.colors.buttonSecondary.withValues(alpha: 0.82),
+                border: Border.all(color: profile.colors.strokeSoft),
+              ),
+              child: const Center(
+                child: JoviaUiIcon(asset: JoviaUiAsset.chatOrbit, size: 20),
               ),
             ),
-            const SizedBox(height: 8),
-            const Text(
+            const SizedBox(height: 16),
+            Text(
+              'Forum daha yeni aciliyor.',
+              style: profile.typography.sectionTitle.copyWith(fontSize: 24),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 10),
+            Text(
               'Ilk paylasimi birak ve toplulugun tonunu sen baslat.',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Color(0xFF9591A0), height: 1.45),
+              style: profile.typography.bodyCompact.copyWith(
+                color: profile.colors.textLight,
+              ),
             ),
-            const SizedBox(height: 14),
-            OutlinedButton(
-              onPressed: onCompose,
-              child: const Text('Ilk paylasimi yap'),
-            ),
+            const SizedBox(height: 18),
+            JoviaPrimaryButton(label: 'Ilk paylasimi yap', onTap: onCompose),
           ],
         ),
       ),
@@ -403,31 +554,27 @@ class _ForumErrorState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profile = context.profileTheme;
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
+      child: JoviaSurfaceCard(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
+            Text(
               'Forum su an acilamiyor.',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-              ),
+              style: profile.typography.sectionTitle.copyWith(fontSize: 24),
+              textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Color(0xFF9591A0), height: 1.4),
+              style: profile.typography.bodyCompact.copyWith(
+                color: profile.colors.textLight,
+              ),
             ),
-            const SizedBox(height: 14),
-            OutlinedButton(
-              onPressed: onRetry,
-              child: const Text('Tekrar dene'),
-            ),
+            const SizedBox(height: 18),
+            JoviaPrimaryButton(label: 'Tekrar dene', onTap: onRetry),
           ],
         ),
       ),
@@ -454,23 +601,61 @@ String _forumCategoryLabel(String raw) {
   }
 }
 
-InputDecoration _forumInputDecoration(String hint) {
+String _forumHeroCategoryLabel(String raw) {
+  if (raw == 'all') {
+    return 'Tum basliklar';
+  }
+  return '${_forumCategoryLabel(raw)} odagi';
+}
+
+Color _forumCategoryAccent(BuildContext context, String category) {
+  final profile = context.profileTheme;
+  switch (category) {
+    case 'transit':
+      return profile.colors.primary;
+    case 'iliski':
+      return const Color(0xFF4EA86C);
+    case 'kariyer':
+      return const Color(0xFF4E83C8);
+    case 'golge':
+      return const Color(0xFFC26B63);
+    case 'genel':
+      return profile.colors.warmAccent;
+    case 'all':
+    default:
+      return profile.colors.textLight;
+  }
+}
+
+InputDecoration _forumInputDecoration(BuildContext context, String hint) {
+  final profile = context.profileTheme;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  final fillColor = Color.alphaBlend(
+    profile.colors.heroBase.withValues(alpha: isDark ? 0.38 : 0.54),
+    profile.colors.surface,
+  );
+  final borderColor = profile.colors.strokeSoft.withValues(
+    alpha: isDark ? 0.94 : 0.86,
+  );
   return InputDecoration(
     hintText: hint,
-    hintStyle: const TextStyle(color: Color(0xFF6F6A7A)),
+    hintStyle: profile.typography.bodyCompact.copyWith(
+      color: profile.colors.textLight,
+    ),
     filled: true,
-    fillColor: const Color(0xFF151519),
+    fillColor: fillColor,
+    contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
     border: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: const BorderSide(color: Color(0xFF24242A)),
+      borderRadius: BorderRadius.circular(18),
+      borderSide: BorderSide(color: borderColor),
     ),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: const BorderSide(color: Color(0xFF24242A)),
+      borderRadius: BorderRadius.circular(18),
+      borderSide: BorderSide(color: borderColor),
     ),
     focusedBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(16),
-      borderSide: const BorderSide(color: Color(0xFF4F4380)),
+      borderRadius: BorderRadius.circular(18),
+      borderSide: BorderSide(color: profile.colors.primary, width: 1.2),
     ),
   );
 }
