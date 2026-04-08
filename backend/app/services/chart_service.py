@@ -6,10 +6,25 @@ from typing import Any, Dict, List, Mapping
 from app.astro.chart_engine.builder import calculate_chart_from_birth_details
 
 
-def compute_natal_chart(birth_date: str, birth_time: str, birth_place: str) -> Dict[str, Any]:
+def compute_natal_chart(
+    birth_date: str,
+    birth_time: str,
+    birth_place: str,
+    *,
+    birth_latitude: Any = None,
+    birth_longitude: Any = None,
+    birth_timezone: str | None = None,
+) -> Dict[str, Any]:
     """Wrapper around chart builder for dependency inversion."""
 
-    return calculate_chart_from_birth_details(birth_date, birth_time, birth_place)
+    return calculate_chart_from_birth_details(
+        birth_date,
+        birth_time,
+        birth_place,
+        latitude=birth_latitude,
+        longitude=birth_longitude,
+        timezone=birth_timezone,
+    )
 
 
 def serialize_planets(planets_data: Mapping[str, Any]) -> List[Dict[str, Any]]:

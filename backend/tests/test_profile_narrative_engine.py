@@ -290,6 +290,11 @@ def test_profile_narrative_public_blocks_have_required_fields_and_separate_micro
         _assert_block_quality(block)
         if block["astro_sources"]:
             assert len(block["astro_sources"]) <= 3
+    assert any(
+        any(marker in str(block.get("body") or "") for marker in ("Yük arttığında", "Belirsizlikte", "Kırılgan yerde", "Denge bozulduğunda"))
+        and any(marker in str(block.get("body") or "") for marker in ("Yerine oturduğunda", "Güven oluştuğunda", "Güçlü halinde", "Denge geldiğinde"))
+        for block in public_blocks
+    )
 
 
 def test_profile_narrative_debug_has_evidence_and_v2_metadata() -> None:

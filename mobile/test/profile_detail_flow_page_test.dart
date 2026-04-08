@@ -205,6 +205,67 @@ void main() {
       findsOneWidget,
     );
   });
+
+  testWidgets('detail page keeps header fixed and only slides body text', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      DefaultAssetBundle(
+        bundle: _FakeSvgAssetBundle(),
+        child: const MaterialApp(
+          home: ProfileDetailPage(
+            flowTitle: 'Zihin-eylem-kontrol',
+            flowSubtitle:
+                'Burada ana portreni tamamlayan diger taraflar one cikiyor.',
+            scenes: [
+              ProfileDetailSceneData(
+                id: 'scene_detail',
+                eyebrow: 'Yan tema',
+                title: 'Zihin-eylem-kontrol',
+                intro: 'Cumle yerine oturdugu anda ic ritmin de hizlanir.',
+                bodyBlocks: [
+                  'Ilk paragraf burada duruyor.',
+                  'Ikinci paragraf saga kayinca gorunuyor.',
+                ],
+                chips: ['Yukselen Oglak', 'Saturn 3. ev', 'Koc'],
+                whyText: '',
+                illustrationAsset: JoviaIllustrationAsset.planet,
+                variant: ProfileDetailSceneVariant.glance,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(
+      find.text('Burada ana portreni tamamlayan diger taraflar one cikiyor.'),
+      findsNothing,
+    );
+    expect(find.text('Zihin-eylem-kontrol'), findsWidgets);
+    expect(find.text('Yukselen Oglak'), findsOneWidget);
+    expect(
+      find.byKey(const ValueKey('profileDetailTextPager_scene_detail')),
+      findsOneWidget,
+    );
+    expect(find.text('Ilk paragraf burada duruyor.'), findsOneWidget);
+
+    await tester.drag(
+      find.byKey(const ValueKey('profileDetailTextPager_scene_detail')),
+      const Offset(-320, 0),
+    );
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+
+    expect(find.text('Yukselen Oglak'), findsOneWidget);
+    expect(find.text('Saturn 3. ev'), findsOneWidget);
+    expect(find.text('Koc'), findsOneWidget);
+    expect(
+      find.text('Ikinci paragraf saga kayinca gorunuyor.'),
+      findsOneWidget,
+    );
+  });
 }
 
 Future<void> _pumpDetailFlow(

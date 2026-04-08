@@ -6,7 +6,7 @@ import copy
 import hashlib
 import inspect
 import os
-from datetime import date as date_type, time as time_type
+from datetime import date as date_type, time as time_type, timedelta
 from typing import Annotated, Any, Dict, List, Mapping, Optional, Tuple, Literal
 import json
 import logging
@@ -49,6 +49,7 @@ from app.transit.narrative.daily_humanizer_tr import humanize_event_card_tr, sum
 from app.transit.narrative.daily_selection import select_daily_and_period_event_cards as build_daily_event_buckets
 from app.transit.narrative.selection import select_event_ids
 from app.transit.narrative.generator import make_birth_fingerprint
+from app.transit.narrative.text_quality_tr import tr_normalize_tree
 from app.transit.observability import (
     TRACE_EVENT_NAME,
     build_route_trace_log_payload,
@@ -59,6 +60,9 @@ from app.services.performance.cache_store import default_cache_store, utc_now
 
 router = APIRouter(tags=["transits"])
 logger = logging.getLogger(__name__)
+DEFAULT_FREE_VISIBLE_DAYS_LIMIT = 7
+HOME_MAX_PERIOD_EVENT_CARDS = 3
+HOME_MAX_PERIOD_PEAK_TIMELINE_ITEMS = 4
 
 
 def _json_safe(value: Any) -> Any:
@@ -87,10 +91,16 @@ def _transit_narrative_cache_key(request: "TransitNarrativeRequest") -> str:
         "birth_date": request.birth_date.strip(),
         "birth_time": request.birth_time.strip(),
         "birth_place": request.birth_place.strip().lower(),
+        "birth_latitude": request.birth_latitude,
+        "birth_longitude": request.birth_longitude,
+        "birth_timezone": str(request.birth_timezone or "").strip().lower(),
         "start": request.start.strip(),
         "end": request.end.strip(),
         "tz": request.tz.strip(),
         "transit_place": (request.transit_place or request.birth_place).strip().lower(),
+        "transit_latitude": request.transit_latitude,
+        "transit_longitude": request.transit_longitude,
+        "transit_timezone": str(request.transit_timezone or "").strip().lower(),
         "lens": request.lens.strip().lower(),
         "intent": str(request.intent or "").strip().lower(),
         "sub_intent": str(request.sub_intent or "").strip().lower(),
@@ -100,7 +110,10 @@ def _transit_narrative_cache_key(request: "TransitNarrativeRequest") -> str:
         "window": int(request.window),
         "debug": bool(request.debug),
         "response_mode": str(request.response_mode or "full").strip().lower(),
-        "version": "v1",
+        "payload_profile": _normalize_payload_profile(request.payload_profile),
+        "subscription_tier": _normalize_subscription_tier(request.subscription_tier),
+        "visible_days_limit": int(request.visible_days_limit or 0),
+        "version": "v3",
     }
     digest = hashlib.sha1(
         json.dumps(
@@ -130,6 +143,214 @@ def _normalize_narrative_response_mode(value: str | None) -> str:
     if normalized in {"public_only", "public", "preview"}:
         return "public_only"
     return "full"
+
+
+def _normalize_payload_profile(value: str | None) -> str:
+    normalized = str(value or "").strip().lower()
+    if normalized in {"home", "calendar_day", "calendar_period", "relationship_preview"}:
+        return normalized
+    return "full"
+
+
+def _normalize_subscription_tier(value: str | None) -> str:
+    normalized = str(value or "").strip().lower()
+    if normalized == "premium":
+        return "premium"
+    return "free"
+
+
+def _positive_limit(value: Any) -> int | None:
+    try:
+        limit = int(value or 0)
+    except (TypeError, ValueError):
+        return None
+    return limit if limit > 0 else None
+
+
+def _request_anchor_date(request: "TransitNarrativeRequest", start_date: date_type) -> date_type:
+    raw = str(request.selected_date or "").strip()
+    if raw:
+        try:
+            return date_type.fromisoformat(raw)
+        except ValueError:
+            return start_date
+    return start_date
+
+
+def _calendar_anchor_date(anchor_date: date_type | None, start_date: date_type) -> date_type:
+    return anchor_date or start_date
+
+
+def _effective_visible_days_limit(
+    *,
+    subscription_tier: str,
+    visible_days_limit: Any,
+    default_free_limit: int | None = None,
+) -> int | None:
+    explicit = _positive_limit(visible_days_limit)
+    if explicit is not None:
+        return explicit
+    if subscription_tier == "free":
+        return default_free_limit
+    return None
+
+
+def _try_parse_iso_date(value: Any) -> date_type | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    if len(text) >= 10:
+        text = text[:10]
+    try:
+        return date_type.fromisoformat(text)
+    except ValueError:
+        return None
+
+
+def _visible_window_end(anchor_date: date_type, visible_days_limit: int | None) -> date_type | None:
+    if visible_days_limit is None:
+        return None
+    return anchor_date + timedelta(days=max(0, visible_days_limit - 1))
+
+
+def _day_in_visible_window(
+    day_date: date_type | None,
+    *,
+    anchor_date: date_type,
+    window_end: date_type | None,
+) -> bool:
+    if day_date is None or window_end is None:
+        return True
+    return anchor_date <= day_date <= window_end
+
+
+def _card_in_visible_window(
+    card: Mapping[str, Any],
+    *,
+    anchor_date: date_type,
+    window_end: date_type | None,
+) -> bool:
+    if window_end is None:
+        return True
+    timing = card.get("timing") if isinstance(card.get("timing"), Mapping) else {}
+    entry_date = _try_parse_iso_date(timing.get("entry_date_utc")) or _try_parse_iso_date(timing.get("peak_date_utc"))
+    peak_date = _try_parse_iso_date(timing.get("peak_date_utc"))
+    exit_date = _try_parse_iso_date(timing.get("exit_date_utc")) or peak_date or entry_date
+    if entry_date is None and peak_date is None and exit_date is None:
+        return True
+    effective_start = entry_date or peak_date or exit_date
+    effective_end = exit_date or peak_date or entry_date
+    if effective_start is None or effective_end is None:
+        return True
+    return not (effective_end < anchor_date or effective_start > window_end)
+
+
+def _limit_calendar_days(
+    days: list[dict[str, Any]],
+    *,
+    anchor_date: date_type,
+    visible_days_limit: int | None,
+) -> list[dict[str, Any]]:
+    window_end = _visible_window_end(anchor_date, visible_days_limit)
+    if window_end is None:
+        return days
+    return [
+        dict(day)
+        for day in days
+        if _day_in_visible_window(
+            _try_parse_iso_date(day.get("date")),
+            anchor_date=anchor_date,
+            window_end=window_end,
+        )
+    ]
+
+
+def _shape_public_payload(
+    public_payload: Mapping[str, Any],
+    *,
+    payload_profile: str,
+    subscription_tier: str,
+    visible_days_limit: int | None,
+    anchor_date: date_type,
+) -> Dict[str, Any]:
+    shaped = copy.deepcopy(dict(public_payload))
+    window_end = _visible_window_end(anchor_date, visible_days_limit)
+
+    if payload_profile == "home":
+        daily_cards = [dict(item) for item in (shaped.get("daily_event_cards") or []) if isinstance(item, Mapping)]
+        period_cards = [dict(item) for item in (shaped.get("period_event_cards") or []) if isinstance(item, Mapping)]
+        legacy_cards = [dict(item) for item in (shaped.get("event_cards") or []) if isinstance(item, Mapping)]
+        timeline = [dict(item) for item in (shaped.get("period_peak_timeline") or []) if isinstance(item, Mapping)]
+        shaped["daily_event_cards"] = daily_cards[:1]
+        shaped["period_event_cards"] = period_cards[:HOME_MAX_PERIOD_EVENT_CARDS]
+        shaped["period_peak_timeline"] = timeline[:HOME_MAX_PERIOD_PEAK_TIMELINE_ITEMS]
+        visible_ids = {
+            str(card.get("event_id") or "").strip()
+            for card in shaped["daily_event_cards"] + shaped["period_event_cards"]
+            if str(card.get("event_id") or "").strip()
+        }
+        shaped["event_cards"] = [
+            card
+            for card in legacy_cards
+            if str(card.get("event_id") or "").strip() in visible_ids
+        ] or legacy_cards[:HOME_MAX_PERIOD_EVENT_CARDS]
+        return shaped
+
+    if payload_profile == "relationship_preview":
+        daily_cards = [dict(item) for item in (shaped.get("daily_event_cards") or []) if isinstance(item, Mapping)]
+        period_cards = [dict(item) for item in (shaped.get("period_event_cards") or []) if isinstance(item, Mapping)]
+        shaped["daily_event_cards"] = daily_cards[:2]
+        shaped["period_event_cards"] = period_cards[:2]
+        shaped["period_peak_timeline"] = []
+        shaped["timeline"] = {}
+        visible_ids = {
+            str(card.get("event_id") or "").strip()
+            for card in shaped["daily_event_cards"] + shaped["period_event_cards"]
+            if str(card.get("event_id") or "").strip()
+        }
+        shaped["event_cards"] = [
+            dict(card)
+            for card in (shaped.get("event_cards") or [])
+            if isinstance(card, Mapping) and str(card.get("event_id") or "").strip() in visible_ids
+        ]
+        return shaped
+
+    if payload_profile == "calendar_day":
+        daily_cards = [dict(item) for item in (shaped.get("daily_event_cards") or []) if isinstance(item, Mapping)]
+        shaped["daily_event_cards"] = daily_cards[:2]
+        shaped["event_cards"] = [dict(card) for card in shaped["daily_event_cards"]]
+        shaped["period_event_cards"] = []
+        shaped["period_peak_timeline"] = []
+        shaped["period_core"] = {}
+        shaped["timeline"] = {}
+        return shaped
+
+    if payload_profile == "calendar_period" and subscription_tier == "free" and window_end is not None:
+        shaped["period_event_cards"] = [
+            dict(card)
+            for card in (shaped.get("period_event_cards") or [])
+            if isinstance(card, Mapping) and _card_in_visible_window(card, anchor_date=anchor_date, window_end=window_end)
+        ]
+        shaped["period_peak_timeline"] = [
+            dict(item)
+            for item in (shaped.get("period_peak_timeline") or [])
+            if isinstance(item, Mapping)
+            and _day_in_visible_window(
+                _try_parse_iso_date(item.get("peak_date_utc") or item.get("entry_date_utc")),
+                anchor_date=anchor_date,
+                window_end=window_end,
+            )
+        ]
+        shaped["event_cards"] = [
+            dict(card)
+            for card in (shaped.get("event_cards") or [])
+            if isinstance(card, Mapping)
+            and (
+                str(card.get("horizon") or "").strip().lower() == "daily"
+                or _card_in_visible_window(card, anchor_date=anchor_date, window_end=window_end)
+            )
+        ]
+    return shaped
 
 
 def _empty_public_narrative_payload() -> Dict[str, Any]:
@@ -332,6 +553,18 @@ def _log_transit_timing(
     start_date = _parse_iso_date(request.start, field_name="start")
     end_date = _parse_iso_date(request.end, field_name="end")
     range_days = (end_date - start_date).days + 1
+    payload_profile = _normalize_payload_profile(request.payload_profile)
+    subscription_tier = _normalize_subscription_tier(request.subscription_tier)
+    best_times_enabled = bool(request.include_best_times) and payload_profile not in {
+        "home",
+        "calendar_day",
+        "relationship_preview",
+    }
+    visible_days_limit = _effective_visible_days_limit(
+        subscription_tier=subscription_tier,
+        visible_days_limit=request.visible_days_limit,
+        default_free_limit=DEFAULT_FREE_VISIBLE_DAYS_LIMIT if payload_profile == "calendar_period" else None,
+    )
     logger.info(
         "transit_timing %s",
         json.dumps(
@@ -348,7 +581,10 @@ def _log_transit_timing(
                 else "single_day"
                 if range_days == 1
                 else "range_only",
-                "include_best_times": bool(request.include_best_times),
+                "include_best_times": best_times_enabled,
+                "payload_profile": payload_profile,
+                "subscription_tier": subscription_tier,
+                "visible_days_limit": visible_days_limit,
                 "top": int(request.top),
                 "window": int(request.window),
                 "payload_bytes": _payload_size_bytes(response),
@@ -554,18 +790,19 @@ DEFAULT_PERIOD_REFINE_NEAR_EXACT = True
 DEFAULT_PERIOD_ORB_HYSTERESIS = 0.2
 
 
+def _load_normalized_json(path: Path) -> Dict[str, Any]:
+    with path.open("r", encoding="utf-8") as handle:
+        return tr_normalize_tree(json.load(handle))
+
+
 def _load_content_store() -> ContentStore:
     global _CONTENT_STORE
     if _CONTENT_STORE is None:
         base_path = Path(__file__).resolve().parents[2] / "transit" / "content" / "tr"
-        with (base_path / "transit_templates.v1.json").open("r", encoding="utf-8") as handle:
-            templates = json.load(handle)
-        with (base_path / "promise_claims.v1.json").open("r", encoding="utf-8") as handle:
-            claims = json.load(handle)
-        with (base_path / "point_affinity.v1.json").open("r", encoding="utf-8") as handle:
-            point_affinity = json.load(handle)
-        with (base_path / "tag_map.v1.json").open("r", encoding="utf-8") as handle:
-            tag_map = json.load(handle)
+        templates = _load_normalized_json(base_path / "transit_templates.v1.json")
+        claims = _load_normalized_json(base_path / "promise_claims.v1.json")
+        point_affinity = _load_normalized_json(base_path / "point_affinity.v1.json")
+        tag_map = _load_normalized_json(base_path / "tag_map.v1.json")
         upper_meaning = _load_upper_meaning_pack(base_path)
         style_do = _load_style_do_pack(base_path)
         approach_pack = _load_approach_pack(base_path)
@@ -576,20 +813,17 @@ def _load_content_store() -> ContentStore:
 
 @lru_cache(maxsize=1)
 def _load_upper_meaning_pack(base_path: Path) -> Dict[str, Any]:
-    with (base_path / "upper_meaning.v1.json").open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+    return _load_normalized_json(base_path / "upper_meaning.v1.json")
 
 
 @lru_cache(maxsize=1)
 def _load_style_do_pack(base_path: Path) -> Dict[str, Any]:
-    with (base_path / "style_do.v1.json").open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+    return _load_normalized_json(base_path / "style_do.v1.json")
 
 
 @lru_cache(maxsize=1)
 def _load_approach_pack(base_path: Path) -> Dict[str, Any]:
-    with (base_path / "approach_pack.v1.json").open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+    return _load_normalized_json(base_path / "approach_pack.v1.json")
 
 
 def _load_period_space_pack() -> Dict[str, Any]:
@@ -599,32 +833,28 @@ def _load_period_space_pack() -> Dict[str, Any]:
             Path(__file__).resolve().parents[2] / "transit" / "content" / "tr" / "period_space"
         )
         pack = {}
-        with (base_path / "house_labels.json").open("r", encoding="utf-8") as handle:
-            pack["house_labels"] = json.load(handle)
-        with (base_path / "house_story_templates.json").open("r", encoding="utf-8") as handle:
-            pack["house_story"] = json.load(handle)
-        with (base_path / "axis_pack.json").open("r", encoding="utf-8") as handle:
-            pack["axis_pack"] = json.load(handle)
-        with (base_path / "housepair_interactions.json").open("r", encoding="utf-8") as handle:
-            pack["housepair_pack"] = json.load(handle)
+        pack["house_labels"] = _load_normalized_json(base_path / "house_labels.json")
+        pack["house_story"] = _load_normalized_json(base_path / "house_story_templates.json")
+        pack["axis_pack"] = _load_normalized_json(base_path / "axis_pack.json")
+        pack["housepair_pack"] = _load_normalized_json(base_path / "housepair_interactions.json")
         _PERIOD_SPACE_PACK = pack
     return _PERIOD_SPACE_PACK or {}
 
 
 def _default_house_labels() -> Dict[int, str]:
     return {
-        1: "kimlik ve durus",
-        2: "para ve ozdeger",
-        3: "zihin ve iletisim",
-        4: "ev ve ic guven",
+        1: "kimlik ve duruş",
+        2: "para ve özdeğer",
+        3: "zihin ve iletişim",
+        4: "ev ve iç güven",
         5: "yaraticilik ve keyif",
-        6: "ritim ve saglik",
-        7: "iliski ve ortaklik",
-        8: "yakinlik ve guven",
-        9: "yon ve anlam",
-        10: "kariyer ve gorunurluk",
-        11: "cevre ve gelecek plani",
-        12: "ic dunya ve cozunme",
+        6: "ritim ve sağlık",
+        7: "ilişki ve ortaklık",
+        8: "yakınlık ve güven",
+        9: "yön ve anlam",
+        10: "kariyer ve görünürlük",
+        11: "çevre ve gelecek planı",
+        12: "iç dünya ve çözünme",
     }
 
 
@@ -1416,9 +1646,15 @@ class TransitRequest(BaseModel):
     birth_date: str
     birth_time: str
     birth_place: str
+    birth_latitude: float | None = None
+    birth_longitude: float | None = None
+    birth_timezone: str | None = None
     transit_date: str
     transit_time: Optional[str] = None
     transit_place: str
+    transit_latitude: float | None = None
+    transit_longitude: float | None = None
+    transit_timezone: str | None = None
     options: Optional[TransitOptions] = None
     context_mode: str = "context-lite"
 
@@ -1429,9 +1665,15 @@ class TransitWindowRequest(BaseModel):
     birth_date: str
     birth_time: str
     birth_place: str
+    birth_latitude: float | None = None
+    birth_longitude: float | None = None
+    birth_timezone: str | None = None
     transit_date: str
     transit_time: Optional[str] = None
     transit_place: str
+    transit_latitude: float | None = None
+    transit_longitude: float | None = None
+    transit_timezone: str | None = None
     options: Optional[TransitOptions] = None
     window_days: int = 120
     step_hours: int = 24
@@ -1455,9 +1697,15 @@ class TransitEventTimingRequest(BaseModel):
     birth_date: str
     birth_time: str
     birth_place: str
+    birth_latitude: float | None = None
+    birth_longitude: float | None = None
+    birth_timezone: str | None = None
     transit_date: str
     transit_time: Optional[str] = None
     transit_place: str
+    transit_latitude: float | None = None
+    transit_longitude: float | None = None
+    transit_timezone: str | None = None
     options: Optional[TransitOptions] = None
     selector: TransitEventSelector
 
@@ -1468,10 +1716,16 @@ class TransitNarrativeRequest(BaseModel):
     birth_date: str
     birth_time: str
     birth_place: str
+    birth_latitude: float | None = None
+    birth_longitude: float | None = None
+    birth_timezone: str | None = None
     start: str
     end: str
     tz: str
     transit_place: str | None = None
+    transit_latitude: float | None = None
+    transit_longitude: float | None = None
+    transit_timezone: str | None = None
     lens: str = "general"
     intent: str | None = "beauty_care_nourish"
     sub_intent: str | None = None
@@ -1481,6 +1735,9 @@ class TransitNarrativeRequest(BaseModel):
     window: int = 3
     debug: bool = False
     response_mode: str = "full"
+    payload_profile: str = "full"
+    visible_days_limit: int | None = None
+    subscription_tier: str = "free"
 
 
 class SolarYearFrameRequest(BaseModel):
@@ -1489,8 +1746,14 @@ class SolarYearFrameRequest(BaseModel):
     birth_date: str
     birth_time: str
     birth_place: str
+    birth_latitude: float | None = None
+    birth_longitude: float | None = None
+    birth_timezone: str | None = None
     transit_date: str
     transit_place: str
+    transit_latitude: float | None = None
+    transit_longitude: float | None = None
+    transit_timezone: str | None = None
 
 
 def _build_narrative_public_payload(
@@ -1504,9 +1767,15 @@ def _build_narrative_public_payload(
         birth_date=request.birth_date,
         birth_time=request.birth_time,
         birth_place=request.birth_place,
+        birth_latitude=request.birth_latitude,
+        birth_longitude=request.birth_longitude,
+        birth_timezone=request.birth_timezone,
         transit_date=transit_date,
         transit_time="12:00",
         transit_place=request.transit_place or request.birth_place,
+        transit_latitude=request.transit_latitude,
+        transit_longitude=request.transit_longitude,
+        transit_timezone=request.transit_timezone,
         options=None,
         context_mode="context-lite",
     )
@@ -1539,8 +1808,27 @@ def _build_narrative_public_payload(
         for card in (public_payload.get("event_cards") or [])
         if isinstance(card, Mapping)
     ]
+    event_card_ids = {
+        str(card.get("event_id") or "").strip()
+        for card in event_cards
+        if str(card.get("event_id") or "").strip()
+    }
+    top_event_ids = {
+        str(token).strip()
+        for token in (selected_day_context or {}).get("top_event_ids", [])
+        if str(token).strip()
+    }
+    daily_selection_events = [
+        item for item in items_unscored if isinstance(item, Mapping)
+    ]
+    if not top_event_ids and event_card_ids:
+        daily_selection_events = [
+            item
+            for item in daily_selection_events
+            if str(item.get("event_id") or "").strip() in event_card_ids
+        ]
     selected_buckets = _select_daily_and_period_event_cards(
-        raw_events=[item for item in items_unscored if isinstance(item, Mapping)],
+        raw_events=daily_selection_events,
         event_cards=event_cards,
         selected_date=transit_date,
         selected_day_context=selected_day_context,
@@ -1558,7 +1846,16 @@ def _build_narrative_public_payload(
             timeline_item["event_card"] = _humanize_event_card(event_card, lens=request.lens)
         period_peak_timeline.append(timeline_item)
     include_public_coverage = str(os.getenv("PERIOD_COVERAGE_PUBLIC", "0")).strip().lower() in {"1", "true", "yes", "on"}
-    return {
+    payload_profile = _normalize_payload_profile(request.payload_profile)
+    subscription_tier = _normalize_subscription_tier(request.subscription_tier)
+    default_visible_limit = DEFAULT_FREE_VISIBLE_DAYS_LIMIT if payload_profile in {"calendar_period"} else None
+    visible_days_limit = _effective_visible_days_limit(
+        subscription_tier=subscription_tier,
+        visible_days_limit=request.visible_days_limit,
+        default_free_limit=default_visible_limit,
+    )
+    anchor_date = _request_anchor_date(request, start_date)
+    payload = {
         "period_core": period_core,
         "event_cards": event_cards,
         "daily_event_cards": selected_buckets["daily_event_cards"],
@@ -1576,6 +1873,13 @@ def _build_narrative_public_payload(
         "_events_debug": events_debug,
         **({"period_coverage": coverage} if include_public_coverage else {}),
     }
+    return _shape_public_payload(
+        payload,
+        payload_profile=payload_profile,
+        subscription_tier=subscription_tier,
+        visible_days_limit=visible_days_limit,
+        anchor_date=anchor_date,
+    )
 
 
 def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
@@ -1590,9 +1894,15 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             birth_date=request.birth_date,
             birth_time=request.birth_time,
             birth_place=request.birth_place,
+            birth_latitude=request.birth_latitude,
+            birth_longitude=request.birth_longitude,
+            birth_timezone=request.birth_timezone,
             transit_date=request.transit_date,
             transit_time=transit_time,
             transit_place=request.transit_place,
+            transit_latitude=request.transit_latitude,
+            transit_longitude=request.transit_longitude,
+            transit_timezone=request.transit_timezone,
             options=options_payload,
             assumptions=assumptions,
         )
@@ -1600,9 +1910,15 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             birth_date=request.birth_date,
             birth_time=request.birth_time,
             birth_place=request.birth_place,
+            birth_latitude=request.birth_latitude,
+            birth_longitude=request.birth_longitude,
+            birth_timezone=request.birth_timezone,
             transit_date=request.transit_date,
             transit_time=transit_time,
             transit_place=request.transit_place,
+            transit_latitude=request.transit_latitude,
+            transit_longitude=request.transit_longitude,
+            transit_timezone=request.transit_timezone,
             options=options_payload,
             window_days=DEFAULT_PERIOD_DAYS,
             step_hours=DEFAULT_PERIOD_STEP_HOURS,
@@ -1615,8 +1931,14 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             birth_date=request.birth_date,
             birth_time=request.birth_time,
             birth_place=request.birth_place,
+            birth_latitude=request.birth_latitude,
+            birth_longitude=request.birth_longitude,
+            birth_timezone=request.birth_timezone,
             transit_date=request.transit_date,
             transit_place=request.transit_place,
+            transit_latitude=request.transit_latitude,
+            transit_longitude=request.transit_longitude,
+            transit_timezone=request.transit_timezone,
             natal_snapshot=response.get("natal") if isinstance(response, Mapping) else None,
         )
         display = response.get("display") or {}
@@ -1714,6 +2036,9 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             report=response,
             transit_date=request.transit_date,
             transit_place=request.transit_place,
+            transit_latitude=request.transit_latitude,
+            transit_longitude=request.transit_longitude,
+            transit_timezone=request.transit_timezone,
             window_report=window_report,
             solar_year=solar_year_frame,
         )
@@ -1756,8 +2081,14 @@ def build_solar_year_frame(request: SolarYearFrameRequest) -> Dict[str, Any]:
         birth_date=request.birth_date,
         birth_time=request.birth_time,
         birth_place=request.birth_place,
+        birth_latitude=request.birth_latitude,
+        birth_longitude=request.birth_longitude,
+        birth_timezone=request.birth_timezone,
         transit_date=request.transit_date,
         transit_place=request.transit_place,
+        transit_latitude=request.transit_latitude,
+        transit_longitude=request.transit_longitude,
+        transit_timezone=request.transit_timezone,
     )
     return {
         "schema_version": "astro_event.v2",
@@ -1773,8 +2104,17 @@ def build_transit_calendar(
     start: str,
     end: str,
     tz: str,
+    birth_latitude: float | None = Query(None),
+    birth_longitude: float | None = Query(None),
+    birth_timezone: str | None = Query(None),
     transit_place: str | None = None,
+    transit_latitude: float | None = Query(None),
+    transit_longitude: float | None = Query(None),
+    transit_timezone: str | None = Query(None),
     lens: str = "general",
+    anchor_date: date_type | None = Query(None, description="Visible window anchor date."),
+    visible_days_limit: int | None = Query(None, ge=1, le=31),
+    subscription_tier: str = Query("free", description="free | premium"),
     view: str = Query("public", description="public | internal | both (ui/full are accepted aliases)"),
     include: str | None = Query(None, description="markers,items_map,items_map_raw,themes,intent_summary,calendar_internal"),
     client_trace_id: Annotated[str | None, Header(alias="X-Transit-Trace-Id")] = None,
@@ -1786,7 +2126,13 @@ def build_transit_calendar(
         birth_date=birth_date,
         birth_time=birth_time,
         birth_place=birth_place,
+        birth_latitude=birth_latitude,
+        birth_longitude=birth_longitude,
+        birth_timezone=birth_timezone,
         transit_place=transit_place or birth_place,
+        transit_latitude=transit_latitude,
+        transit_longitude=transit_longitude,
+        transit_timezone=transit_timezone,
         start=start,
         end=end,
         tz=tz,
@@ -1796,12 +2142,21 @@ def build_transit_calendar(
     v = _normalize_calendar_view(view)
     internal = payload.get("calendar_internal") or payload
     public = payload.get("calendar_public") or {}
+    normalized_tier = _normalize_subscription_tier(subscription_tier)
+    effective_visible_limit = _effective_visible_days_limit(
+        subscription_tier=normalized_tier,
+        visible_days_limit=visible_days_limit,
+        default_free_limit=DEFAULT_FREE_VISIBLE_DAYS_LIMIT,
+    )
+    normalized_anchor = _calendar_anchor_date(anchor_date, _parse_iso_date(start, field_name="start"))
     log_fields = {
         "range_start": start,
         "range_end": end,
         "range_days": _safe_range_days(start, end),
         "view": v,
         "include": include,
+        "subscription_tier": normalized_tier,
+        "visible_days_limit": effective_visible_limit,
     }
     if v == "internal":
         return _finalize_route_response(
@@ -1815,7 +2170,17 @@ def build_transit_calendar(
         )
     if v == "both":
         return _finalize_route_response(
-            {"calendar_internal": internal, "calendar_public": public},
+            {
+                "calendar_internal": internal,
+                "calendar_public": {
+                    **dict(public),
+                    "days": _limit_calendar_days(
+                        [dict(day) for day in (public.get("days") or []) if isinstance(day, Mapping)],
+                        anchor_date=normalized_anchor,
+                        visible_days_limit=effective_visible_limit,
+                    ),
+                },
+            },
             endpoint="/transit/calendar",
             snapshot_id=snapshot_id,
             client_trace_id=client_trace_id,
@@ -1826,8 +2191,14 @@ def build_transit_calendar(
 
     # public + optional include (never mutate public in-place)
     out = copy.deepcopy(public)
-    if include:
-        inc = {p.strip().lower() for p in include.split(",") if p.strip()}
+    out["days"] = _limit_calendar_days(
+        [dict(day) for day in (out.get("days") or []) if isinstance(day, Mapping)],
+        anchor_date=normalized_anchor,
+        visible_days_limit=effective_visible_limit,
+    )
+    include_raw = include if isinstance(include, str) else ""
+    if include_raw.strip():
+        inc = {p.strip().lower() for p in include_raw.split(",") if p.strip()}
         if "markers" in inc:
             out["markers"] = internal.get("markers", [])
         if "items_map" in inc:
@@ -1862,6 +2233,9 @@ def transit_calendar_best_times(
     birth_date: str = Query(..., description="YYYY-MM-DD"),
     birth_time: str = Query(..., description="HH:MM"),
     birth_place: str = Query(..., description="City, Country (or your place id)"),
+    birth_latitude: float | None = Query(None),
+    birth_longitude: float | None = Query(None),
+    birth_timezone: str | None = Query(None),
     start: str = Query(..., description="YYYY-MM-DD"),
     end: str = Query(..., description="YYYY-MM-DD"),
     tz: str = Query("Europe/Istanbul"),
@@ -1870,6 +2244,9 @@ def transit_calendar_best_times(
     window: int = Query(3, ge=2, le=14),
     debug: int = Query(0, description="1 => evidence/rules döndür"),
     transit_place: str | None = None,
+    transit_latitude: float | None = Query(None),
+    transit_longitude: float | None = Query(None),
+    transit_timezone: str | None = Query(None),
     lens: str = Query("general", description="general | relationship | marriage | business | career | money | health | home"),
     client_trace_id: Annotated[str | None, Header(alias="X-Transit-Trace-Id")] = None,
     client_surface: Annotated[str | None, Header(alias="X-Transit-Surface")] = None,
@@ -1898,7 +2275,13 @@ def transit_calendar_best_times(
             birth_date=birth_date,
             birth_time=birth_time,
             birth_place=birth_place,
+            birth_latitude=birth_latitude,
+            birth_longitude=birth_longitude,
+            birth_timezone=birth_timezone,
             transit_place=transit_place or birth_place,
+            transit_latitude=transit_latitude,
+            transit_longitude=transit_longitude,
+            transit_timezone=transit_timezone,
             start=start_date.isoformat(),
             end=end_date.isoformat(),
             tz=tz,
@@ -2000,10 +2383,16 @@ def build_transit_calendar_day(
     birth_time: time_type,
     birth_place: str,
     tz: str,
+    birth_latitude: float | None = Query(None),
+    birth_longitude: float | None = Query(None),
+    birth_timezone: str | None = Query(None),
     date: date_type | None = None,
     start: date_type | None = None,
     end: date_type | None = None,
     transit_place: str | None = None,
+    transit_latitude: float | None = Query(None),
+    transit_longitude: float | None = Query(None),
+    transit_timezone: str | None = Query(None),
     view: str = Query("internal", description="public | internal | both (ui/full are accepted aliases)"),
 ) -> Dict[str, Any]:
     v = _normalize_calendar_view(view)
@@ -2017,7 +2406,13 @@ def build_transit_calendar_day(
                 birth_date=birth_date_str,
                 birth_time=birth_time_str,
                 birth_place=birth_place,
+                birth_latitude=birth_latitude,
+                birth_longitude=birth_longitude,
+                birth_timezone=birth_timezone,
                 transit_place=transit_place or birth_place,
+                transit_latitude=transit_latitude,
+                transit_longitude=transit_longitude,
+                transit_timezone=transit_timezone,
                 start=date_str,
                 end=date_str,
                 tz=tz,
@@ -2051,7 +2446,13 @@ def build_transit_calendar_day(
             birth_date=birth_date_str,
             birth_time=birth_time_str,
             birth_place=birth_place,
+            birth_latitude=birth_latitude,
+            birth_longitude=birth_longitude,
+            birth_timezone=birth_timezone,
             transit_place=transit_place or birth_place,
+            transit_latitude=transit_latitude,
+            transit_longitude=transit_longitude,
+            transit_timezone=transit_timezone,
             start=start_str,
             end=end_str,
             tz=tz,
@@ -2096,8 +2497,21 @@ def build_transit_narrative(
     started = perf_counter()
     snapshot_id = generate_snapshot_id()
     response_mode = _normalize_narrative_response_mode(request.response_mode)
+    payload_profile = _normalize_payload_profile(request.payload_profile)
+    subscription_tier = _normalize_subscription_tier(request.subscription_tier)
     start_date = _parse_iso_date(request.start, field_name="start")
     end_date = _parse_iso_date(request.end, field_name="end")
+    anchor_date = _request_anchor_date(request, start_date)
+    effective_visible_limit = _effective_visible_days_limit(
+        subscription_tier=subscription_tier,
+        visible_days_limit=request.visible_days_limit,
+        default_free_limit=DEFAULT_FREE_VISIBLE_DAYS_LIMIT if payload_profile == "calendar_period" else None,
+    )
+    best_times_enabled = bool(request.include_best_times) and payload_profile not in {
+        "home",
+        "calendar_day",
+        "relationship_preview",
+    }
     if start_date > end_date:
         raise HTTPException(
             status_code=422,
@@ -2128,8 +2542,11 @@ def build_transit_narrative(
                     "range_end": end_date.isoformat(),
                     "range_days": (end_date - start_date).days + 1,
                     "selected_date": request.selected_date,
-                    "include_best_times": bool(request.include_best_times),
+                    "include_best_times": best_times_enabled,
                     "response_mode": response_mode,
+                    "payload_profile": payload_profile,
+                    "subscription_tier": subscription_tier,
+                    "visible_days_limit": effective_visible_limit,
                     "cache_status": lookup.status,
                     "cache_key": cache_key,
                 },
@@ -2191,6 +2608,9 @@ def build_transit_narrative(
             public_payload = response.get("public", {}) if isinstance(response.get("public"), Mapping) else {}
             response["debug"] = {
                 "response_mode": response_mode,
+                "payload_profile": payload_profile,
+                "subscription_tier": subscription_tier,
+                "visible_days_limit": effective_visible_limit,
                 "best_times_enabled": False,
                 "period_coverage": period_coverage_debug,
                 "period_selection": period_selection_debug,
@@ -2234,6 +2654,9 @@ def build_transit_narrative(
                 "selected_date": request.selected_date,
                 "include_best_times": False,
                 "response_mode": response_mode,
+                "payload_profile": payload_profile,
+                "subscription_tier": subscription_tier,
+                "visible_days_limit": effective_visible_limit,
                 "cache_status": "miss",
                 "cache_key": cache_key,
             },
@@ -2252,7 +2675,13 @@ def build_transit_narrative(
         birth_date=request.birth_date,
         birth_time=request.birth_time,
         birth_place=request.birth_place,
+        birth_latitude=request.birth_latitude,
+        birth_longitude=request.birth_longitude,
+        birth_timezone=request.birth_timezone,
         transit_place=request.transit_place or request.birth_place,
+        transit_latitude=request.transit_latitude,
+        transit_longitude=request.transit_longitude,
+        transit_timezone=request.transit_timezone,
         start=start_date.isoformat(),
         end=end_date.isoformat(),
         tz=request.tz,
@@ -2261,10 +2690,31 @@ def build_transit_narrative(
     )
     internal = payload.get("calendar_internal") or payload
     calendar_public = to_ui_calendar(internal, lens=request.lens)
+    calendar_days_for_response = [
+        dict(day)
+        for day in (calendar_public.get("days") or [])
+        if isinstance(day, Mapping)
+    ]
+    if payload_profile == "calendar_day":
+        calendar_days_for_response = _limit_calendar_days(
+            calendar_days_for_response,
+            anchor_date=anchor_date,
+            visible_days_limit=1,
+        )
+    elif payload_profile == "calendar_period":
+        calendar_days_for_response = _limit_calendar_days(
+            calendar_days_for_response,
+            anchor_date=anchor_date,
+            visible_days_limit=effective_visible_limit,
+        )
+    calendar_public = {
+        **dict(calendar_public),
+        "days": calendar_days_for_response,
+    }
 
     best_times_public: Dict[str, Any] | None = None
     best_times_internal: Dict[str, Any] | None = None
-    if request.include_best_times:
+    if best_times_enabled:
         normalized_intent, normalized_sub_intent, public_intent = _parse_best_times_intent(
             request.intent or "",
             request.sub_intent,
@@ -2286,30 +2736,33 @@ def build_transit_narrative(
             intent=public_intent,
         )
 
-    blocks = assemble_blocks(
-        calendar_public=calendar_public,
-        calendar_internal=internal,
-        best_times=best_times_public,
-        year_summary=calendar_public.get("year_summary") or {},
-        selected_date=request.selected_date,
-        seed_context={
-            "birth_fingerprint": make_birth_fingerprint(
-                birth_date=request.birth_date,
-                birth_time=request.birth_time,
-                birth_place=request.birth_place,
-                tz=request.tz,
-            ),
-            "intent": request.intent or "general",
-            "lens": request.lens,
-        },
-    )
+    blocks = []
+    screens: Dict[str, Any] = {}
+    if payload_profile not in {"calendar_day", "calendar_period"}:
+        blocks = assemble_blocks(
+            calendar_public=calendar_public,
+            calendar_internal=internal,
+            best_times=best_times_public,
+            year_summary=calendar_public.get("year_summary") or {},
+            selected_date=request.selected_date,
+            seed_context={
+                "birth_fingerprint": make_birth_fingerprint(
+                    birth_date=request.birth_date,
+                    birth_time=request.birth_time,
+                    birth_place=request.birth_place,
+                    tz=request.tz,
+                ),
+                "intent": request.intent or "general",
+                "lens": request.lens,
+            },
+        )
 
-    screens = {
-        "space_hub": build_space_hub(blocks),
-        "personal_transit": build_personal_transit(blocks),
-        "calendar_day": build_calendar_day(blocks, request.selected_date),
-        "feed_snippet": build_feed_snippet(blocks),
-    }
+        screens = {
+            "space_hub": build_space_hub(blocks),
+            "personal_transit": build_personal_transit(blocks),
+            "calendar_day": build_calendar_day(blocks, request.selected_date),
+            "feed_snippet": build_feed_snippet(blocks),
+        }
     internal_days_by_date: Dict[str, Mapping[str, Any]] = {}
     for day in internal.get("days") or []:
         if isinstance(day, Mapping):
@@ -2370,12 +2823,14 @@ def build_transit_narrative(
 
     response: Dict[str, Any] = {
         "range": calendar_public.get("range", {}),
-        "blocks": [block.to_dict() for block in blocks],
-        "screens": screens,
         "calendar": {
             "days": calendar_days,
         },
     }
+    if blocks:
+        response["blocks"] = [block.to_dict() for block in blocks]
+    if screens:
+        response["screens"] = screens
     period_coverage_debug: Dict[str, Any] = {}
     period_selection_debug: Dict[str, Any] = {}
     period_root_causes_debug: List[Dict[str, Any]] = []
@@ -2454,7 +2909,10 @@ def build_transit_narrative(
         response["debug"] = {
             "calendar_public_keys": sorted(list(calendar_public.keys())),
             "calendar_days_count": len(calendar_public.get("days") or []),
-            "best_times_enabled": bool(request.include_best_times),
+            "best_times_enabled": best_times_enabled,
+            "payload_profile": payload_profile,
+            "subscription_tier": subscription_tier,
+            "visible_days_limit": effective_visible_limit,
             "best_times_candidates": len((best_times_public or {}).get("candidates") or []),
             "best_times_windows": len((best_times_public or {}).get("windows") or []),
             "calendar_numeric": {
@@ -2543,8 +3001,11 @@ def build_transit_narrative(
             "range_end": end_date.isoformat(),
             "range_days": (end_date - start_date).days + 1,
             "selected_date": request.selected_date,
-            "include_best_times": bool(request.include_best_times),
+            "include_best_times": best_times_enabled,
             "response_mode": response_mode,
+            "payload_profile": payload_profile,
+            "subscription_tier": subscription_tier,
+            "visible_days_limit": effective_visible_limit,
             "cache_status": "miss",
             "cache_key": cache_key,
         },
@@ -2572,9 +3033,15 @@ def build_transits_window(request: TransitWindowRequest) -> Dict[str, Any]:
             birth_date=request.birth_date,
             birth_time=request.birth_time,
             birth_place=request.birth_place,
+            birth_latitude=request.birth_latitude,
+            birth_longitude=request.birth_longitude,
+            birth_timezone=request.birth_timezone,
             transit_date=request.transit_date,
             transit_time=transit_time,
             transit_place=request.transit_place,
+            transit_latitude=request.transit_latitude,
+            transit_longitude=request.transit_longitude,
+            transit_timezone=request.transit_timezone,
             options=request.options.model_dump() if request.options else {},
             window_days=request.window_days,
             step_hours=request.step_hours,
@@ -2599,9 +3066,15 @@ def build_transit_event_timing_response(request: TransitEventTimingRequest) -> D
             birth_date=request.birth_date,
             birth_time=request.birth_time,
             birth_place=request.birth_place,
+            birth_latitude=request.birth_latitude,
+            birth_longitude=request.birth_longitude,
+            birth_timezone=request.birth_timezone,
             transit_date=request.transit_date,
             transit_time=transit_time,
             transit_place=request.transit_place,
+            transit_latitude=request.transit_latitude,
+            transit_longitude=request.transit_longitude,
+            transit_timezone=request.transit_timezone,
             options=request.options.model_dump() if request.options else {},
             selector=request.selector.model_dump(),
         )

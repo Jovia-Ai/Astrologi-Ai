@@ -173,6 +173,41 @@ def test_contradiction_engine_builds_structured_signatures() -> None:
     assert top_entry["editorial_label"]
 
 
+def test_structure_vs_originality_needs_stronger_two_sided_support() -> None:
+    primitive_scores = {
+        "primitive_scores": [
+            {"primitive_id": "inner_structure", "score": 0.63, "confidence": 0.82},
+            {"primitive_id": "systems_thinking", "score": 0.61, "confidence": 0.8},
+            {"primitive_id": "methodical_drive", "score": 0.58, "confidence": 0.79},
+            {"primitive_id": "originality_drive", "score": 0.5, "confidence": 0.74},
+            {"primitive_id": "big_picture_vision", "score": 0.48, "confidence": 0.72},
+            {"primitive_id": "visible_presence", "score": 0.44, "confidence": 0.7},
+        ]
+    }
+    feature_graph = {
+        "contradiction_polarity": [
+            {
+                "id": "structure_vs_originality",
+                "score": 1.0,
+                "evidence": ["system_builder"],
+            }
+        ],
+        "compensation_patterns": [
+            {
+                "id": "structure_scaffolds_originality",
+                "score": 0.8,
+            }
+        ],
+    }
+
+    contradictions = build_contradiction_signatures(
+        natal_feature_graph=feature_graph,
+        primitive_scores=primitive_scores,
+    )
+
+    assert "structure_vs_originality" not in contradictions["by_id"]
+
+
 def test_master_selector_selects_identity_spine_lines() -> None:
     chart = _artifact_chart()
     planets, aspects, graph = _serialized(chart)

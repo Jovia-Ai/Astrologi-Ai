@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -9,6 +8,8 @@ extension JoviaAppLocaleX on JoviaAppLocale {
   String get code => name;
 
   String get label => this == JoviaAppLocale.tr ? 'TR' : 'EN';
+
+  Locale get materialLocale => Locale(code);
 }
 
 @immutable

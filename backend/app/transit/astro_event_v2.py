@@ -6,6 +6,7 @@ import hashlib
 import math
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
 
+from app.astro.chart_engine.builder import LocationData, resolve_location
 from app.astro.chart_engine.positions import get_zodiac_sign
 from app.engine.transit_engine import (
     ASPECT_ANGLES,
@@ -241,6 +242,9 @@ def build_personal_multi_event_payload(
     report: Mapping[str, Any],
     transit_date: str,
     transit_place: str,
+    transit_latitude: float | None = None,
+    transit_longitude: float | None = None,
+    transit_timezone: str | None = None,
     window_report: Mapping[str, Any] | None = None,
     solar_year: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
@@ -255,6 +259,9 @@ def build_personal_multi_event_payload(
             birth_place=str((report.get("request_echo") or {}).get("birth_place") or ""),
             transit_date=transit_date,
             transit_place=transit_place,
+            transit_latitude=transit_latitude,
+            transit_longitude=transit_longitude,
+            transit_timezone=transit_timezone,
             natal_snapshot=natal,
         )
 
@@ -276,6 +283,12 @@ def build_personal_multi_event_payload(
     ingress_events = detect_house_ingress_events(
         natal_snapshot=natal,
         transit_place=transit_place,
+        transit_location=resolve_location(
+            transit_place,
+            latitude=transit_latitude,
+            longitude=transit_longitude,
+            timezone=transit_timezone,
+        ),
         start_date=_window_start(transit_date, days=120),
         end_date=_window_end(transit_date, days=120),
         transit_date=transit_date,
@@ -341,6 +354,7 @@ def personalize_global_event(
         date_value=birth_date,
         time_value=birth_time,
         place_value=birth_place,
+        location=resolve_location(birth_place),
         options=_normalize_options(None),
     )
     solar_year = build_solar_year_theme(
@@ -429,14 +443,33 @@ def build_solar_year_theme(
     birth_place: str,
     transit_date: str,
     transit_place: str,
+    birth_latitude: float | None = None,
+    birth_longitude: float | None = None,
+    birth_timezone: str | None = None,
+    transit_latitude: float | None = None,
+    transit_longitude: float | None = None,
+    transit_timezone: str | None = None,
     natal_snapshot: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
     if not birth_date or not birth_time or not birth_place or not transit_date:
         return {}
+    birth_location = resolve_location(
+        birth_place,
+        latitude=birth_latitude,
+        longitude=birth_longitude,
+        timezone=birth_timezone,
+    )
+    transit_location = resolve_location(
+        transit_place or birth_place,
+        latitude=transit_latitude,
+        longitude=transit_longitude,
+        timezone=transit_timezone,
+    )
     natal = dict(natal_snapshot or _build_chart_snapshot(
         date_value=birth_date,
         time_value=birth_time,
         place_value=birth_place,
+        location=birth_location,
         options=_normalize_options(None),
     ))
     natal_sun = _body_position(natal, "Sun")
@@ -450,6 +483,7 @@ def build_solar_year_theme(
             birth_date=birth_date,
             year=year,
             place=transit_place or birth_place,
+            location=transit_location,
         )
         if candidate is None:
             continue
@@ -465,6 +499,7 @@ def build_solar_year_theme(
         date_value=return_time.date().isoformat(),
         time_value=return_time.strftime("%H:%M"),
         place_value=transit_place or birth_place,
+        location=transit_location,
         options=_normalize_options(None),
     )
     next_return = _solar_return_datetime(
@@ -472,6 +507,7 @@ def build_solar_year_theme(
         birth_date=birth_date,
         year=return_time.year + 1,
         place=transit_place or birth_place,
+        location=transit_location,
     )
 
     asc_sign = _angle_sign(solar_snapshot, "ASC")
@@ -685,6 +721,7 @@ def detect_house_ingress_events(
     start_date: str,
     end_date: str,
     transit_date: str,
+    transit_location: LocationData | None = None,
     solar_year: Mapping[str, Any] | None = None,
 ) -> List[AstroEventV2]:
     start_dt = _parse_date(start_date)
@@ -692,7 +729,7 @@ def detect_house_ingress_events(
     cusps = [cusp.get("lon") for cusp in (natal_snapshot.get("house_cusps") or []) if cusp.get("lon") is not None]
     if len(cusps) < 12:
         return []
-    location = fetch_location(transit_place)
+    resolved_location = transit_location or resolve_location(transit_place)
     prev_house: Dict[str, int] = {}
     pass_map: Dict[Tuple[str, int], List[Dict[str, Any]]] = {}
     current = start_dt
@@ -702,6 +739,7 @@ def detect_house_ingress_events(
             when_iso=current.isoformat(),
             place=transit_place,
             hour="12:00",
+            location=resolved_location,
         )
         for position in positions:
             body = str(position.get("body") or "")
@@ -1598,13 +1636,23 @@ def _positions_for_bodies(
     when_iso: str,
     place: str,
     hour: str | None = None,
+    location: LocationData | None = None,
 ) -> List[Dict[str, Any]]:
     when_date = str(when_iso)[:10]
     when_time = hour or ("12:00" if len(str(when_iso)) <= 10 else str(when_iso)[11:16] or "12:00")
-    location = fetch_location(place)
-    _local_dt, utc_dt = _parse_local_datetime(when_date, when_time, location.timezone)
+    resolved_location = location or resolve_location(place)
+    _local_dt, utc_dt = _parse_local_datetime(
+        when_date,
+        when_time,
+        resolved_location.timezone,
+    )
     jd = julian_day(utc_dt)
-    cusps, angles_raw = _calc_houses(jd, location.latitude, location.longitude, house_system="placidus")
+    cusps, angles_raw = _calc_houses(
+        jd,
+        resolved_location.latitude,
+        resolved_location.longitude,
+        house_system="placidus",
+    )
     cusp_sequence = [0.0, *cusps]
     return _calc_bodies(jd, bodies, cusp_sequence, angles_raw)
 
@@ -2075,6 +2123,7 @@ def _solar_return_datetime(
     birth_date: str,
     year: int,
     place: str,
+    location: LocationData | None = None,
 ) -> datetime | None:
     birth_dt = _parse_date(birth_date)
     seed_date = date(year, birth_dt.month, min(birth_dt.day, 28 if birth_dt.month == 2 else birth_dt.day))
@@ -2083,11 +2132,20 @@ def _solar_return_datetime(
     best_time: Optional[datetime] = None
     best_diff = 999.0
     current = start
-    location = fetch_location(place)
+    resolved_location = location or resolve_location(place)
     while current <= end:
-        _local_dt, utc_dt = _parse_local_datetime(current.date().isoformat(), current.strftime("%H:%M"), location.timezone)
+        _local_dt, utc_dt = _parse_local_datetime(
+            current.date().isoformat(),
+            current.strftime("%H:%M"),
+            resolved_location.timezone,
+        )
         jd = julian_day(utc_dt)
-        cusps, angles_raw = _calc_houses(jd, location.latitude, location.longitude, house_system="placidus")
+        cusps, angles_raw = _calc_houses(
+            jd,
+            resolved_location.latitude,
+            resolved_location.longitude,
+            house_system="placidus",
+        )
         cusp_sequence = [0.0, *cusps]
         sun = next((entry for entry in _calc_bodies(jd, ["Sun"], cusp_sequence, angles_raw) if entry.get("body") == "Sun"), {})
         if sun.get("lon") is not None:
@@ -2102,9 +2160,18 @@ def _solar_return_datetime(
     best_refined = best_time
     best_refined_diff = best_diff
     while refined <= best_time + timedelta(hours=3):
-        _local_dt, utc_dt = _parse_local_datetime(refined.date().isoformat(), refined.strftime("%H:%M"), location.timezone)
+        _local_dt, utc_dt = _parse_local_datetime(
+            refined.date().isoformat(),
+            refined.strftime("%H:%M"),
+            resolved_location.timezone,
+        )
         jd = julian_day(utc_dt)
-        cusps, angles_raw = _calc_houses(jd, location.latitude, location.longitude, house_system="placidus")
+        cusps, angles_raw = _calc_houses(
+            jd,
+            resolved_location.latitude,
+            resolved_location.longitude,
+            house_system="placidus",
+        )
         cusp_sequence = [0.0, *cusps]
         sun = next((entry for entry in _calc_bodies(jd, ["Sun"], cusp_sequence, angles_raw) if entry.get("body") == "Sun"), {})
         if sun.get("lon") is not None:

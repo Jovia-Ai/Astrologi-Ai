@@ -224,6 +224,15 @@ String turkishToUpper(String value) {
   return _toTurkishUpper(value);
 }
 
+String turkishCapitalize(String value) {
+  final normalized = normalizeTurkishText(value);
+  if (normalized.isEmpty) {
+    return normalized;
+  }
+  return _capitalizeTurkish(normalized.substring(0, 1)) +
+      normalized.substring(1);
+}
+
 String _matchCase(String source, String replacement) {
   if (source.isEmpty) {
     return replacement;

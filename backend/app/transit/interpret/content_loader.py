@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from typing import Any, Dict, Tuple
 
+from app.transit.narrative.text_quality_tr import tr_normalize_tree
+
 _CACHE: dict[Tuple[str, str], Dict[str, Any]] = {}
 
 
@@ -26,4 +28,4 @@ def load_content(*, lang: str = "tr", version: str = "tr.v1") -> Dict[str, Any]:
 
 def _read_json(path: Path) -> Dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+        return tr_normalize_tree(json.load(handle))

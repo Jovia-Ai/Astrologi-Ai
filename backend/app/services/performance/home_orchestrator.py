@@ -27,6 +27,9 @@ from .refresh_scheduler import schedule_home_refresh
 from .timing import TimingRecorder
 
 logger = logging.getLogger(__name__)
+HOME_SECTION_READY = "ready"
+HOME_SECTION_STALE = "stale"
+HOME_SECTION_DEFERRED = "deferred"
 
 
 def _json_safe(value: Any) -> Any:
@@ -57,6 +60,12 @@ class HomeRequestContext:
     lens: str = "general"
     user_id: str | None = None
     transit_place: str | None = None
+    birth_latitude: float | None = None
+    birth_longitude: float | None = None
+    birth_timezone: str | None = None
+    transit_latitude: float | None = None
+    transit_longitude: float | None = None
+    transit_timezone: str | None = None
 
     @property
     def selected_date(self) -> str:
@@ -143,6 +152,30 @@ class HomeOrchestrator:
             )
             return payload
 
+        if mode == "fast":
+            payload = self._build_deferred_fast_payload(context=context, now=anchor, timer=timer)
+            response_body = {
+                **payload,
+                "generated_at": anchor.isoformat(),
+                "fresh_until": anchor.isoformat(),
+                "payload_version": payload_version,
+                "cache_status": "miss",
+            }
+            with timer.stage("serialization"):
+                response_body = copy.deepcopy(response_body)
+            self._schedule_background_prewarm(context=context)
+            payload_bytes = _payload_size_bytes(response_body)
+            self._log_timing(
+                mode=mode,
+                context=context,
+                cache_status=response_body["cache_status"],
+                cache_key=cache_key,
+                timer=timer,
+                payload_version=payload_version,
+                payload_bytes=payload_bytes,
+            )
+            return response_body
+
         payload = self._compute_payload(mode=mode, context=context, now=anchor, timer=timer)
         fresh_until = self._fresh_until(mode=mode, now=anchor).isoformat()
         response_body = {
@@ -153,7 +186,7 @@ class HomeOrchestrator:
             "cache_status": "miss",
         }
 
-        if cache_enabled:
+        if cache_enabled and self._should_store_payload(mode=mode, payload=response_body):
             with timer.stage("serialization"):
                 entry = self._safe_cache_set(
                     cache_key,
@@ -171,6 +204,8 @@ class HomeOrchestrator:
         else:
             with timer.stage("serialization"):
                 response_body = copy.deepcopy(response_body)
+            if mode == "fast":
+                self._schedule_background_prewarm(context=context)
 
         payload_bytes = _payload_size_bytes(response_body)
         self._log_timing(
@@ -221,7 +256,25 @@ class HomeOrchestrator:
                 birth_date=context.birth_date,
                 birth_time=context.birth_time,
                 birth_place=context.birth_place,
+                birth_latitude=context.birth_latitude,
+                birth_longitude=context.birth_longitude,
+                birth_timezone=context.birth_timezone,
                 locale=context.locale,
+            )
+        )
+        return dict(response.get("public") or {})
+
+    def _build_natal_summary_public(self, context: HomeRequestContext) -> dict[str, Any]:
+        response = interpret_natal_chart_ui(
+            NatalInterpretationRequest(
+                birth_date=context.birth_date,
+                birth_time=context.birth_time,
+                birth_place=context.birth_place,
+                birth_latitude=context.birth_latitude,
+                birth_longitude=context.birth_longitude,
+                birth_timezone=context.birth_timezone,
+                locale=context.locale,
+                summary_only=True,
             )
         )
         return dict(response.get("public") or {})
@@ -232,11 +285,17 @@ class HomeOrchestrator:
                 birth_date=context.birth_date,
                 birth_time=context.birth_time,
                 birth_place=context.birth_place,
+                birth_latitude=context.birth_latitude,
+                birth_longitude=context.birth_longitude,
+                birth_timezone=context.birth_timezone,
                 start=context.range_start,
                 end=context.range_end,
                 selected_date=context.selected_date,
                 tz=context.tz,
                 transit_place=context.effective_transit_place,
+                transit_latitude=context.transit_latitude,
+                transit_longitude=context.transit_longitude,
+                transit_timezone=context.transit_timezone,
                 lens=context.lens,
                 intent="general",
                 include_best_times=include_best_times,
@@ -276,6 +335,7 @@ class HomeOrchestrator:
         natal_public: Mapping[str, Any],
         transit_payload: Mapping[str, Any],
         sky_payload: Mapping[str, Any],
+        section_states: Mapping[str, str] | None = None,
     ) -> dict[str, Any]:
         transit_public = transit_payload.get("public") if isinstance(transit_payload.get("public"), Mapping) else {}
         core_story_ui = natal_public.get("core_story_ui") if isinstance(natal_public.get("core_story_ui"), Mapping) else {}
@@ -320,6 +380,14 @@ class HomeOrchestrator:
                 "transit_cards": len(transit_public.get("event_cards") or []),
                 "sky_items": len(sky_payload.get("items") or []),
             },
+            "section_states": dict(
+                section_states
+                or {
+                    "sky": HOME_SECTION_READY,
+                    "transit_summary": HOME_SECTION_READY,
+                    "natal_summary": HOME_SECTION_READY,
+                }
+            ),
         }
 
     def _assemble_deep_payload(
@@ -541,6 +609,11 @@ class HomeOrchestrator:
 
     def _schedule_background_prewarm(self, *, context: HomeRequestContext) -> None:
         schedule_home_refresh(
+            name=f"fast-refresh-{context.subject_key}-{context.selected_date}",
+            task=lambda: self._refresh_cached_mode(mode="fast", context=context, now=utc_now()),
+            enabled=settings.enable_background_refresh,
+        )
+        schedule_home_refresh(
             name=f"deep-prewarm-{context.subject_key}-{context.selected_date}",
             task=lambda: self._refresh_cached_mode(mode="deep", context=context, now=utc_now()),
             enabled=settings.enable_background_refresh,
@@ -598,7 +671,62 @@ class HomeOrchestrator:
         payload["generated_at"] = payload.get("generated_at") or entry.generated_at.isoformat()
         payload["fresh_until"] = payload.get("fresh_until") or entry.fresh_until.isoformat()
         payload["cache_status"] = cache_status
+        section_states = payload.get("section_states")
+        if isinstance(section_states, Mapping):
+            normalized = {}
+            for name, state in section_states.items():
+                state_text = str(state or "").strip() or HOME_SECTION_READY
+                if cache_status == "stale" and state_text == HOME_SECTION_READY:
+                    state_text = HOME_SECTION_STALE
+                normalized[str(name)] = state_text
+            payload["section_states"] = normalized
         return payload
+
+    def _build_deferred_fast_payload(
+        self,
+        *,
+        context: HomeRequestContext,
+        now: datetime,
+        timer: TimingRecorder,
+    ) -> dict[str, Any]:
+        with timer.stage("global_compute"):
+            sky_payload = self._get_global_sky_payload(context=context, now=now)
+
+        natal_public: dict[str, Any] = {}
+        natal_state = HOME_SECTION_DEFERRED
+        with timer.stage("user_overlay"):
+            try:
+                natal_public = self._build_natal_summary_public(context)
+                if natal_public:
+                    natal_state = HOME_SECTION_READY
+            except Exception:  # pragma: no cover - keep fast payload resilient
+                logger.exception(
+                    "home fast natal summary failed",
+                    extra={"subject_key": context.subject_key, "date": context.selected_date},
+                )
+
+        with timer.stage("ranking"):
+            transit_payload: dict[str, Any] = {"public": {}}
+
+        with timer.stage("composer"):
+            return self._assemble_fast_payload(
+                natal_public=natal_public,
+                transit_payload=transit_payload,
+                sky_payload=sky_payload,
+                section_states={
+                    "sky": HOME_SECTION_READY,
+                    "transit_summary": HOME_SECTION_DEFERRED,
+                    "natal_summary": natal_state,
+                },
+            )
+
+    def _should_store_payload(self, *, mode: str, payload: Mapping[str, Any]) -> bool:
+        if mode != "fast":
+            return True
+        section_states = payload.get("section_states")
+        if not isinstance(section_states, Mapping):
+            return True
+        return str(section_states.get("transit_summary") or HOME_SECTION_READY) == HOME_SECTION_READY
 
     def _cache_key(self, *, mode: str, context: HomeRequestContext) -> str:
         config_hash = build_home_cache_config_hash()

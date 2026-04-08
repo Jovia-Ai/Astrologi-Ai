@@ -115,8 +115,6 @@ class JoviaBrandMark extends StatelessWidget {
                 Text(
                   'SHOU',
                   style: TextStyle(
-                    fontFamily: 'Baskerville',
-                    fontFamilyFallback: const ['Times New Roman', 'Georgia'],
                     fontSize: 34,
                     height: 1,
                     fontWeight: FontWeight.w600,

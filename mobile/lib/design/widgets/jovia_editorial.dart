@@ -9,6 +9,7 @@ import 'package:mobile/design/widgets/jovia_app_menu_scope.dart';
 import 'package:mobile/design/widgets/jovia_assets.dart';
 
 export 'package:mobile/design/widgets/jovia_assets.dart';
+export 'package:mobile/design/widgets/jovia_aura.dart';
 export 'package:mobile/ui/components/editorial_divider.dart';
 
 enum JoviaSectionHeaderVariant { standard, editorial }
@@ -398,6 +399,8 @@ class JoviaSurfaceCard extends StatelessWidget {
     this.borderColor,
     this.radius = 28,
     this.shadow = true,
+    this.frosted = false,
+    this.blurSigma = 20,
   });
 
   final Widget child;
@@ -407,6 +410,8 @@ class JoviaSurfaceCard extends StatelessWidget {
   final Color? borderColor;
   final double radius;
   final bool shadow;
+  final bool frosted;
+  final double blurSigma;
 
   @override
   Widget build(BuildContext context) {
@@ -422,109 +427,110 @@ class JoviaSurfaceCard extends StatelessWidget {
       Colors.black.withValues(alpha: isDark ? 0.14 : 0.04),
       base,
     );
+    final surface = Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            topBlend.withValues(alpha: isDark ? 0.88 : 0.94),
+            base.withValues(alpha: isDark ? 0.86 : 0.9),
+            bottomBlend.withValues(alpha: isDark ? 0.92 : 0.96),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(radius),
+        border: Border.all(color: stroke, width: 1.1),
+        boxShadow: shadow
+            ? [
+                profile.shadows.cardShadow,
+                BoxShadow(
+                  color: Colors.white.withValues(alpha: isDark ? 0.04 : 0.7),
+                  blurRadius: 24,
+                  offset: const Offset(-10, -10),
+                  spreadRadius: -24,
+                ),
+              ]
+            : const [],
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            top: -54,
+            right: -46,
+            child: IgnorePointer(
+              child: _GlowOrb(
+                color: profile.colors.primary.withValues(
+                  alpha: isDark ? 0.16 : 0.14,
+                ),
+                size: 124,
+                stretch: 1.12,
+                rotation: 0.32,
+                blurFactor: 0.28,
+              ),
+            ),
+          ),
+          Positioned(
+            left: -48,
+            bottom: -72,
+            child: IgnorePointer(
+              child: _GlowOrb(
+                color: profile.colors.warmAccent.withValues(
+                  alpha: isDark ? 0.14 : 0.16,
+                ),
+                size: 132,
+                stretch: 1.24,
+                rotation: -0.24,
+                blurFactor: 0.28,
+              ),
+            ),
+          ),
+          Positioned(
+            right: 18,
+            bottom: -42,
+            child: IgnorePointer(
+              child: _GlowOrb(
+                color: profile.colors.lavender.withValues(
+                  alpha: isDark ? 0.12 : 0.14,
+                ),
+                size: 86,
+                stretch: 1.18,
+                rotation: 0.16,
+                blurFactor: 0.26,
+              ),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            top: 0,
+            child: IgnorePointer(
+              child: Container(
+                height: 1,
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.transparent,
+                      Colors.white.withValues(alpha: isDark ? 0.18 : 0.9),
+                      Colors.transparent,
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          child,
+        ],
+      ),
+    );
     return ClipRRect(
       borderRadius: BorderRadius.circular(radius),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                topBlend.withValues(alpha: isDark ? 0.88 : 0.94),
-                base.withValues(alpha: isDark ? 0.86 : 0.9),
-                bottomBlend.withValues(alpha: isDark ? 0.92 : 0.96),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(radius),
-            border: Border.all(color: stroke, width: 1.1),
-            boxShadow: shadow
-                ? [
-                    profile.shadows.cardShadow,
-                    BoxShadow(
-                      color: Colors.white.withValues(
-                        alpha: isDark ? 0.04 : 0.7,
-                      ),
-                      blurRadius: 24,
-                      offset: const Offset(-10, -10),
-                      spreadRadius: -24,
-                    ),
-                  ]
-                : const [],
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                top: -54,
-                right: -46,
-                child: IgnorePointer(
-                  child: _GlowOrb(
-                    color: profile.colors.primary.withValues(
-                      alpha: isDark ? 0.16 : 0.14,
-                    ),
-                    size: 124,
-                    stretch: 1.12,
-                    rotation: 0.32,
-                    blurFactor: 0.28,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: -48,
-                bottom: -72,
-                child: IgnorePointer(
-                  child: _GlowOrb(
-                    color: profile.colors.warmAccent.withValues(
-                      alpha: isDark ? 0.14 : 0.16,
-                    ),
-                    size: 132,
-                    stretch: 1.24,
-                    rotation: -0.24,
-                    blurFactor: 0.28,
-                  ),
-                ),
-              ),
-              Positioned(
-                right: 18,
-                bottom: -42,
-                child: IgnorePointer(
-                  child: _GlowOrb(
-                    color: profile.colors.lavender.withValues(
-                      alpha: isDark ? 0.12 : 0.14,
-                    ),
-                    size: 86,
-                    stretch: 1.18,
-                    rotation: 0.16,
-                    blurFactor: 0.26,
-                  ),
-                ),
-              ),
-              Positioned(
-                left: 0,
-                right: 0,
-                top: 0,
-                child: IgnorePointer(
-                  child: Container(
-                    height: 1,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.transparent,
-                          Colors.white.withValues(alpha: isDark ? 0.18 : 0.9),
-                          Colors.transparent,
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              child,
-            ],
-          ),
-        ),
-      ),
+      child: frosted && blurSigma > 0
+          ? BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
+              child: surface,
+            )
+          : surface,
     );
   }
 }
@@ -1714,8 +1720,8 @@ class JoviaBottomNavBar extends StatelessWidget {
       top: false,
       child: Container(
         margin: const EdgeInsets.fromLTRB(16, 0, 16, 14),
-        constraints: const BoxConstraints(minHeight: 88),
-        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        constraints: const BoxConstraints(minHeight: 76),
+        padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
@@ -1733,7 +1739,7 @@ class JoviaBottomNavBar extends StatelessWidget {
             ],
             stops: const [0, 0.58, 1],
           ),
-          borderRadius: BorderRadius.circular(36),
+          borderRadius: BorderRadius.circular(32),
           border: Border.all(color: shellBorder, width: 1),
           boxShadow: [
             BoxShadow(
@@ -1770,25 +1776,6 @@ class JoviaBottomNavBar extends StatelessWidget {
                 stretch: 1.4,
                 rotation: 0.18,
                 blurFactor: 0.26,
-              ),
-            ),
-            Positioned(
-              left: 0,
-              right: 0,
-              top: 0,
-              child: IgnorePointer(
-                child: Container(
-                  height: 1,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        Colors.transparent,
-                        Colors.white.withValues(alpha: isDark ? 0.12 : 0.82),
-                        Colors.transparent,
-                      ],
-                    ),
-                  ),
-                ),
               ),
             ),
             Row(
@@ -1828,7 +1815,7 @@ class _BottomNavCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final showLabel = !item.prominent && (item.showLabel || selected);
+    final showLabel = !item.prominent && item.showLabel;
     final iconColor = item.prominent
         ? profile.colors.heroText
         : selected
@@ -1842,120 +1829,115 @@ class _BottomNavCell extends StatelessWidget {
       profile.colors.primary.withValues(alpha: isDark ? 0.18 : 0.14),
       profile.colors.heroBase,
     );
+    final iconBubble = AnimatedContainer(
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+      width: item.prominent ? 62 : (selected ? 42 : 36),
+      height: item.prominent ? 62 : (selected ? 42 : 36),
+      decoration: BoxDecoration(
+        gradient: item.prominent
+            ? LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Color.alphaBlend(
+                    Colors.white.withValues(alpha: isDark ? 0.12 : 0.42),
+                    profile.colors.warmAccent,
+                  ),
+                  Color.alphaBlend(
+                    profile.colors.primary.withValues(
+                      alpha: isDark ? 0.36 : 0.64,
+                    ),
+                    profile.colors.heroBase,
+                  ),
+                ],
+              )
+            : selected
+            ? LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [selectedStart, selectedEnd],
+              )
+            : null,
+        color: !item.prominent && !selected ? Colors.transparent : null,
+        shape: BoxShape.circle,
+        border: !item.prominent && selected
+            ? Border.all(
+                color: Colors.white.withValues(alpha: isDark ? 0.16 : 0.72),
+                width: 1,
+              )
+            : null,
+        boxShadow: item.prominent || selected
+            ? [
+                BoxShadow(
+                  color: Colors.black.withValues(
+                    alpha: item.prominent ? 0.24 : 0.12,
+                  ),
+                  blurRadius: item.prominent ? 30 : 20,
+                  offset: const Offset(0, 12),
+                  spreadRadius: item.prominent ? -14 : -16,
+                ),
+              ]
+            : const [],
+      ),
+      child: Center(
+        child: IconTheme(
+          data: IconThemeData(color: iconColor, size: item.prominent ? 30 : 22),
+          child: item.icon,
+        ),
+      ),
+    );
+
+    if (item.prominent) {
+      return SizedBox(height: 60, child: Center(child: iconBubble));
+    }
+
+    if (!showLabel) {
+      return SizedBox(height: 60, child: Center(child: iconBubble));
+    }
 
     return SizedBox(
-      height: item.prominent ? 74 : 68,
-      child: Align(
-        alignment: Alignment.bottomCenter,
-        child: Transform.translate(
-          offset: Offset(0, item.prominent ? -18 : 0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 220),
+      height: 64,
+      child: Column(
+        children: [
+          SizedBox(height: 42, child: Center(child: iconBubble)),
+          const SizedBox(height: 6),
+          SizedBox(
+            height: 14,
+            child: ClipRect(
+              child: AnimatedOpacity(
+                duration: const Duration(milliseconds: 180),
                 curve: Curves.easeOutCubic,
-                width: item.prominent ? 66 : (selected ? 46 : 38),
-                height: item.prominent ? 66 : (selected ? 46 : 38),
-                decoration: BoxDecoration(
-                  gradient: item.prominent
-                      ? LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color.alphaBlend(
-                              Colors.white.withValues(
-                                alpha: isDark ? 0.12 : 0.42,
-                              ),
-                              profile.colors.warmAccent,
-                            ),
-                            Color.alphaBlend(
-                              profile.colors.primary.withValues(
-                                alpha: isDark ? 0.36 : 0.64,
-                              ),
-                              profile.colors.heroBase,
-                            ),
-                          ],
-                        )
-                      : selected
-                      ? LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [selectedStart, selectedEnd],
-                        )
-                      : null,
-                  color: !item.prominent && !selected
-                      ? Colors.transparent
-                      : null,
-                  shape: BoxShape.circle,
-                  border: !item.prominent && selected
-                      ? Border.all(
-                          color: Colors.white.withValues(
-                            alpha: isDark ? 0.16 : 0.72,
+                opacity: showLabel ? 1 : 0,
+                child: AnimatedSlide(
+                  duration: const Duration(milliseconds: 220),
+                  curve: Curves.easeOutCubic,
+                  offset: showLabel ? Offset.zero : const Offset(0, 0.18),
+                  child: Center(
+                    child: Text(
+                      item.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: profile.typography
+                          .navigationLabel(
+                            color: selected
+                                ? profile.colors.text
+                                : (isDark
+                                      ? const Color(0xFF90A0AF)
+                                      : const Color(0xFF8F867D)),
+                          )
+                          .copyWith(
+                            fontSize: 10.5,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: 0.78,
                           ),
-                          width: 1,
-                        )
-                      : null,
-                  boxShadow: item.prominent || selected
-                      ? [
-                          BoxShadow(
-                            color: Colors.black.withValues(
-                              alpha: item.prominent ? 0.24 : 0.12,
-                            ),
-                            blurRadius: item.prominent ? 30 : 20,
-                            offset: const Offset(0, 12),
-                            spreadRadius: item.prominent ? -14 : -16,
-                          ),
-                        ]
-                      : const [],
-                ),
-                child: Center(
-                  child: IconTheme(
-                    data: IconThemeData(
-                      color: iconColor,
-                      size: item.prominent ? 30 : 22,
                     ),
-                    child: item.icon,
                   ),
                 ),
               ),
-              if (showLabel) ...[
-                const SizedBox(height: 6),
-                SizedBox(
-                  height: 14,
-                  child: AnimatedOpacity(
-                    duration: const Duration(milliseconds: 180),
-                    curve: Curves.easeOutCubic,
-                    opacity: showLabel ? 1 : 0,
-                    child: AnimatedSlide(
-                      duration: const Duration(milliseconds: 220),
-                      curve: Curves.easeOutCubic,
-                      offset: showLabel ? Offset.zero : const Offset(0, 0.18),
-                      child: Text(
-                        item.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: profile.typography
-                            .navigationLabel(
-                              color: selected
-                                  ? profile.colors.text
-                                  : (isDark
-                                        ? const Color(0xFF90A0AF)
-                                        : const Color(0xFF8F867D)),
-                            )
-                            .copyWith(
-                              fontSize: 10.5,
-                              fontWeight: FontWeight.w700,
-                              letterSpacing: 0.78,
-                            ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }

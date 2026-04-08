@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/design/widgets/jovia_assets.dart';
 
-const Duration kSplashMotionDuration = Duration(milliseconds: 920);
-const Duration kSplashFadeDuration = Duration(milliseconds: 220);
+const Duration kSplashMotionDuration = Duration(milliseconds: 520);
+const Duration kSplashFadeDuration = Duration(milliseconds: 160);
 const double kSplashLogoWidthFactor = 0.7;
 const double kSplashLogoMinWidth = 220;
 const double kSplashLogoMaxWidth = 420;
@@ -12,9 +12,14 @@ const double kSplashInitialOffsetY = 16;
 const Color kSplashBackgroundColor = Color(0xFF000000);
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key, required this.child});
+  const SplashScreen({
+    super.key,
+    required this.child,
+    this.readyToReveal = true,
+  });
 
   final Widget child;
+  final bool readyToReveal;
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -87,7 +92,9 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _motionController.addStatusListener((status) {
-      if (status != AnimationStatus.completed || !mounted) {
+      if (status != AnimationStatus.completed ||
+          !mounted ||
+          !widget.readyToReveal) {
         return;
       }
       setState(() => _showChild = true);
@@ -95,6 +102,21 @@ class _SplashScreenState extends State<SplashScreen>
     });
 
     _motionController.forward();
+  }
+
+  @override
+  void didUpdateWidget(covariant SplashScreen oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!oldWidget.readyToReveal && widget.readyToReveal) {
+      if (_motionController.status == AnimationStatus.completed) {
+        if (!_showChild) {
+          setState(() => _showChild = true);
+        }
+        if (!_fadeController.isAnimating && !_fadeController.isCompleted) {
+          _fadeController.forward();
+        }
+      }
+    }
   }
 
   @override

@@ -11,6 +11,7 @@ import 'package:mobile/app/people/person_profile.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/tabs/bond_models.dart';
 import 'package:mobile/app/tabs/bond_result_page.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
@@ -1053,7 +1054,7 @@ class _BondAvatarFallback extends StatelessWidget {
     }
     final first = parts.first.substring(0, 1);
     final second = parts.length > 1 ? parts.last.substring(0, 1) : '';
-    return (first + second).toUpperCase();
+    return turkishToUpper(first + second);
   }
 
   static bool _isPlaceholder(String value) {

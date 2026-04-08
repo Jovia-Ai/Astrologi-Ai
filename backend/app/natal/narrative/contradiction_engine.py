@@ -53,6 +53,34 @@ _CONTRADICTION_BLUEPRINTS: Dict[str, Dict[str, Any]] = {
     },
 }
 
+_DEFAULT_CONTRADICTION_GATE = {
+    "min_support": 0.42,
+    "min_balance": 0.48,
+    "proto_escape": 0.74,
+    "feature_scale": 0.8,
+}
+
+_CONTRADICTION_GATES: Dict[str, Dict[str, float]] = {
+    "structure_vs_originality": {
+        "min_support": 0.60,
+        "min_balance": 0.72,
+        "proto_escape": 0.92,
+        "feature_scale": 0.55,
+    },
+    "speed_vs_control": {
+        "min_support": 0.48,
+        "min_balance": 0.56,
+        "proto_escape": 0.76,
+        "feature_scale": 0.75,
+    },
+    "composure_vs_internal_pressure": {
+        "min_support": 0.44,
+        "min_balance": 0.5,
+        "proto_escape": 0.78,
+        "feature_scale": 0.72,
+    },
+}
+
 
 def _clamp01(value: Any) -> float:
     try:
@@ -175,13 +203,42 @@ def build_contradiction_signatures(
         proto_score = float(proto.get("score") or 0.0)
         if left_score < 0.2 or right_score < 0.2:
             continue
+        gate = {
+            **_DEFAULT_CONTRADICTION_GATE,
+            **dict(_CONTRADICTION_GATES.get(contradiction_id) or {}),
+        }
+        support_floor = min(left_score, right_score)
+        balance_score = _clamp01(1.0 - abs(left_score - right_score))
         feature_bonus = _feature_bonus(
             contradiction_id,
             natal_feature_graph=feature_graph,
             compensation_scores=compensation_scores,
         )
-        score = _clamp01(max(proto_score, (min(left_score, right_score) * 0.82) + (feature_bonus * 0.18)))
-        if score < 0.26:
+        if (
+            support_floor < float(gate["min_support"])
+            or balance_score < float(gate["min_balance"])
+        ) and proto_score < float(gate["proto_escape"]):
+            continue
+        scaled_feature_bonus = _clamp01(feature_bonus * float(gate["feature_scale"]))
+        confidence_mean = _clamp01(
+            (
+                float(left_entry.get("confidence") or 0.0)
+                + float(right_entry.get("confidence") or 0.0)
+            )
+            / 2.0
+        )
+        score = _clamp01(
+            (support_floor * 0.42)
+            + (balance_score * 0.22)
+            + (proto_score * 0.18)
+            + (scaled_feature_bonus * 0.12)
+            + (confidence_mean * 0.06)
+        )
+        if contradiction_id == "structure_vs_originality" and abs(left_score - right_score) > 0.14:
+            score = _clamp01(score - 0.06)
+        if contradiction_id == "structure_vs_originality" and score < 0.72:
+            continue
+        if score < 0.38:
             continue
         related_motifs = [
             motif_id
@@ -215,10 +272,11 @@ def build_contradiction_signatures(
         )
         confidence = _clamp01(
             0.30
-            + (proto_score * 0.24)
-            + (min(left_score, right_score) * 0.22)
-            + (feature_bonus * 0.16)
-            + (_clamp01((float(left_entry.get("confidence") or 0.0) + float(right_entry.get("confidence") or 0.0)) / 2.0) * 0.08)
+            + (support_floor * 0.20)
+            + (balance_score * 0.14)
+            + (proto_score * 0.16)
+            + (scaled_feature_bonus * 0.12)
+            + (confidence_mean * 0.08)
         )
         signatures.append(
             {
@@ -241,6 +299,9 @@ def build_contradiction_signatures(
                 "debug": {
                     "proto_score": round(proto_score, 4),
                     "feature_bonus": round(feature_bonus, 4),
+                    "scaled_feature_bonus": round(scaled_feature_bonus, 4),
+                    "support_floor": round(support_floor, 4),
+                    "balance_score": round(balance_score, 4),
                     "left_confidence": round(float(left_entry.get("confidence") or 0.0), 4),
                     "right_confidence": round(float(right_entry.get("confidence") or 0.0), 4),
                 },

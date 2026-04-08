@@ -15,6 +15,11 @@ from app.narrative.humanize_tr import (
 )
 from app.natal.narrative.aspect_bundle_selector import select_aspect_bundles
 from app.natal.profile_insights import build_profile_insight_modules
+from app.natal.profile_detail_editorial import (
+    build_editorial_detail_blocks_for_imprint_entry,
+    build_editorial_detail_blocks_for_profile_block,
+    build_editorial_detail_blocks_for_thread,
+)
 from app.natal.narrative.phrase_lib_tr_profile import humanize_public_chips, soft_public_astro_hint
 from .public_models import (
     PublicFlags,
@@ -212,6 +217,7 @@ _PROFILE_EDITORIAL_TITLES = {
     "mind_mechanics": "Zihnin nasıl çalışıyor",
     "protection_pattern": "Kendini nasıl koruyorsun",
     "intimacy_guard": "Yakınlık sende nasıl açılıyor",
+    "visible_power": "Dışarıya verdiğin iz",
     "control_vs_flow": "Tutma ve bırakma dengesi",
     "creative_channel": "Fırsatın aktığı yer",
     "self_definition": "Sende kolay tanınan çizgi",
@@ -267,6 +273,7 @@ def _editorial_bundle_teaser(*, family: str, recognition: list[str], gifts: list
         "intimacy_guard": f"Yakınlıkta önce {lead} tarafın devreye giriyor.",
         "creative_channel": f"Akışın en çok {lead} olduğunda güçleniyor.",
         "outer_inner_split": f"İnsanlar sende önce {lead} tarafını hissediyor.",
+        "visible_power": f"İnsanlar sende önce {lead} tarafını fark ediyor.",
         "control_vs_flow": f"İçinde aynı anda {lead} çalışan bir denge var.",
         "protection_pattern": f"Zorlandığında ilk devreye {lead} tarafın giriyor.",
         "contradiction_core": f"İçinde aynı anda {lead} isteyen iki yön var.",
@@ -293,6 +300,7 @@ def _editorial_bundle_body(
             "mind_mechanics": f"Bu tema en çok {domain_text} alanında kendini gösteriyor.",
             "intimacy_guard": f"Bu tema en çok {domain_text} alanında hissediliyor.",
             "creative_channel": f"Bu akış en çok {domain_text} alanında açılıyor.",
+            "visible_power": f"Bu görünürlük çizgisi en çok {domain_text} alanında belirginleşiyor.",
         }
         sentences.append(
             domain_templates.get(
@@ -404,6 +412,9 @@ def _build_profile_narrative_v3(
     personality_imprint: dict[str, Any],
     narrative_v2: dict[str, Any],
 ) -> dict[str, Any]:
+    thread_detail_blocks_by_family = _supporting_thread_detail_blocks_by_family(
+        supporting_threads,
+    )
     candidate_blocks: list[dict[str, Any]] = [
         _augment_profile_block(
             block,
@@ -486,7 +497,7 @@ def _build_profile_narrative_v3(
         if synthesized:
             extra_blocks.append(synthesized)
 
-    for thread in supporting_threads[:2]:
+    for thread in supporting_threads[:3]:
         synthesized = _thread_as_profile_block(thread)
         if synthesized:
             extra_blocks.append(synthesized)
@@ -495,7 +506,15 @@ def _build_profile_narrative_v3(
 
     detail_cards: list[dict[str, Any]] = []
     for block in [*core_blocks, *extra_blocks]:
-        detail_cards.append(_detail_card_from_profile_block(block))
+        detail_cards.append(
+            _detail_card_from_profile_block(
+                block,
+                supporting_thread_detail_blocks=thread_detail_blocks_by_family.get(
+                    str(block.get("family") or "").strip(),
+                    [],
+                ),
+            )
+        )
 
     for entry in _personality_imprint_detail_cards(personality_imprint)[:4]:
         detail_cards.append(entry)
@@ -616,6 +635,7 @@ def _thread_as_profile_block(thread: Mapping[str, Any]) -> dict[str, Any] | None
         "astro_hint": "",
         "astro_sources": [],
         "chips": [cleanup_tr_punctuation(str(item).strip()) for item in (thread.get("chips") or []) if str(item).strip()][:3],
+        "detail_blocks": build_editorial_detail_blocks_for_thread(thread),
         "family": family,
         "emphasis": "extra",
         "origin": "supporting_thread",
@@ -630,6 +650,15 @@ def _profile_family_for_thread(section_id: str, title: str) -> str:
         return "mind_mechanics"
     if "identity" in label or "kimlik" in label:
         return "outer_inner_split"
+    if (
+        "career" in label
+        or "kariyer" in label
+        or "görünür" in label
+        or "gorunur" in label
+        or "iş" in label
+        or "is" in label
+    ):
+        return "visible_power"
     if "home" in label or "kök" in label or "ev" in label:
         return "retreat_recharge"
     if "relation" in label or "iliş" in label or "yakın" in label:
@@ -637,7 +666,34 @@ def _profile_family_for_thread(section_id: str, title: str) -> str:
     return "inner_layer"
 
 
-def _detail_card_from_profile_block(block: Mapping[str, Any]) -> dict[str, Any]:
+def _supporting_thread_detail_blocks_by_family(
+    supporting_threads: list[dict[str, Any]],
+) -> dict[str, list[str]]:
+    out: dict[str, list[str]] = {}
+    for thread in supporting_threads:
+        if not isinstance(thread, Mapping):
+            continue
+        family = _profile_family_for_thread(
+            str(thread.get("section_id") or thread.get("id") or "").strip(),
+            str(thread.get("title") or "").strip(),
+        )
+        if not family or family in out:
+            continue
+        detail_blocks = build_editorial_detail_blocks_for_thread(thread)
+        if detail_blocks:
+            out[family] = detail_blocks
+    return out
+
+
+def _detail_card_from_profile_block(
+    block: Mapping[str, Any],
+    *,
+    supporting_thread_detail_blocks: list[str] | None = None,
+) -> dict[str, Any]:
+    detail_blocks = build_editorial_detail_blocks_for_profile_block(
+        block,
+        supporting_blocks=supporting_thread_detail_blocks,
+    )
     return {
         "card_key": str(block.get("card_key") or "").strip() or f"{str(block.get('id') or 'block').strip()}_detail",
         "id": str(block.get("id") or "").strip(),
@@ -648,6 +704,7 @@ def _detail_card_from_profile_block(block: Mapping[str, Any]) -> dict[str, Any]:
         "summary": str(block.get("teaser") or "").strip(),
         "body": str(block.get("body") or "").strip(),
         "micro": str(block.get("micro") or "").strip(),
+        "detail_blocks": detail_blocks,
         "chips": list(block.get("chips") or [])[:4],
         "astro_sources": list(block.get("astro_sources") or [])[:3],
     }
@@ -658,6 +715,12 @@ def _personality_imprint_detail_cards(payload: dict[str, Any]) -> list[dict[str,
         return []
     entries = payload.get("entries") if isinstance(payload.get("entries"), list) else []
     extra_entries = payload.get("extra_entries") if isinstance(payload.get("extra_entries"), list) else []
+    support_entries = payload.get("support_entries") if isinstance(payload.get("support_entries"), list) else []
+    support_entries_by_key = {
+        str(item.get("key") or "").strip(): item
+        for item in support_entries
+        if isinstance(item, dict) and str(item.get("key") or "").strip()
+    }
     cards: list[dict[str, Any]] = []
     for item in [*entries, *extra_entries]:
         if not isinstance(item, dict):
@@ -670,15 +733,11 @@ def _personality_imprint_detail_cards(payload: dict[str, Any]) -> list[dict[str,
             "house_placement": "placement_signature",
             "sign_placement": "tone_signature",
         }.get(str(item.get("kind") or "").strip(), "placement_signature")
-        parts = [
-            cleanup_tr_punctuation(str(item.get("aura") or "").strip()),
-            cleanup_tr_punctuation(str(item.get("trait") or "").strip()),
-            cleanup_tr_punctuation(str(item.get("drive") or "").strip()),
-            cleanup_tr_punctuation(str(item.get("gift") or "").strip()),
-            cleanup_tr_punctuation(str(item.get("shadow") or "").strip()),
-            cleanup_tr_punctuation(str(item.get("background_hint") or "").strip()),
-        ]
-        body = "\n\n".join([part for part in parts if part])
+        detail_blocks = build_editorial_detail_blocks_for_imprint_entry(
+            item,
+            support_entries_by_key=support_entries_by_key,
+        )
+        body = "\n\n".join(detail_blocks)
         if not body:
             continue
         cards.append(
@@ -689,9 +748,10 @@ def _personality_imprint_detail_cards(payload: dict[str, Any]) -> list[dict[str,
                 "origin": "personality_imprint",
                 "eyebrow": "Kişilik izi",
                 "title": title,
-                "summary": next((part for part in parts if part), title),
+                "summary": cleanup_tr_punctuation(str(item.get("aura") or item.get("trait") or title).strip()),
                 "body": body,
                 "micro": "",
+                "detail_blocks": detail_blocks,
                 "chips": [cleanup_tr_punctuation(str(tag).strip()) for tag in (item.get("tags") or []) if str(tag).strip()][:4],
                 "astro_sources": [],
             }

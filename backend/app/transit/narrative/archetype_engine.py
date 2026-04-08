@@ -7,6 +7,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, Mapping
 
+from app.transit.narrative.text_quality_tr import tr_normalize, tr_normalize_tree
+
 BLACKLIST = {
     "orb",
     "aspect",
@@ -52,11 +54,11 @@ def _contains_blacklist(value: str) -> bool:
 
 
 def _safe_sentence(value: str) -> str:
-    text = _normalize_sentence(value)
+    text = tr_normalize(_normalize_sentence(value))
     if not text:
-        return "Bugunu sade ve net adimlarla tasimak daha iyi hissettirebilir."
+        return tr_normalize("Bugunu sade ve net adimlarla tasimak daha iyi hissettirebilir.")
     if _contains_blacklist(text):
-        return "Bugunu sade ve net adimlarla tasimak daha iyi hissettirebilir."
+        return tr_normalize("Bugunu sade ve net adimlarla tasimak daha iyi hissettirebilir.")
     return text
 
 
@@ -118,7 +120,7 @@ def _seed_from_item(item: Mapping[str, Any]) -> int:
 def _load_pack() -> Dict[str, Any]:
     path = Path(__file__).resolve().parents[1] / "content" / "archetypes.v1.tr.json"
     with path.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+        return tr_normalize_tree(json.load(handle))
 
 
 def build_insight_pack(

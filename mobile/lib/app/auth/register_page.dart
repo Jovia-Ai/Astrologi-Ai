@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/app/onboarding/onboarding_birth_page.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 import 'auth_debug_state.dart';
 import 'user_bootstrap.dart';
@@ -33,7 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Future<void> _register() async {
     if (_passwordController.text != _confirmController.text) {
       setState(() {
-        _error = 'Passwords do not match.';
+        _error = context.l10n.registerPasswordsDoNotMatch;
       });
       return;
     }
@@ -91,6 +92,7 @@ class _RegisterPageState extends State<RegisterPage> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final profile = context.profileTheme;
     final spacing = profile.spacing;
+    final l10n = context.l10n;
 
     return Scaffold(
       body: SafeArea(
@@ -110,17 +112,16 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const JoviaProfileTopBar(
-                    label: 'Kayit',
-                    centerText: 'yeni hesap',
+                  JoviaProfileTopBar(
+                    label: l10n.registerTopLabel,
+                    centerText: l10n.registerTopCenter,
                     reserveTrailingSpace: true,
                   ),
                   SizedBox(height: spacing.s24),
-                  const JoviaSectionHeader(
-                    label: 'Baslangic',
-                    title: 'Profil ritmine giris yap',
-                    body:
-                        'Hesabini olustur, sonra profil ve dogum katmanlarini ayni tipografik sistemde tamamla.',
+                  JoviaSectionHeader(
+                    label: l10n.registerSectionLabel,
+                    title: l10n.registerTitle,
+                    body: l10n.registerBody,
                     variant: JoviaSectionHeaderVariant.editorial,
                   ),
                   SizedBox(height: spacing.s24),
@@ -131,22 +132,24 @@ class _RegisterPageState extends State<RegisterPage> {
                         TextField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          decoration: const InputDecoration(labelText: 'Email'),
+                          decoration: InputDecoration(
+                            labelText: l10n.emailLabel,
+                          ),
                         ),
                         SizedBox(height: spacing.s12),
                         TextField(
                           controller: _passwordController,
                           obscureText: true,
-                          decoration: const InputDecoration(
-                            labelText: 'Password',
+                          decoration: InputDecoration(
+                            labelText: l10n.passwordLabel,
                           ),
                         ),
                         SizedBox(height: spacing.s12),
                         TextField(
                           controller: _confirmController,
                           obscureText: true,
-                          decoration: const InputDecoration(
-                            labelText: 'Confirm password',
+                          decoration: InputDecoration(
+                            labelText: l10n.confirmPasswordLabel,
                           ),
                         ),
                         if (_error != null) ...[
@@ -171,7 +174,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       strokeWidth: 2,
                                     ),
                                   )
-                                : const Text('Create account'),
+                                : Text(l10n.registerCreateAccount),
                           ),
                         ),
                         SizedBox(height: spacing.s8),
@@ -179,7 +182,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           alignment: Alignment.centerLeft,
                           child: TextButton(
                             onPressed: () => Navigator.of(context).pop(),
-                            child: const Text('Back to login'),
+                            child: Text(l10n.registerBackToLogin),
                           ),
                         ),
                       ],

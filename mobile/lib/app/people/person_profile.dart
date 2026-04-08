@@ -42,6 +42,27 @@ class PersonProfile {
     return raw;
   }
 
+  String get auraSeedKey {
+    return '$id|$name|$birthDate|${birthTime ?? ''}|$city|$country|$timezone';
+  }
+
+  String get monogram {
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((part) => part.isNotEmpty)
+        .toList();
+    if (parts.isEmpty) {
+      return '?';
+    }
+    if (parts.length == 1) {
+      return String.fromCharCode(parts.first.runes.first).toUpperCase();
+    }
+    final first = String.fromCharCode(parts.first.runes.first).toUpperCase();
+    final last = String.fromCharCode(parts.last.runes.first).toUpperCase();
+    return '$first$last';
+  }
+
   Map<String, dynamic> toProfileMap() {
     return {
       'person_id': id,

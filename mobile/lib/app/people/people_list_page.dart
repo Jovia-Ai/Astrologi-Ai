@@ -4,6 +4,7 @@ import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 import 'add_person_page.dart';
+import 'people_aura_repository.dart';
 import 'friend_profile_page.dart';
 import 'people_providers.dart';
 import 'people_repository.dart';
@@ -175,9 +176,9 @@ class _PeopleHeroCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return JoviaEditorialHeroBlock(
       label: 'Social',
-      title: 'Çevreni aynı editorial ritimde tut.',
+      title: 'Çevrenin aura tonlarını aynı akışta gör.',
       body:
-          'Illustration üstte, spacing daha geniş, kart yapısı daha sakin. Buradaki insanlar artık geri kalan tasarımla aynı premium akışın içinde.',
+          'Kişiler artık yalnızca isim olarak değil, yumuşak orb diliyle de okunuyor. Aura rengi doğum ekseninden geliyor ve people listesini daha canlı bir sosyal yüzeye çeviriyor.',
       large: true,
       background: Stack(
         children: [
@@ -188,32 +189,72 @@ class _PeopleHeroCard extends StatelessWidget {
               opacity: 0.1,
             ),
           ),
-          Positioned(
-            right: -8,
-            top: -4,
-            child: JoviaIllustrationAccent(
-              asset: JoviaIllustrationAsset.heart,
-              width: 88,
-              height: 88,
-              opacity: 0.84,
-            ),
-          ),
+          const _PeopleAuraCluster(),
         ],
       ),
       footer: const Wrap(
         spacing: 8,
         runSpacing: 8,
         children: [
-          JoviaMetaPill(label: 'Bond hazır'),
-          JoviaMetaPill(label: 'Sessiz ton'),
-          JoviaMetaPill(label: 'Premium social'),
+          JoviaMetaPill(label: 'Aura görünümü'),
+          JoviaMetaPill(label: 'Doğum ekseni'),
+          JoviaMetaPill(label: 'Sosyal ton'),
         ],
       ),
     );
   }
 }
 
-class _PeopleListItem extends StatelessWidget {
+class _PeopleAuraCluster extends StatelessWidget {
+  const _PeopleAuraCluster();
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.profileTheme.colors;
+    return Stack(
+      children: [
+        Positioned(
+          right: 14,
+          top: 18,
+          child: JoviaAuraOrb(
+            palette: joviaAuraPaletteForBirthData(
+              colors: colors,
+              birthDate: '1996-07-27',
+              seedText: 'hero-fire',
+            ),
+            size: 82,
+          ),
+        ),
+        Positioned(
+          right: 76,
+          top: 76,
+          child: JoviaAuraOrb(
+            palette: joviaAuraPaletteForBirthData(
+              colors: colors,
+              birthDate: '1996-10-31',
+              seedText: 'hero-water',
+            ),
+            size: 58,
+          ),
+        ),
+        Positioned(
+          right: 34,
+          top: 102,
+          child: JoviaAuraOrb(
+            palette: joviaAuraPaletteForBirthData(
+              colors: colors,
+              birthDate: '1996-02-12',
+              seedText: 'hero-air',
+            ),
+            size: 42,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _PeopleListItem extends ConsumerWidget {
   const _PeopleListItem({
     required this.person,
     required this.onTap,
@@ -225,25 +266,30 @@ class _PeopleListItem extends StatelessWidget {
   final VoidCallback onEdit;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.profileTheme.colors;
+    final fallbackAura = joviaAuraPaletteForBirthData(
+      colors: colors,
+      birthDate: person.birthDate,
+      birthTime: person.birthTime,
+      seedText: person.auraSeedKey,
+    );
+    final semanticAsync = ref.watch(
+      personAuraSemanticProvider(PersonAuraRequest.fromPerson(person)),
+    );
+    final semantic = semanticAsync.valueOrNull;
+    final aura = semantic == null
+        ? fallbackAura
+        : joviaAuraPaletteForSemantic(colors: colors, semantic: semantic);
+    final auraLabel = semantic?.displayLabel ?? fallbackAura.label;
+
     return JoviaUtilityRow(
       label: 'Friend',
       title: person.name,
       body:
           '${person.birthDate} • ${((person.birthTime ?? '').trim().isEmpty ? 'saat yok' : person.birthTime!.trim())} • ${person.city}, ${person.country}',
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: colors.panelSoft,
-          border: Border.all(color: colors.strokeSoft),
-        ),
-        child: const Center(
-          child: JoviaUiIcon(asset: JoviaUiAsset.profileComet, size: 16),
-        ),
-      ),
+      meta: [auraLabel],
+      leading: JoviaAuraOrb(palette: aura, size: 44, monogram: person.monogram),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

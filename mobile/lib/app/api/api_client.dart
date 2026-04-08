@@ -6,6 +6,8 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'api_environment.dart';
 
+enum ApiRequestSla { fast, interactive, background }
+
 class ApiClient {
   ApiClient({String? baseUrl})
     : _baseUrl = ApiEnvironment.resolveBaseUrl(baseUrl),
@@ -21,6 +23,14 @@ class ApiClient {
       <String, _CachedResponse>{};
   static final Map<String, Future<Response<dynamic>>> _inflightRequests =
       <String, Future<Response<dynamic>>>{};
+
+  static Duration timeoutFor(ApiRequestSla sla) {
+    return switch (sla) {
+      ApiRequestSla.fast => const Duration(seconds: 3),
+      ApiRequestSla.interactive => const Duration(seconds: 8),
+      ApiRequestSla.background => const Duration(seconds: 18),
+    };
+  }
 
   static Dio _buildDio(String baseUrl) {
     final dio = Dio(
@@ -49,6 +59,7 @@ class ApiClient {
     String path, {
     Object? data,
     Duration? receiveTimeout,
+    ApiRequestSla? requestSla,
     Duration? cacheTtl,
   }) {
     return _request(
@@ -56,6 +67,7 @@ class ApiClient {
       path: path,
       data: data,
       receiveTimeout: receiveTimeout,
+      requestSla: requestSla,
       cacheTtl: cacheTtl,
     );
   }
@@ -64,6 +76,7 @@ class ApiClient {
     String path, {
     Map<String, dynamic>? queryParameters,
     Duration? receiveTimeout,
+    ApiRequestSla? requestSla,
     Duration? cacheTtl,
   }) {
     return _request(
@@ -71,6 +84,7 @@ class ApiClient {
       path: path,
       queryParameters: queryParameters,
       receiveTimeout: receiveTimeout,
+      requestSla: requestSla,
       cacheTtl: cacheTtl,
     );
   }
@@ -81,6 +95,7 @@ class ApiClient {
     Object? data,
     Map<String, dynamic>? queryParameters,
     Duration? receiveTimeout,
+    ApiRequestSla? requestSla,
     Duration? cacheTtl,
   }) {
     final requestKey = _buildRequestKey(
@@ -115,6 +130,7 @@ class ApiClient {
               data: data,
               queryParameters: queryParameters,
               receiveTimeout: receiveTimeout,
+              requestSla: requestSla,
             )
             .then((response) {
               if (cacheTtl != null && (response.statusCode ?? 200) < 400) {
@@ -139,12 +155,15 @@ class ApiClient {
     Object? data,
     Map<String, dynamic>? queryParameters,
     Duration? receiveTimeout,
+    ApiRequestSla? requestSla,
   }) {
+    final effectiveTimeout =
+        receiveTimeout ?? (requestSla == null ? null : timeoutFor(requestSla));
     final options = Options(
       method: method,
       responseType: ResponseType.json,
-      receiveTimeout: receiveTimeout,
-      sendTimeout: receiveTimeout,
+      receiveTimeout: effectiveTimeout,
+      sendTimeout: effectiveTimeout,
     );
     return _dio.request<dynamic>(
       path,

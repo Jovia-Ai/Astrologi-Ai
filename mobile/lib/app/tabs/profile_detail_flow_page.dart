@@ -66,13 +66,28 @@ Color _detailCardBackground(
   bool emphasized = false,
 }) {
   final profile = context.profileTheme;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  if (isDark) {
+    final base = Color.alphaBlend(
+      tone.accent.withValues(alpha: emphasized ? 0.1 : 0.06),
+      profile.colors.surface,
+    );
+    return Color.alphaBlend(
+      tone.accentSoft.withValues(alpha: emphasized ? 0.08 : 0.04),
+      base,
+    );
+  }
   final base = Color.alphaBlend(
-    tone.accent.withValues(alpha: emphasized ? 0.1 : 0.06),
+    Colors.white.withValues(alpha: emphasized ? 0.9 : 0.82),
     profile.colors.surface,
   );
-  return Color.alphaBlend(
-    tone.accentSoft.withValues(alpha: emphasized ? 0.08 : 0.04),
+  final violetWash = Color.alphaBlend(
+    tone.accent.withValues(alpha: emphasized ? 0.12 : 0.08),
     base,
+  );
+  return Color.alphaBlend(
+    const Color(0xFFF1EAFF).withValues(alpha: emphasized ? 0.28 : 0.18),
+    violetWash,
   );
 }
 
@@ -81,19 +96,91 @@ Color _detailInsetBackground(
   ProfileDetailTone tone, {
   bool highlighted = false,
 }) {
+  final profile = context.profileTheme;
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  if (isDark) {
+    return Color.alphaBlend(
+      (highlighted ? tone.accent : tone.accentSoft).withValues(
+        alpha: highlighted ? 0.16 : 0.08,
+      ),
+      profile.colors.panelSoft,
+    );
+  }
+  final base = Color.alphaBlend(
+    Colors.white.withValues(alpha: highlighted ? 0.72 : 0.62),
+    profile.colors.panelSoft,
+  );
   return Color.alphaBlend(
-    (highlighted ? tone.accent : tone.accentSoft).withValues(
-      alpha: highlighted ? 0.16 : 0.08,
-    ),
-    context.profileTheme.colors.panelSoft,
+    tone.accent.withValues(alpha: highlighted ? 0.1 : 0.07),
+    base,
   );
 }
 
 Color _detailStrokeColor(BuildContext context, ProfileDetailTone tone) {
+  final isDark = Theme.of(context).brightness == Brightness.dark;
+  if (isDark) {
+    return Color.alphaBlend(
+      tone.accent.withValues(alpha: 0.16),
+      context.profileTheme.colors.strokeSoft,
+    );
+  }
   return Color.alphaBlend(
-    tone.accent.withValues(alpha: 0.16),
+    tone.accent.withValues(alpha: 0.045),
     context.profileTheme.colors.strokeSoft,
   );
+}
+
+Color _detailLabelTextColor(BuildContext context, ProfileDetailTone tone) {
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return tone.accent;
+  }
+  return Color.alphaBlend(Colors.white.withValues(alpha: 0.12), tone.accent);
+}
+
+Color _detailIntroTextColor(BuildContext context) {
+  final profile = context.profileTheme;
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return profile.colors.text.withValues(alpha: 0.9);
+  }
+  return profile.colors.text.withValues(alpha: 0.8);
+}
+
+Color _detailBodyTextColor(BuildContext context) {
+  final profile = context.profileTheme;
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return profile.colors.text.withValues(alpha: 0.96);
+  }
+  return profile.colors.text.withValues(alpha: 0.9);
+}
+
+Color _detailMutedTextColor(BuildContext context) {
+  final profile = context.profileTheme;
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return profile.colors.text.withValues(alpha: 0.68);
+  }
+  return profile.colors.text.withValues(alpha: 0.58);
+}
+
+Color _detailChipTextColor(BuildContext context) {
+  final profile = context.profileTheme;
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return profile.colors.text.withValues(alpha: 0.78);
+  }
+  return profile.colors.text.withValues(alpha: 0.68);
+}
+
+Color _detailInfluenceTextColor(BuildContext context) {
+  final profile = context.profileTheme;
+  if (Theme.of(context).brightness == Brightness.dark) {
+    return profile.colors.text.withValues(alpha: 0.82);
+  }
+  return profile.colors.text.withValues(alpha: 0.78);
+}
+
+String _detailInfluenceLabel(BuildContext context) {
+  return Localizations.localeOf(context).languageCode == 'tr'
+      ? 'Etkileyenler'
+      : 'Influences';
 }
 
 ProfileDetailTone profileDetailToneForSignature({
@@ -305,6 +392,7 @@ class ProfileDetailSceneData {
     required this.intro,
     required this.bodyBlocks,
     required this.chips,
+    required this.astroSources,
     required this.whyText,
     required this.illustrationAsset,
     required this.variant,
@@ -317,6 +405,7 @@ class ProfileDetailSceneData {
   final String intro;
   final List<String> bodyBlocks;
   final List<String> chips;
+  final List<String> astroSources;
   final String whyText;
   final JoviaIllustrationAsset illustrationAsset;
   final ProfileDetailSceneVariant variant;
@@ -333,6 +422,7 @@ class ProfileDetailSceneData {
       intro: intro,
       bodyBlocks: bodyBlocks,
       chips: chips,
+      astroSources: astroSources,
       whyText: whyText,
       illustrationAsset: illustrationAsset,
       variant: variant ?? this.variant,
@@ -359,6 +449,15 @@ class ProfileDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final firstScene = scenes.isNotEmpty ? scenes.first : null;
+    final topBarLabel = firstScene?.eyebrow.trim().isNotEmpty == true
+        ? firstScene!.eyebrow
+        : flowTitle;
+    final topBarCenterText =
+        firstScene == null ||
+            firstScene.title.trim().isEmpty ||
+            firstScene.title.trim() == flowTitle.trim()
+        ? null
+        : flowTitle;
     return Scaffold(
       backgroundColor: profile.colors.bg,
       body: ColoredBox(
@@ -371,65 +470,14 @@ class ProfileDetailPage extends StatelessWidget {
               padding: EdgeInsets.zero,
               children: [
                 JoviaProfileTopBar(
-                  label: flowTitle,
-                  centerText: firstScene?.title ?? '',
+                  label: topBarLabel,
+                  centerText: topBarCenterText,
                   onBackTap: () => Navigator.of(context).maybePop(),
                   reserveTrailingSpace: true,
                 ),
-                const SizedBox(height: 18),
-                JoviaEditorialHeroBlock(
-                  label: firstScene?.eyebrow.isNotEmpty == true
-                      ? firstScene!.eyebrow
-                      : 'Detay',
-                  title: flowTitle,
-                  body: flowSubtitle,
-                  large: true,
-                  background: Stack(
-                    children: [
-                      Positioned(
-                        left: -26,
-                        bottom: -34,
-                        child: Container(
-                          width: 170,
-                          height: 170,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: RadialGradient(
-                              colors: [
-                                tone.accent.withValues(alpha: 0.22),
-                                Colors.transparent,
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (firstScene != null)
-                        Positioned(
-                          right: -8,
-                          top: -8,
-                          child: JoviaIllustrationAccent(
-                            asset: firstScene.illustrationAsset,
-                            width: 92,
-                            height: 92,
-                            opacity: 0.84,
-                          ),
-                        ),
-                    ],
-                  ),
-                  footer: firstScene == null || firstScene.chips.isEmpty
-                      ? null
-                      : Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: [
-                            for (final chip in firstScene.chips.take(3))
-                              _ProfileDetailThemeChip(label: chip, tone: tone),
-                          ],
-                        ),
-                ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
                 for (var index = 0; index < scenes.length; index++) ...[
-                  _ProfileDetailSceneCard(
+                  _ProfileDetailPinnedSceneCard(
                     scene: scenes[index],
                     index: index,
                     total: scenes.length,
@@ -446,8 +494,8 @@ class ProfileDetailPage extends StatelessWidget {
   }
 }
 
-class _ProfileDetailSceneCard extends StatelessWidget {
-  const _ProfileDetailSceneCard({
+class _ProfileDetailPinnedSceneCard extends StatelessWidget {
+  const _ProfileDetailPinnedSceneCard({
     required this.scene,
     required this.index,
     required this.total,
@@ -463,7 +511,7 @@ class _ProfileDetailSceneCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final hasIntro = scene.intro.trim().isNotEmpty;
-    final hasWhy = scene.whyText.trim().isNotEmpty;
+    final pages = _buildPinnedScenePages(scene);
     return JoviaSurfaceCard(
       radius: 28,
       padding: EdgeInsets.zero,
@@ -510,7 +558,7 @@ class _ProfileDetailSceneCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            scene.eyebrow.isNotEmpty ? scene.eyebrow : 'Kart',
+                            scene.eyebrow.isNotEmpty ? scene.eyebrow : 'Detay',
                             style: profile.typography.monoEyebrow.copyWith(
                               color: tone.accent,
                               fontSize: 11.5,
@@ -522,7 +570,7 @@ class _ProfileDetailSceneCard extends StatelessWidget {
                             scene.title,
                             style: profile.typography.section.copyWith(
                               color: profile.colors.text,
-                              fontSize: 26,
+                              fontSize: 28,
                               height: 1.08,
                             ),
                           ),
@@ -542,37 +590,14 @@ class _ProfileDetailSceneCard extends StatelessWidget {
                   const SizedBox(height: 12),
                   Text(
                     scene.intro,
-                    style: profile.typography.bodyCompact.copyWith(
+                    style: profile.typography.bodyReading.copyWith(
                       color: tone.mutedText,
-                      height: 1.6,
+                      height: 1.58,
                     ),
                   ),
                 ],
-                if (scene.bodyBlocks.isNotEmpty) ...[
-                  const SizedBox(height: 16),
-                  for (final block in scene.bodyBlocks) ...[
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.fromLTRB(14, 12, 14, 12),
-                      decoration: BoxDecoration(
-                        color: _detailInsetBackground(context, tone),
-                        borderRadius: BorderRadius.circular(18),
-                        border: Border.all(
-                          color: _detailStrokeColor(context, tone),
-                        ),
-                      ),
-                      child: Text(
-                        block,
-                        style: profile.typography.bodyCompact.copyWith(
-                          color: profile.colors.text,
-                          height: 1.6,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-                ],
                 if (scene.chips.isNotEmpty) ...[
+                  const SizedBox(height: 16),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
@@ -581,23 +606,13 @@ class _ProfileDetailSceneCard extends StatelessWidget {
                         _ProfileDetailThemeChip(label: chip, tone: tone),
                     ],
                   ),
-                  if (hasWhy) const SizedBox(height: 16),
                 ],
-                if (hasWhy) ...[
-                  Text(
-                    'Neden burada',
-                    style: profile.typography.eyebrow.copyWith(
-                      color: tone.accent,
-                      letterSpacing: 1.3,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    scene.whyText,
-                    style: profile.typography.bodyCompact.copyWith(
-                      color: tone.mutedText,
-                      height: 1.56,
-                    ),
+                if (pages.isNotEmpty) ...[
+                  const SizedBox(height: 20),
+                  _ProfileDetailPinnedTextPager(
+                    sceneId: scene.id,
+                    pages: pages,
+                    tone: tone,
                   ),
                 ],
                 if (index < total - 1 && scene.nextTitle.trim().isNotEmpty) ...[
@@ -616,6 +631,41 @@ class _ProfileDetailSceneCard extends StatelessWidget {
       ),
     );
   }
+}
+
+class _ProfileDetailPinnedPageData {
+  const _ProfileDetailPinnedPageData({required this.text, this.label = ''});
+
+  final String text;
+  final String label;
+}
+
+List<_ProfileDetailPinnedPageData> _buildPinnedScenePages(
+  ProfileDetailSceneData scene,
+) {
+  final pages = <_ProfileDetailPinnedPageData>[
+    for (final block
+        in scene.bodyBlocks
+            .map((item) => item.trim())
+            .where((item) => item.isNotEmpty))
+      _ProfileDetailPinnedPageData(text: block),
+  ];
+  final whyText = scene.whyText.trim();
+  if (whyText.isNotEmpty) {
+    pages.add(
+      _ProfileDetailPinnedPageData(text: whyText, label: 'Neden burada'),
+    );
+  }
+  if (pages.isNotEmpty) {
+    return pages;
+  }
+  final fallback = scene.intro.trim();
+  if (fallback.isEmpty) {
+    return const <_ProfileDetailPinnedPageData>[];
+  }
+  return <_ProfileDetailPinnedPageData>[
+    _ProfileDetailPinnedPageData(text: fallback),
+  ];
 }
 
 class _ProfileDetailThemeChip extends StatelessWidget {
@@ -641,6 +691,182 @@ class _ProfileDetailThemeChip extends StatelessWidget {
           fontWeight: FontWeight.w600,
         ),
       ),
+    );
+  }
+}
+
+class _ProfileDetailPinnedTextPager extends StatefulWidget {
+  const _ProfileDetailPinnedTextPager({
+    required this.sceneId,
+    required this.pages,
+    required this.tone,
+  });
+
+  final String sceneId;
+  final List<_ProfileDetailPinnedPageData> pages;
+  final ProfileDetailTone tone;
+
+  @override
+  State<_ProfileDetailPinnedTextPager> createState() =>
+      _ProfileDetailPinnedTextPagerState();
+}
+
+class _ProfileDetailPinnedTextPagerState
+    extends State<_ProfileDetailPinnedTextPager> {
+  late final PageController _pageController;
+  int _activeIndex = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _pageController = PageController();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          height: 316,
+          child: PageView.builder(
+            key: ValueKey<String>('profileDetailTextPager_${widget.sceneId}'),
+            controller: _pageController,
+            physics: const BouncingScrollPhysics(),
+            itemCount: widget.pages.length,
+            onPageChanged: (index) {
+              if (_activeIndex == index) {
+                return;
+              }
+              setState(() => _activeIndex = index);
+            },
+            itemBuilder: (context, index) {
+              return AnimatedBuilder(
+                animation: _pageController,
+                builder: (context, child) {
+                  final page = _pageController.hasClients
+                      ? (_pageController.page ?? _activeIndex.toDouble())
+                      : _activeIndex.toDouble();
+                  final distance = (page - index).clamp(-1.0, 1.0);
+                  final emphasis = (1 - distance.abs()).clamp(0.0, 1.0);
+                  final eased = Curves.easeOutCubic.transform(emphasis);
+                  final pageData = widget.pages[index];
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2),
+                    child: ClipRect(
+                      child: Transform.translate(
+                        offset: Offset(distance * -28, 0),
+                        child: Opacity(
+                          opacity: 0.46 + (0.54 * eased),
+                          child: Align(
+                            alignment: Alignment.topLeft,
+                            child: KeyedSubtree(
+                              key: ValueKey<String>(
+                                'profileDetailTextPage_${widget.sceneId}_$index',
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (pageData.label.isNotEmpty) ...[
+                                    Text(
+                                      pageData.label,
+                                      style: profile.typography.buttonLabel
+                                          .copyWith(
+                                            color: widget.tone.accent,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                    ),
+                                    const SizedBox(height: 10),
+                                  ],
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      physics: const BouncingScrollPhysics(),
+                                      child: Text(
+                                        pageData.text,
+                                        style: profile.typography.bodyReading
+                                            .copyWith(
+                                              color: pageData.label.isNotEmpty
+                                                  ? profile.colors.text
+                                                  : profile.colors.textLight,
+                                              fontSize: 16.4,
+                                              height: 1.68,
+                                            ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+              decoration: BoxDecoration(
+                color: widget.tone.accent.withValues(alpha: 0.08),
+                borderRadius: BorderRadius.circular(999),
+                border: Border.all(color: widget.tone.stroke),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.swipe_rounded,
+                    size: 14,
+                    color: widget.tone.accent,
+                  ),
+                  const SizedBox(width: 6),
+                  Text(
+                    '${_activeIndex + 1}/${widget.pages.length}',
+                    style: profile.typography.metaSoft.copyWith(
+                      color: profile.colors.text,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Spacer(),
+            Row(
+              children: [
+                for (var index = 0; index < widget.pages.length; index++) ...[
+                  AnimatedContainer(
+                    duration: const Duration(milliseconds: 220),
+                    curve: Curves.easeOutCubic,
+                    width: index == _activeIndex ? 20 : 8,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: index == _activeIndex
+                          ? widget.tone.accent
+                          : context.profileTheme.colors.strokeSoft,
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                  if (index != widget.pages.length - 1)
+                    const SizedBox(width: 6),
+                ],
+              ],
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -1277,6 +1503,7 @@ class _ProfileDetailPlaybackPageData {
     required this.intro,
     required this.bodyBlocks,
     required this.chips,
+    required this.astroSources,
     required this.whyText,
     required this.illustrationAsset,
     required this.nextTitle,
@@ -1295,6 +1522,7 @@ class _ProfileDetailPlaybackPageData {
   final String intro;
   final List<String> bodyBlocks;
   final List<String> chips;
+  final List<String> astroSources;
   final String whyText;
   final JoviaIllustrationAsset illustrationAsset;
   final String nextTitle;
@@ -1306,6 +1534,13 @@ class _ProfileDetailPlaybackPageData {
 
   String get overlayTitle =>
       isContinuation && pageCountInScene > 1 ? '$title · Devam' : title;
+
+  List<String> get influenceLabels {
+    if (astroSources.isNotEmpty) {
+      return astroSources;
+    }
+    return chips.take(3).toList(growable: false);
+  }
 
   _ProfileDetailPlaybackPageData copyWith({
     String? nextTitle,
@@ -1324,6 +1559,7 @@ class _ProfileDetailPlaybackPageData {
       intro: intro,
       bodyBlocks: bodyBlocks,
       chips: chips,
+      astroSources: astroSources,
       whyText: whyText ?? this.whyText,
       illustrationAsset: illustrationAsset,
       nextTitle: nextTitle ?? this.nextTitle,
@@ -1365,6 +1601,7 @@ List<ProfileDetailSceneData> _resolvedScenes(
         'Kürasyon katmanı geldiğinde burada sıralı bir okuma akışı açılacak.',
       ],
       chips: <String>[],
+      astroSources: <String>[],
       whyText: '',
       illustrationAsset: JoviaIllustrationAsset.planet,
       variant: ProfileDetailSceneVariant.glance,
@@ -1481,6 +1718,11 @@ List<_ProfileDetailPlaybackPageData> _splitSceneToPlaybackPages(
       .where((item) => item.isNotEmpty)
       .take(3)
       .toList(growable: false);
+  final astroSources = scene.astroSources
+      .map((item) => item.trim())
+      .where((item) => item.isNotEmpty)
+      .take(3)
+      .toList(growable: false);
 
   final blocksPerPage = _blocksPerPlaybackPage(scene.variant);
   final playbackPages = <_ProfileDetailPlaybackPageData>[];
@@ -1497,6 +1739,7 @@ List<_ProfileDetailPlaybackPageData> _splitSceneToPlaybackPages(
       intro: intro,
       bodyBlocks: leadingBlocks,
       chips: chips,
+      astroSources: astroSources,
       whyText: '',
       illustrationAsset: scene.illustrationAsset,
       nextTitle: '',
@@ -1526,6 +1769,7 @@ List<_ProfileDetailPlaybackPageData> _splitSceneToPlaybackPages(
         intro: '',
         bodyBlocks: chunk,
         chips: const <String>[],
+        astroSources: const <String>[],
         whyText: '',
         illustrationAsset: scene.illustrationAsset,
         nextTitle: '',
@@ -1558,6 +1802,7 @@ List<_ProfileDetailPlaybackPageData> _splitSceneToPlaybackPages(
           intro: '',
           bodyBlocks: const <String>[],
           chips: const <String>[],
+          astroSources: const <String>[],
           whyText: why,
           illustrationAsset: scene.illustrationAsset,
           nextTitle: '',
@@ -1811,14 +2056,59 @@ class _DetailPlaybackPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       bottom: false,
-      child: Padding(
-        key: ValueKey<String>('detailPlaybackPage_${page.playbackId}'),
-        padding: const EdgeInsets.fromLTRB(16, 92, 16, 34),
-        child: _DetailVariantSurface(
-          page: page,
-          isLastOverallPage: isLastOverallPage,
-        ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Padding(
+            key: ValueKey<String>('detailPlaybackPage_${page.playbackId}'),
+            padding: const EdgeInsets.fromLTRB(16, 88, 16, 18),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight - 106,
+              ),
+              child: _DetailVariantSurface(
+                page: page,
+                isLastOverallPage: isLastOverallPage,
+              ),
+            ),
+          );
+        },
       ),
+    );
+  }
+}
+
+class _DetailPageFill extends StatelessWidget {
+  const _DetailPageFill({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints.expand(),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _DetailScrollableFill extends StatelessWidget {
+  const _DetailScrollableFill({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: child,
+          ),
+        );
+      },
     );
   }
 }
@@ -1947,6 +2237,7 @@ class _DetailSurfaceCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return JoviaSurfaceCard(
       radius: radius,
       padding: EdgeInsets.zero,
@@ -1964,7 +2255,7 @@ class _DetailSurfaceCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    tone.accent.withValues(alpha: 0.16),
+                    tone.accent.withValues(alpha: isDark ? 0.16 : 0.22),
                     Colors.transparent,
                   ],
                 ),
@@ -1981,7 +2272,7 @@ class _DetailSurfaceCard extends StatelessWidget {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    tone.accentSoft.withValues(alpha: 0.12),
+                    tone.accent.withValues(alpha: isDark ? 0.1 : 0.14),
                     Colors.transparent,
                   ],
                 ),
@@ -1990,6 +2281,69 @@ class _DetailSurfaceCard extends StatelessWidget {
           ),
           Padding(padding: padding, child: child),
         ],
+      ),
+    );
+  }
+}
+
+class _DetailInfluenceCorner extends StatelessWidget {
+  const _DetailInfluenceCorner({
+    required this.sources,
+    required this.tone,
+    this.maxWidth = 164,
+  });
+
+  final List<String> sources;
+  final ProfileDetailTone tone;
+  final double maxWidth;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    if (sources.isEmpty) {
+      return const SizedBox.shrink();
+    }
+    final visible = sources.take(2).toList(growable: false);
+    final remainder = sources.length - visible.length;
+    final textLines = <String>[...visible, if (remainder > 0) '+$remainder'];
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        decoration: BoxDecoration(
+          color: _detailInsetBackground(context, tone, highlighted: true),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: _detailStrokeColor(context, tone)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              _detailInfluenceLabel(context),
+              style: profile.typography.meta.copyWith(
+                color: _detailLabelTextColor(
+                  context,
+                  tone,
+                ).withValues(alpha: 0.92),
+                fontSize: 11.5,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.24,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              textLines.join('\n'),
+              maxLines: 3,
+              overflow: TextOverflow.ellipsis,
+              style: profile.typography.metaSoft.copyWith(
+                color: _detailInfluenceTextColor(context),
+                fontSize: 12.2,
+                fontWeight: FontWeight.w600,
+                height: 1.35,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -2011,66 +2365,79 @@ class _DetailGlancePlaybackCard extends StatelessWidget {
     final bodyText = page.bodyBlocks.isNotEmpty
         ? page.bodyBlocks.first
         : page.intro.trim();
-    return _DetailSurfaceCard(
-      tone: tone,
-      radius: 30,
-      padding: const EdgeInsets.fromLTRB(24, 24, 24, 22),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              turkishToUpper(page.eyebrow),
-              style: profile.typography.monoEyebrow.copyWith(
-                color: profile.colors.warmAccent,
-                fontSize: 11.5,
-                letterSpacing: 1.8,
+    return _DetailPageFill(
+      child: _DetailSurfaceCard(
+        tone: tone,
+        radius: 30,
+        padding: const EdgeInsets.fromLTRB(24, 24, 24, 22),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                turkishToUpper(page.eyebrow),
+                style: profile.typography.monoEyebrow.copyWith(
+                  color: profile.colors.warmAccent,
+                  fontSize: 11.5,
+                  letterSpacing: 1.8,
+                ),
               ),
             ),
-          ),
-          const Spacer(),
-          JoviaIllustrationAccent(
-            asset: page.illustrationAsset,
-            width: 176,
-            height: 176,
-            opacity: 0.96,
-          ),
-          const SizedBox(height: 22),
-          Text(
-            page.title,
-            textAlign: TextAlign.center,
-            style: profile.typography.editorialHeadline.copyWith(
-              color: profile.colors.text,
-              fontSize: 32,
-              height: 1.04,
+            if (page.influenceLabels.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: _DetailInfluenceCorner(
+                  sources: page.influenceLabels,
+                  tone: tone,
+                  maxWidth: 188,
+                ),
+              ),
+            ],
+            const Spacer(),
+            JoviaIllustrationAccent(
+              asset: page.illustrationAsset,
+              width: 176,
+              height: 176,
+              opacity: 0.96,
             ),
-          ),
-          if (bodyText.isNotEmpty) ...[
-            const SizedBox(height: 14),
+            const SizedBox(height: 22),
             Text(
-              bodyText,
+              page.title,
               textAlign: TextAlign.center,
-              maxLines: page.requiresOverflowScroll ? null : 3,
-              overflow: page.requiresOverflowScroll
-                  ? TextOverflow.visible
-                  : TextOverflow.ellipsis,
-              style: profile.typography.bodyReading.copyWith(
-                color: profile.colors.textLight,
-                fontSize: 15.4,
-                height: 1.56,
+              style: profile.typography.editorialHeadline.copyWith(
+                color: profile.colors.text,
+                fontSize: 32,
+                height: 1.04,
+              ),
+            ),
+            if (bodyText.isNotEmpty) ...[
+              const SizedBox(height: 14),
+              Text(
+                bodyText,
+                textAlign: TextAlign.center,
+                maxLines: page.requiresOverflowScroll ? null : 3,
+                overflow: page.requiresOverflowScroll
+                    ? TextOverflow.visible
+                    : TextOverflow.ellipsis,
+                style: profile.typography.bodyReading.copyWith(
+                  color: _detailBodyTextColor(context),
+                  fontSize: 16,
+                  height: 1.56,
+                ),
+              ),
+            ],
+            const Spacer(),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: _DetailPageFooter(
+                page: page,
+                isLastOverallPage: isLastOverallPage,
               ),
             ),
           ],
-          const Spacer(),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: _DetailPageFooter(
-              page: page,
-              isLastOverallPage: isLastOverallPage,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -2095,37 +2462,49 @@ class _DetailPosterPlaybackCard extends StatelessWidget {
       isLastOverallPage: isLastOverallPage,
       scrollable: page.requiresOverflowScroll,
     );
-    return _DetailSurfaceCard(
-      tone: tone,
-      radius: 32,
-      padding: EdgeInsets.zero,
-      child: Stack(
-        children: [
-          Positioned(
-            right: 0,
-            bottom: 10,
-            child: JoviaIllustrationAccent(
-              asset: page.illustrationAsset,
-              width: 148,
-              height: 148,
-              opacity: 0.94,
+    return _DetailPageFill(
+      child: _DetailSurfaceCard(
+        tone: tone,
+        radius: 32,
+        padding: EdgeInsets.zero,
+        child: Stack(
+          children: [
+            if (page.influenceLabels.isNotEmpty)
+              Positioned(
+                top: 18,
+                right: 18,
+                child: _DetailInfluenceCorner(
+                  sources: page.influenceLabels,
+                  tone: tone,
+                  maxWidth: 176,
+                ),
+              ),
+            Positioned(
+              right: 0,
+              bottom: 10,
+              child: JoviaIllustrationAccent(
+                asset: page.illustrationAsset,
+                width: 148,
+                height: 148,
+                opacity: 0.94,
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(22, 24, 22, 22),
-            child: page.requiresOverflowScroll
-                ? SingleChildScrollView(
-                    child: Padding(
+            Padding(
+              padding: const EdgeInsets.fromLTRB(22, 24, 22, 22),
+              child: page.requiresOverflowScroll
+                  ? _DetailScrollableFill(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 96),
+                        child: content,
+                      ),
+                    )
+                  : Padding(
                       padding: const EdgeInsets.only(right: 96),
                       child: content,
                     ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.only(right: 96),
-                    child: content,
-                  ),
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -2143,23 +2522,25 @@ class _DetailStructuredPlaybackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tone = _detailToneForPlaybackPage(page);
-    return _DetailSurfaceCard(
-      tone: tone,
-      radius: 30,
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-      child: page.requiresOverflowScroll
-          ? SingleChildScrollView(
-              child: _DetailStructuredBody(
+    return _DetailPageFill(
+      child: _DetailSurfaceCard(
+        tone: tone,
+        radius: 30,
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+        child: page.requiresOverflowScroll
+            ? _DetailScrollableFill(
+                child: _DetailStructuredBody(
+                  page: page,
+                  tone: tone,
+                  isLastOverallPage: isLastOverallPage,
+                ),
+              )
+            : _DetailStructuredBody(
                 page: page,
                 tone: tone,
                 isLastOverallPage: isLastOverallPage,
               ),
-            )
-          : _DetailStructuredBody(
-              page: page,
-              tone: tone,
-              isLastOverallPage: isLastOverallPage,
-            ),
+      ),
     );
   }
 }
@@ -2200,7 +2581,7 @@ class _DetailStructuredBody extends StatelessWidget {
                   Text(
                     turkishToUpper(page.eyebrow),
                     style: profile.typography.monoEyebrow.copyWith(
-                      color: profile.colors.textLight,
+                      color: _detailLabelTextColor(context, tone),
                       fontSize: 11.5,
                       letterSpacing: 1.7,
                     ),
@@ -2219,7 +2600,7 @@ class _DetailStructuredBody extends StatelessWidget {
                     Text(
                       page.intro,
                       style: profile.typography.bodyReading.copyWith(
-                        color: profile.colors.text.withValues(alpha: 0.86),
+                        color: _detailIntroTextColor(context),
                         height: 1.52,
                       ),
                     ),
@@ -2228,11 +2609,24 @@ class _DetailStructuredBody extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            JoviaIllustrationAccent(
-              asset: page.illustrationAsset,
-              width: 62,
-              height: 62,
-              opacity: 0.88,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (page.influenceLabels.isNotEmpty) ...[
+                  _DetailInfluenceCorner(
+                    sources: page.influenceLabels,
+                    tone: tone,
+                    maxWidth: 156,
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                JoviaIllustrationAccent(
+                  asset: page.illustrationAsset,
+                  width: 62,
+                  height: 62,
+                  opacity: 0.88,
+                ),
+              ],
             ),
           ],
         ),
@@ -2250,7 +2644,7 @@ class _DetailStructuredBody extends StatelessWidget {
               child: Text(
                 page.bodyBlocks[index],
                 style: profile.typography.bodyReading.copyWith(
-                  color: profile.colors.textLight,
+                  color: _detailBodyTextColor(context),
                   fontSize: 15,
                   height: 1.56,
                 ),
@@ -2301,13 +2695,23 @@ class _DetailSplitPlaybackCard extends StatelessWidget {
     final extraBlocks = page.bodyBlocks.length > 2
         ? page.bodyBlocks.skip(2).toList(growable: false)
         : const <String>[];
-    return _DetailSurfaceCard(
-      tone: tone,
-      radius: 30,
-      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-      child: page.requiresOverflowScroll
-          ? SingleChildScrollView(
-              child: _DetailSplitBody(
+    return _DetailPageFill(
+      child: _DetailSurfaceCard(
+        tone: tone,
+        radius: 30,
+        padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+        child: page.requiresOverflowScroll
+            ? _DetailScrollableFill(
+                child: _DetailSplitBody(
+                  page: page,
+                  tone: tone,
+                  leftText: leftText,
+                  rightText: rightText,
+                  extraBlocks: extraBlocks,
+                  isLastOverallPage: isLastOverallPage,
+                ),
+              )
+            : _DetailSplitBody(
                 page: page,
                 tone: tone,
                 leftText: leftText,
@@ -2315,15 +2719,7 @@ class _DetailSplitPlaybackCard extends StatelessWidget {
                 extraBlocks: extraBlocks,
                 isLastOverallPage: isLastOverallPage,
               ),
-            )
-          : _DetailSplitBody(
-              page: page,
-              tone: tone,
-              leftText: leftText,
-              rightText: rightText,
-              extraBlocks: extraBlocks,
-              isLastOverallPage: isLastOverallPage,
-            ),
+      ),
     );
   }
 }
@@ -2354,7 +2750,7 @@ class _DetailSplitBody extends StatelessWidget {
         Text(
           turkishToUpper(page.eyebrow),
           style: profile.typography.monoEyebrow.copyWith(
-            color: profile.colors.warmAccent,
+            color: _detailLabelTextColor(context, tone),
             fontSize: 11.5,
             letterSpacing: 1.8,
           ),
@@ -2374,11 +2770,24 @@ class _DetailSplitBody extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 12),
-            JoviaIllustrationAccent(
-              asset: page.illustrationAsset,
-              width: 74,
-              height: 74,
-              opacity: 0.92,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (page.influenceLabels.isNotEmpty) ...[
+                  _DetailInfluenceCorner(
+                    sources: page.influenceLabels,
+                    tone: tone,
+                    maxWidth: 156,
+                  ),
+                  const SizedBox(height: 10),
+                ],
+                JoviaIllustrationAccent(
+                  asset: page.illustrationAsset,
+                  width: 74,
+                  height: 74,
+                  opacity: 0.92,
+                ),
+              ],
             ),
           ],
         ),
@@ -2410,7 +2819,7 @@ class _DetailSplitBody extends StatelessWidget {
             Text(
               block,
               style: profile.typography.bodyReading.copyWith(
-                color: profile.colors.textLight,
+                color: _detailBodyTextColor(context),
                 fontSize: 14.8,
                 height: 1.56,
               ),
@@ -2467,7 +2876,9 @@ class _DetailSplitPane extends StatelessWidget {
           Text(
             title,
             style: profile.typography.buttonLabel.copyWith(
-              color: highlighted ? tone.accent : profile.colors.textLight,
+              color: highlighted
+                  ? _detailLabelTextColor(context, tone)
+                  : _detailBodyTextColor(context),
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -2499,62 +2910,77 @@ class _DetailSymbolPlaybackCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final tone = _detailToneForPlaybackPage(page);
-    return _DetailSurfaceCard(
-      tone: tone,
-      radius: 30,
-      padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              turkishToUpper(page.eyebrow),
-              style: profile.typography.monoEyebrow.copyWith(
-                color: profile.colors.textLight,
-                fontSize: 11.5,
-                letterSpacing: 1.7,
+    return _DetailPageFill(
+      child: _DetailSurfaceCard(
+        tone: tone,
+        radius: 30,
+        padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                turkishToUpper(page.eyebrow),
+                style: profile.typography.monoEyebrow.copyWith(
+                  color: _detailLabelTextColor(context, tone),
+                  fontSize: 11.5,
+                  letterSpacing: 1.7,
+                ),
               ),
             ),
-          ),
-          const Spacer(),
-          JoviaIllustrationAccent(
-            asset: page.illustrationAsset,
-            width: 188,
-            height: 188,
-            opacity: 0.96,
-          ),
-          const SizedBox(height: 20),
-          Text(
-            page.title,
-            textAlign: TextAlign.center,
-            style: profile.typography.section.copyWith(
-              color: profile.colors.text,
-              fontSize: 26,
-              height: 1.08,
+            if (page.influenceLabels.isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: _DetailInfluenceCorner(
+                  sources: page.influenceLabels,
+                  tone: tone,
+                  maxWidth: 188,
+                ),
+              ),
+            ],
+            const Spacer(),
+            JoviaIllustrationAccent(
+              asset: page.illustrationAsset,
+              width: 188,
+              height: 188,
+              opacity: 0.96,
             ),
-          ),
-          if (page.intro.trim().isNotEmpty || page.bodyBlocks.isNotEmpty) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 20),
             Text(
-              page.intro.trim().isNotEmpty ? page.intro : page.bodyBlocks.first,
+              page.title,
               textAlign: TextAlign.center,
-              style: profile.typography.bodyReading.copyWith(
-                color: profile.colors.textLight,
-                fontSize: 15,
-                height: 1.5,
+              style: profile.typography.section.copyWith(
+                color: profile.colors.text,
+                fontSize: 26,
+                height: 1.08,
+              ),
+            ),
+            if (page.intro.trim().isNotEmpty || page.bodyBlocks.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Text(
+                page.intro.trim().isNotEmpty
+                    ? page.intro
+                    : page.bodyBlocks.first,
+                textAlign: TextAlign.center,
+                style: profile.typography.bodyReading.copyWith(
+                  color: _detailBodyTextColor(context),
+                  fontSize: 15.6,
+                  height: 1.5,
+                ),
+              ),
+            ],
+            const Spacer(),
+            Align(
+              alignment: Alignment.centerLeft,
+              child: _DetailPageFooter(
+                page: page,
+                isLastOverallPage: isLastOverallPage,
               ),
             ),
           ],
-          const Spacer(),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: _DetailPageFooter(
-              page: page,
-              isLastOverallPage: isLastOverallPage,
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -2573,54 +2999,67 @@ class _DetailPortalPlaybackCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final tone = _detailToneForPlaybackPage(page);
-    return _DetailSurfaceCard(
-      tone: tone,
-      radius: 30,
-      padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            turkishToUpper(page.eyebrow),
-            style: profile.typography.monoEyebrow.copyWith(
-              color: profile.colors.warmAccent,
-              fontSize: 11.5,
-              letterSpacing: 1.8,
-            ),
-          ),
-          const Spacer(),
-          Text(
-            page.title,
-            style: profile.typography.editorialHeadline.copyWith(
-              color: profile.colors.text,
-              fontSize: 30,
-              height: 1.04,
-            ),
-          ),
-          if (page.intro.trim().isNotEmpty) ...[
-            const SizedBox(height: 14),
+    return _DetailPageFill(
+      child: _DetailSurfaceCard(
+        tone: tone,
+        radius: 30,
+        padding: const EdgeInsets.fromLTRB(22, 22, 22, 22),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             Text(
-              page.intro,
-              style: profile.typography.bodyReading.copyWith(
-                color: profile.colors.textLight,
-                fontSize: 15.4,
-                height: 1.56,
+              turkishToUpper(page.eyebrow),
+              style: profile.typography.monoEyebrow.copyWith(
+                color: _detailLabelTextColor(context, tone),
+                fontSize: 11.5,
+                letterSpacing: 1.8,
               ),
             ),
-          ],
-          const SizedBox(height: 18),
-          IgnorePointer(
-            child: MinimalCTAButton(
-              label: page.nextTitle.trim().isNotEmpty
-                  ? 'Akışı sürdür'
-                  : 'Buradan devam et',
-              emphasized: true,
-              onTap: null,
+            if (page.influenceLabels.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              Align(
+                alignment: Alignment.centerRight,
+                child: _DetailInfluenceCorner(
+                  sources: page.influenceLabels,
+                  tone: tone,
+                  maxWidth: 188,
+                ),
+              ),
+            ],
+            const Spacer(),
+            Text(
+              page.title,
+              style: profile.typography.editorialHeadline.copyWith(
+                color: profile.colors.text,
+                fontSize: 30,
+                height: 1.04,
+              ),
             ),
-          ),
-          const Spacer(),
-          _DetailPageFooter(page: page, isLastOverallPage: isLastOverallPage),
-        ],
+            if (page.intro.trim().isNotEmpty) ...[
+              const SizedBox(height: 14),
+              Text(
+                page.intro,
+                style: profile.typography.bodyReading.copyWith(
+                  color: _detailBodyTextColor(context),
+                  fontSize: 15.8,
+                  height: 1.56,
+                ),
+              ),
+            ],
+            const SizedBox(height: 18),
+            IgnorePointer(
+              child: MinimalCTAButton(
+                label: page.nextTitle.trim().isNotEmpty
+                    ? 'Akışı sürdür'
+                    : 'Buradan devam et',
+                emphasized: true,
+                onTap: null,
+              ),
+            ),
+            const Spacer(),
+            _DetailPageFooter(page: page, isLastOverallPage: isLastOverallPage),
+          ],
+        ),
       ),
     );
   }
@@ -2650,7 +3089,7 @@ class _DetailTextSection extends StatelessWidget {
         Text(
           turkishToUpper(page.eyebrow),
           style: profile.typography.monoEyebrow.copyWith(
-            color: profile.colors.warmAccent,
+            color: _detailLabelTextColor(context, tone),
             fontSize: 11.5,
             letterSpacing: 1.8,
           ),
@@ -2669,7 +3108,7 @@ class _DetailTextSection extends StatelessWidget {
           Text(
             page.intro,
             style: profile.typography.bodyReading.copyWith(
-              color: profile.colors.text.withValues(alpha: 0.86),
+              color: _detailIntroTextColor(context),
               height: 1.56,
             ),
           ),
@@ -2680,7 +3119,7 @@ class _DetailTextSection extends StatelessWidget {
             Text(
               page.bodyBlocks[index],
               style: profile.typography.bodyReading.copyWith(
-                color: profile.colors.textLight,
+                color: _detailBodyTextColor(context),
                 fontSize: 15,
                 height: 1.58,
               ),
@@ -2740,7 +3179,7 @@ class _DetailWhyBlock extends StatelessWidget {
           Text(
             text,
             style: profile.typography.metaSoft.copyWith(
-              color: profile.colors.textLight,
+              color: _detailBodyTextColor(context),
               height: 1.5,
             ),
           ),
@@ -2771,7 +3210,7 @@ class _DetailPageFooter extends StatelessWidget {
     return Text(
       label,
       style: profile.typography.metaSoft.copyWith(
-        color: profile.colors.text.withValues(alpha: 0.58),
+        color: _detailMutedTextColor(context),
         fontWeight: FontWeight.w600,
       ),
     );
@@ -2808,15 +3247,15 @@ class _DetailChip extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
       decoration: BoxDecoration(
-        color: _detailInsetBackground(context, tone),
+        color: _detailInsetBackground(context, tone).withValues(alpha: 0.84),
         borderRadius: BorderRadius.circular(999),
         border: Border.all(color: _detailStrokeColor(context, tone)),
       ),
       child: Text(
         label,
         style: profile.typography.buttonLabel.copyWith(
-          color: profile.colors.text,
-          fontWeight: FontWeight.w600,
+          color: _detailChipTextColor(context),
+          fontWeight: FontWeight.w500,
         ),
       ),
     );

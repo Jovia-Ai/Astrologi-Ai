@@ -131,6 +131,15 @@ def test_neptune_square_asc_copy_is_human_and_clear() -> None:
         assert banned not in merged
 
 
+def test_neptune_square_asc_mechanism_names_aspect_and_houses() -> None:
+    card = build_event_card(_event_neptune_square_asc(), context={"natal": _natal_snapshot()})
+    mechanism = str(card.get("mechanism") or "").lower()
+    assert "kare açı" in mechanism or "kare" in mechanism
+    assert "3. ev" in mechanism
+    assert "1. ev" in mechanism
+    assert any(token in mechanism for token in ("yükselen", "kimlik", "iletişim"))
+
+
 def test_uranus_trine_mars_respects_5_to_9_priority() -> None:
     card = build_event_card(_event_uranus_trine_mars(), context={"natal": _natal_snapshot()})
     mechanism = str(card.get("mechanism") or "").lower()

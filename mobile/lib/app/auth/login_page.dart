@@ -6,11 +6,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/app/onboarding/onboarding_birth_page.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 import 'user_bootstrap.dart';
 
-const String _kLoginTitle = 'Tekrar hos geldin';
-const String _kLoginBody = 'Hesabina gir ve kaldigin yerden devam et.';
 const double _kLoginMaxContentWidth = 460;
 const double _kLogoWidthFactor = 0.25;
 const double _kLogoMinWidth = 92;
@@ -94,7 +93,7 @@ class _LoginPageState extends State<LoginPage> {
       );
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Password reset email sent')),
+          SnackBar(content: Text(context.l10n.loginPasswordResetSent)),
         );
       }
     } on AuthException catch (e) {
@@ -117,7 +116,7 @@ class _LoginPageState extends State<LoginPage> {
         redirectTo: kIsWeb ? null : _kGoogleRedirectTo,
       );
       if (!launched && mounted) {
-        setState(() => _error = 'Google giris akisi baslatilamadi.');
+        setState(() => _error = context.l10n.loginGoogleStartFailed);
       }
     } on AuthException catch (e) {
       setState(() => _error = e.message);
@@ -136,6 +135,7 @@ class _LoginPageState extends State<LoginPage> {
     final profile = context.profileTheme;
     final spacing = profile.spacing;
     final theme = Theme.of(context);
+    final l10n = context.l10n;
     final isDark = theme.brightness == Brightness.dark;
     final backgroundTop = Color.alphaBlend(
       profile.colors.primary.withValues(alpha: isDark ? 0.12 : 0.08),
@@ -254,7 +254,7 @@ class _LoginPageState extends State<LoginPage> {
                                           ],
                                           decoration: _inputDecoration(
                                             context,
-                                            hintText: 'Email',
+                                            hintText: l10n.emailLabel,
                                             fillColor: inputFill,
                                             borderColor: inputBorder,
                                           ),
@@ -274,7 +274,7 @@ class _LoginPageState extends State<LoginPage> {
                                           },
                                           decoration: _inputDecoration(
                                             context,
-                                            hintText: 'Password',
+                                            hintText: l10n.passwordLabel,
                                             fillColor: inputFill,
                                             borderColor: inputBorder,
                                           ),
@@ -337,12 +337,12 @@ class _LoginPageState extends State<LoginPage> {
                                                               primaryForeground,
                                                         ),
                                                   )
-                                                : const Text('Giris yap'),
+                                                : Text(l10n.loginSignIn),
                                           ),
                                         ),
                                         SizedBox(height: spacing.s16),
                                         _AuthDivider(
-                                          label: 'veya',
+                                          label: l10n.authOr,
                                           color: profile.colors.separator,
                                           textColor: profile.colors.textLight,
                                         ),
@@ -381,8 +381,8 @@ class _LoginPageState extends State<LoginPage> {
                                               children: [
                                                 const _GoogleBadge(),
                                                 SizedBox(width: spacing.s12),
-                                                const Text(
-                                                  'Google ile devam et',
+                                                Text(
+                                                  l10n.loginContinueWithGoogle,
                                                 ),
                                               ],
                                             ),
@@ -405,7 +405,9 @@ class _LoginPageState extends State<LoginPage> {
                                                     color: profile.colors.muted,
                                                   ),
                                             ),
-                                            child: const Text('Hesap olustur'),
+                                            child: Text(
+                                              l10n.loginCreateAccount,
+                                            ),
                                           ),
                                         ),
                                         SizedBox(height: spacing.s4),
@@ -434,8 +436,8 @@ class _LoginPageState extends State<LoginPage> {
                                                         .textLight,
                                                   ),
                                             ),
-                                            child: const Text(
-                                              'Sifremi unuttum',
+                                            child: Text(
+                                              l10n.loginForgotPassword,
                                             ),
                                           ),
                                         ),
@@ -510,7 +512,7 @@ class _LoginBrandHeader extends StatelessWidget {
         ),
         SizedBox(height: profile.spacing.s24),
         Text(
-          _kLoginTitle,
+          context.l10n.loginTitle,
           textAlign: TextAlign.center,
           style: profile.typography.heroEditorial.copyWith(
             color: profile.colors.heroText,
@@ -520,7 +522,7 @@ class _LoginBrandHeader extends StatelessWidget {
         ),
         SizedBox(height: profile.spacing.s8),
         Text(
-          _kLoginBody,
+          context.l10n.loginBody,
           textAlign: TextAlign.center,
           style: profile.typography.bodyCompact.copyWith(
             color: profile.colors.textLight,

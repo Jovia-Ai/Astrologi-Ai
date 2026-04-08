@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/tabs/profile_relationship_preview.dart';
 import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
@@ -45,7 +46,14 @@ void main() {
       expect(repository.lastFocusedRange, isTrue);
       expect(repository.lastIncludeBestTimes, isFalse);
       expect(repository.lastResponseMode, 'public_only');
-      expect(repository.lastReceiveTimeout, const Duration(seconds: 35));
+      expect(
+        repository.lastPayloadProfile,
+        TransitPayloadProfile.relationshipPreview,
+      );
+      expect(
+        repository.lastReceiveTimeout,
+        ApiClient.timeoutFor(ApiRequestSla.background),
+      );
 
       expect(find.text(trUpper('Bugünü kuran etkiler')), findsOneWidget);
       expect(find.text(trUpper('Altta çalışan dönem')), findsOneWidget);
@@ -205,6 +213,7 @@ class _FakeNarrativeRepository extends NarrativeRepository {
   bool? lastFocusedRange;
   bool? lastIncludeBestTimes;
   String? lastResponseMode;
+  TransitPayloadProfile? lastPayloadProfile;
   Duration? lastReceiveTimeout;
 
   @override
@@ -215,12 +224,18 @@ class _FakeNarrativeRepository extends NarrativeRepository {
     bool focusedRange = false,
     bool includeBestTimes = true,
     String responseMode = 'full',
+    String locale = 'tr',
+    TransitPayloadProfile payloadProfile = TransitPayloadProfile.full,
+    SubscriptionTier? subscriptionTier,
+    int? visibleDaysLimit,
     Duration? receiveTimeout,
+    ApiRequestSla requestSla = ApiRequestSla.interactive,
   }) async {
     lastLens = lens;
     lastFocusedRange = focusedRange;
     lastIncludeBestTimes = includeBestTimes;
     lastResponseMode = responseMode;
+    lastPayloadProfile = payloadProfile;
     lastReceiveTimeout = receiveTimeout;
     return payload;
   }

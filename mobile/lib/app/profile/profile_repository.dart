@@ -5,9 +5,14 @@ import '../data/supabase_tables.dart';
 class ProfileRepository {
   static const String _avatarBucket = 'avatars';
   static const Duration _profileCacheTtl = Duration(minutes: 3);
+  static const Duration _birthGateCacheTtl = Duration(minutes: 3);
   static final Map<String, _ProfileCacheEntry> _profileCache =
       <String, _ProfileCacheEntry>{};
+  static final Map<String, _ProfileCacheEntry> _birthGateCache =
+      <String, _ProfileCacheEntry>{};
   static final Map<String, Future<Map<String, dynamic>?>> _inflight =
+      <String, Future<Map<String, dynamic>?>>{};
+  static final Map<String, Future<Map<String, dynamic>?>> _birthGateInflight =
       <String, Future<Map<String, dynamic>?>>{};
 
   final SupabaseClient _client;
@@ -32,6 +37,27 @@ class ProfileRepository {
       _inflight.remove(userId);
     });
     _inflight[userId] = future;
+    return future;
+  }
+
+  Future<Map<String, dynamic>?> getBirthGateProfile(String userId) async {
+    final now = DateTime.now();
+    final cached = _birthGateCache[userId];
+    if (cached != null && cached.expiresAt.isAfter(now)) {
+      return cached.data == null
+          ? null
+          : Map<String, dynamic>.from(cached.data!);
+    }
+
+    final inflight = _birthGateInflight[userId];
+    if (inflight != null) {
+      return inflight;
+    }
+
+    final future = _fetchBirthGateProfile(userId).whenComplete(() {
+      _birthGateInflight.remove(userId);
+    });
+    _birthGateInflight[userId] = future;
     return future;
   }
 
@@ -79,6 +105,23 @@ class ProfileRepository {
     _profileCache[userId] = _ProfileCacheEntry(
       data: result == null ? null : Map<String, dynamic>.from(result),
       expiresAt: DateTime.now().add(_profileCacheTtl),
+    );
+    return result;
+  }
+
+  Future<Map<String, dynamic>?> _fetchBirthGateProfile(String userId) async {
+    final birthData = await _client
+        .from(SupabaseTables.birthData)
+        .select('user_id,birth_date,place')
+        .eq('user_id', userId)
+        .limit(1)
+        .maybeSingle();
+    final result = birthData == null
+        ? null
+        : Map<String, dynamic>.from(birthData);
+    _birthGateCache[userId] = _ProfileCacheEntry(
+      data: result == null ? null : Map<String, dynamic>.from(result),
+      expiresAt: DateTime.now().add(_birthGateCacheTtl),
     );
     return result;
   }
@@ -216,7 +259,9 @@ class ProfileRepository {
 
   void _invalidateProfile(String userId) {
     _profileCache.remove(userId);
+    _birthGateCache.remove(userId);
     _inflight.remove(userId);
+    _birthGateInflight.remove(userId);
   }
 }
 

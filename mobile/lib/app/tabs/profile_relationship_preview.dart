@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 
+import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
@@ -213,7 +214,7 @@ class _ProfileRelationshipPreviewState
       final response = await _fetchNarrative(
         profile,
         lens: 'relationship',
-        receiveTimeout: const Duration(seconds: 35),
+        receiveTimeout: ApiClient.timeoutFor(ApiRequestSla.background),
       );
       if (!mounted || requestEpoch != _requestEpoch) {
         return;
@@ -261,7 +262,11 @@ class _ProfileRelationshipPreviewState
       focusedRange: true,
       includeBestTimes: false,
       responseMode: 'public_only',
+      payloadProfile: TransitPayloadProfile.relationshipPreview,
       receiveTimeout: receiveTimeout,
+      requestSla: lens == 'relationship'
+          ? ApiRequestSla.background
+          : ApiRequestSla.interactive,
     );
   }
 
@@ -282,7 +287,7 @@ class _ProfileRelationshipPreviewState
       final response = await _fetchNarrative(
         profile,
         lens: 'general',
-        receiveTimeout: const Duration(seconds: 18),
+        receiveTimeout: ApiClient.timeoutFor(ApiRequestSla.interactive),
       );
       if (!mounted || requestEpoch != _requestEpoch) {
         return true;

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
 
 import 'add_person_page.dart';
+import 'people_aura_repository.dart';
+import 'person_profile.dart';
 import '../tabs/profile_page.dart';
 import 'people_providers.dart';
 import 'people_repository.dart';
@@ -47,6 +50,14 @@ class FriendProfilePage extends ConsumerWidget {
               readOnly: true,
             ),
             Positioned(
+              left: 16,
+              bottom: 24,
+              child: SafeArea(
+                top: false,
+                child: IgnorePointer(child: _FriendAuraBadge(person: person)),
+              ),
+            ),
+            Positioned(
               right: 16,
               bottom: 24,
               child: FloatingActionButton.small(
@@ -89,6 +100,70 @@ class FriendProfilePage extends ConsumerWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _FriendAuraBadge extends ConsumerWidget {
+  const _FriendAuraBadge({required this.person});
+
+  final PersonProfile person;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final profile = context.profileTheme;
+    final fallbackAura = joviaAuraPaletteForBirthData(
+      colors: profile.colors,
+      birthDate: person.birthDate,
+      birthTime: person.birthTime,
+      seedText: person.auraSeedKey,
+    );
+    final semanticAsync = ref.watch(
+      personAuraSemanticProvider(PersonAuraRequest.fromPerson(person)),
+    );
+    final semantic = semanticAsync.valueOrNull;
+    final aura = semantic == null
+        ? fallbackAura
+        : joviaAuraPaletteForSemantic(
+            colors: profile.colors,
+            semantic: semantic,
+          );
+    final eyebrow = semantic?.sourceLabel.trim().isNotEmpty == true
+        ? semantic!.sourceLabel
+        : 'Aura';
+    final title = semantic?.displayLabel ?? fallbackAura.label;
+
+    return JoviaSurfaceCard(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          JoviaAuraOrb(
+            palette: aura,
+            size: 42,
+            monogram: person.monogram,
+            showSparkles: false,
+          ),
+          const SizedBox(width: 12),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                eyebrow,
+                style: profile.typography.eyebrow.copyWith(
+                  color: profile.colors.textLight,
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                title,
+                style: profile.typography.cardTitle.copyWith(fontSize: 15),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

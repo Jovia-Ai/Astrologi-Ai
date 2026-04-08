@@ -20,6 +20,12 @@ from app.utils.timezones import parse_birth_datetime_components
 
 logger = logging.getLogger(__name__)
 
+_CITY_TOKEN_ALIASES = {
+    "turkey": "tr",
+    "turkiye": "tr",
+    "türkiye": "tr",
+}
+
 
 @dataclass(slots=True)
 class LocationData:
@@ -48,12 +54,54 @@ _LOCAL_LOCATION_FALLBACKS: Dict[str, LocationData] = {
 
 
 def _normalize_city_key(city: str) -> str:
-    return " ".join(city.lower().replace(",", " ").split())
+    normalized = city.lower()
+    for separator in (",", ";", "/", "|"):
+        normalized = normalized.replace(separator, " ")
+    tokens = [
+        _CITY_TOKEN_ALIASES.get(token, token)
+        for token in normalized.split()
+    ]
+    return " ".join(tokens)
 
 
 def _fallback_location(city: str) -> LocationData | None:
     key = _normalize_city_key(city)
     return _LOCAL_LOCATION_FALLBACKS.get(key)
+
+
+def _coerce_coordinate(value: Any) -> float | None:
+    if value is None or isinstance(value, bool):
+        return None
+    if isinstance(value, (int, float)):
+        return float(value)
+    text = str(value).strip().replace(",", ".")
+    if not text:
+        return None
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+def _explicit_location(
+    *,
+    label: str,
+    latitude: Any = None,
+    longitude: Any = None,
+    timezone: Any = None,
+) -> LocationData | None:
+    lat = _coerce_coordinate(latitude)
+    lon = _coerce_coordinate(longitude)
+    tz = str(timezone or "").strip()
+    if lat is None or lon is None or not tz:
+        return None
+    resolved_label = label.strip() or "Known location"
+    return LocationData(
+        latitude=lat,
+        longitude=lon,
+        timezone=tz,
+        label=resolved_label,
+    )
 
 
 def julian_day(utc_dt: datetime) -> float:
@@ -110,6 +158,27 @@ def fetch_location(city: str) -> LocationData:
     raise ApiError("OpenCage request failed.") from last_exc
 
 
+def resolve_location(
+    city: str,
+    *,
+    latitude: Any = None,
+    longitude: Any = None,
+    timezone: Any = None,
+) -> LocationData:
+    explicit = _explicit_location(
+        label=city,
+        latitude=latitude,
+        longitude=longitude,
+        timezone=timezone,
+    )
+    if explicit is not None:
+        return explicit
+    fallback = _fallback_location(city)
+    if fallback is not None:
+        return fallback
+    return fetch_location(city)
+
+
 def extract_birth_inputs(payload: Mapping[str, Any]) -> tuple[str, str, str] | tuple[str, str, None]:
     """Extract city and birth date/time components from request payload."""
 
@@ -163,8 +232,25 @@ def extract_birth_inputs(payload: Mapping[str, Any]) -> tuple[str, str, str] | t
 
 def build_natal_chart(payload: Mapping[str, Any]) -> Dict[str, Any]:
     city, date_value, time_value = extract_birth_inputs(payload)
-
-    location = fetch_location(city)
+    location = resolve_location(
+        city,
+        latitude=(
+            payload.get("birth_latitude")
+            or payload.get("latitude")
+            or payload.get("lat")
+        ),
+        longitude=(
+            payload.get("birth_longitude")
+            or payload.get("longitude")
+            or payload.get("lng")
+            or payload.get("lon")
+        ),
+        timezone=(
+            payload.get("birth_timezone")
+            or payload.get("timezone")
+            or payload.get("tz")
+        ),
+    )
     local_dt, utc_dt = parse_birth_datetime_components(date_value, time_value, location.timezone)
     jd_ut = julian_day(utc_dt)
 
@@ -227,12 +313,23 @@ def build_natal_chart(payload: Mapping[str, Any]) -> Dict[str, Any]:
     }
 
 
-def calculate_chart_from_birth_details(date_value: str, time_value: str, city_value: str) -> Dict[str, Any]:
+def calculate_chart_from_birth_details(
+    date_value: str,
+    time_value: str,
+    city_value: str,
+    *,
+    latitude: Any = None,
+    longitude: Any = None,
+    timezone: Any = None,
+) -> Dict[str, Any]:
     """Utility used by interpretation endpoint when only birth inputs are provided."""
 
     payload = {
         "date": (date_value or "").strip(),
         "time": (time_value or "").strip(),
         "city": (city_value or "").strip(),
+        "birth_latitude": latitude,
+        "birth_longitude": longitude,
+        "birth_timezone": timezone,
     }
     return build_natal_chart(payload)

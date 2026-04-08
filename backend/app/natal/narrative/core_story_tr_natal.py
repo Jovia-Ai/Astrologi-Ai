@@ -12,6 +12,21 @@ CORE_HEADLINES = [
     "Ritmini koruduğunda yön duygun güçleniyor",
 ]
 
+_CORE_RULER_SIGN_BALANCE_TR = {
+    "Aries": "İyi çalıştığında bu ton sana cesaret ve direktlik verir; gölgesinde sabırsızlık ya da ani tepki doğurabilir.",
+    "Taurus": "İyi çalıştığında bu ton sana sağlamlık ve istikrar verir; gölgesinde fazla tutunma ya da değişimi geciktirme yaratabilir.",
+    "Gemini": "İyi çalıştığında bu ton sana çeviklik ve ifade gücü verir; gölgesinde dağılma ya da kararı fazla çoğaltma yaratabilir.",
+    "Cancer": "İyi çalıştığında bu ton sana sezgi ve koruyucu bir hassasiyet verir; gölgesinde fazla alınma ya da geri çekilme yaratabilir.",
+    "Leo": "İyi çalıştığında bu ton sana sıcaklık ve görünür bir ifade verir; gölgesinde gurur kırıldığında sert kapanma yaratabilir.",
+    "Virgo": "İyi çalıştığında bu ton sana berraklık ve edit gücü verir; gölgesinde fazla inceleme ya da gecikme yaratabilir.",
+    "Libra": "İyi çalıştığında bu ton sana denge ve ilişki zekası verir; gölgesinde kararı fazla tartıp geciktirme yaratabilir.",
+    "Scorpio": "İyi çalıştığında bu ton sana odak ve derinlik verir; gölgesinde kuşku ya da fazla kontrol yaratabilir.",
+    "Sagittarius": "İyi çalıştığında bu ton sana vizyon ve cesaret verir; gölgesinde fazla açılma ya da abartılı hız yaratabilir.",
+    "Capricorn": "İyi çalıştığında bu ton sana omurga ve dayanıklılık verir; gölgesinde yükü gereğinden fazla içerde toplama yaratabilir.",
+    "Aquarius": "İyi çalıştığında bu ton sana özgünlük ve bağımsızlık verir; gölgesinde mesafe ya da kopukluk yaratabilir.",
+    "Pisces": "İyi çalıştığında bu ton sana sezgisel akış ve hayal gücü verir; gölgesinde dağılma ya da sınır kaybı yaratabilir.",
+}
+
 
 def _clamp_chars(text: str, limit: int) -> str:
     value = " ".join(str(text or "").split()).strip()
@@ -66,6 +81,10 @@ def _planet_label(planet: str) -> str:
     return PLANET_LABEL_TR.get(str(planet or "").strip(), str(planet or "").strip())
 
 
+def _core_balance_text(ruler_sign: str) -> str:
+    return _CORE_RULER_SIGN_BALANCE_TR.get(str(ruler_sign or "").strip(), "")
+
+
 def _build_core_text(asc_sign: str, asc_ruler: str, asc_ruler_house: int) -> str:
     sign_label = _sign_label(asc_sign)
     ruler_label = _planet_label(asc_ruler)
@@ -105,16 +124,18 @@ def build_core_story_ui(
     planets: List[Mapping[str, Any]],
     natal_graph: Mapping[str, Any],
 ) -> Dict[str, Any]:
-    del natal_graph
     seed = _stable_seed(chart_data)
     angles = chart_data.get("angles") if isinstance(chart_data.get("angles"), Mapping) else {}
     asc_sign = str(angles.get("ascendant_sign") or "").strip()
     asc_ruler = _get_ruler(asc_sign)
     pmap = _planet_map(planets)
     asc_ruler_house = _to_house((pmap.get(asc_ruler) or {}).get("house"), 1)
+    asc_ruler_sign = str((pmap.get(asc_ruler) or {}).get("sign") or "").strip()
 
     headline = CORE_HEADLINES[pick_variant(f"{seed}:core_story_ui", len(CORE_HEADLINES))]
-    text = _clamp_chars(_build_core_text(asc_sign, asc_ruler, asc_ruler_house), 520)
+    base_text = _build_core_text(asc_sign, asc_ruler, asc_ruler_house)
+    balance_text = _core_balance_text(asc_ruler_sign)
+    text = _clamp_chars(f"{base_text} {balance_text}".strip(), 520)
     return {
         "headline": headline,
         "text": text,
@@ -122,5 +143,6 @@ def build_core_story_ui(
             {"type": "angle", "key": "ASC", "value": asc_sign},
             {"type": "ruler", "key": "asc_ruler", "value": asc_ruler},
             {"type": "house", "key": "asc_ruler_house", "value": asc_ruler_house},
+            {"type": "sign", "key": "asc_ruler_sign", "value": asc_ruler_sign},
         ],
     }

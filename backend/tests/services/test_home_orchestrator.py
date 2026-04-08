@@ -23,33 +23,85 @@ def _context() -> HomeRequestContext:
     )
 
 
-def test_home_fast_uses_cache_on_second_call(monkeypatch) -> None:
+def test_home_fast_cold_miss_returns_deferred_preview_and_schedules_refresh(monkeypatch) -> None:
     orchestrator = HomeOrchestrator(cache_store=InMemoryCacheStore())
     context = _context()
-    calls = {"count": 0}
+    monkeypatch.setattr(settings, "enable_home_fast_cache", True)
+    monkeypatch.setattr(settings, "enable_background_refresh", True)
+    monkeypatch.setattr(settings, "enable_timing_logs", False)
+    scheduled: list[HomeRequestContext] = []
 
-    def fake_compute_payload(*, mode, context, now, timer):
-        calls["count"] += 1
+    def fake_deferred_fast_payload(*, context, now, timer):
         return {
-            "headline": f"{mode} headline",
+            "headline": "preview headline",
             "summary": "summary",
             "highlights": [],
             "energy": {},
             "cta": {},
+            "section_states": {
+                "sky": "ready",
+                "transit_summary": "deferred",
+                "natal_summary": "ready",
+            },
         }
 
-    monkeypatch.setattr(orchestrator, "_compute_payload", fake_compute_payload)
-    monkeypatch.setattr(settings, "enable_home_fast_cache", True)
-    monkeypatch.setattr(settings, "enable_timing_logs", False)
+    monkeypatch.setattr(orchestrator, "_build_deferred_fast_payload", fake_deferred_fast_payload)
+    monkeypatch.setattr(
+        orchestrator,
+        "_schedule_background_prewarm",
+        lambda *, context: scheduled.append(context),
+    )
 
     anchor = datetime(2026, 3, 21, 9, 0, tzinfo=timezone.utc)
-    first = orchestrator.get_fast(context, now=anchor)
-    second = orchestrator.get_fast(context, now=anchor + timedelta(minutes=5))
+    response = orchestrator.get_fast(context, now=anchor)
 
-    assert first["cache_status"] == "miss"
-    assert second["cache_status"] == "hit"
-    assert first["headline"] == second["headline"]
-    assert calls["count"] == 1
+    assert response["cache_status"] == "miss"
+    assert response["section_states"]["transit_summary"] == "deferred"
+    assert scheduled == [context]
+    assert orchestrator._cache_store.get(
+        build_home_fast_key(
+            subject_key=context.subject_key,
+            day=context.target_date,
+            config_hash=home_orchestrator_module.build_home_cache_config_hash(),
+        ),
+        now=anchor + timedelta(minutes=1),
+    ).status == "miss"
+
+
+def test_home_fast_uses_warmed_cache_after_deep_prewarm(monkeypatch) -> None:
+    orchestrator = HomeOrchestrator(cache_store=InMemoryCacheStore())
+    context = _context()
+
+    monkeypatch.setattr(settings, "enable_home_fast_cache", True)
+    monkeypatch.setattr(settings, "enable_home_deep_cache", True)
+    monkeypatch.setattr(settings, "enable_timing_logs", False)
+
+    def fake_compute_payload(*, mode, context, now, timer):
+        if mode == "deep":
+            return {
+                "preview": {
+                    "headline": "fast preview",
+                    "summary": "summary",
+                    "highlights": [],
+                    "energy": {},
+                    "cta": {},
+                },
+                "sections": [],
+                "expanded_cards": [],
+                "guidance": [],
+                "story_hooks": [],
+                "context": {},
+            }
+        raise AssertionError("fast compute should not run inline once cache is warmed")
+
+    monkeypatch.setattr(orchestrator, "_compute_payload", fake_compute_payload)
+
+    anchor = datetime(2026, 3, 21, 9, 0, tzinfo=timezone.utc)
+    orchestrator.get_deep(context, now=anchor)
+    fast = orchestrator.get_fast(context, now=anchor + timedelta(minutes=1))
+
+    assert fast["cache_status"] == "hit"
+    assert fast["headline"] == "fast preview"
 
 
 def test_home_fast_serves_stale_and_schedules_refresh(monkeypatch) -> None:

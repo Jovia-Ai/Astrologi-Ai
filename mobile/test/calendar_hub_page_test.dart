@@ -4,7 +4,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
+import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
+import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 
 String tr(String value) => normalizeTurkishText(value);
 
@@ -303,9 +306,33 @@ void main() {
 
     expect(find.text(trUpper('Şimdi ne oluyor')), findsOneWidget);
     expect(find.text(trUpper('Nereye gidiyor')), findsOneWidget);
-    expect(find.textContaining('kısa vadeli bir tetikten çok'), findsWidgets);
+    expect(find.textContaining('Arka planda'), findsWidgets);
     expect(find.text(tr('Bugun sakin')), findsNothing);
     expect(find.text(tr('Secili gun sakin')), findsNothing);
+  });
+
+  testWidgets('day page surfaces light astro reasoning in editorial sections', (
+    tester,
+  ) async {
+    await _pumpHarness(
+      tester,
+      child: CalendarHubPage(
+        profileOverride: fakeProfile,
+        dataSource: const _AstroReasonCalendarDataSource(),
+        initialSelectedDay: DateTime(2026, 3, 15),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await tester.tap(
+      find.byKey(const ValueKey<String>('calendarDayCell_2026-03-15')),
+      warnIfMissed: false,
+    );
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('3. Evde iletişim tarafında'), findsWidgets);
+    expect(find.textContaining('1. Evde kimlik alanında'), findsWidgets);
   });
 
   testWidgets('day page only shows markers for the selected day', (
@@ -329,6 +356,99 @@ void main() {
     expect(find.text('Marker 15'), findsOneWidget);
     expect(find.text('Marker 16'), findsNothing);
   });
+
+  testWidgets(
+    'day page still renders shell content when narrative or best times fail',
+    (tester) async {
+      await _pumpHarness(
+        tester,
+        child: CalendarDayPage(
+          profile: fakeProfile,
+          initialDate: DateTime(2026, 3, 15),
+          dataSource: const _NarrativeFailureCalendarDataSource(),
+          source: 'home_preview',
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.byType(JoviaEditorialHeroBlock), findsOneWidget);
+      expect(
+        find.byKey(const ValueKey<String>('calendarDayLoadingPlaceholder')),
+        findsNothing,
+      );
+    },
+  );
+
+  testWidgets(
+    'seeded transit copy stays visible when only calendar shell loads',
+    (tester) async {
+      final selectedDate = DateTime(2026, 3, 15);
+      final periodCard = PeriodCardDto.fromEventCard(
+        eventCard: EventCardDto.fromMap(
+          _FakeCalendarDataSource._eventCardMap(
+            selectedDate,
+            horizon: 'period',
+            prefix: 'Period',
+          ),
+        ),
+        index: 0,
+      );
+
+      await _pumpHarness(
+        tester,
+        child: CalendarDayPage(
+          profile: fakeProfile,
+          initialDate: selectedDate,
+          initialBundle: seedCalendarDayBundleFromPeriodCard(
+            date: selectedDate,
+            card: periodCard,
+            periodCore: PeriodCoreDto.fromMap(
+              _FakeCalendarDataSource._periodCoreMap(),
+            ),
+          ),
+          dataSource: const _NarrativeFailureCalendarDataSource(),
+          source: 'home_preview',
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('İç ses 15'), findsWidgets);
+      expect(find.textContaining('Ritim 15'), findsWidgets);
+      expect(find.byType(JoviaEditorialHeroBlock), findsOneWidget);
+    },
+  );
+
+  testWidgets(
+    'seeded daily copy stays visible when narrative returns empty cards',
+    (tester) async {
+      final selectedDate = DateTime(2026, 3, 15);
+      final dailyCard = EventCardDto.fromMap(
+        _FakeCalendarDataSource._eventCardMap(selectedDate, horizon: 'day'),
+      );
+
+      await _pumpHarness(
+        tester,
+        child: CalendarDayPage(
+          profile: fakeProfile,
+          initialDate: selectedDate,
+          initialBundle: seedCalendarDayBundleFromDailyEventCard(
+            date: selectedDate,
+            card: dailyCard,
+          ),
+          dataSource: const _EmptyNarrativeCardsCalendarDataSource(),
+          source: 'home_preview',
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(find.text('İç ses 15'), findsWidgets);
+      expect(find.textContaining('Ritim 15'), findsWidgets);
+      expect(find.byType(JoviaEditorialHeroBlock), findsOneWidget);
+    },
+  );
 }
 
 Future<void> _pumpHarness(WidgetTester tester, {required Widget child}) async {
@@ -341,7 +461,12 @@ Future<void> _pumpHarness(WidgetTester tester, {required Widget child}) async {
   await tester.pumpWidget(
     DefaultAssetBundle(
       bundle: _FakeSvgAssetBundle(),
-      child: MaterialApp(home: child),
+      child: MaterialApp(
+        locale: const Locale('tr'),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        home: child,
+      ),
     ),
   );
   await tester.pump();
@@ -354,6 +479,7 @@ class _FakeCalendarDataSource implements CalendarDataSource {
   Future<Map<String, dynamic>> fetchBestTimes({
     required Map<String, dynamic> profile,
     required DateTime focusedDate,
+    String locale = 'tr',
   }) async {
     return <String, dynamic>{
       'best_times': <Map<String, dynamic>>[
@@ -367,6 +493,7 @@ class _FakeCalendarDataSource implements CalendarDataSource {
     required Map<String, dynamic> profile,
     required DateTime focusedDate,
     String include = 'markers,themes,intent_summary',
+    String locale = 'tr',
   }) async {
     return <String, dynamic>{
       'public': <String, dynamic>{
@@ -387,6 +514,7 @@ class _FakeCalendarDataSource implements CalendarDataSource {
   Future<Map<String, dynamic>> fetchDailyNarrative({
     required Map<String, dynamic> profile,
     required DateTime selectedDate,
+    String locale = 'tr',
   }) async {
     final daysInMonth = DateTime(
       selectedDate.year,
@@ -489,6 +617,7 @@ class _PeriodOnlyCalendarDataSource extends _FakeCalendarDataSource {
   Future<Map<String, dynamic>> fetchDailyNarrative({
     required Map<String, dynamic> profile,
     required DateTime selectedDate,
+    String locale = 'tr',
   }) async {
     final base = await super.fetchDailyNarrative(
       profile: profile,
@@ -507,6 +636,41 @@ class _PeriodOnlyCalendarDataSource extends _FakeCalendarDataSource {
   }
 }
 
+class _AstroReasonCalendarDataSource extends _FakeCalendarDataSource {
+  const _AstroReasonCalendarDataSource();
+
+  @override
+  Future<Map<String, dynamic>> fetchDailyNarrative({
+    required Map<String, dynamic> profile,
+    required DateTime selectedDate,
+    String locale = 'tr',
+  }) async {
+    final base = await super.fetchDailyNarrative(
+      profile: profile,
+      selectedDate: selectedDate,
+      locale: locale,
+    );
+    final publicRaw = Map<String, dynamic>.from(base['public'] as Map);
+    final eventCards = List<Map<String, dynamic>>.from(
+      (publicRaw['event_cards'] as List).map(
+        (item) => Map<String, dynamic>.from(item as Map),
+      ),
+    );
+    eventCards[0] = <String, dynamic>{
+      ...eventCards[0],
+      'mechanism':
+          'Merkürün yükselene kare açısı önce 3. Evde iletişim tarafında başlıyor. Sonra 1. Evde kimlik alanında belirginleşiyor.',
+      'technical_note':
+          'Teknik not: Merkür Yükselen ile kare açı yapıyor. Ana sahne 3. Ev; hedef alan 1. Ev.',
+      'why_now':
+          'Etki şu an güçlü. Bu açı 3. Evden çalışıp 1. Ev sonucunu tetikliyor.',
+    };
+    publicRaw['event_cards'] = eventCards;
+    base['public'] = publicRaw;
+    return base;
+  }
+}
+
 class _DuplicateCardsCalendarDataSource extends _FakeCalendarDataSource {
   const _DuplicateCardsCalendarDataSource();
 
@@ -514,6 +678,7 @@ class _DuplicateCardsCalendarDataSource extends _FakeCalendarDataSource {
   Future<Map<String, dynamic>> fetchDailyNarrative({
     required Map<String, dynamic> profile,
     required DateTime selectedDate,
+    String locale = 'tr',
   }) async {
     final base = await super.fetchDailyNarrative(
       profile: profile,
@@ -548,11 +713,13 @@ class _SlowCalendarDataSource extends _FakeCalendarDataSource {
   Future<Map<String, dynamic>> fetchDailyNarrative({
     required Map<String, dynamic> profile,
     required DateTime selectedDate,
+    String locale = 'tr',
   }) async {
     await Future<void>.delayed(const Duration(milliseconds: 360));
     return super.fetchDailyNarrative(
       profile: profile,
       selectedDate: selectedDate,
+      locale: locale,
     );
   }
 }
@@ -565,6 +732,7 @@ class _MultiMarkerCalendarDataSource extends _FakeCalendarDataSource {
     required Map<String, dynamic> profile,
     required DateTime focusedDate,
     String include = 'markers,themes,intent_summary',
+    String locale = 'tr',
   }) async {
     return <String, dynamic>{
       'public': <String, dynamic>{
@@ -585,6 +753,55 @@ class _MultiMarkerCalendarDataSource extends _FakeCalendarDataSource {
             'time_hint': 'Sabah',
           },
         ],
+      },
+    };
+  }
+}
+
+class _NarrativeFailureCalendarDataSource extends _FakeCalendarDataSource {
+  const _NarrativeFailureCalendarDataSource();
+
+  @override
+  Future<Map<String, dynamic>> fetchDailyNarrative({
+    required Map<String, dynamic> profile,
+    required DateTime selectedDate,
+    String locale = 'tr',
+  }) async {
+    throw Exception('narrative failed');
+  }
+
+  @override
+  Future<Map<String, dynamic>> fetchBestTimes({
+    required Map<String, dynamic> profile,
+    required DateTime focusedDate,
+    String locale = 'tr',
+  }) async {
+    throw Exception('best times failed');
+  }
+}
+
+class _EmptyNarrativeCardsCalendarDataSource extends _FakeCalendarDataSource {
+  const _EmptyNarrativeCardsCalendarDataSource();
+
+  @override
+  Future<Map<String, dynamic>> fetchDailyNarrative({
+    required Map<String, dynamic> profile,
+    required DateTime selectedDate,
+    String locale = 'tr',
+  }) async {
+    final base = await super.fetchDailyNarrative(
+      profile: profile,
+      selectedDate: selectedDate,
+      locale: locale,
+    );
+    return <String, dynamic>{
+      'calendar': base['calendar'],
+      'public': <String, dynamic>{
+        'period_core': _FakeCalendarDataSource._periodCoreMap(),
+        'event_cards': <Map<String, dynamic>>[],
+        'daily_event_cards': <Map<String, dynamic>>[],
+        'period_event_cards': <Map<String, dynamic>>[],
+        'timeline': <String, dynamic>{},
       },
     };
   }

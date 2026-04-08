@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, List, Mapping, Optional, Tuple
 import unicodedata
 
@@ -29,6 +30,16 @@ SIGN_TR = {
     "Capricorn": "Oğlak",
     "Aquarius": "Kova",
     "Pisces": "Balık",
+}
+
+_TURKISH_UPPER_MAP = {
+    "i": "İ",
+    "ı": "I",
+    "ğ": "Ğ",
+    "ü": "Ü",
+    "ş": "Ş",
+    "ö": "Ö",
+    "ç": "Ç",
 }
 
 HOUSE_LABEL_TR = {
@@ -90,6 +101,7 @@ PUBLIC_EVENT_V2_FIELDS = (
     "importance_label_tr",
     "copy_mode",
 )
+DEFAULT_PERIOD_PEAK_TIMELINE_ITEMS = 4
 
 _EVENT_CARD_DISPLAY_TEXT_KEYS = frozenset(
     {
@@ -154,7 +166,12 @@ def _normalize_display_text(value: Any) -> Any:
     if not text:
         return ""
     try:
-        return tr_normalize(text)
+        normalized = tr_normalize(text)
+        return re.sub(
+            r"(^|[.!?]\s+)([a-zçğıöşü])",
+            lambda match: f"{match.group(1)}{_TURKISH_UPPER_MAP.get(match.group(2), match.group(2).upper())}",
+            normalized,
+        )
     except Exception:
         return text
 
@@ -912,6 +929,7 @@ def build_public_response(response: Dict[str, Any]) -> Dict[str, Any]:
         response,
         filtered_items=filtered_items,
         period_core=period_core,
+        max_items=DEFAULT_PERIOD_PEAK_TIMELINE_ITEMS,
     )
     period_peak_timeline = _merge_period_peak_timeline_v2(period_peak_timeline, event_v2_by_id)
     timeline = _normalize_timeline_copy(

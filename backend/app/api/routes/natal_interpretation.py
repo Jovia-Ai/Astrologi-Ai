@@ -61,6 +61,13 @@ from app.helpers.domain_normalizer import canon_domain
 from app.helpers.normalize import normalize_node_alias, normalize_planet_key, normalize_aspect_type
 from app.engine.astro_normalize import aspect_strength, clamp01
 from app.natal.public_builder import build_public_natal_view
+from app.natal.category_support_engine import (
+    apply_category_support_to_personality_imprint,
+    apply_category_support_to_profile_narrative,
+    apply_category_support_to_sections,
+    apply_category_support_to_threads,
+    build_natal_category_support_bundle,
+)
 from app.natal.natal_graph import build_natal_graph
 from app.natal.natal_graph_v2 import build_natal_graph_v2
 from app.natal.archetype_profile import build_archetype_profile, get_archetype_runtime_versions
@@ -68,6 +75,7 @@ from app.natal.archetype_question_bank import (
     build_public_question_bank,
     current_question_bank_version,
     score_archetype_answers,
+    select_adaptive_questions,
 )
 from app.natal.narrative.core_story_tr_natal import build_core_story_ui
 from app.natal.narrative.contradiction_engine import build_contradiction_signatures
@@ -119,7 +127,11 @@ class NatalInterpretationRequest(BaseModel):
     birth_date: str = Field(..., description="Birth date in YYYY-MM-DD format.")
     birth_time: str = Field(..., description="Birth time in HH:MM format.")
     birth_place: str = Field(..., description="City + country or recognizable location label.")
+    birth_latitude: float | None = None
+    birth_longitude: float | None = None
+    birth_timezone: str | None = None
     locale: str | None = None
+    summary_only: bool = False
 
 
 class ArchetypeAnswer(BaseModel):
@@ -204,11 +216,14 @@ def _profile_fast_cache_key(request: NatalInterpretationRequest) -> str:
                 request.birth_date.strip(),
                 request.birth_time.strip(),
                 request.birth_place.strip().lower(),
+                f"{float(request.birth_latitude):.6f}" if request.birth_latitude is not None else "",
+                f"{float(request.birth_longitude):.6f}" if request.birth_longitude is not None else "",
+                (request.birth_timezone or "").strip().lower(),
                 (request.locale or "tr").strip().lower(),
             ]
         ).encode("utf-8")
     ).hexdigest()
-    return f"profile_fast:v1:{digest}"
+    return f"profile_fast:v2:{digest}"
 
 
 def _natal_selection_seed_key(chart_data: Mapping[str, Any]) -> str:
@@ -269,6 +284,9 @@ def _build_profile_fast_payload(
         request.birth_date,
         request.birth_time,
         request.birth_place,
+        birth_latitude=request.birth_latitude,
+        birth_longitude=request.birth_longitude,
+        birth_timezone=request.birth_timezone,
     )
     chart_compute_ms = (perf_counter() - chart_started) * 1000.0
 
@@ -337,6 +355,79 @@ def _build_profile_fast_payload(
     }
 
 
+def _summary_only_headline(profile_fast: Mapping[str, Any]) -> str:
+    rising_sign = str(profile_fast.get("rising_sign") or "").strip()
+    sun_sign = str(profile_fast.get("sun_sign") or "").strip()
+    if rising_sign:
+        return f"{rising_sign} yükselenle açılan çizgi"
+    if sun_sign:
+        return f"{sun_sign} tonuyla açılan ana tema"
+    return "Kimlik çizgin"
+
+
+def _summary_only_text(profile_fast: Mapping[str, Any]) -> str:
+    sun_sign = str(profile_fast.get("sun_sign") or "").strip()
+    moon_sign = str(profile_fast.get("moon_sign") or "").strip()
+    rising_sign = str(profile_fast.get("rising_sign") or "").strip()
+    chart_ruler = str(profile_fast.get("chart_ruler") or "").strip()
+    chart_ruler_house = profile_fast.get("chart_ruler_house")
+
+    parts: list[str] = []
+    if rising_sign and sun_sign:
+        parts.append(
+            f"{rising_sign} yükselen ve {sun_sign} Güneş birleşimi dışarı verdiğin tonu daha belirgin kuruyor."
+        )
+    elif sun_sign:
+        parts.append(f"{sun_sign} Güneş kimliğinin ana hattını kuruyor.")
+
+    if moon_sign:
+        parts.append(f"{moon_sign} Ay duygusal ritmini ve iç tepki biçimini tarif ediyor.")
+
+    if chart_ruler and chart_ruler_house not in (None, ""):
+        parts.append(f"Harita yöneticin {chart_ruler} {chart_ruler_house}. ev temalarında çalışıyor.")
+    elif chart_ruler:
+        parts.append(f"Harita yöneticin {chart_ruler} üzerinden çalışan bir omurga veriyor.")
+
+    if not parts:
+        return "Kimlik çizginin kısa özeti hazırlanıyor."
+    return " ".join(parts[:2])
+
+
+def _build_summary_only_public_payload(request: NatalInterpretationRequest) -> tuple[dict[str, Any], dict[str, float]]:
+    profile_fast_payload, timing = _build_profile_fast_payload(request)
+    fast = profile_fast_payload.get("profile_fast") if isinstance(profile_fast_payload.get("profile_fast"), Mapping) else {}
+    headline = _summary_only_headline(fast)
+    summary = _summary_only_text(fast)
+    sun_sign = str(fast.get("sun_sign") or "").strip()
+    moon_sign = str(fast.get("moon_sign") or "").strip()
+    rising_sign = str(fast.get("rising_sign") or "").strip()
+
+    planets = []
+    if sun_sign:
+        planets.append({"planet": "Sun", "sign": sun_sign})
+    if moon_sign:
+        planets.append({"planet": "Moon", "sign": moon_sign})
+    if rising_sign:
+        planets.append({"planet": "Ascendant", "sign": rising_sign, "house": 1, "is_point": True})
+
+    payload = {
+        "public": {
+            "locale": request.locale or "tr",
+            "core_story": summary,
+            "core_story_ui": {
+                "headline": headline,
+                "text": summary,
+            },
+            "user_compact": {"domains": []},
+            "planets": planets,
+            "angles": {"ascendant_sign": rising_sign},
+            "profile_fast": dict(fast),
+            "summary_mode": "summary_only",
+        }
+    }
+    return payload, timing
+
+
 def _normalize_archetype_score(value: Any) -> float:
     number = _safe_float(value)
     if 0.0 <= number <= 1.0:
@@ -398,6 +489,8 @@ def _resolve_archetype_inputs(request: ArchetypeProfileRequest) -> Dict[str, Any
             ),
             "answer_consistency": request.answer_consistency,
             "answered_count": 0,
+            "adaptive_answered_count": 0,
+            "family_scores": {},
             "input_mode": "test_scores",
             "question_bank_version": None,
             "question_debug": {},
@@ -422,6 +515,10 @@ def _resolve_archetype_inputs(request: ArchetypeProfileRequest) -> Dict[str, Any
                 else question_payload.get("answer_consistency")
             ),
             "answered_count": int(_safe_float(question_payload.get("answered_count"))),
+            "adaptive_answered_count": int(
+                _safe_float(question_payload.get("adaptive_answered_count"))
+            ),
+            "family_scores": dict(question_payload.get("family_scores") or {}),
             "input_mode": "item_bank",
             "question_bank_version": question_payload.get("question_bank_version"),
             "question_debug": question_payload.get("debug") or {},
@@ -436,6 +533,8 @@ def _resolve_archetype_inputs(request: ArchetypeProfileRequest) -> Dict[str, Any
             "scores": direct_scores,
             "answer_consistency": request.answer_consistency,
             "answered_count": len(list(request.answers or [])),
+            "adaptive_answered_count": 0,
+            "family_scores": {},
             "input_mode": "answers",
             "question_bank_version": None,
             "question_debug": {},
@@ -445,6 +544,8 @@ def _resolve_archetype_inputs(request: ArchetypeProfileRequest) -> Dict[str, Any
         "scores": {},
         "answer_consistency": request.answer_consistency,
         "answered_count": 0,
+        "adaptive_answered_count": 0,
+        "family_scores": {},
         "input_mode": "chart_only",
         "question_bank_version": None,
         "question_debug": {},
@@ -493,8 +594,40 @@ def _stored_snapshot_is_current(
 
 
 def _build_archetype_ui_sections(payload: Mapping[str, Any]) -> Dict[str, Any]:
+    top_archetypes = (
+        list(payload.get("top_archetypes") or [])
+        if isinstance(payload.get("top_archetypes"), Sequence)
+        else []
+    )
+    primary = (
+        dict(top_archetypes[0])
+        if top_archetypes and isinstance(top_archetypes[0], Mapping)
+        else {}
+    )
+    primary_mixins = (
+        list(primary.get("mixins") or [])
+        if isinstance(primary.get("mixins"), Sequence)
+        else []
+    )
+    copy_blocks = (
+        dict(primary.get("copy_blocks") or {})
+        if isinstance(primary.get("copy_blocks"), Mapping)
+        else {}
+    )
     return {
-        "identity": list(payload.get("top_archetypes") or []),
+        "identity": {
+            "items": top_archetypes,
+            "primary": primary,
+            "flavor": {
+                "subprofile_label_tr": primary.get("subprofile_display_label_tr")
+                or primary.get("subprofile_label_tr"),
+                "copy_variant": primary.get("copy_variant"),
+                "mixins": primary_mixins,
+                "flavor_tr": primary.get("flavor_tr") or copy_blocks.get("flavor_tr"),
+            },
+            "differentiators": list(primary.get("differentiators") or []),
+            "copy_blocks": copy_blocks,
+        },
         "protection": dict(payload.get("shadow_archetype") or {}),
         "tension": dict(payload.get("primary_contradiction") or {}),
         "confidence": dict(payload.get("confidence") or {}),
@@ -599,8 +732,17 @@ def profile_archetype(
     normalized_test_scores = normalized_inputs["scores"]
     resolved_answer_consistency = normalized_inputs["answer_consistency"]
     answered_count = int(_safe_float(normalized_inputs.get("answered_count")))
+    adaptive_answered_count = int(
+        _safe_float(normalized_inputs.get("adaptive_answered_count"))
+    )
     question_bank_version = normalized_inputs.get("question_bank_version")
     input_mode = str(normalized_inputs.get("input_mode") or "chart_only")
+    normalized_family_scores = dict(normalized_inputs.get("family_scores") or {})
+    question_debug = (
+        normalized_inputs.get("question_debug")
+        if isinstance(normalized_inputs.get("question_debug"), Mapping)
+        else {}
+    )
     normalized_answers = _normalize_answers_for_storage(request.answers)
     birth_data_hash = build_archetype_birth_hash(
         birth_date=request.birth_date,
@@ -665,8 +807,28 @@ def profile_archetype(
         natal_feature_graph=natal_feature_graph,
         test_scores=normalized_test_scores,
         context_scores=request.context_scores or {},
+        question_family_scores=normalized_family_scores,
         birth_time_confidence=(request.birth_time_confidence or "exact"),
         answer_consistency=resolved_answer_consistency,
+    )
+    adaptive = (
+        archetype_payload.get("adaptive")
+        if isinstance(archetype_payload.get("adaptive"), Mapping)
+        else {}
+    )
+    adaptive_families = [
+        str(item).strip()
+        for item in adaptive.get("families") or []
+        if str(item).strip()
+    ]
+    adaptive_questions = (
+        select_adaptive_questions(
+            families=adaptive_families,
+            locale=request.locale or "tr",
+            exclude_ids=question_debug.get("matched_item_ids") or (),
+        )
+        if adaptive_families
+        else []
     )
     response = {
         "metadata": base_payload.get("metadata") or {},
@@ -682,11 +844,16 @@ def profile_archetype(
         "primary_contradiction": archetype_payload.get("primary_contradiction") or {},
         "confidence": archetype_payload.get("confidence") or {},
         "slots": archetype_payload.get("slots") or {},
+        "adaptive": adaptive,
+        "adaptive_questions": adaptive_questions,
         "ui_sections": _build_archetype_ui_sections(archetype_payload),
         "question_summary": {
             "available": True,
             "has_test_result": bool(archetype_payload.get("test_scores")),
             "answered_count": answered_count,
+            "adaptive_asked_count": adaptive_answered_count,
+            "adaptive_trigger_reason": str(adaptive.get("trigger_reason") or ""),
+            "adaptive_families": adaptive_families,
             "input_mode": input_mode,
         },
         "snapshot": {
@@ -713,7 +880,7 @@ def profile_archetype(
                     "engine_version": response.get("engine_version"),
                     "taxonomy_version": response.get("taxonomy_version"),
                     "fusion_version": response.get("fusion_version"),
-                    "question_bank_version": question_bank_version,
+                    "question_bank_version": response.get("question_bank_version"),
                     "input_mode": input_mode,
                 }
             )
@@ -735,7 +902,9 @@ def profile_archetype(
             "archetype": archetype_payload.get("debug") or {},
             "input_mode": input_mode,
             "normalized_test_scores": normalized_test_scores,
-            "question_debug": normalized_inputs.get("question_debug") or {},
+            "normalized_family_scores": normalized_family_scores,
+            "question_debug": question_debug,
+            "adaptive_questions": adaptive_questions,
         }
     _log_natal_timing(
         endpoint="/profile/archetype",
@@ -784,6 +953,15 @@ def interpret_natal_chart_ui(
     profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     started = perf_counter()
+    if request.summary_only:
+        payload, _timing = _build_summary_only_public_payload(request)
+        _log_natal_timing(
+            endpoint="/interpret/ui",
+            request=request,
+            response=payload,
+            duration_ms=(perf_counter() - started) * 1000.0,
+        )
+        return payload
     base_payload = _prepare_payload(
         request,
         premium_mode=False,
@@ -931,7 +1109,14 @@ def _prepare_payload(
     profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     try:
-        chart_data = compute_natal_chart(request.birth_date, request.birth_time, request.birth_place)
+        chart_data = compute_natal_chart(
+            request.birth_date,
+            request.birth_time,
+            request.birth_place,
+            birth_latitude=request.birth_latitude,
+            birth_longitude=request.birth_longitude,
+            birth_timezone=request.birth_timezone,
+        )
     except Exception as exc:  # pragma: no cover - network/env specific
         logger.exception("Failed to calculate natal chart from inputs")
         raise HTTPException(status_code=500, detail=f"Chart calculation failed: {exc}") from exc
@@ -1395,6 +1580,19 @@ def _prepare_payload_from_chart(
         master_selector=master_selector_v1,
         migration_mode="active" if surface_migration_enabled else ("shadow" if surface_migration_shadow else "legacy"),
     )
+    category_support_bundle = build_natal_category_support_bundle(
+        chart_data=chart_data,
+        planets=planets,
+        aspects=aspects,
+        natal_graph=natal_graph,
+        natal_feature_graph=natal_feature_graph_v2,
+        contradiction_signatures=contradiction_signatures_v1,
+        master_selector=master_selector_v1,
+    )
+    sections_v2 = apply_category_support_to_sections(sections_v2, category_support_bundle)
+    supporting_threads = apply_category_support_to_threads(supporting_threads, category_support_bundle)
+    profile_narrative = apply_category_support_to_profile_narrative(profile_narrative, category_support_bundle)
+    personality_imprint = apply_category_support_to_personality_imprint(personality_imprint, category_support_bundle)
     if debug_mode:
         profile_internal = profile_narrative.get("profile_internal") if isinstance(profile_narrative.get("profile_internal"), Mapping) else {}
         imprint_debug = personality_imprint.get("selection_debug") if isinstance(personality_imprint.get("selection_debug"), Mapping) else {}
@@ -1403,6 +1601,11 @@ def _prepare_payload_from_chart(
             "active": surface_migration_enabled,
             "profile_narrative": (profile_internal.get("spine_migration") if isinstance(profile_internal.get("spine_migration"), Mapping) else {}),
             "personality_imprint": (imprint_debug.get("spine_migration") if isinstance(imprint_debug.get("spine_migration"), Mapping) else {}),
+        }
+        debug_info["category_support_v1"] = {
+            "support_version": category_support_bundle.get("support_version"),
+            "families": sorted((category_support_bundle.get("by_family") or {}).keys()),
+            "supported_ids": sorted((category_support_bundle.get("by_id") or {}).keys()),
         }
         if surface_migration_shadow:
             surface_migration_debug["sections_v2_shadow"] = build_sections_v2(

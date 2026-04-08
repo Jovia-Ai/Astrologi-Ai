@@ -1,4 +1,6 @@
+import json
 import re
+from pathlib import Path
 
 import app.natal.public_builder as natal_public_builder_module
 from app.natal.public_builder import build_public_natal_view
@@ -187,6 +189,13 @@ def test_public_natal_view_includes_supporting_threads_and_graph() -> None:
     assert public["profile_narrative"]["profile_public"]["schema_version"] == "profile_narrative_public_v3"
     assert public["profile_narrative"]["profile_public"]["core_blocks"]
     assert public["profile_narrative"]["profile_public"]["detail_cards"]
+    detail_cards = public["profile_narrative"]["profile_public"]["detail_cards"]
+    mind_card = next(card for card in detail_cards if card["id"] == "mind_voice")
+    assert 4 <= len(mind_card["detail_blocks"]) <= 7
+    assert all("\n\n" not in str(block) for block in mind_card["detail_blocks"])
+    placement_card = next(card for card in detail_cards if card["id"] == "sun_house_10")
+    assert 4 <= len(placement_card["detail_blocks"]) <= 7
+    assert placement_card["detail_blocks"][0] == "Sen yaptığın şeyin ciddiye alınmasını, emeklerinin karşılık bulmasını ve iz bırakmayı istersin."
     assert public["profile_narrative"]["profile_public"]["core_blocks"][0]["family"] == "mind_mechanics"
     assert "3. ev" not in block["astro_hint"]
     assert "Merkür" not in block["astro_hint"]
@@ -210,6 +219,31 @@ def test_public_natal_view_includes_supporting_threads_and_graph() -> None:
     assert debug_public["profile_narrative"]["profile_internal"]["blocks_debug"]
     assert "section_priority_matrix" in debug_public["narrative_v2"]
     assert "migration_map" in debug_public["narrative_v2"]
+
+
+def test_public_natal_view_builds_editorial_visibility_detail_blocks_for_sample_chart() -> None:
+    artifact_path = (
+        Path(__file__).resolve().parent
+        / "_artifacts"
+        / "natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"
+    )
+    response = json.loads(artifact_path.read_text())
+
+    public = build_public_natal_view(response, locale="tr")
+    detail_cards = public["profile_narrative"]["profile_public"]["detail_cards"]
+    career_card = next(card for card in detail_cards if card["id"] == "career_visibility")
+
+    blocks = career_card["detail_blocks"]
+    assert len(blocks) == 7
+
+    haystack = " ".join(str(item) for item in blocks).lower()
+    assert "denge" in haystack
+    assert "estetik" in haystack
+    assert "görmek istedikleri gibi" in haystack
+    assert "görülmek" in haystack
+    assert "ciddiye alınmak" in haystack
+    assert "nüans" in haystack
+    assert "net görünmek" in haystack
 
 
 def test_public_natal_view_naturalizes_profile_copy_and_humanizes_chips() -> None:

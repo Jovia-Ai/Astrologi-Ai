@@ -13,11 +13,13 @@ class ProfileArchetypeExperiencePage extends StatefulWidget {
     required this.displayName,
     required this.requestPayload,
     this.baseUrl,
+    this.initialPayload,
   });
 
   final String displayName;
   final Map<String, dynamic> requestPayload;
   final String? baseUrl;
+  final Map<String, dynamic>? initialPayload;
 
   @override
   State<ProfileArchetypeExperiencePage> createState() =>
@@ -45,6 +47,11 @@ class _ProfileArchetypeExperiencePageState
   @override
   void initState() {
     super.initState();
+    final seededPayload = widget.initialPayload;
+    if (seededPayload != null && seededPayload.isNotEmpty) {
+      _payload = Map<String, dynamic>.from(seededPayload);
+      _isLoading = false;
+    }
     _orbController = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 3600),
@@ -57,7 +64,9 @@ class _ProfileArchetypeExperiencePageState
         _activeStep = (_activeStep + 1) % _loadingSteps.length;
       });
     });
-    unawaited(_load());
+    if (_isLoading) {
+      unawaited(_load());
+    }
   }
 
   @override
@@ -446,15 +455,36 @@ class _ArchetypeHeroCard extends StatelessWidget {
         ? _readString(primary['label'])
         : 'Arketip cizgisi';
     final secondaryLabel = _readString(secondary['label']);
+    final softenedSubprofile = primary['subprofile_is_softened'] == true;
+    final visibleSubprofileLabel =
+        _readString(primary['subprofile_display_label_tr']).isNotEmpty
+        ? _readString(primary['subprofile_display_label_tr'])
+        : (softenedSubprofile ? '' : _readString(primary['subprofile_label_tr']));
     final score = _readDouble(primary['score']);
-    final motto = _readString(primary['motto_tr']);
-    final portrait = _readString(primary['portrait_tr']);
+    final motto = _copyField(primary, 'motto_tr');
+    final plainSummary = _copyField(primary, 'plain_summary_tr');
+    final portrait = _copyField(primary, 'portrait_tr');
+    final flavor = _copyField(primary, 'flavor_tr');
+    final differentiators = _readStringList(primary['differentiators']);
     final accent = profile.colors.warmAccent;
+    final headline = visibleSubprofileLabel.isNotEmpty
+        ? '$primaryLabel / $visibleSubprofileLabel'
+        : '$primaryLabel sende one cikiyor';
     final chips = <String>[
-      primaryLabel,
+      if (visibleSubprofileLabel.isNotEmpty) visibleSubprofileLabel,
       if (secondaryLabel.isNotEmpty) secondaryLabel,
+      ..._mixinLabels(primary).take(2),
       chartOnly ? 'Harita temelli' : 'Fusion profil',
     ];
+    final bodyText = plainSummary.isNotEmpty
+        ? plainSummary
+        : (portrait.isNotEmpty
+              ? portrait
+              : (flavor.isNotEmpty
+                    ? flavor
+                    : (differentiators.isNotEmpty
+                          ? differentiators.first
+                          : '')));
 
     return JoviaSurfaceCard(
       radius: 34,
@@ -499,7 +529,7 @@ class _ArchetypeHeroCard extends StatelessWidget {
                 const SizedBox(height: 10),
               ],
               Text(
-                '$primaryLabel sende one cikiyor',
+                headline,
                 style: profile.typography.editorialHeadline.copyWith(
                   color: profile.colors.text,
                   fontSize: 30,
@@ -508,8 +538,8 @@ class _ArchetypeHeroCard extends StatelessWidget {
               ),
               const SizedBox(height: 12),
               Text(
-                portrait.isNotEmpty
-                    ? portrait
+                bodyText.isNotEmpty
+                    ? bodyText
                     : (chartOnly
                           ? '$displayName icin bu ilk okuma su an sadece haritandaki omurgadan geliyor.'
                           : '$displayName icin harita ve test ayni eksende bulusturuldu; en guclu cizgi burada toplaniyor.'),
@@ -562,7 +592,10 @@ class _ArchetypeRankCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final split = _asMap(item['source_split']);
-    final gift = _readString(item['gift_tr']);
+    final gift = _copyField(item, 'gift_tr');
+    final differentiator = _readStringList(item['differentiators']).isNotEmpty
+        ? _readStringList(item['differentiators']).first
+        : _readString(item['why_this_not_that']);
     final accent = _archetypeRankAccent(context, rank);
 
     return JoviaSurfaceCard(
@@ -621,6 +654,17 @@ class _ArchetypeRankCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 8),
+                if (differentiator.isNotEmpty) ...[
+                  Text(
+                    differentiator,
+                    style: profile.typography.metaSoft.copyWith(
+                      color: accent,
+                      fontSize: 12.2,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                ],
                 Text(
                   gift.isNotEmpty
                       ? gift
@@ -671,12 +715,33 @@ class _ArchetypeNarrativePanel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fear = _readString(item['fear_tr']);
-    final shadow = _readString(item['shadow_tr']);
-    final relationship = _readString(item['relationship_tr']);
-    final workStyle = _readString(item['work_style_tr']);
-    final growth = _readString(item['growth_tr']);
+    final plainSummary = _copyField(item, 'plain_summary_tr');
+    final flavor = _copyField(item, 'flavor_tr');
+    final gift = _copyField(item, 'gift_tr');
+    final fear = _copyField(item, 'fear_tr');
+    final shadow = _copyField(item, 'shadow_tr');
+    final relationship = _copyField(item, 'relationship_tr');
+    final workStyle = _copyField(item, 'work_style_tr');
+    final growth = _copyField(item, 'growth_tr');
     final lines = <Widget>[
+      if (plainSummary.isNotEmpty)
+        _NarrativeLine(
+          label: 'NEDEN BU CIKTI',
+          body: plainSummary,
+          accent: context.profileTheme.colors.warmAccent,
+        ),
+      if (flavor.isNotEmpty)
+        _NarrativeLine(
+          label: 'PROFIL TONU',
+          body: flavor,
+          accent: context.profileTheme.colors.primary,
+        ),
+      if (gift.isNotEmpty)
+        _NarrativeLine(
+          label: 'AYIRT EDICI HAT',
+          body: gift,
+          accent: context.profileTheme.colors.lime,
+        ),
       if (fear.isNotEmpty)
         _NarrativeLine(
           label: 'TEMEL KORKU',
@@ -1414,7 +1479,11 @@ List<Map<String, dynamic>> _asListOfMaps(dynamic value) {
 }
 
 bool _hasNarrative(Map<String, dynamic> item) {
+  final copyBlocks = _asMap(item['copy_blocks']);
   for (final key in const <String>[
+    'plain_summary_tr',
+    'reasoning_tr',
+    'flavor_tr',
     'motto_tr',
     'portrait_tr',
     'gift_tr',
@@ -1424,7 +1493,8 @@ bool _hasNarrative(Map<String, dynamic> item) {
     'work_style_tr',
     'growth_tr',
   ]) {
-    if (_readString(item[key]).isNotEmpty) {
+    if (_readString(copyBlocks[key]).isNotEmpty ||
+        _readString(item[key]).isNotEmpty) {
       return true;
     }
   }
@@ -1432,6 +1502,33 @@ bool _hasNarrative(Map<String, dynamic> item) {
 }
 
 String _readString(dynamic value) => (value ?? '').toString().trim();
+
+List<String> _readStringList(dynamic value) {
+  if (value is! List) {
+    return const <String>[];
+  }
+  return value
+      .map((item) => _readString(item))
+      .where((item) => item.isNotEmpty)
+      .toList(growable: false);
+}
+
+String _copyField(Map<String, dynamic> item, String key) {
+  final copyBlocks = _asMap(item['copy_blocks']);
+  final fromBlocks = _readString(copyBlocks[key]);
+  if (fromBlocks.isNotEmpty) {
+    return fromBlocks;
+  }
+  return _readString(item[key]);
+}
+
+List<String> _mixinLabels(Map<String, dynamic> item) {
+  final mixins = _asListOfMaps(item['mixins']);
+  return mixins
+      .map((mixin) => _readString(mixin['value_label_tr']))
+      .where((label) => label.isNotEmpty)
+      .toList(growable: false);
+}
 
 double _readDouble(dynamic value) {
   if (value is num) {

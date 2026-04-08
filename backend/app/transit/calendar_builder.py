@@ -6,9 +6,9 @@ from typing import Any, Dict, Iterable, List, Mapping, Optional, Tuple
 import math
 import re
 
+from app.astro.chart_engine.builder import LocationData, resolve_location
 from app.engine.transit_engine import (
     build_transit_window_report,
-    fetch_location,
     julian_day,
     parse_birth_datetime_components,
     _calc_bodies,
@@ -602,11 +602,10 @@ def _scan_phase_markers(
     *,
     start: date,
     end: date,
-    transit_place: str,
+    location: LocationData,
     options: Mapping[str, Any] | None,
 ) -> List[CalendarMarker]:
     cfg = _normalize_options(options)
-    location = fetch_location(transit_place)
     markers: List[CalendarMarker] = []
 
     prev_state: Dict[str, Dict[str, Any]] = {}
@@ -724,6 +723,12 @@ def build_transit_calendar_public(
     start: str,
     end: str,
     tz: str,
+    birth_latitude: float | None = None,
+    birth_longitude: float | None = None,
+    birth_timezone: str | None = None,
+    transit_latitude: float | None = None,
+    transit_longitude: float | None = None,
+    transit_timezone: str | None = None,
     lens: str = "general",
     options: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
@@ -740,9 +745,15 @@ def build_transit_calendar_public(
         birth_date=birth_date,
         birth_time=birth_time,
         birth_place=birth_place,
+        birth_latitude=birth_latitude,
+        birth_longitude=birth_longitude,
+        birth_timezone=birth_timezone,
         transit_date=mid_date,
         transit_time="12:00",
         transit_place=transit_place,
+        transit_latitude=transit_latitude,
+        transit_longitude=transit_longitude,
+        transit_timezone=transit_timezone,
         options=options or {},
         window_days=window_days,
         step_hours=12,
@@ -756,10 +767,22 @@ def build_transit_calendar_public(
     event_meta = [meta for event in raw_events if (meta := _event_meta(event))]
 
     cfg = _normalize_options(options)
-    location = fetch_location(transit_place)
+    location = resolve_location(
+        transit_place,
+        latitude=transit_latitude,
+        longitude=transit_longitude,
+        timezone=transit_timezone,
+    )
 
     markers = _build_markers(event_meta)
-    markers.extend(_scan_phase_markers(start=start_date, end=end_date, transit_place=transit_place, options=options))
+    markers.extend(
+        _scan_phase_markers(
+            start=start_date,
+            end=end_date,
+            location=location,
+            options=options,
+        )
+    )
 
     normalized_markers: List[CalendarMarker] = []
     for marker in markers:

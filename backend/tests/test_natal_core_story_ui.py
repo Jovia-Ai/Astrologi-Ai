@@ -64,3 +64,6 @@ def test_core_story_ui_is_deterministic_and_clamped() -> None:
     assert isinstance(first.get("text"), str) and first.get("text")
     assert len(first["text"]) <= 520
     assert isinstance(first.get("drivers"), list)
+    assert "İyi çalıştığında" in first["text"]
+    assert "gölgesinde" in first["text"]
+    assert any((item.get("key") or "") == "asc_ruler_sign" for item in first["drivers"])

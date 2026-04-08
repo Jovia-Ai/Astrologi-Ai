@@ -6,6 +6,7 @@ import 'package:mobile/app/profile/profile_models.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/tabs/bond_page.dart';
 import 'package:mobile/app/tabs/home_page.dart';
+import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
@@ -294,8 +295,9 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
         (profile['birth_time'] ?? '').toString(),
       ),
       'birth_place': _birthPlace(profile),
-      'locale': 'tr',
+      'locale': Localizations.localeOf(context).languageCode,
     };
+    TransitRequestBuilder.appendKnownLocationFields(payload, profile: profile);
 
     setState(() {
       _isLoading = true;

@@ -45,7 +45,7 @@ class Settings(BaseSettings):
     enable_home_fast_cache: bool = Field(default=True, validation_alias="ENABLE_HOME_FAST_CACHE")
     enable_home_deep_cache: bool = Field(default=True, validation_alias="ENABLE_HOME_DEEP_CACHE")
     enable_stale_while_revalidate: bool = Field(default=True, validation_alias="ENABLE_STALE_WHILE_REVALIDATE")
-    enable_background_refresh: bool = Field(default=False, validation_alias="ENABLE_BACKGROUND_REFRESH")
+    enable_background_refresh: bool = Field(default=True, validation_alias="ENABLE_BACKGROUND_REFRESH")
     enable_timing_logs: bool = Field(default=True, validation_alias="ENABLE_TIMING_LOGS")
     global_transits_ttl_seconds: int = Field(default=3600, validation_alias="GLOBAL_TRANSITS_TTL_SECONDS")
     global_transits_stale_ttl_seconds: int = Field(default=43200, validation_alias="GLOBAL_TRANSITS_STALE_TTL_SECONDS")

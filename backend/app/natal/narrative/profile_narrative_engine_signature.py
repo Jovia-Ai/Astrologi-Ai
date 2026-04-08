@@ -15,6 +15,15 @@ from app.natal.narrative.phrase_lib_tr_profile import (
 from app.natal.narrative.signature_catalog_tr import SIGNATURE_CATALOG_TR
 from app.natal.narrative.signature_engine import BLOCK_ORDER, extract_candidates, normalize_facts, select_by_block
 from app.natal.narrative.signature_taxonomy_tr import BLOCK_ALIAS_TO_TAXONOMY
+from app.natal.supporting_threads_builder import (
+    HOUSE_ARENA_TR,
+    SIGN_VIBE_TR,
+    _CAREER_MC_BALANCE_TR,
+    _CAREER_RULER_SIGN_BALANCE_TR,
+    _RELATIONSHIP_RULER_SIGN_BALANCE_TR,
+    _RELATIONSHIP_SIGN_BALANCE_TR,
+    _RELATIONSHIP_SIGN_OPENING_TR,
+)
 
 ENGINE_VERSION = "profile_narrative_v2"
 SEED_VERSION = "profile_signature_seed_v2_s1"
@@ -53,6 +62,21 @@ PLANET_LABELS_TR = {
     "Chiron": "Kiron",
     "Vertex": "Vertex",
     "Lilith": "Lilith",
+}
+
+_RULER_SIGN_BALANCE_TR = {
+    "Aries": {"gift": "cesaret ve direktlik", "shadow": "sabırsızlık ya da ani tepki"},
+    "Taurus": {"gift": "sağlamlık ve istikrar", "shadow": "fazla tutunma ya da değişimi geciktirme"},
+    "Gemini": {"gift": "çeviklik ve ifade gücü", "shadow": "dağılma ya da kararı fazla çoğaltma"},
+    "Cancer": {"gift": "sezgi ve koruyucu bir hassasiyet", "shadow": "fazla alınma ya da geri çekilme"},
+    "Leo": {"gift": "sıcaklık ve görünür bir ifade", "shadow": "gurur kırıldığında sert kapanma"},
+    "Virgo": {"gift": "berraklık ve edit gücü", "shadow": "fazla inceleme ya da gecikme"},
+    "Libra": {"gift": "denge ve ilişki zekası", "shadow": "kararı fazla tartıp geciktirme"},
+    "Scorpio": {"gift": "odak ve derinlik", "shadow": "kuşku ya da fazla kontrol"},
+    "Sagittarius": {"gift": "vizyon ve cesaret", "shadow": "fazla açılma ya da abartılı hız"},
+    "Capricorn": {"gift": "omurga ve dayanıklılık", "shadow": "yükü gereğinden fazla içerde toplama"},
+    "Aquarius": {"gift": "özgünlük ve bağımsızlık", "shadow": "mesafe ya da kopukluk"},
+    "Pisces": {"gift": "sezgisel akış ve hayal gücü", "shadow": "dağılma ya da sınır kaybı"},
 }
 
 PRIMITIVE_SENTENCE_HINTS = {
@@ -253,6 +277,29 @@ def _bridge(color_signature: Mapping[str, Any] | None) -> str:
 
 def _planet_label(value: Any) -> str:
     return PLANET_LABELS_TR.get(str(value or "").strip(), str(value or "").strip())
+
+
+def _sign_vibe(value: Any) -> str:
+    return SIGN_VIBE_TR.get(str(value or "").strip(), "")
+
+
+def _sign_balance(sign: str) -> Dict[str, str]:
+    payload = _RULER_SIGN_BALANCE_TR.get(str(sign or "").strip())
+    return dict(payload) if isinstance(payload, dict) else {}
+
+
+def _house_arena(value: Any) -> str:
+    resolved = _safe_house(value)
+    return HOUSE_ARENA_TR.get(resolved, "") if resolved is not None else ""
+
+
+def _house_ruler_payload(facts: Mapping[str, Any], house: int) -> tuple[str, str, int | None]:
+    house_rulers = facts.get("house_rulers") if isinstance(facts.get("house_rulers"), Mapping) else {}
+    payload = house_rulers.get(str(house)) if isinstance(house_rulers.get(str(house)), Mapping) else {}
+    ruler = str(payload.get("primary_ruler") or "").strip()
+    pos = payload.get("primary_ruler_pos") if isinstance(payload.get("primary_ruler_pos"), Mapping) else {}
+    sign = str(pos.get("sign") or "").strip()
+    return ruler, sign, _safe_house(pos.get("house"))
 
 
 def _house_label(value: Any) -> str:
@@ -584,6 +631,57 @@ def _clean_copy_sentence(text: str, fallback: str = "") -> str:
     return _ensure_sentence(value, fallback)
 
 
+_BALANCE_GIFT_LEADS = (
+    "Bu yapı olgunlaştığında",
+    "Olgun tarafında",
+    "Dengeye geldiğinde",
+    "Dengede olduğunda",
+    "Yakınlık sahici geldiğinde",
+    "Kendi alanında toparlandığında",
+    "İçinden gelen şeyi görünür kıldığında",
+)
+
+_BALANCE_SHADOW_LEADS = (
+    "Zorlandığında",
+    "Denge bozulduğunda",
+    "Yük arttığında",
+    "Baskı arttığında",
+    "Baskı yükseldiğinde",
+    "Beklediğinde",
+    "Yorulduğunda",
+    "Kırıldığında",
+)
+
+
+def _strip_balance_lead(text: str, *, leads: tuple[str, ...]) -> str:
+    value = _first_clause(text).strip().rstrip(".!?")
+    if not value:
+        return ""
+    for lead in leads:
+        if value.lower().startswith(lead.lower()):
+            value = value[len(lead) :].strip(" ,;:")
+            break
+    if value:
+        value = value[0].lower() + value[1:]
+    return value
+
+
+def _balance_sentence(gift: str, shadow: str) -> str:
+    gift_clause = _strip_balance_lead(gift, leads=_BALANCE_GIFT_LEADS)
+    shadow_clause = _strip_balance_lead(shadow, leads=_BALANCE_SHADOW_LEADS)
+    if gift_clause and shadow_clause:
+        return _ensure_sentence(f"İyi çalıştığında {gift_clause}; gölgesinde {shadow_clause}")
+    if gift_clause:
+        return _ensure_sentence(f"İyi çalıştığında {gift_clause}")
+    if shadow_clause:
+        return _ensure_sentence(f"Gölgesinde {shadow_clause}")
+    return ""
+
+
+def _split_public_sentences(text: str) -> list[str]:
+    return [piece.strip() for piece in re.split(r"(?<=[.!?])\s+", str(text or "").strip()) if piece.strip()]
+
+
 def _copy_tokens(text: str) -> set[str]:
     import re
 
@@ -612,6 +710,200 @@ def _choose_distinct_copy(candidates: list[Any], fallback: str, used: list[str])
         if all(_copy_overlap(cleaned, prior) < 0.58 for prior in used if prior):
             return cleaned
     return fallback_clean
+
+
+def _append_balance_to_body(body: str, gift: str, shadow: str, *, max_sentences: int = 4) -> str:
+    balance = _balance_sentence(gift, shadow)
+    if not balance:
+        return str(body or "").strip()
+    sentences = _split_public_sentences(body)
+    if not sentences:
+        return balance
+    if any(_copy_overlap(balance, sentence) >= 0.72 for sentence in sentences):
+        return " ".join(sentences)
+    if len(sentences) >= max_sentences:
+        merged = sentences[-1].rstrip(".!?")
+        balance_clause = _strip_balance_lead(balance, leads=())
+        sentences[-1] = _ensure_sentence(f"{merged}; {balance_clause}")
+        return " ".join(sentences)
+    sentences.append(balance)
+    return " ".join(sentences)
+
+
+def _personalize_identity_copy(copy_payload: Mapping[str, Any], facts: Mapping[str, Any]) -> Dict[str, str] | None:
+    asc_sign = str(((facts.get("angle_signs") or {}) if isinstance(facts.get("angle_signs"), Mapping) else {}).get("ASC") or "").strip()
+    _, ruler_sign, ruler_house = _house_ruler_payload(facts, 1)
+    vibe = _sign_vibe(asc_sign)
+    balance = _sign_balance(ruler_sign)
+    arena = _house_arena(ruler_house)
+    if not any((vibe, balance, arena)):
+        return None
+
+    teaser = str(copy_payload.get("teaser") or "").strip() or (
+        f"İlk hissedilen şey çoğu zaman daha {vibe} bir duruşun olması." if vibe else ""
+    )
+    core = (
+        f"İlk hissedilen şey çoğu zaman daha {vibe} bir duruşun olması; ama bunun altında kendi yönünü koruyan bir taraf da var."
+        if vibe
+        else str(copy_payload.get("core") or "").strip()
+    )
+    mechanism = str(copy_payload.get("mechanism") or "").strip()
+    if arena:
+        mechanism = (
+            f"Kimliğin en çok {arena} tarafında sınanıyor; orada hem kendi çizgini korumak hem de yönünü kaybetmemek istiyorsun."
+        )
+    shadow = str(copy_payload.get("shadow") or "").strip()
+    gift = str(copy_payload.get("gift") or "").strip()
+    if balance.get("shadow"):
+        shadow = f"{balance['shadow']} daha hızlı öne çıkabiliyor."
+    if balance.get("gift"):
+        gift = f"bu yapı sana {balance['gift']} kazandırıyor."
+    return {
+        "teaser": teaser,
+        "core": _ensure_sentence(core),
+        "mechanism": _ensure_sentence(mechanism),
+        "shadow": _ensure_sentence(shadow),
+        "gift": _ensure_sentence(gift),
+    }
+
+
+def _personalize_mind_copy(copy_payload: Mapping[str, Any], facts: Mapping[str, Any]) -> Dict[str, str] | None:
+    angle_signs = facts.get("angle_signs") if isinstance(facts.get("angle_signs"), Mapping) else {}
+    asc_sign = str(angle_signs.get("ASC") or "").strip()
+    _, ruler_sign, ruler_house = _house_ruler_payload(facts, 1)
+    outer_vibe = _sign_vibe(asc_sign)
+    inner_vibe = _sign_vibe(ruler_sign)
+    balance = _sign_balance(ruler_sign)
+    arena = _house_arena(ruler_house)
+    if not any((outer_vibe, inner_vibe, balance, arena)):
+        return None
+
+    teaser = (
+        f"Dışarıda daha {outer_vibe} görünsen de zihnin içeride daha {inner_vibe} bir ritim taşıyabiliyor."
+        if outer_vibe and inner_vibe
+        else str(copy_payload.get("teaser") or "").strip()
+    )
+    core = "Bir şey sana çarptığında zihnin boşta kalmıyor; içeride hemen pozisyon alan bir tarafın çalışıyor."
+    mechanism = str(copy_payload.get("mechanism") or "").strip()
+    if arena:
+        mechanism = (
+            f"Bu hat en çok {arena} tarafında belirginleşiyor; bazen söylemeden önce uzun uzun tartman, bazen de bir anda çok netleşmen biraz bundan."
+        )
+    shadow = str(copy_payload.get("shadow") or "").strip()
+    gift = str(copy_payload.get("gift") or "").strip()
+    if balance.get("shadow"):
+        shadow = f"{balance['shadow']} daha hızlı öne çıkabiliyor."
+    if balance.get("gift"):
+        gift = f"bu yapı sana {balance['gift']} kazandırıyor."
+    return {
+        "teaser": teaser,
+        "core": core,
+        "mechanism": mechanism,
+        "shadow": shadow,
+        "gift": gift,
+    }
+
+
+def _personalize_love_copy(copy_payload: Mapping[str, Any], facts: Mapping[str, Any]) -> Dict[str, str] | None:
+    dsc_sign = str(((facts.get("angle_signs") or {}) if isinstance(facts.get("angle_signs"), Mapping) else {}).get("DSC") or "").strip()
+    _, ruler_sign, ruler_house = _house_ruler_payload(facts, 7)
+    opening = _RELATIONSHIP_SIGN_OPENING_TR.get(dsc_sign) if isinstance(_RELATIONSHIP_SIGN_OPENING_TR.get(dsc_sign), Mapping) else {}
+    sign_balance = _RELATIONSHIP_SIGN_BALANCE_TR.get(dsc_sign) if isinstance(_RELATIONSHIP_SIGN_BALANCE_TR.get(dsc_sign), Mapping) else {}
+    ruler_balance = (
+        _RELATIONSHIP_RULER_SIGN_BALANCE_TR.get(ruler_sign)
+        if isinstance(_RELATIONSHIP_RULER_SIGN_BALANCE_TR.get(ruler_sign), Mapping)
+        else {}
+    )
+    arena = _house_arena(ruler_house)
+    if not any((opening, sign_balance, ruler_balance, arena)):
+        return None
+
+    need = str(opening.get("need") or "").strip()
+    teaser = (
+        f"İlişkide önce {need} arıyorsun."
+        if need
+        else str(copy_payload.get("teaser") or "").strip()
+    )
+    core = str(copy_payload.get("core") or "").strip()
+    if str(sign_balance.get("gift") or "").strip():
+        core = "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor."
+    mechanism = str(copy_payload.get("mechanism") or "").strip()
+    if arena:
+        mechanism = f"Bağ sende en çok {arena} tarafında açılıyor; bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun."
+    ruler_gift = str(ruler_balance.get("gift") or "").strip()
+    if ruler_gift:
+        mechanism = f"{mechanism.rstrip('.')}. Açıldığında {ruler_gift} tarafın da belirginleşiyor."
+    shadow_parts = [str(sign_balance.get("shadow") or "").strip()]
+    shadow = str(copy_payload.get("shadow") or "").strip()
+    shadow_parts = [part for part in shadow_parts if part]
+    if shadow_parts:
+        shadow = f"{shadow_parts[0]} daha kolay tetiklenebiliyor."
+    gift = str(copy_payload.get("gift") or "").strip()
+    gift_parts = [str(sign_balance.get("gift") or "").strip()]
+    gift_parts = [part for part in gift_parts if part]
+    if gift_parts:
+        gift = f"sende {gift_parts[0]} belirginleşiyor."
+    return {
+        "teaser": teaser,
+        "core": _ensure_sentence(core),
+        "mechanism": _ensure_sentence(mechanism),
+        "shadow": _ensure_sentence(shadow),
+        "gift": _ensure_sentence(gift),
+    }
+
+
+def _personalize_career_copy(copy_payload: Mapping[str, Any], facts: Mapping[str, Any]) -> Dict[str, str] | None:
+    mc_sign = str(((facts.get("angle_signs") or {}) if isinstance(facts.get("angle_signs"), Mapping) else {}).get("MC") or "").strip()
+    _, ruler_sign, ruler_house = _house_ruler_payload(facts, 10)
+    mc_balance = _CAREER_MC_BALANCE_TR.get(mc_sign) if isinstance(_CAREER_MC_BALANCE_TR.get(mc_sign), Mapping) else {}
+    ruler_balance = (
+        _CAREER_RULER_SIGN_BALANCE_TR.get(ruler_sign)
+        if isinstance(_CAREER_RULER_SIGN_BALANCE_TR.get(ruler_sign), Mapping)
+        else {}
+    )
+    arena = _house_arena(ruler_house)
+    if not any((mc_balance, ruler_balance, arena)):
+        return None
+
+    teaser = str(copy_payload.get("teaser") or "").strip()
+    if str(mc_balance.get("gift") or "").strip():
+        teaser = f"İş tarafında ilk okunan şey çoğu zaman sende {mc_balance['gift']} olması."
+    core = "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli."
+    mechanism = str(copy_payload.get("mechanism") or "").strip()
+    if arena:
+        mechanism = f"Asıl motor en çok {arena} tarafında çalışıyor; bu yüzden görünmeden önce işi sağlamlaştırmak istiyorsun."
+    ruler_gift = str(ruler_balance.get("gift") or "").strip()
+    if ruler_gift:
+        mechanism = f"{mechanism.rstrip('.')}. İçi dolduğunda {ruler_gift} tarafın da açılıyor."
+    shadow = str(copy_payload.get("shadow") or "").strip()
+    shadow_parts = [str(mc_balance.get("shadow") or "").strip()]
+    shadow_parts = [part for part in shadow_parts if part]
+    if shadow_parts:
+        shadow = f"{shadow_parts[0]} daha kolay çalışabiliyor."
+    gift = str(copy_payload.get("gift") or "").strip()
+    gift_parts = [str(mc_balance.get("gift") or "").strip()]
+    gift_parts = [part for part in gift_parts if part]
+    if gift_parts:
+        gift = f"sende {gift_parts[0]} belirginleşiyor."
+    return {
+        "teaser": teaser,
+        "core": _ensure_sentence(core),
+        "mechanism": _ensure_sentence(mechanism),
+        "shadow": _ensure_sentence(shadow),
+        "gift": _ensure_sentence(gift),
+    }
+
+
+def _personalize_block_copy(block_id: str, copy_payload: Mapping[str, Any], facts: Mapping[str, Any]) -> Dict[str, str] | None:
+    if block_id == "identity_aura":
+        return _personalize_identity_copy(copy_payload, facts)
+    if block_id == "mind_voice":
+        return _personalize_mind_copy(copy_payload, facts)
+    if block_id == "love_depth":
+        return _personalize_love_copy(copy_payload, facts)
+    if block_id == "career_visibility":
+        return _personalize_career_copy(copy_payload, facts)
+    return None
 
 
 def _identity_priority_copy(
@@ -736,7 +1028,12 @@ def _top_primitive_ids_for_block(block_id: str, primitive_hits: list[Mapping[str
     return out
 
 
-def _compose_copy(block_id: str, selection: Mapping[str, Any], primitive_hits: list[Mapping[str, Any]]) -> Dict[str, str]:
+def _compose_copy(
+    block_id: str,
+    selection: Mapping[str, Any],
+    primitive_hits: list[Mapping[str, Any]],
+    facts: Mapping[str, Any],
+) -> Dict[str, str]:
     primary = selection.get("spine_signature") if isinstance(selection.get("spine_signature"), Mapping) else selection.get("primary")
     spark = selection.get("spark_signature") if isinstance(selection.get("spark_signature"), Mapping) else {}
     area = selection.get("area_signature") if isinstance(selection.get("area_signature"), Mapping) else {}
@@ -770,6 +1067,9 @@ def _compose_copy(block_id: str, selection: Mapping[str, Any], primitive_hits: l
     if block_id == "identity_aura":
         identity_override = _identity_priority_copy(selection, primitive_ids, primary_copy)
         if identity_override:
+            personalized = _personalize_block_copy(block_id, identity_override, facts)
+            if personalized:
+                identity_override.update({key: value for key, value in personalized.items() if str(value or "").strip()})
             return identity_override
     if block_id == "drive_rhythm":
         talent_override = _talent_priority_copy(selection, primitive_ids, primary_copy)
@@ -818,7 +1118,7 @@ def _compose_copy(block_id: str, selection: Mapping[str, Any], primitive_hits: l
         [core, mechanism, shadow],
     )
 
-    return {
+    copy_payload = {
         "headline": str(primary_copy.get("headline") or area_copy.get("headline") or ""),
         "teaser": str(primary_copy.get("teaser") or area_copy.get("teaser") or ""),
         "core": core,
@@ -828,6 +1128,10 @@ def _compose_copy(block_id: str, selection: Mapping[str, Any], primitive_hits: l
         "spark": str(primary_copy.get("spark") or spark_copy.get("spark") or ""),
         "watch": str(primary_copy.get("watch") or spark_copy.get("watch") or ""),
     }
+    personalized = _personalize_block_copy(block_id, copy_payload, facts)
+    if personalized:
+        copy_payload.update({key: value for key, value in personalized.items() if str(value or "").strip()})
+    return copy_payload
 
 
 def _public_astro_sources(selection: Mapping[str, Any], facts: Mapping[str, Any]) -> list[str]:
@@ -881,7 +1185,11 @@ def _public_block(block_id: str, rendered: Mapping[str, Any], selection: Mapping
         "headline": rendered.get("headline"),
         "teaser": rendered.get("teaser"),
         "subtitle": rendered.get("teaser"),
-        "body": rendered.get("body"),
+        "body": _append_balance_to_body(
+            str(rendered.get("body") or "").strip(),
+            str(rendered.get("gift") or "").strip(),
+            str(rendered.get("shadow") or rendered.get("watch") or "").strip(),
+        ),
         "micro": rendered.get("micro") or "",
         "astro_hint": rendered.get("astro_hint"),
         "astro_sources": _public_astro_sources(selection, facts),
@@ -991,7 +1299,7 @@ def build_profile_narrative_signature(
         selection.setdefault("spine_alignment_bonus", 0.0)
         primary = selection.get("primary")
         if isinstance(primary, dict):
-            primary["copy_tr"] = _compose_copy(block_id, selection, primitive_hits)
+            primary["copy_tr"] = _compose_copy(block_id, selection, primitive_hits, facts)
         family = select_rhythm_family(str(facts.get("seed") or ""), "profile_narrative", block_id, used_families)
         rendered = _render_block(
             block_id,

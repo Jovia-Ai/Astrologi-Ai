@@ -235,6 +235,58 @@ def test_transit_narrative_uses_period_fallback_when_daily_missing(monkeypatch) 
     assert payload["period_event_cards"][0]["event_id"] == "evt_period"
 
 
+def test_public_payload_limits_daily_selection_to_public_cards_without_day_context(monkeypatch) -> None:
+    raw_items = [
+        {"event_id": "evt_1", "transit_body": "Moon", "aspect": "square", "natal_point": "Venus"},
+        {"event_id": "evt_2", "transit_body": "Saturn", "aspect": "trine", "natal_point": "Mercury"},
+        {"event_id": "evt_3", "transit_body": "Mars", "aspect": "opposition", "natal_point": "Sun"},
+    ]
+    captured = {}
+
+    monkeypatch.setattr(
+        transits,
+        "_build_transits_engine_response",
+        lambda _request: {"display": {"items": raw_items}, "natal": {"bodies": []}},
+    )
+    monkeypatch.setattr(
+        transits,
+        "build_public_response",
+        lambda _response: {
+            "period_core": {"title": "Core"},
+            "event_cards": [
+                {"event_id": "evt_1", "headline": "One"},
+                {"event_id": "evt_3", "headline": "Three"},
+            ],
+            "period_peak_timeline": [],
+            "timeline": {},
+        },
+    )
+    monkeypatch.setattr(
+        transits,
+        "select_event_ids",
+        lambda _items, max_cards, natal=None: ([], {"selection_mode": "test"}),
+    )
+    monkeypatch.setattr(transits, "build_period_coverage", lambda _items, selected_ids, now_date, tz: {})
+
+    def _capture_daily_selection(**kwargs):
+        captured["raw_events"] = [str(item.get("event_id") or "") for item in kwargs.get("raw_events") or []]
+        return {
+            "daily_event_cards": [],
+            "period_event_cards": [],
+            "daily_selection": {},
+        }
+
+    monkeypatch.setattr(transits, "_select_daily_and_period_event_cards", _capture_daily_selection)
+
+    transits._build_narrative_public_payload(
+        _request(start="2026-03-10", end="2026-03-10", selected_date="2026-03-10"),
+        transits.date_type.fromisoformat("2026-03-10"),
+        selected_day_context={},
+    )
+
+    assert captured["raw_events"] == ["evt_1", "evt_3"]
+
+
 def test_transit_narrative_public_payload_fallback_on_error(monkeypatch) -> None:
     monkeypatch.setattr(
         transits,
@@ -409,3 +461,144 @@ def test_transit_narrative_public_only_skips_calendar_assembly(monkeypatch) -> N
     assert response["public"]["daily_event_cards"][0]["event_id"] == "evt_daily"
     assert "calendar" not in response
     assert response["range"]["start"] == "2026-03-10"
+
+
+def test_transit_narrative_calendar_period_profile_skips_block_assembly(monkeypatch) -> None:
+    monkeypatch.setattr(
+        transits,
+        "build_transit_calendar_public",
+        lambda **_: {"calendar_internal": {"days": [{"date": "2026-03-10", "rating": 2, "heat": 1, "event_count": 1}]}}
+    )
+    monkeypatch.setattr(
+        transits,
+        "to_ui_calendar",
+        lambda *_args, **_kwargs: {
+            "range": {"start": "2026-03-01", "end": "2026-03-31", "tz": "Europe/Istanbul"},
+            "days": [{"date": "2026-03-10", "labels": [], "top_events": [], "is_critical": False}],
+            "year_summary": {},
+        },
+    )
+    monkeypatch.setattr(
+        transits,
+        "assemble_blocks",
+        lambda **_: pytest.fail("calendar_period should skip block assembly"),
+    )
+    monkeypatch.setattr(
+        transits,
+        "_build_narrative_public_payload",
+        lambda _request, _start_date, selected_day_context=None: {
+            "period_core": {"title": "Core"},
+            "event_cards": [],
+            "daily_event_cards": [],
+            "period_event_cards": [{"event_id": "evt_1"}],
+            "daily_selection": {},
+            "period_peak_timeline": [{"event_id": "evt_1"}],
+            "timeline": {"summary": "line"},
+        },
+    )
+
+    response = transits.build_transit_narrative(
+        _request(
+            selected_date="2026-03-10",
+            payload_profile="calendar_period",
+            include_best_times=False,
+        )
+    )
+
+    assert "blocks" not in response
+    assert "screens" not in response
+    assert response["public"]["period_event_cards"] == [{"event_id": "evt_1"}]
+
+
+def test_shape_public_payload_limits_calendar_period_to_visible_window_for_free() -> None:
+    shaped = transits._shape_public_payload(
+        {
+            "event_cards": [
+                {
+                    "event_id": "evt_in",
+                    "horizon": "period",
+                    "timing": {
+                        "entry_date_utc": "2026-03-10T09:00:00+00:00",
+                        "exit_date_utc": "2026-03-13T09:00:00+00:00",
+                    },
+                },
+                {
+                    "event_id": "evt_out",
+                    "horizon": "period",
+                    "timing": {
+                        "entry_date_utc": "2026-03-24T09:00:00+00:00",
+                        "exit_date_utc": "2026-03-28T09:00:00+00:00",
+                    },
+                },
+            ],
+            "period_event_cards": [
+                {
+                    "event_id": "evt_in",
+                    "timing": {
+                        "entry_date_utc": "2026-03-10T09:00:00+00:00",
+                        "exit_date_utc": "2026-03-13T09:00:00+00:00",
+                    },
+                },
+                {
+                    "event_id": "evt_out",
+                    "timing": {
+                        "entry_date_utc": "2026-03-24T09:00:00+00:00",
+                        "exit_date_utc": "2026-03-28T09:00:00+00:00",
+                    },
+                },
+            ],
+            "period_peak_timeline": [
+                {"event_id": "evt_in", "peak_date_utc": "2026-03-12T09:00:00+00:00"},
+                {"event_id": "evt_out", "peak_date_utc": "2026-03-26T09:00:00+00:00"},
+            ],
+        },
+        payload_profile="calendar_period",
+        subscription_tier="free",
+        visible_days_limit=7,
+        anchor_date=transits.date_type.fromisoformat("2026-03-10"),
+    )
+
+    assert [card["event_id"] for card in shaped["period_event_cards"]] == ["evt_in"]
+    assert [item["event_id"] for item in shaped["period_peak_timeline"]] == ["evt_in"]
+    assert [card["event_id"] for card in shaped["event_cards"]] == ["evt_in"]
+
+
+def test_transit_calendar_limits_public_days_for_free_window(monkeypatch) -> None:
+    monkeypatch.setattr(
+        transits,
+        "build_transit_calendar_public",
+        lambda **_: {
+            "calendar_internal": {"days": []},
+            "calendar_public": {
+                "range": {"start": "2026-03-01", "end": "2026-03-31", "tz": "Europe/Istanbul"},
+                "year_summary": {},
+                "days": [
+                    {"date": f"2026-03-{day:02d}", "rating": 1, "status": "ok", "labels": [], "note": ""}
+                    for day in range(10, 20)
+                ],
+            },
+        },
+    )
+
+    response = transits.build_transit_calendar(
+        birth_date="1996-12-28",
+        birth_time="07:10",
+        birth_place="Istanbul, TR",
+        start="2026-03-01",
+        end="2026-03-31",
+        tz="Europe/Istanbul",
+        view="public",
+        anchor_date=transits.date_type.fromisoformat("2026-03-10"),
+        visible_days_limit=7,
+        subscription_tier="free",
+    )
+
+    assert [day["date"] for day in response["days"]] == [
+        "2026-03-10",
+        "2026-03-11",
+        "2026-03-12",
+        "2026-03-13",
+        "2026-03-14",
+        "2026-03-15",
+        "2026-03-16",
+    ]

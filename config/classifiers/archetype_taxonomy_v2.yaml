@@ -1,0 +1,843 @@
+{
+  "version": "2.0.0",
+  "last_updated": "2026-04-06",
+  "notes": "Archetypes are derived from the existing natal primitive system. V2 keeps eight core archetypes and adds subprofiles, mixins, and copy hooks for stronger differentiation.",
+  "result_shape": {
+    "top_archetypes": 3,
+    "shadow_archetypes": 1,
+    "primary_contradictions": 1
+  },
+  "mixin_dimensions": [
+    {
+      "id": "visibility_mode",
+      "label_tr": "Gorunurluk modu",
+      "values": {
+        "broadcast": "Acik sahne",
+        "curated": "Secici vitrin",
+        "backstage": "Perde arkasi"
+      }
+    },
+    {
+      "id": "relational_threshold",
+      "label_tr": "Iliski esigi",
+      "values": {
+        "open": "Hizli acilan",
+        "selective": "Secici acilan",
+        "guarded": "Guveni yavas kuran"
+      }
+    },
+    {
+      "id": "decision_tempo",
+      "label_tr": "Karar temposu",
+      "values": {
+        "deliberate": "Olcup bicen",
+        "balanced": "Dengeli tempo",
+        "rapid": "Hizli karar"
+      }
+    },
+    {
+      "id": "structure_freedom_style",
+      "label_tr": "Yapi ve ozgurluk stili",
+      "values": {
+        "structure_led": "Yapi once",
+        "hybrid": "Melez akil",
+        "freedom_led": "Ozgurluk once"
+      }
+    },
+    {
+      "id": "stress_protection_mode",
+      "label_tr": "Stres modu",
+      "values": {
+        "stabilizing": "Toparlayarak",
+        "observing": "Gozleyerek",
+        "combustive": "Atesleyerek"
+      }
+    },
+    {
+      "id": "outer_inner_rhythm",
+      "label_tr": "Disari ve ic ritim",
+      "values": {
+        "steady_inside": "Disari sakin, iceri yogun",
+        "matched": "Ici ve disi benzer",
+        "expressive_outside": "Icerde dogan disari hizla cikan"
+      }
+    }
+  ],
+  "archetypes": [
+    {
+      "id": "builder",
+      "label_tr": "Kurucu",
+      "motto_tr": "Bir seyin omurgasi yoksa, onu kur.",
+      "portrait_tr": "Kurucu arketipi dunyayi oldugu gibi birakmaktan kolay kolay memnun olmaz. Daginik olani toparlamak, yarim kalani tamamlamak ve belirsiz olana bicim vermek ister. Onun gucu ilhamdan cok istikrardan gelir; cunku biliyordur ki kalici seyler heyecanla degil, omurga ile ayakta kalir. Sorumluluk onun icin yuk oldugu kadar kimliktir de.",
+      "gift_tr": "Kurucu yuk tasiyabilir, sistem kurabilir ve bir seyi dagilmadan ileri goturebilir. Guven veren yani, sozunden once emegiyle gorunur.",
+      "fear_tr": "Onun en buyuk korkusu dagilmak, yarim kalmak ve emeginin ciddiye alinmamasidir.",
+      "shadow_tr": "Golgeye dustugunde yapi kurma arzusu kontrole donebilir. Her seyi omzunda tasimaya kalkar, esnemeyi zayiflik sanir ve hayatin organik akisiyla kavga etmeye baslar.",
+      "relationship_tr": "Iliskide sevgisini buyuk laflarla degil, sureklilik ve emekle gosterir. Onun dili sadakat, sorumluluk ve orada kalabilme gucudur.",
+      "work_style_tr": "Iste surec kuran, duzeni toparlayan ve sonuca sahip cikan kisidir. Bir seyin sadece parlak degil, isler ve kalici olmasini ister.",
+      "growth_tr": "Buyume dersi, her seyi tek basina ayakta tutmak yerine bazen akisa, yardima ve esnemeye de yer acabilmektir.",
+      "slot_biases": ["primary_identity_spine", "work_visibility_line"],
+      "question_families": ["structure_preference", "responsibility_style", "execution_style"],
+      "primitive_weights": {
+        "self_definition": 0.30,
+        "inner_structure": 0.28,
+        "methodical_drive": 0.20,
+        "public_refinement": 0.14,
+        "visible_presence": 0.08
+      },
+      "shadow_pressure": ["inner_critic"],
+      "supports_contradictions": ["structure_vs_originality", "composure_vs_internal_pressure"],
+      "subprofiles": [
+        {
+          "id": "systems_architect",
+          "label_tr": "Sistem Mimari",
+          "flavor_tr": "Dagilmis parcayi tek bir isleyen sisteme baglamaya calisir.",
+          "gift_focus_tr": "Karmasik duzeni sade bir omurgaya cevirmesiyle ayrisir.",
+          "growth_edge_tr": "Kontrol ile koordinasyon arasindaki farki ogrenmesi gerekir.",
+          "differentiator_tr": "Kurarken yalnizca tasimaz; modeli de kurar.",
+          "primitive_weights": {
+            "inner_structure": 0.34,
+            "methodical_drive": 0.22,
+            "self_definition": 0.18,
+            "public_refinement": 0.14,
+            "mental_structuring": 0.12
+          },
+          "question_family_weights": {
+            "structure_preference": 0.34,
+            "mental_precision": 0.18,
+            "execution_style": 0.28,
+            "novelty_vs_structure": 0.20
+          },
+          "slot_biases": ["primary_identity_spine", "work_visibility_line"],
+          "supports_contradictions": ["structure_vs_originality"],
+          "public_private_preference": "balanced"
+        },
+        {
+          "id": "duty_anchor",
+          "label_tr": "Sorumluluk Omurgasi",
+          "flavor_tr": "Yuku ustlenip sonuna kadar tasiyarak kimligini kurar.",
+          "gift_focus_tr": "Zor anda alanin dagilmamasini saglayan dayanma gucuyle ayrisir.",
+          "growth_edge_tr": "Destek almanin da omurgayi zayiflatmadigini gormesi gerekir.",
+          "differentiator_tr": "Kurucu tonunun en agirlikli ve tasiyici versiyonu.",
+          "primitive_weights": {
+            "self_definition": 0.28,
+            "methodical_drive": 0.28,
+            "inner_structure": 0.20,
+            "recharge_through_home": 0.12,
+            "family_self_reliance": 0.12
+          },
+          "question_family_weights": {
+            "responsibility_style": 0.38,
+            "safety_needs": 0.18,
+            "stress_regulation": 0.20,
+            "execution_style": 0.24
+          },
+          "slot_biases": ["primary_identity_spine", "shadow_protection_line"],
+          "supports_contradictions": ["composure_vs_internal_pressure"],
+          "public_private_preference": "private"
+        },
+        {
+          "id": "refinement_foreman",
+          "label_tr": "Gorunen Usta",
+          "flavor_tr": "Kurdugu seyin sadece saglam degil, disaridan da net gorunmesini ister.",
+          "gift_focus_tr": "Sistemi cilalayip gorunur hale getirme tarafiyla ayrisir.",
+          "growth_edge_tr": "Isleyen seyi fazla vitrine cevirmeden korumasi gerekir.",
+          "differentiator_tr": "Kurucu tonunun daha vitrinde ve kalite odakli hali.",
+          "primitive_weights": {
+            "public_refinement": 0.30,
+            "visible_presence": 0.18,
+            "inner_structure": 0.24,
+            "methodical_drive": 0.16,
+            "self_definition": 0.12
+          },
+          "question_family_weights": {
+            "expression_style": 0.26,
+            "visibility_preference": 0.28,
+            "structure_preference": 0.22,
+            "audience_energy": 0.24
+          },
+          "slot_biases": ["work_visibility_line", "primary_identity_spine"],
+          "supports_contradictions": ["visibility_vs_private_preparation"],
+          "public_private_preference": "public"
+        }
+      ]
+    },
+    {
+      "id": "visionary",
+      "label_tr": "Vizyoner",
+      "motto_tr": "Hayal edilebiliyorsa, baska bir duzen mumkundur.",
+      "portrait_tr": "Vizyoner icin dunya bitmis bir hikaye degildir; her sey yeniden dusunulebilir, yeniden adlandirilabilir, yeniden kurulabilir. O, henuz kimsenin gormedigi ihtimali sezer ve mevcut olana son soz gibi bakmaz. Hayal gucu onun kacis alani degil, ileri gorusudur. Baskalari sinir gordugunde, o hala acilmamis bir kapi arar.",
+      "gift_tr": "Vizyoner yeni bir yon, yeni bir dil ve yeni bir anlam acabilir. Onun varligi ortama hareket, genisleme ve ilham getirir.",
+      "fear_tr": "Siradanlik, tekrara hapsolmak ve henuz dogmamis bir ihtimali kaybetmek onun temel korkusudur.",
+      "shadow_tr": "Golgeye dustugunde mevcut olani kucumseyebilir, baslamayi bitirmekten daha cazip bulabilir ve her yeni fikri nihai kurtulus sanabilir. O zaman ufuk genisledikce zemin kaybolur.",
+      "relationship_tr": "Iliskide onu canli tutan sey zihinsel hareket, ilham ve birlikte buyume duygusudur. Durgunlukta cabuk solar, canlandigi yerde ise baskalarina da nefes acabilir.",
+      "work_style_tr": "Iste sinir zorlayan, yeni yon gosteren ve daha buyuk resmi goren kisidir. Eski kaliplari sadece surdurmek icin surdurmek ona gore degildir.",
+      "growth_tr": "Buyume dersi, yeni olani cagirmak kadar onu dunyada tutacak sabri ve yapisal disiplini de gelistirmektir.",
+      "slot_biases": ["primary_identity_spine", "secondary_balancing_line", "work_visibility_line"],
+      "question_families": ["novelty_vs_structure", "future_pull", "meaning_orientation"],
+      "primitive_weights": {
+        "originality_drive": 0.32,
+        "big_picture_vision": 0.28,
+        "meaningful_expansion": 0.24,
+        "visible_presence": 0.16
+      },
+      "shadow_pressure": ["push_pull_drive"],
+      "supports_contradictions": ["structure_vs_originality", "visibility_vs_private_preparation"],
+      "subprofiles": [
+        {
+          "id": "horizon_opener",
+          "label_tr": "Ufuk Acici",
+          "flavor_tr": "Henuz gelmemis olani bugunden hissettirir.",
+          "gift_focus_tr": "Daha buyuk resmi acip insanlara yeni yon gosterir.",
+          "growth_edge_tr": "Ufku acarken zeminle bagini korumasi gerekir.",
+          "differentiator_tr": "Vizyoner tonunun genis ufuk ve buyuk resim agirlikli hali.",
+          "primitive_weights": {
+            "big_picture_vision": 0.34,
+            "meaningful_expansion": 0.24,
+            "originality_drive": 0.18,
+            "visible_presence": 0.14,
+            "network_luck": 0.10
+          },
+          "question_family_weights": {
+            "future_pull": 0.34,
+            "meaning_orientation": 0.28,
+            "visibility_preference": 0.18,
+            "novelty_vs_structure": 0.20
+          },
+          "slot_biases": ["primary_identity_spine", "work_visibility_line"],
+          "supports_contradictions": ["visibility_vs_private_preparation"],
+          "public_private_preference": "public"
+        },
+        {
+          "id": "meaning_cartographer",
+          "label_tr": "Anlam Haritacisi",
+          "flavor_tr": "Yonu sadece yeni oldugu icin degil, anlam tasidigi icin degistirir.",
+          "gift_focus_tr": "Karmasik akislar icinde nereye dogru gidildigini anlamlandirir.",
+          "growth_edge_tr": "Anlami ararken uygulamayi fazla geciktirmemesi gerekir.",
+          "differentiator_tr": "Vizyoner tonunun daha anlam ve eksen kuran versiyonu.",
+          "primitive_weights": {
+            "meaningful_expansion": 0.34,
+            "big_picture_vision": 0.22,
+            "originality_drive": 0.18,
+            "self_definition": 0.14,
+            "intimacy_depth": 0.12
+          },
+          "question_family_weights": {
+            "meaning_orientation": 0.38,
+            "future_pull": 0.22,
+            "trust_depth": 0.16,
+            "novelty_vs_structure": 0.24
+          },
+          "slot_biases": ["secondary_balancing_line", "primary_identity_spine"],
+          "supports_contradictions": ["structure_vs_originality"],
+          "public_private_preference": "balanced"
+        },
+        {
+          "id": "rebel_designer",
+          "label_tr": "Duzeni Bozan Tasarimci",
+          "flavor_tr": "Eski kalibi bozup yerine daha canli bir sey koymak ister.",
+          "gift_focus_tr": "Yeni fikri yalnizca dusunmez, eski sisteme carpistirir.",
+          "growth_edge_tr": "Her kopusun hakli olmadigini ayirt etmesi gerekir.",
+          "differentiator_tr": "Vizyoner tonunun daha asi ve itici hali.",
+          "primitive_weights": {
+            "originality_drive": 0.34,
+            "push_pull_drive": 0.18,
+            "big_picture_vision": 0.18,
+            "visible_presence": 0.16,
+            "meaningful_expansion": 0.14
+          },
+          "question_family_weights": {
+            "novelty_vs_structure": 0.36,
+            "action_bias": 0.22,
+            "conflict_activation": 0.22,
+            "future_pull": 0.20
+          },
+          "slot_biases": ["secondary_balancing_line", "work_visibility_line"],
+          "supports_contradictions": ["structure_vs_originality", "composure_vs_internal_pressure"],
+          "public_private_preference": "public"
+        }
+      ]
+    },
+    {
+      "id": "analyst",
+      "label_tr": "Analist",
+      "motto_tr": "Gercek, gozden kacan ayrintida saklanir.",
+      "portrait_tr": "Analist icin dunya yuzeyde gorundugunden daha karmasik ve daha anlamli bir yerdir. O, desenleri gorur, eksik halkalari fark eder ve baskalarinin hizla gectigi yerde durup neyin neden calistigini anlamak ister. Zihni sadece bilgi toplamaz; duzenler, ayiklar, sinar. Dusunce onun icin savunma da guc de olabilir.",
+      "gift_tr": "Analist karmasik olani ayiklayabilir, daginik olani modele cevirebilir ve hatayi daha buyumeden fark edebilir. Onun zekasi, seye sadece bakmakta degil; onu okumakta yatar.",
+      "fear_tr": "Yanilmak, yuzeysel kalmak ve kontrol edemedigi bir karmasanin icinde kaybolmak onun derin korkularindandir.",
+      "shadow_tr": "Golgeye dustugunde asiri inceleme felce donusebilir. Her ihtimali hesaplamaya calisirken hareket gecikir, zihni korumak isterken hayatla araya sogukluk girebilir.",
+      "relationship_tr": "Iliskide guveni hizli duygusalliktan cok tutarlilik, aciklik ve zihinsel netlik uzerinden kurar. Birini anlamadan tamamen acilmakta zorlanabilir.",
+      "work_style_tr": "Iste sistem kurar, hatayi bulur, eksigi gorur ve dusunce omurgasi saglar. Krizde bile sogukkanli kalabilmesi, onu degerli bir cozum ortaigi yapar.",
+      "growth_tr": "Buyume dersi, her seyi kusursuz anlamadan da hayata katilabilmek ve bazen cevaptan once temasa izin verebilmektir.",
+      "slot_biases": ["secondary_balancing_line", "shadow_protection_line"],
+      "question_families": ["decision_style", "mental_precision", "error_avoidance"],
+      "primitive_weights": {
+        "mental_structuring": 0.32,
+        "systems_thinking": 0.30,
+        "tone_sensitivity": 0.18,
+        "inner_structure": 0.20
+      },
+      "shadow_pressure": ["inner_critic"],
+      "supports_contradictions": ["composure_vs_internal_pressure", "structure_vs_originality"],
+      "subprofiles": [
+        {
+          "id": "pattern_decoder",
+          "label_tr": "Desen Cozucu",
+          "flavor_tr": "Yuzeyin altinda tekrar eden oruntuyu gormeye odaklanir.",
+          "gift_focus_tr": "Iliski ve olaylar arasindaki baglanti mantigini erken yakalar.",
+          "growth_edge_tr": "Her sey desen degilken bile hayata akmaya alan acmasi gerekir.",
+          "differentiator_tr": "Analist tonunun desen okuyan ve baglanti kuran hali.",
+          "primitive_weights": {
+            "systems_thinking": 0.34,
+            "mental_structuring": 0.24,
+            "tone_sensitivity": 0.18,
+            "big_picture_vision": 0.12,
+            "inner_structure": 0.12
+          },
+          "question_family_weights": {
+            "mental_precision": 0.30,
+            "decision_style": 0.18,
+            "meaning_orientation": 0.16,
+            "error_avoidance": 0.36
+          },
+          "slot_biases": ["secondary_balancing_line"],
+          "supports_contradictions": ["structure_vs_originality"],
+          "public_private_preference": "balanced"
+        },
+        {
+          "id": "risk_auditor",
+          "label_tr": "Risk Denetcisi",
+          "flavor_tr": "Hatayi erken gormek ve acigi kapatmak icin calisir.",
+          "gift_focus_tr": "Krize donusmeden once zayif halkayi fark eder.",
+          "growth_edge_tr": "Tehlike okumasi fazla buyudugunde hareketi dondurmemesi gerekir.",
+          "differentiator_tr": "Analist tonunun daha tetikte ve hata avcisi versiyonu.",
+          "primitive_weights": {
+            "mental_structuring": 0.30,
+            "inner_structure": 0.22,
+            "emotional_threshold": 0.18,
+            "systems_thinking": 0.18,
+            "tone_sensitivity": 0.12
+          },
+          "question_family_weights": {
+            "error_avoidance": 0.38,
+            "stress_regulation": 0.20,
+            "safety_needs": 0.18,
+            "decision_style": 0.24
+          },
+          "slot_biases": ["shadow_protection_line", "secondary_balancing_line"],
+          "supports_contradictions": ["composure_vs_internal_pressure"],
+          "public_private_preference": "private"
+        },
+        {
+          "id": "precision_editor",
+          "label_tr": "Ince Ayarci",
+          "flavor_tr": "Farki buyuk fikrin kendisinden cok, ince ayarda yaratir.",
+          "gift_focus_tr": "Bir seyi daha net, daha temiz ve daha rafine hale getirir.",
+          "growth_edge_tr": "Iyilestirme arzusu yuzunden tatmin eşiğini cok yukari cekmemesi gerekir.",
+          "differentiator_tr": "Analist tonunun daha rafine ve duzeltici hali.",
+          "primitive_weights": {
+            "public_refinement": 0.20,
+            "mental_structuring": 0.30,
+            "tone_sensitivity": 0.18,
+            "inner_structure": 0.20,
+            "systems_thinking": 0.12
+          },
+          "question_family_weights": {
+            "expression_style": 0.16,
+            "mental_precision": 0.34,
+            "decision_style": 0.20,
+            "error_avoidance": 0.30
+          },
+          "slot_biases": ["work_visibility_line", "secondary_balancing_line"],
+          "supports_contradictions": ["visibility_vs_private_preparation"],
+          "public_private_preference": "public"
+        }
+      ]
+    },
+    {
+      "id": "connector",
+      "label_tr": "Bag Kurucu",
+      "motto_tr": "Insanlar arasindaki bag, soylenenden once hissedilir.",
+      "portrait_tr": "Bag Kurucu arketipi insanlari sadece birey olarak degil, aralarindaki akisla birlikte okur. Kim nerede sertlesiyor, kim nasil aciliyor, hangi soz hangi kalbe dokunur; bunlari icgudusel olarak hisseder. Onun dunyasinda temas, ait olma ve bag kurma bir luks degil, yasamin kendisidir. Yalnizca baglanmak istemez; bagin gercekten yasadigini hissetmek ister.",
+      "gift_tr": "Bag Kurucu insanlari birbirine yaklastirabilir, kopan bir dili yumusatabilir ve bir ortami daha yasanir hale getirebilir. Onun sicakligi yuzeysel degil, birlestiricidir.",
+      "fear_tr": "Dislanmak, duygusal kopukluk ve gercek temasin yerini rol yapmanin almasi onun temel korkularindandir.",
+      "shadow_tr": "Golgeye dustugunde baskalarini fazla tasiyabilir, kendi merkezini iliski icinde kaybedebilir ve huzuru korumak icin gercegi erteleyebilir. Bazen bagi korumak isterken kendini arka plana atar.",
+      "relationship_tr": "Iliskide hizlica sicaklik kurabilir, baskasinin ihtiyacini sezer ve aradaki kopruyu canli tutmak ister. Ama derin guven olmadan surekli veren tarafa da kayabilir.",
+      "work_style_tr": "Iste insanlar, ekip dinamigi, iletisim ve uyum onun guclu alanidir. Sadece ne yapildigina degil, insanlarin bunu birlikte nasil yaptigina da bakar.",
+      "growth_tr": "Buyume dersi, bag kurarken kendini kaybetmemek ve uyumu korurken kendi gercegini de masada tutabilmektir.",
+      "slot_biases": ["relational_line", "work_visibility_line"],
+      "question_families": ["bonding_style", "social_flow", "repair_style"],
+      "primitive_weights": {
+        "graceful_affection": 0.30,
+        "relational_security": 0.28,
+        "network_luck": 0.22,
+        "visible_presence": 0.20
+      },
+      "shadow_pressure": ["emotional_threshold"],
+      "supports_contradictions": ["closeness_vs_threshold", "visibility_vs_private_preparation"],
+      "subprofiles": [
+        {
+          "id": "social_weaver",
+          "label_tr": "Ag Orucu",
+          "flavor_tr": "Insanlar arasindaki temasi hizla orup ortami canlandirir.",
+          "gift_focus_tr": "Ayni masaya daginik duran enerjileri baglamasiyle ayrisir.",
+          "growth_edge_tr": "Her bagin sorumlulugunu tek basina ustlenmemesi gerekir.",
+          "differentiator_tr": "Bag kurucu tonunun daha sosyal akisa yaslanan hali.",
+          "primitive_weights": {
+            "network_luck": 0.30,
+            "graceful_affection": 0.24,
+            "visible_presence": 0.18,
+            "relational_security": 0.16,
+            "creation_luck": 0.12
+          },
+          "question_family_weights": {
+            "social_flow": 0.38,
+            "bonding_style": 0.20,
+            "visibility_preference": 0.18,
+            "repair_style": 0.24
+          },
+          "slot_biases": ["work_visibility_line", "relational_line"],
+          "supports_contradictions": ["visibility_vs_private_preparation"],
+          "public_private_preference": "public"
+        },
+        {
+          "id": "repair_mediator",
+          "label_tr": "Onarici Arabulucu",
+          "flavor_tr": "Kopusu hisseder etmez dili yumusatmaya yonelir.",
+          "gift_focus_tr": "Gerilimli yerde kopru kurma becerisiyle ayrisir.",
+          "growth_edge_tr": "Onarmak isterken kendi gercegini susturmamasi gerekir.",
+          "differentiator_tr": "Bag kurucu tonunun daha tamir ve uzlastirma odakli hali.",
+          "primitive_weights": {
+            "relational_security": 0.28,
+            "graceful_affection": 0.22,
+            "tone_sensitivity": 0.20,
+            "network_luck": 0.16,
+            "visible_presence": 0.14
+          },
+          "question_family_weights": {
+            "repair_style": 0.40,
+            "bonding_style": 0.22,
+            "social_flow": 0.18,
+            "decision_style": 0.20
+          },
+          "slot_biases": ["relational_line"],
+          "supports_contradictions": ["closeness_vs_threshold"],
+          "public_private_preference": "balanced"
+        },
+        {
+          "id": "warm_host",
+          "label_tr": "Sicak Ev Sahibi",
+          "flavor_tr": "Insanlarin rahat acilabilecegi duygusal iklimi kurar.",
+          "gift_focus_tr": "Ortami daha yasanir ve daha yumusak hale getirmesiyle ayrisir.",
+          "growth_edge_tr": "Herkesi rahatlatirken kendi kapasitesini kacirmamasi gerekir.",
+          "differentiator_tr": "Bag kurucu tonunun daha koruyucu ve sicak versiyonu.",
+          "primitive_weights": {
+            "graceful_affection": 0.26,
+            "relational_security": 0.26,
+            "recharge_through_home": 0.18,
+            "network_luck": 0.16,
+            "visible_presence": 0.14
+          },
+          "question_family_weights": {
+            "bonding_style": 0.30,
+            "stress_regulation": 0.20,
+            "social_flow": 0.20,
+            "repair_style": 0.30
+          },
+          "slot_biases": ["relational_line", "shadow_protection_line"],
+          "supports_contradictions": ["closeness_vs_threshold"],
+          "public_private_preference": "private"
+        }
+      ]
+    },
+    {
+      "id": "guardian",
+      "label_tr": "Koruyucu",
+      "motto_tr": "Korunmayan sey buyuyemez.",
+      "portrait_tr": "Koruyucu arketipi hayata once guvenlik, sadakat ve dayanma kapasitesi uzerinden yaklasir. Onun ilk refleksi parlamak degil, kollamak; acele etmek degil, saglamlastirmaktir. Insanlari, alanlari ve duygulari tutma becerisi vardir. Cunku bilir ki kirilgan olan sey, ancak guvende oldugunda gercekten acilabilir.",
+      "gift_tr": "Koruyucu kriz aninda dagilmaz; toparlar, tutar ve alan acar. Onun gucu gosteristen degil, dayanma ve koruma kapasitesinden gelir.",
+      "fear_tr": "Savunmasiz kalmak, ihmal edilmek ve iceri aldigi seyin duzensiz ya da guvensiz cikmasi onu derinden sarsar.",
+      "shadow_tr": "Golgeye dustugunde koruma istegi duvara donebilir. Fazla tetikte olabilir, duygusal esigi yukseltir ve hayati tehdit okumaya basladiginda yumusakligini saklar.",
+      "relationship_tr": "Iliskide once guven ister. Acildiginda cok sahip cikan, kollayan ve kalici bag kuran biri olabilir; ama tehdit hissettiginde geri cekilmesi de hizlidir.",
+      "work_style_tr": "Iste sorumluluk alir, istikrar saglar ve baskalarinin guvenle is gorebilecegi bir alan yaratir. Onun varligi daginik yapilari sakinlestirir.",
+      "growth_tr": "Buyume dersi, kendini korumakla hayata kapanmak arasindaki farki ogrenmek ve guvenin bazen kontrollu risk de istedigini hatirlamaktir.",
+      "slot_biases": ["shadow_protection_line", "relational_line"],
+      "question_families": ["stress_regulation", "repair_style", "safety_needs"],
+      "primitive_weights": {
+        "recharge_through_home": 0.28,
+        "family_self_reliance": 0.20,
+        "emotional_threshold": 0.28,
+        "relational_security": 0.24
+      },
+      "shadow_pressure": ["inner_critic", "backstage_creation"],
+      "supports_contradictions": ["closeness_vs_threshold", "composure_vs_internal_pressure"],
+      "subprofiles": [
+        {
+          "id": "boundary_keeper",
+          "label_tr": "Sinir Bekcisi",
+          "flavor_tr": "Guvenli alanin nerede baslayip bittigini net cizer.",
+          "gift_focus_tr": "Tehlikeyi erken okuyup siniri zamaninda koyar.",
+          "growth_edge_tr": "Siniri duvarlastirmadan da guven kurabilecegini hatirlamasi gerekir.",
+          "differentiator_tr": "Koruyucu tonunun daha esik ve sinir odakli hali.",
+          "primitive_weights": {
+            "emotional_threshold": 0.34,
+            "relational_security": 0.20,
+            "recharge_through_home": 0.18,
+            "family_self_reliance": 0.16,
+            "tone_sensitivity": 0.12
+          },
+          "question_family_weights": {
+            "closeness_boundary": 0.30,
+            "trust_depth": 0.24,
+            "stress_regulation": 0.26,
+            "safety_needs": 0.20
+          },
+          "slot_biases": ["shadow_protection_line", "relational_line"],
+          "supports_contradictions": ["closeness_vs_threshold"],
+          "public_private_preference": "private"
+        },
+        {
+          "id": "shelter_builder",
+          "label_tr": "Siginak Kurucu",
+          "flavor_tr": "Insanlara ve projelere guvenli zemin hazirlar.",
+          "gift_focus_tr": "Baskalarinin nefes alabilecegi bir istikrar alanini kurar.",
+          "growth_edge_tr": "Herkes icin alan acarken kendini tuketmemesi gerekir.",
+          "differentiator_tr": "Koruyucu tonunun daha alan tutan ve yapi kuran versiyonu.",
+          "primitive_weights": {
+            "recharge_through_home": 0.30,
+            "family_self_reliance": 0.22,
+            "relational_security": 0.20,
+            "inner_structure": 0.16,
+            "emotional_threshold": 0.12
+          },
+          "question_family_weights": {
+            "safety_needs": 0.34,
+            "repair_style": 0.22,
+            "stress_regulation": 0.22,
+            "structure_preference": 0.22
+          },
+          "slot_biases": ["shadow_protection_line", "work_visibility_line"],
+          "supports_contradictions": ["composure_vs_internal_pressure"],
+          "public_private_preference": "balanced"
+        },
+        {
+          "id": "steady_holder",
+          "label_tr": "Sessiz Tutan",
+          "flavor_tr": "Gosteriden cok durusla korur; panik yerine ritim kurar.",
+          "gift_focus_tr": "Krizde dagilmadan tasima kapasitesiyle ayrisir.",
+          "growth_edge_tr": "Surekli tuttugu seyi bazen paylasmayi da ogrenmesi gerekir.",
+          "differentiator_tr": "Koruyucu tonunun daha sessiz ama yuksek dayaniklilikli hali.",
+          "primitive_weights": {
+            "family_self_reliance": 0.24,
+            "recharge_through_home": 0.22,
+            "emotional_threshold": 0.22,
+            "methodical_drive": 0.18,
+            "relational_security": 0.14
+          },
+          "question_family_weights": {
+            "stress_regulation": 0.34,
+            "responsibility_style": 0.22,
+            "safety_needs": 0.24,
+            "decision_style": 0.20
+          },
+          "slot_biases": ["shadow_protection_line"],
+          "supports_contradictions": ["composure_vs_internal_pressure"],
+          "public_private_preference": "private"
+        }
+      ]
+    },
+    {
+      "id": "depthkeeper",
+      "label_tr": "Derinlik Tutucusu",
+      "motto_tr": "Gercek yakinlik, yuzeyi gecmeye cesaret eder.",
+      "portrait_tr": "Derinlik Tutucusu icin hayat yuzeyde olanla sinirli degildir. O, insanlarin soylediginden cok sakladigini duyar; hafiflikten cok hakikate cekilir. Bag kurdugunda onu donusturen, sarsan ve degistiren bir yogunluk arar. Bu arketip kolay acilmaz, ama acildiginda temas sathin altina gecer.",
+      "gift_tr": "Derinlik Tutucusu sahiciligi sezebilir, psikolojik derinligi okuyabilir ve baskalarinin kacindigi alanlarda kalabilir. Onun bagi yuzeyde degil, kokte kurulur.",
+      "fear_tr": "Ihanet, yuzeysellik ve gercegin yerine rol konmasi onun icin siradan bir hayal kirikligi degil, guvenin yikilmasidir.",
+      "shadow_tr": "Golgeye dustugunde sinanma istegi asiri kontrol haline gelebilir. Yakinligi isterken esigi o kadar yukseltir ki, ozledigi seyi kendisi de geciktirir.",
+      "relationship_tr": "Iliskide yogunluk, sadakat ve gercek aciklik arar. Onunla kurulan bag hafif olmayabilir ama sahici oldugunda son derece donusturucudur.",
+      "work_style_tr": "Iste yuzeyde kalan seyle yetinmez; kokeni, motivasyonu ve sakli dinamikleri anlamak ister. Arastirma, psikoloji, strateji ve derin analiz alanlarinda guclu olabilir.",
+      "growth_tr": "Buyume dersi, derinlik ihtiyacini korkuyla karistirmamak ve guvenin sadece sinamayla degil, yumusaklikla da kurulabildigini gormektir.",
+      "slot_biases": ["relational_line", "shadow_protection_line"],
+      "question_families": ["closeness_boundary", "trust_depth", "transformational_bonding"],
+      "primitive_weights": {
+        "intimacy_depth": 0.34,
+        "transformative_bonding": 0.28,
+        "emotional_threshold": 0.20,
+        "backstage_creation": 0.18
+      },
+      "shadow_pressure": ["emotional_threshold"],
+      "supports_contradictions": ["closeness_vs_threshold", "visibility_vs_private_preparation"],
+      "subprofiles": [
+        {
+          "id": "trust_alchemist",
+          "label_tr": "Guven Simyacisi",
+          "flavor_tr": "Yakınligi yuzeyde degil, guvenin donustugu yerde kurar.",
+          "gift_focus_tr": "Bir bagin kimyasini degistiren derin aciklikla ayrisir.",
+          "growth_edge_tr": "Guveni sadece sinanarak degil, bazen akarak da kurmasi gerekir.",
+          "differentiator_tr": "Derinlik tonunun daha guven ve donusum merkezli hali.",
+          "primitive_weights": {
+            "transformative_bonding": 0.34,
+            "intimacy_depth": 0.24,
+            "emotional_threshold": 0.18,
+            "relational_security": 0.12,
+            "backstage_creation": 0.12
+          },
+          "question_family_weights": {
+            "transformational_bonding": 0.36,
+            "trust_depth": 0.30,
+            "closeness_boundary": 0.18,
+            "meaning_orientation": 0.16
+          },
+          "slot_biases": ["relational_line"],
+          "supports_contradictions": ["closeness_vs_threshold"],
+          "public_private_preference": "private"
+        },
+        {
+          "id": "undercurrent_reader",
+          "label_tr": "Alttaki Akisi Okuyan",
+          "flavor_tr": "Soylenenden cok saklanan sinyali okumaya yonelir.",
+          "gift_focus_tr": "Gorunmeyen motivasyonu ve gizli gerilimi fark eder.",
+          "growth_edge_tr": "Her sezginin kesin veri olmadigini zaman zaman ayiklamasi gerekir.",
+          "differentiator_tr": "Derinlik tonunun daha psikolojik ve okur tarafli hali.",
+          "primitive_weights": {
+            "intimacy_depth": 0.28,
+            "tone_sensitivity": 0.20,
+            "backstage_creation": 0.18,
+            "systems_thinking": 0.16,
+            "transformative_bonding": 0.18
+          },
+          "question_family_weights": {
+            "trust_depth": 0.28,
+            "mental_precision": 0.18,
+            "closeness_boundary": 0.30,
+            "transformational_bonding": 0.24
+          },
+          "slot_biases": ["shadow_protection_line", "relational_line"],
+          "supports_contradictions": ["composure_vs_internal_pressure"],
+          "public_private_preference": "balanced"
+        },
+        {
+          "id": "vow_guardian",
+          "label_tr": "Yemin Koruyucusu",
+          "flavor_tr": "Bagin agirligini hafif cekimden daha ciddiye alir.",
+          "gift_focus_tr": "Kolay acilmayan ama acildiginda uzun omurlu sadakat kurar.",
+          "growth_edge_tr": "Esigi fazla yukselttiginde aradigi bagi geciktirmemesi gerekir.",
+          "differentiator_tr": "Derinlik tonunun daha sadakat ve esik odakli hali.",
+          "primitive_weights": {
+            "emotional_threshold": 0.24,
+            "intimacy_depth": 0.26,
+            "transformative_bonding": 0.20,
+            "relational_security": 0.16,
+            "backstage_creation": 0.14
+          },
+          "question_family_weights": {
+            "closeness_boundary": 0.34,
+            "trust_depth": 0.28,
+            "bonding_style": 0.20,
+            "transformational_bonding": 0.18
+          },
+          "slot_biases": ["relational_line", "shadow_protection_line"],
+          "supports_contradictions": ["closeness_vs_threshold"],
+          "public_private_preference": "private"
+        }
+      ]
+    },
+    {
+      "id": "performer",
+      "label_tr": "Gorunen",
+      "motto_tr": "Gorunmek, sadece bakilmak degil; iz birakmaktir.",
+      "portrait_tr": "Gorunen arketipi sahneyle, ifade ile ve etkiyle beslenir. Onun icin var olmak bir bakima yanki birakmaktir; hissettigini, bildigini ya da yarattigini gorunur kilmak ister. Dikkat onun icin her zaman bos bir arzu degil, canlilik kaynagidir. Goruldugunde acilir, yanki buldugunda daha cok parlar.",
+      "gift_tr": "Gorunen insanlari etkileyebilir, bir mesaji tasiyabilir ve bir alani kendi varligiyla canlandirabilir. Karizma onun yuzeysel susu degil, ifadesinin uzantisidir.",
+      "fear_tr": "Gorulmeden gecmek, siradanlasmak ve butun emegine ragmen etkisiz kalmak onun buyuk korkularindandir.",
+      "shadow_tr": "Golgeye dustugunde onay acligi artabilir, imaj ozun onune gecebilir ve dikkat kaybi sanki varlik kaybiymis gibi hissedilebilir. O zaman ifade, bag kurmaktan cok kanit sunmaya doner.",
+      "relationship_tr": "Iliskide canli, dikkat cekici ve ifade gucu yuksek bir enerjisi vardir. Ama gercek yakinlik icin sahnenin arkasinda da ayni kadar rahat olmayi ogrenmesi gerekir.",
+      "work_style_tr": "Iste sunum, marka, gorunurluk, yaratici ifade ve etki alanlarinda parlar. Bir seyin sadece iyi olmasi degil, hissedilmesi ve hatirlanmasi da onun icin onemlidir.",
+      "growth_tr": "Buyume dersi, gorunurlugu bir ispat araci degil, hakiki ifadenin dogal uzantisi haline getirmektir.",
+      "slot_biases": ["work_visibility_line", "primary_identity_spine"],
+      "question_families": ["visibility_preference", "expression_style", "audience_energy"],
+      "primitive_weights": {
+        "visible_presence": 0.30,
+        "public_refinement": 0.26,
+        "creation_luck": 0.24,
+        "network_luck": 0.20
+      },
+      "shadow_pressure": ["visibility_sensitivity"],
+      "supports_contradictions": ["visibility_vs_private_preparation", "composure_vs_internal_pressure"],
+      "subprofiles": [
+        {
+          "id": "stage_magnet",
+          "label_tr": "Sahne Mikanatisi",
+          "flavor_tr": "Dikkat geldiginde kuculmez, daha da canlanir.",
+          "gift_focus_tr": "Bulundugu yeri enerji ve etkiyle doldurur.",
+          "growth_edge_tr": "Yankiyi oz degere karistirmamasi gerekir.",
+          "differentiator_tr": "Gorunen tonunun en acik sahne ve temas odakli hali.",
+          "primitive_weights": {
+            "visible_presence": 0.34,
+            "network_luck": 0.20,
+            "creation_luck": 0.18,
+            "public_refinement": 0.14,
+            "push_pull_drive": 0.14
+          },
+          "question_family_weights": {
+            "audience_energy": 0.34,
+            "visibility_preference": 0.30,
+            "social_flow": 0.18,
+            "expression_style": 0.18
+          },
+          "slot_biases": ["work_visibility_line", "primary_identity_spine"],
+          "supports_contradictions": ["visibility_vs_private_preparation"],
+          "public_private_preference": "public"
+        },
+        {
+          "id": "image_curator",
+          "label_tr": "Imge Kuratoru",
+          "flavor_tr": "Gorunurlugu ham enerjiyle degil, rafine ifade ile kurar.",
+          "gift_focus_tr": "Bir seyin nasil algilanacagini sezip onu biçimlendirmesiyle ayrisir.",
+          "growth_edge_tr": "Sekli, icerigin yerine gecirmemesi gerekir.",
+          "differentiator_tr": "Gorunen tonunun daha stilize ve secici vitrini.",
+          "primitive_weights": {
+            "public_refinement": 0.32,
+            "visible_presence": 0.18,
+            "creation_luck": 0.20,
+            "tone_sensitivity": 0.16,
+            "network_luck": 0.14
+          },
+          "question_family_weights": {
+            "expression_style": 0.36,
+            "visibility_preference": 0.28,
+            "audience_energy": 0.16,
+            "mental_precision": 0.20
+          },
+          "slot_biases": ["work_visibility_line"],
+          "supports_contradictions": ["visibility_vs_private_preparation"],
+          "public_private_preference": "balanced"
+        },
+        {
+          "id": "expressive_pulse",
+          "label_tr": "Ifade Nabzi",
+          "flavor_tr": "Gorunurlugu planlanmis sahneden cok, his geldiginde acar.",
+          "gift_focus_tr": "Canli anda etkileyen dogal ifade gucuyle ayrisir.",
+          "growth_edge_tr": "Akisi korurken ritim ve tekrar da kurmasi gerekir.",
+          "differentiator_tr": "Gorunen tonunun daha dogal, canli ve anlik versiyonu.",
+          "primitive_weights": {
+            "creation_luck": 0.28,
+            "visible_presence": 0.24,
+            "network_luck": 0.18,
+            "push_pull_drive": 0.16,
+            "public_refinement": 0.14
+          },
+          "question_family_weights": {
+            "visibility_preference": 0.24,
+            "audience_energy": 0.24,
+            "action_bias": 0.22,
+            "expression_style": 0.30
+          },
+          "slot_biases": ["primary_identity_spine", "work_visibility_line"],
+          "supports_contradictions": ["composure_vs_internal_pressure"],
+          "public_private_preference": "public"
+        }
+      ]
+    },
+    {
+      "id": "catalyst",
+      "label_tr": "Tetikleyici",
+      "motto_tr": "Bazi hayatlar dusunerek degil, ateslenerek acilir.",
+      "portrait_tr": "Tetikleyici arketipi durgunlugu kolay kolay tasimaz. O, hareketi sever; degisimi cagirir, gerilimi hisseder ve enerjiyi durdugu yerden koparip ileri tasimak ister. Bazen bir fikir, bazen bir isyan, bazen yalnizca cesur bir adim olarak belirir. Onun varligi bir alani uyandirabilir, cunku o hayata itki verir.",
+      "gift_tr": "Tetikleyici harekete gecirir, cesaret bulastirir ve statik kalan seylere yeni bir ivme kazandirir. Onun enerjisi baskalarina da baslama gucu verebilir.",
+      "fear_tr": "Sikisip kalmak, edilgenlesmek ve enerjisinin bogulmasi onun icin neredeyse ruhsal bir daralmadir.",
+      "shadow_tr": "Golgeye dustugunde hiz bilgeligin onune gecebilir. Kivraklik dusunmeden once atilmaya, degisim arzusu ise yakip gecmeye donebilir; o zaman hareket ilerleme degil, surekli kopus olur.",
+      "relationship_tr": "Iliskide canli, dogrudan ve atesli bir enerji getirir. Ama sabir ve ritim kurulmuyorsa, ayni hiz bagin kendisini de yorabilir.",
+      "work_style_tr": "Iste hizli karar, yeni baslangic, risk alma ve momentum yaratma alaninda gucludur. Durgun ekipleri canlandirabilir, ama sureklilik ortaklariyla daha da guclenir.",
+      "growth_tr": "Buyume dersi, her kivilcimin yangin olmak zorunda olmadigini ve gercek etkinin bazen hiz kadar yon de istedigini anlamaktir.",
+      "slot_biases": ["primary_identity_spine", "secondary_balancing_line"],
+      "question_families": ["action_bias", "change_tolerance", "conflict_activation"],
+      "primitive_weights": {
+        "push_pull_drive": 0.26,
+        "originality_drive": 0.28,
+        "methodical_drive": 0.22,
+        "self_definition": 0.24
+      },
+      "shadow_pressure": ["push_pull_drive"],
+      "supports_contradictions": ["structure_vs_originality", "composure_vs_internal_pressure"],
+      "subprofiles": [
+        {
+          "id": "ignition_starter",
+          "label_tr": "Ates Baslatici",
+          "flavor_tr": "Beklemekten cok ilk kivlcimi yakmayi sever.",
+          "gift_focus_tr": "Baslangici zor gelen yerde ivme yaratir.",
+          "growth_edge_tr": "Baslatma gucunu sureklilikle dengelemesi gerekir.",
+          "differentiator_tr": "Tetikleyici tonunun en hizli ve baslatici hali.",
+          "primitive_weights": {
+            "push_pull_drive": 0.34,
+            "self_definition": 0.18,
+            "methodical_drive": 0.16,
+            "visible_presence": 0.14,
+            "originality_drive": 0.18
+          },
+          "question_family_weights": {
+            "action_bias": 0.38,
+            "change_tolerance": 0.24,
+            "audience_energy": 0.14,
+            "conflict_activation": 0.24
+          },
+          "slot_biases": ["primary_identity_spine"],
+          "supports_contradictions": ["composure_vs_internal_pressure"],
+          "public_private_preference": "public"
+        },
+        {
+          "id": "rupture_driver",
+          "label_tr": "Kirici Donusturucu",
+          "flavor_tr": "Eski sistemin kirilmadan yeni olana yer acmadigini dusunur.",
+          "gift_focus_tr": "Yavaslayan yerde gercegi aciga cikarip hereketi zorlar.",
+          "growth_edge_tr": "Degisimi kopusla esitlememesi gerekir.",
+          "differentiator_tr": "Tetikleyici tonunun daha sert gerilim ve kopus tarafli hali.",
+          "primitive_weights": {
+            "originality_drive": 0.30,
+            "push_pull_drive": 0.26,
+            "methodical_drive": 0.12,
+            "intimacy_depth": 0.14,
+            "self_definition": 0.18
+          },
+          "question_family_weights": {
+            "conflict_activation": 0.38,
+            "action_bias": 0.24,
+            "novelty_vs_structure": 0.22,
+            "change_tolerance": 0.16
+          },
+          "slot_biases": ["secondary_balancing_line", "primary_identity_spine"],
+          "supports_contradictions": ["structure_vs_originality"],
+          "public_private_preference": "balanced"
+        },
+        {
+          "id": "momentum_commander",
+          "label_tr": "Ivme Komutani",
+          "flavor_tr": "Hareketin yalnizca baslamasina degil, ileri akmasina odaklanir.",
+          "gift_focus_tr": "Takimi veya sureci bir ritim icinde ileri itmesiyle ayrisir.",
+          "growth_edge_tr": "Hizi yon duygusuyla birlikte tutmasi gerekir.",
+          "differentiator_tr": "Tetikleyici tonunun daha ritim kuran ve itkiyi yoneten hali.",
+          "primitive_weights": {
+            "methodical_drive": 0.26,
+            "push_pull_drive": 0.24,
+            "self_definition": 0.18,
+            "originality_drive": 0.18,
+            "visible_presence": 0.14
+          },
+          "question_family_weights": {
+            "change_tolerance": 0.26,
+            "action_bias": 0.26,
+            "responsibility_style": 0.20,
+            "conflict_activation": 0.28
+          },
+          "slot_biases": ["primary_identity_spine", "work_visibility_line"],
+          "supports_contradictions": ["composure_vs_internal_pressure"],
+          "public_private_preference": "public"
+        }
+      ]
+    }
+  ],
+  "contradiction_labels": {
+    "structure_vs_originality": "Yapi ile ozgurluk ayni anda calisiyor.",
+    "visibility_vs_private_preparation": "Gorunme istegi var ama once iceride hazirlanma ihtiyaci da guclu.",
+    "closeness_vs_threshold": "Yakinlik istiyor ama guven esigi yuksek.",
+    "composure_vs_internal_pressure": "Disaridan toplu, iceriden yuk tasiyan bir cizgi."
+  }
+}

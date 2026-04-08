@@ -1449,6 +1449,58 @@ class PeriodCardDto {
   }
 }
 
+DateTime? _parsePeriodCardFocusDate(String raw) {
+  final value = raw.trim();
+  if (value.length < 10) {
+    return null;
+  }
+  final parsed = DateTime.tryParse(value.substring(0, 10));
+  if (parsed == null) {
+    return null;
+  }
+  return DateTime(parsed.year, parsed.month, parsed.day);
+}
+
+extension EventCardFocusDate on EventCardDto {
+  DateTime? get preferredFocusDate {
+    for (final raw in <String>[
+      timing.peakDateUtc,
+      timing.entryDateUtc,
+      timing.exitDateUtc,
+    ]) {
+      final resolved = _parsePeriodCardFocusDate(raw);
+      if (resolved != null) {
+        return resolved;
+      }
+    }
+    return null;
+  }
+}
+
+extension PeriodCardFocusDate on PeriodCardDto {
+  DateTime? get preferredFocusDate => eventCard?.preferredFocusDate;
+}
+
+DateTime? resolvePeriodCardFocusDate(
+  PeriodCardDto card, {
+  DateTime? fallbackDay,
+}) {
+  final explicit = card.preferredFocusDate;
+  if (explicit != null) {
+    return explicit;
+  }
+  final exactInDays = card.eventCard?.tags.exactInDays;
+  if (exactInDays == null || fallbackDay == null) {
+    return null;
+  }
+  final normalizedFallback = DateTime(
+    fallbackDay.year,
+    fallbackDay.month,
+    fallbackDay.day,
+  );
+  return normalizedFallback.add(Duration(days: exactInDays));
+}
+
 List<String> _periodCardPreviewTexts(PeriodCardDto card) {
   return _dedupeNarrativePreviewTexts([
     card.title,

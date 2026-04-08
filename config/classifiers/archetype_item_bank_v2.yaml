@@ -1,0 +1,364 @@
+{
+  "version": "archetype_item_bank_v2",
+  "last_updated": "2026-04-06",
+  "scale": {
+    "type": "likert_5",
+    "min": 1,
+    "max": 5,
+    "labels_tr": {
+      "1": "Bana hic uymuyor",
+      "2": "Biraz uzak",
+      "3": "Kararsizim",
+      "4": "Bana yakin",
+      "5": "Beni iyi anlatiyor"
+    }
+  },
+  "questions": [
+    {
+      "id": "aq01",
+      "order": 1,
+      "stage": "core",
+      "family": "structure_preference",
+      "prompt_tr": "Net bir planim varsa daha rahat hareket ederim.",
+      "reverse_scored": false,
+      "weights": { "builder": 1.0, "analyst": 0.35 }
+    },
+    {
+      "id": "aq02",
+      "order": 2,
+      "stage": "core",
+      "family": "structure_preference",
+      "prompt_tr": "Cok katmanli bir plani surdurmek beni cabuk bogar.",
+      "reverse_scored": true,
+      "weights": { "builder": 0.85, "catalyst": 0.25 }
+    },
+    {
+      "id": "aq03",
+      "order": 3,
+      "stage": "core",
+      "family": "responsibility_style",
+      "prompt_tr": "Bir isi uzerime aldiysam sonuna kadar tasimak isterim.",
+      "reverse_scored": false,
+      "weights": { "builder": 1.0, "guardian": 0.25 }
+    },
+    {
+      "id": "aq04",
+      "order": 4,
+      "stage": "core",
+      "family": "future_pull",
+      "prompt_tr": "Beni en cok henuz kurulmamis bir fikrin ihtimali heyecanlandirir.",
+      "reverse_scored": false,
+      "weights": { "visionary": 1.0, "catalyst": 0.30 }
+    },
+    {
+      "id": "aq05",
+      "order": 5,
+      "stage": "core",
+      "family": "novelty_vs_structure",
+      "prompt_tr": "Yeni bir yone sapmak yerine mevcut duzeni korumak bana daha dogru gelir.",
+      "reverse_scored": true,
+      "weights": { "visionary": 0.90, "builder": 0.25 }
+    },
+    {
+      "id": "aq06",
+      "order": 6,
+      "stage": "core",
+      "family": "meaning_orientation",
+      "prompt_tr": "Bir seyin benim icin anlam tasimasi, verimli olmasindan daha onceliklidir.",
+      "reverse_scored": false,
+      "weights": { "visionary": 1.0, "depthkeeper": 0.20 }
+    },
+    {
+      "id": "aq07",
+      "order": 7,
+      "stage": "core",
+      "family": "mental_precision",
+      "prompt_tr": "Detaylarin birbirine nasil baglandigini fark etmek bende dogal calisir.",
+      "reverse_scored": false,
+      "weights": { "analyst": 1.0, "builder": 0.25 }
+    },
+    {
+      "id": "aq08",
+      "order": 8,
+      "stage": "core",
+      "family": "decision_style",
+      "prompt_tr": "Karar verirken icgudumum ne diyorsa genelde onu izlerim.",
+      "reverse_scored": true,
+      "weights": { "analyst": 0.90, "connector": 0.20 }
+    },
+    {
+      "id": "aq09",
+      "order": 9,
+      "stage": "core",
+      "family": "error_avoidance",
+      "prompt_tr": "Bircok kisi fark etmeden once bir tutarsizligi yakalarim.",
+      "reverse_scored": false,
+      "weights": { "analyst": 1.0, "guardian": 0.20 }
+    },
+    {
+      "id": "aq10",
+      "order": 10,
+      "stage": "core",
+      "family": "social_flow",
+      "prompt_tr": "Bir ortamin ritmine hizla uyum saglarim.",
+      "reverse_scored": false,
+      "weights": { "connector": 1.0, "performer": 0.25 }
+    },
+    {
+      "id": "aq11",
+      "order": 11,
+      "stage": "core",
+      "family": "repair_style",
+      "prompt_tr": "Bir bagda kopus oldugunda once temasi onarmayi denerim.",
+      "reverse_scored": false,
+      "weights": { "connector": 1.0, "guardian": 0.30 }
+    },
+    {
+      "id": "aq12",
+      "order": 12,
+      "stage": "core",
+      "family": "bonding_style",
+      "prompt_tr": "Bir iliskide mesafe koymak, yakin kalmaktan daha kolay gelir.",
+      "reverse_scored": true,
+      "weights": { "connector": 0.75, "depthkeeper": 0.35 }
+    },
+    {
+      "id": "aq13",
+      "order": 13,
+      "stage": "core",
+      "family": "stress_regulation",
+      "prompt_tr": "Enerjimi toplamak icin once guvende hissettigim alana cekilirim.",
+      "reverse_scored": false,
+      "weights": { "guardian": 1.0, "depthkeeper": 0.20 }
+    },
+    {
+      "id": "aq14",
+      "order": 14,
+      "stage": "core",
+      "family": "safety_needs",
+      "prompt_tr": "Beklenmedik bir durumda bile once guvenli zemini kurmaya bakarim.",
+      "reverse_scored": false,
+      "weights": { "guardian": 1.0, "builder": 0.20 }
+    },
+    {
+      "id": "aq15",
+      "order": 15,
+      "stage": "core",
+      "family": "stress_regulation",
+      "prompt_tr": "Stresliyken hemen disariya acilmak bana daha iyi gelir.",
+      "reverse_scored": true,
+      "weights": { "guardian": 0.80, "connector": 0.20 }
+    },
+    {
+      "id": "aq16",
+      "order": 16,
+      "stage": "core",
+      "family": "closeness_boundary",
+      "prompt_tr": "Birinin gercekten iceri girmesi icin zaman ve sinanma payi gerekir.",
+      "reverse_scored": false,
+      "weights": { "depthkeeper": 1.0, "guardian": 0.25 }
+    },
+    {
+      "id": "aq17",
+      "order": 17,
+      "stage": "core",
+      "family": "transformational_bonding",
+      "prompt_tr": "Derin bir bag beni degistiriyorsa o bag benim icin daha gercektir.",
+      "reverse_scored": false,
+      "weights": { "depthkeeper": 1.0, "visionary": 0.20 }
+    },
+    {
+      "id": "aq18",
+      "order": 18,
+      "stage": "core",
+      "family": "trust_depth",
+      "prompt_tr": "Bir bag derinlesmeden once bircok seyi kolayca paylasirim.",
+      "reverse_scored": true,
+      "weights": { "depthkeeper": 0.80, "connector": 0.25 }
+    },
+    {
+      "id": "aq19",
+      "order": 19,
+      "stage": "core",
+      "family": "visibility_preference",
+      "prompt_tr": "Bir seyimi gorunur kilmak beni geri cekmez, canlandirir.",
+      "reverse_scored": false,
+      "weights": { "performer": 1.0, "connector": 0.25 }
+    },
+    {
+      "id": "aq20",
+      "order": 20,
+      "stage": "core",
+      "family": "expression_style",
+      "prompt_tr": "Insanlarin ne gordugu kadar nasil gordugu da benim icin onemlidir.",
+      "reverse_scored": false,
+      "weights": { "performer": 1.0, "builder": 0.20 }
+    },
+    {
+      "id": "aq21",
+      "order": 21,
+      "stage": "core",
+      "family": "audience_energy",
+      "prompt_tr": "Dikkatin benim uzerimde olmasi beni genelde yavaslatir.",
+      "reverse_scored": true,
+      "weights": { "performer": 0.80, "guardian": 0.20 }
+    },
+    {
+      "id": "aq22",
+      "order": 22,
+      "stage": "core",
+      "family": "action_bias",
+      "prompt_tr": "Belirsizlik olsa bile hareket ederek yol bulmayi tercih ederim.",
+      "reverse_scored": false,
+      "weights": { "catalyst": 1.0, "visionary": 0.25 }
+    },
+    {
+      "id": "aq23",
+      "order": 23,
+      "stage": "core",
+      "family": "conflict_activation",
+      "prompt_tr": "Gerilim bazen beni kacirmak yerine hizlandirir.",
+      "reverse_scored": false,
+      "weights": { "catalyst": 1.0, "builder": 0.20 }
+    },
+    {
+      "id": "aq24",
+      "order": 24,
+      "stage": "core",
+      "family": "change_tolerance",
+      "prompt_tr": "Degisim gerektigini bilsem bile uzun sure beklemeyi tercih ederim.",
+      "reverse_scored": true,
+      "weights": { "catalyst": 0.80, "guardian": 0.15 }
+    },
+    {
+      "id": "aq25",
+      "order": 25,
+      "stage": "adaptive",
+      "family": "novelty_vs_structure",
+      "axis_hint": "structure_vs_originality",
+      "prompt_tr": "Bir sistem kurarken ayni anda onu yeniden bozup daha iyi hale getirmek isterim.",
+      "reverse_scored": false,
+      "weights": { "builder": 0.40, "visionary": 0.40, "catalyst": 0.30 }
+    },
+    {
+      "id": "aq26",
+      "order": 26,
+      "stage": "adaptive",
+      "family": "visibility_preference",
+      "axis_hint": "visibility_vs_private_preparation",
+      "prompt_tr": "Bir seyi gostermeden once perde arkasinda uzun sure olgunlastirmam gerekir.",
+      "reverse_scored": false,
+      "weights": { "depthkeeper": 0.40, "guardian": 0.25, "performer": 0.20 }
+    },
+    {
+      "id": "aq27",
+      "order": 27,
+      "stage": "adaptive",
+      "family": "closeness_boundary",
+      "axis_hint": "closeness_vs_threshold",
+      "prompt_tr": "Yakinlik isterim ama birinin iceri girmesi icin once kendini kanitlamasi gerekir.",
+      "reverse_scored": false,
+      "weights": { "depthkeeper": 0.50, "guardian": 0.40, "connector": 0.20 }
+    },
+    {
+      "id": "aq28",
+      "order": 28,
+      "stage": "adaptive",
+      "family": "stress_regulation",
+      "axis_hint": "composure_vs_internal_pressure",
+      "prompt_tr": "Disaridan sakin gorunsem de icimde ayni anda birkac sey calisir.",
+      "reverse_scored": false,
+      "weights": { "guardian": 0.35, "analyst": 0.25, "catalyst": 0.20, "performer": 0.20 }
+    },
+    {
+      "id": "aq29",
+      "order": 29,
+      "stage": "adaptive",
+      "family": "novelty_vs_structure",
+      "axis_hint": "structure_vs_originality",
+      "prompt_tr": "Kurallar netlesince yaratici tarafa gecmek benim icin zorlasir.",
+      "reverse_scored": true,
+      "weights": { "visionary": 0.40, "catalyst": 0.30, "builder": 0.20 }
+    },
+    {
+      "id": "aq30",
+      "order": 30,
+      "stage": "adaptive",
+      "family": "audience_energy",
+      "axis_hint": "visibility_vs_private_preparation",
+      "prompt_tr": "Tam hazir olmasam da gorunur olmak bazen beni acabilir.",
+      "reverse_scored": false,
+      "weights": { "performer": 0.45, "catalyst": 0.25, "visionary": 0.20 }
+    },
+    {
+      "id": "aq31",
+      "order": 31,
+      "stage": "adaptive",
+      "family": "execution_style",
+      "axis_hint": "core_discriminator",
+      "prompt_tr": "Bir seyi guclu kilan sey, hizdan cok isleyen sistemi kurabilmektir.",
+      "reverse_scored": false,
+      "weights": { "builder": 0.45, "analyst": 0.30, "guardian": 0.20 }
+    },
+    {
+      "id": "aq32",
+      "order": 32,
+      "stage": "adaptive",
+      "family": "future_pull",
+      "axis_hint": "core_discriminator",
+      "prompt_tr": "Bir fikrin heyecani, onun henuz bitmemis olmasindan gelir.",
+      "reverse_scored": false,
+      "weights": { "visionary": 0.45, "performer": 0.20, "catalyst": 0.25 }
+    },
+    {
+      "id": "aq33",
+      "order": 33,
+      "stage": "adaptive",
+      "family": "trust_depth",
+      "axis_hint": "subprofile_discriminator",
+      "prompt_tr": "Guven bana gore hizli sicakliktan cok tekrar eden tutarlilikla kurulur.",
+      "reverse_scored": false,
+      "weights": { "guardian": 0.35, "depthkeeper": 0.40, "builder": 0.15, "connector": 0.10 }
+    },
+    {
+      "id": "aq34",
+      "order": 34,
+      "stage": "adaptive",
+      "family": "social_flow",
+      "axis_hint": "subprofile_discriminator",
+      "prompt_tr": "Bir ortama etki etmek icin once enerjimi disariya koymayi severim.",
+      "reverse_scored": false,
+      "weights": { "performer": 0.40, "connector": 0.30, "catalyst": 0.20 }
+    },
+    {
+      "id": "aq35",
+      "order": 35,
+      "stage": "adaptive",
+      "family": "decision_style",
+      "axis_hint": "subprofile_discriminator",
+      "prompt_tr": "Yeterince gozlem yapmadan hizli karar vermek beni rahatsiz eder.",
+      "reverse_scored": false,
+      "weights": { "analyst": 0.40, "guardian": 0.25, "builder": 0.20, "depthkeeper": 0.15 }
+    },
+    {
+      "id": "aq36",
+      "order": 36,
+      "stage": "adaptive",
+      "family": "action_bias",
+      "axis_hint": "subprofile_discriminator",
+      "prompt_tr": "Bir seyin nereye gidecegini anlamanin en iyi yolu bazen onu harekete gecirmektir.",
+      "reverse_scored": false,
+      "weights": { "catalyst": 0.45, "visionary": 0.25, "performer": 0.15, "connector": 0.15 }
+    }
+  ],
+  "consistency_pairs": [
+    ["aq01", "aq02"],
+    ["aq04", "aq05"],
+    ["aq07", "aq08"],
+    ["aq10", "aq12"],
+    ["aq13", "aq15"],
+    ["aq16", "aq18"],
+    ["aq19", "aq21"],
+    ["aq22", "aq24"]
+  ]
+}

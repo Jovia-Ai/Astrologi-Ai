@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_app_menu_scope.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 class AiPage extends StatefulWidget {
   const AiPage({super.key});
@@ -23,10 +24,9 @@ class _AiPageState extends State<AiPage> {
     return const <_AiChatMessageData>[
       _AiChatMessageData(
         sender: _AiChatSender.aila,
-        text:
-            'Merhaba, ben Aila. İstersen bugün hissettiğin şeyi, aklındaki bir konuyu ya da haritana dair merak ettiğin bir detayı yaz.',
+        text: '',
         senderLabel: 'Aila',
-        timestamp: 'Şimdi',
+        timestamp: '',
       ),
     ];
   }
@@ -49,7 +49,7 @@ class _AiPageState extends State<AiPage> {
         _AiChatMessageData(
           sender: _AiChatSender.user,
           text: text,
-          senderLabel: 'Sen',
+          senderLabel: context.l10n.aiUserLabel,
           timestamp: timestamp,
         ),
       );
@@ -78,7 +78,22 @@ class _AiPageState extends State<AiPage> {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final palette = _AiReferencePalette.of(context);
-    final messages = _conversationMessages;
+    final l10n = context.l10n;
+    final messages = _conversationMessages
+        .map(
+          (message) =>
+              message.sender == _AiChatSender.aila &&
+                  message.text.isEmpty &&
+                  message.timestamp.isEmpty
+              ? _AiChatMessageData(
+                  sender: message.sender,
+                  text: l10n.aiIntroMessage,
+                  senderLabel: message.senderLabel,
+                  timestamp: l10n.aiNow,
+                )
+              : message,
+        )
+        .toList(growable: false);
 
     return Scaffold(
       backgroundColor: palette.canvas,
@@ -249,7 +264,7 @@ class _AiTopBar extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                'Çevrimiçi',
+                context.l10n.aiOnline,
                 style: profile.typography.meta.copyWith(
                   color: palette.softText,
                 ),
@@ -406,7 +421,7 @@ class _AiComposer extends StatelessWidget {
                 color: palette.text,
               ),
               decoration: InputDecoration(
-                hintText: "Aila'ya yaz...",
+                hintText: context.l10n.aiComposerHint,
                 hintStyle: profile.typography.bodyCompact.copyWith(
                   color: palette.softText,
                 ),

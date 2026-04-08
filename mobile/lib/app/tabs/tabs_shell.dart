@@ -14,6 +14,7 @@ import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_app_menu_scope.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 import 'package:mobile/app/widgets/jovia_app_menu_drawer.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 class TabsShell extends StatefulWidget {
   const TabsShell({super.key});
@@ -29,49 +30,52 @@ class _TabsShellState extends State<TabsShell> {
   int _index = 0;
   final Set<int> _builtIndexes = <int>{0};
 
-  late final List<_TabItem> _tabs = <_TabItem>[
-    const _TabItem(
-      page: HomePage(),
-      item: JoviaBottomNavItem(
-        icon: JoviaUiIcon(asset: JoviaUiAsset.homePortal, size: 23),
-        label: 'Home',
-        showLabel: false,
+  List<_TabItem> _buildTabs(BuildContext context) {
+    final l10n = context.l10n;
+    return <_TabItem>[
+      _TabItem(
+        page: const HomePage(),
+        item: JoviaBottomNavItem(
+          icon: const Icon(Icons.home_outlined, size: 24),
+          label: l10n.tabsHome,
+          showLabel: false,
+        ),
       ),
-    ),
-    const _TabItem(
-      page: BondPage(),
-      item: JoviaBottomNavItem(
-        icon: JoviaUiIcon(asset: JoviaUiAsset.heartOrbit, size: 23),
-        label: 'Bond',
-        showLabel: false,
+      _TabItem(
+        page: const BondPage(),
+        item: JoviaBottomNavItem(
+          icon: const Icon(Icons.favorite_border_rounded, size: 23),
+          label: l10n.tabsBond,
+          showLabel: false,
+        ),
       ),
-    ),
-    const _TabItem(
-      page: StoryStudioPage(),
-      item: JoviaBottomNavItem(
-        icon: Icon(Icons.add_rounded, size: 30),
-        label: 'Story Studio',
-        prominent: true,
-        showLabel: false,
+      _TabItem(
+        page: const StoryStudioPage(),
+        item: JoviaBottomNavItem(
+          icon: const Icon(Icons.add_rounded, size: 28),
+          label: l10n.tabsStoryStudio,
+          prominent: true,
+          showLabel: false,
+        ),
       ),
-    ),
-    const _TabItem(
-      page: AiPage(),
-      item: JoviaBottomNavItem(
-        icon: _AiTabIcon(),
-        label: 'AI Chat',
-        showLabel: false,
+      _TabItem(
+        page: const AiPage(),
+        item: JoviaBottomNavItem(
+          icon: const _AiTabIcon(),
+          label: l10n.tabsAiChat,
+          showLabel: false,
+        ),
       ),
-    ),
-    const _TabItem(
-      page: ProfilePage(),
-      item: JoviaBottomNavItem(
-        icon: JoviaUiIcon(asset: JoviaUiAsset.profileComet, size: 23),
-        label: 'Profile',
-        showLabel: false,
+      _TabItem(
+        page: const ProfilePage(),
+        item: JoviaBottomNavItem(
+          icon: const Icon(Icons.person_outline_rounded, size: 24),
+          label: l10n.tabsProfile,
+          showLabel: false,
+        ),
       ),
-    ),
-  ];
+    ];
+  }
 
   Future<void> _openProfile(
     BuildContext context,
@@ -113,7 +117,7 @@ class _TabsShellState extends State<TabsShell> {
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => ProfileArchetypeExperiencePage(
-          displayName: _displayName(profile),
+          displayName: _displayName(profile, context.l10n.tabsProfile),
           requestPayload: _buildArchetypePayload(profile!),
           baseUrl: _baseUrl,
         ),
@@ -131,14 +135,14 @@ class _TabsShellState extends State<TabsShell> {
     return birthDate.isNotEmpty && birthTime.isNotEmpty && place.isNotEmpty;
   }
 
-  String _displayName(Map<String, dynamic>? profile) {
+  String _displayName(Map<String, dynamic>? profile, String fallback) {
     final fromProfile = (profile?['full_name'] ?? profile?['name'] ?? '')
         .toString()
         .trim();
     if (fromProfile.isNotEmpty) {
       return fromProfile;
     }
-    return 'Profil';
+    return fallback;
   }
 
   Map<String, dynamic> _buildArchetypePayload(Map<String, dynamic> profile) {
@@ -148,7 +152,7 @@ class _TabsShellState extends State<TabsShell> {
         (profile['birth_time'] ?? '').toString(),
       ),
       'birth_place': _resolveBirthPlace(profile),
-      'locale': 'tr',
+      'locale': Localizations.localeOf(context).languageCode,
       'birth_time_confidence': 'exact',
     };
   }
@@ -186,7 +190,8 @@ class _TabsShellState extends State<TabsShell> {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    final activeIndex = _index.clamp(0, _tabs.length - 1);
+    final tabs = _buildTabs(context);
+    final activeIndex = _index.clamp(0, tabs.length - 1);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -205,9 +210,9 @@ class _TabsShellState extends State<TabsShell> {
           child: IndexedStack(
             index: activeIndex,
             children: [
-              for (var index = 0; index < _tabs.length; index++)
+              for (var index = 0; index < tabs.length; index++)
                 _builtIndexes.contains(index)
-                    ? _tabs[index].page
+                    ? tabs[index].page
                     : const SizedBox.shrink(),
             ],
           ),
@@ -219,7 +224,7 @@ class _TabsShellState extends State<TabsShell> {
           _index = value;
           _builtIndexes.add(value);
         }),
-        items: _tabs.map((entry) => entry.item).toList(),
+        items: tabs.map((entry) => entry.item).toList(),
       ),
     );
   }
@@ -245,7 +250,7 @@ class _AiTabIcon extends StatelessWidget {
               );
             }
           : null,
-      child: const JoviaUiIcon(asset: JoviaUiAsset.chatOrbit, size: 23),
+      child: const Icon(Icons.chat_bubble_outline_rounded, size: 22),
     );
   }
 }

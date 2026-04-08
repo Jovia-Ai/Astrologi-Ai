@@ -1,3 +1,4 @@
+from app.transit.present import public_builder
 from app.transit.present.public_builder import build_public_response
 from app.transit.narrative.deep_archetype_engine import build_combined_meaning
 
@@ -266,3 +267,59 @@ def test_event_card_natal_promise_fallback_when_natal_missing() -> None:
     assert promise["verdict"] == "low"
     assert len(promise["drivers"]) >= 3
     assert promise["drivers"][0]["text"] == "not available"
+
+
+def test_public_response_caps_period_peak_timeline(monkeypatch) -> None:
+    response = {
+        "locale": "tr",
+        "transit_date": "2026-03-10",
+        "metrics": {"pressure_index": 0.62, "support_index": 0.54},
+        "presentable": {"summary": {"main_theme": "mind", "one_liner": "Donem temasi"}},
+        "natal": _natal_snapshot(),
+        "display": {
+            "items": [
+                {
+                    **_event(
+                        event_id=f"evt_{index}",
+                        body="Saturn",
+                        natal="Mercury",
+                        aspect="square",
+                        house=3,
+                        weight=1.4 - (index * 0.05),
+                    ),
+                    "timing": {
+                        "peak_date_utc": f"2026-03-{10 + index:02d}T09:00:00+00:00",
+                        "entry_date_utc": f"2026-03-{9 + index:02d}T09:00:00+00:00",
+                        "exit_date_utc": f"2026-03-{11 + index:02d}T09:00:00+00:00",
+                    },
+                }
+                for index in range(8)
+            ]
+        },
+    }
+    build_event_card_calls = {"count": 0}
+
+    def _stub_build_event_card(event, context=None):
+        build_event_card_calls["count"] += 1
+        event_id = str(event.get("event_id") or "")
+        return {
+            "event_id": event_id,
+            "title": f"Card {event_id}",
+            "headline": f"Headline {event_id}",
+            "signature": f"Signature {event_id}",
+            "signature_tr": f"Imza {event_id}",
+            "bucket": str(event.get("bucket") or "long"),
+            "phase": str(event.get("phase") or "applying"),
+            "horizon": "period",
+            "time_hint_tr": "Zaman akiyor.",
+            "timing": dict(event.get("timing") or {}),
+        }
+
+    monkeypatch.setattr(public_builder, "build_active_event_cards", lambda _response, max_cards=5: [])
+    monkeypatch.setattr(public_builder, "build_period_core", lambda _response, event_cards=None: {})
+    monkeypatch.setattr(public_builder, "build_event_card", _stub_build_event_card)
+
+    out = build_public_response(response)
+
+    assert len(out["period_peak_timeline"]) == public_builder.DEFAULT_PERIOD_PEAK_TIMELINE_ITEMS
+    assert build_event_card_calls["count"] == public_builder.DEFAULT_PERIOD_PEAK_TIMELINE_ITEMS

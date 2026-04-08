@@ -1,0 +1,471 @@
+{
+  "@@locale": "tr",
+  "appTitle": "Astrologi AI",
+  "supabaseConfigErrorTitle": "Supabase Konfigürasyon Hatası",
+  "supabaseConfigErrorBody": "Supabase başlatılamadı. Lütfen SUPABASE_URL ve SUPABASE_ANON_KEY değerlerini ekleyin.",
+  "supabaseConfigErrorExample": "Örnek:\nflutter run --dart-define=SUPABASE_URL=https://YOUR_PROJECT.supabase.co --dart-define=SUPABASE_ANON_KEY=YOUR_KEY",
+  "loginTitle": "Tekrar hoş geldin",
+  "loginBody": "Hesabına gir ve kaldığın yerden devam et.",
+  "emailLabel": "Email",
+  "passwordLabel": "Şifre",
+  "confirmPasswordLabel": "Şifreyi doğrula",
+  "nameLabel": "Ad",
+  "birthDateLabel": "Doğum tarihi (YYYY-MM-DD)",
+  "birthTimeLabel": "Doğum saati (HH:mm)",
+  "cityLabel": "Şehir",
+  "countryLabel": "Ülke",
+  "loginSignIn": "Giriş yap",
+  "authOr": "veya",
+  "loginContinueWithGoogle": "Google ile devam et",
+  "loginCreateAccount": "Hesap oluştur",
+  "loginForgotPassword": "Şifremi unuttum",
+  "loginPasswordResetSent": "Şifre sıfırlama maili gönderildi",
+  "loginGoogleStartFailed": "Google giriş akışı başlatılamadı.",
+  "registerTopLabel": "Kayıt",
+  "registerTopCenter": "yeni hesap",
+  "registerSectionLabel": "Başlangıç",
+  "registerTitle": "Profil ritmine giriş yap",
+  "registerBody": "Hesabını oluştur, sonra profil ve doğum katmanlarını aynı tipografik sistemde tamamla.",
+  "registerCreateAccount": "Hesap oluştur",
+  "registerBackToLogin": "Girişe dön",
+  "registerPasswordsDoNotMatch": "Şifreler eşleşmiyor.",
+  "onboardingSectionLabel": "Onboarding",
+  "onboardingBirthTopLabel": "Doğum",
+  "onboardingBirthTopCenter": "temel veriler",
+  "onboardingBirthTitle": "Haritanın doğum eksenini tamamla",
+  "onboardingBirthBody": "Bu bilgiler backend akışına aynen gider; bu ekran sadece yüzeyi profil diliyle hizalar.",
+  "onboardingProfileTopLabel": "Profil",
+  "onboardingProfileTopCenter": "kurulum",
+  "onboardingProfileTitle": "Kimlik ve doğum alanını aynı yerde kur",
+  "onboardingProfileBody": "Form mantığı aynı kalır; sadece tipografik omurga artık profil sayfasıyla hizalıdır.",
+  "commonContinue": "Devam et",
+  "commonRetry": "Tekrar dene",
+  "commonOpen": "Aç",
+  "commonSave": "Kaydet",
+  "tabsHome": "Ana sayfa",
+  "tabsBond": "Bond",
+  "tabsStoryStudio": "Story Studio",
+  "tabsAiChat": "AI Sohbet",
+  "tabsProfile": "Profil",
+  "homePlansTitle": "Senin planların",
+  "homePlansSubtitle": "Bu hafta akışın ve kolektif nabız yan yana.",
+  "homeSignalFallback": "Bugün öne çıkan tema bu.",
+  "homeActivePeriodTitle": "Aktif dönem",
+  "homeActivePeriodBody": "Bu dönemde arkada çalışan transit teması burada açılıyor.",
+  "homeStoryLoading": "Bugünün hikayesi yükleniyor...",
+  "homeStoryUnavailable": "Bugün için kısa yorum henüz hazır değil.",
+  "homeDailyTransitLabel": "Günlük transit",
+  "homeHeroOpening": "Bugünün açılışı",
+  "homeHeroPrompt": "Bugün bende ne açılıyor?",
+  "homeHeroQuestionTitle": "Bugünün açılış sorusu",
+  "homeGoToCalendar": "Takvime geç",
+  "homeCollectivePulse": "Kolektif nabız",
+  "homeDayPlan": "Günün planı",
+  "homeCalendarTitle": "Takvim",
+  "homeWeekFlowOpen": "Önündeki 1 haftalık akışı aç.",
+  "homeWeekView": "1 haftalık görünüm",
+  "homeWeeklyCalendar": "Haftalık takvim",
+  "homeWeeklyCalendarBody": "Mevcut takvim akışını küçük görünümden aç ve tüm haftayı gör.",
+  "homePeriodCardsPending": "Period kartları hazır olduğunda burada görünecek.",
+  "homeActiveThemePending": "Aktif tema bekleniyor",
+  "homeActiveThemeBody": "Period akışından gelen aktif tema burada kompakt kart olarak görünecek.",
+  "homeOpenTheme": "Temayı aç",
+  "homeNowActive": "Şimdi aktif",
+  "homeOpenTopicsTitle": "Açık konular",
+  "homeOpenTopicsBody": "Kolektifte şu an çalışan tüm başlıklara buradan gir.",
+  "homeAllTopics": "Tüm konular",
+  "homePrimaryMeta": "Ana",
+  "homeCollectiveMeta": "Kolektif",
+  "homeWeekMeta": "Hafta",
+  "homeTimingMeta": "Timing",
+  "homeOpenDetail": "Detayı aç",
+  "homeDataLoadFailed": "Home verisi alınamadı: {error}",
+  "@homeDataLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "homeRequestTimedOut": "Bugünkü home okuması uzun sürdü. Ekran daha hafif veriyle açıldı; biraz sonra tekrar deneyebilirsin.",
+  "authGateBirthDataErrorTitle": "Hesabın açık, veri kontrolü başarısız",
+  "authGateBirthDataErrorBody": "Supabase bağlantısına şu an ulaşılamıyor. Bu yüzden seni eksik doğum verisi ekranına atmak yerine burada bekletiyoruz. Bağlantı gelince tekrar dene.",
+  "sessionExpiredLoginAgain": "Oturum süresi doldu. Lütfen tekrar giriş yap.",
+  "errorFailedToLoadBirthData": "Doğum verileri yüklenemedi: {error}",
+  "@errorFailedToLoadBirthData": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "errorFailedToSaveBirthData": "Doğum verileri kaydedilemedi: {error}",
+  "@errorFailedToSaveBirthData": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "errorPleaseFillBirthFields": "Lütfen doğum tarihi, saat, şehir ve ülke alanlarını doldur.",
+  "errorFailedToLoadProfile": "Profil yüklenemedi: {error}",
+  "@errorFailedToLoadProfile": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "errorFailedToSaveProfile": "Profil kaydedilemedi: {error}",
+  "@errorFailedToSaveProfile": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "errorPleaseFillAllFields": "Lütfen tüm alanları doldur.",
+  "menuQuickAccess": "Hızlı geçiş",
+  "menuEditProfile": "Profili düzenle",
+  "menuEditProfileSubtitle": "Bilgilerini ve profil ayarlarını aç.",
+  "menuManagePeople": "Kişileri yönet",
+  "menuAddPerson": "Kişi ekle",
+  "menuPeopleSubtitle": "Bond ve sosyal akışlar için kayıtlı kişi listesini aç.",
+  "menuCalendar": "Takvim ve timing",
+  "menuCalendarSubtitle": "Gün ritmi, dönemler ve best times.",
+  "menuArchetypeExperience": "Arketip deneyimi",
+  "menuCompleteBirthData": "Doğum verini tamamla",
+  "menuArchetypeSubtitle": "Kimlik eksenini derin deneyimde aç.",
+  "menuCompleteBirthDataSubtitle": "Arketip ekranlarını açmak için eksik veriyi tamamla.",
+  "menuPreferences": "Tercihler",
+  "menuThemeMode": "Tema modu",
+  "themeModeDark": "Koyu",
+  "themeModeLight": "Açık",
+  "menuLanguage": "Dil",
+  "menuNotificationPreferences": "Bildirim tercihleri",
+  "menuDailySummary": "Günlük özet",
+  "menuDailySummarySubtitle": "Sabah kısa ritim özeti",
+  "menuSkyEvents": "Gök olayları",
+  "menuSkyEventsSubtitle": "Öne çıkan transit ve event uyarıları",
+  "menuSocialActivity": "Sosyal hareket",
+  "menuSocialActivitySubtitle": "Forum ve ilişki tarafındaki gelişmeler",
+  "menuMembership": "Üyelik",
+  "menuPremiumSubscription": "Premium abonelik",
+  "menuPremiumInterestSubtitle": "Listedesin. Premium açıldığında haber vereceğiz.",
+  "menuPremiumDefaultSubtitle": "Daha uzun yorumlar ve geniş akışlar için derin katman.",
+  "menuInList": "Listede",
+  "menuSoon": "Yakında",
+  "menuSignOut": "Çıkış yap",
+  "menuSignOutSubtitle": "Mevcut oturumu kapat ve giriş ekranına dön.",
+  "menuPeopleCount": "{count} kişi",
+  "@menuPeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "menuArchetypeReady": "Arketip hazır",
+  "menuBirthDataMissing": "Doğum verisi eksik",
+  "premiumSheetTitle": "Premium abonelik",
+  "premiumSheetBody": "Daha uzun yorumlar, daha fazla derinlik ve erken erişim için premium katman hazırlanıyor.",
+  "premiumBulletIdentity": "Uzun kimlik ve ilişki okumaları",
+  "premiumBulletTiming": "Ekstra timing ve dönem derinliği",
+  "premiumBulletEarlyAccess": "Yeni özelliklere erken erişim",
+  "premiumNotifyMe": "Beni haberdar et",
+  "premiumAlreadyInList": "Listedesin",
+  "premiumNotifySnackbar": "Premium açıldığında sana haber vereceğiz.",
+  "homeGreeting": "Merhaba {name}",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "homeTodayLabel": "Bugün {date}",
+  "@homeTodayLabel": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "homeGreetingFallbackName": "sen",
+  "periodDetailTransitTitle": "Transit Detayı",
+  "periodDetailPeriodTitle": "Dönem Detayı",
+  "periodDetailTodayEyebrow": "Bugün",
+  "periodDetailPeriodEyebrow": "Süreç",
+  "periodDetailContextLabel": "Bağlam",
+  "periodDetailContextTitle": "Bu büyük dönemin parçası",
+  "periodDetailCoreLabel": "Çekirdek",
+  "periodDetailCoreTitle": "Bu etkinin merkez çizgisi",
+  "periodDetailSupportingLabel": "Destekleyen",
+  "periodDetailSupportingTitle": "Açılan diğer katmanlar",
+  "periodDetailTechnicalLabel": "Teknik",
+  "periodDetailTechnicalTitle": "Arka plan notları",
+  "calendarPanelLabel": "Takvim",
+  "calendarMonthMode": "Ay",
+  "calendarWeekMode": "Hafta",
+  "calendarMonthIntro": "Ay görünümünden bir güne dokunup o günün sayfasına geç.",
+  "calendarWeekIntro": "Hafta görünümünde seçili haftaya odaklan, günü açıp detayda sağ-sol ilerle.",
+  "calendarPickDate": "Tarih seç",
+  "calendarDayThemeLabel": "Günün teması",
+  "calendarOpenDay": "Günü aç",
+  "calendarSelectedDayFallback": "Bir güne dokunduğunda o günün kartları, markerları ve uzun dönem bağlamı ayrıntılı açılır.",
+  "calendarContextLabel": "Bağlam",
+  "calendarLongTermEffectTitle": "Uzun dönem etkisi",
+  "calendarLongTermEffectFallback": "Bu günün arkasında çalışan daha uzun bir dönem etkisi var.",
+  "calendarLongTermEffectReadMore": "Günün arka planında çalışan dönem hikayesini gün sayfasında daha uzun okuyabilirsin.",
+  "calendarPreviewFallback": "Yakın günleri hızlıca tara, bir güne dokunup gün sayfasına geç.",
+  "profileAvatarUpdated": "Profil resmi güncellendi",
+  "profileAvatarUploadFailed": "Profil resmi yüklenemedi: {error}",
+  "@profileAvatarUploadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "profileInterpretationUnavailableTitle": "Yorum akışı alınamadı",
+  "profileBirthDataPendingTitle": "Doğum bilgisi bekleniyor",
+  "profileBirthDataPendingBodyDark": "Bu ekran `core_story_ui`, `profile_narrative`, `personality_imprint` ve `insight_modules` alanlarıyla doluyor. Profil ayarlarından doğum tarihini, saati ve yeri tamamladığında içerik otomatik açılır.",
+  "profileBirthDataPendingBodyLight": "Bu ekran core story, profile narrative ve insight alanlarıyla doluyor. Doğum tarihini, saati ve yeri tamamladığında içerik otomatik açılır.",
+  "profileIdentityAxis": "Kimlik ekseni",
+  "profileMainStory": "Ana Hikayen",
+  "profileOpenFullReading": "Tam okumayı aç",
+  "profileSignatureLayers": "İmza Katmanları",
+  "profileSideThemes": "Yan Temalar",
+  "profileWarning": "Uyarı",
+  "profileBack": "Geri dön",
+  "profileOpenRelationshipFlow": "İlişki akışını aç",
+  "profileOpenTimingFlow": "Timing akışını aç",
+  "profileReturnToChartFlow": "Harita akışına dön",
+  "profileConnectionsLabel": "Connections",
+  "profileConnectionsTitle": "Eklediğin kişiler",
+  "profileConnectionsBody": "Takip ve takipçi alanından açılan gerçek arkadaş listen burada görünüyor.",
+  "profileFriendLabel": "Friend",
+  "profileLocationMissing": "konum eksik",
+  "profileFollowing": "Takip",
+  "profileFollowers": "Takipçi",
+  "profileOpenSinglePersonProfile": "{name} profiline git",
+  "@profileOpenSinglePersonProfile": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "profileOpenManyPersonProfiles": "{count} arkadaş profiline bak",
+  "@profileOpenManyPersonProfiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profileSunLabel": "Güneş",
+  "profileRisingLabel": "Yükselen",
+  "profileMoonLabel": "Ay",
+  "profileIdentityLabel": "KİMLİK",
+  "profileIdentityReading": "Kimlik okuması",
+  "profileOpenIdentityReading": "Kimlik okumasını aç",
+  "profileGenerateResult": "Sonucu oluştur",
+  "profileConfidenceScore": "Güven skoru {score}",
+  "@profileConfidenceScore": {
+    "placeholders": {
+      "score": {}
+    }
+  },
+  "profileNatalLoadFailed": "Natal yorum alınamadı: {error}",
+  "@profileNatalLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "profileTimingFlowLabel": "TIMING AKIŞI",
+  "profileTimingFlowUnavailable": "Timing akışı alınamadı",
+  "profileTimingFlowNotReady": "Timing akışı hazır değil",
+  "profileTimingFlowNotReadyBody": "Dönem özeti geldiğinde burada sadece kısa bir teaser ve yaklaşan pikler görünecek.",
+  "profileCurrentPeriod": "Şu anki dönem",
+  "profileUpcomingPeaks": "Yaklaşan pikler",
+  "profileNextLabel": "Sıradaki: {label}",
+  "@profileNextLabel": {
+    "placeholders": {
+      "label": {}
+    }
+  },
+  "profileMoreOpen": "Daha fazla aç",
+  "profileNatal": "Natal",
+  "profileRelationship": "İlişki",
+  "profileTiming": "Timing",
+  "profileMainReading": "Ana okuma",
+  "profileShadowGrowth": "Gölge & büyüme",
+  "profileIdentityEyebrow": "Kimlik",
+  "profileIdentityFlow": "Kimlik akışı",
+  "profileIdentityTone": "Kimlik tonu",
+  "profileIdentitySummary": "Kimlik özeti",
+  "profileArchetypeBirthDataRequired": "Arketip deneyimini açmadan önce doğum tarihi, saati ve yeri gerekli.",
+  "profileIdentityFlowSubtitleFallback": "Kimliğinin dışarıdan ve içeriden nasıl okunduğunu burada daha uzun gör.",
+  "profileNarrativeFlowSubtitleFallback": "Bu bölümün sende nasıl çalıştığını burada daha açık okuyorsun.",
+  "profileSignatureCatalogSubtitle": "Kart listesinde yalnızca başlıkları görürsün; bir karta basınca sadece onun detayı açılır.",
+  "profileSignatureCardSubtitleFallback": "Bu kişilik imzası kartının tam açıklaması burada açılıyor.",
+  "profileSideThemesFlowSubtitle": "Burada ana portreni tamamlayan diğer taraflar öne çıkıyor.",
+  "profileInsightFlowSubtitleFallback": "Bu bölüm savunma ve büyüme eksenindeki tam akışı açıyor.",
+  "profileOpenDefensePattern": "Savunma mekanizmanı aç",
+  "profileSeeArchetype": "Arketipini gör",
+  "profileArchetypeBodyReady": "Haritandaki aktif kimlik, koruma ve gerilim çizgilerini tek bir deneyimde aç.",
+  "profileArchetypeBodyPending": "Doğum tarihi, saati ve yerini tamamladığında arketip deneyimi buradan açılacak.",
+  "profileCompleteBirthData": "Doğum verini tamamla",
+  "profileOnlineFriends": "ONLINE ARKADAŞLARIN",
+  "profileQuietSocialCircle": "Daha sakin bir sosyal halka",
+  "profileIdentitySummaryFallback": "Kimlik aksın profil anlatısından açılıyor.",
+  "profileNarrativeLoading": "Profil anlatısı backend yorumundan çekiliyor...",
+  "profilePlacementsAndAspects": "YERLEŞİM VE AÇILAR",
+  "profileOpenSideThemes": "Yan temaları aç",
+  "profilePlacement": "Yerleşim",
+  "profileAspect": "Açı",
+  "profileSignTone": "Burç tonu",
+  "profileFeaturedTheme": "Öne çıkan tema",
+  "profileRuler": "Yönetici",
+  "profileStrongestRuler": "En güçlü yönetici {name}",
+  "@profileStrongestRuler": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "profileSignRuler": "{sign} yöneticisi",
+  "@profileSignRuler": {
+    "placeholders": {
+      "sign": {}
+    }
+  },
+  "profileChartBackbone": "Harita omurgası",
+  "profileHouseEmphasis": "{house}. ev vurgusu",
+  "@profileHouseEmphasis": {
+    "placeholders": {
+      "house": {
+        "type": "int"
+      }
+    }
+  },
+  "profileEarthInfluential": "Toprak etkili",
+  "profileOutsideInside": "Dışarıdan ve içeriden",
+  "profileMindWorks": "Zihnin nasıl çalışıyor",
+  "profileSelfProtection": "Kendini nasıl koruyorsun",
+  "profileIntimacyOpens": "Yakınlık sende nasıl açılıyor",
+  "profileHoldReleaseBalance": "Tutma ve bırakma dengesi",
+  "profileWhereOpportunityFlows": "Fırsatın aktığı yer",
+  "profileRecognizableLine": "Sende kolay tanınan çizgi",
+  "profileTwoInnerDirections": "İçeride iki yönün nasıl çalışıyor",
+  "profileStandoutSide": "Sende öne çıkan taraf",
+  "profileElementFireDominant": "Ateş baskın",
+  "profileElementWaterDominant": "Su baskın",
+  "profileElementAirDominant": "Hava baskın",
+  "profileElementEarthDominant": "Toprak baskın",
+  "profileBirthPlacePending": "Doğum yeri bekleniyor",
+  "profileAgeLabel": "{age} yaş",
+  "@profileAgeLabel": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarSelectedDaySummaryPrompt": "Seçili güne dokunup günün ritmini, kartlarını ve uzun dönem etkisini aç.",
+  "calendarMarkerDirectionChange": "Yön değişimi",
+  "calendarMarkerNewArea": "Yeni alan",
+  "calendarMarkerRetrograde": "Geri akış",
+  "calendarMarkerPeak": "Zirve",
+  "calendarMarkerBeginning": "Başlangıç",
+  "calendarMarkerThreshold": "Eşik",
+  "calendarMarkerMultipleThresholds": "birden fazla eşik",
+  "calendarFallbackSensitiveDay": "Hassas gün.",
+  "calendarFallbackHighTempo": "Yüksek tempo.",
+  "calendarFallbackBusyDay": "Bugün yoğun.",
+  "calendarFallbackTwoSignals": "Bugün iki şey belirgin.",
+  "calendarFallbackOneSignal": "Tek bir şey öne çıkıyor.",
+  "calendarFallbackMixedDay": "Bugün biraz karışık.",
+  "calendarFallbackCalmDay": "Bugün sakin.",
+  "calendarFallbackHooked": "Bir şeylere bugün çabuk takılabilirsin.",
+  "calendarFallbackSeveralThings": "Aynı anda birkaç şey dikkatini çekebilir.",
+  "calendarFallbackOneThingPushes": "Tek bir şey günün ritmini biraz öne itiyor.",
+  "calendarFallbackSimpleRhythm": "Bugün ritim biraz daha sade akıyor.",
+  "calendarFallbackBreath": "Bir nefes daha iyi gelir.",
+  "calendarFallbackDoNotPileOn": "Her şeye aynı anda yüklenme.",
+  "calendarFallbackDoNotRush": "Acele etme.",
+  "calendarFallbackLeaveSimple": "Bugünü biraz sade bırak.",
+  "calendarHouseTouchpointHint": "En çok {area} tarafında belli olabilir.",
+  "@calendarHouseTouchpointHint": {
+    "placeholders": {
+      "area": {}
+    }
+  },
+  "calendarEditorialCurrentFallback": "Bugünün ritmi burada biraz daha okunur hale geliyor.",
+  "calendarEditorialChangeFallback": "Bunun sende hangi tarafta daha çok belli olduğuna bak.",
+  "calendarEditorialDirectionFallback": "Tema burada bitmiyor; önündeki günlerde biraz daha şekil kazanacak.",
+  "calendarEditorialSecondaryFallback": "Bu da arka planda beraber çalışan ikinci bir katman.",
+  "calendarPhaseIntensifying": "Yoğunlaşıyor",
+  "calendarPhasePeakToday": "Bugün zirvede",
+  "calendarPhaseReleasing": "Çözülmeye geçiyor",
+  "calendarTimingPeak": "Zirve {date}",
+  "@calendarTimingPeak": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "calendarTimingStart": "Başlangıç {date}",
+  "@calendarTimingStart": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "calendarTimingPrefix": "Zaman: {timing}",
+  "@calendarTimingPrefix": {
+    "placeholders": {
+      "timing": {}
+    }
+  },
+  "calendarBestWindow": "Bu hafta iyi pencere: {labels}",
+  "@calendarBestWindow": {
+    "placeholders": {
+      "labels": {}
+    }
+  },
+  "calendarCombinedTitle": "Birleşik takvim",
+  "calendarCombinedBody": "Ay ve hafta akışını aynı yüzde takip et. Bir güne dokunduğunda o günün sayfası açılır ve uzun dönem bağlamı korunur.",
+  "calendarProfileLoadFailed": "Profil verisi yüklenemedi.",
+  "calendarBirthDataRequiredTitle": "Takvim için doğum verisi gerekiyor",
+  "calendarBirthDataRequiredBody": "Doğum tarihi, saati ve yeri tamamlandığında takvim açılır.",
+  "calendarSectionNow": "Şimdi ne oluyor",
+  "calendarSelectedDayWindows": "Seçili gün pencereleri",
+  "calendarSectionChange": "Bu sende neyi değiştiriyor",
+  "calendarSectionDirection": "Nereye gidiyor",
+  "calendarSectionBackground": "Derinde çalışan şey",
+  "calendarSectionSecondaryTheme": "Ayrıca çalışan tema",
+  "calendarOpenMainTheme": "Ana temayı aç",
+  "calendarOpenPeriod": "Dönemi aç",
+  "calendarWhyItMatters": "Neden bu önemli?",
+  "calendarLongTermLabel": "Uzun dönem",
+  "calendarLongTermActiveTodayTitle": "Uzun dönem bugün de etkili",
+  "calendarLongTermActiveTodayBody": "Burası bugünün kendisi değil; bugünü arkadan taşıyan daha uzun hikaye.",
+  "calendarOpenCalendar": "Takvimi aç",
+  "calendarLongTermEffectPrefix": "Uzun dönem etkisi: {title}",
+  "@calendarLongTermEffectPrefix": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "calendarBackgroundActive": "arka planda aktif",
+  "calendarDailyReadingPreparing": "Bu günün ana okuması hazırlanıyor.",
+  "calendarSelectedDayCalm": "Seçili gün sakin",
+  "calendarNoDistinctEventCard": "Bu gün için belirgin event kartı yok. Takvimden başka bir gün seçip akışı kontrol edebilirsin.",
+  "calendarMonthPanelBody": "Takvim gibi görünen ay görünümü burada. Güne dokun, günlük datayı aynı akışta aç.",
+  "calendarTimingPersonalized": "Sana özel zamanlama",
+  "calendarTimingPersonalizedBody": "Önünde açılan dönemleri burada daha sakin bir sırayla okuyabilirsin.",
+  "calendarPeriodLabel": "Period",
+  "calendarCurrentPeriodTheme": "Bu dönemin ana teması",
+  "calendarTimingPreparing": "Timing hazırlanıyor",
+  "calendarTimingPreparingBody": "Kişisel dönemlerin editoryal listesi yükleniyor.",
+  "calendarNoSelectedPeriod": "Seçili dönem yok",
+  "calendarNoSelectedPeriodBody": "Aktif period kartları hazır olduğunda burada göreceksin.",
+  "calendarPeakListShort": "Kısa peak listesi",
+  "calendarPeakListBody": "Önündeki etkilerin güçlendiği tarihleri sırayla takip et.",
+  "calendarPeriodCardNotFound": "Dönem kartı bulunamadı",
+  "calendarPeriodCardNotFoundBody": "Period marker/kart bulunamadı.",
+  "calendarPeriodCardsTitle": "Dönem kartları",
+  "calendarTransitTimeout": "Transit özeti zamanında dönmedi. Dönem ekranını hafiflettim; tekrar dener misin?",
+  "calendarInvalidDateOrProfile": "Gönderilen tarih veya profil alanları geçersiz (422).",
+  "calendarPeriodDataUnavailable": "Period veri alınamadı.",
+  "calendarPeriodCoreFallbackTitle": "Bu dönemin ana teması",
+  "calendarPeriodCoreFallbackBody": "Period özeti henüz hazır değil.",
+  "calendarTodayForeground": "Bugün en çok bu öne çıkıyor.",
+  "calendarPeriodFromBackgroundToday": "Bugün kısa vadeli bir tetikten çok, arkada çalışan tema öne çıkıyor.",
+  "aiOnline": "Çevrimiçi",
+  "aiIntroMessage": "Merhaba, ben Aila. İstersen bugün hissettiğin şeyi, aklındaki bir konuyu ya da haritana dair merak ettiğin bir detayı yaz.",
+  "aiUserLabel": "Sen",
+  "aiNow": "Şimdi",
+  "aiComposerHint": "Aila'ya yaz..."
+}

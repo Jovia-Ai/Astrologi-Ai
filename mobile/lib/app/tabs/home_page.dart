@@ -1,11 +1,13 @@
 // ignore_for_file: unused_element, unused_field, prefer_final_fields
 
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mobile/app/api/api_client.dart';
@@ -26,6 +28,8 @@ import 'package:mobile/design/astro/element_scores.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_app_menu_scope.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 String _firstHomeTextValue(Iterable<String?> values) {
   for (final value in values) {
@@ -37,7 +41,10 @@ String _firstHomeTextValue(Iterable<String?> values) {
   return '';
 }
 
-EventCardDto _promoteHomePeriodEventToDaily(EventCardDto card) {
+EventCardDto _promoteHomePeriodEventToDaily(
+  EventCardDto card, {
+  required AppLocalizations l10n,
+}) {
   final feltLine = _firstHomeTextValue([
     card.feltLineTr,
     card.headline,
@@ -60,7 +67,7 @@ EventCardDto _promoteHomePeriodEventToDaily(EventCardDto card) {
     card.signalLabelTr,
     card.timeHintTr,
     card.signatureTr,
-    'Bugün öne çıkan tema bu.',
+    l10n.homeSignalFallback,
   ]);
   return card.copyWith(
     horizon: 'daily',
@@ -71,17 +78,20 @@ EventCardDto _promoteHomePeriodEventToDaily(EventCardDto card) {
   );
 }
 
-PeriodCardDto _buildHomePeriodCoreFallbackCard(PeriodCoreDto periodCore) {
+PeriodCardDto _buildHomePeriodCoreFallbackCard(
+  PeriodCoreDto periodCore, {
+  required AppLocalizations l10n,
+}) {
   return PeriodCardDto(
     id: 'home-period-core',
     title: periodCore.title.trim().isNotEmpty
         ? periodCore.title.trim()
-        : 'Aktif dönem',
+        : l10n.homeActivePeriodTitle,
     subtitle: periodCore.coreStory.trim().isNotEmpty
         ? periodCore.coreStory.trim()
         : (periodCore.bigPicture.trim().isNotEmpty
               ? periodCore.bigPicture.trim()
-              : 'Bu dönemde arkada çalışan transit teması burada açılıyor.'),
+              : l10n.homeActivePeriodBody),
     timeHint: periodCore.upperMeaning.trim(),
   );
 }
@@ -91,18 +101,274 @@ class HomeTransitSnapshot {
     required this.periodCore,
     required this.periodCards,
     required this.dailyCards,
+    required this.calendarDays,
     required this.todayDayMeta,
   });
 
   final PeriodCoreDto? periodCore;
   final List<PeriodCardDto> periodCards;
   final List<EventCardDto> dailyCards;
+  final Map<String, NarrativeCalendarDay> calendarDays;
   final NarrativeCalendarDay? todayDayMeta;
+}
+
+class _HomeFastHighlight {
+  const _HomeFastHighlight({
+    required this.id,
+    required this.kind,
+    required this.title,
+    required this.summary,
+  });
+
+  final String id;
+  final String kind;
+  final String title;
+  final String summary;
+
+  factory _HomeFastHighlight.fromMap(
+    Map<String, dynamic> map, {
+    required int index,
+  }) {
+    return _HomeFastHighlight(
+      id: (map['id'] ?? 'home-fast-$index').toString().trim(),
+      kind: (map['kind'] ?? '').toString().trim(),
+      title: (map['title'] ?? '').toString().trim(),
+      summary: (map['summary'] ?? '').toString().trim(),
+    );
+  }
+}
+
+class _HomeFastPayload {
+  const _HomeFastPayload({
+    required this.headline,
+    required this.summary,
+    required this.energyBadge,
+    required this.energyFocus,
+    required this.energySummary,
+    required this.highlights,
+    required this.sectionStates,
+    required this.cacheStatus,
+  });
+
+  final String headline;
+  final String summary;
+  final String energyBadge;
+  final String energyFocus;
+  final String energySummary;
+  final List<_HomeFastHighlight> highlights;
+  final Map<String, String> sectionStates;
+  final String cacheStatus;
+
+  bool get hasContent =>
+      headline.isNotEmpty ||
+      summary.isNotEmpty ||
+      energyFocus.isNotEmpty ||
+      energySummary.isNotEmpty ||
+      highlights.isNotEmpty;
+
+  String get transitSummaryState =>
+      (sectionStates['transit_summary'] ?? '').trim().toLowerCase();
+
+  bool get isTransitDeferred => transitSummaryState == 'deferred';
+
+  bool get canUseTransitPreview => transitSummaryState != 'deferred';
+
+  List<_HomeFastHighlight> get transitHighlights => [
+    for (final item in highlights)
+      if (item.kind.trim().toLowerCase() == 'transit' &&
+          (item.title.isNotEmpty || item.summary.isNotEmpty))
+        item,
+  ];
+
+  bool get hasTransitHighlights => transitHighlights.isNotEmpty;
+
+  factory _HomeFastPayload.fromMap(Map<String, dynamic> map) {
+    final energy = map['energy'] is Map
+        ? Map<String, dynamic>.from(map['energy'] as Map)
+        : const <String, dynamic>{};
+    final highlightsRaw = map['highlights'];
+    final sectionStatesRaw = map['section_states'];
+    return _HomeFastPayload(
+      headline: (map['headline'] ?? '').toString().trim(),
+      summary: (map['summary'] ?? '').toString().trim(),
+      energyBadge: (energy['badge'] ?? '').toString().trim(),
+      energyFocus: (energy['focus'] ?? '').toString().trim(),
+      energySummary: (energy['summary'] ?? '').toString().trim(),
+      highlights: highlightsRaw is List
+          ? [
+              for (var index = 0; index < highlightsRaw.length; index++)
+                if (highlightsRaw[index] is Map)
+                  _HomeFastHighlight.fromMap(
+                    Map<String, dynamic>.from(highlightsRaw[index] as Map),
+                    index: index,
+                  ),
+            ]
+          : const <_HomeFastHighlight>[],
+      sectionStates: sectionStatesRaw is Map
+          ? <String, String>{
+              for (final entry in sectionStatesRaw.entries)
+                entry.key.toString(): (entry.value ?? '').toString().trim(),
+            }
+          : const <String, String>{},
+      cacheStatus: (map['cache_status'] ?? '').toString().trim(),
+    );
+  }
+}
+
+EventCardDto? buildHomeFastFallbackDailyCardFromPayloadMap(
+  Map<String, dynamic> map, {
+  required AppLocalizations l10n,
+}) {
+  return _buildHomeFastFallbackDailyCard(
+    _HomeFastPayload.fromMap(map),
+    l10n: l10n,
+  );
+}
+
+PeriodCoreDto? buildHomeFastPeriodCoreFromPayloadMap(
+  Map<String, dynamic> map, {
+  required AppLocalizations l10n,
+}) {
+  return _buildHomeFastPeriodCore(_HomeFastPayload.fromMap(map), l10n: l10n);
+}
+
+List<PeriodCardDto> buildHomeFastPeriodCardsFromPayloadMap(
+  Map<String, dynamic> map, {
+  required AppLocalizations l10n,
+}) {
+  return _buildHomeFastPeriodCards(_HomeFastPayload.fromMap(map), l10n: l10n);
+}
+
+EventCardDto? _buildHomeFastFallbackDailyCard(
+  _HomeFastPayload payload, {
+  required AppLocalizations l10n,
+}) {
+  if (!payload.canUseTransitPreview) {
+    return null;
+  }
+  final transitHighlight = payload.transitHighlights.firstWhere(
+    (item) => item.title.isNotEmpty || item.summary.isNotEmpty,
+    orElse: () =>
+        const _HomeFastHighlight(id: '', kind: '', title: '', summary: ''),
+  );
+  final hasTransitHighlight =
+      transitHighlight.title.isNotEmpty || transitHighlight.summary.isNotEmpty;
+  if (!hasTransitHighlight) {
+    return null;
+  }
+  final title = _firstHomeTextValue([
+    transitHighlight.title,
+    l10n.homeDailyTransitLabel,
+  ]);
+  final body = _firstHomeTextValue([transitHighlight.summary]);
+  final prompt = l10n.homeHeroPrompt;
+  if (title.isEmpty && body.isEmpty) {
+    return null;
+  }
+  return EventCardDto.fromMap({
+    'event_id': transitHighlight.id.isNotEmpty
+        ? transitHighlight.id
+        : 'home-fast-daily-fallback',
+    'headline': title,
+    'opening': body,
+    'essence': body,
+    'felt_line_tr': title,
+    'why_it_feels_this_way_tr': body,
+    'signal_label_tr': prompt,
+    'tone_label_tr': payload.energyFocus,
+    'what_it_builds': prompt,
+    'horizon': 'daily',
+    'source_horizon': transitHighlight.kind.trim().toLowerCase() == 'transit'
+        ? 'daily'
+        : 'period',
+    'today_facing_fallback': false,
+    'tags': {'phase': 'preview', 'duration': 'day', 'domain': 'general'},
+  });
+}
+
+PeriodCoreDto? _buildHomeFastPeriodCore(
+  _HomeFastPayload payload, {
+  required AppLocalizations l10n,
+}) {
+  if (!payload.canUseTransitPreview) {
+    return null;
+  }
+  final title = _firstHomeTextValue([payload.energyFocus, payload.headline]);
+  final coreStory = _firstHomeTextValue([
+    payload.summary,
+    payload.energySummary,
+  ]);
+  final upperMeaning = payload.energyBadge;
+  final bigPicture = _firstHomeTextValue([
+    payload.energySummary,
+    payload.summary,
+  ]);
+  if (title.isEmpty && coreStory.isEmpty && bigPicture.isEmpty) {
+    return null;
+  }
+  return PeriodCoreDto(
+    title: title.isNotEmpty ? title : l10n.homeActivePeriodTitle,
+    coreStory: coreStory,
+    upperMeaning: upperMeaning,
+    bigPicture: bigPicture,
+    mechanism: '',
+    tags: const <PeriodCoreTagDto>[],
+  );
+}
+
+List<PeriodCardDto> _buildHomeFastPeriodCards(
+  _HomeFastPayload payload, {
+  required AppLocalizations l10n,
+}) {
+  if (!payload.canUseTransitPreview) {
+    return const <PeriodCardDto>[];
+  }
+  final transitHighlights = payload.transitHighlights;
+  final cards = <PeriodCardDto>[
+    for (var index = 0; index < transitHighlights.length; index++)
+      if (transitHighlights[index].title.isNotEmpty ||
+          transitHighlights[index].summary.isNotEmpty)
+        PeriodCardDto(
+          id: transitHighlights[index].id.isNotEmpty
+              ? transitHighlights[index].id
+              : 'home-fast-card-$index',
+          title: transitHighlights[index].title.isNotEmpty
+              ? transitHighlights[index].title
+              : l10n.homeActivePeriodTitle,
+          subtitle: transitHighlights[index].summary,
+          timeHint: transitHighlights[index].kind,
+        ),
+  ];
+  if (cards.isNotEmpty) {
+    return cards;
+  }
+  final fallbackTitle = _firstHomeTextValue([
+    payload.energyFocus,
+    payload.headline,
+  ]);
+  final fallbackSubtitle = _firstHomeTextValue([
+    payload.summary,
+    payload.energySummary,
+  ]);
+  if (fallbackTitle.isEmpty && fallbackSubtitle.isEmpty) {
+    return const <PeriodCardDto>[];
+  }
+  return <PeriodCardDto>[
+    PeriodCardDto(
+      id: 'home-fast-fallback',
+      title: fallbackTitle.isNotEmpty
+          ? fallbackTitle
+          : l10n.homeActivePeriodTitle,
+      subtitle: fallbackSubtitle,
+      timeHint: payload.energyBadge,
+    ),
+  ];
 }
 
 HomeTransitSnapshot buildHomeTransitSnapshot({
   required NarrativeResponse narrative,
   required DateTime today,
+  required AppLocalizations l10n,
 }) {
   final todayKey = TransitRequestBuilder.fmtDate(
     TransitRequestBuilder.stripDate(today),
@@ -122,20 +388,49 @@ HomeTransitSnapshot buildHomeTransitSnapshot({
   final fallbackDailyCards = dailyCards.isNotEmpty
       ? dailyCards
       : (periodEvents.isNotEmpty
-            ? <EventCardDto>[_promoteHomePeriodEventToDaily(periodEvents.first)]
+            ? <EventCardDto>[
+                _promoteHomePeriodEventToDaily(periodEvents.first, l10n: l10n),
+              ]
             : const <EventCardDto>[]);
   final periodCards = <PeriodCardDto>[
     for (var i = 0; i < periodEvents.length; i++)
       PeriodCardDto.fromEventCard(eventCard: periodEvents[i], index: i),
   ];
   if (periodCards.isEmpty && narrative.periodCore != null) {
-    periodCards.add(_buildHomePeriodCoreFallbackCard(narrative.periodCore!));
+    periodCards.add(
+      _buildHomePeriodCoreFallbackCard(narrative.periodCore!, l10n: l10n),
+    );
   }
   return HomeTransitSnapshot(
     periodCore: narrative.periodCore,
     periodCards: periodCards,
     dailyCards: fallbackDailyCards,
+    calendarDays: narrative.calendarDays,
     todayDayMeta: narrative.calendarDays[todayKey],
+  );
+}
+
+HomeTransitSnapshot mergeHomeTransitSnapshot({
+  required HomeTransitSnapshot incoming,
+  PeriodCoreDto? currentPeriodCore,
+  List<PeriodCardDto> currentPeriodCards = const <PeriodCardDto>[],
+  List<EventCardDto> currentDailyCards = const <EventCardDto>[],
+  Map<String, NarrativeCalendarDay> currentCalendarDays =
+      const <String, NarrativeCalendarDay>{},
+  NarrativeCalendarDay? currentTodayDayMeta,
+}) {
+  return HomeTransitSnapshot(
+    periodCore: incoming.periodCore ?? currentPeriodCore,
+    periodCards: incoming.periodCards.isNotEmpty
+        ? incoming.periodCards
+        : currentPeriodCards,
+    dailyCards: incoming.dailyCards.isNotEmpty
+        ? incoming.dailyCards
+        : currentDailyCards,
+    calendarDays: incoming.calendarDays.isNotEmpty
+        ? incoming.calendarDays
+        : currentCalendarDays,
+    todayDayMeta: incoming.todayDayMeta ?? currentTodayDayMeta,
   );
 }
 
@@ -145,6 +440,7 @@ String buildHomeDefaultHeroBody({
   PeriodCoreDto? periodCore,
   required String natalSummary,
   required bool loading,
+  required AppLocalizations l10n,
 }) {
   return _firstHomeTextValue([
     todayDailyCard?.opening,
@@ -153,8 +449,58 @@ String buildHomeDefaultHeroBody({
     periodCore?.coreStory,
     periodCore?.bigPicture,
     natalSummary,
-    if (loading) 'Bugünün hikayesi yükleniyor...',
-    'Bugün için kısa yorum henüz hazır değil.',
+    if (loading) l10n.homeStoryLoading,
+    l10n.homeStoryUnavailable,
+  ]);
+}
+
+String _humanizeHomeToneLabel(String? raw) {
+  final normalized = normalizeTurkishText(raw ?? '');
+  if (normalized.isEmpty) {
+    return '';
+  }
+  switch (normalized.trim().toLowerCase()) {
+    case 'yuksek_tempo':
+      return 'Yüksek tempo';
+    case 'yogun':
+      return 'Yoğun';
+    case 'hareketli':
+      return 'Hareketli';
+    case 'sakin':
+      return 'Sakin';
+    case 'ince':
+      return 'İnce';
+  }
+  final spaced = normalized.replaceAll('_', ' ');
+  return toBeginningOfSentenceCase(spaced) ?? spaced;
+}
+
+bool _shouldPreferHomeDayMeta(EventCardDto? card) {
+  if (card == null) {
+    return false;
+  }
+  final sourceHorizon = card.sourceHorizon.trim().toLowerCase();
+  final horizon = card.horizon.trim().toLowerCase();
+  return card.todayFacingFallback ||
+      card.isPeriodDerived ||
+      sourceHorizon == 'period' ||
+      (horizon.isNotEmpty && horizon != 'daily');
+}
+
+String buildHomeDailyFallbackHeroBody({
+  required EventCardDto? card,
+  required NarrativeCalendarDay? dayMeta,
+  required bool loading,
+  required AppLocalizations l10n,
+}) {
+  return _firstHomeTextValue([
+    dayMeta?.microSummaryTr,
+    card?.opening,
+    card?.whyItFeelsThisWayTr,
+    card?.guidanceMicroTr,
+    card?.essence,
+    if (loading) l10n.homeStoryLoading,
+    l10n.homeStoryUnavailable,
   ]);
 }
 
@@ -165,10 +511,18 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends ConsumerState<HomePage> {
+class _HomePageState extends ConsumerState<HomePage>
+    with WidgetsBindingObserver {
   static const String _baseUrl = 'http://127.0.0.1:5000';
+  static const Duration _homeFastTimeout = Duration(seconds: 3);
   static const Duration _natalCacheTtl = Duration(minutes: 5);
   static const Duration _skyCacheTtl = Duration(seconds: 60);
+  static const Duration _homeNarrativeTimeout = Duration(seconds: 18);
+  static const Duration _homeWeekNarrativeTimeout = Duration(seconds: 18);
+  static const Duration _homeFastDeferredRetryDelay = Duration(
+    milliseconds: 1400,
+  );
+  static const int _maxHomeFastDeferredRetries = 2;
 
   bool _loading = false;
   int _homeLoadVersion = 0;
@@ -180,11 +534,15 @@ class _HomePageState extends ConsumerState<HomePage> {
   String _risingSign = '—';
   List<PeriodCardDto> _periodCards = const <PeriodCardDto>[];
   List<EventCardDto> _todayDailyCards = const <EventCardDto>[];
+  Map<String, NarrativeCalendarDay> _homeCalendarDays =
+      const <String, NarrativeCalendarDay>{};
   List<_SkyFeedItemData> _skyFeedItems = const <_SkyFeedItemData>[];
   String _skyFeedSummary = '';
   PeriodCoreDto? _periodCore;
   NarrativeCalendarDay? _todayDayMeta;
   String? _lastKey;
+  String? _lastLoadedDayKey;
+  int _homeFastRetryAttempt = 0;
   int _selectedWeekIndex = 0;
   final NarrativeRepository _narrativeRepository = NarrativeRepository();
 
@@ -192,16 +550,39 @@ class _HomePageState extends ConsumerState<HomePage> {
     return _firstHomeTextValue(values);
   }
 
-  EventCardDto _promotePeriodEventForHome(EventCardDto card) {
-    return _promoteHomePeriodEventToDaily(card);
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
-  PeriodCardDto _buildPeriodCoreFallbackCard(PeriodCoreDto periodCore) {
-    return _buildHomePeriodCoreFallbackCard(periodCore);
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state != AppLifecycleState.resumed) {
+      return;
+    }
+    final profile = ref.read(userProfileProvider).valueOrNull;
+    if (!_hasProfile(profile)) {
+      return;
+    }
+    final todayKey = TransitRequestBuilder.fmtDate(
+      TransitRequestBuilder.stripDate(DateTime.now()),
+    );
+    if (_lastLoadedDayKey != todayKey || _todayDailyCards.isEmpty) {
+      _lastKey = null;
+      _maybeBootstrap(profile, Supabase.instance.client.auth.currentUser);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final profile = ref.watch(userProfileProvider).valueOrNull;
     final user = Supabase.instance.client.auth.currentUser;
     _maybeBootstrap(profile, user);
@@ -242,81 +623,129 @@ class _HomePageState extends ConsumerState<HomePage> {
           final todayDailyCard = _todayDailyCards.isNotEmpty
               ? _todayDailyCards.first
               : null;
-          final defaultHeroBody = buildHomeDefaultHeroBody(
-            todayDailyCard: todayDailyCard,
-            activeCard: activeCard,
-            periodCore: _periodCore,
-            natalSummary: _coreStory,
-            loading: _loading,
-          );
-          final fallbackTitle = activeCard?.title.trim().isNotEmpty == true
-              ? activeCard?.title ?? 'Bugünün açılışı'
-              : _firstHomeText([
-                  todayDailyCard?.feltLineTr,
-                  todayDailyCard?.headline,
-                  'Bugünün açılışı',
-                ]);
-          final fallbackPrompt = activeCard?.subtitle.trim().isNotEmpty == true
-              ? activeCard?.subtitle ?? 'Bugün bende ne açılıyor?'
-              : _firstHomeText([
-                  todayDailyCard?.signalLabelTr,
-                  todayDailyCard?.houseTouchpointHintTr,
-                  'Bugün bende ne açılıyor?',
-                ]);
-          final dailyCards = _periodCards.take(3).toList(growable: false);
+          final periodPreviewCards = _periodCards
+              .take(3)
+              .toList(growable: false);
+          final weekPreviewCards = _todayDailyCards
+              .take(7)
+              .toList(growable: false);
           final collectiveCard = _periodCards.length > 1
               ? _periodCards[1]
               : activeCard;
           final periodBigPicture = _periodCore?.bigPicture.trim() ?? '';
-          final avatarUrl = (user?.userMetadata?['avatar_url'] ?? '')
-              .toString()
-              .trim();
           final weekItems = _buildWeekItems(
-            dailyCards,
+            context,
+            weekPreviewCards,
+            calendarDays: _homeCalendarDays,
             selectedIndex: _selectedWeekIndex,
           );
           final selectedWeekItem = weekItems.isEmpty
               ? null
               : weekItems[_selectedWeekIndex.clamp(0, weekItems.length - 1)];
-          final selectedCard = selectedWeekItem?.card;
-          final useTodayNarrative =
-              selectedWeekItem == null ||
-              selectedWeekItem.isToday ||
-              selectedCard == null;
-          final activeTitle = useTodayNarrative
+          final selectedDailyCard = selectedWeekItem?.card;
+          final selectedDayMeta = selectedWeekItem?.dayMeta;
+          final isSelectedToday =
+              selectedWeekItem == null || selectedWeekItem.isToday;
+          final shouldUsePeriodHeroFallback =
+              selectedDailyCard == null &&
+              selectedDayMeta == null &&
+              (activeCard != null || _periodCore != null);
+          final todayFallbackTitle = _firstHomeText([
+            todayDailyCard?.feltLineTr,
+            todayDailyCard?.headline,
+            selectedDayMeta?.toneLabelTr,
+            l10n.homeDailyTransitLabel,
+          ]);
+          final todayFallbackPrompt = _firstHomeText([
+            todayDailyCard?.signalLabelTr,
+            todayDailyCard?.houseTouchpointHintTr,
+            selectedDayMeta?.signalLabelTr,
+            l10n.homeHeroPrompt,
+          ]);
+          final todayFallbackBody = buildHomeDailyFallbackHeroBody(
+            card: todayDailyCard,
+            dayMeta: selectedDayMeta,
+            loading: _loading,
+            l10n: l10n,
+          );
+          final selectedFallbackTitle = _firstHomeText([
+            selectedDailyCard?.feltLineTr,
+            selectedDailyCard?.headline,
+            l10n.homeDailyTransitLabel,
+          ]);
+          final selectedFallbackPrompt = _firstHomeText([
+            selectedDailyCard?.signalLabelTr,
+            selectedDailyCard?.houseTouchpointHintTr,
+            l10n.homeHeroPrompt,
+          ]);
+          final selectedFallbackBody = buildHomeDailyFallbackHeroBody(
+            card: selectedDailyCard,
+            dayMeta: null,
+            loading: _loading,
+            l10n: l10n,
+          );
+          final periodFallbackTitle = _resolveHomeHeroTitle(
+            selectedCard: activeCard,
+            fallbackTitle: l10n.homeActivePeriodTitle,
+          );
+          final periodFallbackPrompt = _resolveHomeHeroPrompt(
+            selectedCard: activeCard,
+            fallbackPrompt: l10n.homeHeroPrompt,
+          );
+          final periodFallbackBody = buildHomeDefaultHeroBody(
+            todayDailyCard: todayDailyCard,
+            activeCard: activeCard,
+            periodCore: _periodCore,
+            natalSummary: _coreStory,
+            loading: _loading,
+            l10n: l10n,
+          );
+          final resolvedDailyTitle = isSelectedToday
               ? _resolveHomeDailyHeroTitle(
                   card: todayDailyCard,
-                  dayMeta: _todayDayMeta,
-                  fallbackTitle: fallbackTitle,
+                  dayMeta: selectedDayMeta,
+                  fallbackTitle: todayFallbackTitle,
                 )
-              : _resolveHomeHeroTitle(
-                  selectedCard: selectedCard,
-                  fallbackTitle: fallbackTitle,
+              : _resolveHomeDailyHeroTitle(
+                  card: selectedDailyCard,
+                  dayMeta: selectedDayMeta,
+                  fallbackTitle: selectedFallbackTitle,
                 );
-          final activeSubtitle = useTodayNarrative
+          final resolvedDailySubtitle = isSelectedToday
               ? _resolveHomeDailyHeroPrompt(
                   card: todayDailyCard,
-                  dayMeta: _todayDayMeta,
-                  fallbackPrompt: fallbackPrompt,
+                  dayMeta: selectedDayMeta,
+                  fallbackPrompt: todayFallbackPrompt,
                 )
-              : _resolveHomeHeroPrompt(
-                  selectedCard: selectedCard,
-                  fallbackPrompt: fallbackPrompt,
+              : _resolveHomeDailyHeroPrompt(
+                  card: selectedDailyCard,
+                  dayMeta: selectedDayMeta,
+                  fallbackPrompt: selectedFallbackPrompt,
                 );
-          final selectedHeroBody = useTodayNarrative
+          final resolvedDailyBody = isSelectedToday
               ? _resolveHomeDailyHeroBody(
                   card: todayDailyCard,
-                  dayMeta: _todayDayMeta,
-                  fallbackBody: defaultHeroBody,
+                  dayMeta: selectedDayMeta,
+                  fallbackBody: todayFallbackBody,
                 )
-              : _resolveHomeHeroBody(
-                  selectedCard: selectedCard,
-                  fallbackBody: defaultHeroBody,
+              : _resolveHomeDailyHeroBody(
+                  card: selectedDailyCard,
+                  dayMeta: selectedDayMeta,
+                  fallbackBody: selectedFallbackBody,
                 );
+          final activeTitle = shouldUsePeriodHeroFallback
+              ? periodFallbackTitle
+              : resolvedDailyTitle;
+          final activeSubtitle = shouldUsePeriodHeroFallback
+              ? periodFallbackPrompt
+              : resolvedDailySubtitle;
+          final selectedHeroBody = shouldUsePeriodHeroFallback
+              ? periodFallbackBody
+              : resolvedDailyBody;
           final showTimingPanel = _shouldShowTimingPanel(
             periodCore: _periodCore,
             heroBody: selectedHeroBody,
-            activeTitle: fallbackTitle,
+            activeTitle: activeTitle,
             activeSubtitle: activeSubtitle,
           );
 
@@ -341,8 +770,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                 children: [
                   _HomeReferenceHeader(
                     displayName: displayName,
-                    avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
-                    dateLabel: _formatHomeToday(DateTime.now()),
+                    dateLabel: _formatHomeToday(context, DateTime.now()),
                     onActionTap: () =>
                         JoviaAppMenuScope.maybeOf(context)?.openMenu(),
                   ),
@@ -354,7 +782,16 @@ class _HomePageState extends ConsumerState<HomePage> {
                     weekItems: weekItems,
                     onSelectDay: (item) {
                       if (item.isSelected) {
-                        _openHomeDay(context, profile, item.date);
+                        _openHomeDay(
+                          context,
+                          profile,
+                          item.date,
+                          initialBundle: _buildInitialHomeDayBundle(
+                            date: item.date,
+                            card: item.card,
+                            dayMeta: item.dayMeta,
+                          ),
+                        );
                         return;
                       }
                       setState(() => _selectedWeekIndex = item.index);
@@ -363,6 +800,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                       context,
                       profile,
                       selectedWeekItem?.date ?? DateTime.now(),
+                      initialBundle: _buildInitialHomeDayBundle(
+                        date: selectedWeekItem?.date ?? DateTime.now(),
+                        card: selectedWeekItem?.card,
+                        dayMeta: selectedWeekItem?.dayMeta,
+                      ),
                     ),
                     footer: _HomeSignStateRow(
                       sunSign: _sunSign,
@@ -372,8 +814,8 @@ class _HomePageState extends ConsumerState<HomePage> {
                   ),
                   const SizedBox(height: 26),
                   _HomeSectionLead(
-                    title: 'Senin planların',
-                    subtitle: 'Bu hafta akışın ve kolektif nabız yan yana.',
+                    title: context.l10n.homePlansTitle,
+                    subtitle: context.l10n.homePlansSubtitle,
                   ),
                   const SizedBox(height: 14),
                   const ForumCTA(),
@@ -382,17 +824,18 @@ class _HomePageState extends ConsumerState<HomePage> {
                   const SizedBox(height: 14),
                   _HomeReferencePlanBoard(
                     activeCard: activeCard,
-                    dailyCards: dailyCards,
+                    dailyCards: periodPreviewCards,
                     bulletin: skyBulletin,
                     skyItem: skyHeroItem,
                     lineText: periodBigPicture.isNotEmpty
                         ? periodBigPicture
                         : selectedHeroBody,
-                    loading: _loading && dailyCards.isEmpty,
+                    loading: _loading && periodPreviewCards.isEmpty,
                     onOpenActive: activeCard == null
                         ? () => _openTiming(context)
-                        : () => _openPeriodDetails(context, activeCard),
-                    onOpenCard: (card) => _openPeriodDetails(context, card),
+                        : () => _openTransitCard(context, profile, activeCard),
+                    onOpenCard: (card) =>
+                        _openTransitCard(context, profile, card),
                     onOpenSky: () {
                       if (skyHeroItem != null) {
                         _openSkyEventDetail(context, skyHeroItem);
@@ -416,8 +859,9 @@ class _HomePageState extends ConsumerState<HomePage> {
                     const SizedBox(height: 24),
                     _HomeReferenceTimingCard(
                       title: (_periodCore?.title.trim().isEmpty ?? true)
-                          ? 'Aktif period'
-                          : (_periodCore?.title ?? 'Aktif period'),
+                          ? context.l10n.homeActivePeriodTitle
+                          : (_periodCore?.title ??
+                                context.l10n.homeActivePeriodTitle),
                       body: (_periodCore?.coreStory.trim().isEmpty ?? true)
                           ? (_periodCore?.bigPicture ?? '')
                           : (_periodCore?.coreStory ?? ''),
@@ -467,32 +911,36 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   List<_HomeWeekItemData> _buildWeekItems(
-    List<PeriodCardDto> cards, {
+    BuildContext context,
+    List<EventCardDto> cards, {
+    required Map<String, NarrativeCalendarDay> calendarDays,
     required int selectedIndex,
   }) {
-    const weekdayLabels = <String>[
-      'Pzt',
-      'Sal',
-      'Çar',
-      'Per',
-      'Cum',
-      'Cmt',
-      'Paz',
-    ];
+    final locale = Localizations.localeOf(context).toLanguageTag();
     final now = DateTime.now();
     return List<_HomeWeekItemData>.generate(7, (index) {
       final date = DateTime(now.year, now.month, now.day + index);
       final card = index < cards.length ? cards[index] : null;
+      final dayKey = TransitRequestBuilder.fmtDate(
+        TransitRequestBuilder.stripDate(date),
+      );
+      final dayMeta = calendarDays[dayKey];
+      final rawWeekday = DateFormat(
+        'EEE',
+        locale,
+      ).format(date).replaceAll('.', '');
+      final weekdayLabel = toBeginningOfSentenceCase(rawWeekday);
       return _HomeWeekItemData(
         index: index,
         date: date,
-        weekdayLabel: weekdayLabels[date.weekday - 1],
+        weekdayLabel: weekdayLabel,
         dayNumber: date.day,
         isToday: index == 0,
         isSelected: index == selectedIndex,
-        isHighlighted: card != null,
+        isHighlighted: card != null || dayMeta != null,
         accent: _homeAccentForIndex(index),
         card: card,
+        dayMeta: dayMeta,
       );
     });
   }
@@ -510,22 +958,8 @@ class _HomePageState extends ConsumerState<HomePage> {
     return accents[index % accents.length];
   }
 
-  String _formatHomeToday(DateTime date) {
-    const months = <String>[
-      'Ocak',
-      'Şubat',
-      'Mart',
-      'Nisan',
-      'Mayıs',
-      'Haziran',
-      'Temmuz',
-      'Ağustos',
-      'Eylül',
-      'Ekim',
-      'Kasım',
-      'Aralık',
-    ];
-    return '${date.day} ${months[date.month - 1]}';
+  String _formatHomeToday(BuildContext context, DateTime date) {
+    return MaterialLocalizations.of(context).formatMediumDate(date);
   }
 
   String _resolveHomeHeroTitle({
@@ -573,9 +1007,17 @@ class _HomePageState extends ConsumerState<HomePage> {
     required NarrativeCalendarDay? dayMeta,
     required String fallbackTitle,
   }) {
+    final preferDayMeta = _shouldPreferHomeDayMeta(card);
+    final toneLabel = _humanizeHomeToneLabel(dayMeta?.toneLabelTr);
+    if (preferDayMeta && toneLabel.isNotEmpty) {
+      return toneLabel;
+    }
     final feltLine = card?.feltLineTr.trim() ?? '';
     if (feltLine.isNotEmpty) {
       return feltLine;
+    }
+    if (toneLabel.isNotEmpty) {
+      return toneLabel;
     }
     final microSummary = dayMeta?.microSummaryTr.trim() ?? '';
     if (microSummary.isNotEmpty) {
@@ -585,6 +1027,10 @@ class _HomePageState extends ConsumerState<HomePage> {
     if (headline.isNotEmpty) {
       return headline;
     }
+    final title = card?.title.trim() ?? '';
+    if (title.isNotEmpty) {
+      return title;
+    }
     return fallbackTitle;
   }
 
@@ -593,6 +1039,15 @@ class _HomePageState extends ConsumerState<HomePage> {
     required NarrativeCalendarDay? dayMeta,
     required String fallbackBody,
   }) {
+    final preferDayMeta = _shouldPreferHomeDayMeta(card);
+    final microSummary = dayMeta?.microSummaryTr.trim() ?? '';
+    if (preferDayMeta && microSummary.isNotEmpty) {
+      return microSummary;
+    }
+    final opening = card?.opening.trim() ?? '';
+    if (opening.isNotEmpty) {
+      return opening;
+    }
     final whyLine = card?.whyItFeelsThisWayTr.trim() ?? '';
     final guidanceLine = card?.guidanceMicroTr.trim() ?? '';
     final body = [
@@ -602,9 +1057,12 @@ class _HomePageState extends ConsumerState<HomePage> {
     if (body.isNotEmpty) {
       return body;
     }
-    final microSummary = dayMeta?.microSummaryTr.trim() ?? '';
     if (microSummary.isNotEmpty) {
       return microSummary;
+    }
+    final essence = card?.essence.trim() ?? '';
+    if (essence.isNotEmpty) {
+      return essence;
     }
     return fallbackBody;
   }
@@ -614,6 +1072,11 @@ class _HomePageState extends ConsumerState<HomePage> {
     required NarrativeCalendarDay? dayMeta,
     required String fallbackPrompt,
   }) {
+    final preferDayMeta = _shouldPreferHomeDayMeta(card);
+    final daySignal = dayMeta?.signalLabelTr.trim() ?? '';
+    if (preferDayMeta && daySignal.isNotEmpty) {
+      return daySignal;
+    }
     final signalLabel = card?.signalLabelTr.trim() ?? '';
     if (signalLabel.isNotEmpty) {
       return signalLabel;
@@ -622,7 +1085,6 @@ class _HomePageState extends ConsumerState<HomePage> {
     if (houseHint.isNotEmpty) {
       return houseHint;
     }
-    final daySignal = dayMeta?.signalLabelTr.trim() ?? '';
     if (daySignal.isNotEmpty) {
       return daySignal;
     }
@@ -632,6 +1094,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget _buildTransitCarousel(BuildContext context) {
     final profileTheme = context.profileTheme;
     final typo = profileTheme.typography;
+    final profile = ref.read(userProfileProvider).valueOrNull;
 
     if (_loading && _periodCards.isEmpty) {
       return ListView.separated(
@@ -647,7 +1110,7 @@ class _HomePageState extends ConsumerState<HomePage> {
         child: Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'Period kartlari hazir oldugunda burada gorunecek.',
+            context.l10n.homePeriodCardsPending,
             style: typo.body.copyWith(color: profileTheme.colors.muted),
           ),
         ),
@@ -667,7 +1130,7 @@ class _HomePageState extends ConsumerState<HomePage> {
             card: card,
             accent: _accentForIndex(index),
             showSticker: index % 3 == 0,
-            onTap: () => _openPeriodDetails(context, card),
+            onTap: () => _openTransitCard(context, profile, card),
           ),
         );
       },
@@ -684,8 +1147,11 @@ class _HomePageState extends ConsumerState<HomePage> {
     if (!_hasProfile(profile)) {
       return;
     }
+    final todayKey = TransitRequestBuilder.fmtDate(
+      TransitRequestBuilder.stripDate(DateTime.now()),
+    );
     final key =
-        '${profile?['birth_date']}|${profile?['birth_time']}|${profile?['place'] ?? profile?['city']}|${profile?['timezone']}|${user?.id}';
+        '${profile?['birth_date']}|${profile?['birth_time']}|${profile?['place'] ?? profile?['city']}|${profile?['timezone']}|${user?.id}|$todayKey';
     if (_lastKey == key) {
       return;
     }
@@ -700,6 +1166,10 @@ class _HomePageState extends ConsumerState<HomePage> {
 
   Future<void> _loadHomeData(Map<String, dynamic> profile) async {
     final requestVersion = ++_homeLoadVersion;
+    _homeFastRetryAttempt = 0;
+    _lastLoadedDayKey = TransitRequestBuilder.fmtDate(
+      TransitRequestBuilder.stripDate(DateTime.now()),
+    );
     setState(() {
       _loading = true;
       _error = null;
@@ -707,38 +1177,87 @@ class _HomePageState extends ConsumerState<HomePage> {
 
     final client = ApiClient(baseUrl: _baseUrl);
     final natalPayload = _buildNatalPayload(profile);
+    final userId = Supabase.instance.client.auth.currentUser?.id;
 
-    await Future.wait<void>([
-      _loadNarrativeSection(profile: profile, requestVersion: requestVersion),
+    unawaited(
       _loadSkySection(
         client: client,
         profile: profile,
         requestVersion: requestVersion,
       ),
+    );
+
+    await _loadFastHomePreview(
+      client: client,
+      profile: profile,
+      userId: userId,
+      requestVersion: requestVersion,
+    );
+
+    if (!_isActiveHomeLoad(requestVersion)) {
+      return;
+    }
+
+    unawaited(
+      _loadNarrativeSection(profile: profile, requestVersion: requestVersion),
+    );
+    unawaited(
       _loadNatalSection(
         client: client,
         natalPayload: natalPayload,
         requestVersion: requestVersion,
       ),
-    ]);
+    );
   }
 
   bool _isActiveHomeLoad(int requestVersion) =>
       mounted && requestVersion == _homeLoadVersion;
 
+  bool _hasResolvedTodayTransit() {
+    if (_todayDayMeta != null) {
+      return true;
+    }
+    if (_todayDailyCards.isEmpty) {
+      return false;
+    }
+    return _todayDailyCards.any((card) {
+      final eventId = card.eventId.trim();
+      return eventId.isNotEmpty && eventId != 'home-fast-daily-fallback';
+    });
+  }
+
   Future<void> _loadNarrativeSection({
     required Map<String, dynamic> profile,
     required int requestVersion,
   }) async {
+    final localeCode = Localizations.localeOf(context).languageCode;
+    final l10n = context.l10n;
     try {
       final periodMap = await _narrativeRepository.fetchDailyNarrative(
         profile: profile,
         selectedDate: DateTime.now(),
+        focusedRange: true,
+        includeBestTimes: false,
+        responseMode: 'public_only',
+        payloadProfile: TransitPayloadProfile.home,
+        visibleDaysLimit: 7,
+        receiveTimeout: _homeNarrativeTimeout,
+        requestSla: ApiRequestSla.background,
+        locale: localeCode,
       );
       final periodNarrative = NarrativeResponse.fromMap(periodMap);
       final snapshot = buildHomeTransitSnapshot(
         narrative: periodNarrative,
         today: DateTime.now(),
+        l10n: l10n,
+      );
+      final mergedSnapshot = mergeHomeTransitSnapshot(
+        incoming: snapshot,
+        currentPeriodCore: _periodCore,
+        currentPeriodCards: _periodCards,
+        currentDailyCards: _todayDailyCards,
+        currentCalendarDays: _homeCalendarDays,
+        currentTodayDayMeta: _todayDayMeta,
       );
 
       if (!_isActiveHomeLoad(requestVersion)) {
@@ -746,24 +1265,185 @@ class _HomePageState extends ConsumerState<HomePage> {
       }
 
       setState(() {
-        _periodCore = snapshot.periodCore;
-        _periodCards = snapshot.periodCards;
-        _todayDailyCards = snapshot.dailyCards;
-        _todayDayMeta = snapshot.todayDayMeta;
+        _periodCore = mergedSnapshot.periodCore;
+        _periodCards = mergedSnapshot.periodCards;
+        _todayDailyCards = mergedSnapshot.dailyCards;
+        _homeCalendarDays = mergedSnapshot.calendarDays;
+        _todayDayMeta = mergedSnapshot.todayDayMeta;
         _loading = false;
         _error = null;
       });
+      if (mergedSnapshot.calendarDays.length < 7) {
+        _hydrateHomeWeekCalendarDays(
+          profile: profile,
+          requestVersion: requestVersion,
+        );
+      }
     } catch (e) {
       if (!_isActiveHomeLoad(requestVersion)) {
         return;
       }
       setState(() {
         _loading = false;
-        if (_periodCards.isEmpty && _todayDailyCards.isEmpty) {
-          _error = 'Home verisi alinamadi: $e';
+        final hasFallbackContent =
+            _coreStory.trim().isNotEmpty ||
+            _skyFeedItems.isNotEmpty ||
+            _sunSign != '—' ||
+            _moonSign != '—' ||
+            _risingSign != '—';
+        if (_periodCards.isEmpty &&
+            _todayDailyCards.isEmpty &&
+            !hasFallbackContent) {
+          _error = _friendlyHomeLoadError(e, l10n);
         }
       });
     }
+  }
+
+  Future<void> _hydrateHomeWeekCalendarDays({
+    required Map<String, dynamic> profile,
+    required int requestVersion,
+  }) async {
+    final localeCode = Localizations.localeOf(context).languageCode;
+    try {
+      final narrativeMap = await _narrativeRepository.fetchDailyNarrative(
+        profile: profile,
+        selectedDate: DateTime.now(),
+        focusedRange: false,
+        includeBestTimes: false,
+        responseMode: 'full',
+        payloadProfile: TransitPayloadProfile.calendarPeriod,
+        visibleDaysLimit: 7,
+        receiveTimeout: _homeWeekNarrativeTimeout,
+        requestSla: ApiRequestSla.background,
+        locale: localeCode,
+      );
+      if (!_isActiveHomeLoad(requestVersion)) {
+        return;
+      }
+      final narrative = NarrativeResponse.fromMap(narrativeMap);
+      if (narrative.calendarDays.isEmpty) {
+        return;
+      }
+      final todayKey = TransitRequestBuilder.fmtDate(
+        TransitRequestBuilder.stripDate(DateTime.now()),
+      );
+      setState(() {
+        _homeCalendarDays = narrative.calendarDays;
+        _todayDayMeta = narrative.calendarDays[todayKey] ?? _todayDayMeta;
+      });
+    } catch (_) {}
+  }
+
+  Future<void> _loadFastHomePreview({
+    required ApiClient client,
+    required Map<String, dynamic> profile,
+    required String? userId,
+    required int requestVersion,
+    int attempt = 0,
+  }) async {
+    final l10n = context.l10n;
+    try {
+      final response = await client.get(
+        '/home/fast',
+        queryParameters: _buildHomeFastQuery(profile, userId: userId),
+        receiveTimeout: _homeFastTimeout,
+        requestSla: ApiRequestSla.fast,
+      );
+      final payload = _HomeFastPayload.fromMap(_asMap(response.data));
+      if (!_isActiveHomeLoad(requestVersion) || !payload.hasContent) {
+        if (payload.isTransitDeferred &&
+            attempt < _maxHomeFastDeferredRetries) {
+          _scheduleFastHomeRetry(
+            client: client,
+            profile: profile,
+            userId: userId,
+            requestVersion: requestVersion,
+            nextAttempt: attempt + 1,
+          );
+        }
+        return;
+      }
+      final fastPeriodCore = _buildHomeFastPeriodCore(payload, l10n: l10n);
+      final fastPeriodCards = _buildHomeFastPeriodCards(payload, l10n: l10n);
+      final fastDailyFallback = _buildHomeFastFallbackDailyCard(
+        payload,
+        l10n: l10n,
+      );
+      setState(() {
+        if (_periodCore == null && fastPeriodCore != null) {
+          _periodCore = fastPeriodCore;
+        }
+        if (_periodCards.isEmpty && fastPeriodCards.isNotEmpty) {
+          _periodCards = fastPeriodCards;
+        }
+        if (_todayDailyCards.isEmpty && fastDailyFallback != null) {
+          _todayDailyCards = <EventCardDto>[fastDailyFallback];
+        }
+        if (_coreStory.trim().isEmpty && payload.summary.isNotEmpty) {
+          _coreStory = payload.summary;
+        }
+        if (_skyFeedSummary.trim().isEmpty &&
+            payload.energySummary.isNotEmpty) {
+          _skyFeedSummary = payload.energySummary;
+        }
+        if (_error != null &&
+            (_periodCards.isNotEmpty || _coreStory.trim().isNotEmpty)) {
+          _error = null;
+        }
+        if (_periodCards.isNotEmpty || _coreStory.trim().isNotEmpty) {
+          _loading = false;
+        }
+      });
+      if (payload.isTransitDeferred && attempt < _maxHomeFastDeferredRetries) {
+        _scheduleFastHomeRetry(
+          client: client,
+          profile: profile,
+          userId: userId,
+          requestVersion: requestVersion,
+          nextAttempt: attempt + 1,
+        );
+      }
+    } catch (e) {
+      debugPrint('Home fast load skipped: $e');
+      if (attempt < _maxHomeFastDeferredRetries &&
+          _isActiveHomeLoad(requestVersion) &&
+          !_hasResolvedTodayTransit()) {
+        _scheduleFastHomeRetry(
+          client: client,
+          profile: profile,
+          userId: userId,
+          requestVersion: requestVersion,
+          nextAttempt: attempt + 1,
+        );
+      }
+    }
+  }
+
+  void _scheduleFastHomeRetry({
+    required ApiClient client,
+    required Map<String, dynamic> profile,
+    required String? userId,
+    required int requestVersion,
+    required int nextAttempt,
+  }) {
+    if (nextAttempt <= _homeFastRetryAttempt ||
+        nextAttempt > _maxHomeFastDeferredRetries) {
+      return;
+    }
+    _homeFastRetryAttempt = nextAttempt;
+    Future<void>.delayed(_homeFastDeferredRetryDelay).then((_) {
+      if (!_isActiveHomeLoad(requestVersion) || _hasResolvedTodayTransit()) {
+        return;
+      }
+      _loadFastHomePreview(
+        client: client,
+        profile: profile,
+        userId: userId,
+        requestVersion: requestVersion,
+        attempt: nextAttempt,
+      );
+    });
   }
 
   Future<void> _loadSkySection({
@@ -816,41 +1496,80 @@ class _HomePageState extends ConsumerState<HomePage> {
         _sunSign = sun;
         _moonSign = moon;
         _risingSign = rising;
+        if (summary.trim().isNotEmpty) {
+          _loading = false;
+          _error = null;
+        }
       });
     } catch (e) {
       debugPrint('Home natal load skipped: $e');
     }
   }
 
+  String _friendlyHomeLoadError(Object error, AppLocalizations l10n) {
+    if (error is DioException) {
+      if (error.type == DioExceptionType.receiveTimeout ||
+          error.type == DioExceptionType.connectionTimeout) {
+        return l10n.homeRequestTimedOut;
+      }
+      final status = error.response?.statusCode;
+      if (status == 422) {
+        return l10n.calendarInvalidDateOrProfile;
+      }
+    }
+    return l10n.homeDataLoadFailed('$error');
+  }
+
   Future<Response<dynamic>> _fetchNatalInterpretResponse({
     required ApiClient client,
     required Map<String, dynamic> natalPayload,
   }) async {
-    try {
-      return await client.post(
-        '/interpret/ui',
-        data: natalPayload,
-        cacheTtl: _natalCacheTtl,
-      );
-    } on DioException {
-      return client.post(
-        '/interpret',
-        data: natalPayload,
-        cacheTtl: _natalCacheTtl,
-      );
-    }
+    return client.post(
+      '/interpret/ui',
+      data: <String, dynamic>{...natalPayload, 'summary_only': true},
+      requestSla: ApiRequestSla.background,
+      cacheTtl: _natalCacheTtl,
+    );
   }
 
   Map<String, dynamic> _buildNatalPayload(Map<String, dynamic> profile) {
     final place = _resolvePlace(profile);
-    return <String, dynamic>{
+    final payload = <String, dynamic>{
       'birth_date': (profile['birth_date'] ?? '').toString().trim(),
       'birth_time': _normalizeBirthTime(
         (profile['birth_time'] ?? '').toString(),
       ),
       'birth_place': place,
-      'locale': 'tr',
+      'locale': Localizations.localeOf(context).languageCode,
     };
+    TransitRequestBuilder.appendKnownLocationFields(payload, profile: profile);
+    return payload;
+  }
+
+  Map<String, dynamic> _buildHomeFastQuery(
+    Map<String, dynamic> profile, {
+    required String? userId,
+  }) {
+    final place = _resolvePlace(profile);
+    final query = <String, dynamic>{
+      'birth_date': (profile['birth_date'] ?? '').toString().trim(),
+      'birth_time': _normalizeBirthTime(
+        (profile['birth_time'] ?? '').toString(),
+      ),
+      'birth_place': place,
+      'transit_place': place,
+      'date': TransitRequestBuilder.fmtDate(DateTime.now()),
+      'tz': _resolveTimezone(profile),
+      'locale': Localizations.localeOf(context).languageCode,
+      'lens': 'general',
+      if (userId != null && userId.isNotEmpty) 'user_id': userId,
+    };
+    TransitRequestBuilder.appendKnownLocationFields(
+      query,
+      profile: profile,
+      includeTransit: true,
+    );
+    return query;
   }
 
   String _resolvePlace(Map<String, dynamic> profile) {
@@ -870,7 +1589,7 @@ class _HomePageState extends ConsumerState<HomePage> {
   }
 
   String _resolveTimezone(Map<String, dynamic> profile) {
-    final raw = (profile['timezone'] ?? '').toString().trim();
+    final raw = TransitRequestBuilder.resolveTimezone(profile);
     if (raw.contains('/')) {
       return raw;
     }
@@ -910,12 +1629,14 @@ class _HomePageState extends ConsumerState<HomePage> {
   Future<void> _openHomeDay(
     BuildContext context,
     Map<String, dynamic>? profile,
-    DateTime day,
-  ) async {
+    DateTime day, {
+    CalendarDayBundle? initialBundle,
+  }) async {
     if (!_hasProfile(profile)) {
       _openTiming(context);
       return;
     }
+    final localeCode = Localizations.localeOf(context).languageCode;
     final returnedDate = await Navigator.of(context, rootNavigator: true)
         .push<DateTime>(
           buildCalendarDayPageRoute<DateTime>(
@@ -925,6 +1646,8 @@ class _HomePageState extends ConsumerState<HomePage> {
             builder: (_) => CalendarDayPage(
               profile: profile!,
               initialDate: DateTime(day.year, day.month, day.day),
+              initialBundle: initialBundle,
+              localeCode: localeCode,
               source: 'home_preview',
             ),
           ),
@@ -943,6 +1666,47 @@ class _HomePageState extends ConsumerState<HomePage> {
     if (dayOffset >= 0 && dayOffset < 7 && dayOffset != _selectedWeekIndex) {
       setState(() => _selectedWeekIndex = dayOffset);
     }
+  }
+
+  CalendarDayBundle? _buildInitialHomeDayBundle({
+    required DateTime date,
+    required EventCardDto? card,
+    required NarrativeCalendarDay? dayMeta,
+  }) {
+    if (card == null) {
+      return null;
+    }
+    return seedCalendarDayBundleFromDailyEventCard(
+      date: date,
+      card: card,
+      selectedDayMeta: dayMeta,
+      periodCore: _periodCore,
+    );
+  }
+
+  void _openTransitCard(
+    BuildContext context,
+    Map<String, dynamic>? profile,
+    PeriodCardDto card,
+  ) {
+    final focusDay = resolvePeriodCardFocusDate(
+      card,
+      fallbackDay: DateTime.now(),
+    );
+    if (focusDay != null) {
+      _openHomeDay(
+        context,
+        profile,
+        focusDay,
+        initialBundle: seedCalendarDayBundleFromPeriodCard(
+          date: focusDay,
+          card: card,
+          periodCore: _periodCore,
+        ),
+      );
+      return;
+    }
+    _openPeriodDetails(context, card);
   }
 
   void _openPeriodDetails(BuildContext context, PeriodCardDto card) {
@@ -1318,6 +2082,7 @@ class _HomeWeekItemData {
     required this.isHighlighted,
     required this.accent,
     required this.card,
+    required this.dayMeta,
   });
 
   final int index;
@@ -1328,19 +2093,18 @@ class _HomeWeekItemData {
   final bool isSelected;
   final bool isHighlighted;
   final Color accent;
-  final PeriodCardDto? card;
+  final EventCardDto? card;
+  final NarrativeCalendarDay? dayMeta;
 }
 
 class _HomeReferenceHeader extends StatelessWidget {
   const _HomeReferenceHeader({
     required this.displayName,
-    required this.avatarUrl,
     required this.dateLabel,
     required this.onActionTap,
   });
 
   final String displayName;
-  final String? avatarUrl;
   final String dateLabel;
   final VoidCallback onActionTap;
 
@@ -1349,22 +2113,21 @@ class _HomeReferenceHeader extends StatelessWidget {
     final profile = context.profileTheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final firstName = displayName.trim().split(RegExp(r'\s+')).first.trim();
+    final l10n = context.l10n;
+    final greetingName = firstName.isEmpty
+        ? l10n.homeGreetingFallbackName
+        : firstName;
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14),
       child: Row(
         children: [
-          _HomeReferenceAvatar(
-            imageUrl: avatarUrl,
-            fallbackLabel: firstName.isEmpty ? '?' : firstName.substring(0, 1),
-          ),
-          const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Merhaba ${firstName.isEmpty ? 'sen' : firstName}',
+                  l10n.homeGreeting(greetingName),
                   style: profile.typography.card.copyWith(
                     color: profile.colors.text,
                     fontSize: 20,
@@ -1373,7 +2136,7 @@ class _HomeReferenceHeader extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  'Bugün $dateLabel',
+                  l10n.homeTodayLabel(dateLabel),
                   style: profile.typography.bodyCompact.copyWith(
                     color: profile.colors.textLight,
                   ),
@@ -1391,72 +2154,6 @@ class _HomeReferenceHeader extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _HomeReferenceAvatar extends StatelessWidget {
-  const _HomeReferenceAvatar({
-    required this.imageUrl,
-    required this.fallbackLabel,
-  });
-
-  final String? imageUrl;
-  final String fallbackLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final profile = context.profileTheme;
-    return Container(
-      width: 46,
-      height: 46,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            profile.colors.warmAccent,
-            profile.colors.primary.withValues(alpha: 0.9),
-          ],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: profile.colors.warmAccent.withValues(alpha: 0.24),
-            blurRadius: 16,
-            offset: const Offset(0, 10),
-            spreadRadius: -10,
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(2.4),
-        child: ClipOval(
-          child: Container(
-            color: profile.colors.surface,
-            alignment: Alignment.center,
-            child: (imageUrl ?? '').trim().isEmpty
-                ? Text(
-                    turkishToUpper(fallbackLabel),
-                    style: profile.typography.body.copyWith(
-                      color: profile.colors.text,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  )
-                : Image.network(
-                    imageUrl!,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, _, _) => Text(
-                      turkishToUpper(fallbackLabel),
-                      style: profile.typography.body.copyWith(
-                        color: profile.colors.text,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-          ),
-        ),
       ),
     );
   }
@@ -1608,7 +2305,7 @@ class _HomeReferenceHeroCard extends StatelessWidget {
                 SizedBox(
                   height: _homeHeroSlotHeight(labelStyle, 1),
                   child: _HomeHeroAnimatedText(
-                    text: 'Günün teması',
+                    text: context.l10n.homeDailyTransitLabel,
                     textStyle: labelStyle,
                     maxLines: 1,
                     delay: Duration.zero,
@@ -1714,7 +2411,7 @@ class _HomeHeroButton extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                'Aç',
+                context.l10n.commonOpen,
                 style: profile.typography.buttonLabel.copyWith(
                   color: isDark
                       ? const Color(0xFF17131E)
@@ -2076,8 +2773,9 @@ class _HomeReferencePlanBoard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final compact = MediaQuery.of(context).size.width < 392;
-    final skyTitle = skyItem?.title ?? 'Kolektif nabız';
+    final skyTitle = skyItem?.title ?? l10n.homeCollectivePulse;
     final skyBody = skyItem?.hook.isNotEmpty == true
         ? skyItem!.hook
         : bulletin.summary;
@@ -2085,15 +2783,17 @@ class _HomeReferencePlanBoard extends StatelessWidget {
     final activeMeta = _compactHomeMeta(
       activeCard?.timeHint.trim().isNotEmpty == true
           ? activeCard!.timeHint.trim()
-          : 'Primary',
+          : l10n.homePrimaryMeta,
     );
     final skyMeta = _compactHomeMeta(
-      skyItem?.badge.isNotEmpty == true ? skyItem!.badge : 'Collective',
+      skyItem?.badge.isNotEmpty == true
+          ? skyItem!.badge
+          : l10n.homeCollectiveMeta,
     );
     final weekMeta = _compactHomeMeta(
       thirdCard?.timeHint.trim().isNotEmpty == true
           ? thirdCard!.timeHint.trim()
-          : 'Week',
+          : l10n.homeWeekMeta,
     );
 
     if (loading && activeCard == null && dailyCards.isEmpty) {
@@ -2115,7 +2815,7 @@ class _HomeReferencePlanBoard extends StatelessWidget {
                 child: _HomeColorPlanCard(
                   title: activeCard?.title.isNotEmpty == true
                       ? activeCard!.title
-                      : 'Günün planı',
+                      : l10n.homeDayPlan,
                   metaTop: activeMeta,
                   body: activeCard?.subtitle.trim().isNotEmpty == true
                       ? activeCard!.subtitle.trim()
@@ -2124,7 +2824,7 @@ class _HomeReferencePlanBoard extends StatelessWidget {
                       activeCard?.eventCard?.signatureTr.trim().isNotEmpty ==
                           true
                       ? activeCard!.eventCard!.signatureTr.trim()
-                      : 'Takvime geç',
+                      : l10n.homeGoToCalendar,
                   palette: const _HomeCardPalette.sunset(),
                   onTap: onOpenActive,
                   tall: true,
@@ -2149,12 +2849,12 @@ class _HomeReferencePlanBoard extends StatelessWidget {
                     _HomeColorPlanCard(
                       title: thirdCard?.title.isNotEmpty == true
                           ? thirdCard!.title
-                          : 'Takvim',
+                          : l10n.homeCalendarTitle,
                       metaTop: weekMeta,
                       body: thirdCard?.subtitle.trim().isNotEmpty == true
                           ? thirdCard!.subtitle.trim()
-                          : 'Önündeki 1 haftalık akışı aç.',
-                      footer: '1 haftalık görünüm',
+                          : l10n.homeWeekFlowOpen,
+                      footer: l10n.homeWeekView,
                       palette: const _HomeCardPalette.candy(),
                       onTap: thirdCard != null
                           ? () => onOpenCard(thirdCard)
@@ -2168,9 +2868,8 @@ class _HomeReferencePlanBoard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _HomeReferenceTimingCard(
-            title: 'Haftalık takvim',
-            body:
-                'Mevcut takvim akışını küçük görünümden aç ve tüm haftayı gör.',
+            title: l10n.homeWeeklyCalendar,
+            body: l10n.homeWeeklyCalendarBody,
             onTap: onOpenCalendar,
           ),
         ],
@@ -2673,7 +3372,7 @@ class _HomeOpeningHeroCard extends StatelessWidget {
           children: [
             const SizedBox(height: 196),
             Text(
-              turkishToUpper('Bugünün açılışı'),
+              turkishToUpper(context.l10n.homeHeroOpening),
               style: profile.typography.monoEyebrow.copyWith(
                 color: profile.colors.textLight,
                 fontSize: 11.5,
@@ -2721,7 +3420,7 @@ class _HomeOpeningHeroCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Bugünün açılış sorusu',
+                          context.l10n.homeHeroQuestionTitle,
                           style: profile.typography.monoEyebrow.copyWith(
                             color: profile.colors.textLight,
                             fontSize: 11.5,
@@ -2744,7 +3443,7 @@ class _HomeOpeningHeroCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 14),
                   MinimalCTAButton(
-                    label: 'Aç',
+                    label: context.l10n.commonOpen,
                     emphasized: true,
                     onTap: onOpen,
                   ),
@@ -2984,10 +3683,10 @@ class _HomeDailyUpdateStrip extends StatelessWidget {
           final card = cards[index];
           final meta = card.timeHint.trim().isNotEmpty
               ? card.timeHint.trim()
-              : 'Timing';
+              : context.l10n.homeTimingMeta;
           final subtitle = card.subtitle.trim().isNotEmpty
               ? card.subtitle.trim()
-              : 'Detayi ac';
+              : context.l10n.homeOpenDetail;
           final textMaxWidth = index == 1 ? 154.0 : 162.0;
           final accentAsset = <JoviaIllustrationAsset>[
             JoviaIllustrationAsset.planet,
@@ -3070,7 +3769,7 @@ class _HomeDailyUpdateStrip extends StatelessWidget {
                         child: Align(
                           alignment: Alignment.centerLeft,
                           child: MinimalCTAButton(
-                            label: 'Aç',
+                            label: context.l10n.commonOpen,
                             emphasized: true,
                             onTap: null,
                           ),
@@ -3099,10 +3798,12 @@ class _HomeActiveThemeCard extends StatelessWidget {
     final titleValue = card?.title.trim() ?? '';
     final subtitleValue = card?.subtitle.trim() ?? '';
     final signatureValue = card?.eventCard?.signatureTr.trim() ?? '';
-    final title = titleValue.isNotEmpty ? titleValue : 'Aktif tema bekleniyor';
+    final title = titleValue.isNotEmpty
+        ? titleValue
+        : context.l10n.homeActiveThemePending;
     final body = subtitleValue.isNotEmpty
         ? subtitleValue
-        : 'Period akisindan gelen aktif tema burada kompakt kart olarak gorunecek.';
+        : context.l10n.homeActiveThemeBody;
     final timeHint = card?.timeHint.trim() ?? '';
 
     return LayoutBuilder(
@@ -3114,7 +3815,7 @@ class _HomeActiveThemeCard extends StatelessWidget {
         ].take(compact ? 1 : 2).toList(growable: false);
 
         final cta = MinimalCTAButton(
-          label: 'Temayı aç',
+          label: context.l10n.homeOpenTheme,
           emphasized: true,
           onTap: onOpen,
         );
@@ -3144,7 +3845,7 @@ class _HomeActiveThemeCard extends StatelessWidget {
                 Text(
                   timeHint.isNotEmpty
                       ? turkishToUpper(timeHint)
-                      : turkishToUpper('Şimdi aktif'),
+                      : turkishToUpper(context.l10n.homeNowActive),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: context.profileTheme.typography.monoEyebrow.copyWith(
@@ -3234,7 +3935,8 @@ class _HomeCollectivePulseCard extends StatelessWidget {
             ? bulletin.summary
             : _blurbFromCard(fallbackCard));
     final title =
-        skyItem?.title ?? (cardTitle.isNotEmpty ? cardTitle : 'Açık konular');
+        skyItem?.title ??
+        (cardTitle.isNotEmpty ? cardTitle : context.l10n.homeOpenTopicsTitle);
     return JoviaSurfaceCard(
       radius: 34,
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
@@ -3407,19 +4109,19 @@ class _HomeSkyEventList extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Açık konular',
+                context.l10n.homeOpenTopicsTitle,
                 style: context.profileTheme.typography.cardTitle,
               ),
               const SizedBox(height: 10),
               Text(
-                'Kolektifte şu an çalışan tüm başlıklara buradan gir.',
+                context.l10n.homeOpenTopicsBody,
                 style: context.profileTheme.typography.bodyCompact.copyWith(
                   color: context.profileTheme.colors.textLight,
                 ),
               ),
               const SizedBox(height: 16),
               MinimalCTAButton(
-                label: 'Tüm konular',
+                label: context.l10n.homeAllTopics,
                 emphasized: true,
                 onTap: onOpenAll,
               ),

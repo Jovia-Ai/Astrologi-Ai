@@ -10,6 +10,30 @@ import 'package:mobile/app/timing/turkish_text.dart';
 // Home/Donem Kartlari -> POST /transit/narrative -> public.event_cards[horizon=period]
 // Profile/Donem -> same PeriodCalendarTab source split as CalendarHub/Period
 
+enum TransitPayloadProfile {
+  full,
+  home,
+  calendarDay,
+  calendarPeriod,
+  relationshipPreview,
+}
+
+enum SubscriptionTier { free, premium }
+
+extension on TransitPayloadProfile {
+  String get wireValue => switch (this) {
+    TransitPayloadProfile.full => 'full',
+    TransitPayloadProfile.home => 'home',
+    TransitPayloadProfile.calendarDay => 'calendar_day',
+    TransitPayloadProfile.calendarPeriod => 'calendar_period',
+    TransitPayloadProfile.relationshipPreview => 'relationship_preview',
+  };
+}
+
+extension on SubscriptionTier {
+  String get wireValue => this == SubscriptionTier.premium ? 'premium' : 'free';
+}
+
 class TransitRequestBuilder {
   const TransitRequestBuilder._();
 
@@ -37,6 +61,71 @@ class TransitRequestBuilder {
       return city;
     }
     return '$city, $country';
+  }
+
+  static double? _readCoordinate(
+    Map<String, dynamic> profile,
+    List<String> keys,
+  ) {
+    for (final key in keys) {
+      final value = profile[key];
+      if (value is num) {
+        return value.toDouble();
+      }
+      final text = value?.toString().trim() ?? '';
+      if (text.isEmpty) {
+        continue;
+      }
+      final parsed = double.tryParse(text.replaceAll(',', '.'));
+      if (parsed != null) {
+        return parsed;
+      }
+    }
+    return null;
+  }
+
+  static double? resolveLatitude(Map<String, dynamic> profile) {
+    return _readCoordinate(profile, const ['latitude', 'lat']);
+  }
+
+  static double? resolveLongitude(Map<String, dynamic> profile) {
+    return _readCoordinate(profile, const ['longitude', 'lng', 'lon']);
+  }
+
+  static String resolveTimezone(
+    Map<String, dynamic> profile, {
+    String fallback = 'Europe/Istanbul',
+  }) {
+    final raw = (profile['timezone'] ?? '').toString().trim();
+    return raw.isNotEmpty ? raw : fallback;
+  }
+
+  static void appendKnownLocationFields(
+    Map<String, dynamic> payload, {
+    required Map<String, dynamic> profile,
+    bool includeTransit = false,
+  }) {
+    final latitude = resolveLatitude(profile);
+    final longitude = resolveLongitude(profile);
+    final timezone = (profile['timezone'] ?? '').toString().trim();
+    if (latitude != null) {
+      payload['birth_latitude'] = latitude;
+      if (includeTransit) {
+        payload['transit_latitude'] = latitude;
+      }
+    }
+    if (longitude != null) {
+      payload['birth_longitude'] = longitude;
+      if (includeTransit) {
+        payload['transit_longitude'] = longitude;
+      }
+    }
+    if (timezone.isNotEmpty) {
+      payload['birth_timezone'] = timezone;
+      if (includeTransit) {
+        payload['transit_timezone'] = timezone;
+      }
+    }
   }
 
   static String normalizeBirthTime(String raw) {
@@ -90,6 +179,10 @@ class TransitRequestBuilder {
     bool focusedRange = false,
     bool includeBestTimes = true,
     String responseMode = 'full',
+    TransitPayloadProfile payloadProfile = TransitPayloadProfile.full,
+    SubscriptionTier subscriptionTier = SubscriptionTier.free,
+    int? visibleDaysLimit,
+    String locale = 'tr',
   }) {
     final month = stripDate(selectedDate);
     final selected = fmtDate(selectedDate);
@@ -101,7 +194,7 @@ class TransitRequestBuilder {
         : fmtDate(DateTime(month.year, month.month + 1, 0));
     final place = resolvePlace(profile);
 
-    return <String, dynamic>{
+    final payload = <String, dynamic>{
       'birth_date': (profile['birth_date'] ?? '').toString().trim(),
       'birth_time': normalizeBirthTime(
         (profile['birth_time'] ?? '').toString(),
@@ -111,22 +204,30 @@ class TransitRequestBuilder {
       'start': start,
       'end': end,
       'selected_date': selected,
-      'tz': (profile['timezone'] ?? 'Europe/Istanbul').toString().trim(),
+      'tz': resolveTimezone(profile),
       'intent': 'general',
       'include_best_times': includeBestTimes,
       'lens': lens.trim().isNotEmpty ? lens.trim() : 'general',
       'response_mode': responseMode.trim().isNotEmpty
           ? responseMode.trim()
           : 'full',
+      'payload_profile': payloadProfile.wireValue,
+      'subscription_tier': subscriptionTier.wireValue,
+      if (visibleDaysLimit != null && visibleDaysLimit > 0)
+        'visible_days_limit': visibleDaysLimit,
+      'locale': locale,
     };
+    appendKnownLocationFields(payload, profile: profile, includeTransit: true);
+    return payload;
   }
 
   static Map<String, dynamic> buildTransitPayload({
     required Map<String, dynamic> profile,
     required DateTime transitDate,
+    String locale = 'tr',
   }) {
     final place = resolvePlace(profile);
-    return <String, dynamic>{
+    final payload = <String, dynamic>{
       'birth_date': (profile['birth_date'] ?? '').toString().trim(),
       'birth_time': normalizeBirthTime(
         (profile['birth_time'] ?? '').toString(),
@@ -136,19 +237,25 @@ class TransitRequestBuilder {
       'transit_time': '12:00',
       'transit_place': place,
       'context_mode': 'context-lite',
+      'locale': locale,
     };
+    appendKnownLocationFields(payload, profile: profile, includeTransit: true);
+    return payload;
   }
 
   static Map<String, dynamic> buildCalendarQuery({
     required Map<String, dynamic> profile,
     required DateTime focusedDate,
     String include = 'markers,themes,intent_summary',
+    SubscriptionTier subscriptionTier = SubscriptionTier.free,
+    int? visibleDaysLimit,
+    String locale = 'tr',
   }) {
     final start = fmtDate(DateTime(focusedDate.year, focusedDate.month, 1));
     final end = fmtDate(DateTime(focusedDate.year, focusedDate.month + 1, 0));
     final place = resolvePlace(profile);
 
-    return <String, dynamic>{
+    final payload = <String, dynamic>{
       'birth_date': (profile['birth_date'] ?? '').toString().trim(),
       'birth_time': normalizeBirthTime(
         (profile['birth_time'] ?? '').toString(),
@@ -157,20 +264,28 @@ class TransitRequestBuilder {
       'transit_place': place,
       'start': start,
       'end': end,
-      'tz': (profile['timezone'] ?? 'Europe/Istanbul').toString().trim(),
+      'anchor_date': fmtDate(stripDate(focusedDate)),
+      'tz': resolveTimezone(profile),
       'view': 'public',
       'include': include,
+      'subscription_tier': subscriptionTier.wireValue,
+      if (visibleDaysLimit != null && visibleDaysLimit > 0)
+        'visible_days_limit': '$visibleDaysLimit',
+      'locale': locale,
     };
+    appendKnownLocationFields(payload, profile: profile, includeTransit: true);
+    return payload;
   }
 
   static Map<String, dynamic> buildBestTimesQuery({
     required Map<String, dynamic> profile,
     required DateTime focusedDate,
+    String locale = 'tr',
   }) {
     final start = fmtDate(DateTime(focusedDate.year, focusedDate.month, 1));
     final end = fmtDate(DateTime(focusedDate.year, focusedDate.month + 1, 0));
     final place = resolvePlace(profile);
-    return <String, dynamic>{
+    final payload = <String, dynamic>{
       'birth_date': (profile['birth_date'] ?? '').toString().trim(),
       'birth_time': normalizeBirthTime(
         (profile['birth_time'] ?? '').toString(),
@@ -179,10 +294,42 @@ class TransitRequestBuilder {
       'transit_place': place,
       'start': start,
       'end': end,
-      'tz': (profile['timezone'] ?? 'Europe/Istanbul').toString().trim(),
+      'tz': resolveTimezone(profile),
       'intent': 'general',
       'top': '5',
+      'locale': locale,
     };
+    appendKnownLocationFields(payload, profile: profile, includeTransit: true);
+    return payload;
+  }
+
+  static SubscriptionTier resolveSubscriptionTier(
+    Map<String, dynamic>? profile,
+  ) {
+    if (profile == null) {
+      return SubscriptionTier.free;
+    }
+    final directTier = (profile['subscription_tier'] ?? profile['tier'] ?? '')
+        .toString()
+        .trim()
+        .toLowerCase();
+    if (directTier == 'premium') {
+      return SubscriptionTier.premium;
+    }
+    final premiumFlags = <Object?>[
+      profile['is_premium'],
+      profile['premium'],
+      profile['has_premium'],
+    ];
+    for (final value in premiumFlags) {
+      if (value == true) {
+        return SubscriptionTier.premium;
+      }
+      if (value is String && value.trim().toLowerCase() == 'true') {
+        return SubscriptionTier.premium;
+      }
+    }
+    return SubscriptionTier.free;
   }
 }
 
@@ -200,8 +347,16 @@ class NarrativeRepository {
     bool focusedRange = false,
     bool includeBestTimes = true,
     String responseMode = 'full',
+    TransitPayloadProfile payloadProfile = TransitPayloadProfile.full,
+    SubscriptionTier? subscriptionTier,
+    int? visibleDaysLimit,
     Duration? receiveTimeout,
+    ApiRequestSla requestSla = ApiRequestSla.interactive,
+    String locale = 'tr',
   }) async {
+    final resolvedTier =
+        subscriptionTier ??
+        TransitRequestBuilder.resolveSubscriptionTier(profile);
     final response = await _client.post(
       '/transit/narrative',
       data: TransitRequestBuilder.buildNarrativePayload(
@@ -211,8 +366,13 @@ class NarrativeRepository {
         focusedRange: focusedRange,
         includeBestTimes: includeBestTimes,
         responseMode: responseMode,
+        payloadProfile: payloadProfile,
+        subscriptionTier: resolvedTier,
+        visibleDaysLimit: visibleDaysLimit,
+        locale: locale,
       ),
       receiveTimeout: receiveTimeout,
+      requestSla: requestSla,
       cacheTtl: _narrativeCacheTtl,
     );
     return TransitRequestBuilder.asMap(response.data);
@@ -221,12 +381,14 @@ class NarrativeRepository {
   Future<Map<String, dynamic>> fetchTransitSummary({
     required Map<String, dynamic> profile,
     required DateTime transitDate,
+    String locale = 'tr',
   }) async {
     final response = await _client.post(
       '/transits',
       data: TransitRequestBuilder.buildTransitPayload(
         profile: profile,
         transitDate: transitDate,
+        locale: locale,
       ),
       cacheTtl: _transitSummaryCacheTtl,
     );
@@ -733,14 +895,25 @@ class CalendarRepository {
     required Map<String, dynamic> profile,
     required DateTime focusedDate,
     String include = 'markers,themes,intent_summary',
+    SubscriptionTier? subscriptionTier,
+    int? visibleDaysLimit = 7,
+    ApiRequestSla requestSla = ApiRequestSla.interactive,
+    String locale = 'tr',
   }) async {
+    final resolvedTier =
+        subscriptionTier ??
+        TransitRequestBuilder.resolveSubscriptionTier(profile);
     final response = await _client.get(
       '/transit/calendar',
       queryParameters: TransitRequestBuilder.buildCalendarQuery(
         profile: profile,
         focusedDate: focusedDate,
         include: include,
+        subscriptionTier: resolvedTier,
+        visibleDaysLimit: visibleDaysLimit,
+        locale: locale,
       ),
+      requestSla: requestSla,
       cacheTtl: _calendarCacheTtl,
     );
     return TransitRequestBuilder.asMap(response.data);
@@ -749,13 +922,17 @@ class CalendarRepository {
   Future<Map<String, dynamic>> fetchBestTimes({
     required Map<String, dynamic> profile,
     required DateTime focusedDate,
+    ApiRequestSla requestSla = ApiRequestSla.background,
+    String locale = 'tr',
   }) async {
     final response = await _client.get(
       '/transit/calendar/best-times',
       queryParameters: TransitRequestBuilder.buildBestTimesQuery(
         profile: profile,
         focusedDate: focusedDate,
+        locale: locale,
       ),
+      requestSla: requestSla,
       cacheTtl: _bestTimesCacheTtl,
     );
     return TransitRequestBuilder.asMap(response.data);

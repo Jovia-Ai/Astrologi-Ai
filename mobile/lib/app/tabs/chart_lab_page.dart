@@ -66,6 +66,11 @@ class _ChartLabPageState extends ConsumerState<ChartLabPage> {
     super.dispose();
   }
 
+  String _currentLocaleCode() {
+    return Localizations.maybeLocaleOf(context)?.languageCode ??
+        WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+  }
+
   void _applyAction(EndpointAction action, {Map<String, dynamic>? profile}) {
     _pathController.text = action.path;
     final payload = _buildPayloadForAction(action, profile);
@@ -104,7 +109,7 @@ class _ChartLabPageState extends ConsumerState<ChartLabPage> {
       base['birth_date'] = birthDate;
       base['birth_time'] = normalizedBirthTime;
       base['birth_place'] = birthPlace;
-      base['locale'] = (base['locale'] as String?) ?? 'tr';
+      base['locale'] = (base['locale'] as String?) ?? _currentLocaleCode();
     }
 
     if (action.path.startsWith('/transits')) {

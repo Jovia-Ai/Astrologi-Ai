@@ -8,6 +8,7 @@ import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 typedef JoviaAppMenuAction =
     Future<void> Function(BuildContext context, Map<String, dynamic>? profile);
@@ -45,6 +46,7 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = context.profileTheme;
+    final l10n = context.l10n;
     final authUser = Supabase.instance.client.auth.currentUser;
     final profileMap = ref.watch(userProfileProvider).valueOrNull;
     final peopleCount = ref.watch(peopleListProvider).valueOrNull?.length ?? 0;
@@ -124,12 +126,14 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const _JoviaAppMenuSectionLabel(label: 'Hizli gecis'),
+                          _JoviaAppMenuSectionLabel(
+                            label: l10n.menuQuickAccess,
+                          ),
                           const SizedBox(height: 8),
                           if (onEditProfile != null)
                             _JoviaAppMenuActionTile(
-                              title: 'Profili duzenle',
-                              subtitle: 'Bilgilerini ve profil detaylarini ac.',
+                              title: l10n.menuEditProfile,
+                              subtitle: l10n.menuEditProfileSubtitle,
                               iconAsset: JoviaUiAsset.settingsRings,
                               onTap: () => closeThenRun(
                                 context,
@@ -141,10 +145,9 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                           if (onOpenPeople != null)
                             _JoviaAppMenuActionTile(
                               title: peopleCount > 0
-                                  ? 'Kisilerini yonet'
-                                  : 'Kisi ekle',
-                              subtitle:
-                                  'Bond ve sosyal akislar icin kisi listeni ac.',
+                                  ? l10n.menuManagePeople
+                                  : l10n.menuAddPerson,
+                              subtitle: l10n.menuPeopleSubtitle,
                               iconAsset: JoviaUiAsset.connectionsTwins,
                               onTap: () => closeThenRun(
                                 context,
@@ -155,8 +158,8 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                           if (onOpenPeople != null) const SizedBox(height: 10),
                           if (onOpenCalendar != null)
                             _JoviaAppMenuActionTile(
-                              title: 'Takvim ve timing',
-                              subtitle: 'Gun ritmi, periodlar ve best times.',
+                              title: l10n.menuCalendar,
+                              subtitle: l10n.menuCalendarSubtitle,
                               iconAsset: JoviaUiAsset.calendarLunar,
                               onTap: () => closeThenRun(
                                 context,
@@ -169,11 +172,11 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                           if (onOpenArchetype != null)
                             _JoviaAppMenuActionTile(
                               title: hasBirthData
-                                  ? 'Arketip deneyimi'
-                                  : 'Dogum verini tamamla',
+                                  ? l10n.menuArchetypeExperience
+                                  : l10n.menuCompleteBirthData,
                               subtitle: hasBirthData
-                                  ? 'Kimlik eksenlerini derin deneyimde ac.'
-                                  : 'Arketip ekranlari icin eksik veriyi tamamla.',
+                                  ? l10n.menuArchetypeSubtitle
+                                  : l10n.menuCompleteBirthDataSubtitle,
                               iconAsset: hasBirthData
                                   ? JoviaUiAsset.orbitPlanet
                                   : JoviaUiAsset.editPen,
@@ -184,7 +187,9 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                               ),
                             ),
                           const SizedBox(height: 18),
-                          const _JoviaAppMenuSectionLabel(label: 'Tercihler'),
+                          _JoviaAppMenuSectionLabel(
+                            label: l10n.menuPreferences,
+                          ),
                           const SizedBox(height: 8),
                           JoviaSurfaceCard(
                             radius: 24,
@@ -193,7 +198,7 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Tema modu',
+                                  l10n.menuThemeMode,
                                   style: profile.typography.cardTitle.copyWith(
                                     color: profile.colors.text,
                                     fontSize: 14,
@@ -203,9 +208,9 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                                 JoviaModeSwitch<JoviaThemeMode>(
                                   value: themeMode,
                                   leadingValue: JoviaThemeMode.dark,
-                                  leadingLabel: 'Dark',
+                                  leadingLabel: l10n.themeModeDark,
                                   trailingValue: JoviaThemeMode.light,
-                                  trailingLabel: 'Light',
+                                  trailingLabel: l10n.themeModeLight,
                                   onChanged: (mode) {
                                     ref
                                         .read(joviaThemeModeProvider.notifier)
@@ -214,7 +219,7 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 14),
                                 Text(
-                                  'Dil',
+                                  l10n.menuLanguage,
                                   style: profile.typography.cardTitle.copyWith(
                                     color: profile.colors.text,
                                     fontSize: 14,
@@ -237,7 +242,7 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 14),
                                 Text(
-                                  'Bildirim tercihleri',
+                                  l10n.menuNotificationPreferences,
                                   style: profile.typography.cardTitle.copyWith(
                                     color: profile.colors.text,
                                     fontSize: 14,
@@ -245,8 +250,8 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 10),
                                 _JoviaAppMenuToggleTile(
-                                  title: 'Gunluk ozet',
-                                  subtitle: 'Sabah kisa ritim ozeti',
+                                  title: l10n.menuDailySummary,
+                                  subtitle: l10n.menuDailySummarySubtitle,
                                   value: prefs.dailyBriefEnabled,
                                   onChanged: (value) {
                                     ref
@@ -258,9 +263,8 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 8),
                                 _JoviaAppMenuToggleTile(
-                                  title: 'Gok olaylari',
-                                  subtitle:
-                                      'One cikan transit ve event uyarilari',
+                                  title: l10n.menuSkyEvents,
+                                  subtitle: l10n.menuSkyEventsSubtitle,
                                   value: prefs.skyAlertsEnabled,
                                   onChanged: (value) {
                                     ref
@@ -272,9 +276,8 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                                 ),
                                 const SizedBox(height: 8),
                                 _JoviaAppMenuToggleTile(
-                                  title: 'Sosyal hareket',
-                                  subtitle:
-                                      'Forum ve iliski tarafindaki gelismeler',
+                                  title: l10n.menuSocialActivity,
+                                  subtitle: l10n.menuSocialActivitySubtitle,
                                   value: prefs.socialAlertsEnabled,
                                   onChanged: (value) {
                                     ref
@@ -288,17 +291,17 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: 18),
-                          const _JoviaAppMenuSectionLabel(label: 'Uyelik'),
+                          _JoviaAppMenuSectionLabel(label: l10n.menuMembership),
                           const SizedBox(height: 8),
                           _JoviaAppMenuActionTile(
-                            title: 'Premium abonelik',
+                            title: l10n.menuPremiumSubscription,
                             subtitle: prefs.premiumInterest
-                                ? 'Listedesin. Premium acildiginda haber verecegiz.'
-                                : 'Derin yorumlar ve uzun akislari acacak katman.',
+                                ? l10n.menuPremiumInterestSubtitle
+                                : l10n.menuPremiumDefaultSubtitle,
                             iconAsset: JoviaUiAsset.orbitPlanet,
                             trailingLabel: prefs.premiumInterest
-                                ? 'Listede'
-                                : 'Yakinda',
+                                ? l10n.menuInList
+                                : l10n.menuSoon,
                             onTap: () => _showPremiumSheet(context, ref),
                           ),
                         ],
@@ -307,8 +310,8 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                   ),
                   const SizedBox(height: 14),
                   _JoviaAppMenuActionTile(
-                    title: 'Cikis yap',
-                    subtitle: 'Mevcut oturumu kapat ve giris ekranina don.',
+                    title: l10n.menuSignOut,
+                    subtitle: l10n.menuSignOutSubtitle,
                     iconAsset: JoviaUiAsset.logoutArc,
                     danger: true,
                     onTap: () async {
@@ -330,6 +333,7 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
 
   Future<void> _showPremiumSheet(BuildContext context, WidgetRef ref) async {
     final profile = context.profileTheme;
+    final l10n = context.l10n;
     await showModalBottomSheet<void>(
       context: context,
       backgroundColor: Colors.transparent,
@@ -353,35 +357,29 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Premium abonelik',
+                      l10n.premiumSheetTitle,
                       style: profile.typography.h2.copyWith(fontSize: 24),
                     ),
                     const SizedBox(height: 10),
                     Text(
-                      'Daha uzun yorum, daha fazla katman ve erken erisim gibi avantajlar icin premium katman hazirlaniyor.',
+                      l10n.premiumSheetBody,
                       style: profile.typography.bodyCompact.copyWith(
                         color: profile.colors.textLight,
                       ),
                     ),
                     const SizedBox(height: 14),
-                    const _JoviaAppMenuBullet(
-                      text: 'Uzun kimlik ve iliski okumalari',
-                    ),
+                    _JoviaAppMenuBullet(text: l10n.premiumBulletIdentity),
                     const SizedBox(height: 8),
-                    const _JoviaAppMenuBullet(
-                      text: 'Ekstra timing ve period derinligi',
-                    ),
+                    _JoviaAppMenuBullet(text: l10n.premiumBulletTiming),
                     const SizedBox(height: 8),
-                    const _JoviaAppMenuBullet(
-                      text: 'Yeni ozelliklere once erisim',
-                    ),
+                    _JoviaAppMenuBullet(text: l10n.premiumBulletEarlyAccess),
                     const SizedBox(height: 16),
                     SizedBox(
                       width: double.infinity,
                       child: JoviaPrimaryButton(
                         label: prefs.premiumInterest
-                            ? 'Listedesin'
-                            : 'Beni haberdar et',
+                            ? l10n.premiumAlreadyInList
+                            : l10n.premiumNotifyMe,
                         onTap: () async {
                           await ref
                               .read(joviaAppPreferencesProvider.notifier)
@@ -391,11 +389,7 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                           }
                           Navigator.of(sheetContext).pop();
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Premium acildiginda haber verecegiz.',
-                              ),
-                            ),
+                            SnackBar(content: Text(l10n.premiumNotifySnackbar)),
                           );
                         },
                       ),
@@ -427,6 +421,7 @@ class _JoviaAppMenuIdentityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final l10n = context.l10n;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
@@ -469,9 +464,12 @@ class _JoviaAppMenuIdentityCard extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              if (peopleCount > 0) JoviaMetaPill(label: '$peopleCount kisi'),
+              if (peopleCount > 0)
+                JoviaMetaPill(label: l10n.menuPeopleCount(peopleCount)),
               JoviaMetaPill(
-                label: hasBirthData ? 'Arketip hazir' : 'Dogum verisi eksik',
+                label: hasBirthData
+                    ? l10n.menuArchetypeReady
+                    : l10n.menuBirthDataMissing,
               ),
             ],
           ),

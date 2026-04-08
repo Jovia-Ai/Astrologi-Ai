@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 class PeriodDetailPage extends StatelessWidget {
   const PeriodDetailPage({
@@ -21,6 +22,7 @@ class PeriodDetailPage extends StatelessWidget {
     final profile = context.profileTheme;
     final colors = profile.colors;
     final typo = profile.typography;
+    final l10n = context.l10n;
     final detail = card.buildDetailNarrative(
       periodCore: periodCore,
       routeSource: routeSource,
@@ -64,7 +66,9 @@ class PeriodDetailPage extends StatelessWidget {
           ),
         ),
         title: Text(
-          isDaily ? 'TRANSIT DETAYI' : 'DONEM DETAYI',
+          isDaily
+              ? l10n.periodDetailTransitTitle
+              : l10n.periodDetailPeriodTitle,
           style: typo.navigationLabel(color: colors.text),
         ),
       ),
@@ -84,7 +88,9 @@ class PeriodDetailPage extends StatelessWidget {
                 child: JoviaEditorialHeroBlock(
                   label: detail.eyebrow.trim().isNotEmpty
                       ? detail.eyebrow.trim()
-                      : (isDaily ? 'Bugun' : 'Surec'),
+                      : (isDaily
+                            ? l10n.periodDetailTodayEyebrow
+                            : l10n.periodDetailPeriodEyebrow),
                   title: detail.headline,
                   titleStyle: heroTitleStyle,
                   titleMaxLines: heroTitleMaxLines,
@@ -117,10 +123,10 @@ class PeriodDetailPage extends StatelessWidget {
                 JoviaReveal(
                   delay: const Duration(milliseconds: 40),
                   child: JoviaReadingPanel(
-                    label: 'Baglam',
+                    label: l10n.periodDetailContextLabel,
                     title: detail.umbrellaTitle.trim().isNotEmpty
                         ? detail.umbrellaTitle
-                        : 'Bu buyuk donemin parcasi',
+                        : l10n.periodDetailContextTitle,
                     padding: const EdgeInsets.fromLTRB(18, 18, 18, 14),
                     leading: const JoviaIllustrationAccent(
                       asset: JoviaIllustrationAsset.blocks,
@@ -146,9 +152,9 @@ class PeriodDetailPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const JoviaSectionHeader(
-                        label: 'Cekirdek',
-                        title: 'Bu etkinin merkez cizgisi',
+                      JoviaSectionHeader(
+                        label: l10n.periodDetailCoreLabel,
+                        title: l10n.periodDetailCoreTitle,
                       ),
                       const SizedBox(height: 10),
                       JoviaReadingPanel(
@@ -173,9 +179,9 @@ class PeriodDetailPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const JoviaSectionHeader(
-                        label: 'Destekleyen',
-                        title: 'Acilan diger katmanlar',
+                      JoviaSectionHeader(
+                        label: l10n.periodDetailSupportingLabel,
+                        title: l10n.periodDetailSupportingTitle,
                       ),
                       const SizedBox(height: 20),
                       const ThinDivider(),
@@ -195,8 +201,8 @@ class PeriodDetailPage extends StatelessWidget {
                 JoviaReveal(
                   delay: const Duration(milliseconds: 160),
                   child: JoviaReadingPanel(
-                    label: 'Teknik',
-                    title: 'Arka plan notlari',
+                    label: l10n.periodDetailTechnicalLabel,
+                    title: l10n.periodDetailTechnicalTitle,
                     child: _TechnicalMetaBlock(rows: detail.metaRows),
                   ),
                 ),

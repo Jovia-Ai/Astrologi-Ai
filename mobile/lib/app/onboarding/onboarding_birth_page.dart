@@ -4,6 +4,7 @@ import 'package:mobile/app/profile/profile_repository.dart';
 import 'package:mobile/app/tabs/tabs_shell.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 class OnboardingBirthPage extends StatefulWidget {
   const OnboardingBirthPage({super.key});
@@ -43,7 +44,7 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
     if (uid == null) {
       if (mounted) {
         setState(() {
-          _error = 'Session expired. Please login again.';
+          _error = context.l10n.sessionExpiredLoginAgain;
           _isLoading = false;
         });
       }
@@ -60,7 +61,7 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _error = 'Failed to load birth data: $e');
+        setState(() => _error = context.l10n.errorFailedToLoadBirthData('$e'));
       }
     } finally {
       if (mounted) {
@@ -70,9 +71,10 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
   }
 
   Future<void> _save() async {
+    final l10n = context.l10n;
     final uid = Supabase.instance.client.auth.currentUser?.id;
     if (uid == null) {
-      setState(() => _error = 'Session expired. Please login again.');
+      setState(() => _error = l10n.sessionExpiredLoginAgain);
       return;
     }
 
@@ -84,9 +86,7 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
     final timezone = DateTime.now().timeZoneName;
 
     if (birthDate.isEmpty || birthTime.isEmpty || place.isEmpty) {
-      setState(
-        () => _error = 'Please fill birth date, time, city and country.',
-      );
+      setState(() => _error = l10n.errorPleaseFillBirthFields);
       return;
     }
 
@@ -115,7 +115,7 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _error = 'Failed to save birth data: $e');
+        setState(() => _error = l10n.errorFailedToSaveBirthData('$e'));
       }
     } finally {
       if (mounted) {
@@ -133,6 +133,7 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final profile = context.profileTheme;
     final spacing = profile.spacing;
+    final l10n = context.l10n;
 
     return Scaffold(
       body: SafeArea(
@@ -147,17 +148,16 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const JoviaProfileTopBar(
-                label: 'Dogum',
-                centerText: 'temel veriler',
+              JoviaProfileTopBar(
+                label: l10n.onboardingBirthTopLabel,
+                centerText: l10n.onboardingBirthTopCenter,
                 reserveTrailingSpace: true,
               ),
               SizedBox(height: spacing.s24),
-              const JoviaSectionHeader(
-                label: 'Onboarding',
-                title: 'Haritanin dogum eksenini tamamla',
-                body:
-                    'Bu bilgiler backend akisina aynen gider; burada sadece tipografik omurga profile yaklasti.',
+              JoviaSectionHeader(
+                label: l10n.onboardingSectionLabel,
+                title: l10n.onboardingBirthTitle,
+                body: l10n.onboardingBirthBody,
                 variant: JoviaSectionHeaderVariant.editorial,
               ),
               SizedBox(height: spacing.s24),
@@ -176,26 +176,26 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
                     ],
                     TextField(
                       controller: _birthDateController,
-                      decoration: const InputDecoration(
-                        labelText: 'Birth date (YYYY-MM-DD)',
+                      decoration: InputDecoration(
+                        labelText: l10n.birthDateLabel,
                       ),
                     ),
                     SizedBox(height: spacing.s12),
                     TextField(
                       controller: _birthTimeController,
-                      decoration: const InputDecoration(
-                        labelText: 'Birth time (HH:mm)',
+                      decoration: InputDecoration(
+                        labelText: l10n.birthTimeLabel,
                       ),
                     ),
                     SizedBox(height: spacing.s12),
                     TextField(
                       controller: _cityController,
-                      decoration: const InputDecoration(labelText: 'City'),
+                      decoration: InputDecoration(labelText: l10n.cityLabel),
                     ),
                     SizedBox(height: spacing.s12),
                     TextField(
                       controller: _countryController,
-                      decoration: const InputDecoration(labelText: 'Country'),
+                      decoration: InputDecoration(labelText: l10n.countryLabel),
                     ),
                     SizedBox(height: spacing.s24),
                     ElevatedButton(
@@ -206,7 +206,7 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
                               width: 18,
                               child: CircularProgressIndicator(strokeWidth: 2),
                             )
-                          : const Text('Continue'),
+                          : Text(l10n.commonContinue),
                     ),
                   ],
                 ),

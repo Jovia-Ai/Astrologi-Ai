@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
 
 class ForumPost {
   const ForumPost({
@@ -51,11 +52,7 @@ class ForumPost {
     );
   }
 
-  ForumPost copyWith({
-    int? likeCount,
-    bool? isLikedByMe,
-    int? replyCount,
-  }) {
+  ForumPost copyWith({int? likeCount, bool? isLikedByMe, int? replyCount}) {
     return ForumPost(
       id: id,
       userId: userId,
@@ -82,9 +79,10 @@ class ForumPost {
   String get initials {
     final parts = userDisplayName.trim().split(' ');
     if (parts.isEmpty) return '?';
-    if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();
-    return (parts.first.substring(0, 1) + parts.last.substring(0, 1))
-        .toUpperCase();
+    if (parts.length == 1) return turkishToUpper(parts.first.substring(0, 1));
+    return turkishToUpper(
+      parts.first.substring(0, 1) + parts.last.substring(0, 1),
+    );
   }
 }
 
@@ -127,9 +125,10 @@ class ForumReply {
   String get initials {
     final parts = userDisplayName.trim().split(' ');
     if (parts.isEmpty) return '?';
-    if (parts.length == 1) return parts.first.substring(0, 1).toUpperCase();
-    return (parts.first.substring(0, 1) + parts.last.substring(0, 1))
-        .toUpperCase();
+    if (parts.length == 1) return turkishToUpper(parts.first.substring(0, 1));
+    return turkishToUpper(
+      parts.first.substring(0, 1) + parts.last.substring(0, 1),
+    );
   }
 }
 

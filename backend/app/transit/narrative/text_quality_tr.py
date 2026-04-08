@@ -32,10 +32,390 @@ _ENABLE_MICRO_LLM_POLISH = str(os.getenv("ENABLE_MICRO_LLM_POLISH", "0")).strip(
 _MICRO_LLM_PROVIDER = str(os.getenv("MICRO_LLM_PROVIDER", "none")).strip().lower() or "none"
 
 _TR_WORD_FIXES = {
+    "ac": "aç",
+    "acik": "açık",
+    "acikca": "açıkça",
+    "acilir": "açılır",
+    "aciliyor": "açılıyor",
+    "acilmak": "açılmak",
+    "aciklamak": "açıklamak",
+    "acabilir": "açabilir",
+    "adim": "adım",
+    "adimlar": "adımlar",
+    "adimlarla": "adımlarla",
+    "adimim": "adımım",
+    "agir": "ağır",
+    "akis": "akış",
+    "akisin": "akışın",
+    "aldiginda": "aldığında",
+    "alana": "alana",
+    "alaninda": "alanında",
+    "aliskanlik": "alışkanlık",
+    "anlami": "anlamı",
+    "anlami": "anlamı",
+    "anlasilir": "anlaşılır",
+    "anlasilma": "anlaşılma",
+    "arada": "arada",
+    "aralari": "araları",
+    "arasinda": "arasında",
+    "artik": "artık",
+    "asil": "asıl",
+    "atilim": "atılım",
+    "ayakta": "ayakta",
+    "ayar": "ayar",
+    "ayarlar": "ayarlar",
+    "ayarlamak": "ayarlamak",
+    "ayarlamalar": "ayarlamalar",
+    "ayni": "aynı",
+    "azalttiginda": "azalttığında",
+    "bag": "bağ",
+    "bagimsiz": "bağımsız",
+    "baglamak": "bağlamak",
+    "bagla": "bağla",
+    "bakis": "bakış",
+    "basari": "başarı",
+    "basariya": "başarıya",
+    "basina": "başına",
+    "basitlestirip": "basitleştirip",
+    "baski": "baskı",
+    "beklediginden": "beklediğinden",
+    "belirsizligi": "belirsizliği",
+    "belirsizligi": "belirsizliği",
+    "belirsiz": "belirsiz",
+    "basiyor": "basıyor",
+    "bilincli": "bilinçli",
+    "birak": "bırak",
+    "birakmak": "bırakmak",
+    "birakmaya": "bırakmaya",
+    "birkac": "birkaç",
+    "bosaltim": "boşaltım",
+    "butce": "bütçe",
+    "buyuk": "büyük",
+    "buyurse": "büyürse",
+    "buyuyebilir": "büyüyebilir",
+    "buyutmeden": "büyütmeden",
+    "buyut": "büyüt",
+    "calisma": "çalışma",
+    "calisma": "çalışma",
+    "calismamasi": "çalışmaması",
+    "calistirabilir": "çalıştırabilir",
+    "calistikca": "çalıştıkça",
+    "calisiyorsa": "çalışıyorsa",
+    "cerceve": "çerçeve",
+    "cercevesi": "çerçevesi",
+    "cevre": "çevre",
+    "cezmeye": "çezmeye",
+    "cevreye": "çevreye",
+    "cikma": "çıkma",
+    "cikabilir": "çıkabilir",
+    "cikarmak": "çıkarmak",
+    "cizgi": "çizgi",
+    "cizgisi": "çizgisi",
+    "cogu": "çoğu",
+    "cok": "çok",
+    "cozme": "çözme",
+    "cozmeye": "çözmeye",
+    "cozmeye": "çözmeye",
+    "cozum": "çözüm",
+    "daginik": "dağınık",
+    "daha": "daha",
+    "dayanikliligi": "dayanıklılığı",
+    "degerlendir": "değerlendir",
+    "degisince": "değişince",
+    "degistirmek": "değiştirmek",
+    "denge": "denge",
+    "dengeyi": "dengeyi",
+    "denedikce": "denedikçe",
+    "deneme": "deneme",
+    "denemelerle": "denemelerle",
+    "denetleme": "denetleme",
+    "denetleme": "denetleme",
+    "destekledigi": "desteklediği",
+    "destekleyici": "destekleyici",
+    "disarida": "dışarıda",
+    "dis": "dış",
+    "diger": "diğer",
+    "dogal": "doğal",
+    "dogurabilir": "doğurabilir",
+    "dogru": "doğru",
+    "dogrulama": "doğrulama",
+    "dokmek": "dökmek",
+    "doktukce": "döktükçe",
+    "don": "dön",
+    "donus": "dönüş",
+    "donuslu": "dönüşlü",
+    "durtusu": "dürtüsü",
+    "durtu": "dürtü",
+    "dusunce": "düşünce",
+    "dusunceyi": "düşünceyi",
+    "dusundugunden": "düşündüğünden",
+    "dusunmek": "düşünmek",
+    "dusunce": "düşünce",
+    "dusunmeyi": "düşünmeyi",
+    "dusur": "düşür",
+    "duygu": "duygu",
+    "duygusal": "duygusal",
+    "duzeni": "düzeni",
+    "duzeni": "düzeni",
+    "duzenli": "düzenli",
+    "duzeni": "düzeni",
+    "eskiyi": "eskiyi",
+    "esneklik": "esneklik",
+    "etkiyi": "etkiyi",
+    "ettikce": "ettikçe",
+    "farkli": "farklı",
+    "faydali": "faydalı",
+    "fikiralisverisi": "fikir alışverişi",
+    "geri": "geri",
+    "gercekci": "gerçekçi",
+    "gercekcilik": "gerçekçilik",
+    "gercekten": "gerçekten",
+    "gercegi": "gerçeği",
+    "gereksiz": "gereksiz",
+    "gerektirebilir": "gerektirebilir",
+    "gelisim": "gelişim",
+    "gelistirmene": "geliştirmene",
+    "genisletebilir": "genişletebilir",
+    "gerilim": "gerilim",
+    "gevsetip": "gevşetip",
+    "gevsetmek": "gevşetmek",
+    "gozlem": "gözlem",
+    "gozlemci": "gözlemci",
+    "gozlemlerle": "gözlemlerle",
+    "gore": "göre",
+    "gor": "gör",
+    "gorulabilir": "görülebilir",
+    "gorunme": "görünme",
+    "gosterebilir": "gösterebilir",
+    "gosterebilir": "gösterebilir",
+    "gosterir": "gösterir",
+    "gostermek": "göstermek",
+    "gosterecek": "gösterecek",
+    "guncelle": "güncelle",
+    "gundem": "gündem",
+    "gun": "gün",
+    "guncelleyecek": "güncelleyecek",
+    "guclenebilir": "güçlenebilir",
+    "guclenirsin": "güçlenirsin",
+    "guclenme": "güçlenme",
+    "guclenir": "güçlenir",
+    "guc": "güç",
+    "guclu": "güçlü",
+    "guclenir": "güçlenir",
+    "guven": "güven",
+    "guvene": "güvene",
+    "guveni": "güveni",
+    "guvenilir": "güvenilir",
+    "guvenli": "güvenli",
+    "guvende": "güvende",
+    "hareketalanini": "hareket alanını",
+    "hamlede": "hamlede",
+    "hatti": "hattı",
+    "hatta": "hatta",
+    "hatlari": "hatları",
+    "harcamak": "harcamak",
+    "hassasiyet": "hassasiyet",
+    "hassasiyeti": "hassasiyeti",
+    "hedefi": "hedefi",
+    "hemen": "hemen",
+    "hissettigin": "hissettiğin",
+    "hissettirebilir": "hissettirebilir",
+    "hizlandirir": "hızlandırır",
+    "hizlandiriyor": "hızlandırıyor",
+    "hizla": "hızla",
+    "hizi": "hızı",
+    "hos": "hoş",
+    "ice": "içe",
+    "icek": "içek",
+    "icecek": "içecek",
+    "icecek": "içecek",
+    "icecek": "içecek",
+    "iceri": "içeri",
+    "iceride": "içeride",
+    "icten": "içten",
+    "icerde": "içerde",
+    "icin": "için",
+    "icinde": "içinde",
+    "icindeki": "içindeki",
+    "iceriyi": "içeriyi",
+    "icgüven": "iç güven",
+    "ihtiyaci": "ihtiyacı",
+    "ihtiyaclarinla": "ihtiyaçlarınla",
+    "ilerlemek": "ilerlemek",
+    "ilerlemenin": "ilerlemenin",
+    "ilerle": "ilerle",
+    "ilhami": "ilhamı",
+    "iliski": "ilişki",
+    "iliskide": "ilişkide",
+    "iliskiler": "ilişkiler",
+    "iliskilerde": "ilişkilerde",
+    "istegin": "isteğin",
+    "istemiyor": "istemiyor",
+    "isteyebilir": "isteyebilir",
+    "istegi": "isteği",
+    "iyilestirme": "iyileştirme",
+    "kacma": "kaçma",
+    "kaldikca": "kaldıkça",
+    "kalibi": "kalıbı",
+    "kalici": "kalıcı",
+    "kapasiteye": "kapasiteye",
+    "kararlari": "kararları",
+    "kararlarini": "kararlarını",
+    "kararlilik": "kararlılık",
+    "kararli": "kararlı",
+    "karistirir": "karıştırır",
+    "kazandirir": "kazandırır",
+    "kargasa": "kargaşa",
+    "kargasayi": "kargaşayı",
+    "karsitlik": "karşıtlık",
+    "kesfetme": "keşfetme",
+    "kisalt": "kısalt",
+    "kisar": "kısar",
+    "kisa": "kısa",
+    "kimlik": "kimlik",
+    "kilitlemek": "kilitlemek",
+    "kokte": "kökte",
+    "kokten": "kökten",
+    "kisitlayabilir": "kısıtlayabilir",
+    "konusmalari": "konuşmaları",
+    "konusmayi": "konuşmayı",
+    "konforu": "konforu",
+    "kontrolu": "kontrolü",
+    "kontrolu": "kontrolü",
+    "kurdurur": "kurdurur",
+    "kurmak": "kurmak",
+    "kurabilir": "kurabilir",
+    "kurmani": "kurmanı",
+    "kucuk": "küçük",
+    "mukemmel": "mükemmel",
+    "mumkun": "mümkün",
+    "netlesebilir": "netleşebilir",
+    "netlestir": "netleştir",
+    "netlestirmek": "netleştirmek",
+    "netlestirmen": "netleştirmen",
+    "notal": "nötal",
+    "odagin": "odağın",
+    "odaklan": "odaklan",
+    "odaklanma": "odaklanma",
+    "ofkeyi": "öfkeyi",
+    "ogrentiyi": "öğrentiyi",
+    "ogrenmeyi": "öğrenmeyi",
+    "olculu": "ölçülü",
+    "olculeri": "ölçüleri",
+    "once": "önce",
+    "onceligi": "önceliği",
+    "oncelik": "öncelik",
+    "oncelikleri": "öncelikleri",
+    "onceki": "önceki",
+    "onerik": "önerik",
+    "oysa": "oysa",
+    "ozdeger": "özdeğer",
+    "ozellikle": "özellikle",
+    "parca": "parça",
+    "pişir": "pişir",
+    "plani": "planı",
+    "projeksiyon": "projeksiyon",
+    "rahatlatir": "rahatlatır",
+    "rahatlatici": "rahatlatıcı",
+    "rahatlama": "rahatlama",
+    "rahatsiz": "rahatsız",
+    "regule": "regüle",
+    "ritmi": "ritmi",
+    "saglam": "sağlam",
+    "saglamlasabilir": "sağlamlaşabilir",
+    "sakinlesince": "sakinleşince",
+    "sakinlesebilir": "sakinleşebilir",
+    "savasi": "savaşı",
+    "savasina": "savaşına",
+    "savaslarina": "savaşlarına",
+    "sade": "sade",
+    "sadelestir": "sadeleştir",
+    "sadelestirmek": "sadeleştirmek",
+    "sadeleştirip": "sadeleştirip",
+    "sec": "seç",
+    "secenek": "seçenek",
+    "secenekler": "seçenekler",
+    "secmek": "seçmek",
+    "sey": "şey",
+    "seyi": "şeyi",
+    "simdi": "şimdi",
+    "sicrama": "sıçrama",
+    "sinir": "sınır",
+    "sinirlari": "sınırları",
+    "somutlastir": "somutlaştır",
+    "spontanligi": "spontanlığı",
+    "sormak": "sormak",
+    "soru": "soru",
+    "sorumlulugu": "sorumluluğu",
+    "statu": "statü",
+    "surekli": "sürekli",
+    "sureklilik": "süreklilik",
+    "surtunme": "sürtünme",
+    "surdurulebilirligi": "sürdürülebilirliği",
+    "tasarla": "tasarla",
+    "tasimadigina": "taşımadığına",
+    "tasimak": "taşımak",
+    "tasiyor": "taşıyor",
+    "tarafinda": "tarafında",
+    "temayi": "temayı",
+    "tekrarlamak": "tekrarlamak",
+    "tepkiyle": "tepkiyle",
+    "tetiklenirse": "tetiklenirse",
+    "toparlar": "toparlar",
+    "toparlanma": "toparlanma",
+    "tutarli": "tutarlı",
+    "tutum": "tutum",
+    "uygula": "uygula",
+    "uygulamaya": "uygulamaya",
+    "uzerinden": "üzerinden",
+    "varsayim": "varsayım",
+    "verimi": "verimi",
+    "vurgu": "vurgu",
+    "yapi": "yapı",
+    "yapilandirmak": "yapılandırmak",
+    "yaraticiligi": "yaratıcılığı",
+    "yardimci": "yardımcı",
+    "yeri": "yeri",
+    "yenilenme": "yenilenme",
+    "yenilik": "yenilik",
+    "yon": "yön",
+    "yonlendirmeyi": "yönlendirmeyi",
+    "yontemi": "yöntemi",
+    "yonunu": "yönünü",
+    "yorabilir": "yorabilir",
+    "yoruluyorsa": "yoruluyorsa",
+    "yakin": "yakın",
+    "yakinliga": "yakınlığa",
+    "yakinligi": "yakınlığı",
+    "yakinlik": "yakınlık",
+    "yuku": "yükü",
+    "yukleri": "yükleri",
+    "yogunlasiyor": "yoğunlaşıyor",
+    "yogunlasma": "yoğunlaşma",
+    "yukselirse": "yükselirse",
+    "yukseldikce": "yükseldikçe",
+    "yukseldiginde": "yükseldiğinde",
+    "yukseliyor": "yükseliyor",
+    "yukselmesi": "yükselmesi",
+    "yumusama": "yumuşama",
+    "yumusayabilir": "yumuşayabilir",
+    "zorlanma": "zorlanma",
+    "zorlayici": "zorlayıcı",
+    "zorlamak": "zorlamak",
+    "zorlandigin": "zorlandığın",
+    "yanlis": "yanlış",
     "iletisim": "iletişim",
     "iliski": "ilişki",
+    "ulasma": "ulaşma",
+    "ulasma": "ulaşma",
+    "ulasmak": "ulaşmak",
     "hiz": "hız",
+    "yukselir": "yükselir",
     "dogrudan": "doğrudan",
+    "asiri": "aşırı",
+    "baskilar": "baskılar",
+    "baskisi": "baskısı",
+    "cabuk": "çabuk",
     "kacinma": "kaçınma",
     "golge": "gölge",
     "duzen": "düzen",
@@ -43,7 +423,12 @@ _TR_WORD_FIXES = {
     "ic": "iç",
     "dis": "dış",
     "firsat": "fırsat",
+    "kilir": "kılar",
+    "kilar": "kılar",
     "netlik": "netlik",
+    "sertlesmeye": "sertleşmeye",
+    "sertlestirir": "sertleştirir",
+    "yaratir": "yaratır",
     "yonsuz": "yönsüz",
     "stili": "stili",
     "yaklasim": "yaklaşım",
@@ -56,6 +441,7 @@ _TR_WORD_FIXES = {
     "ozel": "özel",
     "ozgur": "özgür",
     "ozgurluk": "özgürlük",
+    "donemi": "dönemi",
     "goz": "göz",
     "gonder": "gönder",
     "cikar": "çıkar",
@@ -74,6 +460,16 @@ _TR_WORD_FIXES = {
     "degisim": "değişim",
     "netlesme": "netleşme",
     "dengeleme": "dengeleme",
+}
+
+_TURKISH_UPPER_MAP = {
+    "i": "İ",
+    "ı": "I",
+    "ğ": "Ğ",
+    "ü": "Ü",
+    "ş": "Ş",
+    "ö": "Ö",
+    "ç": "Ç",
 }
 
 _SIGN_TR = {
@@ -317,6 +713,32 @@ def similarity(a: str, b: str) -> float:
     return inter / union if union else 0.0
 
 
+def _to_turkish_upper(value: str) -> str:
+    buffer: list[str] = []
+    for char in str(value or ""):
+        buffer.append(_TURKISH_UPPER_MAP.get(char, char.upper()))
+    return "".join(buffer)
+
+
+def _capitalize_turkish(value: str) -> str:
+    text = str(value or "")
+    if not text:
+        return ""
+    return _to_turkish_upper(text[:1]) + text[1:]
+
+
+def _match_case(source: str, replacement: str) -> str:
+    raw = str(source or "")
+    fixed = str(replacement or "")
+    if not raw or not fixed:
+        return fixed
+    if raw == raw.upper():
+        return _to_turkish_upper(fixed)
+    if raw[:1] == raw[:1].upper():
+        return _capitalize_turkish(fixed)
+    return fixed
+
+
 def tr_normalize(text: str) -> str:
     out = str(text or "")
     if not out.strip():
@@ -326,7 +748,12 @@ def tr_normalize(text: str) -> str:
     out = re.sub(r"\s+", " ", out).strip()
 
     for raw, fixed in _TR_WORD_FIXES.items():
-        out = re.sub(rf"\b{re.escape(raw)}\b", fixed, out, flags=re.IGNORECASE)
+        out = re.sub(
+            rf"\b{re.escape(raw)}\b",
+            lambda match: _match_case(match.group(0) or "", fixed),
+            out,
+            flags=re.IGNORECASE,
+        )
 
     out = re.sub(r"\b([1-9]|1[0-2])\s*ev\b", r"\1. Ev", out, flags=re.IGNORECASE)
     out = re.sub(r"\b([1-9]|1[0-2])\.\s*ev\b", r"\1. Ev", out, flags=re.IGNORECASE)
@@ -343,6 +770,18 @@ def tr_normalize(text: str) -> str:
     out = re.sub(r"\.{2,}", ".", out)
     out = re.sub(r"\s+", " ", out).strip()
     return out
+
+
+def tr_normalize_tree(value: Any) -> Any:
+    if isinstance(value, str):
+        return tr_normalize(value)
+    if isinstance(value, list):
+        return [tr_normalize_tree(item) for item in value]
+    if isinstance(value, tuple):
+        return tuple(tr_normalize_tree(item) for item in value)
+    if isinstance(value, Mapping):
+        return {key: tr_normalize_tree(item) for key, item in value.items()}
+    return value
 
 
 def _norm(s: str) -> str:
@@ -548,6 +987,16 @@ def _target_life_label(natal_point: str, target_house: int | None) -> str:
     return _life_scene(target_house, detail="short")
 
 
+def _aspect_relation_tr(aspect: str) -> str:
+    return {
+        "square": "kare açı yaptığı",
+        "opposition": "karşıt açı yaptığı",
+        "conjunction": "kavuşum yaptığı",
+        "trine": "üçgen açı yaptığı",
+        "sextile": "sekstil açı yaptığı",
+    }.get(aspect, "temas ettiği")
+
+
 def _transit_target_houses(card: Mapping[str, Any], event: Mapping[str, Any]) -> tuple[int | None, int | None]:
     houses = event.get("houses") if isinstance(event.get("houses"), Mapping) else {}
     pack = card.get("natal_context_pack") if isinstance(card.get("natal_context_pack"), Mapping) else {}
@@ -675,14 +1124,40 @@ def _generic_essence(event: Mapping[str, Any], transit_house: int | None, target
 
 
 def _generic_mechanism(card: Mapping[str, Any], event: Mapping[str, Any], transit_house: int | None, target_house: int | None) -> str:
+    transit = _PLANET_TR.get(
+        _planet_key(event.get("transit_body")),
+        str(event.get("transit_body") or "Transit"),
+    )
+    aspect = _aspect_key(event.get("aspect"))
+    aspect_relation = _aspect_relation_tr(aspect)
     natal_point = str(event.get("natal_point") or "").strip().upper()
+    target_label = POINT_TR.get(
+        natal_point,
+        natal_point.title() if natal_point else "bu noktaya",
+    )
     start_full = _life_scene(transit_house, detail="full")
     end_full = _target_life_label(natal_point, target_house)
     secondary = _secondary_context_sentence(card, event, target_house)
-    base = (
-        f"Önce {start_full} tarafında bir hareket başlıyor. "
-        f"Sonra bunun etkisi {end_full} alanında belirginleşiyor."
-    )
+    if transit_house and target_house:
+        base = (
+            f"{transit} {target_label} hattına {aspect_relation} için etki önce "
+            f"{transit_house}. Evde {start_full} tarafında başlıyor. "
+            f"Sonra {target_house}. Evde {end_full} alanında belirginleşiyor."
+        )
+    elif transit_house:
+        base = (
+            f"{transit} {target_label} hattına {aspect_relation} için etki en çok "
+            f"{transit_house}. Evde {start_full} tarafında açılıyor."
+        )
+    elif target_house:
+        base = (
+            f"{transit} {target_label} hattına {aspect_relation} için ana sonuç "
+            f"{target_house}. Evde {end_full} alanında görünür oluyor."
+        )
+    else:
+        base = (
+            f"{transit} {target_label} hattına {aspect_relation} için tema görünür hale geliyor."
+        )
     if secondary:
         base = f"{base} {secondary}"
     return _dedupe_sentences(base)
@@ -918,6 +1393,18 @@ def why_now_tr(event: Mapping[str, Any]) -> str:
         "MC": "Yön ve kariyer hattı aktif.",
         "IC": "Ev ve iç güven hattı aktif.",
     }.get(natal_point, "")
+    houses = event.get("houses") if isinstance(event.get("houses"), Mapping) else {}
+    transit_house = _safe_int(houses.get("transit_in_natal_house"))
+    target_house = _safe_int(houses.get("natal_point_house"))
+    house_line = ""
+    if transit_house and target_house:
+        house_line = (
+            f"Bu açı {transit_house}. Evden çalışıp {target_house}. Ev sonucunu tetikliyor."
+        )
+    elif transit_house:
+        house_line = f"Tetik en çok {transit_house}. Evde çalışıyor."
+    elif target_house:
+        house_line = f"Sonuç en çok {target_house}. Ev alanında görünür oluyor."
 
     phase = str(event.get("phase") or "").strip().lower()
     phase_line = {
@@ -938,7 +1425,13 @@ def why_now_tr(event: Mapping[str, Any]) -> str:
             axis_line = f"{axis_line[:-1]}; {phase_fragment}."
             phase_line = ""
 
+    if house_line and axis_line:
+        house_line = f"{house_line[:-1]}; {axis_line[0].lower() + axis_line[1:]}"
+        axis_line = ""
+
     lines = [orb_line, duration_line]
+    if house_line:
+        lines.append(house_line)
     if axis_line:
         lines.append(axis_line)
     if phase_line and normalize(phase_line) not in normalize(" ".join(lines)):

@@ -1,0 +1,471 @@
+{
+  "@@locale": "en",
+  "appTitle": "Astrologi AI",
+  "supabaseConfigErrorTitle": "Supabase Configuration Error",
+  "supabaseConfigErrorBody": "Supabase could not start. Please provide SUPABASE_URL and SUPABASE_ANON_KEY.",
+  "supabaseConfigErrorExample": "Example:\nflutter run --dart-define=SUPABASE_URL=https://YOUR_PROJECT.supabase.co --dart-define=SUPABASE_ANON_KEY=YOUR_KEY",
+  "loginTitle": "Welcome back",
+  "loginBody": "Sign in and continue where you left off.",
+  "emailLabel": "Email",
+  "passwordLabel": "Password",
+  "confirmPasswordLabel": "Confirm password",
+  "nameLabel": "Name",
+  "birthDateLabel": "Birth date (YYYY-MM-DD)",
+  "birthTimeLabel": "Birth time (HH:mm)",
+  "cityLabel": "City",
+  "countryLabel": "Country",
+  "loginSignIn": "Sign in",
+  "authOr": "or",
+  "loginContinueWithGoogle": "Continue with Google",
+  "loginCreateAccount": "Create account",
+  "loginForgotPassword": "Forgot password",
+  "loginPasswordResetSent": "Password reset email sent",
+  "loginGoogleStartFailed": "Google sign-in flow could not be started.",
+  "registerTopLabel": "Sign up",
+  "registerTopCenter": "new account",
+  "registerSectionLabel": "Start",
+  "registerTitle": "Create your profile rhythm",
+  "registerBody": "Create your account, then complete your profile and birth layers inside the same typographic system.",
+  "registerCreateAccount": "Create account",
+  "registerBackToLogin": "Back to login",
+  "registerPasswordsDoNotMatch": "Passwords do not match.",
+  "onboardingSectionLabel": "Onboarding",
+  "onboardingBirthTopLabel": "Birth",
+  "onboardingBirthTopCenter": "core data",
+  "onboardingBirthTitle": "Complete your birth axis",
+  "onboardingBirthBody": "This data goes to the backend as-is; this screen only aligns the surface with the profile language.",
+  "onboardingProfileTopLabel": "Profile",
+  "onboardingProfileTopCenter": "setup",
+  "onboardingProfileTitle": "Set up identity and birth in one place",
+  "onboardingProfileBody": "The form logic stays the same; only the typographic spine is now aligned with the profile page.",
+  "commonContinue": "Continue",
+  "commonRetry": "Retry",
+  "commonOpen": "Open",
+  "commonSave": "Save",
+  "tabsHome": "Home",
+  "tabsBond": "Bond",
+  "tabsStoryStudio": "Story Studio",
+  "tabsAiChat": "AI Chat",
+  "tabsProfile": "Profile",
+  "homePlansTitle": "Your plans",
+  "homePlansSubtitle": "Your weekly flow and the collective pulse side by side.",
+  "homeSignalFallback": "Today's highlighted theme.",
+  "homeActivePeriodTitle": "Active period",
+  "homeActivePeriodBody": "The transit theme working in the background of this period opens here.",
+  "homeStoryLoading": "Today's story is loading...",
+  "homeStoryUnavailable": "A short reading for today isn't ready yet.",
+  "homeDailyTransitLabel": "Daily transit",
+  "homeHeroOpening": "Today's opening",
+  "homeHeroPrompt": "What is opening in me today?",
+  "homeHeroQuestionTitle": "Today's opening question",
+  "homeGoToCalendar": "Go to calendar",
+  "homeCollectivePulse": "Collective pulse",
+  "homeDayPlan": "Today's plan",
+  "homeCalendarTitle": "Calendar",
+  "homeWeekFlowOpen": "Open the flow ahead for the next week.",
+  "homeWeekView": "1-week view",
+  "homeWeeklyCalendar": "Weekly calendar",
+  "homeWeeklyCalendarBody": "Open the current calendar flow from the compact view and see the full week.",
+  "homePeriodCardsPending": "Period cards will appear here when ready.",
+  "homeActiveThemePending": "Waiting for active theme",
+  "homeActiveThemeBody": "The active theme from the period flow will appear here as a compact card.",
+  "homeOpenTheme": "Open theme",
+  "homeNowActive": "Active now",
+  "homeOpenTopicsTitle": "Open themes",
+  "homeOpenTopicsBody": "Enter all themes currently active in the collective from here.",
+  "homeAllTopics": "All themes",
+  "homePrimaryMeta": "Primary",
+  "homeCollectiveMeta": "Collective",
+  "homeWeekMeta": "Week",
+  "homeTimingMeta": "Timing",
+  "homeOpenDetail": "Open detail",
+  "homeDataLoadFailed": "Home data could not be loaded: {error}",
+  "@homeDataLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "homeRequestTimedOut": "Today's home reading took too long to load. The screen was opened with lighter data; try again in a moment.",
+  "authGateBirthDataErrorTitle": "Your session is still active",
+  "authGateBirthDataErrorBody": "Supabase is unreachable right now, so we cannot verify your birth data. We keep you on this retry screen instead of redirecting you to onboarding.",
+  "sessionExpiredLoginAgain": "Session expired. Please log in again.",
+  "errorFailedToLoadBirthData": "Failed to load birth data: {error}",
+  "@errorFailedToLoadBirthData": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "errorFailedToSaveBirthData": "Failed to save birth data: {error}",
+  "@errorFailedToSaveBirthData": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "errorPleaseFillBirthFields": "Please fill birth date, time, city and country.",
+  "errorFailedToLoadProfile": "Failed to load profile: {error}",
+  "@errorFailedToLoadProfile": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "errorFailedToSaveProfile": "Failed to save profile: {error}",
+  "@errorFailedToSaveProfile": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "errorPleaseFillAllFields": "Please fill all fields.",
+  "menuQuickAccess": "Quick access",
+  "menuEditProfile": "Edit profile",
+  "menuEditProfileSubtitle": "Open your details and profile settings.",
+  "menuManagePeople": "Manage people",
+  "menuAddPerson": "Add person",
+  "menuPeopleSubtitle": "Open your saved people list for bond and social flows.",
+  "menuCalendar": "Calendar and timing",
+  "menuCalendarSubtitle": "Daily rhythm, periods and best times.",
+  "menuArchetypeExperience": "Archetype experience",
+  "menuCompleteBirthData": "Complete birth data",
+  "menuArchetypeSubtitle": "Open your identity axis in the deeper experience.",
+  "menuCompleteBirthDataSubtitle": "Complete missing data to unlock archetype screens.",
+  "menuPreferences": "Preferences",
+  "menuThemeMode": "Theme mode",
+  "themeModeDark": "Dark",
+  "themeModeLight": "Light",
+  "menuLanguage": "Language",
+  "menuNotificationPreferences": "Notification preferences",
+  "menuDailySummary": "Daily summary",
+  "menuDailySummarySubtitle": "A short rhythm briefing in the morning",
+  "menuSkyEvents": "Sky events",
+  "menuSkyEventsSubtitle": "Highlighted transit and event alerts",
+  "menuSocialActivity": "Social activity",
+  "menuSocialActivitySubtitle": "Forum and relationship-side updates",
+  "menuMembership": "Membership",
+  "menuPremiumSubscription": "Premium subscription",
+  "menuPremiumInterestSubtitle": "You're on the list. We'll let you know when Premium opens.",
+  "menuPremiumDefaultSubtitle": "A deeper layer for longer readings and extended flows.",
+  "menuInList": "On list",
+  "menuSoon": "Soon",
+  "menuSignOut": "Sign out",
+  "menuSignOutSubtitle": "Close the current session and return to login.",
+  "menuPeopleCount": "{count} people",
+  "@menuPeopleCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "menuArchetypeReady": "Archetype ready",
+  "menuBirthDataMissing": "Birth data missing",
+  "premiumSheetTitle": "Premium subscription",
+  "premiumSheetBody": "A premium layer is being prepared for longer readings, more depth and early access.",
+  "premiumBulletIdentity": "Long-form identity and relationship readings",
+  "premiumBulletTiming": "Extra timing and period depth",
+  "premiumBulletEarlyAccess": "Early access to new features",
+  "premiumNotifyMe": "Notify me",
+  "premiumAlreadyInList": "You're on the list",
+  "premiumNotifySnackbar": "We'll notify you when Premium opens.",
+  "homeGreeting": "Hello {name}",
+  "@homeGreeting": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "homeTodayLabel": "Today {date}",
+  "@homeTodayLabel": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "homeGreetingFallbackName": "you",
+  "periodDetailTransitTitle": "Transit Detail",
+  "periodDetailPeriodTitle": "Period Detail",
+  "periodDetailTodayEyebrow": "Today",
+  "periodDetailPeriodEyebrow": "Period",
+  "periodDetailContextLabel": "Context",
+  "periodDetailContextTitle": "Part of a larger period",
+  "periodDetailCoreLabel": "Core",
+  "periodDetailCoreTitle": "The central line of this effect",
+  "periodDetailSupportingLabel": "Supporting",
+  "periodDetailSupportingTitle": "Other layers opening up",
+  "periodDetailTechnicalLabel": "Technical",
+  "periodDetailTechnicalTitle": "Background notes",
+  "calendarPanelLabel": "Calendar",
+  "calendarMonthMode": "Month",
+  "calendarWeekMode": "Week",
+  "calendarMonthIntro": "Tap a day from the month view to open that day's page.",
+  "calendarWeekIntro": "Focus on the selected week, open a day, and move left-right through detail.",
+  "calendarPickDate": "Pick date",
+  "calendarDayThemeLabel": "Day theme",
+  "calendarOpenDay": "Open day",
+  "calendarSelectedDayFallback": "When you tap a day, its cards, markers, and longer-period context open in detail.",
+  "calendarContextLabel": "Context",
+  "calendarLongTermEffectTitle": "Long-term effect",
+  "calendarLongTermEffectFallback": "There is a longer-running period working behind this day.",
+  "calendarLongTermEffectReadMore": "You can read the period story running in the background of the day more fully on the day page.",
+  "calendarPreviewFallback": "Quickly scan nearby days, tap one, and move into that day's page.",
+  "profileAvatarUpdated": "Profile photo updated",
+  "profileAvatarUploadFailed": "Profile photo could not be uploaded: {error}",
+  "@profileAvatarUploadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "profileInterpretationUnavailableTitle": "Reading stream unavailable",
+  "profileBirthDataPendingTitle": "Birth data pending",
+  "profileBirthDataPendingBodyDark": "This screen is filled by `core_story_ui`, `profile_narrative`, `personality_imprint`, and `insight_modules`. When you complete your birth date, time, and place from profile settings, the content opens automatically.",
+  "profileBirthDataPendingBodyLight": "This screen fills with core story, profile narrative, and insight content. When you complete your birth date, time, and place, the content opens automatically.",
+  "profileIdentityAxis": "Identity axis",
+  "profileMainStory": "Your main story",
+  "profileOpenFullReading": "Open full reading",
+  "profileSignatureLayers": "Signature layers",
+  "profileSideThemes": "Side themes",
+  "profileWarning": "Warning",
+  "profileBack": "Go back",
+  "profileOpenRelationshipFlow": "Open relationship flow",
+  "profileOpenTimingFlow": "Open timing flow",
+  "profileReturnToChartFlow": "Return to chart flow",
+  "profileConnectionsLabel": "Connections",
+  "profileConnectionsTitle": "People you added",
+  "profileConnectionsBody": "Your real friend list opened from following and followers appears here.",
+  "profileFriendLabel": "Friend",
+  "profileLocationMissing": "location missing",
+  "profileFollowing": "Following",
+  "profileFollowers": "Followers",
+  "profileOpenSinglePersonProfile": "{name}'s profile",
+  "@profileOpenSinglePersonProfile": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "profileOpenManyPersonProfiles": "View {count} friend profiles",
+  "@profileOpenManyPersonProfiles": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "profileSunLabel": "Sun",
+  "profileRisingLabel": "Rising",
+  "profileMoonLabel": "Moon",
+  "profileIdentityLabel": "IDENTITY",
+  "profileIdentityReading": "Identity reading",
+  "profileOpenIdentityReading": "Open identity reading",
+  "profileGenerateResult": "Generate result",
+  "profileConfidenceScore": "Confidence score {score}",
+  "@profileConfidenceScore": {
+    "placeholders": {
+      "score": {}
+    }
+  },
+  "profileNatalLoadFailed": "Natal reading could not be loaded: {error}",
+  "@profileNatalLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "profileTimingFlowLabel": "TIMING FLOW",
+  "profileTimingFlowUnavailable": "Timing flow unavailable",
+  "profileTimingFlowNotReady": "Timing flow not ready",
+  "profileTimingFlowNotReadyBody": "When the period summary arrives, only a short teaser and upcoming peaks will appear here.",
+  "profileCurrentPeriod": "Current period",
+  "profileUpcomingPeaks": "Upcoming peaks",
+  "profileNextLabel": "Next: {label}",
+  "@profileNextLabel": {
+    "placeholders": {
+      "label": {}
+    }
+  },
+  "profileMoreOpen": "Open more",
+  "profileNatal": "Natal",
+  "profileRelationship": "Relationship",
+  "profileTiming": "Timing",
+  "profileMainReading": "Main reading",
+  "profileShadowGrowth": "Shadow & growth",
+  "profileIdentityEyebrow": "Identity",
+  "profileIdentityFlow": "Identity flow",
+  "profileIdentityTone": "Identity tone",
+  "profileIdentitySummary": "Identity summary",
+  "profileArchetypeBirthDataRequired": "Birth date, time, and place are required before opening the archetype experience.",
+  "profileIdentityFlowSubtitleFallback": "See a longer read of how your identity is perceived from the outside and inside here.",
+  "profileNarrativeFlowSubtitleFallback": "Read more clearly how this section works in you here.",
+  "profileSignatureCatalogSubtitle": "In the card list you only see the titles; tap one card to open only its detail.",
+  "profileSignatureCardSubtitleFallback": "The full explanation of this personality signature card opens here.",
+  "profileSideThemesFlowSubtitle": "Other sides that complete your main portrait stand out here.",
+  "profileInsightFlowSubtitleFallback": "This section opens the full flow on the axis of defense and growth.",
+  "profileOpenDefensePattern": "Open your defense pattern",
+  "profileSeeArchetype": "See your archetype",
+  "profileArchetypeBodyReady": "Open the active identity, protection, and tension lines in your chart in a single experience.",
+  "profileArchetypeBodyPending": "When you complete your birth date, time, and place, the archetype experience will open here.",
+  "profileCompleteBirthData": "Complete your birth data",
+  "profileOnlineFriends": "ONLINE FRIENDS",
+  "profileQuietSocialCircle": "A calmer social circle",
+  "profileIdentitySummaryFallback": "Your identity axis opens from the profile narrative.",
+  "profileNarrativeLoading": "Profile narrative is being pulled from the backend reading...",
+  "profilePlacementsAndAspects": "PLACEMENTS & ASPECTS",
+  "profileOpenSideThemes": "Open side themes",
+  "profilePlacement": "Placement",
+  "profileAspect": "Aspect",
+  "profileSignTone": "Sign tone",
+  "profileFeaturedTheme": "Featured theme",
+  "profileRuler": "Ruler",
+  "profileStrongestRuler": "Strongest ruler: {name}",
+  "@profileStrongestRuler": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "profileSignRuler": "{sign} ruler",
+  "@profileSignRuler": {
+    "placeholders": {
+      "sign": {}
+    }
+  },
+  "profileChartBackbone": "Chart backbone",
+  "profileHouseEmphasis": "{house}. house emphasis",
+  "@profileHouseEmphasis": {
+    "placeholders": {
+      "house": {
+        "type": "int"
+      }
+    }
+  },
+  "profileEarthInfluential": "Earth influential",
+  "profileOutsideInside": "Outside and inside",
+  "profileMindWorks": "How your mind works",
+  "profileSelfProtection": "How you protect yourself",
+  "profileIntimacyOpens": "How intimacy opens in you",
+  "profileHoldReleaseBalance": "Balance between holding and releasing",
+  "profileWhereOpportunityFlows": "Where opportunity flows",
+  "profileRecognizableLine": "The line that is easily recognized in you",
+  "profileTwoInnerDirections": "How your two inner directions work",
+  "profileStandoutSide": "The side that stands out in you",
+  "profileElementFireDominant": "Fire dominant",
+  "profileElementWaterDominant": "Water dominant",
+  "profileElementAirDominant": "Air dominant",
+  "profileElementEarthDominant": "Earth dominant",
+  "profileBirthPlacePending": "Birth place pending",
+  "profileAgeLabel": "{age} years old",
+  "@profileAgeLabel": {
+    "placeholders": {
+      "age": {
+        "type": "int"
+      }
+    }
+  },
+  "calendarSelectedDaySummaryPrompt": "Tap the selected day to open its rhythm, cards, and long-term effect.",
+  "calendarMarkerDirectionChange": "Direction change",
+  "calendarMarkerNewArea": "New area",
+  "calendarMarkerRetrograde": "Retrograde",
+  "calendarMarkerPeak": "Peak",
+  "calendarMarkerBeginning": "Beginning",
+  "calendarMarkerThreshold": "Threshold",
+  "calendarMarkerMultipleThresholds": "multiple thresholds",
+  "calendarFallbackSensitiveDay": "Sensitive day.",
+  "calendarFallbackHighTempo": "High tempo.",
+  "calendarFallbackBusyDay": "Busy day.",
+  "calendarFallbackTwoSignals": "Two things stand out today.",
+  "calendarFallbackOneSignal": "One thing stands out.",
+  "calendarFallbackMixedDay": "Today feels a bit mixed.",
+  "calendarFallbackCalmDay": "Today is calm.",
+  "calendarFallbackHooked": "You may get snagged on things quickly today.",
+  "calendarFallbackSeveralThings": "Several things may draw your attention at once.",
+  "calendarFallbackOneThingPushes": "One thing is pushing the day's rhythm forward a bit.",
+  "calendarFallbackSimpleRhythm": "Today's rhythm is flowing a bit more simply.",
+  "calendarFallbackBreath": "A breath will help.",
+  "calendarFallbackDoNotPileOn": "Don't load everything on at once.",
+  "calendarFallbackDoNotRush": "Don't rush.",
+  "calendarFallbackLeaveSimple": "Keep today a little simpler.",
+  "calendarHouseTouchpointHint": "It may show up most around {area}.",
+  "@calendarHouseTouchpointHint": {
+    "placeholders": {
+      "area": {}
+    }
+  },
+  "calendarEditorialCurrentFallback": "The rhythm of the day becomes a bit more readable here.",
+  "calendarEditorialChangeFallback": "Notice which area of your life this shows up in most.",
+  "calendarEditorialDirectionFallback": "The theme does not end here; it will take more shape over the coming days.",
+  "calendarEditorialSecondaryFallback": "This is a second layer working alongside it in the background.",
+  "calendarPhaseIntensifying": "Intensifying",
+  "calendarPhasePeakToday": "Peaking today",
+  "calendarPhaseReleasing": "Starting to release",
+  "calendarTimingPeak": "Peak {date}",
+  "@calendarTimingPeak": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "calendarTimingStart": "Start {date}",
+  "@calendarTimingStart": {
+    "placeholders": {
+      "date": {}
+    }
+  },
+  "calendarTimingPrefix": "Timing: {timing}",
+  "@calendarTimingPrefix": {
+    "placeholders": {
+      "timing": {}
+    }
+  },
+  "calendarBestWindow": "Best window this week: {labels}",
+  "@calendarBestWindow": {
+    "placeholders": {
+      "labels": {}
+    }
+  },
+  "calendarCombinedTitle": "Unified calendar",
+  "calendarCombinedBody": "Follow the month and week flow on the same surface. When you tap a day, that day's page opens and the long-term context stays intact.",
+  "calendarProfileLoadFailed": "Profile data could not be loaded.",
+  "calendarBirthDataRequiredTitle": "Birth data required for calendar",
+  "calendarBirthDataRequiredBody": "When birth date, time, and place are completed, the calendar opens.",
+  "calendarSectionNow": "What's happening now",
+  "calendarSelectedDayWindows": "Selected day windows",
+  "calendarSectionChange": "What this changes in you",
+  "calendarSectionDirection": "Where it's going",
+  "calendarSectionBackground": "What is working underneath",
+  "calendarSectionSecondaryTheme": "Additional theme in play",
+  "calendarOpenMainTheme": "Open main theme",
+  "calendarOpenPeriod": "Open period",
+  "calendarWhyItMatters": "Why does this matter?",
+  "calendarLongTermLabel": "Long term",
+  "calendarLongTermActiveTodayTitle": "The long-term story is still active today",
+  "calendarLongTermActiveTodayBody": "This is not today itself; it is the longer story carrying today from the background.",
+  "calendarOpenCalendar": "Open calendar",
+  "calendarLongTermEffectPrefix": "Long-term effect: {title}",
+  "@calendarLongTermEffectPrefix": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "calendarBackgroundActive": "active in the background",
+  "calendarDailyReadingPreparing": "The main reading for this day is being prepared.",
+  "calendarSelectedDayCalm": "Selected day is calm",
+  "calendarNoDistinctEventCard": "There is no standout event card for this day. You can choose another day from the calendar and check the flow.",
+  "calendarMonthPanelBody": "The month view that behaves like a calendar lives here. Tap a day and open daily data in the same flow.",
+  "calendarTimingPersonalized": "Your personal timing",
+  "calendarTimingPersonalizedBody": "You can read the periods opening ahead of you here in a calmer order.",
+  "calendarPeriodLabel": "Period",
+  "calendarCurrentPeriodTheme": "The main theme of this period",
+  "calendarTimingPreparing": "Timing is being prepared",
+  "calendarTimingPreparingBody": "The editorial list of your personal periods is loading.",
+  "calendarNoSelectedPeriod": "No selected period",
+  "calendarNoSelectedPeriodBody": "You'll see it here when active period cards are ready.",
+  "calendarPeakListShort": "Short peak list",
+  "calendarPeakListBody": "Follow the dates when the effects ahead of you get stronger, in order.",
+  "calendarPeriodCardNotFound": "No period card found",
+  "calendarPeriodCardNotFoundBody": "No period marker/card was found.",
+  "calendarPeriodCardsTitle": "Period cards",
+  "calendarTransitTimeout": "The transit summary did not return in time. I lightened the period screen; can you try again?",
+  "calendarInvalidDateOrProfile": "The submitted date or profile fields are invalid (422).",
+  "calendarPeriodDataUnavailable": "Period data could not be loaded.",
+  "calendarPeriodCoreFallbackTitle": "The main theme of this period",
+  "calendarPeriodCoreFallbackBody": "The period summary is not ready yet.",
+  "calendarTodayForeground": "This stands out most today.",
+  "calendarPeriodFromBackgroundToday": "Today, rather than a short trigger, the theme working in the background stands out.",
+  "aiOnline": "Online",
+  "aiIntroMessage": "Hello, I'm Aila. If you want, write what you're feeling today, something on your mind, or a chart detail you're curious about.",
+  "aiUserLabel": "You",
+  "aiNow": "Now",
+  "aiComposerHint": "Write to Aila..."
+}

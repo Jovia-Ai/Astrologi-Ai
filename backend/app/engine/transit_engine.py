@@ -9,7 +9,12 @@ import time
 
 import swisseph as swe
 
-from app.astro.chart_engine.builder import fetch_location, julian_day
+from app.astro.chart_engine.builder import (
+    LocationData,
+    fetch_location,
+    julian_day,
+    resolve_location,
+)
 from app.astro.chart_engine.positions import PLANET_CODES, get_zodiac_sign
 from app.helpers.meta_detectors import ELEMENT_MAP, MODALITY_MAP
 from app.helpers.transit_normalize import (
@@ -56,19 +61,39 @@ def build_transit_report(
     transit_place: str,
     options: Mapping[str, Any] | None,
     assumptions: Sequence[str],
+    birth_latitude: float | None = None,
+    birth_longitude: float | None = None,
+    birth_timezone: str | None = None,
+    transit_latitude: float | None = None,
+    transit_longitude: float | None = None,
+    transit_timezone: str | None = None,
 ) -> Dict[str, Any]:
     cfg = _normalize_options(options)
+    natal_location = resolve_location(
+        birth_place,
+        latitude=birth_latitude,
+        longitude=birth_longitude,
+        timezone=birth_timezone,
+    )
+    transit_location = resolve_location(
+        transit_place,
+        latitude=transit_latitude,
+        longitude=transit_longitude,
+        timezone=transit_timezone,
+    )
 
     natal = _build_chart_snapshot(
         date_value=birth_date,
         time_value=birth_time,
         place_value=birth_place,
+        location=natal_location,
         options=cfg,
     )
     transit = _build_chart_snapshot(
         date_value=transit_date,
         time_value=transit_time,
         place_value=transit_place,
+        location=transit_location,
         options=cfg,
     )
 
@@ -92,7 +117,7 @@ def build_transit_report(
         natal_snapshot=natal,
         house_overlays=overlays,
         transit_datetime_utc=transit["datetime_utc"],
-        transit_place=transit_place,
+        transit_location=transit_location,
         options=cfg,
     )
     astro_full = _build_astro_full(
@@ -162,18 +187,38 @@ def build_transit_event_timing(
     transit_place: str,
     options: Mapping[str, Any] | None,
     selector: Mapping[str, Any],
+    birth_latitude: float | None = None,
+    birth_longitude: float | None = None,
+    birth_timezone: str | None = None,
+    transit_latitude: float | None = None,
+    transit_longitude: float | None = None,
+    transit_timezone: str | None = None,
 ) -> Dict[str, Any]:
     cfg = _normalize_options(options)
+    natal_location = resolve_location(
+        birth_place,
+        latitude=birth_latitude,
+        longitude=birth_longitude,
+        timezone=birth_timezone,
+    )
+    transit_location = resolve_location(
+        transit_place,
+        latitude=transit_latitude,
+        longitude=transit_longitude,
+        timezone=transit_timezone,
+    )
     natal = _build_chart_snapshot(
         date_value=birth_date,
         time_value=birth_time,
         place_value=birth_place,
+        location=natal_location,
         options=cfg,
     )
     transit = _build_chart_snapshot(
         date_value=transit_date,
         time_value=transit_time,
         place_value=transit_place,
+        location=transit_location,
         options=cfg,
     )
     aspects = _build_aspects(
@@ -213,17 +258,16 @@ def build_transit_event_timing(
     if matched is None:
         return {"timing": None}
 
-    location = fetch_location(transit_place)
     transit_local_dt, transit_utc_dt = parse_birth_datetime_components(
         transit_date,
         transit_time,
-        location.timezone,
+        transit_location.timezone,
     )
 
     timing = _sample_display_timing(
         aspect_entry=matched,
         transit_dt=transit_utc_dt,
-        location=location,
+        location=transit_location,
         options=cfg,
         bucket=_duration_category(str((matched.get("transit") or {}).get("body") or "")),
         transit_date_utc_day=transit_utc_dt.date().isoformat(),
@@ -248,6 +292,12 @@ def build_transit_window_report(
     max_events: int,
     orb_hysteresis_deg: float,
     assumptions: Sequence[str],
+    birth_latitude: float | None = None,
+    birth_longitude: float | None = None,
+    birth_timezone: str | None = None,
+    transit_latitude: float | None = None,
+    transit_longitude: float | None = None,
+    transit_timezone: str | None = None,
 ) -> Dict[str, Any]:
     cfg = _normalize_options(options)
     window_days = max(1, min(int(window_days), 365))
@@ -255,14 +305,26 @@ def build_transit_window_report(
     max_events = max(1, int(max_events))
     orb_hysteresis_deg = max(0.0, float(orb_hysteresis_deg))
 
+    natal_location = resolve_location(
+        birth_place,
+        latitude=birth_latitude,
+        longitude=birth_longitude,
+        timezone=birth_timezone,
+    )
     natal = _build_chart_snapshot(
         date_value=birth_date,
         time_value=birth_time,
         place_value=birth_place,
+        location=natal_location,
         options=cfg,
     )
 
-    transit_location = fetch_location(transit_place)
+    transit_location = resolve_location(
+        transit_place,
+        latitude=transit_latitude,
+        longitude=transit_longitude,
+        timezone=transit_timezone,
+    )
     transit_local_dt, transit_utc_dt = parse_birth_datetime_components(
         transit_date,
         transit_time,
@@ -400,21 +462,26 @@ def _build_chart_snapshot(
     date_value: str,
     time_value: str,
     place_value: str,
+    location: LocationData | None,
     options: TransitOptions,
 ) -> Dict[str, Any]:
-    location = fetch_location(place_value)
-    local_dt, utc_dt = parse_birth_datetime_components(date_value, time_value, location.timezone)
+    resolved_location = location or resolve_location(place_value)
+    local_dt, utc_dt = parse_birth_datetime_components(
+        date_value,
+        time_value,
+        resolved_location.timezone,
+    )
     jd_ut = julian_day(utc_dt)
 
     try:
-        swe.set_topo(location.longitude, location.latitude, 0.0)
+        swe.set_topo(resolved_location.longitude, resolved_location.latitude, 0.0)
     except Exception:
         pass
 
     cusps, angles_raw = _calc_houses(
         jd_ut,
-        location.latitude,
-        location.longitude,
+        resolved_location.latitude,
+        resolved_location.longitude,
         house_system=options.house_system,
     )
     cusp_sequence = [0.0, *cusps]
@@ -426,9 +493,9 @@ def _build_chart_snapshot(
         "_jd_ut": jd_ut,
         "datetime_utc": utc_dt.isoformat(),
         "location": {
-            "lat": location.latitude,
-            "lon": location.longitude,
-            "tz": location.timezone,
+            "lat": resolved_location.latitude,
+            "lon": resolved_location.longitude,
+            "tz": resolved_location.timezone,
         },
         "house_system": options.house_system,
         "zodiac": options.zodiac,
@@ -895,7 +962,7 @@ def _build_display(
     natal_snapshot: Mapping[str, Any],
     house_overlays: Sequence[Mapping[str, Any]],
     transit_datetime_utc: str,
-    transit_place: str,
+    transit_location: LocationData,
     options: TransitOptions,
 ) -> Dict[str, Any]:
     items: list[Dict[str, Any]] = []
@@ -904,9 +971,8 @@ def _build_display(
     transit_dt = datetime.fromisoformat(transit_datetime_utc)
     transit_date_utc_day = transit_dt.date().isoformat()
     natal_birth_signature = _natal_birth_signature(natal_snapshot)
-    location = fetch_location(transit_place)
     try:
-        swe.set_topo(location.longitude, location.latitude, 0.0)
+        swe.set_topo(transit_location.longitude, transit_location.latitude, 0.0)
     except Exception:
         pass
 
@@ -979,7 +1045,7 @@ def _build_display(
         timing = _sample_display_timing(
             aspect_entry=aspect_entry,
             transit_dt=transit_dt,
-            location=location,
+            location=transit_location,
             options=options,
             bucket=str(entry.get("bucket") or ""),
             transit_date_utc_day=transit_date_utc_day,

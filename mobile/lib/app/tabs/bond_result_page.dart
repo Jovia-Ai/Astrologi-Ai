@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mobile/app/timing/turkish_text.dart';
 
 import '../people/friend_profile_page.dart';
 import '../profile/profile_models.dart';
@@ -743,8 +744,7 @@ class BondResultPage extends StatelessWidget {
           .split(RegExp(r'[._-]+'))
           .where((part) => part.trim().isNotEmpty)
           .map((part) {
-            final word = part.trim();
-            return word[0].toUpperCase() + word.substring(1);
+            return turkishCapitalize(part.trim());
           })
           .toList();
       if (parts.isEmpty) {

@@ -126,8 +126,6 @@ class ProfileTypography {
         letterSpacing: 1.7,
       ),
       pageTitle: TextStyle(
-        fontFamily: 'Baskerville',
-        fontFamilyFallback: ['Times New Roman', 'Georgia'],
         fontSize: 36,
         height: 40 / 36,
         fontWeight: FontWeight.w500,
@@ -135,8 +133,6 @@ class ProfileTypography {
         letterSpacing: -1.24,
       ),
       sectionTitle: TextStyle(
-        fontFamily: 'Baskerville',
-        fontFamilyFallback: ['Times New Roman', 'Georgia'],
         fontSize: 30,
         height: 34 / 30,
         fontWeight: FontWeight.w500,
@@ -179,8 +175,6 @@ class ProfileTypography {
         letterSpacing: 0.02,
       ),
       heroEditorial: TextStyle(
-        fontFamily: 'Baskerville',
-        fontFamilyFallback: ['Times New Roman', 'Georgia'],
         fontSize: 52,
         height: 54 / 52,
         fontWeight: FontWeight.w500,

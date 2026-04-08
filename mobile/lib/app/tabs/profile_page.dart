@@ -5,6 +5,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mobile/app/api/api_client.dart';
@@ -19,6 +20,7 @@ import 'package:mobile/app/tabs/calendar_hub_page.dart';
 import 'package:mobile/app/tabs/profile_detail_flow_page.dart';
 import 'package:mobile/app/tabs/profile_relationship_preview.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
+import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/app/widgets/jovia_app_menu_drawer.dart';
 import 'package:mobile/design/astro/astro_theme_extension.dart';
@@ -26,6 +28,8 @@ import 'package:mobile/design/astro/astro_theme_generator.dart';
 import 'package:mobile/design/astro/element_scores.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 const Color _kProfilePosterBg = Color(0xFF050505);
 const Color _kProfilePosterSurface = Color(0xFF050505);
@@ -37,6 +41,13 @@ const Color _kProfilePosterLilac = Color(0xFFB58DFF);
 const Color _kProfilePosterBlush = Color(0xFFFFC5E7);
 const Color _kProfilePosterMint = Color(0xFF9EF0E7);
 const Color _kProfilePosterButter = Color(0xFFFFE5A4);
+const int _kProfilePlacementPreviewLimit = 2;
+
+AppLocalizations _currentProfileL10n() {
+  final localeName = Intl.getCurrentLocale();
+  final languageCode = localeName.split(RegExp('[-_]')).first;
+  return lookupAppLocalizations(Locale(languageCode));
+}
 
 @immutable
 class _ProfilePosterPalette {
@@ -407,7 +418,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         .map((item) => item.toNarrativeCard())
                         .take(12)
                         .toList();
-              final signatureCards = allSignatureCards.take(3).toList();
+              final signatureCards = allSignatureCards
+                  .take(_kProfilePlacementPreviewLimit)
+                  .toList();
               final sideThemes = _supportingThreads.take(3).toList();
               final mainHeadlineText = _profilePosterLeadText(
                 headlineCard: headlineCard ?? heroNarrativeCard,
@@ -522,24 +535,25 @@ class _ProfilePageState extends State<ProfilePage> {
                       identityHeadline.isEmpty &&
                       curatedCards.isEmpty) ...[
                     _ProfilePosterMessageCard(
-                      title: 'Yorum akışı alınamadı',
+                      title: context.l10n.profileInterpretationUnavailableTitle,
                       body: _natalError!,
                     ),
                     const SizedBox(height: 20),
                   ],
                   if (!_hasBirthData(profile)) ...[
                     _ProfilePosterMessageCard(
-                      title: 'Doğum bilgisi bekleniyor',
-                      body:
-                          'Bu ekran `core_story_ui`, `profile_narrative`, `personality_imprint` ve `insight_modules` alanlarıyla doluyor. Profil ayarlarından doğum tarihini, saati ve yeri tamamladığında içerik otomatik açılır.',
+                      title: context.l10n.profileBirthDataPendingTitle,
+                      body: context.l10n.profileBirthDataPendingBodyDark,
                     ),
                   ] else ...[
                     if (_isNatalLoading &&
                         identitySummary.isEmpty &&
                         curatedCards.isEmpty)
                       const _ProfilePosterLoadingCard(),
-                    const Center(
-                      child: _ProfilePosterSectionTag(label: 'Kimlik ekseni'),
+                    Center(
+                      child: _ProfilePosterSectionTag(
+                        label: context.l10n.profileIdentityAxis,
+                      ),
                     ),
                     const SizedBox(height: 16),
                     Center(
@@ -597,7 +611,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     if (_segmentIndex == 0) ...[
                       if (showLeadSection) ...[
                         _ProfilePosterLeadSection(
-                          title: 'Ana Hikayen',
+                          title: context.l10n.profileMainStory,
                           subtitle: '',
                           intro: mainHeadlineText,
                           body: leadSectionBody,
@@ -617,12 +631,12 @@ class _ProfilePageState extends State<ProfilePage> {
                           body: heroNarrativeCard.previewBody,
                           chips: heroNarrativeCard.chips,
                           illustrationAsset: JoviaIllustrationAsset.rocks,
-                          actionLabel: 'Tam okumayı aç',
+                          actionLabel: context.l10n.profileOpenFullReading,
                           nextLabel: teaserCards.isNotEmpty
                               ? teaserCards.first.title
                               : (signatureCards.isNotEmpty
-                                    ? 'İmza Katmanları'
-                                    : 'Yan Temalar'),
+                                    ? context.l10n.profileSignatureLayers
+                                    : context.l10n.profileSideThemes),
                           onTap: () => _openNarrativeFlow(
                             selectedCard: heroNarrativeCard,
                           ),
@@ -639,7 +653,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           body: leadInsight.subheadline.isNotEmpty
                               ? leadInsight.subheadline
                               : leadInsight.headline,
-                          ctaLabel: 'Savunma mekanizmanı aç',
+                          ctaLabel: context.l10n.profileOpenDefensePattern,
                           onTap: () => _openInsightFlow(module: leadInsight),
                         ),
                       ],
@@ -648,18 +662,21 @@ class _ProfilePageState extends State<ProfilePage> {
                         _ProfilePosterPlacementsStrip(
                           sectionTitle: imprintHeadline.isNotEmpty
                               ? imprintHeadline
-                              : 'İmza Katmanları',
+                              : context.l10n.profileSignatureLayers,
                           cards: signatureCards,
+                          showOpenAll:
+                              allSignatureCards.length >
+                              _kProfilePlacementPreviewLimit,
                           onOpenAll: () => _openSignatureFlow(
                             title: imprintHeadline.isNotEmpty
                                 ? imprintHeadline
-                                : 'İmza Katmanları',
+                                : context.l10n.profileSignatureLayers,
                             cards: allSignatureCards,
                           ),
                           onOpenCard: (card) => _openSignatureFlow(
                             title: imprintHeadline.isNotEmpty
                                 ? imprintHeadline
-                                : 'İmza Katmanları',
+                                : context.l10n.profileSignatureLayers,
                             cards: allSignatureCards,
                             selected: card,
                           ),
@@ -696,18 +713,17 @@ class _ProfilePageState extends State<ProfilePage> {
                       identityHeadline.isEmpty &&
                       curatedCards.isEmpty) ...[
                     JoviaReadingPanel(
-                      label: 'Uyarı',
-                      title: 'Yorum akışı alınamadı',
+                      label: context.l10n.profileWarning,
+                      title: context.l10n.profileInterpretationUnavailableTitle,
                       body: _natalError!,
                     ),
                     const SizedBox(height: 20),
                   ],
                   if (!_hasBirthData(profile)) ...[
-                    const JoviaReadingPanel(
-                      label: 'Profil',
-                      title: 'Doğum bilgisi bekleniyor',
-                      body:
-                          'Bu ekran core story, profile narrative ve insight alanlarıyla doluyor. Doğum tarihini, saati ve yeri tamamladığında içerik otomatik açılır.',
+                    JoviaReadingPanel(
+                      label: context.l10n.tabsProfile,
+                      title: context.l10n.profileBirthDataPendingTitle,
+                      body: context.l10n.profileBirthDataPendingBodyLight,
                     ),
                   ] else ...[
                     if (_identityContext != null) ...[
@@ -734,10 +750,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         borderRadius: BorderRadius.circular(24),
                         child: JoviaReadingPanel(
-                          label: 'Kimlik ekseni',
+                          label: context.l10n.profileIdentityAxis,
                           title: editorialStatementTitle.trim().isNotEmpty
                               ? editorialStatementTitle
-                              : 'Kimlik ekseni',
+                              : context.l10n.profileIdentityAxis,
                           body: editorialStatementBody,
                         ),
                       ),
@@ -772,13 +788,13 @@ class _ProfilePageState extends State<ProfilePage> {
                             : () => _openSignatureFlow(
                                 title: imprintHeadline.isNotEmpty
                                     ? imprintHeadline
-                                    : 'İmza Katmanları',
+                                    : context.l10n.profileSignatureLayers,
                                 cards: allSignatureCards,
                               ),
                         onOpenPlacementCard: (card) => _openSignatureFlow(
                           title: imprintHeadline.isNotEmpty
                               ? imprintHeadline
-                              : 'İmza Katmanları',
+                              : context.l10n.profileSignatureLayers,
                           cards: allSignatureCards,
                           selected: card,
                         ),
@@ -810,7 +826,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
               final footer = widget.readOnly
                   ? _ProfilePosterFooterButton(
-                      label: 'Geri dön',
+                      label: context.l10n.profileBack,
                       onTap: () =>
                           Navigator.of(context, rootNavigator: true).maybePop(),
                     )
@@ -819,9 +835,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         Expanded(
                           child: _ProfilePosterFooterButton(
                             label: switch (_segmentIndex) {
-                              0 => 'Iliski akisini ac',
-                              1 => 'Timing akisini ac',
-                              _ => 'Harita akisina don',
+                              0 => context.l10n.profileOpenRelationshipFlow,
+                              1 => context.l10n.profileOpenTimingFlow,
+                              _ => context.l10n.profileReturnToChartFlow,
                             },
                             emphasized: true,
                             onTap: () {
@@ -938,13 +954,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                   horizontal: 16,
                                 ),
                                 child: _ProfilePosterArchetypeEntryCard(
-                                  title: 'Arketipini Gor',
+                                  title: context.l10n.profileSeeArchetype,
                                   body: _hasBirthData(profile)
-                                      ? 'Haritandaki aktif kimlik, koruma ve gerilim cizgilerini tek bir deneyimde ac.'
-                                      : 'Dogum tarihi, saati ve yerini tamamladiginda arketip deneyimi buradan acilacak.',
+                                      ? context.l10n.profileArchetypeBodyReady
+                                      : context
+                                            .l10n
+                                            .profileArchetypeBodyPending,
                                   ctaLabel: _hasBirthData(profile)
-                                      ? 'Arketipini gor'
-                                      : 'Dogum verini tamamla',
+                                      ? context.l10n.profileSeeArchetype
+                                      : context.l10n.profileCompleteBirthData,
                                   onTap: () => _openArchetypeExperience(
                                     profile: profile,
                                     displayName: displayName,
@@ -1049,15 +1067,17 @@ class _ProfilePageState extends State<ProfilePage> {
         return;
       }
       setState(() => _avatarUrl = publicUrl);
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Profil resmi güncellendi')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.profileAvatarUpdated)),
+      );
     } catch (error) {
       if (!mounted) {
         return;
       }
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Profil resmi yüklenemedi: $error')),
+        SnackBar(
+          content: Text(context.l10n.profileAvatarUploadFailed('$error')),
+        ),
       );
     } finally {
       if (mounted) {
@@ -1233,10 +1253,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   String _dominantElementLabel(ElementScores scores) {
     return switch (scores.dominant) {
-      AstroElement.fire => 'Ateş baskın',
-      AstroElement.water => 'Su baskın',
-      AstroElement.air => 'Hava baskın',
-      AstroElement.earth => 'Toprak baskın',
+      AstroElement.fire => context.l10n.profileElementFireDominant,
+      AstroElement.water => context.l10n.profileElementWaterDominant,
+      AstroElement.air => context.l10n.profileElementAirDominant,
+      AstroElement.earth => context.l10n.profileElementEarthDominant,
     };
   }
 
@@ -1396,9 +1416,10 @@ class _ProfilePageState extends State<ProfilePage> {
         (profile['birth_time'] ?? '').toString(),
       ),
       'birth_place': place,
-      'locale': 'tr',
+      'locale': Localizations.localeOf(context).languageCode,
       'client_surface_version': _natalPayloadVersion,
     };
+    TransitRequestBuilder.appendKnownLocationFields(payload, profile: profile);
 
     setState(() {
       _isNatalLoading = true;
@@ -1524,7 +1545,7 @@ class _ProfilePageState extends State<ProfilePage> {
         _supportingThreads = const [];
         _profileExtraCards = const [];
         _profileBundleTeasers = const [];
-        _natalError = 'Natal yorum alinamadi: $e';
+        _natalError = context.l10n.profileNatalLoadFailed('$e');
       });
     }
   }
@@ -1655,7 +1676,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             width: 18,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Save'),
+                        : Text(context.l10n.commonSave),
                   ),
                 ],
               ),
@@ -1691,10 +1712,9 @@ class _ProfilePageState extends State<ProfilePage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 JoviaEditorialHeroBlock(
-                  label: 'Connections',
-                  title: 'Eklediğin kişiler',
-                  body:
-                      'Takip ve takipçi alanından açılan gerçek arkadaş listen burada görünüyor.',
+                  label: context.l10n.profileConnectionsLabel,
+                  title: context.l10n.profileConnectionsTitle,
+                  body: context.l10n.profileConnectionsBody,
                   surface: false,
                   accent: const JoviaIllustrationAccent(
                     asset: JoviaIllustrationAsset.flower,
@@ -1718,10 +1738,10 @@ class _ProfilePageState extends State<ProfilePage> {
                         radius: 24,
                         padding: const EdgeInsets.all(12),
                         child: JoviaUtilityRow(
-                          label: 'Friend',
+                          label: context.l10n.profileFriendLabel,
                           title: person.name,
                           body:
-                              '${person.birthDate} • ${person.place.isEmpty ? 'konum eksik' : person.place}',
+                              '${person.birthDate} • ${person.place.isEmpty ? context.l10n.profileLocationMissing : person.place}',
                           leading: _ProfilePosterMiniAvatar(
                             name: person.name,
                             tint: _profilePosterFeatureColor(index + 1),
@@ -2778,7 +2798,9 @@ class _ProfilePageState extends State<ProfilePage> {
       if (city.isNotEmpty) city,
       if (country.isNotEmpty && country != city) country,
     ];
-    return parts.isEmpty ? 'Doğum yeri bekleniyor' : parts.join(', ');
+    return parts.isEmpty
+        ? context.l10n.profileBirthPlacePending
+        : parts.join(', ');
   }
 
   String _profileAgeLabel(Map<String, dynamic>? profile) {
@@ -2801,7 +2823,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (age < 0 || age > 120) {
       return '';
     }
-    return '$age yaş';
+    return context.l10n.profileAgeLabel(age);
   }
 
   JoviaIllustrationAsset _illustrationForElement(AstroElement element) {
@@ -2868,6 +2890,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return switch (card.family) {
       'mind_mechanics' => JoviaIllustrationAsset.dots,
       'intimacy_guard' => JoviaIllustrationAsset.heart,
+      'visible_power' => JoviaIllustrationAsset.sunGrowth,
       'creative_channel' => JoviaIllustrationAsset.bird,
       'outer_inner_split' => JoviaIllustrationAsset.layers,
       _ => JoviaIllustrationAsset.planet,
@@ -2900,6 +2923,20 @@ class _ProfilePageState extends State<ProfilePage> {
     return <String>[raw];
   }
 
+  List<String> _detailBlocksForNarrativeCard(_ProfileNarrativeCard card) {
+    final explicit = card.detailBlocks
+        .map((item) => item.trim())
+        .where((item) => item.isNotEmpty)
+        .toList(growable: false);
+    if (explicit.isNotEmpty) {
+      return explicit;
+    }
+    final detailText = card.body.trim().isNotEmpty
+        ? card.body
+        : card.previewBody;
+    return _detailBlocksFromText(detailText);
+  }
+
   String _whyTextForNarrativeCard(_ProfileNarrativeCard card) {
     if (card.astroSources.isNotEmpty) {
       return [
@@ -2915,6 +2952,8 @@ class _ProfilePageState extends State<ProfilePage> {
         'Bu bölüm, düşünme biçiminin kararlarını nasıl etkilediğini anlatıyor.',
       'intimacy_guard' =>
         'Bu bölüm, yakınlıkta ne zaman açıldığını ve neye ihtiyaç duyduğunu anlatıyor.',
+      'visible_power' =>
+        'Bu bölüm, dışarıda nasıl bir etki bıraktığını ve görünürlük ritminin nasıl çalıştığını anlatıyor.',
       'outer_inner_split' =>
         'Bu bölüm, dışarıdan görünen tarafınla iç dünyandaki hassas tarafı birlikte anlatıyor.',
       'creative_channel' =>
@@ -2926,6 +2965,12 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   String _whyTextForThread(_SupportingThreadItem item) {
+    if (item.astroSources.isNotEmpty) {
+      return [
+        'Bu yan tema en çok şu göstergelerden besleniyor:',
+        ...item.astroSources.take(3).map((entry) => '• $entry'),
+      ].join('\n');
+    }
     if (item.chips.isNotEmpty) {
       return 'Bu yan tema ${item.chips.take(3).join(' • ')} eksenlerinden besleniyor.';
     }
@@ -2999,7 +3044,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final detailText = card.body.trim().isNotEmpty
         ? card.body
         : card.previewBody;
-    final blocks = _detailBlocksFromText(detailText);
+    final blocks = _detailBlocksForNarrativeCard(card);
     final totalLength = [
       card.title,
       card.summary,
@@ -3015,6 +3060,7 @@ class _ProfilePageState extends State<ProfilePage> {
     }.contains(card.family);
     final structuredFamily = <String>{
       'mind_mechanics',
+      'visible_power',
       'placement_signature',
       'tone_signature',
       'desire_style',
@@ -3126,9 +3172,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final intro = card.summary.trim().isNotEmpty
         ? card.summary.trim()
         : card.previewBody;
-    final detailText = card.body.trim().isNotEmpty
-        ? card.body
-        : card.previewBody;
+    final detailBlocks = _detailBlocksForNarrativeCard(card);
     return ProfileDetailSceneData(
       id: _cardIdentity(card),
       eyebrow: (eyebrowOverride ?? card.eyebrow).trim().isNotEmpty
@@ -3136,9 +3180,10 @@ class _ProfilePageState extends State<ProfilePage> {
           : 'Detay',
       title: (titleOverride ?? card.title).trim(),
       intro: intro,
-      bodyBlocks: _detailBlocksFromText(detailText),
+      bodyBlocks: detailBlocks,
       chips: card.chips,
-      whyText: _whyTextForNarrativeCard(card),
+      astroSources: card.astroSources,
+      whyText: detailBlocks.length >= 4 ? '' : _whyTextForNarrativeCard(card),
       illustrationAsset: _illustrationForCard(card),
       variant: variant,
     );
@@ -3163,6 +3208,7 @@ class _ProfilePageState extends State<ProfilePage> {
               item.paragraph.isNotEmpty ? item.paragraph : item.oneLiner,
             ),
       chips: item.chips,
+      astroSources: item.astroSources,
       whyText: detailBlocks.length >= 4 ? '' : _whyTextForThread(item),
       illustrationAsset: JoviaIllustrationAsset.layers,
       variant: variant,
@@ -3175,11 +3221,14 @@ class _ProfilePageState extends State<ProfilePage> {
   }) {
     return ProfileDetailSceneData(
       id: module.moduleId.isNotEmpty ? module.moduleId : module.title,
-      eyebrow: module.headline.isNotEmpty ? module.headline : 'Gölge & büyüme',
+      eyebrow: module.headline.isNotEmpty
+          ? module.headline
+          : context.l10n.profileShadowGrowth,
       title: module.title,
       intro: module.subheadline,
       bodyBlocks: _detailBlocksFromText(module.body),
       chips: const <String>['savunma', 'büyüme'],
+      astroSources: const <String>[],
       whyText: _whyTextForInsight(module),
       illustrationAsset: JoviaIllustrationAsset.blocks,
       variant: variant,
@@ -3197,11 +3246,12 @@ class _ProfilePageState extends State<ProfilePage> {
         : summary;
     return ProfileDetailSceneData(
       id: 'identity_flow',
-      eyebrow: 'Kimlik',
+      eyebrow: context.l10n.profileIdentityEyebrow,
       title: headline.trim().isNotEmpty ? headline.trim() : displayName,
       intro: summary,
       bodyBlocks: _detailBlocksFromText(bodyText),
       chips: drivers.take(3).toList(),
+      astroSources: const <String>[],
       whyText: _whyTextForIdentity(
         displayName: displayName,
         drivers: drivers,
@@ -3279,10 +3329,8 @@ class _ProfilePageState extends State<ProfilePage> {
     if (!_hasBirthData(profile)) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Arketip deneyimi icin once dogum tarihi, saati ve yeri gerekli.',
-            ),
+          SnackBar(
+            content: Text(context.l10n.profileArchetypeBirthDataRequired),
           ),
         );
       }
@@ -3302,9 +3350,10 @@ class _ProfilePageState extends State<ProfilePage> {
         (profile['birth_time'] ?? '').toString(),
       ),
       'birth_place': place,
-      'locale': 'tr',
+      'locale': Localizations.localeOf(context).languageCode,
       'birth_time_confidence': 'exact',
     };
+    TransitRequestBuilder.appendKnownLocationFields(payload, profile: profile);
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (context) => ProfileArchetypeExperiencePage(
@@ -3337,10 +3386,10 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     ];
     _pushDetailFlow(
-      title: 'Kimlik okuması',
+      title: context.l10n.profileIdentityReading,
       subtitle: headline.trim().isNotEmpty
           ? headline.trim()
-          : 'Kimliğinin dışarıdan ve içeriden nasıl okunduğunu burada daha uzun gör.',
+          : context.l10n.profileIdentityFlowSubtitleFallback,
       scenes: scenes,
       tone: _detailToneForIdentity(
         headline: headline.trim().isNotEmpty ? headline : displayName,
@@ -3361,7 +3410,7 @@ class _ProfilePageState extends State<ProfilePage> {
       title: selectedCard.title,
       subtitle: selectedCard.summary.isNotEmpty
           ? selectedCard.summary
-          : 'Bu bölümün sende nasıl çalıştığını burada daha açık okuyorsun.',
+          : context.l10n.profileNarrativeFlowSubtitleFallback,
       scenes: scenes,
       tone: _detailToneForNarrativeCard(selectedCard),
     );
@@ -3399,8 +3448,7 @@ class _ProfilePageState extends State<ProfilePage> {
       MaterialPageRoute<void>(
         builder: (context) => ProfileDetailCatalogPage(
           title: title,
-          subtitle:
-              'Kart listesinde yalnızca başlıkları görürsün; bir karta basınca sadece onun detayı açılır.',
+          subtitle: context.l10n.profileSignatureCatalogSubtitle,
           items: items,
           onOpenItem: (item) {
             final card = uniqueCards.firstWhere(
@@ -3429,7 +3477,7 @@ class _ProfilePageState extends State<ProfilePage> {
       title: title,
       subtitle: card.summary.isNotEmpty
           ? card.summary
-          : 'Bu kişilik imzası kartının tam açıklaması burada açılıyor.',
+          : context.l10n.profileSignatureCardSubtitleFallback,
       scenes: scenes,
       tone: _detailToneForNarrativeCard(card),
     );
@@ -3451,7 +3499,7 @@ class _ProfilePageState extends State<ProfilePage> {
     ];
     _pushDetailFlow(
       title: activeItem.title,
-      subtitle: 'Burada ana portreni tamamlayan diğer taraflar öne çıkıyor.',
+      subtitle: context.l10n.profileSideThemesFlowSubtitle,
       scenes: scenes,
       tone: _detailToneForThread(activeItem),
     );
@@ -3465,7 +3513,7 @@ class _ProfilePageState extends State<ProfilePage> {
       title: module.title,
       subtitle: module.subheadline.isNotEmpty
           ? module.subheadline
-          : 'Bu bölüm savunma ve büyüme eksenindeki tam akışı açıyor.',
+          : context.l10n.profileInsightFlowSubtitleFallback,
       scenes: scenes,
       tone: _detailToneForInsight(module),
     );
@@ -3572,6 +3620,7 @@ class _SupportingThreadItem {
   final String paragraph;
   final List<String> detailBlocks;
   final List<String> chips;
+  final List<String> astroSources;
 
   const _SupportingThreadItem({
     required this.id,
@@ -3580,12 +3629,38 @@ class _SupportingThreadItem {
     required this.paragraph,
     required this.detailBlocks,
     required this.chips,
+    required this.astroSources,
   });
 
   factory _SupportingThreadItem.fromMap(Map<String, dynamic> map) {
     String s(String key) => (map[key] ?? '').toString().trim();
     List<String> readList(String key) {
       return _sanitizeUserFacingChips(map[key], max: 3);
+    }
+
+    List<String> readAstroSources(String key) {
+      final raw = map[key];
+      if (raw is! List) {
+        return const <String>[];
+      }
+      final sources = <String>[];
+      for (final item in raw) {
+        final value = item.toString().trim();
+        if (value.isEmpty) {
+          continue;
+        }
+        final duplicate = sources.any(
+          (existing) => existing.toLowerCase() == value.toLowerCase(),
+        );
+        if (duplicate) {
+          continue;
+        }
+        sources.add(value);
+        if (sources.length >= 3) {
+          break;
+        }
+      }
+      return sources;
     }
 
     return _SupportingThreadItem(
@@ -3595,6 +3670,7 @@ class _SupportingThreadItem {
       paragraph: s('paragraph'),
       detailBlocks: _sanitizeUserFacingParagraphs(map['detail_blocks'], max: 8),
       chips: readList('chips'),
+      astroSources: readAstroSources('astro_sources'),
     );
   }
 }
@@ -3696,16 +3772,18 @@ class _ProfileBundleTeaser {
     }
 
     String editorialTitleForFamily(String family) {
+      final l10n = _currentProfileL10n();
       return switch (family) {
-        'outer_inner_split' => 'Dışarıdan ve içeriden',
-        'mind_mechanics' => 'Zihnin nasıl çalışıyor',
-        'protection_pattern' => 'Kendini nasıl koruyorsun',
-        'intimacy_guard' => 'Yakınlık sende nasıl açılıyor',
-        'control_vs_flow' => 'Tutma ve bırakma dengesi',
-        'creative_channel' => 'Fırsatın aktığı yer',
-        'self_definition' => 'Sende kolay tanınan çizgi',
-        'contradiction_core' => 'İçeride iki yönün nasıl çalışıyor',
-        _ => 'Sende öne çıkan taraf',
+        'outer_inner_split' => l10n.profileOutsideInside,
+        'mind_mechanics' => l10n.profileMindWorks,
+        'protection_pattern' => l10n.profileSelfProtection,
+        'intimacy_guard' => l10n.profileIntimacyOpens,
+        'visible_power' => l10n.profileFeaturedTheme,
+        'control_vs_flow' => l10n.profileHoldReleaseBalance,
+        'creative_channel' => l10n.profileWhereOpportunityFlows,
+        'self_definition' => l10n.profileRecognizableLine,
+        'contradiction_core' => l10n.profileTwoInnerDirections,
+        _ => l10n.profileStandoutSide,
       };
     }
 
@@ -3748,6 +3826,7 @@ class _ProfileBundleTeaser {
         'intimacy_guard' => 'Yakınlıkta önce $lead tarafın devreye giriyor.',
         'creative_channel' => 'Akışın en çok $lead olduğunda güçleniyor.',
         'outer_inner_split' => 'İnsanlar sende önce $lead tarafını hissediyor.',
+        'visible_power' => 'İnsanlar sende önce $lead tarafını fark ediyor.',
         'control_vs_flow' => 'İçinde aynı anda $lead çalışan bir denge var.',
         'protection_pattern' =>
           'Zorlandığında ilk devreye $lead tarafın giriyor.',
@@ -3778,6 +3857,8 @@ class _ProfileBundleTeaser {
               'Bu tema en çok $domainText alanında hissediliyor.',
             'creative_channel' =>
               'Bu akış en çok $domainText alanında açılıyor.',
+            'visible_power' =>
+              'Bu görünürlük çizgisi en çok $domainText alanında belirginleşiyor.',
             _ => 'Bu tema en çok $domainText alanında kendini gösteriyor.',
           },
         if (recognitionText.isNotEmpty)
@@ -3832,16 +3913,18 @@ class _ProfileBundleTeaser {
   }
 
   _ProfileNarrativeCard toNarrativeCard() {
+    final l10n = _currentProfileL10n();
     return _ProfileNarrativeCard(
       cardKey: '${id}_detail',
       id: id,
       family: family,
       origin: 'narrative_v2_bundle',
-      eyebrow: 'Öne çıkan tema',
+      eyebrow: l10n.profileFeaturedTheme,
       title: title,
       summary: summary,
       body: body,
       micro: '',
+      detailBlocks: const <String>[],
       chips: chips,
       astroSources: astroSources,
     );
@@ -3859,6 +3942,7 @@ class _ProfileNarrativeCard {
     required this.summary,
     required this.body,
     required this.micro,
+    required this.detailBlocks,
     required this.chips,
     required this.astroSources,
   });
@@ -3872,6 +3956,7 @@ class _ProfileNarrativeCard {
   final String summary;
   final String body;
   final String micro;
+  final List<String> detailBlocks;
   final List<String> chips;
   final List<String> astroSources;
 
@@ -3938,28 +4023,30 @@ class _ProfileNarrativeCard {
     }
 
     String pickEyebrow() {
+      final l10n = _currentProfileL10n();
       final eyebrow = (map['eyebrow'] ?? '').toString().trim();
       final lowerEyebrow = eyebrow.toLowerCase();
       if (lowerEyebrow == 'kişilik izi' ||
           lowerEyebrow == 'kisilik izi' ||
           lowerEyebrow == 'ton izi' ||
           lowerEyebrow == 'aci izi') {
-        return 'Öne çıkan tema';
+        return l10n.profileFeaturedTheme;
       }
       if (eyebrow.isNotEmpty) {
         return eyebrow;
       }
       final family = (map['family'] ?? '').toString().trim();
       return switch (family) {
-        'placement_signature' => 'Öne çıkan tema',
-        'tone_signature' => 'Öne çıkan tema',
-        'self_definition' => 'Sende kolay tanınan çizgi',
-        'outer_inner_split' => 'Dışarıdan ve içeriden',
-        'mind_mechanics' => 'Zihnin nasıl çalışıyor',
-        'intimacy_guard' => 'Yakınlık sende nasıl açılıyor',
-        'creative_channel' => 'Fırsatın aktığı yer',
-        'contradiction_core' => 'İçeride iki yön',
-        'control_vs_flow' => 'Tutma ve bırakma dengesi',
+        'placement_signature' => l10n.profileFeaturedTheme,
+        'tone_signature' => l10n.profileFeaturedTheme,
+        'self_definition' => l10n.profileRecognizableLine,
+        'outer_inner_split' => l10n.profileOutsideInside,
+        'mind_mechanics' => l10n.profileMindWorks,
+        'intimacy_guard' => l10n.profileIntimacyOpens,
+        'visible_power' => l10n.profileFeaturedTheme,
+        'creative_channel' => l10n.profileWhereOpportunityFlows,
+        'contradiction_core' => l10n.profileTwoInnerDirections,
+        'control_vs_flow' => l10n.profileHoldReleaseBalance,
         _ => '',
       };
     }
@@ -3974,6 +4061,7 @@ class _ProfileNarrativeCard {
       summary: pickSummary(),
       body: (map['body'] ?? '').toString().trim(),
       micro: (map['micro'] ?? '').toString().trim(),
+      detailBlocks: _sanitizeUserFacingParagraphs(map['detail_blocks'], max: 7),
       chips: normalizeChips(map['chips']),
       astroSources: normalizeAstroSources(map['astro_sources']),
     );
@@ -4225,12 +4313,18 @@ class _ProfilePosterHeader extends StatelessWidget {
                       spacing: 12,
                       runSpacing: 8,
                       children: [
-                        _ProfilePosterAstroItem(label: 'Güneş', value: sunSign),
                         _ProfilePosterAstroItem(
-                          label: 'Yükselen',
+                          label: context.l10n.profileSunLabel,
+                          value: sunSign,
+                        ),
+                        _ProfilePosterAstroItem(
+                          label: context.l10n.profileRisingLabel,
                           value: risingSign,
                         ),
-                        _ProfilePosterAstroItem(label: 'Ay', value: moonSign),
+                        _ProfilePosterAstroItem(
+                          label: context.l10n.profileMoonLabel,
+                          value: moonSign,
+                        ),
                       ],
                     ),
                     if (metaLabel.trim().isNotEmpty) ...[
@@ -4335,8 +4429,8 @@ class _ProfilePosterFollowStatsRow extends StatelessWidget {
           spacing: 10,
           runSpacing: 8,
           children: [
-            stat(followingCount, 'Takip'),
-            stat(followerCount, 'Takipçi'),
+            stat(followingCount, context.l10n.profileFollowing),
+            stat(followerCount, context.l10n.profileFollowers),
           ],
         ),
         if (people.isNotEmpty) ...[
@@ -4377,8 +4471,12 @@ class _ProfilePosterFollowStatsRow extends StatelessWidget {
                     const SizedBox(width: 8),
                     Text(
                       people.length == 1
-                          ? '${people.first.name} profiline git'
-                          : '${people.length} arkadaş profiline bak',
+                          ? context.l10n.profileOpenSinglePersonProfile(
+                              people.first.name,
+                            )
+                          : context.l10n.profileOpenManyPersonProfiles(
+                              people.length,
+                            ),
                       style: profile.typography.micro.copyWith(
                         color: palette.muted,
                         fontSize: 12.4,
@@ -4582,7 +4680,7 @@ class _ProfilePosterIdentitySummaryCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'KİMLİK',
+            context.l10n.profileIdentityLabel,
             style: profile.typography.monoEyebrow.copyWith(
               color: profile.colors.warmAccent,
               fontSize: 11.5,
@@ -4591,7 +4689,9 @@ class _ProfilePosterIdentitySummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            headline.trim().isNotEmpty ? headline.trim() : 'Kimlik okuması',
+            headline.trim().isNotEmpty
+                ? headline.trim()
+                : context.l10n.profileIdentityReading,
             style: profile.typography.section.copyWith(
               color: palette.text,
               fontSize: 24,
@@ -4624,7 +4724,7 @@ class _ProfilePosterIdentitySummaryCard extends StatelessWidget {
           ],
           const SizedBox(height: 16),
           _ProfilePosterFooterButton(
-            label: 'Kimlik okumasını aç',
+            label: context.l10n.profileOpenIdentityReading,
             onTap: onTap,
           ),
         ],
@@ -4660,16 +4760,18 @@ class _ProfilePosterQuickInfoRow extends StatelessWidget {
         .trim();
     final elementTitle = fallbackElementTitle.isNotEmpty
         ? fallbackElementTitle
-        : 'Toprak etkili';
+        : context.l10n.profileEarthInfluential;
     final elementBody = '';
     final rulerTitle = rulerName.trim().isNotEmpty
-        ? 'En güçlü yönetici $rulerName'
+        ? context.l10n.profileStrongestRuler(rulerName)
         : (auraSourceLabel.trim().isNotEmpty
               ? auraSourceLabel.trim()
               : (risingSign.trim().isNotEmpty && risingSign.trim() != '—'
-                    ? '$risingSign yöneticisi'
-                    : 'Harita omurgası'));
-    final rulerBody = rulerHouse == null ? '' : '$rulerHouse. ev vurgusu';
+                    ? context.l10n.profileSignRuler(risingSign)
+                    : context.l10n.profileChartBackbone));
+    final rulerBody = rulerHouse == null
+        ? ''
+        : context.l10n.profileHouseEmphasis(rulerHouse!);
     final content = ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 300),
       child: Row(
@@ -4691,7 +4793,7 @@ class _ProfilePosterQuickInfoRow extends StatelessWidget {
             child: _ProfilePosterStructuredSnapshotCard(
               title: rulerTitle,
               body: rulerBody,
-              overline: 'Yönetici',
+              overline: context.l10n.profileRuler,
               art: const _ProfilePosterSaturnSeal(),
             ),
           ),
@@ -4899,9 +5001,9 @@ class _ProfilePosterModeSwitch extends StatelessWidget {
       value: currentIndex,
       options: const <int>[0, 1, 2],
       labelBuilder: (value) => switch (value) {
-        0 => 'Natal',
-        1 => 'Iliski',
-        _ => 'Timing',
+        0 => context.l10n.profileNatal,
+        1 => context.l10n.profileRelationship,
+        _ => context.l10n.profileTiming,
       },
       onChanged: onChanged,
     );
@@ -5432,7 +5534,7 @@ class _ProfilePosterPeopleStrip extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'ONLINE ARKADAŞLARIN',
+            context.l10n.profileOnlineFriends,
             style: profile.typography.eyebrow.copyWith(
               color: palette.muted,
               letterSpacing: 1.3,
@@ -5440,7 +5542,7 @@ class _ProfilePosterPeopleStrip extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Daha sakin bir sosyal halka',
+            context.l10n.profileQuietSocialCircle,
             style: profile.typography.cardTitle.copyWith(color: palette.text),
           ),
           const SizedBox(height: 14),
@@ -5555,7 +5657,7 @@ class _ProfilePosterVisualHero extends StatelessWidget {
     final palette = _profilePosterPalette(context);
     final resolvedSummary = summary.trim().isNotEmpty
         ? summary.trim()
-        : 'Kimlik aksın profil anlatısından açılıyor.';
+        : context.l10n.profileIdentitySummaryFallback;
     return Container(
       height: 220,
       padding: const EdgeInsets.fromLTRB(18, 18, 18, 18),
@@ -5732,7 +5834,7 @@ class _ProfilePosterLoadingCard extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(
-              'Profil anlatısı backend yorumundan çekiliyor...',
+              context.l10n.profileNarrativeLoading,
               style: profile.typography.bodyCompact.copyWith(
                 color: palette.textSoft,
               ),
@@ -6214,7 +6316,7 @@ class _ProfilePosterNextCardPreview extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return Text(
-      'Sıradaki: $nextLabel',
+      context.l10n.profileNextLabel(nextLabel),
       style: profile.typography.metaSoft.copyWith(
         color: palette.muted,
         fontWeight: FontWeight.w600,
@@ -6345,12 +6447,14 @@ class _ProfilePosterPlacementsStrip extends StatelessWidget {
   const _ProfilePosterPlacementsStrip({
     required this.sectionTitle,
     required this.cards,
+    required this.showOpenAll,
     required this.onOpenAll,
     required this.onOpenCard,
   });
 
   final String sectionTitle;
   final List<_ProfileNarrativeCard> cards;
+  final bool showOpenAll;
   final VoidCallback onOpenAll;
   final ValueChanged<_ProfileNarrativeCard> onOpenCard;
 
@@ -6362,7 +6466,7 @@ class _ProfilePosterPlacementsStrip extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'YERLEŞİM VE AÇILAR',
+          context.l10n.profilePlacementsAndAspects,
           style: profile.typography.monoEyebrow.copyWith(
             color: palette.muted,
             fontSize: 11.0,
@@ -6404,8 +6508,13 @@ class _ProfilePosterPlacementsStrip extends StatelessWidget {
             ],
           ),
         ),
-        const SizedBox(height: 18),
-        _ProfilePosterFooterButton(label: 'Daha fazla aç', onTap: onOpenAll),
+        if (showOpenAll) ...[
+          const SizedBox(height: 18),
+          _ProfilePosterFooterButton(
+            label: context.l10n.profileMoreOpen,
+            onTap: onOpenAll,
+          ),
+        ],
       ],
     );
   }
@@ -6430,7 +6539,7 @@ class _ProfilePosterThreadSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'YAN TEMALAR',
+          turkishToUpper(context.l10n.profileSideThemes),
           style: profile.typography.monoEyebrow.copyWith(
             color: palette.muted,
             fontSize: 11.0,
@@ -6491,7 +6600,7 @@ class _ProfilePosterThreadSection extends StatelessWidget {
         Align(
           alignment: Alignment.centerLeft,
           child: _ProfilePosterFooterButton(
-            label: 'Yan temaları aç',
+            label: context.l10n.profileOpenSideThemes,
             onTap: onOpenAll,
           ),
         ),
@@ -6525,7 +6634,7 @@ class _ProfilePosterInsightEntryCard extends StatelessWidget {
         child: Column(
           children: [
             Text(
-              'GÖLGE & BÜYÜME',
+              turkishToUpper(context.l10n.profileShadowGrowth),
               style: profile.typography.monoEyebrow.copyWith(
                 color: palette.muted,
                 fontSize: 11.0,
@@ -6663,7 +6772,7 @@ class _ProfilePosterArchetypeEntryCard extends StatelessWidget {
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      const JoviaMetaPill(label: 'Kimlik akisi'),
+                      JoviaMetaPill(label: context.l10n.profileIdentityFlow),
                       JoviaMetaPill(label: ctaLabel),
                     ],
                   ),
@@ -6871,12 +6980,16 @@ class _ProfilePosterArchetypeSnapshotCard extends StatelessWidget {
             ),
             if (scoreLabel.isNotEmpty) ...[
               const SizedBox(height: 14),
-              JoviaMetaPill(label: 'Guven skoru $scoreLabel'),
+              JoviaMetaPill(
+                label: context.l10n.profileConfidenceScore(scoreLabel),
+              ),
             ],
           ],
           const SizedBox(height: 16),
           JoviaPrimaryButton(
-            label: payload == null ? 'Sonucu olustur' : 'Detayi ac',
+            label: payload == null
+                ? context.l10n.profileGenerateResult
+                : context.l10n.homeOpenDetail,
             onTap: onTap,
             leading: const JoviaUiIcon(
               asset: JoviaUiAsset.orbitPlanet,
@@ -6928,7 +7041,7 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'TIMING AKIŞI',
+            context.l10n.profileTimingFlowLabel,
             style: profile.typography.monoEyebrow.copyWith(
               color: profile.colors.warmAccent,
               fontSize: 11.5,
@@ -6940,20 +7053,19 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
             const _ProfilePosterLoadingCard()
           else if ((error ?? '').trim().isNotEmpty && core == null)
             _ProfilePosterMessageCard(
-              title: 'Timing akışı alınamadı',
+              title: context.l10n.profileTimingFlowUnavailable,
               body: error!,
             )
           else if (core == null)
-            const _ProfilePosterMessageCard(
-              title: 'Timing akışı hazır değil',
-              body:
-                  'Dönem özeti geldiğinde burada sadece kısa bir teaser ve yaklaşan pikler görünecek.',
+            _ProfilePosterMessageCard(
+              title: context.l10n.profileTimingFlowNotReady,
+              body: context.l10n.profileTimingFlowNotReadyBody,
             )
           else ...[
             Text(
               core.title.trim().isNotEmpty
                   ? core.title.trim()
-                  : 'Şu anki dönem',
+                  : context.l10n.profileCurrentPeriod,
               style: profile.typography.section.copyWith(
                 color: palette.text,
                 fontSize: 24,
@@ -6976,7 +7088,7 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
             if (previewPeaks.isNotEmpty) ...[
               const SizedBox(height: 16),
               Text(
-                'Yaklaşan pikler',
+                context.l10n.profileUpcomingPeaks,
                 style: profile.typography.monoEyebrow.copyWith(
                   color: palette.muted,
                   fontSize: 11.5,
@@ -6995,7 +7107,7 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
           SizedBox(
             width: double.infinity,
             child: _ProfilePosterFooterButton(
-              label: 'Timing akışını aç',
+              label: context.l10n.profileOpenTimingFlow,
               emphasized: true,
               onTap: onOpenTiming,
             ),
@@ -7731,6 +7843,68 @@ List<String> _sanitizeUserFacingChips(dynamic raw, {int max = 4}) {
   return sanitized;
 }
 
+List<String> _sanitizeUserFacingParagraphs(dynamic raw, {int max = 6}) {
+  if (raw is! List) {
+    return const <String>[];
+  }
+  final sanitized = <String>[];
+  for (final item in raw) {
+    final clean = normalizeTurkishText(item.toString());
+    if (clean.isEmpty) {
+      continue;
+    }
+    final duplicate = sanitized.any(
+      (existing) => existing.toLowerCase() == clean.toLowerCase(),
+    );
+    if (duplicate) {
+      continue;
+    }
+    sanitized.add(clean);
+    if (sanitized.length >= max) {
+      break;
+    }
+  }
+  return sanitized;
+}
+
+@visibleForTesting
+List<String> debugProfileNarrativeDetailBlocksFromMap(
+  Map<String, dynamic> map,
+) {
+  final card = _ProfileNarrativeCard.fromMap(map);
+  final explicit = card.detailBlocks
+      .map((item) => item.trim())
+      .where((item) => item.isNotEmpty)
+      .toList(growable: false);
+  if (explicit.isNotEmpty) {
+    return explicit;
+  }
+  final raw = card.body.trim().isNotEmpty ? card.body : card.previewBody;
+  final normalized = raw.trim();
+  if (normalized.isEmpty) {
+    return const <String>[];
+  }
+  final paragraphBlocks = normalized
+      .split(RegExp(r'\n\s*\n'))
+      .map((item) => item.replaceAll(RegExp(r'\s+'), ' ').trim())
+      .where((item) => item.isNotEmpty)
+      .toList(growable: false);
+  if (paragraphBlocks.length >= 2) {
+    return paragraphBlocks.take(4).toList(growable: false);
+  }
+  final sentenceBlocks = normalized
+      .replaceAll('\n', ' ')
+      .split(RegExp(r'(?<=[.!?])\s+'))
+      .map((item) => item.trim())
+      .where((item) => item.isNotEmpty)
+      .take(4)
+      .toList(growable: false);
+  if (sentenceBlocks.isNotEmpty) {
+    return sentenceBlocks;
+  }
+  return <String>[normalized];
+}
+
 List<String> _profilePosterBullets(String text) {
   final normalized = text
       .replaceAll('\n', ' ')
@@ -7803,6 +7977,7 @@ JoviaIllustrationAsset _profilePosterIllustrationForCard(
   return switch (card.family) {
     'mind_mechanics' => JoviaIllustrationAsset.dots,
     'intimacy_guard' => JoviaIllustrationAsset.heart,
+    'visible_power' => JoviaIllustrationAsset.sunGrowth,
     'creative_channel' => JoviaIllustrationAsset.bird,
     'outer_inner_split' => JoviaIllustrationAsset.layers,
     _ => JoviaIllustrationAsset.planet,
@@ -7834,7 +8009,7 @@ class _SupportingThreadsSection extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Yan Temalar',
+              context.l10n.profileSideThemes,
               style: typo.body.copyWith(fontWeight: FontWeight.w700),
             ),
             SizedBox(height: profile.spacing.xs),
@@ -8309,10 +8484,10 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
   final String dominantElementLabel;
   final VoidCallback? onTap;
 
-  String _auraTitle() {
+  String _auraTitle(BuildContext context) {
     final normalized = dominantElementLabel.trim();
     if (normalized.isEmpty || normalized == '—') {
-      return 'Kimlik tonu';
+      return context.l10n.profileIdentityTone;
     }
     return normalized.replaceAll(
       RegExp('baskin', caseSensitive: false),
@@ -8327,7 +8502,7 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
       Expanded(
         child: _ProfileIdentityMiniCard(
           label: 'Aura',
-          title: _auraTitle(),
+          title: _auraTitle(context),
           subtitle: contextData.auraSourceLabel,
           kind: _ProfileIdentityMiniCardKind.aura,
         ),
@@ -8336,12 +8511,12 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
     if (contextData.rulerName.trim().isNotEmpty) {
       final houseLabel = contextData.rulerHouse == null
           ? ''
-          : '${contextData.rulerHouse}. ev vurgusu';
+          : context.l10n.profileHouseEmphasis(contextData.rulerHouse!);
       cards.add(const SizedBox(width: 12));
       cards.add(
         Expanded(
           child: _ProfileIdentityMiniCard(
-            label: 'Yonetici',
+            label: context.l10n.profileRuler,
             title: contextData.rulerName,
             subtitle: houseLabel,
             kind: _ProfileIdentityMiniCardKind.ruler,
@@ -8355,7 +8530,7 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
       children: [
         Align(
           alignment: Alignment.centerLeft,
-          child: JoviaMetaPill(label: 'Kimlik ozeti'),
+          child: JoviaMetaPill(label: context.l10n.profileIdentitySummary),
         ),
         if (contextData.overview.trim().isNotEmpty) ...[
           const SizedBox(height: 12),
@@ -8565,7 +8740,9 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final placementPreviewCards = placementCards.take(3).toList();
+    final placementPreviewCards = placementCards
+        .take(_kProfilePlacementPreviewLimit)
+        .toList();
     final hasEditorialNarrative =
         placementPreviewCards.isNotEmpty ||
         insightModules.isNotEmpty ||
@@ -8583,13 +8760,14 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
             cards: placementPreviewCards,
             onOpenCard: onOpenPlacementCard,
           ),
-          if (onOpenPlacementFlow != null) ...[
+          if (onOpenPlacementFlow != null &&
+              placementCards.length > _kProfilePlacementPreviewLimit) ...[
             const SizedBox(height: 10),
             Align(
               alignment: Alignment.centerLeft,
               child: TextButton(
                 onPressed: onOpenPlacementFlow,
-                child: const Text('Daha fazla aç'),
+                child: Text(context.l10n.profileMoreOpen),
               ),
             ),
           ],
@@ -8619,8 +8797,8 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
             onTap: onOpenSummary,
             borderRadius: BorderRadius.circular(24),
             child: JoviaReadingPanel(
-              label: 'Natal',
-              title: 'Ana okuma',
+              label: context.l10n.profileNatal,
+              title: context.l10n.profileMainReading,
               large: true,
               child: _ProfileRecoverySummaryBlock(
                 isLoading: isLoading,
@@ -8909,6 +9087,7 @@ class _ProfileInsightModuleCard extends StatelessWidget {
       summary: module.subheadline,
       body: module.body,
       micro: '',
+      detailBlocks: const <String>[],
       chips: const [],
       astroSources: const [],
     );
@@ -8924,17 +9103,18 @@ String _displayTitleForCard(_ProfileNarrativeCard card) {
 }
 
 String _signatureEyebrowForCard(_ProfileNarrativeCard card) {
+  final l10n = _currentProfileL10n();
   final title = card.title.trim();
   if (RegExp(r'^.+?\s+\d+\.\s*Ev$', caseSensitive: false).hasMatch(title)) {
-    return 'Yerleşim';
+    return l10n.profilePlacement;
   }
   if (card.family == 'contradiction_core') {
-    return 'Açı';
+    return l10n.profileAspect;
   }
   if (card.family == 'tone_signature') {
-    return 'Burç tonu';
+    return l10n.profileSignTone;
   }
-  return 'Öne çıkan tema';
+  return l10n.profileFeaturedTheme;
 }
 
 String _legacySignalLineForCard(_ProfileNarrativeCard card) {
@@ -9274,7 +9454,10 @@ class _ProfileTabBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    final labels = const <String>['Natal', 'Timing'];
+    final labels = <String>[
+      context.l10n.profileNatal,
+      context.l10n.profileTiming,
+    ];
     return Row(
       children: [
         for (var index = 0; index < labels.length; index++)

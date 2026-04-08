@@ -4,6 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/app/tabs/tabs_shell.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 import '../profile/profile_providers.dart';
 
@@ -46,7 +47,7 @@ class _OnboardingProfilePageState extends ConsumerState<OnboardingProfilePage> {
     if (uid == null) {
       if (mounted) {
         setState(() {
-          _error = 'Session expired. Please log in again.';
+          _error = context.l10n.sessionExpiredLoginAgain;
           _isLoading = false;
         });
       }
@@ -64,7 +65,7 @@ class _OnboardingProfilePageState extends ConsumerState<OnboardingProfilePage> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _error = 'Failed to load profile: $e');
+        setState(() => _error = context.l10n.errorFailedToLoadProfile('$e'));
       }
     } finally {
       if (mounted) {
@@ -74,9 +75,10 @@ class _OnboardingProfilePageState extends ConsumerState<OnboardingProfilePage> {
   }
 
   Future<void> _save() async {
+    final l10n = context.l10n;
     final uid = Supabase.instance.client.auth.currentUser?.id;
     if (uid == null) {
-      setState(() => _error = 'Session expired. Please log in again.');
+      setState(() => _error = l10n.sessionExpiredLoginAgain);
       return;
     }
 
@@ -90,7 +92,7 @@ class _OnboardingProfilePageState extends ConsumerState<OnboardingProfilePage> {
         birthTime.isEmpty ||
         city.isEmpty ||
         country.isEmpty) {
-      setState(() => _error = 'Please fill all fields.');
+      setState(() => _error = l10n.errorPleaseFillAllFields);
       return;
     }
 
@@ -125,7 +127,7 @@ class _OnboardingProfilePageState extends ConsumerState<OnboardingProfilePage> {
       }
     } catch (e) {
       if (mounted) {
-        setState(() => _error = 'Failed to save profile: $e');
+        setState(() => _error = l10n.errorFailedToSaveProfile('$e'));
       }
     } finally {
       if (mounted) {
@@ -139,6 +141,7 @@ class _OnboardingProfilePageState extends ConsumerState<OnboardingProfilePage> {
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
     final profile = context.profileTheme;
     final spacing = profile.spacing;
+    final l10n = context.l10n;
 
     return Scaffold(
       body: _isLoading
@@ -156,17 +159,16 @@ class _OnboardingProfilePageState extends ConsumerState<OnboardingProfilePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const JoviaProfileTopBar(
-                      label: 'Profil',
-                      centerText: 'kurulum',
+                    JoviaProfileTopBar(
+                      label: l10n.onboardingProfileTopLabel,
+                      centerText: l10n.onboardingProfileTopCenter,
                       reserveTrailingSpace: true,
                     ),
                     SizedBox(height: spacing.s24),
-                    const JoviaSectionHeader(
-                      label: 'Onboarding',
-                      title: 'Kimlik ve dogum alanini ayni yerde kur',
-                      body:
-                          'Form mantigi ayni, sadece tipografik omurga artik profil sayfasiyla daha uyumlu.',
+                    JoviaSectionHeader(
+                      label: l10n.onboardingSectionLabel,
+                      title: l10n.onboardingProfileTitle,
+                      body: l10n.onboardingProfileBody,
                       variant: JoviaSectionHeaderVariant.editorial,
                     ),
                     SizedBox(height: spacing.s24),
@@ -185,36 +187,36 @@ class _OnboardingProfilePageState extends ConsumerState<OnboardingProfilePage> {
                           ],
                           TextField(
                             controller: _nameController,
-                            decoration: const InputDecoration(
-                              labelText: 'Name',
+                            decoration: InputDecoration(
+                              labelText: l10n.nameLabel,
                             ),
                           ),
                           SizedBox(height: spacing.s12),
                           TextField(
                             controller: _birthDateController,
-                            decoration: const InputDecoration(
-                              labelText: 'Birth date (YYYY-MM-DD)',
+                            decoration: InputDecoration(
+                              labelText: l10n.birthDateLabel,
                             ),
                           ),
                           SizedBox(height: spacing.s12),
                           TextField(
                             controller: _birthTimeController,
-                            decoration: const InputDecoration(
-                              labelText: 'Birth time (HH:mm)',
+                            decoration: InputDecoration(
+                              labelText: l10n.birthTimeLabel,
                             ),
                           ),
                           SizedBox(height: spacing.s12),
                           TextField(
                             controller: _cityController,
-                            decoration: const InputDecoration(
-                              labelText: 'City',
+                            decoration: InputDecoration(
+                              labelText: l10n.cityLabel,
                             ),
                           ),
                           SizedBox(height: spacing.s12),
                           TextField(
                             controller: _countryController,
-                            decoration: const InputDecoration(
-                              labelText: 'Country',
+                            decoration: InputDecoration(
+                              labelText: l10n.countryLabel,
                             ),
                           ),
                           SizedBox(height: spacing.s20),
@@ -230,7 +232,7 @@ class _OnboardingProfilePageState extends ConsumerState<OnboardingProfilePage> {
                                         strokeWidth: 2,
                                       ),
                                     )
-                                  : const Text('Save'),
+                                  : Text(l10n.commonSave),
                             ),
                           ),
                         ],

@@ -145,6 +145,8 @@ def build_profile_narrative(
 ) -> Dict[str, Any]:
     seed_material = seed_key or _default_seed_key(chart)
     engine = _select_engine(seed_material, engine_override)
+    if engine == "legacy" and not include_debug:
+        engine = "signature"
     resolved_migration_mode = _surface_migration_mode(
         include_debug=include_debug,
         explicit_mode=migration_mode,
