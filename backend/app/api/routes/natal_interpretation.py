@@ -88,6 +88,7 @@ from app.natal.personality_imprint import build_personality_imprint
 from app.natal.narrative.profile_narrative_engine import build_profile_narrative
 from app.natal.supporting_threads_builder import build_sections_v2, build_supporting_threads
 from app.services.performance.cache_store import default_cache_store, utc_now
+from app.services.performance.timing import TimingRecorder
 from app.services.profiles import (
     build_archetype_answers_hash,
     build_archetype_birth_hash,
@@ -117,6 +118,9 @@ def _payload_size_bytes(payload: Any) -> int:
 
 router = APIRouter(tags=["natal"])
 rule_engine = RuleEngine()
+_INTERPRET_UI_CACHE_VERSION = "v1"
+_INTERPRET_UI_CACHE_TTL_SECONDS = 12 * 60 * 60
+_INTERPRET_UI_CACHE_STALE_TTL_SECONDS = 12 * 60 * 60
 
 
 class NatalInterpretationRequest(BaseModel):
@@ -189,24 +193,88 @@ def _log_natal_timing(
     request: NatalInterpretationRequest,
     response: Mapping[str, Any],
     duration_ms: float,
+    cache_status: str = "not_cached",
+    status: str = "ok",
+    error_type: str | None = None,
+    stage_breakdown_ms: Mapping[str, float] | None = None,
+    extra_fields: Mapping[str, Any] | None = None,
 ) -> None:
     if not os.getenv("ENABLE_TIMING_LOGS", "true").strip().lower() in {"1", "true", "yes", "on"}:
         return
+    payload = {
+        "endpoint": endpoint,
+        "cache_status": cache_status,
+        "status": status,
+        "request_summary": _natal_request_summary(request),
+        "duration_ms": round(duration_ms, 3),
+        "payload_bytes": _payload_size_bytes(response),
+        "payload_shape": _natal_payload_shape(response),
+    }
+    if error_type:
+        payload["error_type"] = error_type
+    if stage_breakdown_ms:
+        payload["stage_breakdown_ms"] = {
+            str(name): round(float(value), 3) for name, value in stage_breakdown_ms.items()
+        }
+    if extra_fields:
+        payload.update(dict(extra_fields))
     logger.info(
         "natal_timing %s",
         json.dumps(
-            {
-                "endpoint": endpoint,
-                "cache_status": "not_cached",
-                "birth_place": request.birth_place,
-                "locale": request.locale or "tr",
-                "duration_ms": round(duration_ms, 3),
-                "payload_bytes": _payload_size_bytes(response),
-            },
+            payload,
             ensure_ascii=False,
             sort_keys=True,
         ),
     )
+
+
+def _natal_request_summary(request: NatalInterpretationRequest) -> Dict[str, Any]:
+    place = request.birth_place.strip().lower()
+    request_key = hashlib.sha1(
+        "|".join(
+            [
+                request.birth_date.strip(),
+                request.birth_time.strip(),
+                place,
+                f"{float(request.birth_latitude):.6f}" if request.birth_latitude is not None else "",
+                f"{float(request.birth_longitude):.6f}" if request.birth_longitude is not None else "",
+                (request.birth_timezone or "").strip().lower(),
+                (request.locale or "tr").strip().lower(),
+                "summary_only" if request.summary_only else "full",
+            ]
+        ).encode("utf-8")
+    ).hexdigest()[:12]
+    place_hash = hashlib.sha1(place.encode("utf-8")).hexdigest()[:10] if place else ""
+    birth_date_masked = request.birth_date[:7] + "-xx" if len(request.birth_date) >= 7 else "unknown"
+    return {
+        "request_key": request_key,
+        "birth_date_masked": birth_date_masked,
+        "has_birth_time": bool(request.birth_time.strip()),
+        "has_birth_place": bool(place),
+        "birth_place_hash": place_hash,
+        "has_coordinates": request.birth_latitude is not None and request.birth_longitude is not None,
+        "has_timezone": bool((request.birth_timezone or "").strip()),
+        "locale": request.locale or "tr",
+        "summary_only": bool(request.summary_only),
+    }
+
+
+def _natal_payload_shape(response: Mapping[str, Any]) -> Dict[str, Any]:
+    public_raw = response.get("public")
+    public = dict(public_raw) if isinstance(public_raw, Mapping) else dict(response)
+    sections_v2 = public.get("sections_v2")
+    supporting_threads = public.get("supporting_threads")
+    return {
+        "has_public": isinstance(public_raw, Mapping),
+        "has_sections_v2": isinstance(sections_v2, Sequence) and bool(sections_v2),
+        "has_supporting_threads": isinstance(supporting_threads, Sequence) and bool(supporting_threads),
+        "has_core_story_ui": isinstance(public.get("core_story_ui"), Mapping),
+        "has_profile_narrative": isinstance(public.get("profile_narrative"), Mapping),
+        "has_personality_imprint": isinstance(public.get("personality_imprint"), Mapping),
+        "has_narrative_v2": isinstance(public.get("narrative_v2"), Mapping),
+        "sections_v2_count": len(sections_v2) if isinstance(sections_v2, Sequence) else 0,
+        "supporting_threads_count": len(supporting_threads) if isinstance(supporting_threads, Sequence) else 0,
+    }
 
 
 def _profile_fast_cache_key(request: NatalInterpretationRequest) -> str:
@@ -224,6 +292,38 @@ def _profile_fast_cache_key(request: NatalInterpretationRequest) -> str:
         ).encode("utf-8")
     ).hexdigest()
     return f"profile_fast:v2:{digest}"
+
+
+def _interpret_ui_cache_key(
+    request: NatalInterpretationRequest,
+    *,
+    debug: bool,
+    include_debug: bool,
+    profile_engine: str | None,
+) -> str:
+    digest = hashlib.sha1(
+        "|".join(
+            [
+                request.birth_date.strip(),
+                request.birth_time.strip(),
+                request.birth_place.strip().lower(),
+                f"{float(request.birth_latitude):.6f}" if request.birth_latitude is not None else "",
+                f"{float(request.birth_longitude):.6f}" if request.birth_longitude is not None else "",
+                (request.birth_timezone or "").strip().lower(),
+                (request.locale or "tr").strip().lower(),
+                "summary_only" if request.summary_only else "full",
+                "debug" if debug else "nodebug",
+                "include_debug" if include_debug else "noinclude_debug",
+                (profile_engine or "").strip().lower(),
+                _INTERPRET_UI_CACHE_VERSION,
+            ]
+        ).encode("utf-8")
+    ).hexdigest()
+    return f"interpret_ui:{_INTERPRET_UI_CACHE_VERSION}:{digest}"
+
+
+def _cache_key_hash(cache_key: str) -> str:
+    return cache_key.rsplit(":", 1)[-1][:12]
 
 
 def _natal_selection_seed_key(chart_data: Mapping[str, Any]) -> str:
@@ -654,12 +754,12 @@ def _log_profile_fast_timing(
                 "endpoint": "/profile/fast",
                 "cache_status": cache_status,
                 "cache_key": cache_key,
-                "birth_place": request.birth_place,
-                "locale": request.locale or "tr",
+                "request_summary": _natal_request_summary(request),
                 "duration_ms": round(duration_ms, 3),
                 "chart_compute_ms": round(chart_compute_ms, 3),
                 "serialization_ms": round(serialization_ms, 3),
                 "payload_bytes": _payload_size_bytes(response),
+                "payload_shape": _natal_payload_shape(response),
             },
             ensure_ascii=False,
             sort_keys=True,
@@ -924,25 +1024,49 @@ def interpret_natal_chart(
 ) -> Dict[str, Any]:
     """Free deterministic interpretation endpoint (JoviaWeighted narratives)."""
     started = perf_counter()
-    base_payload = _prepare_payload(
-        request,
-        premium_mode=False,
-        debug_mode=debug,
-        profile_engine=profile_engine,
-    )
-    response = _finalize_response(
-        base_payload,
-        premium_mode=False,
-        debug_mode=debug,
-        output_profile=output_profile,
-    )
-    _log_natal_timing(
-        endpoint="/interpret",
-        request=request,
-        response=response,
-        duration_ms=(perf_counter() - started) * 1000.0,
-    )
-    return response
+    timer = TimingRecorder()
+    try:
+        with timer.stage("input_normalize"):
+            _natal_request_summary(request)
+        with timer.stage("chart_payload_preparation"):
+            base_payload = _prepare_payload(
+                request,
+                premium_mode=False,
+                debug_mode=debug,
+                profile_engine=profile_engine,
+            )
+        with timer.stage("response_finalize"):
+            response = _finalize_response(
+                base_payload,
+                premium_mode=False,
+                debug_mode=debug,
+                output_profile=output_profile,
+            )
+        _log_natal_timing(
+            endpoint="/interpret",
+            request=request,
+            response=response,
+            duration_ms=(perf_counter() - started) * 1000.0,
+            stage_breakdown_ms={
+                "request_received": 0.0,
+                **timer.stage_breakdown_ms,
+            },
+        )
+        return response
+    except Exception as exc:
+        _log_natal_timing(
+            endpoint="/interpret",
+            request=request,
+            response={},
+            duration_ms=timer.total_ms(),
+            status="error",
+            error_type=type(exc).__name__,
+            stage_breakdown_ms={
+                "request_received": 0.0,
+                **timer.stage_breakdown_ms,
+            },
+        )
+        raise
 
 
 @router.post("/interpret/ui")
@@ -953,36 +1077,155 @@ def interpret_natal_chart_ui(
     profile_engine: str | None = None,
 ) -> Dict[str, Any]:
     started = perf_counter()
-    if request.summary_only:
-        payload, _timing = _build_summary_only_public_payload(request)
+    timer = TimingRecorder()
+    cache_key = _interpret_ui_cache_key(
+        request,
+        debug=debug,
+        include_debug=include_debug,
+        profile_engine=profile_engine,
+    )
+    cache_status = "miss"
+    cache_write = "skipped"
+    cache_bypass_reason: str | None = None
+    try:
+        with timer.stage("input_normalize"):
+            locale = request.locale or "tr"
+            _natal_request_summary(request)
+        with timer.stage("cache_lookup"):
+            try:
+                lookup = default_cache_store.get(cache_key, now=utc_now())
+            except Exception:
+                lookup = None
+                cache_status = "bypass"
+                cache_bypass_reason = "cache_get_failed"
+                logger.exception(
+                    "interpret_ui cache get failed",
+                    extra={"cache_key_hash": _cache_key_hash(cache_key)},
+                )
+            else:
+                if lookup is not None and lookup.status in {"hit", "stale"} and lookup.entry is not None:
+                    cache_status = lookup.status
+                    payload = copy.deepcopy(lookup.entry.value)
+                    with timer.stage("response_finalize"):
+                        _natal_payload_shape(payload)
+                    _log_natal_timing(
+                        endpoint="/interpret/ui",
+                        request=request,
+                        response=payload,
+                        duration_ms=(perf_counter() - started) * 1000.0,
+                        cache_status=cache_status,
+                        stage_breakdown_ms={
+                            "request_received": 0.0,
+                            **timer.stage_breakdown_ms,
+                        },
+                        extra_fields={
+                            "cache_key_hash": _cache_key_hash(cache_key),
+                            "cache_policy": {
+                                "fresh_ttl_seconds": _INTERPRET_UI_CACHE_TTL_SECONDS,
+                                "stale_ttl_seconds": _INTERPRET_UI_CACHE_STALE_TTL_SECONDS,
+                                "mode": "serve_stale_without_refresh",
+                            },
+                            "cache_write": cache_write,
+                            **(
+                                {"summary_mode": "summary_only"}
+                                if request.summary_only
+                                else {}
+                            ),
+                        },
+                    )
+                    return payload
+        if request.summary_only:
+            with timer.stage("public_natal_build"):
+                payload, summary_timing = _build_summary_only_public_payload(request)
+            with timer.stage("response_finalize"):
+                _natal_payload_shape(payload)
+        else:
+            with timer.stage("chart_payload_preparation"):
+                base_payload = _prepare_payload(
+                    request,
+                    premium_mode=False,
+                    debug_mode=debug,
+                    profile_engine=profile_engine,
+                )
+            with timer.stage("public_natal_build"):
+                response = _finalize_response(
+                    base_payload,
+                    premium_mode=False,
+                    debug_mode=debug,
+                    output_profile="user_compact",
+                )
+                public = build_public_natal_view(
+                    response,
+                    locale=locale,
+                    include_debug=include_debug,
+                )
+            with timer.stage("response_finalize"):
+                payload = {"public": public}
+                _natal_payload_shape(payload)
+        with timer.stage("cache_write"):
+            try:
+                default_cache_store.set(
+                    cache_key,
+                    payload,
+                    ttl_seconds=_INTERPRET_UI_CACHE_TTL_SECONDS,
+                    stale_ttl_seconds=_INTERPRET_UI_CACHE_STALE_TTL_SECONDS,
+                    now=utc_now(),
+                )
+            except Exception:
+                cache_write = "failed"
+                if cache_bypass_reason is None:
+                    cache_bypass_reason = "cache_set_failed"
+                logger.exception(
+                    "interpret_ui cache set failed",
+                    extra={"cache_key_hash": _cache_key_hash(cache_key)},
+                )
+            else:
+                cache_write = "stored"
         _log_natal_timing(
             endpoint="/interpret/ui",
             request=request,
             response=payload,
             duration_ms=(perf_counter() - started) * 1000.0,
+            cache_status=cache_status,
+            stage_breakdown_ms={
+                "request_received": 0.0,
+                **timer.stage_breakdown_ms,
+            },
+            extra_fields={
+                "cache_key_hash": _cache_key_hash(cache_key),
+                "cache_policy": {
+                    "fresh_ttl_seconds": _INTERPRET_UI_CACHE_TTL_SECONDS,
+                    "stale_ttl_seconds": _INTERPRET_UI_CACHE_STALE_TTL_SECONDS,
+                    "mode": "serve_stale_without_refresh",
+                },
+                "cache_write": cache_write,
+                **({"cache_bypass_reason": cache_bypass_reason} if cache_bypass_reason else {}),
+                **(
+                    {
+                        "summary_mode": "summary_only",
+                        "profile_fast_chart_compute_ms": summary_timing.get("chart_compute_ms", 0.0),
+                        "profile_fast_serialization_ms": summary_timing.get("serialization_ms", 0.0),
+                    }
+                    if request.summary_only
+                    else {}
+                ),
+            },
         )
         return payload
-    base_payload = _prepare_payload(
-        request,
-        premium_mode=False,
-        debug_mode=debug,
-        profile_engine=profile_engine,
-    )
-    response = _finalize_response(
-        base_payload,
-        premium_mode=False,
-        debug_mode=debug,
-        output_profile="user_compact",
-    )
-    public = build_public_natal_view(response, locale=request.locale or "tr", include_debug=include_debug)
-    payload = {"public": public}
-    _log_natal_timing(
-        endpoint="/interpret/ui",
-        request=request,
-        response=payload,
-        duration_ms=(perf_counter() - started) * 1000.0,
-    )
-    return payload
+    except Exception as exc:
+        _log_natal_timing(
+            endpoint="/interpret/ui",
+            request=request,
+            response={},
+            duration_ms=timer.total_ms(),
+            status="error",
+            error_type=type(exc).__name__,
+            stage_breakdown_ms={
+                "request_received": 0.0,
+                **timer.stage_breakdown_ms,
+            },
+        )
+        raise
 
 
 @router.post("/interpret/debug")

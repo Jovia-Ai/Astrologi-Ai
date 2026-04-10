@@ -47,6 +47,25 @@ class Settings(BaseSettings):
     enable_stale_while_revalidate: bool = Field(default=True, validation_alias="ENABLE_STALE_WHILE_REVALIDATE")
     enable_background_refresh: bool = Field(default=True, validation_alias="ENABLE_BACKGROUND_REFRESH")
     enable_timing_logs: bool = Field(default=True, validation_alias="ENABLE_TIMING_LOGS")
+    performance_cache_backend: str = Field(default="memory", validation_alias="PERFORMANCE_CACHE_BACKEND")
+    performance_cache_redis_url: str | None = Field(default=None, validation_alias="PERFORMANCE_CACHE_REDIS_URL")
+    performance_cache_redis_prefix: str = Field(
+        default="astrologi-ai",
+        validation_alias="PERFORMANCE_CACHE_REDIS_PREFIX",
+    )
+    performance_cache_redis_socket_timeout_seconds: float = Field(
+        default=0.2,
+        validation_alias="PERFORMANCE_CACHE_REDIS_SOCKET_TIMEOUT_SECONDS",
+    )
+    performance_cache_redis_connect_timeout_seconds: float = Field(
+        default=0.2,
+        validation_alias="PERFORMANCE_CACHE_REDIS_CONNECT_TIMEOUT_SECONDS",
+    )
+    performance_cache_strict: bool = Field(default=False, validation_alias="PERFORMANCE_CACHE_STRICT")
+    performance_cache_fail_fast_envs: List[str] = Field(
+        default_factory=lambda: ["staging", "production"],
+        validation_alias="PERFORMANCE_CACHE_FAIL_FAST_ENVS",
+    )
     global_transits_ttl_seconds: int = Field(default=3600, validation_alias="GLOBAL_TRANSITS_TTL_SECONDS")
     global_transits_stale_ttl_seconds: int = Field(default=43200, validation_alias="GLOBAL_TRANSITS_STALE_TTL_SECONDS")
     transit_narrative_ttl_seconds: int = Field(default=900, validation_alias="TRANSIT_NARRATIVE_TTL_SECONDS")
@@ -65,6 +84,13 @@ class Settings(BaseSettings):
         if isinstance(value, str):
             return [origin.strip() for origin in value.split(",") if origin.strip()]
         return value
+
+    @field_validator("performance_cache_fail_fast_envs", mode="before")
+    @classmethod
+    def _split_cache_fail_fast_envs(cls, value: str | list[str]) -> list[str]:
+        if isinstance(value, str):
+            return [item.strip().lower() for item in value.split(",") if item.strip()]
+        return [str(item).strip().lower() for item in value if str(item).strip()]
 
     @field_validator("house_system", mode="before")
     @classmethod

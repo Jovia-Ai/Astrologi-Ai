@@ -13,4 +13,4 @@ fastapi
 uvicorn
 pydantic-settings
 email-validator
-
+redis>=5,<6
