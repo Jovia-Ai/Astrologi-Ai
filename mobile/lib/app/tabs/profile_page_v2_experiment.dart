@@ -13,6 +13,8 @@ import 'package:mobile/design/astro/astro_theme_generator.dart';
 import 'package:mobile/design/astro/element_scores.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/current_localizations.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 class ProfilePageV2Experiment extends ConsumerStatefulWidget {
   const ProfilePageV2Experiment({
@@ -55,6 +57,7 @@ class _ProfilePageV2ExperimentState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final profileAsync = widget.profileOverride == null
         ? ref.watch(userProfileProvider)
         : const AsyncValue<Map<String, dynamic>?>.data(null);
@@ -121,12 +124,12 @@ class _ProfilePageV2ExperimentState
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           JoviaProfileTopBar(
-                            label: 'Preview',
-                            centerText: 'Nocturne Identity',
+                            label: l10n.profileExperimentPreviewLabel,
+                            centerText: l10n.profileExperimentCenterText,
                             onBackTap: () => Navigator.of(context).maybePop(),
                             onActionTap: () => _showExperimentMenu(context),
                             actionAsset: JoviaUiAsset.menuStack,
-                            actionTooltip: 'Tema ve deney ayarlari',
+                            actionTooltip: l10n.profileExperimentMenuTooltip,
                           ),
                           const SizedBox(height: 14),
                           _NocturneIdentityHero(
@@ -135,7 +138,7 @@ class _ProfilePageV2ExperimentState
                             avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
                             signatureLine:
                                 _identityContext?.overview ??
-                                'Haritanin ilk izi burada toplanir.',
+                                l10n.profileExperimentHeroFallback,
                             sunSign: _sunSign,
                             moonSign: _moonSign,
                             risingSign: _risingSign,
@@ -154,7 +157,8 @@ class _ProfilePageV2ExperimentState
                             rulerHouse: _identityContext?.rulerHouse,
                             dominantElementLabel: dominantElementLabel,
                             signatureLabel:
-                                _identityContext?.summaryLabel ?? 'Kimlik izi',
+                                _identityContext?.summaryLabel ??
+                                l10n.profileExperimentSignatureFallback,
                             sunSign: _sunSign,
                             moonSign: _moonSign,
                             risingSign: _risingSign,
@@ -173,8 +177,8 @@ class _ProfilePageV2ExperimentState
                                 .withValues(alpha: 0.68),
                             child: Text(
                               _mode == _ProfileMode.natal
-                                  ? 'Bu preview, kimligi tam portre hissiyle acan spotlight hero uzerinde calisiyor. Alt chapter katmanlari sonraki patchte eklenecek.'
-                                  : 'Timing modu burada sadece odak degisimi gibi davranir. Alt donem kompozisyonu sonraki patchte gelecek.',
+                                  ? l10n.profileExperimentNatalPanelBody
+                                  : l10n.profileExperimentTimingPanelBody,
                               style: profileTheme.typography.body.copyWith(
                                 color: profileTheme.colors.textLight,
                                 height: 1.5,
@@ -195,6 +199,7 @@ class _ProfilePageV2ExperimentState
   }
 
   Future<void> _showExperimentMenu(BuildContext context) async {
+    final l10n = context.l10n;
     final profile = context.profileTheme;
     final currentMode = ref.read(joviaThemeModeProvider);
     await showModalBottomSheet<void>(
@@ -214,7 +219,7 @@ class _ProfilePageV2ExperimentState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Nocturne experiment',
+                  l10n.profileExperimentMenuTitle,
                   style: profile.typography.card.copyWith(
                     color: profile.colors.text,
                     fontWeight: FontWeight.w700,
@@ -222,14 +227,14 @@ class _ProfilePageV2ExperimentState
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  'Patch 1 sadece ust kimlik kompozisyonunu dener.',
+                  l10n.profileExperimentMenuBody,
                   style: profile.typography.body.copyWith(
                     color: profile.colors.textLight,
                   ),
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Tema',
+                  l10n.menuThemeMode,
                   style: profile.typography.eyebrow.copyWith(
                     color: profile.colors.textLight,
                     letterSpacing: 1.4,
@@ -240,7 +245,7 @@ class _ProfilePageV2ExperimentState
                   children: [
                     Expanded(
                       child: MinimalCTAButton(
-                        label: 'Koyu mod',
+                        label: l10n.themeModeDark,
                         emphasized: currentMode == JoviaThemeMode.dark,
                         onTap: () {
                           ref
@@ -253,7 +258,7 @@ class _ProfilePageV2ExperimentState
                     const SizedBox(width: 12),
                     Expanded(
                       child: MinimalCTAButton(
-                        label: 'Acik mod',
+                        label: l10n.themeModeLight,
                         emphasized: currentMode == JoviaThemeMode.light,
                         onTap: () {
                           ref
@@ -314,7 +319,7 @@ class _ProfilePageV2ExperimentState
         (profile['birth_time'] ?? '').toString(),
       ),
       'birth_place': place,
-      'locale': 'tr',
+      'locale': Localizations.localeOf(context).languageCode,
     };
 
     setState(() => _isIdentityLoading = true);
@@ -521,10 +526,10 @@ class _ProfilePageV2ExperimentState
 
   String _dominantElementLabel(ElementScores scores) {
     return switch (scores.dominant) {
-      AstroElement.fire => 'Ates baskin',
-      AstroElement.water => 'Su baskin',
-      AstroElement.air => 'Hava baskin',
-      AstroElement.earth => 'Toprak baskin',
+      AstroElement.fire => currentL10n().profileExperimentFireDominant,
+      AstroElement.water => currentL10n().profileExperimentWaterDominant,
+      AstroElement.air => currentL10n().profileExperimentAirDominant,
+      AstroElement.earth => currentL10n().profileExperimentEarthDominant,
     };
   }
 
@@ -535,7 +540,7 @@ class _ProfilePageV2ExperimentState
     if (fromProfile.isNotEmpty) {
       return fromProfile;
     }
-    return 'Isimsiz Profil';
+    return currentL10n().profileExperimentUnnamedProfile;
   }
 
   String _displayUsername({
@@ -715,18 +720,31 @@ class _ProfilePageV2ExperimentState
   }
 
   String _planetLabelTr(String raw) {
-    const labels = <String, String>{
-      'sun': 'Gunes',
-      'moon': 'Ay',
-      'mercury': 'Merkur',
-      'venus': 'Venus',
-      'mars': 'Mars',
-      'jupiter': 'Jupiter',
-      'saturn': 'Saturn',
-      'uranus': 'Uranus',
-      'neptune': 'Neptun',
-      'pluto': 'Pluton',
-    };
+    final labels = isCurrentLocaleTurkish()
+        ? const <String, String>{
+            'sun': 'Güneş',
+            'moon': 'Ay',
+            'mercury': 'Merkür',
+            'venus': 'Venüs',
+            'mars': 'Mars',
+            'jupiter': 'Jüpiter',
+            'saturn': 'Satürn',
+            'uranus': 'Uranüs',
+            'neptune': 'Neptün',
+            'pluto': 'Plüton',
+          }
+        : const <String, String>{
+            'sun': 'Sun',
+            'moon': 'Moon',
+            'mercury': 'Mercury',
+            'venus': 'Venus',
+            'mars': 'Mars',
+            'jupiter': 'Jupiter',
+            'saturn': 'Saturn',
+            'uranus': 'Uranus',
+            'neptune': 'Neptune',
+            'pluto': 'Pluto',
+          };
     final key = raw.trim().toLowerCase();
     return labels[key] ?? (raw.trim().isEmpty ? '—' : raw.trim());
   }
@@ -795,32 +813,59 @@ class _ProfilePageV2ExperimentState
   }
 
   String _toTrSign(String raw) {
-    const signs = <String, String>{
-      'aries': 'Koc',
-      'taurus': 'Boga',
-      'gemini': 'Ikizler',
-      'cancer': 'Yengec',
-      'leo': 'Aslan',
-      'virgo': 'Basak',
-      'libra': 'Terazi',
-      'scorpio': 'Akrep',
-      'sagittarius': 'Yay',
-      'capricorn': 'Oglak',
-      'aquarius': 'Kova',
-      'pisces': 'Balik',
-      'koç': 'Koc',
-      'koc': 'Koc',
-      'boğa': 'Boga',
-      'boga': 'Boga',
-      'yengeç': 'Yengec',
-      'yengec': 'Yengec',
-      'başak': 'Basak',
-      'basak': 'Basak',
-      'oğlak': 'Oglak',
-      'oglak': 'Oglak',
-      'balık': 'Balik',
-      'balik': 'Balik',
-    };
+    final signs = isCurrentLocaleTurkish()
+        ? const <String, String>{
+            'aries': 'Koç',
+            'taurus': 'Boğa',
+            'gemini': 'İkizler',
+            'cancer': 'Yengeç',
+            'leo': 'Aslan',
+            'virgo': 'Başak',
+            'libra': 'Terazi',
+            'scorpio': 'Akrep',
+            'sagittarius': 'Yay',
+            'capricorn': 'Oğlak',
+            'aquarius': 'Kova',
+            'pisces': 'Balık',
+            'koç': 'Koç',
+            'koc': 'Koç',
+            'boğa': 'Boğa',
+            'boga': 'Boğa',
+            'yengeç': 'Yengeç',
+            'yengec': 'Yengeç',
+            'başak': 'Başak',
+            'basak': 'Başak',
+            'oğlak': 'Oğlak',
+            'oglak': 'Oğlak',
+            'balık': 'Balık',
+            'balik': 'Balık',
+          }
+        : const <String, String>{
+            'aries': 'Aries',
+            'taurus': 'Taurus',
+            'gemini': 'Gemini',
+            'cancer': 'Cancer',
+            'leo': 'Leo',
+            'virgo': 'Virgo',
+            'libra': 'Libra',
+            'scorpio': 'Scorpio',
+            'sagittarius': 'Sagittarius',
+            'capricorn': 'Capricorn',
+            'aquarius': 'Aquarius',
+            'pisces': 'Pisces',
+            'koç': 'Aries',
+            'koc': 'Aries',
+            'boğa': 'Taurus',
+            'boga': 'Taurus',
+            'yengeç': 'Cancer',
+            'yengec': 'Cancer',
+            'başak': 'Virgo',
+            'basak': 'Virgo',
+            'oğlak': 'Capricorn',
+            'oglak': 'Capricorn',
+            'balık': 'Pisces',
+            'balik': 'Pisces',
+          };
     final key = raw.trim().toLowerCase();
     return signs[key] ?? (raw.trim().isEmpty ? '—' : raw.trim());
   }
@@ -922,6 +967,7 @@ class _NocturneIdentityHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final l10n = context.l10n;
     return Container(
       height: 620,
       decoration: BoxDecoration(
@@ -965,7 +1011,9 @@ class _NocturneIdentityHero extends StatelessWidget {
                   ),
                   const Spacer(),
                   _FloatingPill(
-                    label: readOnly ? 'Preview' : 'Edit Profile',
+                    label: readOnly
+                        ? l10n.profileExperimentPreviewLabel
+                        : l10n.menuEditProfile,
                     onTap: onMenuTap,
                   ),
                 ],
@@ -1020,7 +1068,7 @@ class _NocturneIdentityHero extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  'See profile',
+                                  l10n.profileExperimentSeeProfile,
                                   style: profile.typography.micro.copyWith(
                                     color: Colors.white.withValues(alpha: 0.84),
                                     fontWeight: FontWeight.w700,
@@ -1044,7 +1092,7 @@ class _NocturneIdentityHero extends StatelessWidget {
                           opacity: isLoading ? 0.65 : 1,
                           child: Text(
                             signatureLine.trim().isEmpty
-                                ? 'Kimligin bu ekranda yeni bir odak yuzeyine toplanir.'
+                                ? l10n.profileExperimentHeroLineFallback
                                 : signatureLine.trim(),
                             style: profile.typography.body.copyWith(
                               color: Colors.white.withValues(alpha: 0.82),
@@ -1060,26 +1108,26 @@ class _NocturneIdentityHero extends StatelessWidget {
                             Expanded(
                               child: _MetricColumn(
                                 value: sunSign,
-                                label: 'Gunes',
+                                label: l10n.profileSunLabel,
                               ),
                             ),
                             Expanded(
                               child: _MetricColumn(
                                 value: moonSign,
-                                label: 'Ay',
+                                label: l10n.profileMoonLabel,
                               ),
                             ),
                             Expanded(
                               child: _MetricColumn(
                                 value: risingSign,
-                                label: 'Yukselen',
+                                label: l10n.profileRisingLabel,
                               ),
                             ),
                           ],
                         ),
                         const SizedBox(height: 18),
                         _GradientActionBar(
-                          label: 'Kimlik akisini ac',
+                          label: l10n.profileOpenIdentityReading,
                           onTap: onMenuTap,
                         ),
                       ],
@@ -1378,25 +1426,31 @@ class _NocturneIdentityRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final cards = <_NocturneRailCardData>[
       _NocturneRailCardData(
-        label: 'Aura',
-        title: auraSourceLabel.isEmpty ? 'Kimlik izi' : auraSourceLabel,
+        label: l10n.profileExperimentAuraLabel,
+        title: auraSourceLabel.isEmpty
+            ? l10n.profileExperimentSignatureFallback
+            : auraSourceLabel,
         body: auraLine.isEmpty ? dominantElementLabel : auraLine,
         chips: [dominantElementLabel, signatureLabel],
         gradient: const [Color(0xFFE1BEA6), Color(0xFF6C473A)],
       ),
       _NocturneRailCardData(
-        label: 'Yonetici',
-        title: rulerName.isEmpty ? 'Bekliyor' : rulerName,
+        label: l10n.profileExperimentRulerLabel,
+        title: rulerName.isEmpty ? l10n.profileExperimentWaiting : rulerName,
         body: rulerHouse == null
-            ? '1. ev yoneticisi okunuyor'
-            : '${rulerHouse!}. ev vurgusu',
-        chips: [if (rulerHouse != null) '${rulerHouse!}. ev', 'Yukselen izi'],
+            ? l10n.profileExperimentRulerBodyFallback
+            : l10n.profileHouseEmphasis(rulerHouse!),
+        chips: [
+          if (rulerHouse != null) l10n.profileHouseEmphasis(rulerHouse!),
+          l10n.profileExperimentRisingTrace,
+        ],
         gradient: const [Color(0xFFB9B4D9), Color(0xFF473C5B)],
       ),
       _NocturneRailCardData(
-        label: 'Imza',
+        label: l10n.profileExperimentSignatureLabel,
         title: dominantElementLabel,
         body: signatureLabel,
         chips: [sunSign, moonSign, risingSign],
@@ -1414,7 +1468,7 @@ class _NocturneIdentityRow extends StatelessWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Spotlight Cards',
+                    l10n.profileExperimentSpotlightCards,
                     style: profile.typography.eyebrow.copyWith(
                       color: profile.colors.textLight,
                       letterSpacing: 1.8,
@@ -1422,7 +1476,7 @@ class _NocturneIdentityRow extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Kaydir',
+                  l10n.profileExperimentSwipe,
                   style: profile.typography.micro.copyWith(
                     color: profile.colors.textLight.withValues(alpha: 0.8),
                     fontWeight: FontWeight.w700,
@@ -1667,6 +1721,7 @@ class _NocturneModeSurface extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final profile = context.profileTheme;
     return JoviaSurfaceCard(
       radius: 28,
@@ -1677,7 +1732,7 @@ class _NocturneModeSurface extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Okuma odağı',
+            l10n.profileExperimentFocusTitle,
             style: profile.typography.eyebrow.copyWith(
               color: profile.colors.textLight,
               letterSpacing: 1.4,
@@ -1687,8 +1742,9 @@ class _NocturneModeSurface extends StatelessWidget {
           JoviaSegmentedControl<_ProfileMode>(
             value: mode,
             options: const [_ProfileMode.natal, _ProfileMode.timing],
-            labelBuilder: (value) =>
-                value == _ProfileMode.natal ? 'Senin Yapin' : 'Su Anki Donemin',
+            labelBuilder: (value) => value == _ProfileMode.natal
+                ? l10n.profileExperimentNatalFocus
+                : l10n.profileExperimentTimingFocus,
             onChanged: onChanged,
           ),
         ],

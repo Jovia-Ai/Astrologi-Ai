@@ -16,6 +16,21 @@ from typing import Any, Protocol
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
+_cache_runtime_state_lock = threading.RLock()
+_cache_runtime_state: dict[str, Any] = {
+    "selected_backend": "memory",
+    "active_backend": "memory",
+    "strict_mode": False,
+    "environment": "development",
+    "redis_configured": False,
+    "redis_ready": False,
+    "fallback_active": False,
+    "fail_fast_expected": False,
+    "shared_cache_expected": False,
+    "readiness_ok": True,
+    "status": "ready",
+    "reason": "memory_backend",
+}
 
 
 def utc_now() -> datetime:
@@ -82,6 +97,83 @@ def _shared_cache_strict_mode(backend: str) -> bool:
     return backend in {"redis", "layered"} and (
         bool(settings.performance_cache_strict) or environment in fail_fast_envs
     )
+
+
+def _shared_cache_requested(backend: str) -> bool:
+    return backend in {"redis", "layered"}
+
+
+def _record_cache_runtime_state(
+    *,
+    selected_backend: str,
+    active_backend: str,
+    strict_mode: bool,
+    environment: str,
+    redis_configured: bool,
+    status: str,
+    reason: str | None = None,
+) -> None:
+    shared_cache_expected = _shared_cache_requested(selected_backend)
+    redis_ready = active_backend in {"redis", "layered"}
+    fallback_active = shared_cache_expected and active_backend == "memory"
+    readiness_ok = (not shared_cache_expected and active_backend == "memory") or (
+        shared_cache_expected and active_backend == selected_backend
+    )
+    with _cache_runtime_state_lock:
+        _cache_runtime_state.update(
+            {
+                "selected_backend": selected_backend,
+                "active_backend": active_backend,
+                "strict_mode": strict_mode,
+                "environment": environment,
+                "redis_configured": redis_configured,
+                "redis_ready": redis_ready,
+                "fallback_active": fallback_active,
+                "fail_fast_expected": strict_mode,
+                "shared_cache_expected": shared_cache_expected,
+                "readiness_ok": readiness_ok,
+                "status": status,
+                "reason": reason,
+            }
+        )
+
+
+def get_cache_runtime_status() -> dict[str, Any]:
+    with _cache_runtime_state_lock:
+        return dict(_cache_runtime_state)
+
+
+def _probe_store_ready(store: Any) -> bool:
+    if isinstance(store, InMemoryCacheStore):
+        return True
+    if isinstance(store, LayeredCacheStore):
+        primary = getattr(store, "_primary", None)
+        secondary = getattr(store, "_secondary", None)
+        return _probe_store_ready(primary) and _probe_store_ready(secondary)
+    client = getattr(store, "_client", None)
+    ping = getattr(client, "ping", None)
+    if callable(ping):
+        ping()
+        return True
+    return False
+
+
+def get_cache_health_status() -> dict[str, Any]:
+    summary = get_cache_runtime_status()
+    if not summary.get("shared_cache_expected"):
+        return summary
+    try:
+        live_ready = _probe_store_ready(default_cache_store)
+    except Exception:
+        live_ready = False
+    if not live_ready:
+        summary["redis_ready"] = False
+        summary["readiness_ok"] = False
+        if summary.get("status") == "ready":
+            summary["status"] = "degraded"
+        if not summary.get("reason"):
+            summary["reason"] = "redis_probe_failed"
+    return summary
 
 
 class InMemoryCacheStore:
@@ -445,6 +537,7 @@ def build_cache_store_from_env() -> CacheStore:
     backend = settings.performance_cache_backend.strip().lower() or "memory"
     strict_mode = _shared_cache_strict_mode(backend)
     environment = settings.environment.strip().lower() or "development"
+    redis_configured = bool((settings.performance_cache_redis_url or "").strip())
     _log_cache_event(
         "backend_selection",
         backend=backend,
@@ -452,6 +545,15 @@ def build_cache_store_from_env() -> CacheStore:
         environment=environment,
     )
     if backend == "memory":
+        _record_cache_runtime_state(
+            selected_backend="memory",
+            active_backend="memory",
+            strict_mode=strict_mode,
+            environment=environment,
+            redis_configured=redis_configured,
+            status="ready",
+            reason="memory_backend",
+        )
         _log_cache_event(
             "backend_init",
             backend="memory",
@@ -471,6 +573,15 @@ def build_cache_store_from_env() -> CacheStore:
             "bypass_reason": "redis_url_missing",
             "fallback_backend": "memory",
         }
+        _record_cache_runtime_state(
+            selected_backend=backend,
+            active_backend="unavailable" if strict_mode else "memory",
+            strict_mode=strict_mode,
+            environment=environment,
+            redis_configured=False,
+            status="fail_fast" if strict_mode else "fallback",
+            reason="redis_url_missing",
+        )
         _log_cache_event("backend_init", **payload)
         if strict_mode:
             logger.critical("Shared cache initialization failed: Redis URL missing for backend=%s", backend)
@@ -489,6 +600,15 @@ def build_cache_store_from_env() -> CacheStore:
             connect_timeout_seconds=connect_timeout_seconds,
         )
     except Exception as exc:
+        _record_cache_runtime_state(
+            selected_backend=backend,
+            active_backend="unavailable" if strict_mode else "memory",
+            strict_mode=strict_mode,
+            environment=environment,
+            redis_configured=True,
+            status="fail_fast" if strict_mode else "fallback",
+            reason="redis_init_failed",
+        )
         _log_cache_event(
             "backend_init",
             backend=backend,
@@ -509,6 +629,15 @@ def build_cache_store_from_env() -> CacheStore:
         return InMemoryCacheStore()
 
     if backend == "redis":
+        _record_cache_runtime_state(
+            selected_backend="redis",
+            active_backend="redis",
+            strict_mode=strict_mode,
+            environment=environment,
+            redis_configured=True,
+            status="ready",
+            reason=None,
+        )
         _log_cache_event(
             "backend_init",
             backend="redis",
@@ -518,6 +647,15 @@ def build_cache_store_from_env() -> CacheStore:
         )
         return redis_store
     if backend == "layered":
+        _record_cache_runtime_state(
+            selected_backend="layered",
+            active_backend="layered",
+            strict_mode=strict_mode,
+            environment=environment,
+            redis_configured=True,
+            status="ready",
+            reason=None,
+        )
         _log_cache_event(
             "backend_init",
             backend="layered",
@@ -527,6 +665,15 @@ def build_cache_store_from_env() -> CacheStore:
         )
         return LayeredCacheStore(primary=InMemoryCacheStore(), secondary=redis_store)
 
+    _record_cache_runtime_state(
+        selected_backend=backend,
+        active_backend="memory",
+        strict_mode=strict_mode,
+        environment=environment,
+        redis_configured=redis_configured,
+        status="fallback",
+        reason="unknown_backend",
+    )
     _log_cache_event(
         "backend_init",
         backend=backend,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/app/telemetry/perf_telemetry.dart';
 import 'package:mobile/design/widgets/jovia_assets.dart';
 
 const Duration kSplashMotionDuration = Duration(milliseconds: 520);
@@ -40,6 +41,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void initState() {
     super.initState();
+    PerfTelemetry.logPointOnce('startup.splash_visible', 'splash_visible');
     _motionController = AnimationController(
       vsync: this,
       duration: kSplashMotionDuration,

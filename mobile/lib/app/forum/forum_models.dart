@@ -139,7 +139,7 @@ class ForumState {
     this.selectedCategory = 'all',
     this.hasMore = false,
     this.error,
-    this.activeTransit = 'Gökyüzü hareketli',
+    this.activeTransit = '',
   });
 
   final List<ForumPost> posts;

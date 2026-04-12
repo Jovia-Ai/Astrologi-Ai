@@ -1,8 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mobile/l10n/app_localizations.dart';
+import 'package:mobile/l10n/current_localizations.dart';
 
 import '../data/supabase_tables.dart';
 import 'person_profile.dart';
+
+String _peopleL10n(String Function(AppLocalizations l10n) selector) =>
+    selector(currentL10n());
 
 class PeopleQueryException implements Exception {
   const PeopleQueryException({
@@ -63,7 +68,7 @@ class PeopleRepository {
         operation: 'listPeople',
         table: table,
         endpoint: endpoint,
-        message: 'Kişi listesi alınamadı',
+        message: _peopleL10n((l10n) => l10n.peopleRepoListFailed),
         cause: error,
       );
     }
@@ -107,7 +112,7 @@ class PeopleRepository {
         operation: 'getPerson',
         table: table,
         endpoint: endpoint,
-        message: 'Kişi detayı alınamadı',
+        message: _peopleL10n((l10n) => l10n.peopleRepoDetailFailed),
         cause: error,
       );
     }
@@ -168,7 +173,7 @@ class PeopleRepository {
         operation: 'createPerson',
         table: table,
         endpoint: endpoint,
-        message: 'Kişi kaydı oluşturulamadı',
+        message: _peopleL10n((l10n) => l10n.peopleRepoCreateFailed),
         cause: error,
       );
     }
@@ -232,7 +237,7 @@ class PeopleRepository {
         operation: 'updatePerson',
         table: table,
         endpoint: endpoint,
-        message: 'Kişi kaydı güncellenemedi',
+        message: _peopleL10n((l10n) => l10n.peopleRepoUpdateFailed),
         cause: error,
       );
     }
@@ -263,8 +268,7 @@ class PeopleRepository {
         operation: 'listPeople',
         table: table,
         endpoint: endpoint,
-        message:
-            'Profiles tablosu kişi listesi için uygun değil. people tablosu gerekir.',
+        message: _peopleL10n((l10n) => l10n.peopleRepoProfilesListUnsupported),
         cause: error,
       );
     }
@@ -301,8 +305,9 @@ class PeopleRepository {
         operation: 'getPerson',
         table: table,
         endpoint: endpoint,
-        message:
-            'Profiles tablosu kişi detayı için uygun değil. people tablosu gerekir.',
+        message: _peopleL10n(
+          (l10n) => l10n.peopleRepoProfilesDetailUnsupported,
+        ),
         cause: error,
       );
     }
@@ -360,8 +365,7 @@ class PeopleRepository {
       operation: 'createPerson',
       table: table,
       endpoint: endpoint,
-      message:
-          'Profiles tablosu kişi oluşturma için uygun değil. people tablosu gerekir.',
+      message: _peopleL10n((l10n) => l10n.peopleRepoProfilesCreateUnsupported),
       cause: lastError,
     );
   }
@@ -423,7 +427,7 @@ class PeopleRepository {
       operation: 'updatePerson',
       table: table,
       endpoint: endpoint,
-      message: 'Kişi kaydı güncellenemedi',
+      message: _peopleL10n((l10n) => l10n.peopleRepoUpdateFailed),
       cause: lastError,
     );
   }
@@ -460,8 +464,11 @@ class PeopleRepository {
       operation: operation,
       table: fallbackTable,
       endpoint: '/$fallbackTable?select=id',
-      message:
-          'Kişi tablosu bulunamadı. Beklenen tablolar: ${SupabaseTables.peopleCandidates}',
+      message: _peopleL10n(
+        (l10n) => l10n.peopleRepoTableNotFound(
+          SupabaseTables.peopleCandidates.join(', '),
+        ),
+      ),
     );
   }
 
@@ -494,7 +501,7 @@ class PeopleRepository {
         operation: 'probeTable',
         table: table,
         endpoint: '/$table?select=$select&limit=1',
-        message: 'Kişi tablosu doğrulanamadı',
+        message: _peopleL10n((l10n) => l10n.peopleRepoTableValidationFailed),
         cause: error,
       );
     }

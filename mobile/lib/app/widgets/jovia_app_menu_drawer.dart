@@ -8,6 +8,7 @@ import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/design/widgets/jovia_premium_accents.dart';
 import 'package:mobile/l10n/l10n.dart';
 
 typedef JoviaAppMenuAction =
@@ -56,8 +57,8 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
     final displayName = _displayName(profileMap, authUser);
     final username = _displayUsername(profileMap, authUser);
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final drawerWidth = (MediaQuery.sizeOf(context).width * 0.86)
-        .clamp(312.0, 382.0)
+    final drawerWidth = (MediaQuery.sizeOf(context).width * 0.82)
+        .clamp(304.0, 368.0)
         .toDouble();
     final shellColor = isDark
         ? const Color(0xFF11131A)
@@ -78,11 +79,11 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
       child: SafeArea(
         left: false,
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 10, 14, 10),
+          padding: const EdgeInsets.fromLTRB(12, 12, 14, 12),
           child: DecoratedBox(
             decoration: BoxDecoration(
               color: shellColor,
-              borderRadius: BorderRadius.circular(32),
+              borderRadius: BorderRadius.circular(30),
               border: Border.all(color: shellBorder),
               boxShadow: [
                 BoxShadow(
@@ -94,7 +95,7 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
               ],
             ),
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
+              padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -114,11 +115,14 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  _JoviaAppMenuIdentityCard(
-                    displayName: displayName,
-                    username: username,
-                    peopleCount: peopleCount,
-                    hasBirthData: hasBirthData,
+                  JoviaReveal(
+                    delay: const Duration(milliseconds: 40),
+                    child: _JoviaAppMenuIdentityCard(
+                      displayName: displayName,
+                      username: username,
+                      peopleCount: peopleCount,
+                      hasBirthData: hasBirthData,
+                    ),
                   ),
                   const SizedBox(height: 18),
                   Expanded(
@@ -126,201 +130,245 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _JoviaAppMenuSectionLabel(
-                            label: l10n.menuQuickAccess,
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 80),
+                            child: _JoviaAppMenuSectionLabel(
+                              label: l10n.menuQuickAccess,
+                            ),
                           ),
                           const SizedBox(height: 8),
                           if (onEditProfile != null)
-                            _JoviaAppMenuActionTile(
-                              title: l10n.menuEditProfile,
-                              subtitle: l10n.menuEditProfileSubtitle,
-                              iconAsset: JoviaUiAsset.settingsRings,
-                              onTap: () => closeThenRun(
-                                context,
-                                onEditProfile,
-                                profile: profileMap,
+                            JoviaReveal(
+                              delay: const Duration(milliseconds: 110),
+                              child: _JoviaAppMenuActionTile(
+                                title: l10n.menuEditProfile,
+                                subtitle: l10n.menuEditProfileSubtitle,
+                                iconAsset: JoviaUiAsset.settingsRings,
+                                onTap: () => closeThenRun(
+                                  context,
+                                  onEditProfile,
+                                  profile: profileMap,
+                                ),
                               ),
                             ),
                           if (onEditProfile != null) const SizedBox(height: 10),
                           if (onOpenPeople != null)
-                            _JoviaAppMenuActionTile(
-                              title: peopleCount > 0
-                                  ? l10n.menuManagePeople
-                                  : l10n.menuAddPerson,
-                              subtitle: l10n.menuPeopleSubtitle,
-                              iconAsset: JoviaUiAsset.connectionsTwins,
-                              onTap: () => closeThenRun(
-                                context,
-                                onOpenPeople,
-                                profile: profileMap,
+                            JoviaReveal(
+                              delay: const Duration(milliseconds: 150),
+                              child: _JoviaAppMenuActionTile(
+                                title: peopleCount > 0
+                                    ? l10n.menuManagePeople
+                                    : l10n.menuAddPerson,
+                                subtitle: l10n.menuPeopleSubtitle,
+                                iconAsset: JoviaUiAsset.connectionsTwins,
+                                onTap: () => closeThenRun(
+                                  context,
+                                  onOpenPeople,
+                                  profile: profileMap,
+                                ),
                               ),
                             ),
                           if (onOpenPeople != null) const SizedBox(height: 10),
                           if (onOpenCalendar != null)
-                            _JoviaAppMenuActionTile(
-                              title: l10n.menuCalendar,
-                              subtitle: l10n.menuCalendarSubtitle,
-                              iconAsset: JoviaUiAsset.calendarLunar,
-                              onTap: () => closeThenRun(
-                                context,
-                                onOpenCalendar,
-                                profile: profileMap,
+                            JoviaReveal(
+                              delay: const Duration(milliseconds: 190),
+                              child: _JoviaAppMenuActionTile(
+                                title: l10n.menuCalendar,
+                                subtitle: l10n.menuCalendarSubtitle,
+                                iconAsset: JoviaUiAsset.calendarLunar,
+                                onTap: () => closeThenRun(
+                                  context,
+                                  onOpenCalendar,
+                                  profile: profileMap,
+                                ),
                               ),
                             ),
                           if (onOpenCalendar != null)
                             const SizedBox(height: 10),
                           if (onOpenArchetype != null)
-                            _JoviaAppMenuActionTile(
-                              title: hasBirthData
-                                  ? l10n.menuArchetypeExperience
-                                  : l10n.menuCompleteBirthData,
-                              subtitle: hasBirthData
-                                  ? l10n.menuArchetypeSubtitle
-                                  : l10n.menuCompleteBirthDataSubtitle,
-                              iconAsset: hasBirthData
-                                  ? JoviaUiAsset.orbitPlanet
-                                  : JoviaUiAsset.editPen,
-                              onTap: () => closeThenRun(
-                                context,
-                                onOpenArchetype,
-                                profile: profileMap,
+                            JoviaReveal(
+                              delay: const Duration(milliseconds: 230),
+                              child: _JoviaAppMenuActionTile(
+                                title: hasBirthData
+                                    ? l10n.menuArchetypeExperience
+                                    : l10n.menuCompleteBirthData,
+                                subtitle: hasBirthData
+                                    ? l10n.menuArchetypeSubtitle
+                                    : l10n.menuCompleteBirthDataSubtitle,
+                                iconAsset: hasBirthData
+                                    ? JoviaUiAsset.orbitPlanet
+                                    : JoviaUiAsset.editPen,
+                                onTap: () => closeThenRun(
+                                  context,
+                                  onOpenArchetype,
+                                  profile: profileMap,
+                                ),
                               ),
                             ),
                           const SizedBox(height: 18),
-                          _JoviaAppMenuSectionLabel(
-                            label: l10n.menuPreferences,
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 270),
+                            child: _JoviaAppMenuSectionLabel(
+                              label: l10n.menuPreferences,
+                            ),
                           ),
                           const SizedBox(height: 8),
-                          JoviaSurfaceCard(
-                            radius: 24,
-                            padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  l10n.menuThemeMode,
-                                  style: profile.typography.cardTitle.copyWith(
-                                    color: profile.colors.text,
-                                    fontSize: 14,
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 310),
+                            child: JoviaSurfaceCard(
+                              radius: 24,
+                              padding: const EdgeInsets.fromLTRB(
+                                14,
+                                14,
+                                14,
+                                14,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.menuThemeMode,
+                                    style: profile.typography.cardTitle
+                                        .copyWith(
+                                          color: profile.colors.text,
+                                          fontSize: 13.5,
+                                        ),
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                JoviaModeSwitch<JoviaThemeMode>(
-                                  value: themeMode,
-                                  leadingValue: JoviaThemeMode.dark,
-                                  leadingLabel: l10n.themeModeDark,
-                                  trailingValue: JoviaThemeMode.light,
-                                  trailingLabel: l10n.themeModeLight,
-                                  onChanged: (mode) {
-                                    ref
-                                        .read(joviaThemeModeProvider.notifier)
-                                        .setMode(mode);
-                                  },
-                                ),
-                                const SizedBox(height: 14),
-                                Text(
-                                  l10n.menuLanguage,
-                                  style: profile.typography.cardTitle.copyWith(
-                                    color: profile.colors.text,
-                                    fontSize: 14,
+                                  const SizedBox(height: 10),
+                                  JoviaModeSwitch<JoviaThemeMode>(
+                                    value: themeMode,
+                                    leadingValue: JoviaThemeMode.dark,
+                                    leadingLabel: l10n.themeModeDark,
+                                    trailingValue: JoviaThemeMode.light,
+                                    trailingLabel: l10n.themeModeLight,
+                                    onChanged: (mode) {
+                                      ref
+                                          .read(joviaThemeModeProvider.notifier)
+                                          .setMode(mode);
+                                    },
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                JoviaModeSwitch<JoviaAppLocale>(
-                                  value: prefs.locale,
-                                  leadingValue: JoviaAppLocale.tr,
-                                  leadingLabel: JoviaAppLocale.tr.label,
-                                  trailingValue: JoviaAppLocale.en,
-                                  trailingLabel: JoviaAppLocale.en.label,
-                                  onChanged: (value) {
-                                    ref
-                                        .read(
-                                          joviaAppPreferencesProvider.notifier,
-                                        )
-                                        .setLocale(value);
-                                  },
-                                ),
-                                const SizedBox(height: 14),
-                                Text(
-                                  l10n.menuNotificationPreferences,
-                                  style: profile.typography.cardTitle.copyWith(
-                                    color: profile.colors.text,
-                                    fontSize: 14,
+                                  const SizedBox(height: 14),
+                                  Text(
+                                    l10n.menuLanguage,
+                                    style: profile.typography.cardTitle
+                                        .copyWith(
+                                          color: profile.colors.text,
+                                          fontSize: 13.5,
+                                        ),
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                _JoviaAppMenuToggleTile(
-                                  title: l10n.menuDailySummary,
-                                  subtitle: l10n.menuDailySummarySubtitle,
-                                  value: prefs.dailyBriefEnabled,
-                                  onChanged: (value) {
-                                    ref
-                                        .read(
-                                          joviaAppPreferencesProvider.notifier,
-                                        )
-                                        .setDailyBriefEnabled(value);
-                                  },
-                                ),
-                                const SizedBox(height: 8),
-                                _JoviaAppMenuToggleTile(
-                                  title: l10n.menuSkyEvents,
-                                  subtitle: l10n.menuSkyEventsSubtitle,
-                                  value: prefs.skyAlertsEnabled,
-                                  onChanged: (value) {
-                                    ref
-                                        .read(
-                                          joviaAppPreferencesProvider.notifier,
-                                        )
-                                        .setSkyAlertsEnabled(value);
-                                  },
-                                ),
-                                const SizedBox(height: 8),
-                                _JoviaAppMenuToggleTile(
-                                  title: l10n.menuSocialActivity,
-                                  subtitle: l10n.menuSocialActivitySubtitle,
-                                  value: prefs.socialAlertsEnabled,
-                                  onChanged: (value) {
-                                    ref
-                                        .read(
-                                          joviaAppPreferencesProvider.notifier,
-                                        )
-                                        .setSocialAlertsEnabled(value);
-                                  },
-                                ),
-                              ],
+                                  const SizedBox(height: 10),
+                                  JoviaModeSwitch<JoviaAppLocale>(
+                                    value: prefs.locale,
+                                    leadingValue: JoviaAppLocale.tr,
+                                    leadingLabel: JoviaAppLocale.tr.label,
+                                    trailingValue: JoviaAppLocale.en,
+                                    trailingLabel: JoviaAppLocale.en.label,
+                                    onChanged: (value) {
+                                      ref
+                                          .read(
+                                            joviaAppPreferencesProvider
+                                                .notifier,
+                                          )
+                                          .setLocale(value);
+                                    },
+                                  ),
+                                  const SizedBox(height: 14),
+                                  Text(
+                                    l10n.menuNotificationPreferences,
+                                    style: profile.typography.cardTitle
+                                        .copyWith(
+                                          color: profile.colors.text,
+                                          fontSize: 13.5,
+                                        ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _JoviaAppMenuToggleTile(
+                                    title: l10n.menuDailySummary,
+                                    subtitle: l10n.menuDailySummarySubtitle,
+                                    value: prefs.dailyBriefEnabled,
+                                    onChanged: (value) {
+                                      ref
+                                          .read(
+                                            joviaAppPreferencesProvider
+                                                .notifier,
+                                          )
+                                          .setDailyBriefEnabled(value);
+                                    },
+                                  ),
+                                  const SizedBox(height: 8),
+                                  _JoviaAppMenuToggleTile(
+                                    title: l10n.menuSkyEvents,
+                                    subtitle: l10n.menuSkyEventsSubtitle,
+                                    value: prefs.skyAlertsEnabled,
+                                    onChanged: (value) {
+                                      ref
+                                          .read(
+                                            joviaAppPreferencesProvider
+                                                .notifier,
+                                          )
+                                          .setSkyAlertsEnabled(value);
+                                    },
+                                  ),
+                                  const SizedBox(height: 8),
+                                  _JoviaAppMenuToggleTile(
+                                    title: l10n.menuSocialActivity,
+                                    subtitle: l10n.menuSocialActivitySubtitle,
+                                    value: prefs.socialAlertsEnabled,
+                                    onChanged: (value) {
+                                      ref
+                                          .read(
+                                            joviaAppPreferencesProvider
+                                                .notifier,
+                                          )
+                                          .setSocialAlertsEnabled(value);
+                                    },
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                           const SizedBox(height: 18),
-                          _JoviaAppMenuSectionLabel(label: l10n.menuMembership),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 360),
+                            child: _JoviaAppMenuSectionLabel(
+                              label: l10n.menuMembership,
+                            ),
+                          ),
                           const SizedBox(height: 8),
-                          _JoviaAppMenuActionTile(
-                            title: l10n.menuPremiumSubscription,
-                            subtitle: prefs.premiumInterest
-                                ? l10n.menuPremiumInterestSubtitle
-                                : l10n.menuPremiumDefaultSubtitle,
-                            iconAsset: JoviaUiAsset.orbitPlanet,
-                            trailingLabel: prefs.premiumInterest
-                                ? l10n.menuInList
-                                : l10n.menuSoon,
-                            onTap: () => _showPremiumSheet(context, ref),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 390),
+                            child: _JoviaAppMenuActionTile(
+                              title: l10n.menuPremiumSubscription,
+                              subtitle: prefs.premiumInterest
+                                  ? l10n.menuPremiumInterestSubtitle
+                                  : l10n.menuPremiumDefaultSubtitle,
+                              iconAsset: JoviaUiAsset.orbitPlanet,
+                              trailingLabel: prefs.premiumInterest
+                                  ? l10n.menuInList
+                                  : l10n.menuSoon,
+                              onTap: () => _showPremiumSheet(context, ref),
+                            ),
                           ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 14),
-                  _JoviaAppMenuActionTile(
-                    title: l10n.menuSignOut,
-                    subtitle: l10n.menuSignOutSubtitle,
-                    iconAsset: JoviaUiAsset.logoutArc,
-                    danger: true,
-                    onTap: () async {
-                      Navigator.of(context).pop();
-                      await Future<void>.delayed(
-                        const Duration(milliseconds: 180),
-                      );
-                      await Supabase.instance.client.auth.signOut();
-                    },
+                  JoviaReveal(
+                    delay: const Duration(milliseconds: 430),
+                    child: _JoviaAppMenuActionTile(
+                      title: l10n.menuSignOut,
+                      subtitle: l10n.menuSignOutSubtitle,
+                      iconAsset: JoviaUiAsset.logoutArc,
+                      danger: true,
+                      onTap: () async {
+                        Navigator.of(context).pop();
+                        await Future<void>.delayed(
+                          const Duration(milliseconds: 180),
+                        );
+                        await Supabase.instance.client.auth.signOut();
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -422,6 +470,10 @@ class _JoviaAppMenuIdentityCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final l10n = context.l10n;
+    final highlightLines = <String>[
+      hasBirthData ? l10n.menuArchetypeReady : l10n.menuCompleteBirthData,
+      peopleCount > 0 ? l10n.menuManagePeople : l10n.menuPeopleSubtitle,
+    ];
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
@@ -444,22 +496,42 @@ class _JoviaAppMenuIdentityCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            displayName,
-            style: profile.typography.cardTitle.copyWith(
-              color: profile.colors.text,
-              fontSize: 16,
-            ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      displayName,
+                      style: profile.typography.cardTitle.copyWith(
+                        color: profile.colors.text,
+                        fontSize: 15.2,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      username,
+                      style: profile.typography.meta.copyWith(
+                        color: profile.colors.textLight,
+                        fontSize: 11.4,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 12),
+              const JoviaMoodStickerCluster(size: 20),
+            ],
           ),
-          const SizedBox(height: 4),
-          Text(
-            username,
-            style: profile.typography.meta.copyWith(
-              color: profile.colors.textLight,
-              fontSize: 11.5,
-            ),
+          const SizedBox(height: 12),
+          JoviaSentenceBubbleStack(
+            lines: highlightLines,
+            compact: true,
+            accents: <Color>[profile.colors.primary, profile.colors.warmAccent],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 12),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -529,34 +601,34 @@ class _JoviaAppMenuActionTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
         child: Ink(
-          padding: const EdgeInsets.fromLTRB(12, 12, 12, 12),
+          padding: const EdgeInsets.fromLTRB(11, 11, 11, 11),
           decoration: BoxDecoration(
             color: surface,
-            borderRadius: BorderRadius.circular(22),
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(color: profile.colors.strokeSoft),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 38,
-                height: 38,
+                width: 34,
+                height: 34,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.68),
+                  color: Colors.white.withValues(alpha: 0.72),
                   border: Border.all(color: profile.colors.strokeSoft),
                 ),
                 child: Center(
                   child: JoviaUiIcon(
                     asset: iconAsset,
-                    size: 16,
+                    size: 15,
                     color: profile.colors.text,
                   ),
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 11),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -568,7 +640,8 @@ class _JoviaAppMenuActionTile extends StatelessWidget {
                             title,
                             style: profile.typography.cardTitle.copyWith(
                               color: profile.colors.text,
-                              fontSize: 14,
+                              fontSize: 13.6,
+                              height: 1.18,
                             ),
                           ),
                         ),
@@ -582,20 +655,25 @@ class _JoviaAppMenuActionTile extends StatelessWidget {
                     const SizedBox(height: 3),
                     Text(
                       subtitle,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                       style: profile.typography.bodyCompact.copyWith(
                         color: profile.colors.textLight,
-                        fontSize: 11.5,
-                        height: 1.3,
+                        fontSize: 11.0,
+                        height: 1.28,
                       ),
                     ),
                   ],
                 ),
               ),
               const SizedBox(width: 10),
-              JoviaUiIcon(
-                asset: JoviaUiAsset.chevronRight,
-                size: 15,
-                color: profile.colors.textLight,
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: JoviaUiIcon(
+                  asset: JoviaUiAsset.chevronRight,
+                  size: 14,
+                  color: profile.colors.textLight,
+                ),
               ),
             ],
           ),
@@ -624,7 +702,7 @@ class _JoviaAppMenuToggleTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(18),
         border: Border.all(color: profile.colors.strokeSoft),
       ),
       child: Row(
@@ -637,22 +715,28 @@ class _JoviaAppMenuToggleTile extends StatelessWidget {
                   title,
                   style: profile.typography.body.copyWith(
                     color: profile.colors.text,
-                    fontSize: 13.5,
+                    fontSize: 13.2,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
                   style: profile.typography.meta.copyWith(
                     color: profile.colors.textLight,
-                    fontSize: 11,
+                    fontSize: 10.8,
+                    height: 1.28,
                   ),
                 ),
               ],
             ),
           ),
-          Switch.adaptive(value: value, onChanged: onChanged),
+          Transform.scale(
+            scale: 0.92,
+            child: Switch.adaptive(value: value, onChanged: onChanged),
+          ),
         ],
       ),
     );

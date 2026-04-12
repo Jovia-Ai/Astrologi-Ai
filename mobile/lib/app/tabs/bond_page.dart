@@ -14,6 +14,7 @@ import 'package:mobile/app/tabs/bond_result_page.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 class BondPage extends ConsumerStatefulWidget {
   const BondPage({super.key});
@@ -30,6 +31,7 @@ class _BondPageState extends ConsumerState<BondPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final profileAsync = ref.watch(userProfileProvider);
     final profile = profileAsync.valueOrNull;
     final profileLoaded = profileAsync.hasValue;
@@ -67,27 +69,26 @@ class _BondPageState extends ConsumerState<BondPage> {
                   children: [
                     JoviaReveal(
                       child: JoviaProfileTopBar(
-                        label: 'Bond',
+                        label: l10n.tabsBond,
                         centerText: _selectionDisplayName(
                           _secondarySelection,
                           displayProfile,
-                          fallback: 'iliski lensi',
+                          fallback: l10n.bondPageLensFallback,
                         ),
                         onActionTap: () => _openPersonPicker(
                           _BondSlot.secondary,
                           displayProfile,
                         ),
                         actionAsset: JoviaUiAsset.plusCrosshair,
-                        actionTooltip: 'Kisi sec',
+                        actionTooltip: l10n.bondPageSelectPerson,
                       ),
                     ),
                     SizedBox(height: spacing.s24),
                     JoviaReveal(
                       delay: const Duration(milliseconds: 20),
-                      child: const _BondReferenceHero(
-                        title: 'Aranızdaki uyumu gör',
-                        body:
-                            'İki kişiyi seç, uyumu tek bir ilişki lensiyle daha net ve daha sakin bir yüzeyden oku.',
+                      child: _BondReferenceHero(
+                        title: l10n.bondPageHeroTitle,
+                        body: l10n.bondPageHeroBody,
                       ),
                     ),
                     SizedBox(height: spacing.s20),
@@ -126,7 +127,7 @@ class _BondPageState extends ConsumerState<BondPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'LENS',
+                              l10n.bondPageLensLabel,
                               style: context.profileTheme.typography.eyebrow
                                   .copyWith(color: palette.softText),
                             ),
@@ -146,11 +147,10 @@ class _BondPageState extends ConsumerState<BondPage> {
                       SizedBox(height: spacing.s24),
                       JoviaReveal(
                         delay: const Duration(milliseconds: 120),
-                        child: const _BondReferenceDashedPanel(
+                        child: _BondReferenceDashedPanel(
                           child: EmptyStateBlock(
-                            title: 'Dogum verisi eksik',
-                            body:
-                                'Bond analizi icin once kendi dogum tarihi, saati ve yer bilginin dolu olmasi gerekiyor.',
+                            title: l10n.bondPageBirthDataMissingTitle,
+                            body: l10n.bondPageBirthDataMissingBody,
                             framed: false,
                           ),
                         ),
@@ -172,8 +172,8 @@ class _BondPageState extends ConsumerState<BondPage> {
                           SizedBox(height: spacing.s24),
                           _BondCtaDoorway(
                             label: _loading
-                                ? 'Hazirlaniyor...'
-                                : 'Bond sonucunu ac',
+                                ? l10n.bondPagePreparing
+                                : l10n.bondPageOpenResult,
                             enabled: canViewBond,
                             isBusy: _loading,
                             onTap: canViewBond
@@ -279,9 +279,9 @@ class _BondPageState extends ConsumerState<BondPage> {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text('Bond analizi alınamadı: $error')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.bondPageAnalyzeFailed('$error'))),
+      );
     } finally {
       if (mounted) {
         setState(() => _loading = false);
@@ -387,7 +387,7 @@ class _BondPageState extends ConsumerState<BondPage> {
         return cleaned;
       }
     }
-    return 'Sen';
+    return context.l10n.bondSelfName;
   }
 
   bool _looksLikeSystemHandle(String value) {
@@ -415,17 +415,18 @@ class _BondPageState extends ConsumerState<BondPage> {
   String _selectionDisplayName(
     _BondSelection? selection,
     Map<String, dynamic>? profile, {
-    String fallback = 'Kisi sec',
+    String? fallback,
   }) {
+    final resolvedFallback = fallback ?? context.l10n.bondPageSelectPerson;
     if (selection == null) {
-      return fallback;
+      return resolvedFallback;
     }
     if (selection.isSelf) {
       final name = _userName(profile).trim();
-      return name.isEmpty ? fallback : name;
+      return name.isEmpty ? resolvedFallback : name;
     }
     final name = selection.person?.name.trim() ?? '';
-    return name.isEmpty ? fallback : name;
+    return name.isEmpty ? resolvedFallback : name;
   }
 
   Map<String, dynamic> _selectionPayload(
@@ -497,6 +498,7 @@ class _PeoplePickerSheet extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final peopleAsync = ref.watch(peopleListProvider);
     final profile = context.profileTheme;
     final palette = _BondReferencePalette.of(context);
@@ -518,15 +520,15 @@ class _PeoplePickerSheet extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SectionLabel(
-                  label: 'Arkadaslarim',
-                  title: 'Bond icin bir kisi sec',
+                SectionLabel(
+                  label: l10n.bondPickerLabel,
+                  title: l10n.bondPickerTitle,
                 ),
                 SizedBox(height: profile.spacing.sm),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: MinimalCTAButton(
-                    label: '+ Kisi ekle',
+                    label: l10n.bondPickerAddPerson,
                     glassy: true,
                     onTap: () async {
                       final created = await Navigator.of(context).push<bool>(
@@ -551,8 +553,8 @@ class _PeoplePickerSheet extends ConsumerWidget {
                           if (index == 0) {
                             return EditorialListItem(
                               title: selfName,
-                              body: 'Kendi profilin',
-                              meta: const <String>['Ben'],
+                              body: l10n.bondPickerOwnProfile,
+                              meta: <String>[l10n.bondPickerMe],
                               onTap: () =>
                                   onSelection(const _BondSelection.self()),
                               trailing: JoviaUiIcon(
@@ -588,7 +590,7 @@ class _PeoplePickerSheet extends ConsumerWidget {
                         }
                         final msg = error is PeopleQueryException
                             ? error.userMessage
-                            : 'Arkadaslar yuklenemedi: $error';
+                            : l10n.bondPickerLoadFailed('$error');
                         ScaffoldMessenger.of(
                           context,
                         ).showSnackBar(SnackBar(content: Text(msg)));
@@ -597,7 +599,7 @@ class _PeoplePickerSheet extends ConsumerWidget {
                         child: Text(
                           error is PeopleQueryException
                               ? error.userMessage
-                              : 'Arkadaslar yuklenemedi: $error',
+                              : l10n.bondPickerLoadFailed('$error'),
                           textAlign: TextAlign.center,
                         ),
                       );
@@ -647,6 +649,7 @@ class _BondPairSelectorCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final profile = context.profileTheme;
     final spacing = profile.spacing;
     final palette = _BondReferencePalette.of(context);
@@ -656,12 +659,12 @@ class _BondPairSelectorCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'KARŞILAŞTIRMA',
+            l10n.bondPairEyebrow,
             style: profile.typography.eyebrow.copyWith(color: palette.softText),
           ),
           const SizedBox(height: 10),
           Text(
-            'İki kişi',
+            l10n.bondPairTitle,
             style: profile.typography.sectionTitle.copyWith(
               color: palette.text,
               fontSize: 22,
@@ -670,7 +673,7 @@ class _BondPairSelectorCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            'Karşılaştırmayı tek bir ilişki lensiyle aç.',
+            l10n.bondPairBody,
             style: profile.typography.bodyCompact.copyWith(
               color: palette.mutedText,
               fontSize: 15,
@@ -1059,7 +1062,9 @@ class _BondAvatarFallback extends StatelessWidget {
 
   static bool _isPlaceholder(String value) {
     final normalized = value.trim().toLowerCase();
-    return normalized.isEmpty || normalized == 'kisi sec';
+    return normalized.isEmpty ||
+        normalized == 'kisi sec' ||
+        normalized == 'select person';
   }
 }
 
@@ -1187,13 +1192,14 @@ class _BondReferenceHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final profile = context.profileTheme;
     final palette = _BondReferencePalette.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'BOND',
+          l10n.tabsBond,
           style: profile.typography.eyebrow.copyWith(color: palette.softText),
         ),
         const SizedBox(height: 10),

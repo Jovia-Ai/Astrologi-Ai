@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,9 +52,22 @@ class _SkyEventDetailPageState extends ConsumerState<SkyEventDetailPage> {
       if (!mounted) {
         return;
       }
+      if (!mounted) return;
       setState(() {
         _loading = false;
-        _error = e.toString();
+        if (e is DioException) {
+          if (e.type == DioExceptionType.receiveTimeout ||
+              e.type == DioExceptionType.sendTimeout ||
+              e.type == DioExceptionType.connectionTimeout) {
+            _error = 'Sunucu şu an yavaş, birazdan tekrar dene.';
+          } else if (e.type == DioExceptionType.connectionError) {
+            _error = 'Bağlantı kurulamadı.';
+          } else {
+            _error = 'Bir sorun oluştu, tekrar dene.';
+          }
+        } else {
+          _error = 'Bir sorun oluştu, tekrar dene.';
+        }
       });
     }
   }

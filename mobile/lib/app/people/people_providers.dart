@@ -3,6 +3,7 @@ import 'package:mobile/design/widgets/jovia_aura.dart';
 
 import '../preferences/jovia_app_preferences_provider.dart';
 import '../profile/profile_providers.dart';
+import '../telemetry/perf_telemetry.dart';
 import 'people_aura_repository.dart';
 import 'people_repository.dart';
 import 'person_profile.dart';
@@ -20,8 +21,30 @@ final peopleListProvider = FutureProvider<List<PersonProfile>>((ref) async {
   if (ownerUserId == null) {
     return const <PersonProfile>[];
   }
+  final span = PerfTelemetry.startSpan(
+    'peopleListProvider_resolve',
+    data: const <String, Object?>{'provider': 'peopleListProvider'},
+  );
   final repository = ref.watch(peopleRepositoryProvider);
-  return repository.listPeople(ownerUserId);
+  try {
+    final people = await repository.listPeople(ownerUserId);
+    span.finish(
+      data: <String, Object?>{
+        'provider': 'peopleListProvider',
+        'count': people.length,
+      },
+    );
+    return people;
+  } catch (error) {
+    span.finish(
+      status: 'error',
+      data: <String, Object?>{
+        'provider': 'peopleListProvider',
+        'error_type': error.runtimeType.toString(),
+      },
+    );
+    rethrow;
+  }
 });
 
 final personByIdProvider = FutureProvider.family<PersonProfile?, String>((

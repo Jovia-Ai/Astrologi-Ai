@@ -9,6 +9,8 @@ import 'package:mobile/app/tabs/home_page.dart';
 import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/current_localizations.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 class StoryStudioPage extends ConsumerStatefulWidget {
   const StoryStudioPage({super.key});
@@ -37,6 +39,7 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final theme = context.profileTheme;
     final spacing = theme.spacing;
     final palette = _StoryStudioReferencePalette.of(context);
@@ -83,27 +86,25 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
             JoviaPageScaffold(
               child: profile == null
                   ? _StoryStudioStateBlock(
-                      title: 'Story Studio',
-                      body:
-                          'Profil bilgileri yuklenirken kartlar hazirlaniyor.',
+                      title: l10n.tabsStoryStudio,
+                      body: l10n.storyStudioLoadingProfile,
                       child: const Padding(
                         padding: EdgeInsets.only(top: 18),
                         child: Center(child: CircularProgressIndicator()),
                       ),
                     )
                   : !_hasBirthData(profile)
-                  ? const _StoryStudioStateBlock(
-                      title: 'Story Studio',
-                      body:
-                          'Bu alanda kisilik imzasi kartlari gormek icin dogum tarihi, saat ve yer bilgisi gerekiyor.',
+                  ? _StoryStudioStateBlock(
+                      title: l10n.tabsStoryStudio,
+                      body: l10n.storyStudioBirthDataRequired,
                     )
                   : SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          const JoviaProfileTopBar(
-                            label: 'Studio',
-                            centerText: 'story studio',
+                          JoviaProfileTopBar(
+                            label: l10n.storyStudioTopLabel,
+                            centerText: l10n.storyStudioTopCenter,
                             reserveTrailingSpace: true,
                           ),
                           SizedBox(height: spacing.s20),
@@ -111,19 +112,20 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
                           SizedBox(height: spacing.s20),
                           _StoryStudioSectionLead(
                             title: isIdentityFamily
-                                ? 'Kişilik imzalarını aç'
-                                : 'Akışlardan bir an seç',
+                                ? l10n.storyStudioIdentityTitle
+                                : l10n.storyStudioMomentTitle,
                             body: isIdentityFamily
-                                ? 'Identity Studio dominant ve destek katmanları daha collectible kartlara çevirir.'
-                                : 'Moment Studio Home ve Bond akışlarındaki anlık yüzeylere köprü olur.',
+                                ? l10n.storyStudioIdentityBody
+                                : l10n.storyStudioMomentBody,
                           ),
                           SizedBox(height: spacing.sectionToContent),
                           JoviaSegmentedControl<_StudioFamily>(
                             value: _family,
                             options: _StudioFamily.values,
                             labelBuilder: (value) => switch (value) {
-                              _StudioFamily.identity => 'Identity Studio',
-                              _StudioFamily.moment => 'Moment Studio',
+                              _StudioFamily.identity =>
+                                l10n.storyStudioIdentityTab,
+                              _StudioFamily.moment => l10n.storyStudioMomentTab,
                             },
                             onChanged: (value) {
                               if (value == _family) {
@@ -152,7 +154,7 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
                             )
                           else if (_error != null && cards.isEmpty)
                             _StoryStudioStateBlock(
-                              title: 'Kartlar yuklenemedi',
+                              title: l10n.storyStudioCardsLoadFailed,
                               body: _error!,
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 18),
@@ -168,8 +170,8 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
                                       color: const Color(0xFF6D5CF6),
                                       borderRadius: BorderRadius.circular(999),
                                     ),
-                                    child: const Text(
-                                      'Tekrar dene',
+                                    child: Text(
+                                      l10n.commonRetry,
                                       style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w700,
@@ -180,10 +182,9 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
                               ),
                             )
                           else if (_isLoading && cards.isEmpty)
-                            const _StoryStudioStateBlock(
-                              title: 'Kartlar hazirlaniyor',
-                              body:
-                                  'Kisilik imzandaki dominant ve destek katmanlar toplanıyor.',
+                            _StoryStudioStateBlock(
+                              title: l10n.storyStudioCardsPreparing,
+                              body: l10n.storyStudioCardsPreparingBody,
                               child: Padding(
                                 padding: EdgeInsets.only(top: 18),
                                 child: Center(
@@ -192,10 +193,9 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
                               ),
                             )
                           else if (cards.isEmpty)
-                            const _StoryStudioStateBlock(
-                              title: 'Kart bulunmadi',
-                              body:
-                                  'Kisilik imzasi kartlari su an olusmamis gorunuyor.',
+                            _StoryStudioStateBlock(
+                              title: l10n.storyStudioCardsNotFound,
+                              body: l10n.storyStudioCardsNotFoundBody,
                             )
                           else ...[
                             SizedBox(height: spacing.s8),
@@ -322,7 +322,7 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
       }
       setState(() {
         _isLoading = false;
-        _error = 'Kisilik imzasi su an alinmadi: $error';
+        _error = context.l10n.storyStudioLoadFailed('$error');
       });
     }
   }
@@ -468,7 +468,7 @@ class _StoryStudioReferenceHero extends StatelessWidget {
       children: [
         if (title.trim().isNotEmpty || body.trim().isNotEmpty) ...[
           Text(
-            'STUDIO',
+            context.l10n.tabsStoryStudio,
             style: theme.typography.eyebrow.copyWith(color: palette.softText),
           ),
           if (title.trim().isNotEmpty) ...[
@@ -552,25 +552,25 @@ class _StoryStudioMomentBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        const _StoryStudioStateBlock(
-          title: 'Moment Studio',
-          body:
-              'Anlik bir donemi ya da iliski vurgusunu secip paylasilabilir bir yone cevirmek icin kaynak akislardan birine don.',
+        _StoryStudioStateBlock(
+          title: l10n.storyStudioMomentPanelTitle,
+          body: l10n.storyStudioMomentPanelBody,
         ),
         const SizedBox(height: 18),
         JoviaActionRail(
-          title: 'Kaynak akislara don',
+          title: l10n.storyStudioReturnToSources,
           leading: const JoviaUiIcon(asset: JoviaUiAsset.homePortal, size: 16),
           primaryAction: MinimalCTAButton(
-            label: 'Home',
+            label: l10n.tabsHome,
             emphasized: true,
             onTap: onOpenHome,
           ),
           secondaryActions: [
-            MinimalCTAButton(label: 'Bond', onTap: onOpenBond),
+            MinimalCTAButton(label: l10n.tabsBond, onTap: onOpenBond),
           ],
         ),
       ],
@@ -1036,14 +1036,14 @@ class _StoryStudioFullViewPage extends StatelessWidget {
                           const SizedBox(height: 28),
                           if (trait.isNotEmpty) ...[
                             _StoryStudioInlineSection(
-                              label: 'OZELLIK',
+                              label: context.l10n.storyStudioTraitLabel,
                               body: trait,
                             ),
                             const SizedBox(height: 18),
                           ],
                           if (drive.isNotEmpty) ...[
                             _StoryStudioInlineSection(
-                              label: 'IC MOTOR',
+                              label: context.l10n.storyStudioInnerDriveLabel,
                               body: drive,
                             ),
                             const SizedBox(height: 18),
@@ -1095,7 +1095,7 @@ class _StoryStudioFullViewPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'DOZ ASINCA',
+                                    context.l10n.storyStudioWhenTooMuchLabel,
                                     style: theme.typography.meta.copyWith(
                                       color: Colors.white.withValues(
                                         alpha: 0.8,
@@ -1122,7 +1122,7 @@ class _StoryStudioFullViewPage extends StatelessWidget {
                           if (isLoading) ...[
                             const SizedBox(height: 16),
                             Text(
-                              'Kartlar yenileniyor...',
+                              context.l10n.storyStudioRefreshing,
                               style: theme.typography.meta.copyWith(
                                 color: Colors.white.withValues(alpha: 0.72),
                               ),
@@ -1312,15 +1312,16 @@ List<_StoryStudioCardData> _storyStudioCardsFor({
 }
 
 String _storyStudioKindLabel(String value) {
+  final l10n = currentL10n();
   switch (value.trim().toLowerCase()) {
     case 'aspect':
-      return 'ACI';
+      return l10n.storyStudioKindAspect;
     case 'house_placement':
-      return 'EV YERLESIMI';
+      return l10n.storyStudioKindHousePlacement;
     case 'sign_placement':
-      return 'BURC TONU';
+      return l10n.storyStudioKindSignPlacement;
     default:
-      return 'KATMAN';
+      return l10n.storyStudioKindLayer;
   }
 }
 

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/app/preferences/jovia_app_preferences_provider.dart';
 import 'package:mobile/app/auth/auth_gate.dart';
 import 'package:mobile/app/splash/splash_screen.dart';
+import 'package:mobile/app/telemetry/perf_telemetry.dart';
 import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/typography/app_font_family.dart';
@@ -14,6 +15,7 @@ import 'package:mobile/l10n/l10n.dart';
 import 'app/supabase/supabase_bootstrap.dart';
 
 Future<void> main() async {
+  PerfTelemetry.logPoint('app_launch_start');
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const ProviderScope(child: MyApp()));
 }

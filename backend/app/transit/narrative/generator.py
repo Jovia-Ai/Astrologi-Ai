@@ -199,8 +199,7 @@ def generate_daily_narrative(
     top_event: Mapping[str, Any] | None = None,
     locale: str = "tr",
 ) -> str:
-    if locale != "tr":
-        locale = "tr"
+    locale = (locale or "tr").lower()
 
     tone_pool = CRITICAL_TONES if is_critical else RATING_TONES.get(max(0, min(3, int(rating))), RATING_TONES[1])
     line1 = _sanitize_sentence(tone_pool[seed % len(tone_pool)])

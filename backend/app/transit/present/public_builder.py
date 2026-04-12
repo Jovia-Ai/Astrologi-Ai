@@ -894,7 +894,11 @@ def build_public_response(response: Dict[str, Any]) -> Dict[str, Any]:
         for card in build_active_event_cards(response, max_cards=5)
     ]
     period_core = _normalize_period_core_copy(
-        build_period_core(response, event_cards=event_cards)
+        build_period_core(
+            response,
+            event_cards=event_cards,
+            locale=str(response.get("locale") or "tr"),
+        )
     )
     global_period_story = _global_period_story(period_core)
     story_tracks = period_core.get("story_tracks") if isinstance(period_core.get("story_tracks"), dict) else {}

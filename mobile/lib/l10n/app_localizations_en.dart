@@ -1075,4 +1075,725 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiComposerHint => 'Write to Aila...';
+
+  @override
+  String aiFreeRemaining(int count) {
+    return '$count free left';
+  }
+
+  @override
+  String aiCreditsRemaining(int count) {
+    return '$count credits';
+  }
+
+  @override
+  String get aiProActive => 'Pro active';
+
+  @override
+  String get aiSending => 'Aila is thinking...';
+
+  @override
+  String get aiPaywallTitle => 'Continue with credits or Pro';
+
+  @override
+  String get aiPaywallBody => 'You used all 3 free questions. Buy a credit pack or unlock Pro to keep chatting.';
+
+  @override
+  String get aiPaywallLoading => 'Loading products...';
+
+  @override
+  String get aiPaywallUnavailable => 'Purchases are not available right now.';
+
+  @override
+  String get aiPaywallRestoreHint => 'After purchase, retry your message in a few seconds while the webhook updates your balance.';
+
+  @override
+  String get aiProductQ1Title => '1 question';
+
+  @override
+  String get aiProductQ1Subtitle => 'Single reply credit';
+
+  @override
+  String get aiProductQ5Title => '5 questions';
+
+  @override
+  String get aiProductQ5Subtitle => 'Credit pack for a short streak';
+
+  @override
+  String get aiProductQ15Title => '15 questions';
+
+  @override
+  String get aiProductQ15Subtitle => 'Credit pack for heavier use';
+
+  @override
+  String get aiProductProTitle => 'Pro monthly';
+
+  @override
+  String get aiProductProSubtitle => 'Unlimited chat while Pro is active';
+
+  @override
+  String get aiStorePriceUnavailable => 'Unavailable';
+
+  @override
+  String get aiPurchasePending => 'Purchase received. Retry your message in a few seconds.';
+
+  @override
+  String get aiPurchaseNotSupported => 'Purchases are only available on iOS and Android.';
+
+  @override
+  String aiChatUnavailable(Object error) {
+    return 'AI chat is unavailable right now: $error';
+  }
+
+  @override
+  String get peopleFormAddTitle => 'Add person';
+
+  @override
+  String get peopleFormEditTitle => 'Edit person';
+
+  @override
+  String get peopleFormNameRequired => 'Name is required.';
+
+  @override
+  String get peopleFormBirthDateRequired => 'Birth date is required.';
+
+  @override
+  String get peopleFormBirthTimeOptional => 'Birth time (optional)';
+
+  @override
+  String get peopleFormBirthTimeHint => 'If you do not know the birth time, you can leave it empty.';
+
+  @override
+  String get peopleFormCityRequired => 'City is required.';
+
+  @override
+  String get peopleFormCountryRequired => 'Country is required.';
+
+  @override
+  String get peopleFormSaving => 'Saving...';
+
+  @override
+  String get peopleFormLoginRequired => 'Sign in before adding a person.';
+
+  @override
+  String peopleFormSaveFailed(Object error) {
+    return 'Person could not be saved: $error';
+  }
+
+  @override
+  String get peoplePageLabel => 'People';
+
+  @override
+  String get peoplePageCenterText => 'your circle';
+
+  @override
+  String get peoplePageAddTooltip => 'Add person';
+
+  @override
+  String get peoplePageEmptyTitle => 'No saved people yet';
+
+  @override
+  String get peoplePageEmptyBody => 'Save people from your circle here to use them in Bond and social flows.';
+
+  @override
+  String get peoplePageCircleLabel => 'Circle';
+
+  @override
+  String get peoplePageCircleTitle => 'Saved people';
+
+  @override
+  String get peoplePageCircleBody => 'The people you use for Bond, friend profiles, and social flows appear here.';
+
+  @override
+  String get peoplePageHeroLabel => 'People';
+
+  @override
+  String get peoplePageHeroTitle => 'Keep your circle here for Bond and social flows';
+
+  @override
+  String get peoplePageHeroBody => 'The people you add are reused from the same place for Bond matches, friend profiles, and future social readings.';
+
+  @override
+  String get peoplePagePillAura => 'Aura';
+
+  @override
+  String get peoplePagePillBirthAxis => 'Birth axis';
+
+  @override
+  String get peoplePagePillSocialTone => 'Social tone';
+
+  @override
+  String get peoplePageListLoadFailedTitle => 'People list unavailable';
+
+  @override
+  String peoplePageListLoadFailed(Object error) {
+    return 'People list could not be loaded: $error';
+  }
+
+  @override
+  String get peoplePageFriendLabel => 'Person';
+
+  @override
+  String get peoplePageNoBirthTime => 'No birth time';
+
+  @override
+  String get peoplePageEditTooltip => 'Edit';
+
+  @override
+  String get peopleRepoListFailed => 'People list could not be fetched.';
+
+  @override
+  String get peopleRepoDetailFailed => 'Person details could not be fetched.';
+
+  @override
+  String get peopleRepoCreateFailed => 'Person could not be created.';
+
+  @override
+  String get peopleRepoUpdateFailed => 'Person could not be updated.';
+
+  @override
+  String get peopleRepoProfilesListUnsupported => 'The profiles table does not support listing saved people.';
+
+  @override
+  String get peopleRepoProfilesDetailUnsupported => 'The profiles table does not support loading this saved person.';
+
+  @override
+  String get peopleRepoProfilesCreateUnsupported => 'The profiles table does not support creating separate saved people.';
+
+  @override
+  String peopleRepoTableNotFound(Object candidates) {
+    return 'No valid table for people records was found. Tried: $candidates';
+  }
+
+  @override
+  String get peopleRepoTableValidationFailed => 'The people table could not be validated.';
+
+  @override
+  String get forumActiveTransitFallback => 'The sky is active';
+
+  @override
+  String get transitSkyCollectiveFallback => 'Something is moving in the collective.';
+
+  @override
+  String get transitSkyTypeIngress => 'Ingress';
+
+  @override
+  String get transitSkyTypeFullMoon => 'Full moon';
+
+  @override
+  String get transitSkyTypeNewMoon => 'New moon';
+
+  @override
+  String get transitSkyTypeExactAspect => 'Exact aspect';
+
+  @override
+  String get transitSkyTypeEclipse => 'Eclipse';
+
+  @override
+  String get transitSkyTypeRetroStart => 'Retrograde starts';
+
+  @override
+  String get transitSkyTypeRetroEnd => 'Retrograde ends';
+
+  @override
+  String get transitSkyTimingNow => 'Now';
+
+  @override
+  String get transitSkyTimingThisWeek => 'This week';
+
+  @override
+  String get transitMeaningRelationships => 'Relationships';
+
+  @override
+  String get transitMeaningMoney => 'Money';
+
+  @override
+  String get transitMeaningVisibility => 'Visibility';
+
+  @override
+  String get transitMeaningDecision => 'Decision';
+
+  @override
+  String get transitMeaningCloseness => 'Closeness';
+
+  @override
+  String get transitMeaningBuilding => 'Building';
+
+  @override
+  String get transitMeaningRelease => 'Release';
+
+  @override
+  String get transitMeaningTension => 'Tension';
+
+  @override
+  String get transitMeaningClarifying => 'Clarifying';
+
+  @override
+  String get transitMeaningTransformation => 'Transformation';
+
+  @override
+  String get profileDetailFallbackEyebrow => 'Deep reading';
+
+  @override
+  String get profileDetailFallbackTitle => 'Detail is being prepared for this card';
+
+  @override
+  String get profileDetailFallbackIntro => 'The main narrative flow came back empty for now.';
+
+  @override
+  String get profileDetailFallbackBody => 'The meaning of this card will still open here; right now the content stream is still on the way.';
+
+  @override
+  String get bondSelfName => 'Me';
+
+  @override
+  String get bondPageSelectPerson => 'Select person';
+
+  @override
+  String get bondPageLensFallback => 'bond lens';
+
+  @override
+  String get bondPageHeroTitle => 'Open the dynamic between two people here';
+
+  @override
+  String get bondPageHeroBody => 'Pick your own profile and one saved person, then read the main rhythm and tension line between you in the same flow.';
+
+  @override
+  String get bondPageLensLabel => 'Lens';
+
+  @override
+  String get bondPageBirthDataMissingTitle => 'Birth data is required for Bond';
+
+  @override
+  String get bondPageBirthDataMissingBody => 'When you complete your own birth date and location, this match opens more accurately.';
+
+  @override
+  String get bondPagePreparing => 'Preparing...';
+
+  @override
+  String get bondPageOpenResult => 'Open Bond result';
+
+  @override
+  String bondPageAnalyzeFailed(Object error) {
+    return 'Bond analysis could not be loaded: $error';
+  }
+
+  @override
+  String get bondPickerLabel => 'People selection';
+
+  @override
+  String get bondPickerTitle => 'Choose the second person for Bond';
+
+  @override
+  String get bondPickerAddPerson => 'Add new person';
+
+  @override
+  String get bondPickerOwnProfile => 'Your own profile';
+
+  @override
+  String get bondPickerMe => 'You';
+
+  @override
+  String bondPickerLoadFailed(Object error) {
+    return 'People could not be loaded: $error';
+  }
+
+  @override
+  String get bondPairEyebrow => 'Selection';
+
+  @override
+  String get bondPairTitle => 'Compare two people';
+
+  @override
+  String get bondPairBody => 'Pick two profiles, then see the main rhythm of their bond in the same flow.';
+
+  @override
+  String get storyStudioTopLabel => 'Story Studio';
+
+  @override
+  String get storyStudioTopCenter => 'imprint deck';
+
+  @override
+  String get storyStudioLoadingProfile => 'Profile is loading...';
+
+  @override
+  String get storyStudioBirthDataRequired => 'Story Studio needs birth date, time, and location before it can open.';
+
+  @override
+  String get storyStudioIdentityTitle => 'Identity cards';
+
+  @override
+  String get storyStudioIdentityBody => 'Open the dominant placements, inner drive, and shadow line in your chart one card at a time.';
+
+  @override
+  String get storyStudioIdentityTab => 'Identity';
+
+  @override
+  String get storyStudioMomentTitle => 'Live sources';
+
+  @override
+  String get storyStudioMomentBody => 'Return to the surfaces working right now and open the active flows from there.';
+
+  @override
+  String get storyStudioMomentTab => 'Moment';
+
+  @override
+  String get storyStudioCardsLoadFailed => 'Cards could not be loaded';
+
+  @override
+  String get storyStudioCardsPreparing => 'Cards are being prepared';
+
+  @override
+  String get storyStudioCardsPreparingBody => 'The personality imprint layer is coming in from the backend.';
+
+  @override
+  String get storyStudioCardsNotFound => 'No cards found';
+
+  @override
+  String get storyStudioCardsNotFoundBody => 'No Story Studio cards could be produced from this profile yet.';
+
+  @override
+  String get storyStudioMomentPanelTitle => 'Live studio sources';
+
+  @override
+  String get storyStudioMomentPanelBody => 'This section does not create a new card; it sends you back to the active Home and Bond surfaces.';
+
+  @override
+  String get storyStudioReturnToSources => 'Return to sources';
+
+  @override
+  String get storyStudioTraitLabel => 'Standout line';
+
+  @override
+  String get storyStudioInnerDriveLabel => 'Inner drive';
+
+  @override
+  String get storyStudioWhenTooMuchLabel => 'When overloaded';
+
+  @override
+  String get storyStudioRefreshing => 'Refreshing...';
+
+  @override
+  String get storyStudioKindAspect => 'Aspect';
+
+  @override
+  String get storyStudioKindHousePlacement => 'House placement';
+
+  @override
+  String get storyStudioKindSignPlacement => 'Sign placement';
+
+  @override
+  String get storyStudioKindLayer => 'Layer';
+
+  @override
+  String storyStudioLoadFailed(Object error) {
+    return 'Story Studio could not be loaded: $error';
+  }
+
+  @override
+  String get relationshipPreviewLabel => 'Relationship preview';
+
+  @override
+  String get relationshipPreviewBirthDataRequiredTitle => 'Birth data is required for relationship preview';
+
+  @override
+  String get relationshipPreviewBirthDataRequiredBody => 'When birth date, time, and location are complete, the relationship line opens here.';
+
+  @override
+  String get relationshipPreviewLoadFailedTitle => 'Relationship flow unavailable';
+
+  @override
+  String get relationshipPreviewMainThemeLabel => 'Main theme';
+
+  @override
+  String get relationshipPreviewDriversLabel => 'What is shaping today';
+
+  @override
+  String get relationshipPreviewBackdropLabel => 'Backdrop';
+
+  @override
+  String get relationshipPreviewUpperMeaningLabel => 'Deeper meaning';
+
+  @override
+  String get relationshipPreviewSupportingThemeLabel => 'Supporting theme';
+
+  @override
+  String get relationshipPreviewWhyImportant => 'Why this matters';
+
+  @override
+  String get relationshipPreviewFallbackNotice => 'The relationship lens was slow, so this opened with the general reading instead.';
+
+  @override
+  String get relationshipPreviewTimeout => 'The relationship reading took too long to return. Try again in a moment.';
+
+  @override
+  String get relationshipPreviewInvalidProfile => 'The submitted profile data is not enough for the relationship flow.';
+
+  @override
+  String get relationshipPreviewServerError => 'The relationship flow could not be loaded from the server right now.';
+
+  @override
+  String get relationshipPreviewFetchFailed => 'The relationship flow could not be loaded.';
+
+  @override
+  String get relationshipPreviewStageStarted => 'Started';
+
+  @override
+  String get relationshipPreviewStageIntensifying => 'Intensifying';
+
+  @override
+  String get relationshipPreviewStagePeak => 'Peak';
+
+  @override
+  String get relationshipPreviewStageResolving => 'Resolving';
+
+  @override
+  String get relationshipPreviewPeriodToToday => 'From the period into today';
+
+  @override
+  String get relationshipPreviewDefaultDriversFallback => 'There is movement on the relationship side today, but a single theme has not fully separated yet.';
+
+  @override
+  String get relationshipPreviewDefaultBackdropFallback => 'A longer period is still working underneath, and its relationship-side result will become clearer with a bit more time.';
+
+  @override
+  String get friendProfileTitle => 'Person profile';
+
+  @override
+  String get friendProfileNotFound => 'Person not found.';
+
+  @override
+  String get friendProfileEditTooltip => 'Edit person';
+
+  @override
+  String friendProfileLoadFailed(Object error) {
+    return 'Person could not be loaded: $error';
+  }
+
+  @override
+  String get profileDetailInfluences => 'Influences';
+
+  @override
+  String get profileDetailAllCards => 'All cards';
+
+  @override
+  String get profileDetailSignatureCardsTitle => 'Signature cards';
+
+  @override
+  String get profileDetailDefaultEyebrow => 'Detail';
+
+  @override
+  String get profileDetailDefaultTitle => 'Detail flow';
+
+  @override
+  String get profileDetailWhyHere => 'Why here';
+
+  @override
+  String profileDetailNextLabel(Object title) {
+    return 'Next: $title';
+  }
+
+  @override
+  String profileDetailContinuationTitle(Object title) {
+    return '$title · Continue';
+  }
+
+  @override
+  String get profileDetailSideA => 'One side';
+
+  @override
+  String get profileDetailSideB => 'The other side';
+
+  @override
+  String get profileDetailContinueFlow => 'Continue the flow';
+
+  @override
+  String get profileDetailContinueFromHere => 'Continue from here';
+
+  @override
+  String profileDetailContinuationFooter(int page, int total) {
+    return 'Continues $page/$total';
+  }
+
+  @override
+  String get profileDetailFlowEnds => 'The flow ends here';
+
+  @override
+  String get periodFallbackEffectTitle => 'Period effect';
+
+  @override
+  String periodIntentSummaryGeneric(Object title) {
+    return 'There are windows to track for $title in this period.';
+  }
+
+  @override
+  String periodIntentTopDays(Object title, Object dates) {
+    return 'Standout days for $title: $dates.';
+  }
+
+  @override
+  String periodIntentScores(Object ratings) {
+    return 'Scores: $ratings';
+  }
+
+  @override
+  String get periodIntentBeautyCare => 'Care and body';
+
+  @override
+  String get periodIntentBusiness => 'Work and output';
+
+  @override
+  String get periodIntentMoney => 'Money and resources';
+
+  @override
+  String get periodIntentRelationship => 'Relationship and harmony';
+
+  @override
+  String periodIntentLabel(int index) {
+    return 'Intent $index';
+  }
+
+  @override
+  String get periodDefaultTitle => 'Period';
+
+  @override
+  String get periodMainFlowFallback => 'The main flow of this period.';
+
+  @override
+  String get periodMainThemeFallback => 'The main theme of this period.';
+
+  @override
+  String get periodHighlightedThemeFallback => 'The standout theme in this period.';
+
+  @override
+  String get periodThemeCollectFallback => 'The standout theme of this period gathers here.';
+
+  @override
+  String get periodEssenceTitle => 'Essence of this period';
+
+  @override
+  String get periodSummaryUnavailable => 'No summary for this period is available.';
+
+  @override
+  String get periodTimeLabel => 'Timing';
+
+  @override
+  String get periodGuidancePrefix => 'Small practice:';
+
+  @override
+  String get periodDifficultyPrefix => 'What tends to make this harder is:';
+
+  @override
+  String get periodHowItWorksTitle => 'How it works';
+
+  @override
+  String get periodAsksTitle => 'What it asks of you';
+
+  @override
+  String get periodWatchTitle => 'What to watch';
+
+  @override
+  String get periodBuildsTitle => 'What it develops in you';
+
+  @override
+  String get periodEffectLabel => 'Effect';
+
+  @override
+  String get periodTechnicalNoteLabel => 'Technical note';
+
+  @override
+  String get periodCoreMainThemeTitle => 'The main theme of this period';
+
+  @override
+  String get periodCoreSummaryUnavailable => 'No period summary was available for this period.';
+
+  @override
+  String get profileExperimentPreviewLabel => 'Preview';
+
+  @override
+  String get profileExperimentCenterText => 'Nocturne Identity';
+
+  @override
+  String get profileExperimentMenuTooltip => 'Theme and experiment settings';
+
+  @override
+  String get profileExperimentHeroFallback => 'The first trace of the chart gathers here.';
+
+  @override
+  String get profileExperimentSignatureFallback => 'Identity trace';
+
+  @override
+  String get profileExperimentNatalPanelBody => 'This preview currently focuses on a spotlight hero that opens identity as a full portrait surface. Lower chapter layers will follow in a later patch.';
+
+  @override
+  String get profileExperimentTimingPanelBody => 'Timing mode behaves like a focus switch here for now. The lower period composition will arrive in a later patch.';
+
+  @override
+  String get profileExperimentMenuTitle => 'Nocturne experiment';
+
+  @override
+  String get profileExperimentMenuBody => 'Patch 1 only tests the upper identity composition.';
+
+  @override
+  String get profileExperimentSeeProfile => 'See profile';
+
+  @override
+  String get profileExperimentHeroLineFallback => 'Your identity is gathered into a new focal surface on this screen.';
+
+  @override
+  String get profileExperimentAuraLabel => 'Aura';
+
+  @override
+  String get profileExperimentRulerLabel => 'Ruler';
+
+  @override
+  String get profileExperimentWaiting => 'Waiting';
+
+  @override
+  String get profileExperimentRulerBodyFallback => 'The ruler of the 1st house is being read.';
+
+  @override
+  String get profileExperimentRisingTrace => 'Rising trace';
+
+  @override
+  String get profileExperimentSignatureLabel => 'Signature';
+
+  @override
+  String get profileExperimentSpotlightCards => 'Spotlight cards';
+
+  @override
+  String get profileExperimentSwipe => 'Swipe';
+
+  @override
+  String get profileExperimentFocusTitle => 'Reading focus';
+
+  @override
+  String get profileExperimentNatalFocus => 'Your structure';
+
+  @override
+  String get profileExperimentTimingFocus => 'Your current period';
+
+  @override
+  String get profileExperimentUnnamedProfile => 'Unnamed profile';
+
+  @override
+  String get profileExperimentFireDominant => 'Fire dominant';
+
+  @override
+  String get profileExperimentWaterDominant => 'Water dominant';
+
+  @override
+  String get profileExperimentAirDominant => 'Air dominant';
+
+  @override
+  String get profileExperimentEarthDominant => 'Earth dominant';
+
+  @override
+  String get errorTimeout => 'The server is a bit slow right now, try again in a moment.';
+
+  @override
+  String get errorNoConnection => 'Could not connect. Check your internet connection.';
+
+  @override
+  String get errorGeneric => 'Something went wrong. Please try again.';
 }

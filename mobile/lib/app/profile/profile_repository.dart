@@ -1,6 +1,7 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import '../data/supabase_tables.dart';
+import '../telemetry/perf_telemetry.dart';
 
 class ProfileRepository {
   static const String _avatarBucket = 'avatars';
@@ -23,6 +24,10 @@ class ProfileRepository {
     final now = DateTime.now();
     final cached = _profileCache[userId];
     if (cached != null && cached.expiresAt.isAfter(now)) {
+      PerfTelemetry.logPoint(
+        'profile_loaded_from_cache',
+        data: const <String, Object?>{'source': 'ProfileRepository.getProfile'},
+      );
       return cached.data == null
           ? null
           : Map<String, dynamic>.from(cached.data!);
@@ -30,6 +35,10 @@ class ProfileRepository {
 
     final inflight = _inflight[userId];
     if (inflight != null) {
+      PerfTelemetry.logPoint(
+        'profile_repository_inflight_dedupe',
+        data: const <String, Object?>{'source': 'ProfileRepository.getProfile'},
+      );
       return inflight;
     }
 
@@ -44,6 +53,12 @@ class ProfileRepository {
     final now = DateTime.now();
     final cached = _birthGateCache[userId];
     if (cached != null && cached.expiresAt.isAfter(now)) {
+      PerfTelemetry.logPoint(
+        'birth_gate_profile_loaded_from_cache',
+        data: const <String, Object?>{
+          'source': 'ProfileRepository.getBirthGateProfile',
+        },
+      );
       return cached.data == null
           ? null
           : Map<String, dynamic>.from(cached.data!);
@@ -51,6 +66,12 @@ class ProfileRepository {
 
     final inflight = _birthGateInflight[userId];
     if (inflight != null) {
+      PerfTelemetry.logPoint(
+        'birth_gate_profile_inflight_dedupe',
+        data: const <String, Object?>{
+          'source': 'ProfileRepository.getBirthGateProfile',
+        },
+      );
       return inflight;
     }
 
@@ -62,68 +83,118 @@ class ProfileRepository {
   }
 
   Future<Map<String, dynamic>?> _fetchProfile(String userId) async {
-    final responses = await Future.wait<dynamic>([
-      _client
-          .from(SupabaseTables.profiles)
-          .select('id,email,full_name,avatar_path')
-          .eq('id', userId)
-          .limit(1)
-          .maybeSingle(),
-      _client
-          .from(SupabaseTables.birthData)
-          .select(
-            'user_id,birth_date,birth_time,place,city,country,timezone,latitude,longitude',
-          )
-          .eq('user_id', userId)
-          .limit(1)
-          .maybeSingle(),
-    ]);
-
-    final profile = responses[0] as Map<String, dynamic>?;
-    final birthData = responses[1] as Map<String, dynamic>?;
-
-    Map<String, dynamic>? result;
-    if (profile != null || birthData != null) {
-      result = <String, dynamic>{
-        if (profile != null) ...Map<String, dynamic>.from(profile),
-        if (birthData != null) ...Map<String, dynamic>.from(birthData),
-      };
-
-      final fullName = (result['full_name'] ?? '').toString().trim();
-      if (fullName.isNotEmpty &&
-          (result['name'] == null ||
-              (result['name'] as Object).toString().trim().isEmpty)) {
-        result['name'] = fullName;
-      }
-
-      final avatarPath = (result['avatar_path'] ?? '').toString().trim();
-      if (avatarPath.isNotEmpty) {
-        result['avatar_url'] = avatarPublicUrl(avatarPath);
-      }
-    }
-
-    _profileCache[userId] = _ProfileCacheEntry(
-      data: result == null ? null : Map<String, dynamic>.from(result),
-      expiresAt: DateTime.now().add(_profileCacheTtl),
+    final span = PerfTelemetry.startSpan(
+      'profile_repository_fetch',
+      data: const <String, Object?>{
+        'source': 'ProfileRepository._fetchProfile',
+      },
     );
-    return result;
+    try {
+      final responses = await Future.wait<dynamic>([
+        _client
+            .from(SupabaseTables.profiles)
+            .select('id,email,full_name,avatar_path')
+            .eq('id', userId)
+            .limit(1)
+            .maybeSingle(),
+        _client
+            .from(SupabaseTables.birthData)
+            .select(
+              'user_id,birth_date,birth_time,place,city,country,timezone,latitude,longitude',
+            )
+            .eq('user_id', userId)
+            .limit(1)
+            .maybeSingle(),
+      ]);
+
+      final profile = responses[0] as Map<String, dynamic>?;
+      final birthData = responses[1] as Map<String, dynamic>?;
+
+      Map<String, dynamic>? result;
+      if (profile != null || birthData != null) {
+        result = <String, dynamic>{
+          if (profile != null) ...Map<String, dynamic>.from(profile),
+          if (birthData != null) ...Map<String, dynamic>.from(birthData),
+        };
+
+        final fullName = (result['full_name'] ?? '').toString().trim();
+        if (fullName.isNotEmpty &&
+            (result['name'] == null ||
+                (result['name'] as Object).toString().trim().isEmpty)) {
+          result['name'] = fullName;
+        }
+
+        final avatarPath = (result['avatar_path'] ?? '').toString().trim();
+        if (avatarPath.isNotEmpty) {
+          result['avatar_url'] = avatarPublicUrl(avatarPath);
+        }
+      }
+
+      _profileCache[userId] = _ProfileCacheEntry(
+        data: result == null ? null : Map<String, dynamic>.from(result),
+        expiresAt: DateTime.now().add(_profileCacheTtl),
+      );
+      span.finish(
+        data: <String, Object?>{
+          'source': 'ProfileRepository._fetchProfile',
+          'has_profile': result != null,
+        },
+      );
+      PerfTelemetry.logPoint(
+        'profile_loaded_from_network',
+        data: const <String, Object?>{'source': 'ProfileRepository.getProfile'},
+      );
+      return result;
+    } catch (error) {
+      span.finish(
+        status: 'error',
+        data: <String, Object?>{
+          'source': 'ProfileRepository._fetchProfile',
+          'error_type': error.runtimeType.toString(),
+        },
+      );
+      rethrow;
+    }
   }
 
   Future<Map<String, dynamic>?> _fetchBirthGateProfile(String userId) async {
-    final birthData = await _client
-        .from(SupabaseTables.birthData)
-        .select('user_id,birth_date,place')
-        .eq('user_id', userId)
-        .limit(1)
-        .maybeSingle();
-    final result = birthData == null
-        ? null
-        : Map<String, dynamic>.from(birthData);
-    _birthGateCache[userId] = _ProfileCacheEntry(
-      data: result == null ? null : Map<String, dynamic>.from(result),
-      expiresAt: DateTime.now().add(_birthGateCacheTtl),
+    final span = PerfTelemetry.startSpan(
+      'birth_gate_profile_fetch',
+      data: const <String, Object?>{
+        'source': 'ProfileRepository._fetchBirthGateProfile',
+      },
     );
-    return result;
+    try {
+      final birthData = await _client
+          .from(SupabaseTables.birthData)
+          .select('user_id,birth_date,place')
+          .eq('user_id', userId)
+          .limit(1)
+          .maybeSingle();
+      final result = birthData == null
+          ? null
+          : Map<String, dynamic>.from(birthData);
+      _birthGateCache[userId] = _ProfileCacheEntry(
+        data: result == null ? null : Map<String, dynamic>.from(result),
+        expiresAt: DateTime.now().add(_birthGateCacheTtl),
+      );
+      span.finish(
+        data: <String, Object?>{
+          'source': 'ProfileRepository._fetchBirthGateProfile',
+          'has_birth_gate_profile': result != null,
+        },
+      );
+      return result;
+    } catch (error) {
+      span.finish(
+        status: 'error',
+        data: <String, Object?>{
+          'source': 'ProfileRepository._fetchBirthGateProfile',
+          'error_type': error.runtimeType.toString(),
+        },
+      );
+      rethrow;
+    }
   }
 
   Future<void> upsertProfileBasics({

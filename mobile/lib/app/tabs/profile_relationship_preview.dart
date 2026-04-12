@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
@@ -7,6 +8,8 @@ import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/current_localizations.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 class ProfileRelationshipPreview extends StatefulWidget {
   const ProfileRelationshipPreview({
@@ -48,15 +51,15 @@ class _ProfileRelationshipPreviewState
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final profile = widget.profile;
     _maybeBootstrap(profile);
 
     if (!TransitRequestBuilder.hasProfile(profile)) {
-      return const JoviaReadingPanel(
-        label: 'İlişki',
-        title: 'İlişki akışı için doğum verisi gerekiyor',
-        body:
-            'Doğum tarihi, saati ve yeri tamamlandığında ilişkilerdeki güncel tema burada açılır.',
+      return JoviaReadingPanel(
+        label: l10n.relationshipPreviewLabel,
+        title: l10n.relationshipPreviewBirthDataRequiredTitle,
+        body: l10n.relationshipPreviewBirthDataRequiredBody,
       );
     }
 
@@ -70,8 +73,8 @@ class _ProfileRelationshipPreviewState
 
     if (_error != null && narrative == null) {
       return JoviaReadingPanel(
-        label: 'İlişki',
-        title: 'İlişki akışı alınamadı',
+        label: l10n.relationshipPreviewLabel,
+        title: l10n.relationshipPreviewLoadFailedTitle,
         body: _error!,
       );
     }
@@ -83,7 +86,7 @@ class _ProfileRelationshipPreviewState
         children: [
           JoviaEditorialHeroBlock(
             surface: false,
-            label: 'İlişkilerde ana tema',
+            label: l10n.relationshipPreviewMainThemeLabel,
             title: viewModel.hook,
             body: viewModel.primarySummary,
             large: true,
@@ -135,21 +138,21 @@ class _ProfileRelationshipPreviewState
           const ThinDivider(),
           const SizedBox(height: 16),
           _RelationshipNarrativeSection(
-            label: 'Bugünü kuran etkiler',
+            label: l10n.relationshipPreviewDriversLabel,
             paragraphs: viewModel.driverParagraphs,
           ),
           const SizedBox(height: 16),
           const ThinDivider(),
           const SizedBox(height: 16),
           _RelationshipNarrativeSection(
-            label: 'Altta çalışan dönem',
+            label: l10n.relationshipPreviewBackdropLabel,
             paragraphs: viewModel.backdropParagraphs,
           ),
           const SizedBox(height: 16),
           const ThinDivider(),
           const SizedBox(height: 16),
           _RelationshipNarrativeSection(
-            label: 'Bugünün üst anlamı',
+            label: l10n.relationshipPreviewUpperMeaningLabel,
             paragraphs: <String>[viewModel.upperMeaning],
             child:
                 viewModel.supportingAsideTitle.isEmpty &&
@@ -158,7 +161,7 @@ class _ProfileRelationshipPreviewState
                 : Padding(
                     padding: const EdgeInsets.only(top: 12),
                     child: JoviaUtilityRow(
-                      label: 'Ayrıca çalışan tema',
+                      label: l10n.relationshipPreviewSupportingThemeLabel,
                       title: viewModel.supportingAsideTitle,
                       body: viewModel.supportingAsideBody,
                       meta: [
@@ -245,7 +248,7 @@ class _ProfileRelationshipPreviewState
       }
       setState(() {
         _loading = false;
-        _error = exc.toString();
+        _error = context.l10n.errorGeneric;
       });
     }
   }
@@ -296,8 +299,7 @@ class _ProfileRelationshipPreviewState
         _narrative = NarrativeResponse.fromMap(response);
         _loading = false;
         _error = null;
-        _notice =
-            'İlişki yorumu geç döndüğü için içerik şimdilik genel akıştan açıldı.';
+        _notice = context.l10n.relationshipPreviewFallbackNotice;
       });
       return true;
     } catch (_) {
@@ -308,16 +310,16 @@ class _ProfileRelationshipPreviewState
   String _friendlyError(DioException exc) {
     if (exc.type == DioExceptionType.receiveTimeout ||
         exc.type == DioExceptionType.connectionTimeout) {
-      return 'İlişki yorumu zamanında dönmedi. Sunucu bu lens için yavaş kalıyor.';
+      return context.l10n.relationshipPreviewTimeout;
     }
     final status = exc.response?.statusCode;
     if (status == 422) {
-      return 'Profildeki tarih, saat veya konum bilgisi bu akış için geçersiz görünüyor.';
+      return context.l10n.relationshipPreviewInvalidProfile;
     }
     if (status != null && status >= 500) {
-      return 'İlişki yorumu şu anda sunucuda hata veriyor. Biraz sonra tekrar dene.';
+      return context.l10n.relationshipPreviewServerError;
     }
-    return exc.message ?? 'İlişki akışı alınamadı.';
+    return exc.message ?? context.l10n.relationshipPreviewFetchFailed;
   }
 }
 
@@ -367,7 +369,8 @@ class _ProfileRelationshipViewModel {
         primary!.timeHintTr.trim()
       else if ((primary?.timing.timingNote ?? '').trim().isNotEmpty)
         primary!.timing.timingNote.trim(),
-      if (primary?.isPeriodDerived == true) 'Dönemden bugüne düşüyor',
+      if (primary?.isPeriodDerived == true)
+        currentL10n().relationshipPreviewPeriodToToday,
     ];
 
     return _ProfileRelationshipViewModel(
@@ -523,14 +526,10 @@ class _RelationshipNarrativeBlocks {
         periodCore: narrative?.periodCore,
       ),
       driverParagraphs: driverParagraphs.isEmpty
-          ? <String>[
-              'Bugün ilişki tarafında hareket var, ama tek bir tema henüz tam olarak ayrışmıyor.',
-            ]
+          ? <String>[currentL10n().relationshipPreviewDefaultDriversFallback]
           : driverParagraphs,
       backdropParagraphs: backdropParagraphs.isEmpty
-          ? <String>[
-              'Altta çalışan dönem hattı var, ama bunun ilişki tarafındaki asıl sonucu biraz daha zamanla netleşecek.',
-            ]
+          ? <String>[currentL10n().relationshipPreviewDefaultBackdropFallback]
           : backdropParagraphs,
       upperMeaning: _buildRelationshipUpperMeaning(
         primary: primary,
@@ -568,13 +567,6 @@ class _RelationshipMiniTimeline extends StatelessWidget {
 
   final EventCardDto card;
 
-  static const List<String> _stages = <String>[
-    'Başladı',
-    'Yoğunlaşıyor',
-    'Zirve',
-    'Çözülüyor',
-  ];
-
   int _activeStage() {
     final phase = card.phase.trim().toLowerCase();
     return switch (phase) {
@@ -587,17 +579,23 @@ class _RelationshipMiniTimeline extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final stages = <String>[
+      context.l10n.relationshipPreviewStageStarted,
+      context.l10n.relationshipPreviewStageIntensifying,
+      context.l10n.relationshipPreviewStagePeak,
+      context.l10n.relationshipPreviewStageResolving,
+    ];
     final profile = context.profileTheme;
     final activeStage = _activeStage();
     return Row(
       children: [
-        for (var index = 0; index < _stages.length; index++) ...[
+        for (var index = 0; index < stages.length; index++) ...[
           _RelationshipMiniTimelineNode(
-            label: _stages[index],
+            label: stages[index],
             active: index <= activeStage,
             emphasized: index == activeStage,
           ),
-          if (index != _stages.length - 1)
+          if (index != stages.length - 1)
             Expanded(
               child: Container(
                 height: 1,
@@ -1617,7 +1615,7 @@ class _RelationshipWhyItMattersDisclosureState
               children: [
                 Expanded(
                   child: Text(
-                    'Neden bu önemli?',
+                    context.l10n.relationshipPreviewWhyImportant,
                     style: profile.typography.cardTitle.copyWith(
                       fontSize: 17,
                       color: colors.text,
@@ -1798,19 +1796,5 @@ String _normalizeCopy(String value) {
 }
 
 String _formatDateLabel(DateTime value) {
-  const months = <String>[
-    'Ocak',
-    'Şubat',
-    'Mart',
-    'Nisan',
-    'Mayis',
-    'Haziran',
-    'Temmuz',
-    'Ağustos',
-    'Eylul',
-    'Ekim',
-    'Kasim',
-    'Aralik',
-  ];
-  return '${value.day} ${months[value.month - 1]} ${value.year}';
+  return DateFormat('d MMMM y', currentL10n().localeName).format(value);
 }

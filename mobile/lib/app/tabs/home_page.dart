@@ -16,8 +16,10 @@ import 'package:mobile/app/tabs/calendar_hub_page.dart';
 import 'package:mobile/app/tabs/period_detail_page.dart';
 import 'package:mobile/app/tabs/sky_event_detail_page.dart';
 import 'package:mobile/app/tabs/sky_event_feed_page.dart';
+import 'package:mobile/app/telemetry/perf_telemetry.dart';
 import 'package:mobile/app/widgets/forum_cta.dart';
 import 'package:mobile/app/widgets/forum_social_preview_strip.dart';
+import 'package:mobile/app/timing/daily_transit_selection.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/source_guards.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
@@ -373,20 +375,13 @@ HomeTransitSnapshot buildHomeTransitSnapshot({
   final todayKey = TransitRequestBuilder.fmtDate(
     TransitRequestBuilder.stripDate(today),
   );
-  final dailyCards = narrative.dailyEventCards.isNotEmpty
-      ? narrative.dailyEventCards
-      : pickDailyEventCards(
-          narrative.eventCards,
-          context: 'Home/Gunun Karti/Fallback',
-        );
-  final periodEvents = narrative.periodEventCards.isNotEmpty
-      ? narrative.periodEventCards
-      : pickPeriodEventCards(
-          narrative.eventCards,
-          context: 'Home/Donem Kartlari/Fallback',
-        );
-  final fallbackDailyCards = dailyCards.isNotEmpty
-      ? dailyCards
+  final selection = selectDailyTransitCardsForDate(
+    narrative: narrative,
+    selectedDate: today,
+  );
+  final periodEvents = selection.periodCards;
+  final fallbackDailyCards = selection.dailyCards.isNotEmpty
+      ? selection.dailyCards
       : (periodEvents.isNotEmpty
             ? <EventCardDto>[
                 _promoteHomePeriodEventToDaily(periodEvents.first, l10n: l10n),
@@ -410,6 +405,138 @@ HomeTransitSnapshot buildHomeTransitSnapshot({
   );
 }
 
+String describeHomeDailyCardSource(EventCardDto? card) {
+  if (card == null) {
+    return 'none';
+  }
+  if (card.eventId.trim() == 'home-fast-daily-fallback') {
+    return 'home_fast_fallback';
+  }
+  if (isDailyTransitCardBackedByPeriod(card)) {
+    return 'period_derived';
+  }
+  if (card.eventId.trim().isNotEmpty) {
+    return 'daily_event_card';
+  }
+  return 'daily_unknown';
+}
+
+bool _sameHomeDailyCard(EventCardDto? left, EventCardDto? right) {
+  if (left == null || right == null) {
+    return left == right;
+  }
+  return left.eventId.trim() == right.eventId.trim() &&
+      left.feltLineTr.trim() == right.feltLineTr.trim() &&
+      left.opening.trim() == right.opening.trim() &&
+      left.whyItFeelsThisWayTr.trim() == right.whyItFeelsThisWayTr.trim() &&
+      left.guidanceMicroTr.trim() == right.guidanceMicroTr.trim();
+}
+
+bool hasUsableHomeDailyCardCopy(EventCardDto? card) {
+  if (card == null) {
+    return false;
+  }
+  return _firstHomeTextValue([
+    card.opening,
+    card.whyItFeelsThisWayTr,
+    card.guidanceMicroTr,
+    card.essence,
+  ]).isNotEmpty;
+}
+
+int scoreHomeDailyCardStrength(EventCardDto? card) {
+  if (card == null) {
+    return 0;
+  }
+  var score = 0;
+  if (card.feltLineTr.trim().isNotEmpty || card.headline.trim().isNotEmpty) {
+    score += 3;
+  }
+  if (card.opening.trim().isNotEmpty) {
+    score += 6;
+  }
+  if (card.whyItFeelsThisWayTr.trim().isNotEmpty) {
+    score += 5;
+  }
+  if (card.guidanceMicroTr.trim().isNotEmpty) {
+    score += 4;
+  }
+  if (card.houseTouchpointHintTr.trim().isNotEmpty) {
+    score += 2;
+  }
+  if (card.essence.trim().isNotEmpty) {
+    score += 2;
+  }
+
+  final horizon = card.horizon.trim().toLowerCase();
+  final sourceHorizon = card.sourceHorizon.trim().toLowerCase();
+  if (horizon == 'daily') {
+    score += 2;
+  }
+  if (sourceHorizon == 'daily') {
+    score += 2;
+  }
+  if (!isDailyTransitCardBackedByPeriod(card)) {
+    score += 5;
+  } else {
+    score -= 4;
+  }
+  if (card.eventId.trim().isNotEmpty &&
+      card.eventId.trim() != 'home-fast-daily-fallback') {
+    score += 1;
+  }
+  return score;
+}
+
+List<EventCardDto> _mergeHomeDailyCards({
+  required List<EventCardDto> incoming,
+  required List<EventCardDto> current,
+}) {
+  if (incoming.isEmpty) {
+    return current;
+  }
+  if (current.isEmpty) {
+    return incoming;
+  }
+  final incomingScore = scoreHomeDailyCardStrength(incoming.first);
+  final currentScore = scoreHomeDailyCardStrength(current.first);
+  if (incomingScore > currentScore) {
+    return incoming;
+  }
+  return current;
+}
+
+String _homeDailyResolutionReason({
+  required List<EventCardDto> dailyCards,
+  required NarrativeCalendarDay? dayMeta,
+}) {
+  if (dailyCards.isNotEmpty) {
+    return isDailyTransitCardBackedByPeriod(dailyCards.first)
+        ? 'period_fallback'
+        : 'daily_card';
+  }
+  if (dayMeta != null) {
+    return 'day_meta_only';
+  }
+  return 'empty';
+}
+
+bool hasUsableHomeDailyContent({
+  required List<EventCardDto> dailyCards,
+  required NarrativeCalendarDay? dayMeta,
+}) {
+  final microSummary = dayMeta?.microSummaryTr.trim() ?? '';
+  if (microSummary.isNotEmpty) {
+    return true;
+  }
+  for (final card in dailyCards) {
+    if (hasUsableHomeDailyCardCopy(card)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 HomeTransitSnapshot mergeHomeTransitSnapshot({
   required HomeTransitSnapshot incoming,
   PeriodCoreDto? currentPeriodCore,
@@ -424,9 +551,10 @@ HomeTransitSnapshot mergeHomeTransitSnapshot({
     periodCards: incoming.periodCards.isNotEmpty
         ? incoming.periodCards
         : currentPeriodCards,
-    dailyCards: incoming.dailyCards.isNotEmpty
-        ? incoming.dailyCards
-        : currentDailyCards,
+    dailyCards: _mergeHomeDailyCards(
+      incoming: incoming.dailyCards,
+      current: currentDailyCards,
+    ),
     calendarDays: incoming.calendarDays.isNotEmpty
         ? incoming.calendarDays
         : currentCalendarDays,
@@ -512,7 +640,7 @@ class HomePage extends ConsumerStatefulWidget {
 }
 
 class _HomePageState extends ConsumerState<HomePage>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver, TickerProviderStateMixin {
   static const String _baseUrl = 'http://127.0.0.1:5000';
   static const Duration _homeFastTimeout = Duration(seconds: 3);
   static const Duration _natalCacheTtl = Duration(minutes: 5);
@@ -546,6 +674,10 @@ class _HomePageState extends ConsumerState<HomePage>
   int _selectedWeekIndex = 0;
   final NarrativeRepository _narrativeRepository = NarrativeRepository();
 
+  late final AnimationController _heroEnterController;
+  late final AnimationController _starController;
+  late final AnimationController _contentEnterController;
+
   String _firstHomeText(Iterable<String?> values) {
     return _firstHomeTextValue(values);
   }
@@ -553,11 +685,61 @@ class _HomePageState extends ConsumerState<HomePage>
   @override
   void initState() {
     super.initState();
+    _heroEnterController = AnimationController(
+      duration: const Duration(milliseconds: 350),
+      vsync: this,
+    )..forward();
+    _starController = AnimationController(
+      duration: const Duration(seconds: 8),
+      vsync: this,
+    )..repeat();
+    _contentEnterController = AnimationController(
+      duration: const Duration(milliseconds: 800),
+      vsync: this,
+    )..forward();
     WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      PerfTelemetry.logPointOnce(
+        'startup.first_home_visible',
+        'first_home_visible',
+      );
+    });
+  }
+
+  void _retry() {
+    setState(() {
+      _lastKey = null;
+      _error = null;
+    });
+  }
+
+  Widget _staggerItem(int index, Widget child) {
+    final start = (index * 0.08).clamp(0.0, 0.6);
+    final end = (start + 0.35).clamp(0.0, 1.0);
+    final animation = CurvedAnimation(
+      parent: _contentEnterController,
+      curve: Interval(start, end, curve: Curves.easeOutCubic),
+    );
+    return FadeTransition(
+      opacity: animation,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.06),
+          end: Offset.zero,
+        ).animate(animation),
+        child: child,
+      ),
+    );
   }
 
   @override
   void dispose() {
+    _heroEnterController.dispose();
+    _starController.dispose();
+    _contentEnterController.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
@@ -574,7 +756,11 @@ class _HomePageState extends ConsumerState<HomePage>
     final todayKey = TransitRequestBuilder.fmtDate(
       TransitRequestBuilder.stripDate(DateTime.now()),
     );
-    if (_lastLoadedDayKey != todayKey || _todayDailyCards.isEmpty) {
+    if (_lastLoadedDayKey != todayKey ||
+        !hasUsableHomeDailyContent(
+          dailyCards: _todayDailyCards,
+          dayMeta: _todayDayMeta,
+        )) {
       _lastKey = null;
       _maybeBootstrap(profile, Supabase.instance.client.auth.currentUser);
     }
@@ -643,12 +829,19 @@ class _HomePageState extends ConsumerState<HomePage>
               ? null
               : weekItems[_selectedWeekIndex.clamp(0, weekItems.length - 1)];
           final selectedDailyCard = selectedWeekItem?.card;
-          final selectedDayMeta = selectedWeekItem?.dayMeta;
           final isSelectedToday =
               selectedWeekItem == null || selectedWeekItem.isToday;
+          final selectedDayMeta = isSelectedToday
+              ? (selectedWeekItem?.dayMeta ?? _todayDayMeta)
+              : selectedWeekItem.dayMeta;
+          final hasSelectedDailyContent = hasUsableHomeDailyContent(
+            dailyCards: selectedDailyCard == null
+                ? const <EventCardDto>[]
+                : <EventCardDto>[selectedDailyCard],
+            dayMeta: selectedDayMeta,
+          );
           final shouldUsePeriodHeroFallback =
-              selectedDailyCard == null &&
-              selectedDayMeta == null &&
+              !hasSelectedDailyContent &&
               (activeCard != null || _periodCore != null);
           final todayFallbackTitle = _firstHomeText([
             todayDailyCard?.feltLineTr,
@@ -775,106 +968,154 @@ class _HomePageState extends ConsumerState<HomePage>
                         JoviaAppMenuScope.maybeOf(context)?.openMenu(),
                   ),
                   const SizedBox(height: 18),
-                  _HomeReferenceHeroCard(
-                    title: activeTitle,
-                    body: selectedHeroBody,
-                    prompt: activeSubtitle,
-                    weekItems: weekItems,
-                    onSelectDay: (item) {
-                      if (item.isSelected) {
-                        _openHomeDay(
+                  FadeTransition(
+                    opacity: CurvedAnimation(
+                      parent: _heroEnterController,
+                      curve: Curves.easeOutCubic,
+                    ),
+                    child: SlideTransition(
+                      position: Tween<Offset>(
+                        begin: const Offset(0, 0.08),
+                        end: Offset.zero,
+                      ).animate(CurvedAnimation(
+                        parent: _heroEnterController,
+                        curve: Curves.easeOutCubic,
+                      )),
+                      child: _HomeReferenceHeroCard(
+                        title: activeTitle,
+                        body: selectedHeroBody,
+                        prompt: activeSubtitle,
+                        weekItems: weekItems,
+                        starRotation: _starController,
+                        onSelectDay: (item) {
+                          if (item.isSelected) {
+                            _openHomeDay(
+                              context,
+                              profile,
+                              item.date,
+                              initialBundle: _buildInitialHomeDayBundle(
+                                date: item.date,
+                                card: item.card,
+                                dayMeta: item.dayMeta,
+                              ),
+                            );
+                            return;
+                          }
+                          setState(() => _selectedWeekIndex = item.index);
+                        },
+                        onOpen: () => _openHomeDay(
                           context,
                           profile,
-                          item.date,
+                          selectedWeekItem?.date ?? DateTime.now(),
                           initialBundle: _buildInitialHomeDayBundle(
-                            date: item.date,
-                            card: item.card,
-                            dayMeta: item.dayMeta,
+                            date: selectedWeekItem?.date ?? DateTime.now(),
+                            card: selectedWeekItem?.card,
+                            dayMeta: selectedWeekItem?.dayMeta,
                           ),
-                        );
-                        return;
-                      }
-                      setState(() => _selectedWeekIndex = item.index);
-                    },
-                    onOpen: () => _openHomeDay(
-                      context,
-                      profile,
-                      selectedWeekItem?.date ?? DateTime.now(),
-                      initialBundle: _buildInitialHomeDayBundle(
-                        date: selectedWeekItem?.date ?? DateTime.now(),
-                        card: selectedWeekItem?.card,
-                        dayMeta: selectedWeekItem?.dayMeta,
+                        ),
+                        footer: _HomeSignStateRow(
+                          sunSign: _sunSign,
+                          moonSign: _moonSign,
+                          risingSign: _risingSign,
+                        ),
                       ),
-                    ),
-                    footer: _HomeSignStateRow(
-                      sunSign: _sunSign,
-                      moonSign: _moonSign,
-                      risingSign: _risingSign,
                     ),
                   ),
                   const SizedBox(height: 26),
-                  _HomeSectionLead(
-                    title: context.l10n.homePlansTitle,
-                    subtitle: context.l10n.homePlansSubtitle,
+                  _staggerItem(
+                    0,
+                    _HomeSectionLead(
+                      title: context.l10n.homePlansTitle,
+                      subtitle: context.l10n.homePlansSubtitle,
+                    ),
                   ),
                   const SizedBox(height: 14),
-                  const ForumCTA(),
+                  _staggerItem(1, const ForumCTA()),
                   const SizedBox(height: 14),
-                  const SocialPreviewStrip(),
+                  _staggerItem(2, const SocialPreviewStrip()),
                   const SizedBox(height: 14),
-                  _HomeReferencePlanBoard(
-                    activeCard: activeCard,
-                    dailyCards: periodPreviewCards,
-                    bulletin: skyBulletin,
-                    skyItem: skyHeroItem,
-                    lineText: periodBigPicture.isNotEmpty
-                        ? periodBigPicture
-                        : selectedHeroBody,
-                    loading: _loading && periodPreviewCards.isEmpty,
-                    onOpenActive: activeCard == null
-                        ? () => _openTiming(context)
-                        : () => _openTransitCard(context, profile, activeCard),
-                    onOpenCard: (card) =>
-                        _openTransitCard(context, profile, card),
-                    onOpenSky: () {
-                      if (skyHeroItem != null) {
-                        _openSkyEventDetail(context, skyHeroItem);
-                      } else if (collectiveCard != null) {
-                        _openPeriodDetails(context, collectiveCard);
-                      } else {
-                        _openTiming(context);
-                      }
-                    },
-                    onOpenCalendar: () => _openTiming(context),
+                  _staggerItem(
+                    3,
+                    _HomeReferencePlanBoard(
+                      activeCard: activeCard,
+                      dailyCards: periodPreviewCards,
+                      bulletin: skyBulletin,
+                      skyItem: skyHeroItem,
+                      lineText: periodBigPicture.isNotEmpty
+                          ? periodBigPicture
+                          : selectedHeroBody,
+                      loading: _loading && periodPreviewCards.isEmpty,
+                      onOpenActive: activeCard == null
+                          ? () => _openTiming(context)
+                          : () =>
+                              _openTransitCard(context, profile, activeCard),
+                      onOpenCard: (card) =>
+                          _openTransitCard(context, profile, card),
+                      onOpenSky: () {
+                        if (skyHeroItem != null) {
+                          _openSkyEventDetail(context, skyHeroItem);
+                        } else if (collectiveCard != null) {
+                          _openPeriodDetails(context, collectiveCard);
+                        } else {
+                          _openTiming(context);
+                        }
+                      },
+                      onOpenCalendar: () => _openTiming(context),
+                    ),
                   ),
                   if (_skyFeedItems.length > 1) ...[
                     const SizedBox(height: 18),
-                    _HomeSkyEventList(
-                      items: _skyFeedItems.skip(1).take(2).toList(),
-                      onOpenItem: (item) => _openSkyEventDetail(context, item),
-                      onOpenAll: () => _openSkyFeed(context),
+                    _staggerItem(
+                      4,
+                      _HomeSkyEventList(
+                        items: _skyFeedItems.skip(1).take(2).toList(),
+                        onOpenItem: (item) =>
+                            _openSkyEventDetail(context, item),
+                        onOpenAll: () => _openSkyFeed(context),
+                      ),
                     ),
                   ],
                   if (showTimingPanel) ...[
                     const SizedBox(height: 24),
-                    _HomeReferenceTimingCard(
-                      title: (_periodCore?.title.trim().isEmpty ?? true)
-                          ? context.l10n.homeActivePeriodTitle
-                          : (_periodCore?.title ??
-                                context.l10n.homeActivePeriodTitle),
-                      body: (_periodCore?.coreStory.trim().isEmpty ?? true)
-                          ? (_periodCore?.bigPicture ?? '')
-                          : (_periodCore?.coreStory ?? ''),
-                      onTap: () => _openTiming(context),
+                    _staggerItem(
+                      5,
+                      _HomeReferenceTimingCard(
+                        title: (_periodCore?.title.trim().isEmpty ?? true)
+                            ? context.l10n.homeActivePeriodTitle
+                            : (_periodCore?.title ??
+                                  context.l10n.homeActivePeriodTitle),
+                        body: (_periodCore?.coreStory.trim().isEmpty ?? true)
+                            ? (_periodCore?.bigPicture ?? '')
+                            : (_periodCore?.coreStory ?? ''),
+                        onTap: () => _openTiming(context),
+                      ),
                     ),
                   ],
                   if (_error != null) ...[
                     const SizedBox(height: 18),
-                    Text(
-                      _error ?? '',
-                      style: context.profileTheme.typography.micro.copyWith(
-                        color: Theme.of(context).colorScheme.error,
-                      ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.cloud_off_outlined,
+                          size: 40,
+                          color: Colors.grey[400],
+                        ),
+                        const SizedBox(height: 12),
+                        Text(
+                          _error ?? '',
+                          textAlign: TextAlign.center,
+                          style: context.profileTheme.typography.micro.copyWith(
+                            color: context.profileTheme.colors.textLight,
+                            height: 1.4,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextButton(
+                          onPressed: _retry,
+                          child: Text(context.l10n.commonRetry),
+                        ),
+                      ],
                     ),
                   ],
                 ],
@@ -1214,16 +1455,10 @@ class _HomePageState extends ConsumerState<HomePage>
       mounted && requestVersion == _homeLoadVersion;
 
   bool _hasResolvedTodayTransit() {
-    if (_todayDayMeta != null) {
-      return true;
-    }
-    if (_todayDailyCards.isEmpty) {
-      return false;
-    }
-    return _todayDailyCards.any((card) {
-      final eventId = card.eventId.trim();
-      return eventId.isNotEmpty && eventId != 'home-fast-daily-fallback';
-    });
+    return hasUsableHomeDailyContent(
+      dailyCards: _todayDailyCards,
+      dayMeta: _todayDayMeta,
+    );
   }
 
   Future<void> _loadNarrativeSection({
@@ -1259,21 +1494,85 @@ class _HomePageState extends ConsumerState<HomePage>
         currentCalendarDays: _homeCalendarDays,
         currentTodayDayMeta: _todayDayMeta,
       );
+      HomeTransitSnapshot resolvedSnapshot = mergedSnapshot;
+
+      if (!hasUsableHomeDailyContent(
+        dailyCards: resolvedSnapshot.dailyCards,
+        dayMeta: resolvedSnapshot.todayDayMeta,
+      )) {
+        final detailFallbackSnapshot = await _loadHomeDailyCalendarDayFallback(
+          profile: profile,
+          localeCode: localeCode,
+          l10n: l10n,
+          requestVersion: requestVersion,
+        );
+        if (detailFallbackSnapshot != null) {
+          resolvedSnapshot = mergeHomeTransitSnapshot(
+            incoming: detailFallbackSnapshot,
+            currentPeriodCore: resolvedSnapshot.periodCore,
+            currentPeriodCards: resolvedSnapshot.periodCards,
+            currentDailyCards: resolvedSnapshot.dailyCards,
+            currentCalendarDays: resolvedSnapshot.calendarDays,
+            currentTodayDayMeta: resolvedSnapshot.todayDayMeta,
+          );
+        }
+      }
 
       if (!_isActiveHomeLoad(requestVersion)) {
         return;
       }
 
+      final currentDailyCard = _todayDailyCards.isNotEmpty
+          ? _todayDailyCards.first
+          : null;
+      final incomingDailyCard = resolvedSnapshot.dailyCards.isNotEmpty
+          ? resolvedSnapshot.dailyCards.first
+          : null;
+      final resolvedDailyCard = resolvedSnapshot.dailyCards.isNotEmpty
+          ? resolvedSnapshot.dailyCards.first
+          : null;
+      PerfTelemetry.logEvent(
+        'home_daily_transit_merge',
+        data: <String, Object?>{
+          'selected_day_key': TransitRequestBuilder.fmtDate(
+            TransitRequestBuilder.stripDate(DateTime.now()),
+          ),
+          'response_mode': 'public_only',
+          'current_daily_count': _todayDailyCards.length,
+          'incoming_daily_count': snapshot.dailyCards.length,
+          'resolved_daily_count': resolvedSnapshot.dailyCards.length,
+          'current_source': describeHomeDailyCardSource(currentDailyCard),
+          'incoming_source': describeHomeDailyCardSource(incomingDailyCard),
+          'resolved_source': describeHomeDailyCardSource(resolvedDailyCard),
+          'current_strength': scoreHomeDailyCardStrength(currentDailyCard),
+          'incoming_strength': scoreHomeDailyCardStrength(incomingDailyCard),
+          'resolved_strength': scoreHomeDailyCardStrength(resolvedDailyCard),
+          'incoming_calendar_days': snapshot.calendarDays.length,
+          'resolved_calendar_days': resolvedSnapshot.calendarDays.length,
+          'incoming_has_today_day_meta': snapshot.todayDayMeta != null,
+          'resolved_has_today_day_meta': resolvedSnapshot.todayDayMeta != null,
+          'overwrite_prevented':
+              currentDailyCard != null &&
+              incomingDailyCard != null &&
+              _sameHomeDailyCard(resolvedDailyCard, currentDailyCard) &&
+              !_sameHomeDailyCard(currentDailyCard, incomingDailyCard),
+          'resolution_reason': _homeDailyResolutionReason(
+            dailyCards: resolvedSnapshot.dailyCards,
+            dayMeta: resolvedSnapshot.todayDayMeta,
+          ),
+        },
+      );
+
       setState(() {
-        _periodCore = mergedSnapshot.periodCore;
-        _periodCards = mergedSnapshot.periodCards;
-        _todayDailyCards = mergedSnapshot.dailyCards;
-        _homeCalendarDays = mergedSnapshot.calendarDays;
-        _todayDayMeta = mergedSnapshot.todayDayMeta;
+        _periodCore = resolvedSnapshot.periodCore;
+        _periodCards = resolvedSnapshot.periodCards;
+        _todayDailyCards = resolvedSnapshot.dailyCards;
+        _homeCalendarDays = resolvedSnapshot.calendarDays;
+        _todayDayMeta = resolvedSnapshot.todayDayMeta;
         _loading = false;
         _error = null;
       });
-      if (mergedSnapshot.calendarDays.length < 7) {
+      if (resolvedSnapshot.calendarDays.length < 7) {
         _hydrateHomeWeekCalendarDays(
           profile: profile,
           requestVersion: requestVersion,
@@ -1297,6 +1596,70 @@ class _HomePageState extends ConsumerState<HomePage>
           _error = _friendlyHomeLoadError(e, l10n);
         }
       });
+    }
+  }
+
+  Future<HomeTransitSnapshot?> _loadHomeDailyCalendarDayFallback({
+    required Map<String, dynamic> profile,
+    required String localeCode,
+    required AppLocalizations l10n,
+    required int requestVersion,
+  }) async {
+    PerfTelemetry.logEvent(
+      'home_daily_transit_detail_fallback_start',
+      data: <String, Object?>{
+        'selected_day_key': TransitRequestBuilder.fmtDate(
+          TransitRequestBuilder.stripDate(DateTime.now()),
+        ),
+      },
+    );
+    try {
+      final narrativeMap = await _narrativeRepository.fetchDailyNarrative(
+        profile: profile,
+        selectedDate: DateTime.now(),
+        focusedRange: true,
+        includeBestTimes: false,
+        responseMode: 'full',
+        payloadProfile: TransitPayloadProfile.calendarDay,
+        visibleDaysLimit: 7,
+        receiveTimeout: _homeNarrativeTimeout,
+        requestSla: ApiRequestSla.background,
+        locale: localeCode,
+      );
+      if (!_isActiveHomeLoad(requestVersion)) {
+        return null;
+      }
+      final narrative = NarrativeResponse.fromMap(narrativeMap);
+      final snapshot = buildHomeTransitSnapshot(
+        narrative: narrative,
+        today: DateTime.now(),
+        l10n: l10n,
+      );
+      PerfTelemetry.logEvent(
+        'home_daily_transit_detail_fallback_end',
+        data: <String, Object?>{
+          'status': 'ok',
+          'daily_count': snapshot.dailyCards.length,
+          'calendar_days': snapshot.calendarDays.length,
+          'has_today_day_meta': snapshot.todayDayMeta != null,
+          'selected_day_key': TransitRequestBuilder.fmtDate(
+            TransitRequestBuilder.stripDate(DateTime.now()),
+          ),
+        },
+      );
+      return snapshot;
+    } catch (error) {
+      PerfTelemetry.logEvent(
+        'home_daily_transit_detail_fallback_end',
+        data: <String, Object?>{
+          'status': 'error',
+          'error_type': error.runtimeType.toString(),
+          'selected_day_key': TransitRequestBuilder.fmtDate(
+            TransitRequestBuilder.stripDate(DateTime.now()),
+          ),
+        },
+      );
+      return null;
     }
   }
 
@@ -1377,7 +1740,11 @@ class _HomePageState extends ConsumerState<HomePage>
         if (_periodCards.isEmpty && fastPeriodCards.isNotEmpty) {
           _periodCards = fastPeriodCards;
         }
-        if (_todayDailyCards.isEmpty && fastDailyFallback != null) {
+        if (!hasUsableHomeDailyContent(
+              dailyCards: _todayDailyCards,
+              dayMeta: _todayDayMeta,
+            ) &&
+            fastDailyFallback != null) {
           _todayDailyCards = <EventCardDto>[fastDailyFallback];
         }
         if (_coreStory.trim().isEmpty && payload.summary.isNotEmpty) {
@@ -2204,6 +2571,7 @@ class _HomeReferenceHeroCard extends StatelessWidget {
     required this.body,
     required this.prompt,
     required this.weekItems,
+    required this.starRotation,
     required this.onSelectDay,
     required this.onOpen,
     required this.footer,
@@ -2213,6 +2581,7 @@ class _HomeReferenceHeroCard extends StatelessWidget {
   final String body;
   final String prompt;
   final List<_HomeWeekItemData> weekItems;
+  final Animation<double> starRotation;
   final ValueChanged<_HomeWeekItemData> onSelectDay;
   final VoidCallback onOpen;
   final Widget footer;
@@ -2304,11 +2673,26 @@ class _HomeReferenceHeroCard extends StatelessWidget {
               children: [
                 SizedBox(
                   height: _homeHeroSlotHeight(labelStyle, 1),
-                  child: _HomeHeroAnimatedText(
-                    text: context.l10n.homeDailyTransitLabel,
-                    textStyle: labelStyle,
-                    maxLines: 1,
-                    delay: Duration.zero,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      RotationTransition(
+                        turns: starRotation,
+                        child: Text(
+                          '✦',
+                          style: labelStyle.copyWith(fontSize: 10),
+                        ),
+                      ),
+                      const SizedBox(width: 5),
+                      Expanded(
+                        child: _HomeHeroAnimatedText(
+                          text: context.l10n.homeDailyTransitLabel,
+                          textStyle: labelStyle,
+                          maxLines: 1,
+                          delay: Duration.zero,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -4394,15 +4778,21 @@ class _TransitSummaryCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: Text(
-                        card.title.isNotEmpty ? card.title : 'Aktif Transit',
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: typo.body.copyWith(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: colors.text,
-                          height: 1.2,
+                      child: Hero(
+                        tag: 'transit_title_${card.id}',
+                        child: Material(
+                          type: MaterialType.transparency,
+                          child: Text(
+                            card.title.isNotEmpty ? card.title : 'Aktif Transit',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: typo.body.copyWith(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w600,
+                              color: colors.text,
+                              height: 1.2,
+                            ),
+                          ),
                         ),
                       ),
                     ),

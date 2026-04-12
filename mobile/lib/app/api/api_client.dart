@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:mobile/app/telemetry/perf_telemetry.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'api_environment.dart';
@@ -105,13 +106,38 @@ class ApiClient {
       queryParameters: queryParameters,
     );
     final now = DateTime.now();
+    final baseTelemetry = <String, Object?>{
+      'endpoint': path,
+      'method': method,
+      'request_sla': requestSla?.name ?? '',
+      'client_cache_enabled': cacheTtl != null,
+    };
 
     if (cacheTtl != null) {
       final cached = _responseCache[requestKey];
       if (cached != null && cached.expiresAt.isAfter(now)) {
-        return Future<Response<dynamic>>.value(
-          cached.toResponse(path: path, baseUrl: _baseUrl),
+        final span = PerfTelemetry.startSpan(
+          'api_request',
+          data: baseTelemetry,
         );
+        final response = cached.toResponse(
+          path: path,
+          baseUrl: _baseUrl,
+          telemetry: <String, Object?>{
+            ...baseTelemetry,
+            'cache_status': 'hit',
+            'inflight_dedupe': false,
+            'status_code': cached.statusCode ?? 200,
+            'payload_bytes': _payloadSizeBytes(cached.data),
+            'payload_kb': _payloadSizeKb(cached.data),
+          },
+        );
+        span.finish(
+          data: Map<String, Object?>.from(
+            response.requestOptions.extra['api_telemetry'] as Map,
+          ),
+        );
+        return Future<Response<dynamic>>.value(response);
       }
       if (cached != null && !cached.expiresAt.isAfter(now)) {
         _responseCache.remove(requestKey);
@@ -120,9 +146,14 @@ class ApiClient {
 
     final inflight = _inflightRequests[requestKey];
     if (inflight != null) {
+      PerfTelemetry.logPoint(
+        'api_request_deduped',
+        data: <String, Object?>{...baseTelemetry, 'inflight_dedupe': true},
+      );
       return inflight;
     }
 
+    final span = PerfTelemetry.startSpan('api_request', data: baseTelemetry);
     final future =
         _send(
               method: method,
@@ -133,13 +164,41 @@ class ApiClient {
               requestSla: requestSla,
             )
             .then((response) {
+              final telemetry = <String, Object?>{
+                ...baseTelemetry,
+                'cache_status': cacheTtl != null ? 'miss' : 'disabled',
+                'cache_store':
+                    cacheTtl != null && (response.statusCode ?? 200) < 400,
+                'inflight_dedupe': false,
+                'status_code': response.statusCode ?? 0,
+                'payload_bytes': _payloadSizeBytes(response.data),
+                'payload_kb': _payloadSizeKb(response.data),
+              };
+              _attachTelemetry(response, telemetry);
               if (cacheTtl != null && (response.statusCode ?? 200) < 400) {
                 _responseCache[requestKey] = _CachedResponse.fromResponse(
                   response,
                   expiresAt: now.add(cacheTtl),
                 );
               }
+              span.finish(data: telemetry);
               return response;
+            })
+            .catchError((error) {
+              final statusCode = error is DioException
+                  ? error.response?.statusCode
+                  : null;
+              span.finish(
+                status: 'error',
+                data: <String, Object?>{
+                  ...baseTelemetry,
+                  'cache_status': cacheTtl != null ? 'miss' : 'disabled',
+                  'inflight_dedupe': false,
+                  'status_code': statusCode ?? 0,
+                  'error_type': error.runtimeType.toString(),
+                },
+              );
+              throw error;
             })
             .whenComplete(() {
               _inflightRequests.remove(requestKey);
@@ -210,6 +269,25 @@ class ApiClient {
     }
     return value;
   }
+
+  static void _attachTelemetry(
+    Response<dynamic> response,
+    Map<String, Object?> telemetry,
+  ) {
+    response.requestOptions.extra['api_telemetry'] = telemetry;
+  }
+
+  static int _payloadSizeBytes(Object? value) {
+    try {
+      return utf8.encode(jsonEncode(value)).length;
+    } catch (_) {
+      return utf8.encode(value?.toString() ?? '').length;
+    }
+  }
+
+  static double _payloadSizeKb(Object? value) {
+    return double.parse((_payloadSizeBytes(value) / 1024).toStringAsFixed(3));
+  }
 }
 
 class _CachedResponse {
@@ -237,9 +315,14 @@ class _CachedResponse {
   Response<dynamic> toResponse({
     required String path,
     required String baseUrl,
+    Map<String, Object?> telemetry = const <String, Object?>{},
   }) {
     return Response<dynamic>(
-      requestOptions: RequestOptions(path: path, baseUrl: baseUrl),
+      requestOptions: RequestOptions(
+        path: path,
+        baseUrl: baseUrl,
+        extra: <String, dynamic>{'api_telemetry': telemetry},
+      ),
       data: _deepCopy(data),
       statusCode: statusCode,
     );

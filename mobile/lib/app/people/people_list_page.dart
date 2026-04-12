@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 import 'add_person_page.dart';
 import 'people_aura_repository.dart';
@@ -15,6 +16,7 @@ class PeopleListPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final peopleAsync = ref.watch(peopleListProvider);
     final profile = context.profileTheme;
     final spacing = profile.spacing;
@@ -59,11 +61,11 @@ class PeopleListPage extends ConsumerWidget {
               padding: EdgeInsets.zero,
               children: [
                 JoviaProfileTopBar(
-                  label: 'People',
-                  centerText: 'Sosyal çevren',
+                  label: l10n.peoplePageLabel,
+                  centerText: l10n.peoplePageCenterText,
                   onActionTap: () => openCreatePerson(),
                   actionAsset: JoviaUiAsset.plusCrosshair,
-                  actionTooltip: 'Kişi ekle',
+                  actionTooltip: l10n.peoplePageAddTooltip,
                 ),
                 SizedBox(height: spacing.s24),
                 const _PeopleHeroCard(),
@@ -74,16 +76,15 @@ class PeopleListPage extends ConsumerWidget {
                       return Column(
                         children: [
                           JoviaReadingPanel(
-                            label: 'People',
-                            title: 'Henüz kayıtlı kişi yok',
-                            body:
-                                'Bond ve diğer ilişki akışları için çevreni burada kuracaksın. Aynı spacing ve aynı sosyal yüzey diliyle ilerliyor.',
+                            label: l10n.peoplePageLabel,
+                            title: l10n.peoplePageEmptyTitle,
+                            body: l10n.peoplePageEmptyBody,
                           ),
                           SizedBox(height: spacing.s12),
                           SizedBox(
                             width: double.infinity,
                             child: JoviaPrimaryButton(
-                              label: 'Kişi ekle',
+                              label: l10n.peoplePageAddTooltip,
                               onTap: () => openCreatePerson(),
                             ),
                           ),
@@ -92,10 +93,9 @@ class PeopleListPage extends ConsumerWidget {
                     }
 
                     return JoviaReadingPanel(
-                      label: 'Circle',
-                      title: 'Yakın çevren',
-                      body:
-                          'Kayıtlı kişiler utility listede değil, daha sakin ve tutarlı bir sosyal yüzeyde tutuluyor.',
+                      label: l10n.peoplePageCircleLabel,
+                      title: l10n.peoplePageCircleTitle,
+                      body: l10n.peoplePageCircleBody,
                       background: const Align(
                         alignment: Alignment.topRight,
                         child: Padding(
@@ -146,17 +146,17 @@ class PeopleListPage extends ConsumerWidget {
                     WidgetsBinding.instance.addPostFrameCallback((_) {
                       final msg = error is PeopleQueryException
                           ? error.userMessage
-                          : 'Arkadaş listesi yüklenemedi: $error';
+                          : l10n.peoplePageListLoadFailed('$error');
                       ScaffoldMessenger.of(
                         context,
                       ).showSnackBar(SnackBar(content: Text(msg)));
                     });
                     return JoviaReadingPanel(
-                      label: 'People',
-                      title: 'Kişi listesi yüklenemedi',
+                      label: l10n.peoplePageLabel,
+                      title: l10n.peoplePageListLoadFailedTitle,
                       body: error is PeopleQueryException
                           ? error.userMessage
-                          : 'Arkadaş listesi yüklenemedi: $error',
+                          : l10n.peoplePageListLoadFailed('$error'),
                     );
                   },
                 ),
@@ -174,11 +174,11 @@ class _PeopleHeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return JoviaEditorialHeroBlock(
-      label: 'Social',
-      title: 'Çevrenin aura tonlarını aynı akışta gör.',
-      body:
-          'Kişiler artık yalnızca isim olarak değil, yumuşak orb diliyle de okunuyor. Aura rengi doğum ekseninden geliyor ve people listesini daha canlı bir sosyal yüzeye çeviriyor.',
+      label: l10n.peoplePageHeroLabel,
+      title: l10n.peoplePageHeroTitle,
+      body: l10n.peoplePageHeroBody,
       large: true,
       background: Stack(
         children: [
@@ -192,13 +192,13 @@ class _PeopleHeroCard extends StatelessWidget {
           const _PeopleAuraCluster(),
         ],
       ),
-      footer: const Wrap(
+      footer: Wrap(
         spacing: 8,
         runSpacing: 8,
         children: [
-          JoviaMetaPill(label: 'Aura görünümü'),
-          JoviaMetaPill(label: 'Doğum ekseni'),
-          JoviaMetaPill(label: 'Sosyal ton'),
+          JoviaMetaPill(label: l10n.peoplePagePillAura),
+          JoviaMetaPill(label: l10n.peoplePagePillBirthAxis),
+          JoviaMetaPill(label: l10n.peoplePagePillSocialTone),
         ],
       ),
     );
@@ -267,6 +267,7 @@ class _PeopleListItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final colors = context.profileTheme.colors;
     final fallbackAura = joviaAuraPaletteForBirthData(
       colors: colors,
@@ -284,17 +285,17 @@ class _PeopleListItem extends ConsumerWidget {
     final auraLabel = semantic?.displayLabel ?? fallbackAura.label;
 
     return JoviaUtilityRow(
-      label: 'Friend',
+      label: l10n.peoplePageFriendLabel,
       title: person.name,
       body:
-          '${person.birthDate} • ${((person.birthTime ?? '').trim().isEmpty ? 'saat yok' : person.birthTime!.trim())} • ${person.city}, ${person.country}',
+          '${person.birthDate} • ${((person.birthTime ?? '').trim().isEmpty ? l10n.peoplePageNoBirthTime : person.birthTime!.trim())} • ${person.city}, ${person.country}',
       meta: [auraLabel],
       leading: JoviaAuraOrb(palette: aura, size: 44, monogram: person.monogram),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            tooltip: 'Düzenle',
+            tooltip: l10n.peoplePageEditTooltip,
             icon: const Icon(Icons.edit_outlined, size: 18),
             onPressed: onEdit,
           ),

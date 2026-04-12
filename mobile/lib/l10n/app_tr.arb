@@ -467,5 +467,331 @@
   "aiIntroMessage": "Merhaba, ben Aila. İstersen bugün hissettiğin şeyi, aklındaki bir konuyu ya da haritana dair merak ettiğin bir detayı yaz.",
   "aiUserLabel": "Sen",
   "aiNow": "Şimdi",
-  "aiComposerHint": "Aila'ya yaz..."
+  "aiComposerHint": "Aila'ya yaz...",
+  "aiFreeRemaining": "{count} ücretsiz kaldı",
+  "@aiFreeRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "aiCreditsRemaining": "{count} kredi",
+  "@aiCreditsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "aiProActive": "Pro aktif",
+  "aiSending": "Aila düşünüyor...",
+  "aiPaywallTitle": "Kredi veya Pro ile devam et",
+  "aiPaywallBody": "3 ücretsiz sorunu kullandın. Sohbete devam etmek için kredi paketi al veya Pro'yu aç.",
+  "aiPaywallLoading": "Ürünler yükleniyor...",
+  "aiPaywallUnavailable": "Satın alma şu anda kullanılamıyor.",
+  "aiPaywallRestoreHint": "Satın alma sonrası webhook bakiyeni güncellerken birkaç saniye bekleyip mesajını tekrar dene.",
+  "aiProductQ1Title": "1 soru",
+  "aiProductQ1Subtitle": "Tek cevap kredisi",
+  "aiProductQ5Title": "5 soru",
+  "aiProductQ5Subtitle": "Kısa kullanım için kredi paketi",
+  "aiProductQ15Title": "15 soru",
+  "aiProductQ15Subtitle": "Yoğun kullanım için kredi paketi",
+  "aiProductProTitle": "Aylık Pro",
+  "aiProductProSubtitle": "Pro aktifken sınırsız sohbet",
+  "aiStorePriceUnavailable": "Hazır değil",
+  "aiPurchasePending": "Satın alma alındı. Birkaç saniye içinde mesajını tekrar dene.",
+  "aiPurchaseNotSupported": "Satın alma yalnızca iOS ve Android'de kullanılabilir.",
+  "aiChatUnavailable": "AI sohbet şu anda kullanılamıyor: {error}",
+  "@aiChatUnavailable": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "peopleFormAddTitle": "Kişi ekle",
+  "peopleFormEditTitle": "Kişiyi düzenle",
+  "peopleFormNameRequired": "Ad zorunlu.",
+  "peopleFormBirthDateRequired": "Doğum tarihi zorunlu.",
+  "peopleFormBirthTimeOptional": "Doğum saati (isteğe bağlı)",
+  "peopleFormBirthTimeHint": "Doğum saatini bilmiyorsan boş bırakabilirsin.",
+  "peopleFormCityRequired": "Şehir zorunlu.",
+  "peopleFormCountryRequired": "Ülke zorunlu.",
+  "peopleFormSaving": "Kaydediliyor...",
+  "peopleFormLoginRequired": "Kişi eklemek için önce giriş yap.",
+  "peopleFormSaveFailed": "Kişi kaydedilemedi: {error}",
+  "@peopleFormSaveFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "peoplePageLabel": "Kişiler",
+  "peoplePageCenterText": "çevren",
+  "peoplePageAddTooltip": "Kişi ekle",
+  "peoplePageEmptyTitle": "Henüz kayıtlı kişi yok",
+  "peoplePageEmptyBody": "Bond ve sosyal akışlarda kullanmak için çevrenden kişileri burada kaydedebilirsin.",
+  "peoplePageCircleLabel": "Çevren",
+  "peoplePageCircleTitle": "Kayıtlı kişiler",
+  "peoplePageCircleBody": "Bond, arkadaş profilleri ve sosyal akışlar için kullandığın kişi listesi burada görünür.",
+  "peoplePageHeroLabel": "Kişiler",
+  "peoplePageHeroTitle": "Bond ve sosyal akışların için çevreni burada tut",
+  "peoplePageHeroBody": "Eklediğin kişiler bond eşleşmeleri, arkadaş profilleri ve daha sonra açılacak sosyal okumalar için aynı yerden kullanılır.",
+  "peoplePagePillAura": "Aura",
+  "peoplePagePillBirthAxis": "Doğum ekseni",
+  "peoplePagePillSocialTone": "Sosyal ton",
+  "peoplePageListLoadFailedTitle": "Kişi listesi alınamadı",
+  "peoplePageListLoadFailed": "Kişi listesi yüklenemedi: {error}",
+  "@peoplePageListLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "peoplePageFriendLabel": "Kişi",
+  "peoplePageNoBirthTime": "Doğum saati yok",
+  "peoplePageEditTooltip": "Düzenle",
+  "peopleRepoListFailed": "Kişi listesi alınamadı.",
+  "peopleRepoDetailFailed": "Kişi detayı alınamadı.",
+  "peopleRepoCreateFailed": "Kişi oluşturulamadı.",
+  "peopleRepoUpdateFailed": "Kişi güncellenemedi.",
+  "peopleRepoProfilesListUnsupported": "Profiles tablosu kayıtlı kişileri listelemeyi desteklemiyor.",
+  "peopleRepoProfilesDetailUnsupported": "Profiles tablosu bu kayıtlı kişiyi okumayı desteklemiyor.",
+  "peopleRepoProfilesCreateUnsupported": "Profiles tablosu ayrı kayıtlı kişi oluşturmayı desteklemiyor.",
+  "peopleRepoTableNotFound": "Kişi kayıtları için uygun tablo bulunamadı. Denenenler: {candidates}",
+  "@peopleRepoTableNotFound": {
+    "placeholders": {
+      "candidates": {}
+    }
+  },
+  "peopleRepoTableValidationFailed": "Kişi tablosu doğrulanamadı.",
+  "forumActiveTransitFallback": "Gökyüzü hareketli",
+  "transitSkyCollectiveFallback": "Kolektifte hareket var.",
+  "transitSkyTypeIngress": "Yeni alan",
+  "transitSkyTypeFullMoon": "Dolunay",
+  "transitSkyTypeNewMoon": "Yeniay",
+  "transitSkyTypeExactAspect": "Keskin açı",
+  "transitSkyTypeEclipse": "Tutulma",
+  "transitSkyTypeRetroStart": "Retro başlıyor",
+  "transitSkyTypeRetroEnd": "Retro bitiyor",
+  "transitSkyTimingNow": "Şimdi",
+  "transitSkyTimingThisWeek": "Bu hafta",
+  "transitMeaningRelationships": "İlişkiler",
+  "transitMeaningMoney": "Para",
+  "transitMeaningVisibility": "Görünürlük",
+  "transitMeaningDecision": "Karar",
+  "transitMeaningCloseness": "Yakınlık",
+  "transitMeaningBuilding": "İnşa",
+  "transitMeaningRelease": "Bırakma",
+  "transitMeaningTension": "Gerilim",
+  "transitMeaningClarifying": "Netleşme",
+  "transitMeaningTransformation": "Dönüşüm",
+  "profileDetailFallbackEyebrow": "Derin okuma",
+  "profileDetailFallbackTitle": "Bu kart için detay hazırlanıyor",
+  "profileDetailFallbackIntro": "Ana anlatı akışı şu an boş döndü.",
+  "profileDetailFallbackBody": "Kartın anlamı yine burada açılacak; şu an içerik akışının gelmesini bekliyoruz.",
+  "bondSelfName": "Ben",
+  "bondPageSelectPerson": "Kişi seç",
+  "bondPageLensFallback": "bağ lensi",
+  "bondPageHeroTitle": "İki kişi arasındaki dinamiği buradan aç",
+  "bondPageHeroBody": "Kendi profilinle kayıtlı bir kişiyi seç, sonra aranızdaki ana ritmi ve gerilim hattını aynı akışta oku.",
+  "bondPageLensLabel": "Lens",
+  "bondPageBirthDataMissingTitle": "Bond için doğum verisi gerekli",
+  "bondPageBirthDataMissingBody": "Kendi doğum tarihi ve konum bilgini tamamladığında bu eşleşme daha doğru açılır.",
+  "bondPagePreparing": "Hazırlanıyor...",
+  "bondPageOpenResult": "Bond sonucunu aç",
+  "bondPageAnalyzeFailed": "Bond analizi alınamadı: {error}",
+  "@bondPageAnalyzeFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "bondPickerLabel": "Kişi seçimi",
+  "bondPickerTitle": "Bond için ikinci kişiyi seç",
+  "bondPickerAddPerson": "Yeni kişi ekle",
+  "bondPickerOwnProfile": "Kendi profilin",
+  "bondPickerMe": "Sen",
+  "bondPickerLoadFailed": "Kişiler yüklenemedi: {error}",
+  "@bondPickerLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "bondPairEyebrow": "Seçim",
+  "bondPairTitle": "İki kişiyi karşılaştır",
+  "bondPairBody": "İki profili seç, sonra aralarındaki bağın ana ritmini aynı akışta gör.",
+  "storyStudioTopLabel": "Story Studio",
+  "storyStudioTopCenter": "iz kartları",
+  "storyStudioLoadingProfile": "Profil yükleniyor...",
+  "storyStudioBirthDataRequired": "Story Studio açılmadan önce doğum tarihi, saati ve konumu gerekli.",
+  "storyStudioIdentityTitle": "Kimlik kartları",
+  "storyStudioIdentityBody": "Haritandaki baskın yerleşimleri, iç itkiyi ve gölge hattını kart kart aç.",
+  "storyStudioIdentityTab": "Kimlik",
+  "storyStudioMomentTitle": "Canlı kaynaklar",
+  "storyStudioMomentBody": "Şu an çalışan yüzeylere dön ve aktif akışları oradan aç.",
+  "storyStudioMomentTab": "An",
+  "storyStudioCardsLoadFailed": "Kartlar yüklenemedi",
+  "storyStudioCardsPreparing": "Kartlar hazırlanıyor",
+  "storyStudioCardsPreparingBody": "Kişilik imprint katmanı backend'den çekiliyor.",
+  "storyStudioCardsNotFound": "Kart bulunamadı",
+  "storyStudioCardsNotFoundBody": "Bu profilden henüz Story Studio kartı üretilemedi.",
+  "storyStudioMomentPanelTitle": "Canlı stüdyo kaynakları",
+  "storyStudioMomentPanelBody": "Bu bölüm yeni kart üretmez; seni aktif Home ve Bond yüzeylerine geri gönderir.",
+  "storyStudioReturnToSources": "Kaynaklara dön",
+  "storyStudioTraitLabel": "Öne çıkan çizgi",
+  "storyStudioInnerDriveLabel": "İç itki",
+  "storyStudioWhenTooMuchLabel": "Zorlandığında",
+  "storyStudioRefreshing": "Yenileniyor...",
+  "storyStudioKindAspect": "Açı",
+  "storyStudioKindHousePlacement": "Ev yerleşimi",
+  "storyStudioKindSignPlacement": "Burç yerleşimi",
+  "storyStudioKindLayer": "Katman",
+  "storyStudioLoadFailed": "Story Studio yüklenemedi: {error}",
+  "@storyStudioLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "relationshipPreviewLabel": "İlişki görünümü",
+  "relationshipPreviewBirthDataRequiredTitle": "İlişki görünümü için doğum verisi gerekli",
+  "relationshipPreviewBirthDataRequiredBody": "Doğum tarihi, saati ve konum bilgisi tamamlandığında ilişki hattı burada açılır.",
+  "relationshipPreviewLoadFailedTitle": "İlişki akışı alınamadı",
+  "relationshipPreviewMainThemeLabel": "Ana tema",
+  "relationshipPreviewDriversLabel": "Bugünü kuran etkiler",
+  "relationshipPreviewBackdropLabel": "Arka plan",
+  "relationshipPreviewUpperMeaningLabel": "Üst anlam",
+  "relationshipPreviewSupportingThemeLabel": "Yan tema",
+  "relationshipPreviewWhyImportant": "Neden burada",
+  "relationshipPreviewFallbackNotice": "İlişki lensi yavaş döndüğü için ekran daha genel yorumla açıldı.",
+  "relationshipPreviewTimeout": "İlişki yorumu zamanında dönmedi. Biraz sonra tekrar deneyebilirsin.",
+  "relationshipPreviewInvalidProfile": "Gönderilen profil verisi ilişki akışı için yeterli değil.",
+  "relationshipPreviewServerError": "İlişki akışı şu an sunucudan alınamıyor.",
+  "relationshipPreviewFetchFailed": "İlişki akışı alınamadı.",
+  "relationshipPreviewStageStarted": "Başladı",
+  "relationshipPreviewStageIntensifying": "Yoğunlaşıyor",
+  "relationshipPreviewStagePeak": "Zirve",
+  "relationshipPreviewStageResolving": "Çözülüyor",
+  "relationshipPreviewPeriodToToday": "Dönemden bugüne",
+  "relationshipPreviewDefaultDriversFallback": "Bugün ilişki tarafında hareket var, ama tek bir tema henüz tam olarak ayrışmıyor.",
+  "relationshipPreviewDefaultBackdropFallback": "Altta çalışan dönem hattı var, ama bunun ilişki tarafındaki asıl sonucu biraz daha zamanla netleşecek.",
+  "friendProfileTitle": "Kişi profili",
+  "friendProfileNotFound": "Kişi bulunamadı.",
+  "friendProfileEditTooltip": "Kişiyi düzenle",
+  "friendProfileLoadFailed": "Kişi yüklenemedi: {error}",
+  "@friendProfileLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "profileDetailInfluences": "Etkileyenler",
+  "profileDetailAllCards": "Tüm kartlar",
+  "profileDetailSignatureCardsTitle": "Kişilik imzası kartları",
+  "profileDetailDefaultEyebrow": "Detay",
+  "profileDetailDefaultTitle": "Detay akışı",
+  "profileDetailWhyHere": "Neden burada",
+  "profileDetailNextLabel": "Sıradaki: {title}",
+  "@profileDetailNextLabel": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "profileDetailContinuationTitle": "{title} · Devam",
+  "@profileDetailContinuationTitle": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "profileDetailSideA": "Bir tarafı",
+  "profileDetailSideB": "Diğer tarafı",
+  "profileDetailContinueFlow": "Akışı sürdür",
+  "profileDetailContinueFromHere": "Buradan devam et",
+  "profileDetailContinuationFooter": "Devam {page}/{total}",
+  "@profileDetailContinuationFooter": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "profileDetailFlowEnds": "Akış burada bitiyor",
+  "periodFallbackEffectTitle": "Dönem etkisi",
+  "periodIntentSummaryGeneric": "{title} için bu dönemde takip edilecek pencereler var.",
+  "@periodIntentSummaryGeneric": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "periodIntentTopDays": "{title} odağı için öne çıkan günler: {dates}.",
+  "@periodIntentTopDays": {
+    "placeholders": {
+      "title": {},
+      "dates": {}
+    }
+  },
+  "periodIntentScores": "Puanlar: {ratings}",
+  "@periodIntentScores": {
+    "placeholders": {
+      "ratings": {}
+    }
+  },
+  "periodIntentBeautyCare": "Bakım ve Beden",
+  "periodIntentBusiness": "İş ve Üretim",
+  "periodIntentMoney": "Para ve Kaynak",
+  "periodIntentRelationship": "İlişki ve Uyum",
+  "periodIntentLabel": "Niyet {index}",
+  "@periodIntentLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "periodDefaultTitle": "Dönem",
+  "periodMainFlowFallback": "Bu dönemin ana akışı.",
+  "periodMainThemeFallback": "Bu dönemin ana teması.",
+  "periodHighlightedThemeFallback": "Bu dönemde öne çıkan tema.",
+  "periodThemeCollectFallback": "Bu dönemde öne çıkan tema burada toplanır.",
+  "periodEssenceTitle": "Bu dönemin özü",
+  "periodSummaryUnavailable": "Bu döneme ait özet anlatım bulunamadı.",
+  "periodTimeLabel": "Zaman",
+  "periodGuidancePrefix": "Küçük pratik:",
+  "periodDifficultyPrefix": "Bunu zorlaştıran şey genelde şu olur:",
+  "periodHowItWorksTitle": "Nasıl çalışıyor",
+  "periodAsksTitle": "Senden ne istiyor",
+  "periodWatchTitle": "Dikkat edilmesi gereken",
+  "periodBuildsTitle": "Sende neyi geliştiriyor",
+  "periodEffectLabel": "Etki",
+  "periodTechnicalNoteLabel": "Teknik not",
+  "periodCoreMainThemeTitle": "Bu Dönemin Ana Teması",
+  "periodCoreSummaryUnavailable": "Bu dönem için period özeti bulunamadı.",
+  "profileExperimentPreviewLabel": "Preview",
+  "profileExperimentCenterText": "Nocturne Identity",
+  "profileExperimentMenuTooltip": "Tema ve deney ayarları",
+  "profileExperimentHeroFallback": "Haritanın ilk izi burada toplanır.",
+  "profileExperimentSignatureFallback": "Kimlik izi",
+  "profileExperimentNatalPanelBody": "Bu preview, kimliği tam portre hissiyle açan spotlight hero üzerinde çalışıyor. Alt chapter katmanları sonraki patchte eklenecek.",
+  "profileExperimentTimingPanelBody": "Timing modu burada sadece odak değişimi gibi davranır. Alt dönem kompozisyonu sonraki patchte gelecek.",
+  "profileExperimentMenuTitle": "Nocturne experiment",
+  "profileExperimentMenuBody": "Patch 1 sadece üst kimlik kompozisyonunu dener.",
+  "profileExperimentSeeProfile": "Profili gör",
+  "profileExperimentHeroLineFallback": "Kimliğin bu ekranda yeni bir odak yüzeyine toplanır.",
+  "profileExperimentAuraLabel": "Aura",
+  "profileExperimentRulerLabel": "Yönetici",
+  "profileExperimentWaiting": "Bekliyor",
+  "profileExperimentRulerBodyFallback": "1. ev yöneticisi okunuyor",
+  "profileExperimentRisingTrace": "Yükselen izi",
+  "profileExperimentSignatureLabel": "İmza",
+  "profileExperimentSpotlightCards": "Spotlight Cards",
+  "profileExperimentSwipe": "Kaydır",
+  "profileExperimentFocusTitle": "Okuma odağı",
+  "profileExperimentNatalFocus": "Senin Yapın",
+  "profileExperimentTimingFocus": "Şu Anki Dönemin",
+  "profileExperimentUnnamedProfile": "İsimsiz Profil",
+  "profileExperimentFireDominant": "Ateş baskın",
+  "profileExperimentWaterDominant": "Su baskın",
+  "profileExperimentAirDominant": "Hava baskın",
+  "profileExperimentEarthDominant": "Toprak baskın",
+  "errorTimeout": "Sunucu şu an yavaş, birazdan tekrar dene.",
+  "errorNoConnection": "Bağlantı kurulamadı.",
+  "errorGeneric": "Bir sorun oluştu, tekrar dene."
 }

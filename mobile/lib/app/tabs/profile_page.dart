@@ -2,6 +2,7 @@
 
 import 'dart:ui' as ui;
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -15,6 +16,7 @@ import 'package:mobile/app/people/person_profile.dart';
 import 'package:mobile/app/people/people_providers.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/profile/profile_repository.dart';
+import 'package:mobile/app/telemetry/perf_telemetry.dart';
 import 'package:mobile/app/tabs/profile_archetype_page.dart';
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
 import 'package:mobile/app/tabs/profile_detail_flow_page.dart';
@@ -28,6 +30,7 @@ import 'package:mobile/design/astro/astro_theme_generator.dart';
 import 'package:mobile/design/astro/element_scores.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/design/widgets/jovia_premium_accents.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mobile/l10n/l10n.dart';
 
@@ -47,6 +50,25 @@ AppLocalizations _currentProfileL10n() {
   final localeName = Intl.getCurrentLocale();
   final languageCode = localeName.split(RegExp('[-_]')).first;
   return lookupAppLocalizations(Locale(languageCode));
+}
+
+@immutable
+class _ProfileApiCallResult {
+  const _ProfileApiCallResult({
+    required this.path,
+    required this.data,
+    required this.telemetry,
+    this.error,
+    this.failureReason = '',
+  });
+
+  final String path;
+  final Map<String, dynamic> data;
+  final Map<String, dynamic> telemetry;
+  final Object? error;
+  final String failureReason;
+
+  bool get hasError => error != null;
 }
 
 @immutable
@@ -256,6 +278,37 @@ class _ProfilePageState extends State<ProfilePage> {
   Map<String, dynamic>? _archetypeSummary;
   String? _lastArchetypeSummaryKey;
   int _segmentIndex = 0;
+  bool _didLogProfileFirstBuild = false;
+  bool _didLogMeaningfulProfileContent = false;
+
+  bool get _isPrimaryProfileSurface =>
+      widget.profileOverride == null &&
+      !widget.readOnly &&
+      (widget.viewedUserId ?? '').trim().isEmpty;
+
+  @override
+  void initState() {
+    super.initState();
+    if (_isPrimaryProfileSurface) {
+      final isFirstOpen = PerfTelemetry.markSessionFlag(
+        'profile_primary_surface_seen',
+      );
+      PerfTelemetry.logPoint(
+        isFirstOpen ? 'profile_first_open' : 'profile_reopen_same_session',
+        data: <String, Object?>{'source': 'profile_page_init'},
+      );
+    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted || !_isPrimaryProfileSurface || _didLogProfileFirstBuild) {
+        return;
+      }
+      _didLogProfileFirstBuild = true;
+      PerfTelemetry.logPoint(
+        'profile_tab_first_build',
+        data: const <String, Object?>{'source': 'profile_page'},
+      );
+    });
+  }
 
   @override
   void dispose() {
@@ -1311,6 +1364,173 @@ class _ProfilePageState extends State<ProfilePage> {
     return birthDate.isNotEmpty && birthTime.isNotEmpty && place.isNotEmpty;
   }
 
+  Map<String, dynamic> _apiTelemetry(Response<dynamic>? response) {
+    final extra = response?.requestOptions.extra['api_telemetry'];
+    if (extra is Map) {
+      return Map<String, dynamic>.from(extra);
+    }
+    return const <String, dynamic>{};
+  }
+
+  String _classifyProfileRequestError(Object error) {
+    if (error is FormatException) {
+      return 'parsing_problem';
+    }
+    if (error is DioException) {
+      return switch (error.type) {
+        DioExceptionType.receiveTimeout => 'timeout_receive',
+        DioExceptionType.connectionTimeout => 'timeout_connect',
+        DioExceptionType.sendTimeout => 'timeout_send',
+        DioExceptionType.badResponse => 'bad_response',
+        DioExceptionType.connectionError => 'connection_error',
+        DioExceptionType.cancel => 'cancelled',
+        DioExceptionType.badCertificate => 'bad_certificate',
+        DioExceptionType.unknown => 'unknown_dio',
+      };
+    }
+    return 'request_error';
+  }
+
+  Map<String, Object?> _profilePayloadShape(Map<String, dynamic> payload) {
+    final public = payload['public'] is Map
+        ? Map<String, dynamic>.from(payload['public'] as Map)
+        : payload;
+    final supportingThreads = public['supporting_threads'];
+    final sectionsV2 = public['sections_v2'];
+    final profileNarrative = public['profile_narrative'];
+    final personalityImprint = public['personality_imprint'];
+    return <String, Object?>{
+      'has_public': payload['public'] is Map,
+      'has_sections_v2': sectionsV2 is List && sectionsV2.isNotEmpty,
+      'has_supporting_threads':
+          supportingThreads is List && supportingThreads.isNotEmpty,
+      'has_core_story_ui': public['core_story_ui'] is Map,
+      'has_profile_narrative': profileNarrative is Map,
+      'has_personality_imprint': personalityImprint is Map,
+      'has_narrative_v2': public['narrative_v2'] is Map,
+      'sections_v2_count': sectionsV2 is List ? sectionsV2.length : 0,
+      'supporting_threads_count': supportingThreads is List
+          ? supportingThreads.length
+          : 0,
+    };
+  }
+
+  void _logProfilePayloadShape({
+    required String endpoint,
+    required Map<String, dynamic> payload,
+    Map<String, dynamic>? telemetry,
+  }) {
+    PerfTelemetry.logPoint(
+      'profile_payload_shape',
+      data: <String, Object?>{
+        'endpoint': endpoint,
+        ..._profilePayloadShape(payload),
+        'payload_bytes': telemetry?['payload_bytes'],
+        'payload_kb': telemetry?['payload_kb'],
+        'cache_status': telemetry?['cache_status'],
+      },
+    );
+  }
+
+  Future<_ProfileApiCallResult> _postProfileMap(
+    ApiClient client,
+    String path, {
+    required Map<String, dynamic> data,
+    Duration? cacheTtl,
+    required String telemetryName,
+  }) async {
+    final span = PerfTelemetry.startSpan(
+      telemetryName,
+      finishEvent: '${telemetryName}_end',
+      data: <String, Object?>{'endpoint': path},
+    );
+    try {
+      final response = await client.post(path, data: data, cacheTtl: cacheTtl);
+      final map = _asMap(response.data);
+      final telemetry = _apiTelemetry(response);
+      final failureReason = response.data != null && map.isEmpty
+          ? 'schema_mismatch'
+          : '';
+      span.finish(
+        data: <String, Object?>{
+          'endpoint': path,
+          'status_code': telemetry['status_code'],
+          'payload_bytes': telemetry['payload_bytes'],
+          'cache_status': telemetry['cache_status'],
+          'inflight_dedupe': telemetry['inflight_dedupe'],
+          'result_empty': map.isEmpty,
+          if (failureReason.isNotEmpty) 'failure_reason': failureReason,
+        },
+      );
+      if (map.isNotEmpty) {
+        _logProfilePayloadShape(
+          endpoint: path,
+          payload: map,
+          telemetry: telemetry,
+        );
+      }
+      return _ProfileApiCallResult(
+        path: path,
+        data: map,
+        telemetry: telemetry,
+        failureReason: failureReason,
+      );
+    } catch (error) {
+      final failureReason = _classifyProfileRequestError(error);
+      span.finish(
+        status: 'error',
+        data: <String, Object?>{
+          'endpoint': path,
+          'failure_reason': failureReason,
+          'error_type': error.runtimeType.toString(),
+        },
+      );
+      return _ProfileApiCallResult(
+        path: path,
+        data: const <String, dynamic>{},
+        telemetry: const <String, dynamic>{},
+        error: error,
+        failureReason: failureReason,
+      );
+    }
+  }
+
+  void _logMeaningfulProfileContentVisibleIfNeeded({
+    required bool fallbackUsed,
+    required String fallbackReason,
+  }) {
+    if (!_isPrimaryProfileSurface || _didLogMeaningfulProfileContent) {
+      return;
+    }
+    final hasMeaningfulContent =
+        (_natalSummary ?? '').trim().isNotEmpty ||
+        _profilePrimaryCards.isNotEmpty ||
+        _profileExtraCards.isNotEmpty ||
+        _profilePlacementCards.isNotEmpty ||
+        _supportingThreads.isNotEmpty;
+    if (!hasMeaningfulContent) {
+      return;
+    }
+    _didLogMeaningfulProfileContent = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      PerfTelemetry.logPoint(
+        'first_meaningful_profile_content_visible',
+        data: <String, Object?>{
+          'fallback_used': fallbackUsed,
+          'fallback_reason': fallbackReason,
+          'summary_present': (_natalSummary ?? '').trim().isNotEmpty,
+          'primary_cards': _profilePrimaryCards.length,
+          'extra_cards': _profileExtraCards.length,
+          'placement_cards': _profilePlacementCards.length,
+          'supporting_threads': _supportingThreads.length,
+        },
+      );
+    });
+  }
+
   void _maybeLoadNatalInterpretation(Map<String, dynamic> profile) {
     if (!_hasBirthData(profile)) {
       return;
@@ -1375,6 +1595,10 @@ class _ProfilePageState extends State<ProfilePage> {
     required String userId,
     required ProfileRepository repo,
   }) async {
+    final span = PerfTelemetry.startSpan(
+      'archetype_summary_load',
+      data: const <String, Object?>{'surface': 'profile_page'},
+    );
     setState(() {
       _isArchetypeSummaryLoading = true;
       _archetypeSummaryError = null;
@@ -1383,6 +1607,12 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final payload = await repo.getArchetypeProfile(userId);
       if (!mounted) {
+        span.finish(
+          data: <String, Object?>{
+            'has_payload': payload != null,
+            'mounted': false,
+          },
+        );
         return;
       }
       setState(() {
@@ -1390,6 +1620,7 @@ class _ProfilePageState extends State<ProfilePage> {
         _isArchetypeSummaryLoading = false;
         _archetypeSummaryError = null;
       });
+      span.finish(data: <String, Object?>{'has_payload': payload != null});
     } catch (e) {
       if (!mounted) {
         return;
@@ -1398,6 +1629,10 @@ class _ProfilePageState extends State<ProfilePage> {
         _isArchetypeSummaryLoading = false;
         _archetypeSummaryError = 'Arketip ozeti alinamadi.';
       });
+      span.finish(
+        status: 'error',
+        data: <String, Object?>{'error_type': e.runtimeType.toString()},
+      );
     }
   }
 
@@ -1426,40 +1661,83 @@ class _ProfilePageState extends State<ProfilePage> {
       _natalError = null;
     });
 
+    final natalLoadSpan = PerfTelemetry.startSpan(
+      'profile_natal_load',
+      data: const <String, Object?>{'surface': 'profile_page'},
+    );
+
     try {
       final client = ApiClient(baseUrl: _baseUrl);
-      final responses = await Future.wait<Map<String, dynamic>>([
-        _safePostMap(
+      final responses = await Future.wait<_ProfileApiCallResult>([
+        _postProfileMap(
           client,
           '/interpret/ui',
           data: payload,
           cacheTtl: _natalCacheTtl,
+          telemetryName: 'interpret_ui_request',
         ),
-        _safePostMap(
+        _postProfileMap(
           client,
           '/profile/fast',
           data: payload,
           cacheTtl: _fastProfileCacheTtl,
+          telemetryName: 'profile_fast_request',
         ),
       ]);
-      final publicMap = responses[0];
-      final fastMap = responses[1];
+      final publicResult = responses[0];
+      final fastResult = responses[1];
+      final publicMap = publicResult.data;
+      final fastMap = fastResult.data;
+      final loadedFromCache =
+          (publicResult.telemetry['cache_status'] ?? '') == 'hit' ||
+          (fastResult.telemetry['cache_status'] ?? '') == 'hit';
+      PerfTelemetry.logPoint(
+        loadedFromCache
+            ? 'profile_loaded_from_cache'
+            : 'profile_loaded_from_network',
+        data: const <String, Object?>{'source': 'profile_natal_api'},
+      );
+      final publicSummary = _extractNatalSummary(publicMap).trim();
+      final publicCoreBlocks = _extractProfileNarrativeCards(
+        publicMap,
+        field: 'core_blocks',
+      );
+      final publicSupportingThreads = _extractSupportingThreads(publicMap);
       final shouldLoadLegacyFallback =
           publicMap.isEmpty ||
-          (_extractNatalSummary(publicMap).trim().isEmpty &&
-              _extractProfileNarrativeCards(
-                publicMap,
-                field: 'core_blocks',
-              ).isEmpty &&
-              _extractSupportingThreads(publicMap).isEmpty);
-      final legacyMap = shouldLoadLegacyFallback
-          ? await _safePostMap(
+          (publicSummary.isEmpty &&
+              publicCoreBlocks.isEmpty &&
+              publicSupportingThreads.isEmpty);
+      final fallbackReason = !shouldLoadLegacyFallback
+          ? 'not_needed'
+          : publicResult.failureReason.isNotEmpty
+          ? publicResult.failureReason
+          : publicMap.isEmpty
+          ? 'empty_map'
+          : 'missing_summary_and_cards';
+      PerfTelemetry.logPoint(
+        shouldLoadLegacyFallback ? 'fallback_used' : 'fallback_skipped',
+        data: <String, Object?>{
+          'reason_code': fallbackReason,
+          'elapsed_ms': natalLoadSpan.elapsedMs(),
+          'interpret_ui_cache_status': publicResult.telemetry['cache_status'],
+          'profile_fast_cache_status': fastResult.telemetry['cache_status'],
+        },
+      );
+      final legacyResult = shouldLoadLegacyFallback
+          ? await _postProfileMap(
               client,
               '/interpret',
               data: payload,
               cacheTtl: _natalCacheTtl,
+              telemetryName: 'interpret_legacy_request',
             )
-          : <String, dynamic>{};
+          : const _ProfileApiCallResult(
+              path: '/interpret',
+              data: <String, dynamic>{},
+              telemetry: <String, dynamic>{},
+            );
+      final legacyMap = legacyResult.data;
       final activeMap = publicMap.isNotEmpty
           ? _mergeMaps(publicMap, legacyMap)
           : legacyMap;
@@ -1517,6 +1795,13 @@ class _ProfilePageState extends State<ProfilePage> {
           fastSnapshot?.moonSign ?? _extractPlanetSign(signSource, 'Moon');
       final rising = fastSnapshot?.risingSign ?? _extractRisingSign(signSource);
       if (!mounted) {
+        natalLoadSpan.finish(
+          data: <String, Object?>{
+            'mounted': false,
+            'fallback_used': shouldLoadLegacyFallback,
+            'fallback_reason': fallbackReason,
+          },
+        );
         return;
       }
 
@@ -1535,8 +1820,30 @@ class _ProfilePageState extends State<ProfilePage> {
         _risingSign = _toTrSign(rising);
         _isNatalLoading = false;
       });
+      _logMeaningfulProfileContentVisibleIfNeeded(
+        fallbackUsed: shouldLoadLegacyFallback,
+        fallbackReason: fallbackReason,
+      );
+      natalLoadSpan.finish(
+        data: <String, Object?>{
+          'fallback_used': shouldLoadLegacyFallback,
+          'fallback_reason': fallbackReason,
+          'summary_present': summary.trim().isNotEmpty,
+          'supporting_threads': supportingThreads.length,
+          'primary_cards': primaryCards.length,
+          'extra_cards': extraNarrativeCards.length,
+          'placement_cards': placementCards.length,
+        },
+      );
     } catch (e) {
       if (!mounted) {
+        natalLoadSpan.finish(
+          status: 'error',
+          data: <String, Object?>{
+            'mounted': false,
+            'error_type': e.runtimeType.toString(),
+          },
+        );
         return;
       }
       setState(() {
@@ -1547,20 +1854,10 @@ class _ProfilePageState extends State<ProfilePage> {
         _profileBundleTeasers = const [];
         _natalError = context.l10n.profileNatalLoadFailed('$e');
       });
-    }
-  }
-
-  Future<Map<String, dynamic>> _safePostMap(
-    ApiClient client,
-    String path, {
-    required Map<String, dynamic> data,
-    Duration? cacheTtl,
-  }) async {
-    try {
-      final response = await client.post(path, data: data, cacheTtl: cacheTtl);
-      return _asMap(response.data);
-    } catch (_) {
-      return <String, dynamic>{};
+      natalLoadSpan.finish(
+        status: 'error',
+        data: <String, Object?>{'error_type': e.runtimeType.toString()},
+      );
     }
   }
 
@@ -4276,6 +4573,21 @@ class _ProfilePosterHeader extends StatelessWidget {
               opacity: palette.isDark ? 0.82 : 0.56,
             ),
           ),
+          Positioned(
+            right: 8,
+            bottom: 6,
+            child: Opacity(
+              opacity: palette.isDark ? 0.8 : 0.96,
+              child: JoviaMoodStickerCluster(
+                size: 22,
+                colors: <Color>[
+                  palette.accent,
+                  palette.accentWarm,
+                  palette.accentSoft,
+                ],
+              ),
+            ),
+          ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -4298,7 +4610,8 @@ class _ProfilePosterHeader extends StatelessWidget {
                       style: profile.typography.heroName.copyWith(
                         color: palette.text,
                         fontWeight: FontWeight.w600,
-                        height: 0.94,
+                        fontSize: 25.5,
+                        height: 0.98,
                       ),
                     ),
                     const SizedBox(height: 7),
@@ -4607,6 +4920,11 @@ class _ProfilePosterEditorialStatement extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final palette = _profilePosterPalette(context);
+    final highlightLines = joviaHighlightLinesFromText(
+      body,
+      maxLines: 2,
+      maxLength: 52,
+    );
     final content = Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -4624,15 +4942,26 @@ class _ProfilePosterEditorialStatement extends StatelessWidget {
           ),
         if (body.trim().isNotEmpty) ...[
           const SizedBox(height: 14),
+          JoviaSentenceBubbleStack(
+            lines: highlightLines,
+            centered: true,
+            compact: true,
+            accents: <Color>[
+              palette.accent,
+              palette.accentWarm,
+              palette.butter,
+            ],
+          ),
+          const SizedBox(height: 12),
           Text(
             body,
-            maxLines: 4,
+            maxLines: 3,
             textAlign: TextAlign.center,
             overflow: TextOverflow.ellipsis,
             style: profile.typography.bodyReading.copyWith(
               color: palette.textSoft,
-              fontSize: 15,
-              height: 1.58,
+              fontSize: 14.2,
+              height: 1.52,
             ),
           ),
         ],
@@ -5893,6 +6222,13 @@ class _NarrativeCardLarge extends StatelessWidget {
         break;
       }
     }
+    final highlightLines = visibleBlocks.isEmpty
+        ? const <String>[]
+        : joviaHighlightLinesFromText(
+            visibleBlocks.first,
+            maxLines: 1,
+            maxLength: 40,
+          );
     return _ProfileLilacGlassCard(
       onTap: onTap,
       radius: 32,
@@ -5937,10 +6273,24 @@ class _NarrativeCardLarge extends StatelessWidget {
               children: [
                 Align(
                   alignment: Alignment.centerRight,
-                  child: MinimalCTAButton(
-                    label: actionLabel,
-                    onTap: onTap,
-                    glassy: true,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      JoviaMoodStickerCluster(
+                        size: 18,
+                        colors: <Color>[
+                          palette.accentWarm,
+                          palette.accent,
+                          palette.accentSoft,
+                        ],
+                      ),
+                      const SizedBox(width: 10),
+                      MinimalCTAButton(
+                        label: actionLabel,
+                        onTap: onTap,
+                        glassy: true,
+                      ),
+                    ],
                   ),
                 ),
                 const SizedBox(height: 14),
@@ -5957,27 +6307,38 @@ class _NarrativeCardLarge extends StatelessWidget {
                   title,
                   style: profile.typography.section.copyWith(
                     color: palette.text,
-                    fontSize: 24,
-                    height: 1.1,
+                    fontSize: 22.2,
+                    height: 1.12,
                   ),
                 ),
-                const SizedBox(height: 12),
+                if (highlightLines.isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  JoviaSentenceBubbleStack(
+                    lines: highlightLines,
+                    compact: true,
+                    accents: <Color>[palette.accentWarm, palette.accent],
+                  ),
+                ],
+                const SizedBox(height: 10),
                 if (visibleBlocks.isNotEmpty) ...[
                   for (
                     var index = 0;
                     index < visibleBlocks.length;
                     index++
                   ) ...[
-                    Text(
-                      visibleBlocks[index],
-                      style: profile.typography.bodyReading.copyWith(
-                        color: palette.textSoft,
-                        fontSize: 15.2,
-                        height: 1.58,
+                    if (index == 0 && highlightLines.isNotEmpty)
+                      const SizedBox.shrink()
+                    else
+                      Text(
+                        visibleBlocks[index],
+                        style: profile.typography.bodyReading.copyWith(
+                          color: palette.textSoft,
+                          fontSize: 14.3,
+                          height: 1.52,
+                        ),
                       ),
-                    ),
                     if (index != visibleBlocks.length - 1)
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 14),
                   ],
                 ],
                 if (chips.isNotEmpty) ...[
@@ -8498,6 +8859,11 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final overviewHighlights = joviaHighlightLinesFromText(
+      contextData.overview,
+      maxLines: 1,
+      maxLength: 54,
+    );
     final cards = <Widget>[
       Expanded(
         child: _ProfileIdentityMiniCard(
@@ -8534,17 +8900,10 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
         ),
         if (contextData.overview.trim().isNotEmpty) ...[
           const SizedBox(height: 12),
-          Padding(
-            padding: const EdgeInsets.only(left: 2, right: 6),
-            child: Text(
-              contextData.overview,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: profile.typography.bodyCompact.copyWith(
-                color: profile.colors.textLight,
-                height: 1.45,
-              ),
-            ),
+          JoviaSentenceBubbleStack(
+            lines: overviewHighlights,
+            compact: true,
+            accents: <Color>[profile.colors.primary, profile.colors.lavender],
           ),
         ],
         const SizedBox(height: 16),
@@ -8861,14 +9220,17 @@ class _ProfileEditorialFlow extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             for (var index = 0; index < cards.length; index++) ...[
-              Align(
-                alignment: Alignment.center,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: resolvedMaxWidth),
-                  child: _ProfileEditorialCard(
-                    card: cards[index],
-                    featured: index == 0,
-                    onTap: () => onOpenCard(cards[index]),
+              JoviaReveal(
+                delay: Duration(milliseconds: 70 * index),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(maxWidth: resolvedMaxWidth),
+                    child: _ProfileEditorialCard(
+                      card: cards[index],
+                      featured: index == 0,
+                      onTap: () => onOpenCard(cards[index]),
+                    ),
                   ),
                 ),
               ),
@@ -8941,6 +9303,11 @@ class _ProfileEditorialCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final title = _displayTitleForCard(card);
+    final highlightLines = joviaHighlightLinesFromText(
+      card.previewBody,
+      maxLines: featured ? 2 : 1,
+      maxLength: featured ? 46 : 42,
+    );
     final ruleColor = profile.colors.text.withValues(alpha: 0.14);
     final paperTint = featured
         ? const Color(0xFFF6F1E7)
@@ -8971,6 +9338,18 @@ class _ProfileEditorialCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Align(
+              alignment: Alignment.centerRight,
+              child: JoviaMoodStickerCluster(
+                size: featured ? 26 : 22,
+                colors: <Color>[
+                  profile.colors.warmAccent,
+                  profile.colors.primary,
+                  profile.colors.lavender,
+                ],
+              ),
+            ),
+            const SizedBox(height: 6),
             if (card.eyebrow.trim().isNotEmpty) ...[
               Container(width: featured ? 96 : 82, height: 1, color: ruleColor),
               const SizedBox(height: 12),
@@ -8991,24 +9370,37 @@ class _ProfileEditorialCard extends StatelessWidget {
               style: profile.typography
                   .headlineFor(title, color: profile.colors.text)
                   .copyWith(
-                    fontSize: featured ? 42 : 34,
-                    height: featured ? 1.04 : 1.08,
+                    fontSize: featured ? 36 : 29,
+                    height: featured ? 1.06 : 1.1,
                     fontWeight: FontWeight.w500,
-                    letterSpacing: featured ? -1.08 : -0.72,
+                    letterSpacing: featured ? -0.92 : -0.56,
                   ),
             ),
-            const SizedBox(height: 14),
+            if (highlightLines.isNotEmpty) ...[
+              const SizedBox(height: 16),
+              JoviaSentenceBubbleStack(
+                lines: highlightLines,
+                centered: true,
+                compact: true,
+                accents: <Color>[
+                  profile.colors.warmAccent,
+                  profile.colors.primary,
+                  profile.colors.lavender,
+                ],
+              ),
+            ],
+            const SizedBox(height: 12),
             ConstrainedBox(
               constraints: BoxConstraints(maxWidth: featured ? 440 : 400),
               child: Text(
                 card.previewBody,
-                maxLines: featured ? 8 : 5,
+                maxLines: featured ? 6 : 4,
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.center,
                 style: profile.typography.bodyReading.copyWith(
                   color: profile.colors.text.withValues(alpha: 0.76),
-                  fontSize: featured ? 16.6 : 15.2,
-                  height: featured ? 1.62 : 1.66,
+                  fontSize: featured ? 15.2 : 14.2,
+                  height: featured ? 1.54 : 1.58,
                 ),
               ),
             ),

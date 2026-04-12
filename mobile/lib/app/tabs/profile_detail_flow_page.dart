@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/design/widgets/jovia_premium_accents.dart';
+import 'package:mobile/l10n/current_localizations.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 const Duration _kDetailPlaybackAutoplay = Duration(seconds: 7);
 const Duration _kDetailPlaybackPageTurn = Duration(milliseconds: 280);
@@ -178,9 +181,19 @@ Color _detailInfluenceTextColor(BuildContext context) {
 }
 
 String _detailInfluenceLabel(BuildContext context) {
-  return Localizations.localeOf(context).languageCode == 'tr'
-      ? 'Etkileyenler'
-      : 'Influences';
+  return context.l10n.profileDetailInfluences;
+}
+
+List<String> _detailHighlightLines(
+  _ProfileDetailPlaybackPageData page, {
+  int maxLines = 2,
+}) {
+  final source = <String>[
+    page.intro.trim(),
+    if (page.bodyBlocks.isNotEmpty) page.bodyBlocks.first.trim(),
+    page.whyText.trim(),
+  ].firstWhere((item) => item.isNotEmpty, orElse: () => '');
+  return joviaHighlightLinesFromText(source, maxLines: maxLines, maxLength: 62);
 }
 
 ProfileDetailTone profileDetailToneForSignature({
@@ -558,7 +571,9 @@ class _ProfileDetailPinnedSceneCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            scene.eyebrow.isNotEmpty ? scene.eyebrow : 'Detay',
+                            scene.eyebrow.isNotEmpty
+                                ? scene.eyebrow
+                                : currentL10n().profileDetailDefaultEyebrow,
                             style: profile.typography.monoEyebrow.copyWith(
                               color: tone.accent,
                               fontSize: 11.5,
@@ -618,7 +633,7 @@ class _ProfileDetailPinnedSceneCard extends StatelessWidget {
                 if (index < total - 1 && scene.nextTitle.trim().isNotEmpty) ...[
                   const SizedBox(height: 16),
                   Text(
-                    'Sonraki: ${scene.nextTitle}',
+                    currentL10n().profileDetailNextLabel(scene.nextTitle),
                     style: profile.typography.meta.copyWith(
                       color: tone.mutedText.withValues(alpha: 0.82),
                     ),
@@ -653,7 +668,10 @@ List<_ProfileDetailPinnedPageData> _buildPinnedScenePages(
   final whyText = scene.whyText.trim();
   if (whyText.isNotEmpty) {
     pages.add(
-      _ProfileDetailPinnedPageData(text: whyText, label: 'Neden burada'),
+      _ProfileDetailPinnedPageData(
+        text: whyText,
+        label: currentL10n().profileDetailWhyHere,
+      ),
     );
   }
   if (pages.isNotEmpty) {
@@ -904,7 +922,7 @@ class ProfileDetailCatalogPage extends StatelessWidget {
               children: [
                 JoviaProfileTopBar(
                   label: title,
-                  centerText: 'Tüm Kartlar',
+                  centerText: context.l10n.profileDetailAllCards,
                   onBackTap: () => Navigator.of(context).maybePop(),
                   reserveTrailingSpace: true,
                 ),
@@ -930,7 +948,7 @@ class ProfileDetailCatalogPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 10),
                       Text(
-                        'Kişilik imzası kartları',
+                        context.l10n.profileDetailSignatureCardsTitle,
                         style: profile.typography.section.copyWith(
                           color: profile.colors.text,
                           fontSize: 24,
@@ -1532,8 +1550,9 @@ class _ProfileDetailPlaybackPageData {
   final bool allowAutoAdvance;
   final bool requiresOverflowScroll;
 
-  String get overlayTitle =>
-      isContinuation && pageCountInScene > 1 ? '$title · Devam' : title;
+  String get overlayTitle => isContinuation && pageCountInScene > 1
+      ? currentL10n().profileDetailContinuationTitle(title)
+      : title;
 
   List<String> get influenceLabels {
     if (astroSources.isNotEmpty) {
@@ -1591,15 +1610,14 @@ List<ProfileDetailSceneData> _resolvedScenes(
   if (scenes.isNotEmpty) {
     return scenes;
   }
-  return const <ProfileDetailSceneData>[
+  final l10n = currentL10n();
+  return <ProfileDetailSceneData>[
     ProfileDetailSceneData(
       id: 'empty',
-      eyebrow: 'Detay',
-      title: 'Detay akışı hazır değil',
-      intro: 'Bu bölüm için tam okuma henüz oluşturulmadı.',
-      bodyBlocks: <String>[
-        'Kürasyon katmanı geldiğinde burada sıralı bir okuma akışı açılacak.',
-      ],
+      eyebrow: l10n.profileDetailFallbackEyebrow,
+      title: l10n.profileDetailFallbackTitle,
+      intro: l10n.profileDetailFallbackIntro,
+      bodyBlocks: <String>[l10n.profileDetailFallbackBody],
       chips: <String>[],
       astroSources: <String>[],
       whyText: '',
@@ -1734,8 +1752,12 @@ List<_ProfileDetailPlaybackPageData> _splitSceneToPlaybackPages(
       sceneId: scene.id,
       playbackId: '${scene.id}_0',
       variant: scene.variant,
-      eyebrow: scene.eyebrow.trim().isNotEmpty ? scene.eyebrow : 'Detay',
-      title: scene.title.trim().isNotEmpty ? scene.title : 'Detay akışı',
+      eyebrow: scene.eyebrow.trim().isNotEmpty
+          ? scene.eyebrow
+          : currentL10n().profileDetailDefaultEyebrow,
+      title: scene.title.trim().isNotEmpty
+          ? scene.title
+          : currentL10n().profileDetailDefaultTitle,
       intro: intro,
       bodyBlocks: leadingBlocks,
       chips: chips,
@@ -1764,8 +1786,12 @@ List<_ProfileDetailPlaybackPageData> _splitSceneToPlaybackPages(
         sceneId: scene.id,
         playbackId: '${scene.id}_$continuationIndex',
         variant: _continuationVariantFor(scene.variant),
-        eyebrow: scene.eyebrow.trim().isNotEmpty ? scene.eyebrow : 'Detay',
-        title: scene.title.trim().isNotEmpty ? scene.title : 'Detay akışı',
+        eyebrow: scene.eyebrow.trim().isNotEmpty
+            ? scene.eyebrow
+            : currentL10n().profileDetailDefaultEyebrow,
+        title: scene.title.trim().isNotEmpty
+            ? scene.title
+            : currentL10n().profileDetailDefaultTitle,
         intro: '',
         bodyBlocks: chunk,
         chips: const <String>[],
@@ -1797,8 +1823,10 @@ List<_ProfileDetailPlaybackPageData> _splitSceneToPlaybackPages(
           sceneId: scene.id,
           playbackId: '${scene.id}_$continuationIndex',
           variant: ProfileDetailSceneVariant.glance,
-          eyebrow: 'Neden burada',
-          title: scene.title.trim().isNotEmpty ? scene.title : 'Detay akışı',
+          eyebrow: currentL10n().profileDetailWhyHere,
+          title: scene.title.trim().isNotEmpty
+              ? scene.title
+              : currentL10n().profileDetailDefaultTitle,
           intro: '',
           bodyBlocks: const <String>[],
           chips: const <String>[],
@@ -2263,6 +2291,23 @@ class _DetailSurfaceCard extends StatelessWidget {
             ),
           ),
           Positioned(
+            right: 16,
+            top: 16,
+            child: IgnorePointer(
+              child: Opacity(
+                opacity: isDark ? 0.76 : 0.92,
+                child: JoviaMoodStickerCluster(
+                  size: 18,
+                  colors: <Color>[
+                    tone.accent,
+                    tone.accentSoft,
+                    tone.accent.withValues(alpha: 0.86),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Positioned(
             left: -30,
             bottom: -38,
             child: Container(
@@ -2365,6 +2410,7 @@ class _DetailGlancePlaybackCard extends StatelessWidget {
     final bodyText = page.bodyBlocks.isNotEmpty
         ? page.bodyBlocks.first
         : page.intro.trim();
+    final highlightLines = _detailHighlightLines(page, maxLines: 1);
     return _DetailPageFill(
       child: _DetailSurfaceCard(
         tone: tone,
@@ -2398,22 +2444,31 @@ class _DetailGlancePlaybackCard extends StatelessWidget {
             const Spacer(),
             JoviaIllustrationAccent(
               asset: page.illustrationAsset,
-              width: 176,
-              height: 176,
+              width: 162,
+              height: 162,
               opacity: 0.96,
             ),
-            const SizedBox(height: 22),
+            const SizedBox(height: 18),
             Text(
               page.title,
               textAlign: TextAlign.center,
               style: profile.typography.editorialHeadline.copyWith(
                 color: profile.colors.text,
-                fontSize: 32,
-                height: 1.04,
+                fontSize: 28,
+                height: 1.06,
               ),
             ),
-            if (bodyText.isNotEmpty) ...[
+            if (highlightLines.isNotEmpty) ...[
               const SizedBox(height: 14),
+              JoviaSentenceBubbleStack(
+                lines: highlightLines,
+                centered: true,
+                compact: true,
+                accents: <Color>[tone.accent, tone.accentSoft],
+              ),
+            ],
+            if (bodyText.isNotEmpty) ...[
+              const SizedBox(height: 12),
               Text(
                 bodyText,
                 textAlign: TextAlign.center,
@@ -2423,8 +2478,8 @@ class _DetailGlancePlaybackCard extends StatelessWidget {
                     : TextOverflow.ellipsis,
                 style: profile.typography.bodyReading.copyWith(
                   color: _detailBodyTextColor(context),
-                  fontSize: 16,
-                  height: 1.56,
+                  fontSize: 14.8,
+                  height: 1.52,
                 ),
               ),
             ],
@@ -2559,6 +2614,7 @@ class _DetailStructuredBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final highlightLines = _detailHighlightLines(page, maxLines: 1);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -2591,8 +2647,8 @@ class _DetailStructuredBody extends StatelessWidget {
                     page.title,
                     style: profile.typography.section.copyWith(
                       color: profile.colors.text,
-                      fontSize: 27,
-                      height: 1.06,
+                      fontSize: 24,
+                      height: 1.08,
                     ),
                   ),
                   if (page.intro.trim().isNotEmpty) ...[
@@ -2601,7 +2657,8 @@ class _DetailStructuredBody extends StatelessWidget {
                       page.intro,
                       style: profile.typography.bodyReading.copyWith(
                         color: _detailIntroTextColor(context),
-                        height: 1.52,
+                        fontSize: 14.6,
+                        height: 1.5,
                       ),
                     ),
                   ],
@@ -2630,6 +2687,14 @@ class _DetailStructuredBody extends StatelessWidget {
             ),
           ],
         ),
+        if (highlightLines.isNotEmpty) ...[
+          const SizedBox(height: 14),
+          JoviaSentenceBubbleStack(
+            lines: highlightLines,
+            compact: true,
+            accents: <Color>[tone.accent, tone.accentSoft],
+          ),
+        ],
         if (page.bodyBlocks.isNotEmpty) ...[
           const SizedBox(height: 18),
           for (var index = 0; index < page.bodyBlocks.length; index++) ...[
@@ -2645,8 +2710,8 @@ class _DetailStructuredBody extends StatelessWidget {
                 page.bodyBlocks[index],
                 style: profile.typography.bodyReading.copyWith(
                   color: _detailBodyTextColor(context),
-                  fontSize: 15,
-                  height: 1.56,
+                  fontSize: 14.4,
+                  height: 1.52,
                 ),
               ),
             ),
@@ -2744,6 +2809,7 @@ class _DetailSplitBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final highlightLines = _detailHighlightLines(page, maxLines: 1);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -2764,8 +2830,8 @@ class _DetailSplitBody extends StatelessWidget {
                 page.title,
                 style: profile.typography.editorialHeadline.copyWith(
                   color: profile.colors.text,
-                  fontSize: 31,
-                  height: 1.04,
+                  fontSize: 27,
+                  height: 1.06,
                 ),
               ),
             ),
@@ -2791,13 +2857,21 @@ class _DetailSplitBody extends StatelessWidget {
             ),
           ],
         ),
+        if (highlightLines.isNotEmpty) ...[
+          const SizedBox(height: 14),
+          JoviaSentenceBubbleStack(
+            lines: highlightLines,
+            compact: true,
+            accents: <Color>[tone.accentSoft, tone.accent],
+          ),
+        ],
         const SizedBox(height: 18),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               child: _DetailSplitPane(
-                title: 'Bir tarafı',
+                title: context.l10n.profileDetailSideA,
                 body: leftText,
                 tone: tone,
               ),
@@ -2805,7 +2879,7 @@ class _DetailSplitBody extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: _DetailSplitPane(
-                title: 'Diğer tarafı',
+                title: context.l10n.profileDetailSideB,
                 body: rightText.isNotEmpty ? rightText : page.intro,
                 highlighted: true,
                 tone: tone,
@@ -2820,8 +2894,8 @@ class _DetailSplitBody extends StatelessWidget {
               block,
               style: profile.typography.bodyReading.copyWith(
                 color: _detailBodyTextColor(context),
-                fontSize: 14.8,
-                height: 1.56,
+                fontSize: 14.2,
+                height: 1.5,
               ),
             ),
             const SizedBox(height: 10),
@@ -2887,8 +2961,8 @@ class _DetailSplitPane extends StatelessWidget {
             body,
             style: profile.typography.bodyReading.copyWith(
               color: profile.colors.text,
-              fontSize: 15,
-              height: 1.56,
+              fontSize: 14.2,
+              height: 1.48,
             ),
           ),
         ],
@@ -2910,6 +2984,7 @@ class _DetailSymbolPlaybackCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final tone = _detailToneForPlaybackPage(page);
+    final highlightLines = _detailHighlightLines(page, maxLines: 1);
     return _DetailPageFill(
       child: _DetailSurfaceCard(
         tone: tone,
@@ -2943,20 +3018,29 @@ class _DetailSymbolPlaybackCard extends StatelessWidget {
             const Spacer(),
             JoviaIllustrationAccent(
               asset: page.illustrationAsset,
-              width: 188,
-              height: 188,
+              width: 170,
+              height: 170,
               opacity: 0.96,
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             Text(
               page.title,
               textAlign: TextAlign.center,
               style: profile.typography.section.copyWith(
                 color: profile.colors.text,
-                fontSize: 26,
-                height: 1.08,
+                fontSize: 23,
+                height: 1.1,
               ),
             ),
+            if (highlightLines.isNotEmpty) ...[
+              const SizedBox(height: 12),
+              JoviaSentenceBubbleStack(
+                lines: highlightLines,
+                centered: true,
+                compact: true,
+                accents: <Color>[tone.accentSoft, tone.accent],
+              ),
+            ],
             if (page.intro.trim().isNotEmpty || page.bodyBlocks.isNotEmpty) ...[
               const SizedBox(height: 12),
               Text(
@@ -2966,8 +3050,8 @@ class _DetailSymbolPlaybackCard extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: profile.typography.bodyReading.copyWith(
                   color: _detailBodyTextColor(context),
-                  fontSize: 15.6,
-                  height: 1.5,
+                  fontSize: 14.4,
+                  height: 1.46,
                 ),
               ),
             ],
@@ -2999,6 +3083,7 @@ class _DetailPortalPlaybackCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final tone = _detailToneForPlaybackPage(page);
+    final highlightLines = _detailHighlightLines(page, maxLines: 1);
     return _DetailPageFill(
       child: _DetailSurfaceCard(
         tone: tone,
@@ -3031,18 +3116,26 @@ class _DetailPortalPlaybackCard extends StatelessWidget {
               page.title,
               style: profile.typography.editorialHeadline.copyWith(
                 color: profile.colors.text,
-                fontSize: 30,
-                height: 1.04,
+                fontSize: 27,
+                height: 1.06,
               ),
             ),
-            if (page.intro.trim().isNotEmpty) ...[
+            if (highlightLines.isNotEmpty) ...[
               const SizedBox(height: 14),
+              JoviaSentenceBubbleStack(
+                lines: highlightLines,
+                compact: true,
+                accents: <Color>[tone.accent, tone.accentSoft],
+              ),
+            ],
+            if (page.intro.trim().isNotEmpty) ...[
+              const SizedBox(height: 12),
               Text(
                 page.intro,
                 style: profile.typography.bodyReading.copyWith(
                   color: _detailBodyTextColor(context),
-                  fontSize: 15.8,
-                  height: 1.56,
+                  fontSize: 14.8,
+                  height: 1.5,
                 ),
               ),
             ],
@@ -3050,8 +3143,8 @@ class _DetailPortalPlaybackCard extends StatelessWidget {
             IgnorePointer(
               child: MinimalCTAButton(
                 label: page.nextTitle.trim().isNotEmpty
-                    ? 'Akışı sürdür'
-                    : 'Buradan devam et',
+                    ? context.l10n.profileDetailContinueFlow
+                    : context.l10n.profileDetailContinueFromHere,
                 emphasized: true,
                 onTap: null,
               ),
@@ -3083,6 +3176,7 @@ class _DetailTextSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
+    final highlightLines = _detailHighlightLines(page, maxLines: 1);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -3099,8 +3193,8 @@ class _DetailTextSection extends StatelessWidget {
           page.title,
           style: profile.typography.section.copyWith(
             color: profile.colors.text,
-            fontSize: titleSize,
-            height: 1.08,
+            fontSize: titleSize - 3,
+            height: 1.1,
           ),
         ),
         if (page.intro.trim().isNotEmpty) ...[
@@ -3109,8 +3203,17 @@ class _DetailTextSection extends StatelessWidget {
             page.intro,
             style: profile.typography.bodyReading.copyWith(
               color: _detailIntroTextColor(context),
-              height: 1.56,
+              fontSize: 14.6,
+              height: 1.5,
             ),
+          ),
+        ],
+        if (highlightLines.isNotEmpty) ...[
+          const SizedBox(height: 14),
+          JoviaSentenceBubbleStack(
+            lines: highlightLines,
+            compact: true,
+            accents: <Color>[tone.accentSoft, tone.accent],
           ),
         ],
         if (page.bodyBlocks.isNotEmpty) ...[
@@ -3120,8 +3223,8 @@ class _DetailTextSection extends StatelessWidget {
               page.bodyBlocks[index],
               style: profile.typography.bodyReading.copyWith(
                 color: _detailBodyTextColor(context),
-                fontSize: 15,
-                height: 1.58,
+                fontSize: 14.3,
+                height: 1.52,
               ),
             ),
             if (index != page.bodyBlocks.length - 1) const SizedBox(height: 14),
@@ -3169,7 +3272,7 @@ class _DetailWhyBlock extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Neden burada',
+            context.l10n.profileDetailWhyHere,
             style: profile.typography.buttonLabel.copyWith(
               color: tone.accent,
               fontWeight: FontWeight.w700,
@@ -3202,10 +3305,15 @@ class _DetailPageFooter extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final label = switch (_detailFooterKind(page, isLastOverallPage)) {
-      _DetailFooterKind.next => 'Sıradaki: ${page.nextTitle}',
+      _DetailFooterKind.next => context.l10n.profileDetailNextLabel(
+        page.nextTitle,
+      ),
       _DetailFooterKind.continuation =>
-        'Devam ${page.pageIndexInScene + 1}/${page.pageCountInScene}',
-      _DetailFooterKind.end => 'Akış burada bitiyor',
+        context.l10n.profileDetailContinuationFooter(
+          page.pageIndexInScene + 1,
+          page.pageCountInScene,
+        ),
+      _DetailFooterKind.end => context.l10n.profileDetailFlowEnds,
     };
     return Text(
       label,

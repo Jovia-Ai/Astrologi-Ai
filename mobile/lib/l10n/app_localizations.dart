@@ -2134,6 +2134,1380 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Write to Aila...'**
   String get aiComposerHint;
+
+  /// No description provided for @aiFreeRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} free left'**
+  String aiFreeRemaining(int count);
+
+  /// No description provided for @aiCreditsRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} credits'**
+  String aiCreditsRemaining(int count);
+
+  /// No description provided for @aiProActive.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro active'**
+  String get aiProActive;
+
+  /// No description provided for @aiSending.
+  ///
+  /// In en, this message translates to:
+  /// **'Aila is thinking...'**
+  String get aiSending;
+
+  /// No description provided for @aiPaywallTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue with credits or Pro'**
+  String get aiPaywallTitle;
+
+  /// No description provided for @aiPaywallBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You used all 3 free questions. Buy a credit pack or unlock Pro to keep chatting.'**
+  String get aiPaywallBody;
+
+  /// No description provided for @aiPaywallLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading products...'**
+  String get aiPaywallLoading;
+
+  /// No description provided for @aiPaywallUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases are not available right now.'**
+  String get aiPaywallUnavailable;
+
+  /// No description provided for @aiPaywallRestoreHint.
+  ///
+  /// In en, this message translates to:
+  /// **'After purchase, retry your message in a few seconds while the webhook updates your balance.'**
+  String get aiPaywallRestoreHint;
+
+  /// No description provided for @aiProductQ1Title.
+  ///
+  /// In en, this message translates to:
+  /// **'1 question'**
+  String get aiProductQ1Title;
+
+  /// No description provided for @aiProductQ1Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Single reply credit'**
+  String get aiProductQ1Subtitle;
+
+  /// No description provided for @aiProductQ5Title.
+  ///
+  /// In en, this message translates to:
+  /// **'5 questions'**
+  String get aiProductQ5Title;
+
+  /// No description provided for @aiProductQ5Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit pack for a short streak'**
+  String get aiProductQ5Subtitle;
+
+  /// No description provided for @aiProductQ15Title.
+  ///
+  /// In en, this message translates to:
+  /// **'15 questions'**
+  String get aiProductQ15Title;
+
+  /// No description provided for @aiProductQ15Subtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Credit pack for heavier use'**
+  String get aiProductQ15Subtitle;
+
+  /// No description provided for @aiProductProTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Pro monthly'**
+  String get aiProductProTitle;
+
+  /// No description provided for @aiProductProSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlimited chat while Pro is active'**
+  String get aiProductProSubtitle;
+
+  /// No description provided for @aiStorePriceUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'Unavailable'**
+  String get aiStorePriceUnavailable;
+
+  /// No description provided for @aiPurchasePending.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchase received. Retry your message in a few seconds.'**
+  String get aiPurchasePending;
+
+  /// No description provided for @aiPurchaseNotSupported.
+  ///
+  /// In en, this message translates to:
+  /// **'Purchases are only available on iOS and Android.'**
+  String get aiPurchaseNotSupported;
+
+  /// No description provided for @aiChatUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'AI chat is unavailable right now: {error}'**
+  String aiChatUnavailable(Object error);
+
+  /// No description provided for @peopleFormAddTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Add person'**
+  String get peopleFormAddTitle;
+
+  /// No description provided for @peopleFormEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit person'**
+  String get peopleFormEditTitle;
+
+  /// No description provided for @peopleFormNameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Name is required.'**
+  String get peopleFormNameRequired;
+
+  /// No description provided for @peopleFormBirthDateRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth date is required.'**
+  String get peopleFormBirthDateRequired;
+
+  /// No description provided for @peopleFormBirthTimeOptional.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth time (optional)'**
+  String get peopleFormBirthTimeOptional;
+
+  /// No description provided for @peopleFormBirthTimeHint.
+  ///
+  /// In en, this message translates to:
+  /// **'If you do not know the birth time, you can leave it empty.'**
+  String get peopleFormBirthTimeHint;
+
+  /// No description provided for @peopleFormCityRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'City is required.'**
+  String get peopleFormCityRequired;
+
+  /// No description provided for @peopleFormCountryRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Country is required.'**
+  String get peopleFormCountryRequired;
+
+  /// No description provided for @peopleFormSaving.
+  ///
+  /// In en, this message translates to:
+  /// **'Saving...'**
+  String get peopleFormSaving;
+
+  /// No description provided for @peopleFormLoginRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in before adding a person.'**
+  String get peopleFormLoginRequired;
+
+  /// No description provided for @peopleFormSaveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Person could not be saved: {error}'**
+  String peopleFormSaveFailed(Object error);
+
+  /// No description provided for @peoplePageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get peoplePageLabel;
+
+  /// No description provided for @peoplePageCenterText.
+  ///
+  /// In en, this message translates to:
+  /// **'your circle'**
+  String get peoplePageCenterText;
+
+  /// No description provided for @peoplePageAddTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Add person'**
+  String get peoplePageAddTooltip;
+
+  /// No description provided for @peoplePageEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved people yet'**
+  String get peoplePageEmptyTitle;
+
+  /// No description provided for @peoplePageEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Save people from your circle here to use them in Bond and social flows.'**
+  String get peoplePageEmptyBody;
+
+  /// No description provided for @peoplePageCircleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Circle'**
+  String get peoplePageCircleLabel;
+
+  /// No description provided for @peoplePageCircleTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved people'**
+  String get peoplePageCircleTitle;
+
+  /// No description provided for @peoplePageCircleBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The people you use for Bond, friend profiles, and social flows appear here.'**
+  String get peoplePageCircleBody;
+
+  /// No description provided for @peoplePageHeroLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'People'**
+  String get peoplePageHeroLabel;
+
+  /// No description provided for @peoplePageHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Keep your circle here for Bond and social flows'**
+  String get peoplePageHeroTitle;
+
+  /// No description provided for @peoplePageHeroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The people you add are reused from the same place for Bond matches, friend profiles, and future social readings.'**
+  String get peoplePageHeroBody;
+
+  /// No description provided for @peoplePagePillAura.
+  ///
+  /// In en, this message translates to:
+  /// **'Aura'**
+  String get peoplePagePillAura;
+
+  /// No description provided for @peoplePagePillBirthAxis.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth axis'**
+  String get peoplePagePillBirthAxis;
+
+  /// No description provided for @peoplePagePillSocialTone.
+  ///
+  /// In en, this message translates to:
+  /// **'Social tone'**
+  String get peoplePagePillSocialTone;
+
+  /// No description provided for @peoplePageListLoadFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'People list unavailable'**
+  String get peoplePageListLoadFailedTitle;
+
+  /// No description provided for @peoplePageListLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'People list could not be loaded: {error}'**
+  String peoplePageListLoadFailed(Object error);
+
+  /// No description provided for @peoplePageFriendLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Person'**
+  String get peoplePageFriendLabel;
+
+  /// No description provided for @peoplePageNoBirthTime.
+  ///
+  /// In en, this message translates to:
+  /// **'No birth time'**
+  String get peoplePageNoBirthTime;
+
+  /// No description provided for @peoplePageEditTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get peoplePageEditTooltip;
+
+  /// No description provided for @peopleRepoListFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'People list could not be fetched.'**
+  String get peopleRepoListFailed;
+
+  /// No description provided for @peopleRepoDetailFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Person details could not be fetched.'**
+  String get peopleRepoDetailFailed;
+
+  /// No description provided for @peopleRepoCreateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Person could not be created.'**
+  String get peopleRepoCreateFailed;
+
+  /// No description provided for @peopleRepoUpdateFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Person could not be updated.'**
+  String get peopleRepoUpdateFailed;
+
+  /// No description provided for @peopleRepoProfilesListUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'The profiles table does not support listing saved people.'**
+  String get peopleRepoProfilesListUnsupported;
+
+  /// No description provided for @peopleRepoProfilesDetailUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'The profiles table does not support loading this saved person.'**
+  String get peopleRepoProfilesDetailUnsupported;
+
+  /// No description provided for @peopleRepoProfilesCreateUnsupported.
+  ///
+  /// In en, this message translates to:
+  /// **'The profiles table does not support creating separate saved people.'**
+  String get peopleRepoProfilesCreateUnsupported;
+
+  /// No description provided for @peopleRepoTableNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No valid table for people records was found. Tried: {candidates}'**
+  String peopleRepoTableNotFound(Object candidates);
+
+  /// No description provided for @peopleRepoTableValidationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The people table could not be validated.'**
+  String get peopleRepoTableValidationFailed;
+
+  /// No description provided for @forumActiveTransitFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The sky is active'**
+  String get forumActiveTransitFallback;
+
+  /// No description provided for @transitSkyCollectiveFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Something is moving in the collective.'**
+  String get transitSkyCollectiveFallback;
+
+  /// No description provided for @transitSkyTypeIngress.
+  ///
+  /// In en, this message translates to:
+  /// **'Ingress'**
+  String get transitSkyTypeIngress;
+
+  /// No description provided for @transitSkyTypeFullMoon.
+  ///
+  /// In en, this message translates to:
+  /// **'Full moon'**
+  String get transitSkyTypeFullMoon;
+
+  /// No description provided for @transitSkyTypeNewMoon.
+  ///
+  /// In en, this message translates to:
+  /// **'New moon'**
+  String get transitSkyTypeNewMoon;
+
+  /// No description provided for @transitSkyTypeExactAspect.
+  ///
+  /// In en, this message translates to:
+  /// **'Exact aspect'**
+  String get transitSkyTypeExactAspect;
+
+  /// No description provided for @transitSkyTypeEclipse.
+  ///
+  /// In en, this message translates to:
+  /// **'Eclipse'**
+  String get transitSkyTypeEclipse;
+
+  /// No description provided for @transitSkyTypeRetroStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Retrograde starts'**
+  String get transitSkyTypeRetroStart;
+
+  /// No description provided for @transitSkyTypeRetroEnd.
+  ///
+  /// In en, this message translates to:
+  /// **'Retrograde ends'**
+  String get transitSkyTypeRetroEnd;
+
+  /// No description provided for @transitSkyTimingNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Now'**
+  String get transitSkyTimingNow;
+
+  /// No description provided for @transitSkyTimingThisWeek.
+  ///
+  /// In en, this message translates to:
+  /// **'This week'**
+  String get transitSkyTimingThisWeek;
+
+  /// No description provided for @transitMeaningRelationships.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationships'**
+  String get transitMeaningRelationships;
+
+  /// No description provided for @transitMeaningMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Money'**
+  String get transitMeaningMoney;
+
+  /// No description provided for @transitMeaningVisibility.
+  ///
+  /// In en, this message translates to:
+  /// **'Visibility'**
+  String get transitMeaningVisibility;
+
+  /// No description provided for @transitMeaningDecision.
+  ///
+  /// In en, this message translates to:
+  /// **'Decision'**
+  String get transitMeaningDecision;
+
+  /// No description provided for @transitMeaningCloseness.
+  ///
+  /// In en, this message translates to:
+  /// **'Closeness'**
+  String get transitMeaningCloseness;
+
+  /// No description provided for @transitMeaningBuilding.
+  ///
+  /// In en, this message translates to:
+  /// **'Building'**
+  String get transitMeaningBuilding;
+
+  /// No description provided for @transitMeaningRelease.
+  ///
+  /// In en, this message translates to:
+  /// **'Release'**
+  String get transitMeaningRelease;
+
+  /// No description provided for @transitMeaningTension.
+  ///
+  /// In en, this message translates to:
+  /// **'Tension'**
+  String get transitMeaningTension;
+
+  /// No description provided for @transitMeaningClarifying.
+  ///
+  /// In en, this message translates to:
+  /// **'Clarifying'**
+  String get transitMeaningClarifying;
+
+  /// No description provided for @transitMeaningTransformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Transformation'**
+  String get transitMeaningTransformation;
+
+  /// No description provided for @profileDetailFallbackEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Deep reading'**
+  String get profileDetailFallbackEyebrow;
+
+  /// No description provided for @profileDetailFallbackTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Detail is being prepared for this card'**
+  String get profileDetailFallbackTitle;
+
+  /// No description provided for @profileDetailFallbackIntro.
+  ///
+  /// In en, this message translates to:
+  /// **'The main narrative flow came back empty for now.'**
+  String get profileDetailFallbackIntro;
+
+  /// No description provided for @profileDetailFallbackBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The meaning of this card will still open here; right now the content stream is still on the way.'**
+  String get profileDetailFallbackBody;
+
+  /// No description provided for @bondSelfName.
+  ///
+  /// In en, this message translates to:
+  /// **'Me'**
+  String get bondSelfName;
+
+  /// No description provided for @bondPageSelectPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Select person'**
+  String get bondPageSelectPerson;
+
+  /// No description provided for @bondPageLensFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'bond lens'**
+  String get bondPageLensFallback;
+
+  /// No description provided for @bondPageHeroTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the dynamic between two people here'**
+  String get bondPageHeroTitle;
+
+  /// No description provided for @bondPageHeroBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick your own profile and one saved person, then read the main rhythm and tension line between you in the same flow.'**
+  String get bondPageHeroBody;
+
+  /// No description provided for @bondPageLensLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Lens'**
+  String get bondPageLensLabel;
+
+  /// No description provided for @bondPageBirthDataMissingTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth data is required for Bond'**
+  String get bondPageBirthDataMissingTitle;
+
+  /// No description provided for @bondPageBirthDataMissingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When you complete your own birth date and location, this match opens more accurately.'**
+  String get bondPageBirthDataMissingBody;
+
+  /// No description provided for @bondPagePreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing...'**
+  String get bondPagePreparing;
+
+  /// No description provided for @bondPageOpenResult.
+  ///
+  /// In en, this message translates to:
+  /// **'Open Bond result'**
+  String get bondPageOpenResult;
+
+  /// No description provided for @bondPageAnalyzeFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Bond analysis could not be loaded: {error}'**
+  String bondPageAnalyzeFailed(Object error);
+
+  /// No description provided for @bondPickerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'People selection'**
+  String get bondPickerLabel;
+
+  /// No description provided for @bondPickerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose the second person for Bond'**
+  String get bondPickerTitle;
+
+  /// No description provided for @bondPickerAddPerson.
+  ///
+  /// In en, this message translates to:
+  /// **'Add new person'**
+  String get bondPickerAddPerson;
+
+  /// No description provided for @bondPickerOwnProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Your own profile'**
+  String get bondPickerOwnProfile;
+
+  /// No description provided for @bondPickerMe.
+  ///
+  /// In en, this message translates to:
+  /// **'You'**
+  String get bondPickerMe;
+
+  /// No description provided for @bondPickerLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'People could not be loaded: {error}'**
+  String bondPickerLoadFailed(Object error);
+
+  /// No description provided for @bondPairEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Selection'**
+  String get bondPairEyebrow;
+
+  /// No description provided for @bondPairTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare two people'**
+  String get bondPairTitle;
+
+  /// No description provided for @bondPairBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick two profiles, then see the main rhythm of their bond in the same flow.'**
+  String get bondPairBody;
+
+  /// No description provided for @storyStudioTopLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Story Studio'**
+  String get storyStudioTopLabel;
+
+  /// No description provided for @storyStudioTopCenter.
+  ///
+  /// In en, this message translates to:
+  /// **'imprint deck'**
+  String get storyStudioTopCenter;
+
+  /// No description provided for @storyStudioLoadingProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile is loading...'**
+  String get storyStudioLoadingProfile;
+
+  /// No description provided for @storyStudioBirthDataRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Story Studio needs birth date, time, and location before it can open.'**
+  String get storyStudioBirthDataRequired;
+
+  /// No description provided for @storyStudioIdentityTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity cards'**
+  String get storyStudioIdentityTitle;
+
+  /// No description provided for @storyStudioIdentityBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the dominant placements, inner drive, and shadow line in your chart one card at a time.'**
+  String get storyStudioIdentityBody;
+
+  /// No description provided for @storyStudioIdentityTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity'**
+  String get storyStudioIdentityTab;
+
+  /// No description provided for @storyStudioMomentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live sources'**
+  String get storyStudioMomentTitle;
+
+  /// No description provided for @storyStudioMomentBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to the surfaces working right now and open the active flows from there.'**
+  String get storyStudioMomentBody;
+
+  /// No description provided for @storyStudioMomentTab.
+  ///
+  /// In en, this message translates to:
+  /// **'Moment'**
+  String get storyStudioMomentTab;
+
+  /// No description provided for @storyStudioCardsLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Cards could not be loaded'**
+  String get storyStudioCardsLoadFailed;
+
+  /// No description provided for @storyStudioCardsPreparing.
+  ///
+  /// In en, this message translates to:
+  /// **'Cards are being prepared'**
+  String get storyStudioCardsPreparing;
+
+  /// No description provided for @storyStudioCardsPreparingBody.
+  ///
+  /// In en, this message translates to:
+  /// **'The personality imprint layer is coming in from the backend.'**
+  String get storyStudioCardsPreparingBody;
+
+  /// No description provided for @storyStudioCardsNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No cards found'**
+  String get storyStudioCardsNotFound;
+
+  /// No description provided for @storyStudioCardsNotFoundBody.
+  ///
+  /// In en, this message translates to:
+  /// **'No Story Studio cards could be produced from this profile yet.'**
+  String get storyStudioCardsNotFoundBody;
+
+  /// No description provided for @storyStudioMomentPanelTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Live studio sources'**
+  String get storyStudioMomentPanelTitle;
+
+  /// No description provided for @storyStudioMomentPanelBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This section does not create a new card; it sends you back to the active Home and Bond surfaces.'**
+  String get storyStudioMomentPanelBody;
+
+  /// No description provided for @storyStudioReturnToSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Return to sources'**
+  String get storyStudioReturnToSources;
+
+  /// No description provided for @storyStudioTraitLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Standout line'**
+  String get storyStudioTraitLabel;
+
+  /// No description provided for @storyStudioInnerDriveLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Inner drive'**
+  String get storyStudioInnerDriveLabel;
+
+  /// No description provided for @storyStudioWhenTooMuchLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'When overloaded'**
+  String get storyStudioWhenTooMuchLabel;
+
+  /// No description provided for @storyStudioRefreshing.
+  ///
+  /// In en, this message translates to:
+  /// **'Refreshing...'**
+  String get storyStudioRefreshing;
+
+  /// No description provided for @storyStudioKindAspect.
+  ///
+  /// In en, this message translates to:
+  /// **'Aspect'**
+  String get storyStudioKindAspect;
+
+  /// No description provided for @storyStudioKindHousePlacement.
+  ///
+  /// In en, this message translates to:
+  /// **'House placement'**
+  String get storyStudioKindHousePlacement;
+
+  /// No description provided for @storyStudioKindSignPlacement.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign placement'**
+  String get storyStudioKindSignPlacement;
+
+  /// No description provided for @storyStudioKindLayer.
+  ///
+  /// In en, this message translates to:
+  /// **'Layer'**
+  String get storyStudioKindLayer;
+
+  /// No description provided for @storyStudioLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Story Studio could not be loaded: {error}'**
+  String storyStudioLoadFailed(Object error);
+
+  /// No description provided for @relationshipPreviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship preview'**
+  String get relationshipPreviewLabel;
+
+  /// No description provided for @relationshipPreviewBirthDataRequiredTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Birth data is required for relationship preview'**
+  String get relationshipPreviewBirthDataRequiredTitle;
+
+  /// No description provided for @relationshipPreviewBirthDataRequiredBody.
+  ///
+  /// In en, this message translates to:
+  /// **'When birth date, time, and location are complete, the relationship line opens here.'**
+  String get relationshipPreviewBirthDataRequiredBody;
+
+  /// No description provided for @relationshipPreviewLoadFailedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship flow unavailable'**
+  String get relationshipPreviewLoadFailedTitle;
+
+  /// No description provided for @relationshipPreviewMainThemeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Main theme'**
+  String get relationshipPreviewMainThemeLabel;
+
+  /// No description provided for @relationshipPreviewDriversLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'What is shaping today'**
+  String get relationshipPreviewDriversLabel;
+
+  /// No description provided for @relationshipPreviewBackdropLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Backdrop'**
+  String get relationshipPreviewBackdropLabel;
+
+  /// No description provided for @relationshipPreviewUpperMeaningLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Deeper meaning'**
+  String get relationshipPreviewUpperMeaningLabel;
+
+  /// No description provided for @relationshipPreviewSupportingThemeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Supporting theme'**
+  String get relationshipPreviewSupportingThemeLabel;
+
+  /// No description provided for @relationshipPreviewWhyImportant.
+  ///
+  /// In en, this message translates to:
+  /// **'Why this matters'**
+  String get relationshipPreviewWhyImportant;
+
+  /// No description provided for @relationshipPreviewFallbackNotice.
+  ///
+  /// In en, this message translates to:
+  /// **'The relationship lens was slow, so this opened with the general reading instead.'**
+  String get relationshipPreviewFallbackNotice;
+
+  /// No description provided for @relationshipPreviewTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The relationship reading took too long to return. Try again in a moment.'**
+  String get relationshipPreviewTimeout;
+
+  /// No description provided for @relationshipPreviewInvalidProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'The submitted profile data is not enough for the relationship flow.'**
+  String get relationshipPreviewInvalidProfile;
+
+  /// No description provided for @relationshipPreviewServerError.
+  ///
+  /// In en, this message translates to:
+  /// **'The relationship flow could not be loaded from the server right now.'**
+  String get relationshipPreviewServerError;
+
+  /// No description provided for @relationshipPreviewFetchFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'The relationship flow could not be loaded.'**
+  String get relationshipPreviewFetchFailed;
+
+  /// No description provided for @relationshipPreviewStageStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Started'**
+  String get relationshipPreviewStageStarted;
+
+  /// No description provided for @relationshipPreviewStageIntensifying.
+  ///
+  /// In en, this message translates to:
+  /// **'Intensifying'**
+  String get relationshipPreviewStageIntensifying;
+
+  /// No description provided for @relationshipPreviewStagePeak.
+  ///
+  /// In en, this message translates to:
+  /// **'Peak'**
+  String get relationshipPreviewStagePeak;
+
+  /// No description provided for @relationshipPreviewStageResolving.
+  ///
+  /// In en, this message translates to:
+  /// **'Resolving'**
+  String get relationshipPreviewStageResolving;
+
+  /// No description provided for @relationshipPreviewPeriodToToday.
+  ///
+  /// In en, this message translates to:
+  /// **'From the period into today'**
+  String get relationshipPreviewPeriodToToday;
+
+  /// No description provided for @relationshipPreviewDefaultDriversFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'There is movement on the relationship side today, but a single theme has not fully separated yet.'**
+  String get relationshipPreviewDefaultDriversFallback;
+
+  /// No description provided for @relationshipPreviewDefaultBackdropFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'A longer period is still working underneath, and its relationship-side result will become clearer with a bit more time.'**
+  String get relationshipPreviewDefaultBackdropFallback;
+
+  /// No description provided for @friendProfileTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Person profile'**
+  String get friendProfileTitle;
+
+  /// No description provided for @friendProfileNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Person not found.'**
+  String get friendProfileNotFound;
+
+  /// No description provided for @friendProfileEditTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit person'**
+  String get friendProfileEditTooltip;
+
+  /// No description provided for @friendProfileLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Person could not be loaded: {error}'**
+  String friendProfileLoadFailed(Object error);
+
+  /// No description provided for @profileDetailInfluences.
+  ///
+  /// In en, this message translates to:
+  /// **'Influences'**
+  String get profileDetailInfluences;
+
+  /// No description provided for @profileDetailAllCards.
+  ///
+  /// In en, this message translates to:
+  /// **'All cards'**
+  String get profileDetailAllCards;
+
+  /// No description provided for @profileDetailSignatureCardsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature cards'**
+  String get profileDetailSignatureCardsTitle;
+
+  /// No description provided for @profileDetailDefaultEyebrow.
+  ///
+  /// In en, this message translates to:
+  /// **'Detail'**
+  String get profileDetailDefaultEyebrow;
+
+  /// No description provided for @profileDetailDefaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Detail flow'**
+  String get profileDetailDefaultTitle;
+
+  /// No description provided for @profileDetailWhyHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Why here'**
+  String get profileDetailWhyHere;
+
+  /// No description provided for @profileDetailNextLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Next: {title}'**
+  String profileDetailNextLabel(Object title);
+
+  /// No description provided for @profileDetailContinuationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'{title} · Continue'**
+  String profileDetailContinuationTitle(Object title);
+
+  /// No description provided for @profileDetailSideA.
+  ///
+  /// In en, this message translates to:
+  /// **'One side'**
+  String get profileDetailSideA;
+
+  /// No description provided for @profileDetailSideB.
+  ///
+  /// In en, this message translates to:
+  /// **'The other side'**
+  String get profileDetailSideB;
+
+  /// No description provided for @profileDetailContinueFlow.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue the flow'**
+  String get profileDetailContinueFlow;
+
+  /// No description provided for @profileDetailContinueFromHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue from here'**
+  String get profileDetailContinueFromHere;
+
+  /// No description provided for @profileDetailContinuationFooter.
+  ///
+  /// In en, this message translates to:
+  /// **'Continues {page}/{total}'**
+  String profileDetailContinuationFooter(int page, int total);
+
+  /// No description provided for @profileDetailFlowEnds.
+  ///
+  /// In en, this message translates to:
+  /// **'The flow ends here'**
+  String get profileDetailFlowEnds;
+
+  /// No description provided for @periodFallbackEffectTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Period effect'**
+  String get periodFallbackEffectTitle;
+
+  /// No description provided for @periodIntentSummaryGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'There are windows to track for {title} in this period.'**
+  String periodIntentSummaryGeneric(Object title);
+
+  /// No description provided for @periodIntentTopDays.
+  ///
+  /// In en, this message translates to:
+  /// **'Standout days for {title}: {dates}.'**
+  String periodIntentTopDays(Object title, Object dates);
+
+  /// No description provided for @periodIntentScores.
+  ///
+  /// In en, this message translates to:
+  /// **'Scores: {ratings}'**
+  String periodIntentScores(Object ratings);
+
+  /// No description provided for @periodIntentBeautyCare.
+  ///
+  /// In en, this message translates to:
+  /// **'Care and body'**
+  String get periodIntentBeautyCare;
+
+  /// No description provided for @periodIntentBusiness.
+  ///
+  /// In en, this message translates to:
+  /// **'Work and output'**
+  String get periodIntentBusiness;
+
+  /// No description provided for @periodIntentMoney.
+  ///
+  /// In en, this message translates to:
+  /// **'Money and resources'**
+  String get periodIntentMoney;
+
+  /// No description provided for @periodIntentRelationship.
+  ///
+  /// In en, this message translates to:
+  /// **'Relationship and harmony'**
+  String get periodIntentRelationship;
+
+  /// No description provided for @periodIntentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Intent {index}'**
+  String periodIntentLabel(int index);
+
+  /// No description provided for @periodDefaultTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Period'**
+  String get periodDefaultTitle;
+
+  /// No description provided for @periodMainFlowFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The main flow of this period.'**
+  String get periodMainFlowFallback;
+
+  /// No description provided for @periodMainThemeFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The main theme of this period.'**
+  String get periodMainThemeFallback;
+
+  /// No description provided for @periodHighlightedThemeFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The standout theme in this period.'**
+  String get periodHighlightedThemeFallback;
+
+  /// No description provided for @periodThemeCollectFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The standout theme of this period gathers here.'**
+  String get periodThemeCollectFallback;
+
+  /// No description provided for @periodEssenceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Essence of this period'**
+  String get periodEssenceTitle;
+
+  /// No description provided for @periodSummaryUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No summary for this period is available.'**
+  String get periodSummaryUnavailable;
+
+  /// No description provided for @periodTimeLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Timing'**
+  String get periodTimeLabel;
+
+  /// No description provided for @periodGuidancePrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'Small practice:'**
+  String get periodGuidancePrefix;
+
+  /// No description provided for @periodDifficultyPrefix.
+  ///
+  /// In en, this message translates to:
+  /// **'What tends to make this harder is:'**
+  String get periodDifficultyPrefix;
+
+  /// No description provided for @periodHowItWorksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'How it works'**
+  String get periodHowItWorksTitle;
+
+  /// No description provided for @periodAsksTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What it asks of you'**
+  String get periodAsksTitle;
+
+  /// No description provided for @periodWatchTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What to watch'**
+  String get periodWatchTitle;
+
+  /// No description provided for @periodBuildsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'What it develops in you'**
+  String get periodBuildsTitle;
+
+  /// No description provided for @periodEffectLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Effect'**
+  String get periodEffectLabel;
+
+  /// No description provided for @periodTechnicalNoteLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Technical note'**
+  String get periodTechnicalNoteLabel;
+
+  /// No description provided for @periodCoreMainThemeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'The main theme of this period'**
+  String get periodCoreMainThemeTitle;
+
+  /// No description provided for @periodCoreSummaryUnavailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No period summary was available for this period.'**
+  String get periodCoreSummaryUnavailable;
+
+  /// No description provided for @profileExperimentPreviewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Preview'**
+  String get profileExperimentPreviewLabel;
+
+  /// No description provided for @profileExperimentCenterText.
+  ///
+  /// In en, this message translates to:
+  /// **'Nocturne Identity'**
+  String get profileExperimentCenterText;
+
+  /// No description provided for @profileExperimentMenuTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme and experiment settings'**
+  String get profileExperimentMenuTooltip;
+
+  /// No description provided for @profileExperimentHeroFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The first trace of the chart gathers here.'**
+  String get profileExperimentHeroFallback;
+
+  /// No description provided for @profileExperimentSignatureFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Identity trace'**
+  String get profileExperimentSignatureFallback;
+
+  /// No description provided for @profileExperimentNatalPanelBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This preview currently focuses on a spotlight hero that opens identity as a full portrait surface. Lower chapter layers will follow in a later patch.'**
+  String get profileExperimentNatalPanelBody;
+
+  /// No description provided for @profileExperimentTimingPanelBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Timing mode behaves like a focus switch here for now. The lower period composition will arrive in a later patch.'**
+  String get profileExperimentTimingPanelBody;
+
+  /// No description provided for @profileExperimentMenuTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Nocturne experiment'**
+  String get profileExperimentMenuTitle;
+
+  /// No description provided for @profileExperimentMenuBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Patch 1 only tests the upper identity composition.'**
+  String get profileExperimentMenuBody;
+
+  /// No description provided for @profileExperimentSeeProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'See profile'**
+  String get profileExperimentSeeProfile;
+
+  /// No description provided for @profileExperimentHeroLineFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Your identity is gathered into a new focal surface on this screen.'**
+  String get profileExperimentHeroLineFallback;
+
+  /// No description provided for @profileExperimentAuraLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Aura'**
+  String get profileExperimentAuraLabel;
+
+  /// No description provided for @profileExperimentRulerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Ruler'**
+  String get profileExperimentRulerLabel;
+
+  /// No description provided for @profileExperimentWaiting.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting'**
+  String get profileExperimentWaiting;
+
+  /// No description provided for @profileExperimentRulerBodyFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'The ruler of the 1st house is being read.'**
+  String get profileExperimentRulerBodyFallback;
+
+  /// No description provided for @profileExperimentRisingTrace.
+  ///
+  /// In en, this message translates to:
+  /// **'Rising trace'**
+  String get profileExperimentRisingTrace;
+
+  /// No description provided for @profileExperimentSignatureLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Signature'**
+  String get profileExperimentSignatureLabel;
+
+  /// No description provided for @profileExperimentSpotlightCards.
+  ///
+  /// In en, this message translates to:
+  /// **'Spotlight cards'**
+  String get profileExperimentSpotlightCards;
+
+  /// No description provided for @profileExperimentSwipe.
+  ///
+  /// In en, this message translates to:
+  /// **'Swipe'**
+  String get profileExperimentSwipe;
+
+  /// No description provided for @profileExperimentFocusTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading focus'**
+  String get profileExperimentFocusTitle;
+
+  /// No description provided for @profileExperimentNatalFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Your structure'**
+  String get profileExperimentNatalFocus;
+
+  /// No description provided for @profileExperimentTimingFocus.
+  ///
+  /// In en, this message translates to:
+  /// **'Your current period'**
+  String get profileExperimentTimingFocus;
+
+  /// No description provided for @profileExperimentUnnamedProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Unnamed profile'**
+  String get profileExperimentUnnamedProfile;
+
+  /// No description provided for @profileExperimentFireDominant.
+  ///
+  /// In en, this message translates to:
+  /// **'Fire dominant'**
+  String get profileExperimentFireDominant;
+
+  /// No description provided for @profileExperimentWaterDominant.
+  ///
+  /// In en, this message translates to:
+  /// **'Water dominant'**
+  String get profileExperimentWaterDominant;
+
+  /// No description provided for @profileExperimentAirDominant.
+  ///
+  /// In en, this message translates to:
+  /// **'Air dominant'**
+  String get profileExperimentAirDominant;
+
+  /// No description provided for @profileExperimentEarthDominant.
+  ///
+  /// In en, this message translates to:
+  /// **'Earth dominant'**
+  String get profileExperimentEarthDominant;
+
+  /// No description provided for @errorTimeout.
+  ///
+  /// In en, this message translates to:
+  /// **'The server is a bit slow right now, try again in a moment.'**
+  String get errorTimeout;
+
+  /// No description provided for @errorNoConnection.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not connect. Check your internet connection.'**
+  String get errorNoConnection;
+
+  /// No description provided for @errorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get errorGeneric;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

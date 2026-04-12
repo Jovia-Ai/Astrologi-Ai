@@ -1,5 +1,5 @@
 """Router module exports for FastAPI app."""
-from . import charts, chat, health, interpretation, profile, story, synastry, user
+from . import charts, chat, health, interpretation, profile, revenuecat, story, synastry, user
 
 __all__ = [
     "charts",
@@ -7,6 +7,7 @@ __all__ = [
     "health",
     "interpretation",
     "profile",
+    "revenuecat",
     "story",
     "synastry",
     "user",

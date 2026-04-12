@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/app/telemetry/perf_telemetry.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile/app/onboarding/onboarding_birth_page.dart';
 import 'package:mobile/app/profile/profile_repository.dart';
@@ -35,17 +36,38 @@ Future<BirthDataGateDecision> loadBirthDataGateDecision({
   required String userId,
   required Future<Map<String, dynamic>?> Function(String userId) profileLoader,
 }) async {
+  final span = PerfTelemetry.startSpan(
+    'auth_gate',
+    finishEvent: 'auth_gate_resolved',
+    data: <String, Object?>{
+      'has_session': true,
+      'user_id_present': userId.trim().isNotEmpty,
+    },
+  );
   try {
     final row = await profileLoader(userId);
     final hasBirth = profileHasBirthData(row);
     debugPrint(
       'AUTH_GATE_BIRTH_CHECK user=$userId hasBirth=$hasBirth row=$row',
     );
+    span.finish(
+      data: <String, Object?>{
+        'target': hasBirth ? 'tabs' : 'onboarding',
+        'has_birth_data': hasBirth,
+      },
+    );
     return hasBirth
         ? const BirthDataGateDecision.tabs()
         : const BirthDataGateDecision.onboarding();
   } catch (error) {
     debugPrint('AUTH_GATE_BIRTH_CHECK_ERROR user=$userId error=$error');
+    span.finish(
+      status: 'error',
+      data: <String, Object?>{
+        'target': 'retry',
+        'error_type': error.runtimeType.toString(),
+      },
+    );
     return BirthDataGateDecision.retry(error: error);
   }
 }
@@ -65,6 +87,19 @@ class AuthGate extends StatelessWidget {
       builder: (context, snapshot) {
         final session = Supabase.instance.client.auth.currentSession;
         if (session == null) {
+          PerfTelemetry.logPointOnce(
+            'startup.auth_gate_no_session_start',
+            'auth_gate_start',
+            data: const <String, Object?>{'has_session': false},
+          );
+          PerfTelemetry.logPointOnce(
+            'startup.auth_gate_login_resolved',
+            'auth_gate_resolved',
+            data: const <String, Object?>{
+              'has_session': false,
+              'target': 'login',
+            },
+          );
           return const LoginPage();
         }
         return _BirthDataGate(

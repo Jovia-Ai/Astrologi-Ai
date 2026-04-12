@@ -98,3 +98,53 @@ def test_relationship_lens_uses_venus_affinity_before_house_only_language() -> N
     assert out["lens_projection"]["primary_domain"] == "relationships"
     assert "Yakınlık" in out["felt_line_tr"]
     assert "İçe çekildiğin yerde" not in out["felt_line_tr"]
+
+
+def test_why_line_surfaces_astro_signature_without_losing_human_language() -> None:
+    out = generate_daily_from_event(
+        {
+            **_event(aspect="square", house=3, transit_body="Neptune"),
+            "natal_point": "ASC",
+            "signature_tr": "Neptün □ Yükselen • Şu an güçlü, dalga dalga birkaç ay",
+        },
+        score=0.84,
+    )
+
+    assert "Bugünün tonunu özellikle" in out["why_it_feels_this_way_tr"]
+    assert "Neptün □ Yükselen" in out["why_it_feels_this_way_tr"]
+    assert "zihnin ve konuşma halin" in out["why_it_feels_this_way_tr"]
+    assert "dönemin ana temasının sana bugün hangi kapıdan dokunduğunu gösteriyor" in out["why_it_feels_this_way_tr"]
+
+
+def test_period_fallback_why_line_explicitly_ties_today_to_period_story() -> None:
+    out = generate_daily_from_event(
+        {
+            **_event(aspect="conjunction", house=7, transit_body="Venus"),
+            "signature_tr": "Venüs ☌ Güneş • Şu an güçlü, dalga dalga birkaç ay",
+            "period_story": {"title": "Yakınlıkta Yeni Denge"},
+        },
+        score=0.72,
+        is_period_derived=True,
+        force_daily_horizon=True,
+    )
+
+    assert "Venüs ☌ Güneş" in out["why_it_feels_this_way_tr"]
+    assert '"Yakınlıkta Yeni Denge" döneminin bugüne inen yüzü' in out["why_it_feels_this_way_tr"]
+
+
+def test_daily_why_line_can_still_reference_period_story_without_period_fallback() -> None:
+    out = generate_daily_from_event(
+        {
+            **_event(aspect="square", house=3, transit_body="Mercury"),
+            "signature_tr": "Merkür □ Güneş • Tam üstünde",
+            "period_story": {
+                "title": "Zihinsel Otoriteni İnşa Ediyorsun",
+                "big_picture": "Kimlik hattında gereksiz fazlalıklar ayıklanıyor.",
+            },
+        },
+        score=0.79,
+    )
+
+    assert "Merkür □ Güneş" in out["why_it_feels_this_way_tr"]
+    assert '"Zihinsel Otoriteni İnşa Ediyorsun" döneminin sana hangi kapıdan açıldığını gösteriyor' in out["why_it_feels_this_way_tr"]
+    assert "Bu hikâye tek katmanlı değil: Kimlik hattında gereksiz fazlalıklar ayıklanıyor" in out["why_it_feels_this_way_tr"]

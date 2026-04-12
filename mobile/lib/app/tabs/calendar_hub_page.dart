@@ -3,6 +3,7 @@ import 'dart:ui' show lerpDouble;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -10,6 +11,7 @@ import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/tabs/period_detail_page.dart';
 import 'package:mobile/app/tabs/period_marker_detail_page.dart';
+import 'package:mobile/app/timing/daily_transit_selection.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/period_peak_timeline_widget.dart';
 import 'package:mobile/app/timing/source_guards.dart';
@@ -699,51 +701,6 @@ List<String> _eventCardSelectionTexts(EventCardDto card) {
   ]);
 }
 
-bool _eventCardsSharePageMeaning(EventCardDto left, EventCardDto right) {
-  final leftEventId = left.eventId.trim();
-  final rightEventId = right.eventId.trim();
-  if (leftEventId.isNotEmpty && leftEventId == rightEventId) {
-    return true;
-  }
-  return _transitPageTextListsOverlap(
-    _eventCardSelectionTexts(left),
-    _eventCardSelectionTexts(right),
-  );
-}
-
-bool _eventAndPeriodSharePageMeaning(EventCardDto event, EventCardDto period) {
-  return _transitPageTextListsOverlap(
-    _eventCardSelectionTexts(event),
-    _eventCardSelectionTexts(period),
-  );
-}
-
-List<EventCardDto> _dedupeEventCardSelection(
-  Iterable<EventCardDto> cards, {
-  Iterable<EventCardDto> avoid = const <EventCardDto>[],
-}) {
-  final out = <EventCardDto>[];
-  for (final card in cards) {
-    if (_eventCardSelectionTexts(card).isEmpty) {
-      continue;
-    }
-    final duplicateInAvoid = avoid.any(
-      (existing) => _eventAndPeriodSharePageMeaning(existing, card),
-    );
-    if (duplicateInAvoid) {
-      continue;
-    }
-    final duplicate = out.any(
-      (existing) => _eventCardsSharePageMeaning(existing, card),
-    );
-    if (duplicate) {
-      continue;
-    }
-    out.add(card);
-  }
-  return out;
-}
-
 List<String> _periodCardPageTexts(PeriodCardDto card) {
   return _dedupeTransitPageTexts([card.title, card.subtitle, card.timeHint]);
 }
@@ -1006,10 +963,7 @@ _DailyHumanCardViewModel _buildDailyHumanCardViewModel({
 }
 
 bool _isDailyCardBackedByPeriod(EventCardDto card) {
-  final sourceHorizon = card.sourceHorizon.trim().toLowerCase();
-  return card.isPeriodDerived ||
-      card.todayFacingFallback ||
-      sourceHorizon == 'period';
+  return isDailyTransitCardBackedByPeriod(card);
 }
 
 // ignore: unused_element
@@ -1345,117 +1299,6 @@ String _markerSectionBody(List<PeriodMarkerDto> markers) {
   return 'Kısa gökyüzü işaretleri. Bunlar tam yorum değil; günün dikkat çeken eşikleri.';
 }
 
-double _scoreEventCardForToday(EventCardDto card, DateTime selectedDate) {
-  var score = 0.0;
-
-  if (card.eventFamily == 'lunation_trigger' ||
-      card.eventFamily == 'eclipse_trigger') {
-    score += 38;
-  }
-
-  score += switch (card.transitBody.trim().toLowerCase()) {
-    'moon' => 24,
-    'sun' => 18,
-    'mercury' => 16,
-    'mars' => 16,
-    'venus' => 10,
-    _ => 0,
-  };
-
-  score += switch (card.aspect.trim().toLowerCase()) {
-    'opposition' => 18,
-    'square' => 18,
-    'conjunction' => 15,
-    'quincunx' => 13,
-    'trine' => 10,
-    'sextile' => 8,
-    _ => 6,
-  };
-
-  final orb = card.orbDeg;
-  if (orb != null) {
-    score += (20 - (orb * 5)).clamp(0, 20).toDouble();
-  }
-
-  final exactInDays = card.tags.exactInDays;
-  if (exactInDays != null) {
-    score += switch (exactInDays) {
-      0 => 18,
-      1 => 12,
-      2 => 6,
-      _ => exactInDays >= 5 ? 0 : 4,
-    };
-  }
-
-  final phase = card.phase.trim().toLowerCase();
-  if (phase == 'exact' || phase == 'exactish') {
-    score += 16;
-  } else if (phase == 'applying') {
-    score += 8;
-  }
-
-  if (const {
-    'asc',
-    'dsc',
-    'mc',
-    'ic',
-  }.contains(card.natalPoint.trim().toLowerCase())) {
-    score += 14;
-  }
-
-  if (card.natalPromiseScore != null) {
-    score += card.natalPromiseScore!.clamp(0, 1) * 14;
-  }
-  score += card.tags.intensity.clamp(0, 1) * 8;
-
-  int? dayDelta(String raw) {
-    final value = raw.trim();
-    if (value.length < 10) {
-      return null;
-    }
-    final parsed = DateTime.tryParse(value.substring(0, 10));
-    if (parsed == null) {
-      return null;
-    }
-    final normalizedSelected = DateTime(
-      selectedDate.year,
-      selectedDate.month,
-      selectedDate.day,
-    );
-    return parsed.difference(normalizedSelected).inDays.abs();
-  }
-
-  for (final entry in <({String raw, double exact, double near})>[
-    (raw: card.timing.peakDateUtc, exact: 16, near: 8),
-    (raw: card.timing.entryDateUtc, exact: 10, near: 4),
-  ]) {
-    final delta = dayDelta(entry.raw);
-    if (delta == null) {
-      continue;
-    }
-    if (delta == 0) {
-      score += entry.exact;
-    } else if (delta == 1) {
-      score += entry.near;
-    }
-  }
-
-  if (card.horizon.trim().toLowerCase() == 'daily') {
-    score += 18;
-  }
-  if (card.bucket.trim().toLowerCase() == 'short') {
-    score += 12;
-  }
-
-  score += switch (card.importanceTier.trim().toLowerCase()) {
-    'critical' => 10,
-    'high' => 6,
-    _ => 0,
-  };
-
-  return score;
-}
-
 EventCardDto _convertPeriodToDaily(EventCardDto card, DateTime selectedDate) {
   final fallbackHuman = _buildDailyHumanCardViewModel(
     card: card,
@@ -1483,68 +1326,18 @@ _EventCardSelectionResult _deriveEventCardSelection({
   required NarrativeResponse narrative,
   required DateTime selectedDate,
 }) {
-  if (narrative.dailyEventCards.isNotEmpty ||
-      narrative.periodEventCards.isNotEmpty) {
-    final dailyCards = _dedupeEventCardSelection(narrative.dailyEventCards);
-    final periodCards = _dedupeEventCardSelection(
-      narrative.periodEventCards,
-      avoid: dailyCards,
-    );
-    if (dailyCards.isNotEmpty) {
-      return _EventCardSelectionResult(
-        dailyCards: dailyCards,
-        periodCards: periodCards,
-        usedPeriodFallback:
-            narrative.dailySelection?.usedPeriodFallback == true,
-        periodOnlyNote: narrative.dailySelection?.periodOnlyNote.trim() ?? '',
-      );
-    }
-    if (periodCards.isNotEmpty) {
-      return _EventCardSelectionResult(
-        dailyCards: <EventCardDto>[
-          _convertPeriodToDaily(periodCards.first, selectedDate),
-        ],
-        periodCards: periodCards,
-        usedPeriodFallback: true,
-        periodOnlyNote:
-            narrative.dailySelection?.periodOnlyNote.trim().isNotEmpty == true
-            ? narrative.dailySelection!.periodOnlyNote.trim()
-            : _currentCalendarL10n().calendarPeriodFromBackgroundToday,
-      );
-    }
-    return _EventCardSelectionResult(
-      dailyCards: const <EventCardDto>[],
-      periodCards: const <EventCardDto>[],
-      usedPeriodFallback: false,
-      periodOnlyNote: '',
-    );
-  }
-
-  final scored = [
-    for (final card in narrative.eventCards)
-      (card: card, score: _scoreEventCardForToday(card, selectedDate)),
-  ]..sort((a, b) => b.score.compareTo(a.score));
-
-  final dailyCards = _dedupeEventCardSelection(
-    <EventCardDto>[
-      for (final entry in scored)
-        if (entry.card.horizon.trim().toLowerCase() != 'period') entry.card,
-    ].take(2).toList(growable: false),
+  final selection = selectDailyTransitCardsForDate(
+    narrative: narrative,
+    selectedDate: selectedDate,
   );
-  final periodCards = _dedupeEventCardSelection(
-    <EventCardDto>[
-      for (final entry in scored)
-        if (entry.card.horizon.trim().toLowerCase() == 'period') entry.card,
-    ].take(3).toList(growable: false),
-    avoid: dailyCards,
-  );
-
+  final dailyCards = selection.dailyCards;
+  final periodCards = selection.periodCards;
   if (dailyCards.isNotEmpty) {
     return _EventCardSelectionResult(
       dailyCards: dailyCards,
       periodCards: periodCards,
-      usedPeriodFallback: false,
-      periodOnlyNote: '',
+      usedPeriodFallback: selection.usedPeriodFallback,
+      periodOnlyNote: selection.periodOnlyNote,
     );
   }
   if (periodCards.isNotEmpty) {
@@ -1554,7 +1347,9 @@ _EventCardSelectionResult _deriveEventCardSelection({
       ],
       periodCards: periodCards,
       usedPeriodFallback: true,
-      periodOnlyNote: _currentCalendarL10n().calendarPeriodFromBackgroundToday,
+      periodOnlyNote: selection.periodOnlyNote.isNotEmpty
+          ? selection.periodOnlyNote
+          : _currentCalendarL10n().calendarPeriodFromBackgroundToday,
     );
   }
   return const _EventCardSelectionResult(
@@ -2166,11 +1961,31 @@ class _CalendarHubPageState extends ConsumerState<CalendarHubPage>
               ],
               if (_error != null) ...[
                 SizedBox(height: spacing.sectionToContent),
-                Text(
-                  _error!,
-                  style: profile.typography.meta.copyWith(
-                    color: Theme.of(context).colorScheme.error,
-                  ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.cloud_off_outlined,
+                      size: 40,
+                      color: Colors.grey[400],
+                    ),
+                    const SizedBox(height: 12),
+                    Text(
+                      _error!,
+                      textAlign: TextAlign.center,
+                      style: profile.typography.meta.copyWith(
+                        color: profile.colors.textLight,
+                        height: 1.4,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    TextButton(
+                      onPressed: profileMap != null
+                          ? () => _loadBundle(profileMap)
+                          : null,
+                      child: Text(l10n.commonRetry),
+                    ),
+                  ],
                 ),
               ],
               SizedBox(height: spacing.majorSectionGap),
@@ -2423,7 +2238,7 @@ class _CalendarHubPageState extends ConsumerState<CalendarHubPage>
       }
       setState(() {
         _loading = false;
-        _error = exc.toString();
+        _error = context.l10n.errorGeneric;
       });
     }
   }
@@ -4798,6 +4613,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
     if (_dayKey(normalized) == _dayKey(_selectedDay)) {
       return;
     }
+    HapticFeedback.selectionClick();
     setState(() => _selectedDay = normalized);
     await _loadDaily(profile);
   }
@@ -5545,7 +5361,7 @@ class _AnimatedCalendarWeekRow extends StatelessWidget {
   }
 }
 
-class _CalendarDayCell extends StatelessWidget {
+class _CalendarDayCell extends StatefulWidget {
   const _CalendarDayCell({
     required this.day,
     required this.meta,
@@ -5561,12 +5377,53 @@ class _CalendarDayCell extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
+  State<_CalendarDayCell> createState() => _CalendarDayCellState();
+}
+
+class _CalendarDayCellState extends State<_CalendarDayCell>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _springController;
+  late final Animation<double> _springAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _springController = AnimationController(
+      duration: const Duration(milliseconds: 380),
+      vsync: this,
+    );
+    _springAnimation = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.88), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: 0.88, end: 1.12), weight: 40),
+      TweenSequenceItem(tween: Tween(begin: 1.12, end: 0.97), weight: 20),
+      TweenSequenceItem(tween: Tween(begin: 0.97, end: 1.0), weight: 15),
+    ]).animate(CurvedAnimation(
+      parent: _springController,
+      curve: Curves.easeOutCubic,
+    ));
+  }
+
+  @override
+  void didUpdateWidget(covariant _CalendarDayCell oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (!oldWidget.isSelected && widget.isSelected) {
+      _springController.forward(from: 0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _springController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final colors = profile.colors;
-    final signals = meta?.signalsCount ?? 0;
-    final critical = meta?.isCritical == true;
-    final fill = isSelected
+    final signals = widget.meta?.signalsCount ?? 0;
+    final critical = widget.meta?.isCritical == true;
+    final fill = widget.isSelected
         ? Color.alphaBlend(
             colors.primary.withValues(alpha: 0.18),
             colors.surface.withValues(alpha: 0.88),
@@ -5575,101 +5432,111 @@ class _CalendarDayCell extends StatelessWidget {
         ? colors.warmAccent.withValues(alpha: 0.12)
         : signals > 0
         ? colors.primary.withValues(alpha: 0.08)
-        : colors.surface.withValues(alpha: isCurrentMonth ? 0.46 : 0.26);
-    final border = isSelected
+        : colors.surface.withValues(alpha: widget.isCurrentMonth ? 0.46 : 0.26);
+    final border = widget.isSelected
         ? colors.primary.withValues(alpha: 0.9)
         : critical
         ? colors.warmAccent.withValues(alpha: 0.72)
-        : colors.separator.withValues(alpha: isCurrentMonth ? 0.46 : 0.22);
-    final textColor = isCurrentMonth
+        : colors.separator.withValues(
+            alpha: widget.isCurrentMonth ? 0.46 : 0.22,
+          );
+    final textColor = widget.isCurrentMonth
         ? colors.text
         : colors.textLight.withValues(alpha: 0.65);
 
     return KeyedSubtree(
-      key: ValueKey<String>('calendarDayCell_${_calendarDayKey(day)}'),
-      child: JoviaPressable(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(profile.radii.cardRadius - 2),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            final compact = constraints.maxHeight < 72;
-            final dotSize = compact ? 4.0 : 5.0;
-            final dotSpacing = compact ? 3.0 : 4.0;
-            final dayStyle = profile.typography.cardTitle.copyWith(
-              color: textColor,
-              fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-              fontSize: compact ? 15 : 17,
-              height: 1.0,
-            );
+      key: ValueKey<String>('calendarDayCell_${_calendarDayKey(widget.day)}'),
+      child: ScaleTransition(
+        scale: _springAnimation,
+        child: JoviaPressable(
+          onTap: widget.onTap,
+          borderRadius: BorderRadius.circular(profile.radii.cardRadius - 2),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final compact = constraints.maxHeight < 72;
+              final dotSize = compact ? 4.0 : 5.0;
+              final dotSpacing = compact ? 3.0 : 4.0;
+              final dayStyle = profile.typography.cardTitle.copyWith(
+                color: textColor,
+                fontWeight:
+                    widget.isSelected ? FontWeight.w700 : FontWeight.w600,
+                fontSize: compact ? 15 : 17,
+                height: 1.0,
+              );
 
-            return Container(
-              padding: EdgeInsets.symmetric(
-                horizontal: compact ? 7 : 8,
-                vertical: compact ? 8 : 10,
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(
-                  profile.radii.cardRadius - 2,
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 220),
+                curve: Curves.easeInOutCubic,
+                padding: EdgeInsets.symmetric(
+                  horizontal: compact ? 7 : 8,
+                  vertical: compact ? 8 : 10,
                 ),
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Colors.white.withValues(alpha: isSelected ? 0.16 : 0.08),
-                    fill,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    profile.radii.cardRadius - 2,
+                  ),
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      Colors.white.withValues(
+                        alpha: widget.isSelected ? 0.16 : 0.08,
+                      ),
+                      fill,
+                    ],
+                  ),
+                  border: Border.all(color: border),
+                  boxShadow: widget.isSelected
+                      ? [
+                          BoxShadow(
+                            color: colors.primary.withValues(alpha: 0.16),
+                            blurRadius: 18,
+                            offset: const Offset(0, 12),
+                            spreadRadius: -14,
+                          ),
+                        ]
+                      : null,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${widget.day.day}', style: dayStyle),
+                    const Spacer(),
+                    if (signals > 0)
+                      Row(
+                        children: [
+                          for (
+                            var index = 0;
+                            index < (signals > 3 ? 3 : signals);
+                            index++
+                          ) ...[
+                            Container(
+                              width: dotSize,
+                              height: dotSize,
+                              margin: EdgeInsets.only(
+                                right: index == 2 ? 0 : dotSpacing,
+                              ),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: critical
+                                    ? colors.warmAccent
+                                    : colors.primary.withValues(alpha: 0.9),
+                              ),
+                            ),
+                          ],
+                        ],
+                      )
+                    else
+                      Container(
+                        width: compact ? 12 : 16,
+                        height: 1,
+                        color: colors.separator.withValues(alpha: 0.45),
+                      ),
                   ],
                 ),
-                border: Border.all(color: border),
-                boxShadow: isSelected
-                    ? [
-                        BoxShadow(
-                          color: colors.primary.withValues(alpha: 0.16),
-                          blurRadius: 18,
-                          offset: const Offset(0, 12),
-                          spreadRadius: -14,
-                        ),
-                      ]
-                    : null,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('${day.day}', style: dayStyle),
-                  const Spacer(),
-                  if (signals > 0)
-                    Row(
-                      children: [
-                        for (
-                          var index = 0;
-                          index < (signals > 3 ? 3 : signals);
-                          index++
-                        ) ...[
-                          Container(
-                            width: dotSize,
-                            height: dotSize,
-                            margin: EdgeInsets.only(
-                              right: index == 2 ? 0 : dotSpacing,
-                            ),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: critical
-                                  ? colors.warmAccent
-                                  : colors.primary.withValues(alpha: 0.9),
-                            ),
-                          ),
-                        ],
-                      ],
-                    )
-                  else
-                    Container(
-                      width: compact ? 12 : 16,
-                      height: 1,
-                      color: colors.separator.withValues(alpha: 0.45),
-                    ),
-                ],
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

@@ -1075,4 +1075,725 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get aiComposerHint => 'Aila\'ya yaz...';
+
+  @override
+  String aiFreeRemaining(int count) {
+    return '$count ücretsiz kaldı';
+  }
+
+  @override
+  String aiCreditsRemaining(int count) {
+    return '$count kredi';
+  }
+
+  @override
+  String get aiProActive => 'Pro aktif';
+
+  @override
+  String get aiSending => 'Aila düşünüyor...';
+
+  @override
+  String get aiPaywallTitle => 'Kredi veya Pro ile devam et';
+
+  @override
+  String get aiPaywallBody => '3 ücretsiz sorunu kullandın. Sohbete devam etmek için kredi paketi al veya Pro\'yu aç.';
+
+  @override
+  String get aiPaywallLoading => 'Ürünler yükleniyor...';
+
+  @override
+  String get aiPaywallUnavailable => 'Satın alma şu anda kullanılamıyor.';
+
+  @override
+  String get aiPaywallRestoreHint => 'Satın alma sonrası webhook bakiyeni güncellerken birkaç saniye bekleyip mesajını tekrar dene.';
+
+  @override
+  String get aiProductQ1Title => '1 soru';
+
+  @override
+  String get aiProductQ1Subtitle => 'Tek cevap kredisi';
+
+  @override
+  String get aiProductQ5Title => '5 soru';
+
+  @override
+  String get aiProductQ5Subtitle => 'Kısa kullanım için kredi paketi';
+
+  @override
+  String get aiProductQ15Title => '15 soru';
+
+  @override
+  String get aiProductQ15Subtitle => 'Yoğun kullanım için kredi paketi';
+
+  @override
+  String get aiProductProTitle => 'Aylık Pro';
+
+  @override
+  String get aiProductProSubtitle => 'Pro aktifken sınırsız sohbet';
+
+  @override
+  String get aiStorePriceUnavailable => 'Hazır değil';
+
+  @override
+  String get aiPurchasePending => 'Satın alma alındı. Birkaç saniye içinde mesajını tekrar dene.';
+
+  @override
+  String get aiPurchaseNotSupported => 'Satın alma yalnızca iOS ve Android\'de kullanılabilir.';
+
+  @override
+  String aiChatUnavailable(Object error) {
+    return 'AI sohbet şu anda kullanılamıyor: $error';
+  }
+
+  @override
+  String get peopleFormAddTitle => 'Kişi ekle';
+
+  @override
+  String get peopleFormEditTitle => 'Kişiyi düzenle';
+
+  @override
+  String get peopleFormNameRequired => 'Ad zorunlu.';
+
+  @override
+  String get peopleFormBirthDateRequired => 'Doğum tarihi zorunlu.';
+
+  @override
+  String get peopleFormBirthTimeOptional => 'Doğum saati (isteğe bağlı)';
+
+  @override
+  String get peopleFormBirthTimeHint => 'Doğum saatini bilmiyorsan boş bırakabilirsin.';
+
+  @override
+  String get peopleFormCityRequired => 'Şehir zorunlu.';
+
+  @override
+  String get peopleFormCountryRequired => 'Ülke zorunlu.';
+
+  @override
+  String get peopleFormSaving => 'Kaydediliyor...';
+
+  @override
+  String get peopleFormLoginRequired => 'Kişi eklemek için önce giriş yap.';
+
+  @override
+  String peopleFormSaveFailed(Object error) {
+    return 'Kişi kaydedilemedi: $error';
+  }
+
+  @override
+  String get peoplePageLabel => 'Kişiler';
+
+  @override
+  String get peoplePageCenterText => 'çevren';
+
+  @override
+  String get peoplePageAddTooltip => 'Kişi ekle';
+
+  @override
+  String get peoplePageEmptyTitle => 'Henüz kayıtlı kişi yok';
+
+  @override
+  String get peoplePageEmptyBody => 'Bond ve sosyal akışlarda kullanmak için çevrenden kişileri burada kaydedebilirsin.';
+
+  @override
+  String get peoplePageCircleLabel => 'Çevren';
+
+  @override
+  String get peoplePageCircleTitle => 'Kayıtlı kişiler';
+
+  @override
+  String get peoplePageCircleBody => 'Bond, arkadaş profilleri ve sosyal akışlar için kullandığın kişi listesi burada görünür.';
+
+  @override
+  String get peoplePageHeroLabel => 'Kişiler';
+
+  @override
+  String get peoplePageHeroTitle => 'Bond ve sosyal akışların için çevreni burada tut';
+
+  @override
+  String get peoplePageHeroBody => 'Eklediğin kişiler bond eşleşmeleri, arkadaş profilleri ve daha sonra açılacak sosyal okumalar için aynı yerden kullanılır.';
+
+  @override
+  String get peoplePagePillAura => 'Aura';
+
+  @override
+  String get peoplePagePillBirthAxis => 'Doğum ekseni';
+
+  @override
+  String get peoplePagePillSocialTone => 'Sosyal ton';
+
+  @override
+  String get peoplePageListLoadFailedTitle => 'Kişi listesi alınamadı';
+
+  @override
+  String peoplePageListLoadFailed(Object error) {
+    return 'Kişi listesi yüklenemedi: $error';
+  }
+
+  @override
+  String get peoplePageFriendLabel => 'Kişi';
+
+  @override
+  String get peoplePageNoBirthTime => 'Doğum saati yok';
+
+  @override
+  String get peoplePageEditTooltip => 'Düzenle';
+
+  @override
+  String get peopleRepoListFailed => 'Kişi listesi alınamadı.';
+
+  @override
+  String get peopleRepoDetailFailed => 'Kişi detayı alınamadı.';
+
+  @override
+  String get peopleRepoCreateFailed => 'Kişi oluşturulamadı.';
+
+  @override
+  String get peopleRepoUpdateFailed => 'Kişi güncellenemedi.';
+
+  @override
+  String get peopleRepoProfilesListUnsupported => 'Profiles tablosu kayıtlı kişileri listelemeyi desteklemiyor.';
+
+  @override
+  String get peopleRepoProfilesDetailUnsupported => 'Profiles tablosu bu kayıtlı kişiyi okumayı desteklemiyor.';
+
+  @override
+  String get peopleRepoProfilesCreateUnsupported => 'Profiles tablosu ayrı kayıtlı kişi oluşturmayı desteklemiyor.';
+
+  @override
+  String peopleRepoTableNotFound(Object candidates) {
+    return 'Kişi kayıtları için uygun tablo bulunamadı. Denenenler: $candidates';
+  }
+
+  @override
+  String get peopleRepoTableValidationFailed => 'Kişi tablosu doğrulanamadı.';
+
+  @override
+  String get forumActiveTransitFallback => 'Gökyüzü hareketli';
+
+  @override
+  String get transitSkyCollectiveFallback => 'Kolektifte hareket var.';
+
+  @override
+  String get transitSkyTypeIngress => 'Yeni alan';
+
+  @override
+  String get transitSkyTypeFullMoon => 'Dolunay';
+
+  @override
+  String get transitSkyTypeNewMoon => 'Yeniay';
+
+  @override
+  String get transitSkyTypeExactAspect => 'Keskin açı';
+
+  @override
+  String get transitSkyTypeEclipse => 'Tutulma';
+
+  @override
+  String get transitSkyTypeRetroStart => 'Retro başlıyor';
+
+  @override
+  String get transitSkyTypeRetroEnd => 'Retro bitiyor';
+
+  @override
+  String get transitSkyTimingNow => 'Şimdi';
+
+  @override
+  String get transitSkyTimingThisWeek => 'Bu hafta';
+
+  @override
+  String get transitMeaningRelationships => 'İlişkiler';
+
+  @override
+  String get transitMeaningMoney => 'Para';
+
+  @override
+  String get transitMeaningVisibility => 'Görünürlük';
+
+  @override
+  String get transitMeaningDecision => 'Karar';
+
+  @override
+  String get transitMeaningCloseness => 'Yakınlık';
+
+  @override
+  String get transitMeaningBuilding => 'İnşa';
+
+  @override
+  String get transitMeaningRelease => 'Bırakma';
+
+  @override
+  String get transitMeaningTension => 'Gerilim';
+
+  @override
+  String get transitMeaningClarifying => 'Netleşme';
+
+  @override
+  String get transitMeaningTransformation => 'Dönüşüm';
+
+  @override
+  String get profileDetailFallbackEyebrow => 'Derin okuma';
+
+  @override
+  String get profileDetailFallbackTitle => 'Bu kart için detay hazırlanıyor';
+
+  @override
+  String get profileDetailFallbackIntro => 'Ana anlatı akışı şu an boş döndü.';
+
+  @override
+  String get profileDetailFallbackBody => 'Kartın anlamı yine burada açılacak; şu an içerik akışının gelmesini bekliyoruz.';
+
+  @override
+  String get bondSelfName => 'Ben';
+
+  @override
+  String get bondPageSelectPerson => 'Kişi seç';
+
+  @override
+  String get bondPageLensFallback => 'bağ lensi';
+
+  @override
+  String get bondPageHeroTitle => 'İki kişi arasındaki dinamiği buradan aç';
+
+  @override
+  String get bondPageHeroBody => 'Kendi profilinle kayıtlı bir kişiyi seç, sonra aranızdaki ana ritmi ve gerilim hattını aynı akışta oku.';
+
+  @override
+  String get bondPageLensLabel => 'Lens';
+
+  @override
+  String get bondPageBirthDataMissingTitle => 'Bond için doğum verisi gerekli';
+
+  @override
+  String get bondPageBirthDataMissingBody => 'Kendi doğum tarihi ve konum bilgini tamamladığında bu eşleşme daha doğru açılır.';
+
+  @override
+  String get bondPagePreparing => 'Hazırlanıyor...';
+
+  @override
+  String get bondPageOpenResult => 'Bond sonucunu aç';
+
+  @override
+  String bondPageAnalyzeFailed(Object error) {
+    return 'Bond analizi alınamadı: $error';
+  }
+
+  @override
+  String get bondPickerLabel => 'Kişi seçimi';
+
+  @override
+  String get bondPickerTitle => 'Bond için ikinci kişiyi seç';
+
+  @override
+  String get bondPickerAddPerson => 'Yeni kişi ekle';
+
+  @override
+  String get bondPickerOwnProfile => 'Kendi profilin';
+
+  @override
+  String get bondPickerMe => 'Sen';
+
+  @override
+  String bondPickerLoadFailed(Object error) {
+    return 'Kişiler yüklenemedi: $error';
+  }
+
+  @override
+  String get bondPairEyebrow => 'Seçim';
+
+  @override
+  String get bondPairTitle => 'İki kişiyi karşılaştır';
+
+  @override
+  String get bondPairBody => 'İki profili seç, sonra aralarındaki bağın ana ritmini aynı akışta gör.';
+
+  @override
+  String get storyStudioTopLabel => 'Story Studio';
+
+  @override
+  String get storyStudioTopCenter => 'iz kartları';
+
+  @override
+  String get storyStudioLoadingProfile => 'Profil yükleniyor...';
+
+  @override
+  String get storyStudioBirthDataRequired => 'Story Studio açılmadan önce doğum tarihi, saati ve konumu gerekli.';
+
+  @override
+  String get storyStudioIdentityTitle => 'Kimlik kartları';
+
+  @override
+  String get storyStudioIdentityBody => 'Haritandaki baskın yerleşimleri, iç itkiyi ve gölge hattını kart kart aç.';
+
+  @override
+  String get storyStudioIdentityTab => 'Kimlik';
+
+  @override
+  String get storyStudioMomentTitle => 'Canlı kaynaklar';
+
+  @override
+  String get storyStudioMomentBody => 'Şu an çalışan yüzeylere dön ve aktif akışları oradan aç.';
+
+  @override
+  String get storyStudioMomentTab => 'An';
+
+  @override
+  String get storyStudioCardsLoadFailed => 'Kartlar yüklenemedi';
+
+  @override
+  String get storyStudioCardsPreparing => 'Kartlar hazırlanıyor';
+
+  @override
+  String get storyStudioCardsPreparingBody => 'Kişilik imprint katmanı backend\'den çekiliyor.';
+
+  @override
+  String get storyStudioCardsNotFound => 'Kart bulunamadı';
+
+  @override
+  String get storyStudioCardsNotFoundBody => 'Bu profilden henüz Story Studio kartı üretilemedi.';
+
+  @override
+  String get storyStudioMomentPanelTitle => 'Canlı stüdyo kaynakları';
+
+  @override
+  String get storyStudioMomentPanelBody => 'Bu bölüm yeni kart üretmez; seni aktif Home ve Bond yüzeylerine geri gönderir.';
+
+  @override
+  String get storyStudioReturnToSources => 'Kaynaklara dön';
+
+  @override
+  String get storyStudioTraitLabel => 'Öne çıkan çizgi';
+
+  @override
+  String get storyStudioInnerDriveLabel => 'İç itki';
+
+  @override
+  String get storyStudioWhenTooMuchLabel => 'Zorlandığında';
+
+  @override
+  String get storyStudioRefreshing => 'Yenileniyor...';
+
+  @override
+  String get storyStudioKindAspect => 'Açı';
+
+  @override
+  String get storyStudioKindHousePlacement => 'Ev yerleşimi';
+
+  @override
+  String get storyStudioKindSignPlacement => 'Burç yerleşimi';
+
+  @override
+  String get storyStudioKindLayer => 'Katman';
+
+  @override
+  String storyStudioLoadFailed(Object error) {
+    return 'Story Studio yüklenemedi: $error';
+  }
+
+  @override
+  String get relationshipPreviewLabel => 'İlişki görünümü';
+
+  @override
+  String get relationshipPreviewBirthDataRequiredTitle => 'İlişki görünümü için doğum verisi gerekli';
+
+  @override
+  String get relationshipPreviewBirthDataRequiredBody => 'Doğum tarihi, saati ve konum bilgisi tamamlandığında ilişki hattı burada açılır.';
+
+  @override
+  String get relationshipPreviewLoadFailedTitle => 'İlişki akışı alınamadı';
+
+  @override
+  String get relationshipPreviewMainThemeLabel => 'Ana tema';
+
+  @override
+  String get relationshipPreviewDriversLabel => 'Bugünü kuran etkiler';
+
+  @override
+  String get relationshipPreviewBackdropLabel => 'Arka plan';
+
+  @override
+  String get relationshipPreviewUpperMeaningLabel => 'Üst anlam';
+
+  @override
+  String get relationshipPreviewSupportingThemeLabel => 'Yan tema';
+
+  @override
+  String get relationshipPreviewWhyImportant => 'Neden burada';
+
+  @override
+  String get relationshipPreviewFallbackNotice => 'İlişki lensi yavaş döndüğü için ekran daha genel yorumla açıldı.';
+
+  @override
+  String get relationshipPreviewTimeout => 'İlişki yorumu zamanında dönmedi. Biraz sonra tekrar deneyebilirsin.';
+
+  @override
+  String get relationshipPreviewInvalidProfile => 'Gönderilen profil verisi ilişki akışı için yeterli değil.';
+
+  @override
+  String get relationshipPreviewServerError => 'İlişki akışı şu an sunucudan alınamıyor.';
+
+  @override
+  String get relationshipPreviewFetchFailed => 'İlişki akışı alınamadı.';
+
+  @override
+  String get relationshipPreviewStageStarted => 'Başladı';
+
+  @override
+  String get relationshipPreviewStageIntensifying => 'Yoğunlaşıyor';
+
+  @override
+  String get relationshipPreviewStagePeak => 'Zirve';
+
+  @override
+  String get relationshipPreviewStageResolving => 'Çözülüyor';
+
+  @override
+  String get relationshipPreviewPeriodToToday => 'Dönemden bugüne';
+
+  @override
+  String get relationshipPreviewDefaultDriversFallback => 'Bugün ilişki tarafında hareket var, ama tek bir tema henüz tam olarak ayrışmıyor.';
+
+  @override
+  String get relationshipPreviewDefaultBackdropFallback => 'Altta çalışan dönem hattı var, ama bunun ilişki tarafındaki asıl sonucu biraz daha zamanla netleşecek.';
+
+  @override
+  String get friendProfileTitle => 'Kişi profili';
+
+  @override
+  String get friendProfileNotFound => 'Kişi bulunamadı.';
+
+  @override
+  String get friendProfileEditTooltip => 'Kişiyi düzenle';
+
+  @override
+  String friendProfileLoadFailed(Object error) {
+    return 'Kişi yüklenemedi: $error';
+  }
+
+  @override
+  String get profileDetailInfluences => 'Etkileyenler';
+
+  @override
+  String get profileDetailAllCards => 'Tüm kartlar';
+
+  @override
+  String get profileDetailSignatureCardsTitle => 'Kişilik imzası kartları';
+
+  @override
+  String get profileDetailDefaultEyebrow => 'Detay';
+
+  @override
+  String get profileDetailDefaultTitle => 'Detay akışı';
+
+  @override
+  String get profileDetailWhyHere => 'Neden burada';
+
+  @override
+  String profileDetailNextLabel(Object title) {
+    return 'Sıradaki: $title';
+  }
+
+  @override
+  String profileDetailContinuationTitle(Object title) {
+    return '$title · Devam';
+  }
+
+  @override
+  String get profileDetailSideA => 'Bir tarafı';
+
+  @override
+  String get profileDetailSideB => 'Diğer tarafı';
+
+  @override
+  String get profileDetailContinueFlow => 'Akışı sürdür';
+
+  @override
+  String get profileDetailContinueFromHere => 'Buradan devam et';
+
+  @override
+  String profileDetailContinuationFooter(int page, int total) {
+    return 'Devam $page/$total';
+  }
+
+  @override
+  String get profileDetailFlowEnds => 'Akış burada bitiyor';
+
+  @override
+  String get periodFallbackEffectTitle => 'Dönem etkisi';
+
+  @override
+  String periodIntentSummaryGeneric(Object title) {
+    return '$title için bu dönemde takip edilecek pencereler var.';
+  }
+
+  @override
+  String periodIntentTopDays(Object title, Object dates) {
+    return '$title odağı için öne çıkan günler: $dates.';
+  }
+
+  @override
+  String periodIntentScores(Object ratings) {
+    return 'Puanlar: $ratings';
+  }
+
+  @override
+  String get periodIntentBeautyCare => 'Bakım ve Beden';
+
+  @override
+  String get periodIntentBusiness => 'İş ve Üretim';
+
+  @override
+  String get periodIntentMoney => 'Para ve Kaynak';
+
+  @override
+  String get periodIntentRelationship => 'İlişki ve Uyum';
+
+  @override
+  String periodIntentLabel(int index) {
+    return 'Niyet $index';
+  }
+
+  @override
+  String get periodDefaultTitle => 'Dönem';
+
+  @override
+  String get periodMainFlowFallback => 'Bu dönemin ana akışı.';
+
+  @override
+  String get periodMainThemeFallback => 'Bu dönemin ana teması.';
+
+  @override
+  String get periodHighlightedThemeFallback => 'Bu dönemde öne çıkan tema.';
+
+  @override
+  String get periodThemeCollectFallback => 'Bu dönemde öne çıkan tema burada toplanır.';
+
+  @override
+  String get periodEssenceTitle => 'Bu dönemin özü';
+
+  @override
+  String get periodSummaryUnavailable => 'Bu döneme ait özet anlatım bulunamadı.';
+
+  @override
+  String get periodTimeLabel => 'Zaman';
+
+  @override
+  String get periodGuidancePrefix => 'Küçük pratik:';
+
+  @override
+  String get periodDifficultyPrefix => 'Bunu zorlaştıran şey genelde şu olur:';
+
+  @override
+  String get periodHowItWorksTitle => 'Nasıl çalışıyor';
+
+  @override
+  String get periodAsksTitle => 'Senden ne istiyor';
+
+  @override
+  String get periodWatchTitle => 'Dikkat edilmesi gereken';
+
+  @override
+  String get periodBuildsTitle => 'Sende neyi geliştiriyor';
+
+  @override
+  String get periodEffectLabel => 'Etki';
+
+  @override
+  String get periodTechnicalNoteLabel => 'Teknik not';
+
+  @override
+  String get periodCoreMainThemeTitle => 'Bu Dönemin Ana Teması';
+
+  @override
+  String get periodCoreSummaryUnavailable => 'Bu dönem için period özeti bulunamadı.';
+
+  @override
+  String get profileExperimentPreviewLabel => 'Preview';
+
+  @override
+  String get profileExperimentCenterText => 'Nocturne Identity';
+
+  @override
+  String get profileExperimentMenuTooltip => 'Tema ve deney ayarları';
+
+  @override
+  String get profileExperimentHeroFallback => 'Haritanın ilk izi burada toplanır.';
+
+  @override
+  String get profileExperimentSignatureFallback => 'Kimlik izi';
+
+  @override
+  String get profileExperimentNatalPanelBody => 'Bu preview, kimliği tam portre hissiyle açan spotlight hero üzerinde çalışıyor. Alt chapter katmanları sonraki patchte eklenecek.';
+
+  @override
+  String get profileExperimentTimingPanelBody => 'Timing modu burada sadece odak değişimi gibi davranır. Alt dönem kompozisyonu sonraki patchte gelecek.';
+
+  @override
+  String get profileExperimentMenuTitle => 'Nocturne experiment';
+
+  @override
+  String get profileExperimentMenuBody => 'Patch 1 sadece üst kimlik kompozisyonunu dener.';
+
+  @override
+  String get profileExperimentSeeProfile => 'Profili gör';
+
+  @override
+  String get profileExperimentHeroLineFallback => 'Kimliğin bu ekranda yeni bir odak yüzeyine toplanır.';
+
+  @override
+  String get profileExperimentAuraLabel => 'Aura';
+
+  @override
+  String get profileExperimentRulerLabel => 'Yönetici';
+
+  @override
+  String get profileExperimentWaiting => 'Bekliyor';
+
+  @override
+  String get profileExperimentRulerBodyFallback => '1. ev yöneticisi okunuyor';
+
+  @override
+  String get profileExperimentRisingTrace => 'Yükselen izi';
+
+  @override
+  String get profileExperimentSignatureLabel => 'İmza';
+
+  @override
+  String get profileExperimentSpotlightCards => 'Spotlight Cards';
+
+  @override
+  String get profileExperimentSwipe => 'Kaydır';
+
+  @override
+  String get profileExperimentFocusTitle => 'Okuma odağı';
+
+  @override
+  String get profileExperimentNatalFocus => 'Senin Yapın';
+
+  @override
+  String get profileExperimentTimingFocus => 'Şu Anki Dönemin';
+
+  @override
+  String get profileExperimentUnnamedProfile => 'İsimsiz Profil';
+
+  @override
+  String get profileExperimentFireDominant => 'Ateş baskın';
+
+  @override
+  String get profileExperimentWaterDominant => 'Su baskın';
+
+  @override
+  String get profileExperimentAirDominant => 'Hava baskın';
+
+  @override
+  String get profileExperimentEarthDominant => 'Toprak baskın';
+
+  @override
+  String get errorTimeout => 'Sunucu şu an yavaş, birazdan tekrar dene.';
+
+  @override
+  String get errorNoConnection => 'Bağlantı kurulamadı.';
+
+  @override
+  String get errorGeneric => 'Bir sorun oluştu, tekrar dene.';
 }

@@ -84,38 +84,47 @@ class PeriodDetailPage extends StatelessWidget {
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
-              JoviaReveal(
-                child: JoviaEditorialHeroBlock(
-                  label: detail.eyebrow.trim().isNotEmpty
-                      ? detail.eyebrow.trim()
-                      : (isDaily
-                            ? l10n.periodDetailTodayEyebrow
-                            : l10n.periodDetailPeriodEyebrow),
-                  title: detail.headline,
-                  titleStyle: heroTitleStyle,
-                  titleMaxLines: heroTitleMaxLines,
-                  body: detail.summary,
-                  bodyMaxLines: 4,
-                  surface: true,
-                  large: true,
-                  glyph: JoviaUiIcon(
-                    asset: JoviaUiAsset.orbitPlanet,
-                    size: 16,
-                    color: colors.primary,
-                  ),
-                  background: JoviaColorWash(asset: heroWash, opacity: 0.16),
-                  accent: Padding(
-                    padding: const EdgeInsets.only(top: 10, right: 2),
-                    child: JoviaIllustrationAccent(
-                      asset: isDaily
-                          ? JoviaIllustrationAsset.planet
-                          : JoviaIllustrationAsset.layers,
-                      width: 68,
-                      height: 68,
-                      opacity: 0.28,
+              Hero(
+                tag: 'transit_title_${card.id}',
+                child: Material(
+                  type: MaterialType.transparency,
+                  child: JoviaReveal(
+                    child: JoviaEditorialHeroBlock(
+                      label: detail.eyebrow.trim().isNotEmpty
+                          ? detail.eyebrow.trim()
+                          : (isDaily
+                                ? l10n.periodDetailTodayEyebrow
+                                : l10n.periodDetailPeriodEyebrow),
+                      title: detail.headline,
+                      titleStyle: heroTitleStyle,
+                      titleMaxLines: heroTitleMaxLines,
+                      body: detail.summary,
+                      bodyMaxLines: 4,
+                      surface: true,
+                      large: true,
+                      glyph: JoviaUiIcon(
+                        asset: JoviaUiAsset.orbitPlanet,
+                        size: 16,
+                        color: colors.primary,
+                      ),
+                      background: JoviaColorWash(
+                        asset: heroWash,
+                        opacity: 0.16,
+                      ),
+                      accent: Padding(
+                        padding: const EdgeInsets.only(top: 10, right: 2),
+                        child: JoviaIllustrationAccent(
+                          asset: isDaily
+                              ? JoviaIllustrationAsset.planet
+                              : JoviaIllustrationAsset.layers,
+                          width: 68,
+                          height: 68,
+                          opacity: 0.28,
+                        ),
+                      ),
+                      footer: _HeroMeta(detail: detail),
                     ),
                   ),
-                  footer: _HeroMeta(detail: detail),
                 ),
               ),
               if (detail.hasUmbrella) ...<Widget>[

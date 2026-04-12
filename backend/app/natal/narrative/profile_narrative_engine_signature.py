@@ -1266,8 +1266,7 @@ def build_profile_narrative_signature(
     seed_key: str | None = None,
     block_spine_contract: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> Dict[str, Any]:
-    if (locale or "tr").lower() != "tr":
-        locale = "tr"
+    locale = (locale or "tr").lower()
     facts = normalize_facts(chart, natal_graph)
     if seed_key:
         facts = dict(facts)

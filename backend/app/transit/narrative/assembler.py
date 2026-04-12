@@ -120,6 +120,7 @@ def assemble_blocks(
     year_summary: Mapping[str, Any] | None = None,
     selected_date: str | None = None,
     seed_context: Mapping[str, Any] | None = None,
+    locale: str = "tr",
 ) -> List[UIBlock]:
     blocks: List[UIBlock] = []
     range_payload = dict(calendar_public.get("range") or {})
@@ -229,7 +230,7 @@ def assemble_blocks(
             labels=label_values,
             seed=narrative_seed,
             top_event=(selected_day.get("top_events") or [None])[0],
-            locale="tr",
+            locale=locale,
         )
 
         blocks.append(

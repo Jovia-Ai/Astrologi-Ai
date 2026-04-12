@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mobile/app/people/people_list_page.dart';
+import 'package:mobile/app/telemetry/perf_telemetry.dart';
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
 import 'ai_page.dart';
 import 'bond_page.dart';
@@ -29,6 +30,21 @@ class _TabsShellState extends State<TabsShell> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
   int _index = 0;
   final Set<int> _builtIndexes = <int>{0};
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+      PerfTelemetry.logPointOnce(
+        'startup.tabs_shell_visible',
+        'tabs_shell_visible',
+        data: <String, Object?>{'initial_index': _index},
+      );
+    });
+  }
 
   List<_TabItem> _buildTabs(BuildContext context) {
     final l10n = context.l10n;
@@ -221,6 +237,12 @@ class _TabsShellState extends State<TabsShell> {
       bottomNavigationBar: JoviaBottomNavBar(
         currentIndex: activeIndex,
         onTap: (value) => setState(() {
+          if (value == 4 && _index != value && _builtIndexes.contains(value)) {
+            PerfTelemetry.logPoint(
+              'profile_reopen_same_session',
+              data: const <String, Object?>{'source': 'tabs_shell'},
+            );
+          }
           _index = value;
           _builtIndexes.add(value);
         }),

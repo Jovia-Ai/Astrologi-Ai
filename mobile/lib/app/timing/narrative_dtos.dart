@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
+import 'package:mobile/l10n/current_localizations.dart';
 
 String _tr(dynamic value) => normalizeTurkishText(value?.toString() ?? '');
 
@@ -1079,7 +1080,7 @@ class PeriodPeakTimelineItemDto {
     if (signature.isNotEmpty) {
       return signature;
     }
-    return 'Dönem etkisi';
+    return currentL10n().periodFallbackEffectTitle;
   }
 
   factory PeriodPeakTimelineItemDto.fromMap(Map<String, dynamic> map) {
@@ -1300,11 +1301,11 @@ class IntentSummaryDto {
         .toList();
     final title = _intentTitle(intent, index: index);
     final summary = topDates.isEmpty
-        ? '$title için bu dönemde takip edilecek pencereler var.'
-        : '$title odağı için öne çıkan günler: ${topDates.join(', ')}.';
+        ? currentL10n().periodIntentSummaryGeneric(title)
+        : currentL10n().periodIntentTopDays(title, topDates.join(', '));
     final timeHint = topRatings.isEmpty
         ? ''
-        : 'Puanlar: ${topRatings.join(' / ')}';
+        : currentL10n().periodIntentScores(topRatings.join(' / '));
     return IntentSummaryDto(
       intent: intent,
       title: _tr(title),
@@ -1317,15 +1318,17 @@ class IntentSummaryDto {
   static String _intentTitle(String intent, {required int index}) {
     switch (intent) {
       case 'beauty_care':
-        return 'Bakım ve Beden';
+        return currentL10n().periodIntentBeautyCare;
       case 'business':
-        return 'İş ve Üretim';
+        return currentL10n().periodIntentBusiness;
       case 'money':
-        return 'Para ve Kaynak';
+        return currentL10n().periodIntentMoney;
       case 'relationship':
-        return 'İlişki ve Uyum';
+        return currentL10n().periodIntentRelationship;
       default:
-        return intent.trim().isNotEmpty ? intent : 'Niyet ${index + 1}';
+        return intent.trim().isNotEmpty
+            ? intent
+            : currentL10n().periodIntentLabel(index + 1);
     }
   }
 }
@@ -1370,7 +1373,7 @@ class PeriodCardDto {
       id: eventCard.eventId.isNotEmpty ? eventCard.eventId : 'event-$index',
       title: eventCard.title.trim().isNotEmpty
           ? eventCard.title.trim()
-          : 'Dönem',
+          : currentL10n().periodDefaultTitle,
       subtitle: pickFirst([
         eventCard.opening,
         eventCard.essence,
@@ -1378,7 +1381,7 @@ class PeriodCardDto {
         eventCard.whyNow,
         story?.lead ?? '',
         story?.bigPicture ?? '',
-        'Bu dönemin ana akışı.',
+        currentL10n().periodMainFlowFallback,
       ]),
       timeHint: pickFirst([
         eventCard.timeHintTr,
@@ -1399,10 +1402,14 @@ class PeriodCardDto {
     final periodUpperMeaning = periodCore?.upperMeaning.trim() ?? '';
     final title = marker.title.isNotEmpty
         ? marker.title
-        : (periodTitle.isNotEmpty ? periodTitle : 'Dönem');
+        : (periodTitle.isNotEmpty
+              ? periodTitle
+              : currentL10n().periodDefaultTitle);
     final subtitle = marker.summary.isNotEmpty
         ? marker.summary
-        : (periodStory.isNotEmpty ? periodStory : 'Bu dönemin ana teması.');
+        : (periodStory.isNotEmpty
+              ? periodStory
+              : currentL10n().periodMainThemeFallback);
     final timeHint = marker.timeHint.isNotEmpty
         ? marker.timeHint
         : (periodUpperMeaning.isNotEmpty ? periodUpperMeaning : '');
@@ -1425,7 +1432,7 @@ class PeriodCardDto {
       title: theme.title,
       subtitle: theme.summary.isNotEmpty
           ? theme.summary
-          : 'Bu dönemde öne çıkan tema.',
+          : currentL10n().periodHighlightedThemeFallback,
       timeHint: theme.timeHint,
       eventCard: null,
       theme: theme,
@@ -1858,7 +1865,7 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
       final summary = _firstDistinctSnippet([
         subtitle,
         periodCore?.coreStory ?? '',
-        'Bu dönemde öne çıkan tema burada toplanır.',
+        currentL10n().periodThemeCollectFallback,
       ], maxSentences: 2);
       final timingNote = _firstDistinctSnippet(
         [timeHint],
@@ -1868,10 +1875,10 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
       final sections = _dedupeDetailSections(
         <PeriodDetailSectionDto>[
           PeriodDetailSectionDto(
-            title: 'Bu dönemin özü',
+            title: currentL10n().periodEssenceTitle,
             body: summary.isNotEmpty
                 ? summary
-                : 'Bu döneme ait özet anlatım bulunamadı.',
+                : currentL10n().periodSummaryUnavailable,
           ),
         ],
         avoid: <String>[summary, timingNote],
@@ -1879,7 +1886,10 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
       final metaRows = _dedupeDetailMetaRows(
         <PeriodDetailMetaRowDto>[
           if (timeHint.trim().isNotEmpty)
-            PeriodDetailMetaRowDto(label: 'Zaman', value: timeHint.trim()),
+            PeriodDetailMetaRowDto(
+              label: currentL10n().periodTimeLabel,
+              value: timeHint.trim(),
+            ),
         ],
         avoid: <String>[
           summary,
@@ -1889,10 +1899,12 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
       );
       return PeriodDetailNarrativeDto(
         eyebrow: eyebrow,
-        headline: title.trim().isNotEmpty ? title.trim() : 'Dönem',
+        headline: title.trim().isNotEmpty
+            ? title.trim()
+            : currentL10n().periodDefaultTitle,
         summary: summary.isNotEmpty
             ? summary
-            : 'Bu döneme ait özet anlatım bulunamadı.',
+            : currentL10n().periodSummaryUnavailable,
         timingNote: timingNote,
         umbrellaTitle: '',
         umbrellaBody: '',
@@ -1901,10 +1913,10 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
             ? sections
             : <PeriodDetailSectionDto>[
                 PeriodDetailSectionDto(
-                  title: 'Bu dönemin özü',
+                  title: currentL10n().periodEssenceTitle,
                   body: summary.isNotEmpty
                       ? summary
-                      : 'Bu döneme ait özet anlatım bulunamadı.',
+                      : currentL10n().periodSummaryUnavailable,
                 ),
               ],
         metaRows: metaRows,
@@ -1982,7 +1994,10 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
         _DetailSourceCandidate(source: 'event.upper', value: event.upper),
         _DetailSourceCandidate(
           source: 'event.guidance',
-          value: _listToNarrative(event.guidance, prefix: 'Küçük pratik:'),
+          value: _listToNarrative(
+            event.guidance,
+            prefix: currentL10n().periodGuidancePrefix,
+          ),
         ),
       ],
       avoid: <String>[
@@ -2017,7 +2032,7 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
           source: 'event.watch_out',
           value: _listToNarrative(
             event.watchOut,
-            prefix: 'Bunu zorlaştıran şey genelde şu olur:',
+            prefix: currentL10n().periodDifficultyPrefix,
           ),
         ),
       ],
@@ -2058,19 +2073,28 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
 
     final rawSections = <PeriodDetailSectionDto>[
       if (essence.value.isNotEmpty)
-        PeriodDetailSectionDto(title: 'Bu dönemin özü', body: essence.value),
+        PeriodDetailSectionDto(
+          title: currentL10n().periodEssenceTitle,
+          body: essence.value,
+        ),
       if (mechanism.value.isNotEmpty)
-        PeriodDetailSectionDto(title: 'Nasıl çalışıyor', body: mechanism.value),
+        PeriodDetailSectionDto(
+          title: currentL10n().periodHowItWorksTitle,
+          body: mechanism.value,
+        ),
       if (asks.value.isNotEmpty)
-        PeriodDetailSectionDto(title: 'Senden ne istiyor', body: asks.value),
+        PeriodDetailSectionDto(
+          title: currentL10n().periodAsksTitle,
+          body: asks.value,
+        ),
       if (watchout.value.isNotEmpty)
         PeriodDetailSectionDto(
-          title: 'Dikkat edilmesi gereken',
+          title: currentL10n().periodWatchTitle,
           body: watchout.value,
         ),
       if (builds.value.isNotEmpty)
         PeriodDetailSectionDto(
-          title: 'Sende neyi geliştiriyor',
+          title: currentL10n().periodBuildsTitle,
           body: builds.value,
         ),
     ];
@@ -2092,14 +2116,17 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
       <PeriodDetailMetaRowDto>[
         if (event.signatureTr.trim().isNotEmpty)
           PeriodDetailMetaRowDto(
-            label: 'Etki',
+            label: currentL10n().periodEffectLabel,
             value: event.signatureTr.trim(),
           ),
         if (timing.value.trim().isNotEmpty)
-          PeriodDetailMetaRowDto(label: 'Zaman', value: timing.value.trim()),
+          PeriodDetailMetaRowDto(
+            label: currentL10n().periodTimeLabel,
+            value: timing.value.trim(),
+          ),
         if (event.technicalNote.trim().isNotEmpty)
           PeriodDetailMetaRowDto(
-            label: 'Teknik not',
+            label: currentL10n().periodTechnicalNoteLabel,
             value: event.technicalNote.trim(),
           ),
       ],
@@ -2114,12 +2141,14 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
 
     return PeriodDetailNarrativeDto(
       eyebrow: umbrellaTitle.value,
-      headline: headline.value.isNotEmpty ? headline.value : 'Dönem',
+      headline: headline.value.isNotEmpty
+          ? headline.value
+          : currentL10n().periodDefaultTitle,
       summary: opening.value.isNotEmpty
           ? opening.value
           : (subtitle.trim().isNotEmpty
                 ? subtitle.trim()
-                : 'Bu döneme ait özet anlatım bulunamadı.'),
+                : currentL10n().periodSummaryUnavailable),
       timingNote: timingNote,
       umbrellaTitle: umbrellaTitle.value,
       umbrellaBody: umbrellaBody.value,
@@ -2132,10 +2161,10 @@ extension PeriodCardDetailNarrativeX on PeriodCardDto {
           ? sections
           : <PeriodDetailSectionDto>[
               PeriodDetailSectionDto(
-                title: 'Bu dönemin özü',
+                title: currentL10n().periodEssenceTitle,
                 body: subtitle.trim().isNotEmpty
                     ? subtitle.trim()
-                    : 'Bu döneme ait özet anlatım bulunamadı.',
+                    : currentL10n().periodSummaryUnavailable,
               ),
             ],
       metaRows: metaRows,
@@ -2297,10 +2326,10 @@ class PeriodCalendarDto {
           id: 'period-core',
           title: periodCore.title.trim().isNotEmpty
               ? periodCore.title.trim()
-              : 'Bu Dönemin Ana Teması',
+              : currentL10n().periodCoreMainThemeTitle,
           subtitle: periodCore.coreStory.trim().isNotEmpty
               ? periodCore.coreStory.trim()
-              : 'Bu dönem için period özeti bulunamadı.',
+              : currentL10n().periodCoreSummaryUnavailable,
           timeHint: periodCore.upperMeaning.trim(),
           eventCard: null,
         ),

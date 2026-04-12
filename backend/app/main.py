@@ -14,7 +14,7 @@ from app.api.routes.transits import router as transits_router
 from app.core.config import settings
 from app.forum.forum_router import router as forum_router
 from app.core.logging import configure_logging
-from app.routers import charts, chat, health, profile, story, synastry, user
+from app.routers import charts, chat, health, profile, revenuecat, story, synastry, user
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +45,7 @@ def create_app() -> FastAPI:
     app.include_router(transits_router)
     app.include_router(sky_router)
     app.include_router(chat.router)
+    app.include_router(revenuecat.router)
     app.include_router(profile.router)
     app.include_router(story.router)
     app.include_router(synastry.router)

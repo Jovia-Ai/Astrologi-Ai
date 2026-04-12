@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any, Dict, Mapping
 
 from app.transit.narrative.semantic_projection import (
@@ -155,6 +156,95 @@ TONE_LABEL_BY_MODE = {
     "mixed": "mixed",
 }
 
+PLANET_LABEL_TR = {
+    "sun": "Güneş",
+    "moon": "Ay",
+    "mercury": "Merkür",
+    "venus": "Venüs",
+    "mars": "Mars",
+    "jupiter": "Jüpiter",
+    "saturn": "Satürn",
+    "uranus": "Uranüs",
+    "neptune": "Neptün",
+    "pluto": "Plüton",
+}
+
+POINT_LABEL_TR = {
+    "sun": "Güneş",
+    "moon": "Ay",
+    "mercury": "Merkür",
+    "venus": "Venüs",
+    "mars": "Mars",
+    "jupiter": "Jüpiter",
+    "saturn": "Satürn",
+    "uranus": "Uranüs",
+    "neptune": "Neptün",
+    "pluto": "Plüton",
+    "asc": "Yükselen",
+    "dsc": "Alçalan",
+    "mc": "Tepe Noktası",
+    "ic": "Dip Noktası",
+}
+
+ASPECT_LABEL_TR = {
+    "conjunction": "kavuşumu",
+    "square": "karesi",
+    "opposition": "karşıtı",
+    "trine": "üçgeni",
+    "sextile": "sekstili",
+    "quincunx": "quincunxu",
+}
+
+TR_LOWER_MAP = {
+    "I": "ı",
+    "İ": "i",
+    "Ğ": "ğ",
+    "Ü": "ü",
+    "Ş": "ş",
+    "Ö": "ö",
+    "Ç": "ç",
+}
+
+TR_UPPER_MAP = {
+    "ı": "I",
+    "i": "İ",
+    "ğ": "Ğ",
+    "ü": "Ü",
+    "ş": "Ş",
+    "ö": "Ö",
+    "ç": "Ç",
+}
+
+SIGN_LABEL_TR = {
+    "aries": "Koç",
+    "taurus": "Boğa",
+    "gemini": "İkizler",
+    "cancer": "Yengeç",
+    "leo": "Aslan",
+    "virgo": "Başak",
+    "libra": "Terazi",
+    "scorpio": "Akrep",
+    "sagittarius": "Yay",
+    "capricorn": "Oğlak",
+    "aquarius": "Kova",
+    "pisces": "Balık",
+}
+
+HOUSE_DOMAIN_TR = {
+    1: "benlik ve duruş",
+    2: "özdeğer ve maddi düzen",
+    3: "zihin ve iletişim",
+    4: "ev ve iç güven",
+    5: "yaratıcılık ve ifade",
+    6: "rutin ve beden ritmi",
+    7: "ilişki ve ortaklık",
+    8: "yakınlık ve güven",
+    9: "ufuk ve yön arayışı",
+    10: "kariyer ve görünürlük",
+    11: "çevre ve gelecek planları",
+    12: "arka plan ve iç dünya",
+}
+
 
 def _safe_int(value: Any) -> int | None:
     try:
@@ -170,6 +260,266 @@ def _sentence(text: str) -> str:
     if cleaned.endswith((".", "!", "?")):
         return cleaned
     return f"{cleaned}."
+
+
+def _lowercase_first(text: str) -> str:
+    cleaned = " ".join(str(text or "").strip().split())
+    if not cleaned:
+        return ""
+    head = cleaned[0]
+    lowered = TR_LOWER_MAP.get(head, head.lower())
+    return f"{lowered}{cleaned[1:]}"
+
+
+def _capitalize_first(text: str) -> str:
+    cleaned = " ".join(str(text or "").strip().split())
+    if not cleaned:
+        return ""
+    head = cleaned[0]
+    uppered = TR_UPPER_MAP.get(head, head.upper())
+    return f"{uppered}{cleaned[1:]}"
+
+
+def _strip_leading_because(text: str) -> str:
+    cleaned = " ".join(str(text or "").strip().split())
+    lowered = cleaned.lower()
+    if lowered.startswith("çünkü "):
+        return cleaned[6:].strip()
+    return cleaned
+
+
+def _first_sentence(text: str) -> str:
+    cleaned = " ".join(str(text or "").strip().split())
+    if not cleaned:
+        return ""
+    parts = [part.strip() for part in re.split(r"(?<=[.!?])\s+", cleaned) if part.strip()]
+    if not parts:
+        return ""
+    return parts[0].rstrip(".!?")
+
+
+def _append_unique_sentence(lines: list[str], text: str) -> None:
+    sentence = _sentence(text)
+    normalized = re.sub(r"\s+", " ", sentence).strip().lower()
+    if not normalized:
+        return
+    if any(re.sub(r"\s+", " ", existing).strip().lower() == normalized for existing in lines):
+        return
+    lines.append(sentence)
+
+
+def _compact_signature(event: Mapping[str, Any]) -> str:
+    raw = str(event.get("signature_tr") or event.get("signature") or "").strip()
+    if raw:
+        compact = re.split(r"\s+[•—-]\s+", raw, maxsplit=1)[0].strip()
+        compact = re.sub(r"\s*\([^)]*\)", "", compact).strip().rstrip(".")
+        if compact:
+            return compact
+
+    body = PLANET_LABEL_TR.get(str(event.get("transit_body") or "").strip().lower(), "")
+    target = POINT_LABEL_TR.get(str(event.get("natal_point") or "").strip().lower(), "")
+    aspect = ASPECT_LABEL_TR.get(str(event.get("aspect") or "").strip().lower(), "")
+    if body and target and aspect:
+        return f"{body} ile {target} {aspect}"
+    if body and aspect:
+        return f"{body} {aspect}"
+    return body or "bu gökyüzü hareketi"
+
+
+def _signature_display(event: Mapping[str, Any]) -> str:
+    compact = _compact_signature(event)
+    if compact:
+        return compact
+    return _narrative_signature(event)
+
+
+def _narrative_signature(event: Mapping[str, Any]) -> str:
+    body = PLANET_LABEL_TR.get(str(event.get("transit_body") or "").strip().lower(), "")
+    point_key = str(event.get("natal_point") or "").strip().lower()
+    target = POINT_LABEL_TR.get(point_key, "")
+    aspect = ASPECT_LABEL_TR.get(str(event.get("aspect") or "").strip().lower(), "")
+    if body and target and aspect:
+        return f"{body}-{target} {aspect}"
+    compact = _compact_signature(event)
+    return compact if compact else "bu gökyüzü hareketi"
+
+
+def _house_domain(house: int | None) -> str:
+    if house is None:
+        return "hayatının aktif alanı"
+    return HOUSE_DOMAIN_TR.get(house, f"{house}. ev alanı")
+
+
+def _scene_activation_sentence(event: Mapping[str, Any], *, pack: Mapping[str, Any]) -> str:
+    scene = event.get("scene") if isinstance(event.get("scene"), Mapping) else {}
+    houses = event.get("houses") if isinstance(event.get("houses"), Mapping) else {}
+    transit_house = _safe_int(scene.get("start_house"))
+    if transit_house is None:
+        transit_house = _safe_int(houses.get("transit_in_natal_house"))
+    target_house = _safe_int(scene.get("outcome_house"))
+    if target_house is None:
+        target_house = _safe_int(houses.get("natal_point_house"))
+    touchpoint = str(pack.get("touchpoint") or "günün aktif alanı").strip()
+
+    if transit_house is not None and target_house is not None and transit_house != target_house:
+        return (
+            f"Bu hareket önce {transit_house}. evinde, yani {_house_domain(transit_house)} alanında çalışıyor. "
+            f"Ama hikâye orada kalmıyor; {target_house}. evdeki temayı tetiklediği için bu etki en çok "
+            f"{touchpoint} üzerinde görünür oluyor"
+        )
+    if transit_house is not None:
+        return (
+            f"Bu hareket {transit_house}. evinde çalıştığı için bugün {_house_domain(transit_house)} tarafı "
+            f"daha görünür. Orada görünen şey, özellikle {touchpoint} daha çabuk hareketleniyor"
+        )
+    if target_house is not None:
+        return (
+            f"Bu hareket {target_house}. evdeki temayı tetiklediği için bugün en görünür başlık {touchpoint}; "
+            "hikâye en hızlı orada hassaslaşıyor"
+        )
+
+    technical_note = _first_sentence(str(event.get("technical_note") or "").replace("Teknik not:", "").strip())
+    if technical_note:
+        return technical_note
+    return ""
+
+
+def _natal_resonance_sentence(event: Mapping[str, Any]) -> str:
+    derived = event.get("derived_context") if isinstance(event.get("derived_context"), Mapping) else {}
+    angle = derived.get("angle") if isinstance(derived.get("angle"), Mapping) else {}
+    if angle:
+        angle_name = POINT_LABEL_TR.get(str(angle.get("name") or "").strip().lower(), str(angle.get("name") or "").strip())
+        angle_sign = SIGN_LABEL_TR.get(str(angle.get("sign") or "").strip().lower(), str(angle.get("sign") or "").strip())
+        ruler = PLANET_LABEL_TR.get(str(angle.get("ruler") or "").strip().lower(), str(angle.get("ruler") or "").strip())
+        ruler_house = _safe_int(angle.get("ruler_house"))
+        transit_house = _safe_int(((event.get("scene") or {}).get("start_house")))
+        if angle_name and angle_sign and ruler and ruler_house is not None and transit_house is not None:
+            return (
+                f"{angle_name} hattın {angle_sign}; yöneticisi {ruler} sende {ruler_house}. evde. "
+                f"O yüzden burada görünen şey yalnızca {transit_house}. evdeki gündelik tetik değil; "
+                "doğrudan o hatta inen daha derin bir ayar"
+            )
+        if angle_name and angle_sign and ruler and ruler_house is not None:
+            return (
+                f"{angle_name} hattın {angle_sign}; yöneticisi {ruler} sende {ruler_house}. evde. "
+                "Bu yüzden bu açı sende daha kişisel; dışarıda görünen şeyin altında daha derin bir eşik de çalışıyor"
+            )
+
+    pack = event.get("natal_context_pack") if isinstance(event.get("natal_context_pack"), Mapping) else {}
+    target = pack.get("target") if isinstance(pack.get("target"), Mapping) else {}
+    planet = POINT_LABEL_TR.get(str(target.get("planet") or "").strip().lower(), str(target.get("planet") or "").strip())
+    sign = str(target.get("sign_tr") or "").strip() or SIGN_LABEL_TR.get(str(target.get("sign") or "").strip().lower(), str(target.get("sign") or "").strip())
+    house = _safe_int(target.get("house"))
+    if planet and sign and house is not None:
+        return (
+            f"Natal haritanda {planet} {sign} burcunda {house}. evde. "
+            f"Bu yüzden bu açı sende sadece bugünün havasını anlatmıyor; altta zaten çalışan "
+            f"{_house_domain(house)} temasını yeniden uyandırıyor"
+        )
+
+    natal_target = derived.get("natal_target") if isinstance(derived.get("natal_target"), Mapping) else {}
+    sign_fallback = SIGN_LABEL_TR.get(str(natal_target.get("sign") or "").strip().lower(), str(natal_target.get("sign") or "").strip())
+    house_fallback = _safe_int(natal_target.get("house"))
+    point_name = POINT_LABEL_TR.get(str(natal_target.get("name") or "").strip().lower(), str(natal_target.get("name") or "").strip())
+    if point_name and sign_fallback and house_fallback is not None:
+        return (
+            f"Natal haritanda {point_name} {sign_fallback} çizgisi {house_fallback}. ev temasıyla bağlı. "
+            "Bu yüzden bu gökyüzü hareketi sende yeni değil; tanıdık geldiği yer tam da bu daha derin hat"
+        )
+    return ""
+
+
+def _period_bridge_sentence(
+    event: Mapping[str, Any],
+    *,
+    is_period_derived: bool,
+    source_horizon: str,
+) -> str:
+    period_story = event.get("period_story") if isinstance(event.get("period_story"), Mapping) else {}
+    period_title = str(period_story.get("title") or "").strip()
+    bucket = str(event.get("bucket") or "").strip().lower()
+    time_hint = str(event.get("time_hint_tr") or event.get("time_hint") or "").strip().lower()
+
+    if period_title:
+        if is_period_derived or source_horizon == "period":
+            return f"Bugün yaşadığın şey tek başına değil; \"{period_title}\" döneminin bugüne inen yüzü."
+        return f"Yani bugünkü tetik tek başına değil; arkada \"{period_title}\" döneminin sana hangi kapıdan açıldığını gösteriyor."
+    if is_period_derived or source_horizon == "period":
+        if bucket == "long" or "ay" in time_hint:
+            return "Bugün yaşadığın şey tek başına değil; birkaç aydır çalışan dönemin bugüne inen yüzü."
+        if bucket == "medium" or "hafta" in time_hint:
+            return "Bugün yaşadığın şey tek başına değil; birkaç haftadır şekillenen dönemin bugüne inen yüzü."
+        return "Bugün yaşadığın şey tek başına değil; arka planda süren dönemin bugüne inen yüzü."
+
+    return "Yani bugünkü tetik tek başına değil; dönemin ana temasının sana bugün hangi kapıdan dokunduğunu gösteriyor."
+
+
+def _period_story_editorial_sentence(event: Mapping[str, Any]) -> str:
+    period_story = event.get("period_story") if isinstance(event.get("period_story"), Mapping) else {}
+    if not period_story:
+        return ""
+
+    preferred_fields = (
+        ("big_picture", "Bu hikâye tek katmanlı değil"),
+        ("lead", "Bu hikâye tek katmanlı değil"),
+        ("period_opening", "Bu dönemin açtığı eşik de burada"),
+        ("what_it_builds", "Altta çalışan şey biraz da bu"),
+        ("upper_meaning", "Altta çalışan şey biraz da bu"),
+        ("mechanism", "Arka planda süreç şöyle işliyor"),
+    )
+    for field_name, intro in preferred_fields:
+        excerpt = _first_sentence(str(period_story.get(field_name) or "").strip())
+        if not excerpt:
+            continue
+        return f"{intro}: {excerpt}"
+    return ""
+
+
+def _build_enriched_why_line(
+    event: Mapping[str, Any],
+    *,
+    pack: Mapping[str, Any],
+    base_why_line: str,
+    is_period_derived: bool,
+) -> str:
+    signature = _signature_display(event)
+    narrative_signature = _narrative_signature(event)
+    source_horizon = str(event.get("source_horizon") or event.get("horizon") or "").strip().lower()
+    why_clause = _capitalize_first(_lowercase_first(_strip_leading_because(base_why_line)))
+    sentences: list[str] = []
+
+    if signature and narrative_signature and signature.lower() != narrative_signature.lower():
+        _append_unique_sentence(
+            sentences,
+            f"Bugünün tonunu özellikle {signature} belirliyor; bu {narrative_signature} bugün daha görünür çalışıyor",
+        )
+    else:
+        _append_unique_sentence(sentences, f"Bugünün tonunu özellikle {signature or narrative_signature} belirliyor")
+
+    scene_line = _scene_activation_sentence(event, pack=pack)
+    if scene_line:
+        _append_unique_sentence(sentences, scene_line)
+    elif why_clause:
+        _append_unique_sentence(sentences, why_clause)
+
+    natal_line = _natal_resonance_sentence(event)
+    if natal_line:
+        _append_unique_sentence(sentences, natal_line)
+    elif why_clause:
+        _append_unique_sentence(sentences, why_clause)
+
+    period_line = _period_bridge_sentence(
+        event,
+        is_period_derived=is_period_derived,
+        source_horizon=source_horizon,
+    )
+    if period_line:
+        _append_unique_sentence(sentences, period_line)
+    period_story_line = _period_story_editorial_sentence(event)
+    if period_story_line:
+        _append_unique_sentence(sentences, period_story_line)
+
+    return " ".join(sentences).strip()
 
 
 def house_touchpoint_from_event(event: Mapping[str, Any]) -> int | None:
@@ -457,8 +807,17 @@ def generate_daily_from_event(
         out["source_horizon"] = source_horizon or "period"
         out["horizon"] = "daily"
 
+    selected_why_line = lines[1]
+    if str(selected_why_line or "").strip().lower().startswith("bu en çok "):
+        selected_why_line = _why_line(pack, trigger, mode, face)
+
     out["felt_line_tr"] = _sentence(lines[0])
-    out["why_it_feels_this_way_tr"] = _sentence(lines[1])
+    out["why_it_feels_this_way_tr"] = _build_enriched_why_line(
+        out,
+        pack=pack,
+        base_why_line=selected_why_line,
+        is_period_derived=bool(is_period_derived),
+    )
     out["guidance_micro_tr"] = _sentence(lines[2])
     out["signal_label_tr"] = _sentence(FLOW_SIGNAL_BY_MODE.get(mode, FLOW_SIGNAL_BY_MODE["mixed"]))
     out["tone_label_tr"] = TONE_LABEL_BY_MODE.get(mode, "mixed")

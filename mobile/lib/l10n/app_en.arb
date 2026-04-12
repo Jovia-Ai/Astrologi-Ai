@@ -467,5 +467,331 @@
   "aiIntroMessage": "Hello, I'm Aila. If you want, write what you're feeling today, something on your mind, or a chart detail you're curious about.",
   "aiUserLabel": "You",
   "aiNow": "Now",
-  "aiComposerHint": "Write to Aila..."
+  "aiComposerHint": "Write to Aila...",
+  "aiFreeRemaining": "{count} free left",
+  "@aiFreeRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "aiCreditsRemaining": "{count} credits",
+  "@aiCreditsRemaining": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "aiProActive": "Pro active",
+  "aiSending": "Aila is thinking...",
+  "aiPaywallTitle": "Continue with credits or Pro",
+  "aiPaywallBody": "You used all 3 free questions. Buy a credit pack or unlock Pro to keep chatting.",
+  "aiPaywallLoading": "Loading products...",
+  "aiPaywallUnavailable": "Purchases are not available right now.",
+  "aiPaywallRestoreHint": "After purchase, retry your message in a few seconds while the webhook updates your balance.",
+  "aiProductQ1Title": "1 question",
+  "aiProductQ1Subtitle": "Single reply credit",
+  "aiProductQ5Title": "5 questions",
+  "aiProductQ5Subtitle": "Credit pack for a short streak",
+  "aiProductQ15Title": "15 questions",
+  "aiProductQ15Subtitle": "Credit pack for heavier use",
+  "aiProductProTitle": "Pro monthly",
+  "aiProductProSubtitle": "Unlimited chat while Pro is active",
+  "aiStorePriceUnavailable": "Unavailable",
+  "aiPurchasePending": "Purchase received. Retry your message in a few seconds.",
+  "aiPurchaseNotSupported": "Purchases are only available on iOS and Android.",
+  "aiChatUnavailable": "AI chat is unavailable right now: {error}",
+  "@aiChatUnavailable": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "peopleFormAddTitle": "Add person",
+  "peopleFormEditTitle": "Edit person",
+  "peopleFormNameRequired": "Name is required.",
+  "peopleFormBirthDateRequired": "Birth date is required.",
+  "peopleFormBirthTimeOptional": "Birth time (optional)",
+  "peopleFormBirthTimeHint": "If you do not know the birth time, you can leave it empty.",
+  "peopleFormCityRequired": "City is required.",
+  "peopleFormCountryRequired": "Country is required.",
+  "peopleFormSaving": "Saving...",
+  "peopleFormLoginRequired": "Sign in before adding a person.",
+  "peopleFormSaveFailed": "Person could not be saved: {error}",
+  "@peopleFormSaveFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "peoplePageLabel": "People",
+  "peoplePageCenterText": "your circle",
+  "peoplePageAddTooltip": "Add person",
+  "peoplePageEmptyTitle": "No saved people yet",
+  "peoplePageEmptyBody": "Save people from your circle here to use them in Bond and social flows.",
+  "peoplePageCircleLabel": "Circle",
+  "peoplePageCircleTitle": "Saved people",
+  "peoplePageCircleBody": "The people you use for Bond, friend profiles, and social flows appear here.",
+  "peoplePageHeroLabel": "People",
+  "peoplePageHeroTitle": "Keep your circle here for Bond and social flows",
+  "peoplePageHeroBody": "The people you add are reused from the same place for Bond matches, friend profiles, and future social readings.",
+  "peoplePagePillAura": "Aura",
+  "peoplePagePillBirthAxis": "Birth axis",
+  "peoplePagePillSocialTone": "Social tone",
+  "peoplePageListLoadFailedTitle": "People list unavailable",
+  "peoplePageListLoadFailed": "People list could not be loaded: {error}",
+  "@peoplePageListLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "peoplePageFriendLabel": "Person",
+  "peoplePageNoBirthTime": "No birth time",
+  "peoplePageEditTooltip": "Edit",
+  "peopleRepoListFailed": "People list could not be fetched.",
+  "peopleRepoDetailFailed": "Person details could not be fetched.",
+  "peopleRepoCreateFailed": "Person could not be created.",
+  "peopleRepoUpdateFailed": "Person could not be updated.",
+  "peopleRepoProfilesListUnsupported": "The profiles table does not support listing saved people.",
+  "peopleRepoProfilesDetailUnsupported": "The profiles table does not support loading this saved person.",
+  "peopleRepoProfilesCreateUnsupported": "The profiles table does not support creating separate saved people.",
+  "peopleRepoTableNotFound": "No valid table for people records was found. Tried: {candidates}",
+  "@peopleRepoTableNotFound": {
+    "placeholders": {
+      "candidates": {}
+    }
+  },
+  "peopleRepoTableValidationFailed": "The people table could not be validated.",
+  "forumActiveTransitFallback": "The sky is active",
+  "transitSkyCollectiveFallback": "Something is moving in the collective.",
+  "transitSkyTypeIngress": "Ingress",
+  "transitSkyTypeFullMoon": "Full moon",
+  "transitSkyTypeNewMoon": "New moon",
+  "transitSkyTypeExactAspect": "Exact aspect",
+  "transitSkyTypeEclipse": "Eclipse",
+  "transitSkyTypeRetroStart": "Retrograde starts",
+  "transitSkyTypeRetroEnd": "Retrograde ends",
+  "transitSkyTimingNow": "Now",
+  "transitSkyTimingThisWeek": "This week",
+  "transitMeaningRelationships": "Relationships",
+  "transitMeaningMoney": "Money",
+  "transitMeaningVisibility": "Visibility",
+  "transitMeaningDecision": "Decision",
+  "transitMeaningCloseness": "Closeness",
+  "transitMeaningBuilding": "Building",
+  "transitMeaningRelease": "Release",
+  "transitMeaningTension": "Tension",
+  "transitMeaningClarifying": "Clarifying",
+  "transitMeaningTransformation": "Transformation",
+  "profileDetailFallbackEyebrow": "Deep reading",
+  "profileDetailFallbackTitle": "Detail is being prepared for this card",
+  "profileDetailFallbackIntro": "The main narrative flow came back empty for now.",
+  "profileDetailFallbackBody": "The meaning of this card will still open here; right now the content stream is still on the way.",
+  "bondSelfName": "Me",
+  "bondPageSelectPerson": "Select person",
+  "bondPageLensFallback": "bond lens",
+  "bondPageHeroTitle": "Open the dynamic between two people here",
+  "bondPageHeroBody": "Pick your own profile and one saved person, then read the main rhythm and tension line between you in the same flow.",
+  "bondPageLensLabel": "Lens",
+  "bondPageBirthDataMissingTitle": "Birth data is required for Bond",
+  "bondPageBirthDataMissingBody": "When you complete your own birth date and location, this match opens more accurately.",
+  "bondPagePreparing": "Preparing...",
+  "bondPageOpenResult": "Open Bond result",
+  "bondPageAnalyzeFailed": "Bond analysis could not be loaded: {error}",
+  "@bondPageAnalyzeFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "bondPickerLabel": "People selection",
+  "bondPickerTitle": "Choose the second person for Bond",
+  "bondPickerAddPerson": "Add new person",
+  "bondPickerOwnProfile": "Your own profile",
+  "bondPickerMe": "You",
+  "bondPickerLoadFailed": "People could not be loaded: {error}",
+  "@bondPickerLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "bondPairEyebrow": "Selection",
+  "bondPairTitle": "Compare two people",
+  "bondPairBody": "Pick two profiles, then see the main rhythm of their bond in the same flow.",
+  "storyStudioTopLabel": "Story Studio",
+  "storyStudioTopCenter": "imprint deck",
+  "storyStudioLoadingProfile": "Profile is loading...",
+  "storyStudioBirthDataRequired": "Story Studio needs birth date, time, and location before it can open.",
+  "storyStudioIdentityTitle": "Identity cards",
+  "storyStudioIdentityBody": "Open the dominant placements, inner drive, and shadow line in your chart one card at a time.",
+  "storyStudioIdentityTab": "Identity",
+  "storyStudioMomentTitle": "Live sources",
+  "storyStudioMomentBody": "Return to the surfaces working right now and open the active flows from there.",
+  "storyStudioMomentTab": "Moment",
+  "storyStudioCardsLoadFailed": "Cards could not be loaded",
+  "storyStudioCardsPreparing": "Cards are being prepared",
+  "storyStudioCardsPreparingBody": "The personality imprint layer is coming in from the backend.",
+  "storyStudioCardsNotFound": "No cards found",
+  "storyStudioCardsNotFoundBody": "No Story Studio cards could be produced from this profile yet.",
+  "storyStudioMomentPanelTitle": "Live studio sources",
+  "storyStudioMomentPanelBody": "This section does not create a new card; it sends you back to the active Home and Bond surfaces.",
+  "storyStudioReturnToSources": "Return to sources",
+  "storyStudioTraitLabel": "Standout line",
+  "storyStudioInnerDriveLabel": "Inner drive",
+  "storyStudioWhenTooMuchLabel": "When overloaded",
+  "storyStudioRefreshing": "Refreshing...",
+  "storyStudioKindAspect": "Aspect",
+  "storyStudioKindHousePlacement": "House placement",
+  "storyStudioKindSignPlacement": "Sign placement",
+  "storyStudioKindLayer": "Layer",
+  "storyStudioLoadFailed": "Story Studio could not be loaded: {error}",
+  "@storyStudioLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "relationshipPreviewLabel": "Relationship preview",
+  "relationshipPreviewBirthDataRequiredTitle": "Birth data is required for relationship preview",
+  "relationshipPreviewBirthDataRequiredBody": "When birth date, time, and location are complete, the relationship line opens here.",
+  "relationshipPreviewLoadFailedTitle": "Relationship flow unavailable",
+  "relationshipPreviewMainThemeLabel": "Main theme",
+  "relationshipPreviewDriversLabel": "What is shaping today",
+  "relationshipPreviewBackdropLabel": "Backdrop",
+  "relationshipPreviewUpperMeaningLabel": "Deeper meaning",
+  "relationshipPreviewSupportingThemeLabel": "Supporting theme",
+  "relationshipPreviewWhyImportant": "Why this matters",
+  "relationshipPreviewFallbackNotice": "The relationship lens was slow, so this opened with the general reading instead.",
+  "relationshipPreviewTimeout": "The relationship reading took too long to return. Try again in a moment.",
+  "relationshipPreviewInvalidProfile": "The submitted profile data is not enough for the relationship flow.",
+  "relationshipPreviewServerError": "The relationship flow could not be loaded from the server right now.",
+  "relationshipPreviewFetchFailed": "The relationship flow could not be loaded.",
+  "relationshipPreviewStageStarted": "Started",
+  "relationshipPreviewStageIntensifying": "Intensifying",
+  "relationshipPreviewStagePeak": "Peak",
+  "relationshipPreviewStageResolving": "Resolving",
+  "relationshipPreviewPeriodToToday": "From the period into today",
+  "relationshipPreviewDefaultDriversFallback": "There is movement on the relationship side today, but a single theme has not fully separated yet.",
+  "relationshipPreviewDefaultBackdropFallback": "A longer period is still working underneath, and its relationship-side result will become clearer with a bit more time.",
+  "friendProfileTitle": "Person profile",
+  "friendProfileNotFound": "Person not found.",
+  "friendProfileEditTooltip": "Edit person",
+  "friendProfileLoadFailed": "Person could not be loaded: {error}",
+  "@friendProfileLoadFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "profileDetailInfluences": "Influences",
+  "profileDetailAllCards": "All cards",
+  "profileDetailSignatureCardsTitle": "Signature cards",
+  "profileDetailDefaultEyebrow": "Detail",
+  "profileDetailDefaultTitle": "Detail flow",
+  "profileDetailWhyHere": "Why here",
+  "profileDetailNextLabel": "Next: {title}",
+  "@profileDetailNextLabel": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "profileDetailContinuationTitle": "{title} · Continue",
+  "@profileDetailContinuationTitle": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "profileDetailSideA": "One side",
+  "profileDetailSideB": "The other side",
+  "profileDetailContinueFlow": "Continue the flow",
+  "profileDetailContinueFromHere": "Continue from here",
+  "profileDetailContinuationFooter": "Continues {page}/{total}",
+  "@profileDetailContinuationFooter": {
+    "placeholders": {
+      "page": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "profileDetailFlowEnds": "The flow ends here",
+  "periodFallbackEffectTitle": "Period effect",
+  "periodIntentSummaryGeneric": "There are windows to track for {title} in this period.",
+  "@periodIntentSummaryGeneric": {
+    "placeholders": {
+      "title": {}
+    }
+  },
+  "periodIntentTopDays": "Standout days for {title}: {dates}.",
+  "@periodIntentTopDays": {
+    "placeholders": {
+      "title": {},
+      "dates": {}
+    }
+  },
+  "periodIntentScores": "Scores: {ratings}",
+  "@periodIntentScores": {
+    "placeholders": {
+      "ratings": {}
+    }
+  },
+  "periodIntentBeautyCare": "Care and body",
+  "periodIntentBusiness": "Work and output",
+  "periodIntentMoney": "Money and resources",
+  "periodIntentRelationship": "Relationship and harmony",
+  "periodIntentLabel": "Intent {index}",
+  "@periodIntentLabel": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "periodDefaultTitle": "Period",
+  "periodMainFlowFallback": "The main flow of this period.",
+  "periodMainThemeFallback": "The main theme of this period.",
+  "periodHighlightedThemeFallback": "The standout theme in this period.",
+  "periodThemeCollectFallback": "The standout theme of this period gathers here.",
+  "periodEssenceTitle": "Essence of this period",
+  "periodSummaryUnavailable": "No summary for this period is available.",
+  "periodTimeLabel": "Timing",
+  "periodGuidancePrefix": "Small practice:",
+  "periodDifficultyPrefix": "What tends to make this harder is:",
+  "periodHowItWorksTitle": "How it works",
+  "periodAsksTitle": "What it asks of you",
+  "periodWatchTitle": "What to watch",
+  "periodBuildsTitle": "What it develops in you",
+  "periodEffectLabel": "Effect",
+  "periodTechnicalNoteLabel": "Technical note",
+  "periodCoreMainThemeTitle": "The main theme of this period",
+  "periodCoreSummaryUnavailable": "No period summary was available for this period.",
+  "profileExperimentPreviewLabel": "Preview",
+  "profileExperimentCenterText": "Nocturne Identity",
+  "profileExperimentMenuTooltip": "Theme and experiment settings",
+  "profileExperimentHeroFallback": "The first trace of the chart gathers here.",
+  "profileExperimentSignatureFallback": "Identity trace",
+  "profileExperimentNatalPanelBody": "This preview currently focuses on a spotlight hero that opens identity as a full portrait surface. Lower chapter layers will follow in a later patch.",
+  "profileExperimentTimingPanelBody": "Timing mode behaves like a focus switch here for now. The lower period composition will arrive in a later patch.",
+  "profileExperimentMenuTitle": "Nocturne experiment",
+  "profileExperimentMenuBody": "Patch 1 only tests the upper identity composition.",
+  "profileExperimentSeeProfile": "See profile",
+  "profileExperimentHeroLineFallback": "Your identity is gathered into a new focal surface on this screen.",
+  "profileExperimentAuraLabel": "Aura",
+  "profileExperimentRulerLabel": "Ruler",
+  "profileExperimentWaiting": "Waiting",
+  "profileExperimentRulerBodyFallback": "The ruler of the 1st house is being read.",
+  "profileExperimentRisingTrace": "Rising trace",
+  "profileExperimentSignatureLabel": "Signature",
+  "profileExperimentSpotlightCards": "Spotlight cards",
+  "profileExperimentSwipe": "Swipe",
+  "profileExperimentFocusTitle": "Reading focus",
+  "profileExperimentNatalFocus": "Your structure",
+  "profileExperimentTimingFocus": "Your current period",
+  "profileExperimentUnnamedProfile": "Unnamed profile",
+  "profileExperimentFireDominant": "Fire dominant",
+  "profileExperimentWaterDominant": "Water dominant",
+  "profileExperimentAirDominant": "Air dominant",
+  "profileExperimentEarthDominant": "Earth dominant",
+  "errorTimeout": "The server is a bit slow right now, try again in a moment.",
+  "errorNoConnection": "Could not connect. Check your internet connection.",
+  "errorGeneric": "Something went wrong. Please try again."
 }

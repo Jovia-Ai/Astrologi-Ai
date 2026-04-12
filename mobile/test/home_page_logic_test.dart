@@ -293,5 +293,266 @@ void main() {
         expect(merged.todayDayMeta?.toneLabelTr, tr('hareketli'));
       },
     );
+
+    test(
+      'mergeHomeTransitSnapshot keeps stronger existing daily card over period-derived fallback',
+      () {
+        final existingDailyCard = EventCardDto.fromMap({
+          'event_id': 'evt_daily_strong',
+          'headline': 'Bugun bir konu daha net aciliyor',
+          'opening': 'Gunun odagi daha belirgin ilerliyor.',
+          'why_it_feels_this_way_tr':
+              'Cunku bu aci dogrudan kisa vadeli ritmini uyandiriyor.',
+          'guidance_micro_tr': 'Tek bir seye odaklanman daha iyi calisir.',
+          'house_touchpoint_hint_tr': '3. ev temasi',
+          'essence': 'Net bir gunluk vurgu var.',
+          'horizon': 'daily',
+          'source_horizon': 'daily',
+          'tags': {'phase': 'exact', 'duration': 'day', 'domain': 'general'},
+        });
+        final incomingFallback = EventCardDto.fromMap({
+          'event_id': 'evt_period_fallback',
+          'headline': 'Arkada calisan tema bugune dusuyor',
+          'opening': 'Daha uzun bir tema bugun daha gorunur.',
+          'why_it_feels_this_way_tr':
+              'Bu vurgu kisa tetikten cok uzun bir akis tasiyor.',
+          'essence': 'Donem etkisi bugune dusuyor.',
+          'horizon': 'daily',
+          'source_horizon': 'period',
+          'is_period_derived': true,
+          'tags': {'phase': 'peak', 'duration': 'weeks', 'domain': 'general'},
+        });
+
+        final merged = mergeHomeTransitSnapshot(
+          incoming: HomeTransitSnapshot(
+            periodCore: null,
+            periodCards: const <PeriodCardDto>[],
+            dailyCards: <EventCardDto>[incomingFallback],
+            calendarDays: const <String, NarrativeCalendarDay>{},
+            todayDayMeta: null,
+          ),
+          currentDailyCards: <EventCardDto>[existingDailyCard],
+        );
+
+        expect(merged.dailyCards, hasLength(1));
+        expect(merged.dailyCards.first.eventId, 'evt_daily_strong');
+      },
+    );
+
+    test(
+      'mergeHomeTransitSnapshot upgrades fast preview when richer true daily card arrives',
+      () {
+        final existingFastPreview = EventCardDto.fromMap({
+          'event_id': 'home-fast-daily-fallback',
+          'headline': 'Bugun bir vurgu var',
+          'opening': 'Iletisim alaninda bir hareket var.',
+          'why_it_feels_this_way_tr': 'Kisa bir on izleme.',
+          'essence': 'On izleme ozeti.',
+          'horizon': 'daily',
+          'source_horizon': 'daily',
+          'tags': {'phase': 'preview', 'duration': 'day', 'domain': 'general'},
+        });
+        final incomingDailyCard = EventCardDto.fromMap({
+          'event_id': 'evt_daily_rich',
+          'headline': 'Konusmalar bugun daha hizli aciliyor',
+          'opening': 'Merkuryen trafik daha canli ve yonlu akiyor.',
+          'why_it_feels_this_way_tr':
+              'Bu aci 3. ev alanini tetikledigi icin mesaj, akis ve yakin cevre vurgusu buyuyor.',
+          'guidance_micro_tr':
+              'Tek bir mesaji netlestirip sonra dagilmak daha iyi calisir.',
+          'house_touchpoint_hint_tr': '3. ev ve Merkur temasi',
+          'essence': 'Gercek gunluk yorum.',
+          'horizon': 'daily',
+          'source_horizon': 'daily',
+          'tags': {'phase': 'exact', 'duration': 'day', 'domain': 'general'},
+        });
+
+        final merged = mergeHomeTransitSnapshot(
+          incoming: HomeTransitSnapshot(
+            periodCore: null,
+            periodCards: const <PeriodCardDto>[],
+            dailyCards: <EventCardDto>[incomingDailyCard],
+            calendarDays: const <String, NarrativeCalendarDay>{},
+            todayDayMeta: null,
+          ),
+          currentDailyCards: <EventCardDto>[existingFastPreview],
+        );
+
+        expect(merged.dailyCards, hasLength(1));
+        expect(merged.dailyCards.first.eventId, 'evt_daily_rich');
+      },
+    );
+
+    test(
+      'buildHomeTransitSnapshot scores legacy event cards so stronger daily stays on home',
+      () {
+        final narrative = NarrativeResponse.fromMap({
+          'calendar': {
+            'days': [
+              {
+                'date': '2026-04-08',
+                'rating': 2,
+                'heat': 2,
+                'event_count': 2,
+                'signals_count': 2,
+                'has_signals': true,
+                'is_critical': false,
+                'labels': const <String>[],
+                'critical_reasons': const <String>[],
+                'signal_label_tr': 'Bugun iki sey belirgin.',
+                'tone_label_tr': 'yogun',
+                'micro_summary_tr': 'Bugunun asil karti daha net.',
+              },
+            ],
+          },
+          'public': {
+            'period_core': {},
+            'daily_event_cards': [],
+            'period_event_cards': [],
+            'event_cards': [
+              {
+                'event_id': 'evt_weaker',
+                'transit_body': 'venus',
+                'aspect': 'trine',
+                'phase': 'separating',
+                'bucket': 'short',
+                'orb_deg': 4.6,
+                'headline': 'Daha yumusak bir akis',
+                'opening': 'Bu kart bugun icin ikincil kaliyor.',
+                'essence': 'Ikincil gunluk vurgu.',
+                'horizon': 'daily',
+                'timing': {
+                  'peak_date_utc': '2026-04-11T12:00:00Z',
+                  'entry_date_utc': '2026-04-09T12:00:00Z',
+                },
+                'tags': {
+                  'phase': 'separating',
+                  'duration': 'day',
+                  'domain': 'general',
+                  'exact_in_days': 3,
+                  'intensity': 0.2,
+                },
+              },
+              {
+                'event_id': 'evt_stronger',
+                'transit_body': 'moon',
+                'aspect': 'square',
+                'phase': 'exact',
+                'bucket': 'short',
+                'orb_deg': 0.1,
+                'headline': 'Asil gunluk kart',
+                'opening': 'Bugunun ana vurgu karti bu olmali.',
+                'essence': 'Guclu gunluk vurgu.',
+                'horizon': 'daily',
+                'timing': {
+                  'peak_date_utc': '2026-04-08T12:00:00Z',
+                  'entry_date_utc': '2026-04-08T00:00:00Z',
+                },
+                'tags': {
+                  'phase': 'exact',
+                  'duration': 'day',
+                  'domain': 'general',
+                  'exact_in_days': 0,
+                  'intensity': 0.9,
+                },
+              },
+            ],
+          },
+        });
+
+        final snapshot = buildHomeTransitSnapshot(
+          narrative: narrative,
+          today: DateTime(2026, 4, 8),
+          l10n: l10n,
+        );
+
+        expect(snapshot.dailyCards, isNotEmpty);
+        expect(snapshot.dailyCards.first.eventId, 'evt_stronger');
+      },
+    );
+
+    test(
+      'hasUsableHomeDailyContent is false when home has no card copy or day meta',
+      () {
+        expect(
+          hasUsableHomeDailyContent(
+            dailyCards: const <EventCardDto>[],
+            dayMeta: null,
+          ),
+          isFalse,
+        );
+      },
+    );
+
+    test(
+      'hasUsableHomeDailyContent is true when today micro summary exists',
+      () {
+        final dayMeta = NarrativeCalendarDay.fromMap({
+          'date': '2026-04-08',
+          'rating': 2,
+          'heat': 2,
+          'event_count': 1,
+          'signals_count': 1,
+          'has_signals': true,
+          'is_critical': false,
+          'labels': const <String>[],
+          'critical_reasons': const <String>[],
+          'signal_label_tr': 'Bugun tek tema var.',
+          'tone_label_tr': 'yogun',
+          'micro_summary_tr': 'Bugun bir sey aciliyor.',
+        });
+
+        expect(
+          hasUsableHomeDailyContent(
+            dailyCards: const <EventCardDto>[],
+            dayMeta: dayMeta,
+          ),
+          isTrue,
+        );
+      },
+    );
+
+    test(
+      'hasUsableHomeDailyContent is true when a daily card carries copy',
+      () {
+        final dailyCard = EventCardDto.fromMap({
+          'event_id': 'evt_daily_copy',
+          'headline': 'Bugunun karti',
+          'opening': 'Bugun sende bir vurgu var.',
+          'horizon': 'daily',
+          'tags': {'phase': 'exact', 'duration': 'day', 'domain': 'general'},
+        });
+
+        expect(
+          hasUsableHomeDailyContent(
+            dailyCards: <EventCardDto>[dailyCard],
+            dayMeta: null,
+          ),
+          isTrue,
+        );
+      },
+    );
+
+    test(
+      'hasUsableHomeDailyContent is false when daily card only carries a title',
+      () {
+        final dailyCard = EventCardDto.fromMap({
+          'event_id': 'evt_daily_title_only',
+          'headline': 'Bugunun karti',
+          'felt_line_tr': 'Bugunun karti',
+          'horizon': 'daily',
+          'tags': {'phase': 'exact', 'duration': 'day', 'domain': 'general'},
+        });
+
+        expect(hasUsableHomeDailyCardCopy(dailyCard), isFalse);
+        expect(
+          hasUsableHomeDailyContent(
+            dailyCards: <EventCardDto>[dailyCard],
+            dayMeta: null,
+          ),
+          isFalse,
+        );
+      },
+    );
   });
 }

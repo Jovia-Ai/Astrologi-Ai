@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
+import 'package:mobile/l10n/current_localizations.dart';
 
 // Screen -> endpoint -> keys
 // CalendarHub/Daily -> POST /transit/narrative -> public.event_cards, public.best_times
@@ -999,9 +1000,10 @@ String _skyFirstString(List<String> values) {
 }
 
 String _skyHookFromText(String raw) {
+  final l10n = currentL10n();
   final trimmed = raw.trim();
   if (trimmed.isEmpty) {
-    return 'Şu an gökyüzünde kolektif tonu değiştiren bir başlık çalışıyor.';
+    return l10n.transitSkyCollectiveFallback;
   }
   final cut = trimmed.split(RegExp(r'[.!?]')).first.trim();
   final candidate = cut.isEmpty ? trimmed : cut;
@@ -1011,37 +1013,39 @@ String _skyHookFromText(String raw) {
 }
 
 String _skyTypeChip(String eventType, {String fallback = ''}) {
+  final l10n = currentL10n();
   switch (eventType.trim()) {
     case 'ingress':
-      return 'Burç geçişi';
+      return l10n.transitSkyTypeIngress;
     case 'lunation_full_moon':
-      return 'Dolunay';
+      return l10n.transitSkyTypeFullMoon;
     case 'lunation_new_moon':
-      return 'Yeniay';
+      return l10n.transitSkyTypeNewMoon;
     case 'exact_aspect_major':
-      return 'Exact açı';
+      return l10n.transitSkyTypeExactAspect;
     case 'eclipse':
-      return 'Tutulma';
+      return l10n.transitSkyTypeEclipse;
     case 'retrograde_start':
-      return 'Retro başlıyor';
+      return l10n.transitSkyTypeRetroStart;
     case 'retrograde_end':
-      return 'Retro bitiyor';
+      return l10n.transitSkyTypeRetroEnd;
     default:
       return fallback.trim();
   }
 }
 
 String _skyTimingChip(String relativeTiming) {
+  final l10n = currentL10n();
   final trimmed = relativeTiming.trim();
   if (trimmed.isEmpty) {
     return '';
   }
   final lower = trimmed.toLowerCase();
   if (lower.contains('right now')) {
-    return 'Şu anda';
+    return l10n.transitSkyTimingNow;
   }
   if (lower.contains('this week')) {
-    return 'Bu hafta';
+    return l10n.transitSkyTimingThisWeek;
   }
   if (lower.contains('in ') || lower.contains('icinde')) {
     return trimmed;
@@ -1053,61 +1057,62 @@ String _skyTimingChip(String relativeTiming) {
 }
 
 String _skyMeaningChipFromText(String raw) {
+  final l10n = currentL10n();
   final lower = raw.toLowerCase();
   if (lower.contains('venus') ||
       lower.contains('taurus') ||
       lower.contains('libra') ||
       lower.contains('iliski') ||
       lower.contains('ilişki')) {
-    return 'İlişkiler';
+    return l10n.transitMeaningRelationships;
   }
   if (lower.contains('para') ||
       lower.contains('money') ||
       lower.contains('kaynak')) {
-    return 'Para';
+    return l10n.transitMeaningMoney;
   }
   if (lower.contains('sun') ||
       lower.contains('leo') ||
       lower.contains('gorunur') ||
       lower.contains('görünür')) {
-    return 'Görünürlük';
+    return l10n.transitMeaningVisibility;
   }
   if (lower.contains('mercury') ||
       lower.contains('gemini') ||
       lower.contains('virgo') ||
       lower.contains('karar')) {
-    return 'Karar';
+    return l10n.transitMeaningDecision;
   }
   if (lower.contains('moon') ||
       lower.contains('cancer') ||
       lower.contains('yakin') ||
       lower.contains('yakın')) {
-    return 'Yakınlık';
+    return l10n.transitMeaningCloseness;
   }
   if (lower.contains('saturn') ||
       lower.contains('capricorn') ||
       lower.contains('yapi')) {
-    return 'Yapi kurma';
+    return l10n.transitMeaningBuilding;
   }
   if (lower.contains('full moon') ||
       lower.contains('dolunay') ||
       lower.contains('birak')) {
-    return 'Birakma';
+    return l10n.transitMeaningRelease;
   }
   if (lower.contains('mars') ||
       lower.contains('aries') ||
       lower.contains('gerilim')) {
-    return 'Gerilim';
+    return l10n.transitMeaningTension;
   }
   if (lower.contains('exact') ||
       lower.contains('net') ||
       lower.contains('gorunur')) {
-    return 'Netlesme';
+    return l10n.transitMeaningClarifying;
   }
   if (lower.contains('pluto') ||
       lower.contains('scorpio') ||
       lower.contains('donus')) {
-    return 'Donusum';
+    return l10n.transitMeaningTransformation;
   }
   return '';
 }

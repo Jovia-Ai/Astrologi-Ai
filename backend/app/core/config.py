@@ -35,6 +35,23 @@ class Settings(BaseSettings):
         default="https://api.groq.com/openai/v1/chat/completions",
         validation_alias="GROQ_API_URL",
     )
+    openai_api_key: str | None = Field(default=None, validation_alias="OPENAI_API_KEY")
+    openai_api_url: str = Field(default="https://api.openai.com/v1/responses", validation_alias="OPENAI_API_URL")
+    openai_chat_model: str = Field(default="gpt-5.4-mini", validation_alias="OPENAI_CHAT_MODEL")
+    openai_max_output_tokens: int = Field(default=600, validation_alias="OPENAI_MAX_OUTPUT_TOKENS")
+    openai_request_timeout_seconds: float = Field(default=40.0, validation_alias="OPENAI_REQUEST_TIMEOUT_SECONDS")
+    openai_input_cost_per_million_usd: float = Field(
+        default=0.0,
+        validation_alias="OPENAI_INPUT_COST_PER_MILLION_USD",
+    )
+    openai_output_cost_per_million_usd: float = Field(
+        default=0.0,
+        validation_alias="OPENAI_OUTPUT_COST_PER_MILLION_USD",
+    )
+    revenuecat_webhook_authorization: str | None = Field(
+        default=None,
+        validation_alias="REVENUECAT_WEBHOOK_AUTHORIZATION",
+    )
     cors_supports_credentials: bool = Field(default=True, validation_alias="CORS_SUPPORTS_CREDENTIALS")
     environment: str = Field(default="development", validation_alias="APP_ENV")
     log_level: str = Field(default="INFO", validation_alias="LOG_LEVEL")

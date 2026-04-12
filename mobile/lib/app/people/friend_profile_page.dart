@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 import 'add_person_page.dart';
 import 'people_aura_repository.dart';
@@ -17,6 +18,7 @@ class FriendProfilePage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.l10n;
     final personAsync = ref.watch(personByIdProvider(personId));
 
     return personAsync.when(
@@ -25,7 +27,7 @@ class FriendProfilePage extends ConsumerWidget {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                'KISI PROFILI',
+                l10n.friendProfileTitle,
                 style: context.profileTheme.typography.navigationLabel(
                   color: context.profileTheme.colors.text,
                 ),
@@ -33,7 +35,7 @@ class FriendProfilePage extends ConsumerWidget {
             ),
             body: Center(
               child: Text(
-                'Kişi bulunamadı.',
+                l10n.friendProfileNotFound,
                 style: context.profileTheme.typography.bodyCompact.copyWith(
                   color: context.profileTheme.colors.text,
                 ),
@@ -61,7 +63,7 @@ class FriendProfilePage extends ConsumerWidget {
               right: 16,
               bottom: 24,
               child: FloatingActionButton.small(
-                tooltip: 'Kişiyi düzenle',
+                tooltip: l10n.friendProfileEditTooltip,
                 onPressed: () async {
                   final updated = await Navigator.of(context).push<bool>(
                     MaterialPageRoute<bool>(
@@ -84,7 +86,7 @@ class FriendProfilePage extends ConsumerWidget {
       error: (error, _) => Scaffold(
         appBar: AppBar(
           title: Text(
-            'KISI PROFILI',
+            l10n.friendProfileTitle,
             style: context.profileTheme.typography.navigationLabel(
               color: context.profileTheme.colors.text,
             ),
@@ -94,7 +96,7 @@ class FriendProfilePage extends ConsumerWidget {
           child: Text(
             error is PeopleQueryException
                 ? error.userMessage
-                : 'Kişi yüklenemedi: $error',
+                : l10n.friendProfileLoadFailed('$error'),
             style: context.profileTheme.typography.bodyCompact.copyWith(
               color: context.profileTheme.colors.text,
             ),

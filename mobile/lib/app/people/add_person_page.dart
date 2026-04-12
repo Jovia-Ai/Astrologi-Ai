@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/l10n/l10n.dart';
 
 import '../profile/profile_providers.dart';
 import 'people_providers.dart';
@@ -67,12 +68,13 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final profile = context.profileTheme;
     final spacing = profile.spacing;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _isEditMode ? 'KISIYI DUZENLE' : 'KISI EKLE',
+          _isEditMode ? l10n.peopleFormEditTitle : l10n.peopleFormAddTitle,
           style: profile.typography.navigationLabel(color: profile.colors.text),
         ),
       ),
@@ -85,10 +87,10 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
               TextFormField(
                 controller: _nameController,
                 textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(labelText: 'Ad'),
+                decoration: InputDecoration(labelText: l10n.nameLabel),
                 validator: (value) {
                   if ((value ?? '').trim().isEmpty) {
-                    return 'Ad zorunlu';
+                    return l10n.peopleFormNameRequired;
                   }
                   return null;
                 },
@@ -97,11 +99,11 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
               TextFormField(
                 controller: _birthDateController,
                 readOnly: true,
-                decoration: const InputDecoration(labelText: 'Doğum tarihi'),
+                decoration: InputDecoration(labelText: l10n.birthDateLabel),
                 onTap: _pickBirthDate,
                 validator: (value) {
                   if ((value ?? '').trim().isEmpty) {
-                    return 'Doğum tarihi zorunlu';
+                    return l10n.peopleFormBirthDateRequired;
                   }
                   return null;
                 },
@@ -110,8 +112,8 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
               TextFormField(
                 controller: _birthTimeController,
                 readOnly: true,
-                decoration: const InputDecoration(
-                  labelText: 'Doğum saati (opsiyonel)',
+                decoration: InputDecoration(
+                  labelText: l10n.peopleFormBirthTimeOptional,
                 ),
                 onTap: _pickBirthTime,
               ),
@@ -119,10 +121,10 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
               TextFormField(
                 controller: _cityController,
                 textCapitalization: TextCapitalization.words,
-                decoration: const InputDecoration(labelText: 'Şehir'),
+                decoration: InputDecoration(labelText: l10n.cityLabel),
                 validator: (value) {
                   if ((value ?? '').trim().isEmpty) {
-                    return 'Şehir zorunlu';
+                    return l10n.peopleFormCityRequired;
                   }
                   return null;
                 },
@@ -131,17 +133,17 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
               TextFormField(
                 controller: _countryController,
                 textCapitalization: TextCapitalization.characters,
-                decoration: const InputDecoration(labelText: 'Ülke'),
+                decoration: InputDecoration(labelText: l10n.countryLabel),
                 validator: (value) {
                   if ((value ?? '').trim().isEmpty) {
-                    return 'Ülke zorunlu';
+                    return l10n.peopleFormCountryRequired;
                   }
                   return null;
                 },
               ),
               SizedBox(height: spacing.s8),
               Text(
-                'Doğum saati boş bırakılırsa varsayılan 12:00 kullanılır.',
+                l10n.peopleFormBirthTimeHint,
                 style: profile.typography.meta.copyWith(
                   color: profile.colors.textLight,
                 ),
@@ -156,7 +158,7 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
                         child: CircularProgressIndicator(strokeWidth: 2),
                       )
                     : const Icon(Icons.save_outlined),
-                label: Text(_saving ? 'Kaydediliyor...' : 'Kaydet'),
+                label: Text(_saving ? l10n.peopleFormSaving : l10n.commonSave),
               ),
             ],
           ),
@@ -209,9 +211,9 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
       if (!mounted) {
         return;
       }
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Önce giriş yapmalısın.')));
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.peopleFormLoginRequired)),
+      );
       return;
     }
 
@@ -256,7 +258,7 @@ class _AddPersonPageState extends ConsumerState<AddPersonPage> {
       }
       final message = error is PeopleQueryException
           ? error.userMessage
-          : 'Kayıt başarısız: $error';
+          : context.l10n.peopleFormSaveFailed('$error');
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(message)));

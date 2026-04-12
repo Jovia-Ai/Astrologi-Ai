@@ -1,5 +1,6 @@
 import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/forum/forum_models.dart';
+import 'package:mobile/l10n/current_localizations.dart';
 
 class ForumService {
   ForumService({ApiClient? client}) : _client = client ?? ApiClient();
@@ -80,15 +81,16 @@ class ForumService {
   }
 
   Future<String> fetchActiveTransit() async {
+    final l10n = currentL10n();
     try {
       final res = await _client.get(
         '$_base/active-transit',
         cacheTtl: const Duration(minutes: 30),
       );
       final data = res.data as Map<String, dynamic>?;
-      return data?['label'] as String? ?? 'Gökyüzü hareketli';
+      return data?['label'] as String? ?? l10n.forumActiveTransitFallback;
     } catch (_) {
-      return 'Gökyüzü hareketli';
+      return l10n.forumActiveTransitFallback;
     }
   }
 }

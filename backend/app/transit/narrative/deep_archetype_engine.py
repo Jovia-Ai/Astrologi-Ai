@@ -784,6 +784,7 @@ def build_event_card(event: Mapping[str, Any], context: Mapping[str, Any] | None
 def build_period_core(
     report: Mapping[str, Any],
     event_cards: List[Mapping[str, Any]] | None = None,
+    locale: str = "tr",
 ) -> Dict[str, Any]:
     items = report.get("display", {}).get("items", []) if isinstance(report.get("display"), Mapping) else []
     typed_items = [item for item in items if isinstance(item, Mapping)]
@@ -917,7 +918,7 @@ def build_period_core(
                 period_core=result,
                 chart_snapshot=report.get("natal") if isinstance(report.get("natal"), Mapping) else {},
                 natal_promise={"themes": promise_themes},
-                locale="tr",
+                locale=locale,
                 enable_fun=True,
             )
         )

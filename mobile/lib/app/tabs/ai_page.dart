@@ -1,5 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
+import 'package:mobile/app/ai/ai_chat_service.dart';
+import 'package:mobile/app/ai/ai_paywall_sheet.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_app_menu_scope.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
@@ -13,9 +17,14 @@ class AiPage extends StatefulWidget {
 }
 
 class _AiPageState extends State<AiPage> {
+  final AiChatService _chatService = AiChatService();
   final TextEditingController _composerController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
   final List<_AiChatMessageData> _messages = <_AiChatMessageData>[];
+
+  AiChatQuotaState? _quotaState;
+  String? _conversationId;
+  bool _isSending = false;
 
   List<_AiChatMessageData> get _conversationMessages {
     if (_messages.isNotEmpty) {
@@ -39,11 +48,20 @@ class _AiPageState extends State<AiPage> {
   }
 
   void _sendDraft() {
+    unawaited(_runSendDraft());
+  }
+
+  Future<void> _runSendDraft() async {
+    if (_isSending) {
+      return;
+    }
     final text = _composerController.text.trim();
     if (text.isEmpty) {
       return;
     }
+
     final timestamp = _currentTimestamp();
+    final insertionIndex = _messages.length;
     setState(() {
       _messages.add(
         _AiChatMessageData(
@@ -54,17 +72,91 @@ class _AiPageState extends State<AiPage> {
         ),
       );
       _composerController.clear();
+      _isSending = true;
     });
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!_scrollController.hasClients) {
+
+    await _scrollToBottom();
+
+    try {
+      final result = await _chatService.sendMessage(
+        message: text,
+        conversationId: _conversationId,
+      );
+      if (!mounted) {
         return;
       }
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent + 160,
-        duration: const Duration(milliseconds: 220),
-        curve: Curves.easeOutCubic,
+
+      if (result is AiChatSuccess) {
+        setState(() {
+          _conversationId = result.conversationId ?? _conversationId;
+          _quotaState = result.quotaState;
+          _messages.add(
+            _AiChatMessageData(
+              sender: _AiChatSender.aila,
+              text: result.text,
+              senderLabel: 'Aila',
+              timestamp: _currentTimestamp(),
+            ),
+          );
+        });
+        await _scrollToBottom();
+        return;
+      }
+
+      if (result is AiChatPaywall) {
+        _restoreDraft(text: text, insertionIndex: insertionIndex);
+        setState(() {
+          _quotaState = const AiChatQuotaState(
+            remainingFree: 0,
+            creditsRemaining: 0,
+            isPro: false,
+          );
+        });
+        await showAiPaywallSheet(
+          context,
+          onPurchased: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(context.l10n.aiPurchasePending)),
+            );
+          },
+        );
+      }
+    } on AiChatException catch (error) {
+      if (!mounted) {
+        return;
+      }
+      _restoreDraft(text: text, insertionIndex: insertionIndex);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.aiChatUnavailable(error.message))),
       );
+    } finally {
+      if (mounted) {
+        setState(() => _isSending = false);
+      }
+    }
+  }
+
+  void _restoreDraft({required String text, required int insertionIndex}) {
+    setState(() {
+      if (insertionIndex >= 0 && insertionIndex < _messages.length) {
+        _messages.removeAt(insertionIndex);
+      }
+      _composerController
+        ..text = text
+        ..selection = TextSelection.collapsed(offset: text.length);
     });
+  }
+
+  Future<void> _scrollToBottom() async {
+    await Future<void>.delayed(const Duration(milliseconds: 16));
+    if (!_scrollController.hasClients) {
+      return;
+    }
+    await _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent + 160,
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+    );
   }
 
   String _currentTimestamp() {
@@ -119,6 +211,13 @@ class _AiPageState extends State<AiPage> {
                   ),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 0),
+                child: _AiQuotaBanner(
+                  quotaState: _quotaState,
+                  isSending: _isSending,
+                ),
+              ),
               SizedBox(height: profile.spacing.s12),
               Expanded(
                 child: Padding(
@@ -141,6 +240,7 @@ class _AiPageState extends State<AiPage> {
                     child: _AiChatDock(
                       controller: _composerController,
                       onSend: _sendDraft,
+                      isSending: _isSending,
                     ),
                   ),
                 ),
@@ -286,6 +386,51 @@ class _AiTopBar extends StatelessWidget {
   }
 }
 
+class _AiQuotaBanner extends StatelessWidget {
+  const _AiQuotaBanner({required this.quotaState, required this.isSending});
+
+  final AiChatQuotaState? quotaState;
+  final bool isSending;
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = _AiReferencePalette.of(context);
+    final profile = context.profileTheme;
+    final chips = <String>[
+      if (quotaState?.isPro == true) context.l10n.aiProActive,
+      if (quotaState != null && quotaState!.isPro == false)
+        context.l10n.aiFreeRemaining(quotaState!.remainingFree),
+      if ((quotaState?.creditsRemaining ?? 0) > 0)
+        context.l10n.aiCreditsRemaining(quotaState!.creditsRemaining),
+      if (isSending) context.l10n.aiSending,
+    ];
+
+    if (chips.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final chip in chips)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: palette.softFill.withValues(alpha: 0.92),
+              borderRadius: BorderRadius.circular(999),
+              border: Border.all(color: palette.rule),
+            ),
+            child: Text(
+              chip,
+              style: profile.typography.meta.copyWith(color: palette.text),
+            ),
+          ),
+      ],
+    );
+  }
+}
+
 class _AiChatShell extends StatelessWidget {
   const _AiChatShell({required this.messages, required this.scrollController});
 
@@ -366,10 +511,15 @@ class _AiMessageBubble extends StatelessWidget {
 }
 
 class _AiChatDock extends StatelessWidget {
-  const _AiChatDock({required this.controller, required this.onSend});
+  const _AiChatDock({
+    required this.controller,
+    required this.onSend,
+    required this.isSending,
+  });
 
   final TextEditingController controller;
   final VoidCallback onSend;
+  final bool isSending;
 
   @override
   Widget build(BuildContext context) {
@@ -387,17 +537,26 @@ class _AiChatDock extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.only(top: 8),
-        child: _AiComposer(controller: controller, onSend: onSend),
+        child: _AiComposer(
+          controller: controller,
+          onSend: onSend,
+          isSending: isSending,
+        ),
       ),
     );
   }
 }
 
 class _AiComposer extends StatelessWidget {
-  const _AiComposer({required this.controller, required this.onSend});
+  const _AiComposer({
+    required this.controller,
+    required this.onSend,
+    required this.isSending,
+  });
 
   final TextEditingController controller;
   final VoidCallback onSend;
+  final bool isSending;
 
   @override
   Widget build(BuildContext context) {
@@ -415,6 +574,7 @@ class _AiComposer extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: controller,
+              enabled: !isSending,
               minLines: 1,
               maxLines: 4,
               style: profile.typography.bodyCompact.copyWith(
@@ -432,7 +592,7 @@ class _AiComposer extends StatelessWidget {
           ),
           const SizedBox(width: 14),
           JoviaPressable(
-            onTap: onSend,
+            onTap: isSending ? null : onSend,
             borderRadius: BorderRadius.circular(999),
             child: Container(
               width: 42,
@@ -443,11 +603,22 @@ class _AiComposer extends StatelessWidget {
                 border: Border.all(color: palette.edge.withValues(alpha: 0.5)),
               ),
               child: Center(
-                child: JoviaUiIcon(
-                  asset: JoviaUiAsset.chevronRight,
-                  size: 18,
-                  color: palette.text,
-                ),
+                child: isSending
+                    ? SizedBox(
+                        width: 18,
+                        height: 18,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            palette.text,
+                          ),
+                        ),
+                      )
+                    : JoviaUiIcon(
+                        asset: JoviaUiAsset.chevronRight,
+                        size: 18,
+                        color: palette.text,
+                      ),
               ),
             ),
           ),

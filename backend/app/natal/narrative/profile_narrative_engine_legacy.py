@@ -146,8 +146,7 @@ def build_profile_narrative_legacy(
     seed_key: str | None = None,
     locale: str = "tr",
 ) -> Dict[str, Any]:
-    if (locale or "tr").lower() != "tr":
-        locale = "tr"
+    locale = (locale or "tr").lower()
     facts = normalize_facts(chart, natal_graph)
     seed_material = seed_key or str(facts.get("seed") or "")
 
