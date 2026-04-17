@@ -116,9 +116,13 @@ class ProfileTypography {
     required Color textColor,
     required Color secondaryColor,
     required Color mutedLabelColor,
+    String? displayFontFamily,
+    String? bodyFontFamily,
+    String? monoFontFamily,
   }) {
     return ProfileTypography(
       sectionLabel: TextStyle(
+        fontFamily: monoFontFamily,
         fontSize: 11,
         height: 15 / 11,
         fontWeight: FontWeight.w700,
@@ -126,6 +130,7 @@ class ProfileTypography {
         letterSpacing: 1.7,
       ),
       pageTitle: TextStyle(
+        fontFamily: displayFontFamily,
         fontSize: 36,
         height: 40 / 36,
         fontWeight: FontWeight.w500,
@@ -133,6 +138,7 @@ class ProfileTypography {
         letterSpacing: -1.24,
       ),
       sectionTitle: TextStyle(
+        fontFamily: displayFontFamily,
         fontSize: 30,
         height: 34 / 30,
         fontWeight: FontWeight.w500,
@@ -140,6 +146,7 @@ class ProfileTypography {
         letterSpacing: -0.9,
       ),
       cardTitle: TextStyle(
+        fontFamily: bodyFontFamily,
         fontSize: 18,
         height: 24 / 18,
         fontWeight: FontWeight.w500,
@@ -147,6 +154,7 @@ class ProfileTypography {
         letterSpacing: -0.22,
       ),
       bodyLarge: TextStyle(
+        fontFamily: bodyFontFamily,
         fontSize: 15.5,
         height: 26 / 15.5,
         fontWeight: FontWeight.w400,
@@ -154,6 +162,7 @@ class ProfileTypography {
         letterSpacing: -0.08,
       ),
       bodyCompact: TextStyle(
+        fontFamily: bodyFontFamily,
         fontSize: 14.5,
         height: 22 / 14.5,
         fontWeight: FontWeight.w400,
@@ -161,6 +170,7 @@ class ProfileTypography {
         letterSpacing: -0.05,
       ),
       meta: TextStyle(
+        fontFamily: bodyFontFamily,
         fontSize: 13,
         height: 18 / 13,
         fontWeight: FontWeight.w500,
@@ -168,6 +178,7 @@ class ProfileTypography {
         letterSpacing: 0.01,
       ),
       chipLabel: TextStyle(
+        fontFamily: bodyFontFamily,
         fontSize: 12.5,
         height: 16 / 12.5,
         fontWeight: FontWeight.w600,
@@ -175,6 +186,7 @@ class ProfileTypography {
         letterSpacing: 0.02,
       ),
       heroEditorial: TextStyle(
+        fontFamily: displayFontFamily,
         fontSize: 52,
         height: 54 / 52,
         fontWeight: FontWeight.w500,
