@@ -27,9 +27,19 @@ class _HomePageV2State extends ConsumerState<HomePageV2> {
         bottom: false,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: const [
-            _ShouTopbar(),
-            Expanded(child: _HomeV2Placeholder()),
+          children: [
+            const _ShouTopbar(),
+            Expanded(
+              child: ListView(
+                padding: const EdgeInsets.only(bottom: 120),
+                children: const [
+                  SizedBox(height: 13),
+                  _StoryCirclesRow(),
+                  SizedBox(height: 32),
+                  _HomeV2Placeholder(),
+                ],
+              ),
+            ),
           ],
         ),
       ),
@@ -231,6 +241,182 @@ class _TopbarIconButton extends StatelessWidget {
       constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
     );
   }
+}
+
+/// Horizontal "Bugün aktif" story row with tinted rings encoding each
+/// friend's state — lime for "active today", lavender for "in your current
+/// transit", blush for softer social relevance. Mirrors the Figma
+/// `STORY CIRCLES` frame: header eyebrow + "Tümünü gör" link on top of a
+/// 70px tall scrollable row of 52×52 rings with a tiny name label.
+///
+/// Uses hardcoded placeholder entries for now; wired to the friends /
+/// people provider in a later step.
+class _StoryCirclesRow extends StatelessWidget {
+  const _StoryCirclesRow();
+
+  static const _items = <_StoryCircleData>[
+    _StoryCircleData(name: 'Sen', tone: _StoryCircleTone.limeActive),
+    _StoryCircleData(name: 'Zeynep', tone: _StoryCircleTone.lime),
+    _StoryCircleData(name: 'Ceren', tone: _StoryCircleTone.lavender),
+    _StoryCircleData(name: 'Alp', tone: _StoryCircleTone.lavender),
+    _StoryCircleData(name: 'Bora', tone: _StoryCircleTone.blush),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.profileTheme;
+    final eyebrowColor = theme.colors.textLight;
+    final eyebrowStyle = GoogleFonts.jetBrainsMono(
+      textStyle: TextStyle(
+        fontSize: 10.5,
+        letterSpacing: 1.4,
+        color: eyebrowColor,
+      ),
+    );
+    final linkStyle = TextStyle(
+      fontSize: 11,
+      fontWeight: FontWeight.w500,
+      color: theme.colors.brandLavender,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: Row(
+            children: [
+              Text('Bugün aktif', style: eyebrowStyle),
+              const Spacer(),
+              Text('Tümünü gör', style: linkStyle),
+            ],
+          ),
+        ),
+        const SizedBox(height: 14),
+        SizedBox(
+          height: 70,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            itemCount: _items.length,
+            separatorBuilder: (_, _) => const SizedBox(width: 14),
+            itemBuilder: (context, index) =>
+                _StoryCircle(data: _items[index]),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+enum _StoryCircleTone { limeActive, lime, lavender, blush }
+
+class _StoryCircleData {
+  const _StoryCircleData({required this.name, required this.tone});
+  final String name;
+  final _StoryCircleTone tone;
+}
+
+class _StoryCircle extends StatelessWidget {
+  const _StoryCircle({required this.data});
+  final _StoryCircleData data;
+
+  _StoryCirclePalette _palette(BuildContext context) {
+    final colors = context.profileTheme.colors;
+    switch (data.tone) {
+      case _StoryCircleTone.limeActive:
+        return _StoryCirclePalette(
+          ring: colors.brandLime,
+          center: const Color(0xFFEAFFB8),
+          avatar: const Color(0xFFD4F088),
+        );
+      case _StoryCircleTone.lime:
+        return _StoryCirclePalette(
+          ring: colors.brandLime.withValues(alpha: 0.55),
+          center: const Color(0xFFF0FFD4),
+          avatar: const Color(0xFFE6F7B8),
+        );
+      case _StoryCircleTone.lavender:
+        return _StoryCirclePalette(
+          ring: colors.brandLavender.withValues(alpha: 0.45),
+          center: const Color(0xFFEBE8FF),
+          avatar: const Color(0xFFD6D0F5),
+        );
+      case _StoryCircleTone.blush:
+        return _StoryCirclePalette(
+          ring: const Color(0xFFF5C2DE),
+          center: const Color(0xFFFDE4F2),
+          avatar: const Color(0xFFF5C2DE),
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final palette = _palette(context);
+    final theme = context.profileTheme;
+    return SizedBox(
+      width: 52,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              color: palette.ring,
+              shape: BoxShape.circle,
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(3),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: palette.center,
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                child: Center(
+                  child: Container(
+                    width: 28,
+                    height: 28,
+                    decoration: BoxDecoration(
+                      color: palette.avatar,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 5),
+          SizedBox(
+            height: 13,
+            child: Text(
+              data.name,
+              style: TextStyle(
+                fontSize: 10.5,
+                fontWeight: FontWeight.w400,
+                color: theme.colors.textLight,
+                height: 1,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _StoryCirclePalette {
+  const _StoryCirclePalette({
+    required this.ring,
+    required this.center,
+    required this.avatar,
+  });
+
+  final Color ring;
+  final Color center;
+  final Color avatar;
 }
 
 /// Temporary body shown while the v2 home is still under construction. Lets
