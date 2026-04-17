@@ -6,9 +6,11 @@ import hashlib
 import json
 import logging
 import os
+from datetime import datetime, timezone
 from time import perf_counter
 from types import SimpleNamespace
 from typing import Any, Dict, List, Mapping, Sequence
+from uuid import uuid4
 
 
 from fastapi import APIRouter, Depends, Header, HTTPException
@@ -98,6 +100,8 @@ from app.services.profiles import (
 from app.services.supabase import supabase
 
 logger = logging.getLogger(__name__)
+timing_logger = logging.getLogger("natal.timing")
+_ENABLED_ENV_VALUES = {"1", "true", "yes", "on"}
 
 
 def _json_safe(value: Any) -> Any:
@@ -115,6 +119,72 @@ def _payload_size_bytes(payload: Any) -> int:
             default=_json_safe,
         ).encode("utf-8")
     )
+
+
+def _stage_timings_enabled() -> bool:
+    return os.getenv("ENABLE_NATAL_STAGE_TIMINGS", "false").strip().lower() in _ENABLED_ENV_VALUES
+
+
+def _utc_iso_timestamp() -> str:
+    return datetime.now(timezone.utc).isoformat()
+
+
+def _resolve_request_id(request_id: str | None) -> str:
+    candidate = request_id.strip() if isinstance(request_id, str) else ""
+    return candidate or uuid4().hex
+
+
+def _emit_timing_event(payload: Mapping[str, Any]) -> None:
+    timing_logger.info(json.dumps(dict(payload), ensure_ascii=False, sort_keys=True, default=_json_safe))
+
+
+def _stage_start(enabled: bool) -> float | None:
+    if not enabled:
+        return None
+    return perf_counter()
+
+
+def _stage_end(stage_breakdown_ms: Dict[str, float], name: str, started: float | None) -> None:
+    if started is None:
+        return
+    stage_breakdown_ms[name] = round((perf_counter() - started) * 1000.0, 3)
+
+
+def _log_natal_stage_timing(
+    *,
+    phase: str,
+    stage_breakdown_ms: Mapping[str, float],
+    compute_groups: Sequence[str],
+    route: str,
+    request_id: str,
+    debug: bool,
+    status: str = "ok",
+    chart_data: Mapping[str, Any] | None = None,
+) -> None:
+    if not _stage_timings_enabled() or not stage_breakdown_ms:
+        return
+    filtered_groups = [str(name) for name in compute_groups if str(name).strip()]
+    selection_seed_hash: str | None = None
+    if isinstance(chart_data, Mapping):
+        selection_seed_hash = hashlib.sha1(
+            _natal_selection_seed_key(chart_data).encode("utf-8")
+        ).hexdigest()[:12]
+    for stage_name, stage_duration in stage_breakdown_ms.items():
+        payload: Dict[str, Any] = {
+            "type": "natal_stage_timing",
+            "timestamp": _utc_iso_timestamp(),
+            "route": route,
+            "request_id": request_id,
+            "debug": bool(debug),
+            "status": status,
+            "phase": phase,
+            "stage": str(stage_name),
+            "compute_groups": filtered_groups,
+            "duration_ms": round(float(stage_duration), 3),
+        }
+        if selection_seed_hash:
+            payload["selection_seed_hash"] = selection_seed_hash
+        _emit_timing_event(payload)
 
 router = APIRouter(tags=["natal"])
 rule_engine = RuleEngine()
@@ -193,6 +263,8 @@ def _log_natal_timing(
     request: NatalInterpretationRequest,
     response: Mapping[str, Any],
     duration_ms: float,
+    request_id: str,
+    debug: bool,
     cache_status: str = "not_cached",
     status: str = "ok",
     error_type: str | None = None,
@@ -201,8 +273,12 @@ def _log_natal_timing(
 ) -> None:
     if not os.getenv("ENABLE_TIMING_LOGS", "true").strip().lower() in {"1", "true", "yes", "on"}:
         return
-    payload = {
-        "endpoint": endpoint,
+    payload: Dict[str, Any] = {
+        "type": "natal_timing",
+        "timestamp": _utc_iso_timestamp(),
+        "route": endpoint,
+        "request_id": request_id,
+        "debug": bool(debug),
         "cache_status": cache_status,
         "status": status,
         "request_summary": _natal_request_summary(request),
@@ -218,14 +294,7 @@ def _log_natal_timing(
         }
     if extra_fields:
         payload.update(dict(extra_fields))
-    logger.info(
-        "natal_timing %s",
-        json.dumps(
-            payload,
-            ensure_ascii=False,
-            sort_keys=True,
-        ),
-    )
+    _emit_timing_event(payload)
 
 
 def _natal_request_summary(request: NatalInterpretationRequest) -> Dict[str, Any]:
@@ -740,38 +809,41 @@ def _log_profile_fast_timing(
     request: NatalInterpretationRequest,
     response: Mapping[str, Any],
     duration_ms: float,
+    request_id: str,
     cache_status: str,
     cache_key: str,
     chart_compute_ms: float,
     serialization_ms: float,
+    status: str = "ok",
 ) -> None:
     if not os.getenv("ENABLE_TIMING_LOGS", "true").strip().lower() in {"1", "true", "yes", "on"}:
         return
-    logger.info(
-        "profile_fast_timing %s",
-        json.dumps(
-            {
-                "endpoint": "/profile/fast",
-                "cache_status": cache_status,
-                "cache_key": cache_key,
-                "request_summary": _natal_request_summary(request),
-                "duration_ms": round(duration_ms, 3),
-                "chart_compute_ms": round(chart_compute_ms, 3),
-                "serialization_ms": round(serialization_ms, 3),
-                "payload_bytes": _payload_size_bytes(response),
-                "payload_shape": _natal_payload_shape(response),
-            },
-            ensure_ascii=False,
-            sort_keys=True,
-        ),
-    )
+    payload = {
+        "type": "profile_fast_timing",
+        "timestamp": _utc_iso_timestamp(),
+        "route": "/profile/fast",
+        "request_id": request_id,
+        "debug": False,
+        "status": status,
+        "cache_status": cache_status,
+        "cache_key": cache_key,
+        "request_summary": _natal_request_summary(request),
+        "duration_ms": round(duration_ms, 3),
+        "chart_compute_ms": round(chart_compute_ms, 3),
+        "serialization_ms": round(serialization_ms, 3),
+        "payload_bytes": _payload_size_bytes(response),
+        "payload_shape": _natal_payload_shape(response),
+    }
+    _emit_timing_event(payload)
 
 
 @router.post("/profile/fast")
 def profile_fast(
     request: NatalInterpretationRequest,
+    x_request_id: str | None = Header(default=None, alias="X-Request-Id"),
 ) -> Dict[str, Any]:
     started = perf_counter()
+    request_id = _resolve_request_id(x_request_id)
     cache_key = _profile_fast_cache_key(request)
     lookup = default_cache_store.get(cache_key, now=utc_now())
     if lookup.status == "hit" and lookup.entry is not None:
@@ -781,6 +853,7 @@ def profile_fast(
             request=request,
             response=payload,
             duration_ms=(perf_counter() - started) * 1000.0,
+            request_id=request_id,
             cache_status="hit",
             cache_key=cache_key,
             chart_compute_ms=0.0,
@@ -804,6 +877,7 @@ def profile_fast(
         request=request,
         response=response,
         duration_ms=(perf_counter() - started) * 1000.0,
+        request_id=request_id,
         cache_status="miss",
         cache_key=cache_key,
         chart_compute_ms=timing["chart_compute_ms"],
@@ -828,6 +902,7 @@ def profile_archetype(
     current_user_id: str | None = Depends(_get_optional_supabase_user_id),
 ) -> Dict[str, Any]:
     started = perf_counter()
+    request_id = _resolve_request_id(None)
     normalized_inputs = _resolve_archetype_inputs(request)
     normalized_test_scores = normalized_inputs["scores"]
     resolved_answer_consistency = normalized_inputs["answer_consistency"]
@@ -869,6 +944,8 @@ def profile_archetype(
                 request=request,
                 response=response,
                 duration_ms=(perf_counter() - started) * 1000.0,
+                request_id=request_id,
+                debug=include_debug,
             )
             return response
 
@@ -1011,6 +1088,8 @@ def profile_archetype(
         request=request,
         response=response,
         duration_ms=(perf_counter() - started) * 1000.0,
+        request_id=request_id,
+        debug=include_debug,
     )
     return response
 
@@ -1021,9 +1100,11 @@ def interpret_natal_chart(
     debug: bool = False,
     output_profile: str = "user_compact",
     profile_engine: str | None = None,
+    x_request_id: str | None = Header(default=None, alias="X-Request-Id"),
 ) -> Dict[str, Any]:
     """Free deterministic interpretation endpoint (JoviaWeighted narratives)."""
     started = perf_counter()
+    request_id = _resolve_request_id(x_request_id)
     timer = TimingRecorder()
     try:
         with timer.stage("input_normalize"):
@@ -1034,6 +1115,8 @@ def interpret_natal_chart(
                 premium_mode=False,
                 debug_mode=debug,
                 profile_engine=profile_engine,
+                route="/interpret",
+                request_id=request_id,
             )
         with timer.stage("response_finalize"):
             response = _finalize_response(
@@ -1041,12 +1124,16 @@ def interpret_natal_chart(
                 premium_mode=False,
                 debug_mode=debug,
                 output_profile=output_profile,
+                route="/interpret",
+                request_id=request_id,
             )
         _log_natal_timing(
             endpoint="/interpret",
             request=request,
             response=response,
             duration_ms=(perf_counter() - started) * 1000.0,
+            request_id=request_id,
+            debug=debug,
             stage_breakdown_ms={
                 "request_received": 0.0,
                 **timer.stage_breakdown_ms,
@@ -1059,6 +1146,8 @@ def interpret_natal_chart(
             request=request,
             response={},
             duration_ms=timer.total_ms(),
+            request_id=request_id,
+            debug=debug,
             status="error",
             error_type=type(exc).__name__,
             stage_breakdown_ms={
@@ -1075,8 +1164,10 @@ def interpret_natal_chart_ui(
     debug: bool = False,
     include_debug: bool = False,
     profile_engine: str | None = None,
+    x_request_id: str | None = Header(default=None, alias="X-Request-Id"),
 ) -> Dict[str, Any]:
     started = perf_counter()
+    request_id = _resolve_request_id(x_request_id)
     timer = TimingRecorder()
     cache_key = _interpret_ui_cache_key(
         request,
@@ -1113,6 +1204,8 @@ def interpret_natal_chart_ui(
                         request=request,
                         response=payload,
                         duration_ms=(perf_counter() - started) * 1000.0,
+                        request_id=request_id,
+                        debug=debug,
                         cache_status=cache_status,
                         stage_breakdown_ms={
                             "request_received": 0.0,
@@ -1146,6 +1239,8 @@ def interpret_natal_chart_ui(
                     premium_mode=False,
                     debug_mode=debug,
                     profile_engine=profile_engine,
+                    route="/interpret/ui",
+                    request_id=request_id,
                 )
             with timer.stage("public_natal_build"):
                 response = _finalize_response(
@@ -1153,6 +1248,8 @@ def interpret_natal_chart_ui(
                     premium_mode=False,
                     debug_mode=debug,
                     output_profile="user_compact",
+                    route="/interpret/ui",
+                    request_id=request_id,
                 )
                 public = build_public_natal_view(
                     response,
@@ -1186,6 +1283,8 @@ def interpret_natal_chart_ui(
             request=request,
             response=payload,
             duration_ms=(perf_counter() - started) * 1000.0,
+            request_id=request_id,
+            debug=debug,
             cache_status=cache_status,
             stage_breakdown_ms={
                 "request_received": 0.0,
@@ -1218,6 +1317,8 @@ def interpret_natal_chart_ui(
             request=request,
             response={},
             duration_ms=timer.total_ms(),
+            request_id=request_id,
+            debug=debug,
             status="error",
             error_type=type(exc).__name__,
             stage_breakdown_ms={
@@ -1350,6 +1451,8 @@ def _prepare_payload(
     debug_mode: bool = False,
     tone_enabled: bool = True,
     profile_engine: str | None = None,
+    route: str | None = None,
+    request_id: str | None = None,
 ) -> Dict[str, Any]:
     try:
         chart_data = compute_natal_chart(
@@ -1370,6 +1473,8 @@ def _prepare_payload(
         tone_enabled=tone_enabled,
         request=request,
         profile_engine=profile_engine,
+        route=route,
+        request_id=request_id,
     )
 
 
@@ -1381,7 +1486,11 @@ def _prepare_payload_from_chart(
     tone_enabled: bool = True,
     request: NatalInterpretationRequest | None = None,
     profile_engine: str | None = None,
+    route: str | None = None,
+    request_id: str | None = None,
 ) -> Dict[str, Any]:
+    resolved_route = route or "natal_internal"
+    resolved_request_id = _resolve_request_id(request_id)
     snapshots: Dict[str, Any] | None = {} if debug_mode else None
     natal_selection_config = get_natal_selection_v3_config()
     phase_flags = (
@@ -1409,6 +1518,9 @@ def _prepare_payload_from_chart(
         )
     )
 
+    stage_timings_enabled = _stage_timings_enabled()
+    prepare_stage_breakdown_ms: Dict[str, float] = {}
+    stage_started = _stage_start(stage_timings_enabled)
     planets = serialize_planets(chart_data.get("planets", {}))
     angles = chart_data.get("angles") if isinstance(chart_data, Mapping) else None
     if isinstance(angles, Mapping):
@@ -1434,12 +1546,14 @@ def _prepare_payload_from_chart(
         "planets": list(planets or []),
         "aspects": list(aspects or []),
     }
+    _stage_end(prepare_stage_breakdown_ms, "normalize_chart_inputs", stage_started)
     natal_graph_v2_debug: Dict[str, Any] | None = None
     natal_feature_graph_v2: Dict[str, Any] | None = None
     primitive_scores_v2: Dict[str, Any] | None = None
     contradiction_signatures_v1: Dict[str, Any] | None = None
     master_selector_v1: Dict[str, Any] | None = None
     layer_arbitration_v1: Dict[str, Any] | None = None
+    stage_started = _stage_start(stage_timings_enabled)
     if selection_runtime_enabled:
         natal_graph_v2_debug = build_natal_graph_v2(
             chart_for_selection,
@@ -1467,14 +1581,33 @@ def _prepare_payload_from_chart(
             natal_feature_graph=natal_feature_graph_v2,
             contradiction_signatures=contradiction_signatures_v1,
         )
-    interpretation, meta_info = rule_engine.interpret(planets=planets, aspects=aspects, return_meta=True)
+    _stage_end(prepare_stage_breakdown_ms, "selection_runtime", stage_started)
+    stage_started = _stage_start(stage_timings_enabled)
+    interpretation, meta_info, rule_engine_stage_breakdown = rule_engine.interpret(
+        planets=planets,
+        aspects=aspects,
+        return_meta=True,
+        return_stage_breakdown=True,
+    )
     if snapshots is not None:
         snapshots["rule_engine_output_summary"] = _summarize_rule_engine(interpretation, meta_info)
+    _stage_end(prepare_stage_breakdown_ms, "rule_engine", stage_started)
+    for stage_name, stage_value in (rule_engine_stage_breakdown or {}).items():
+        prepare_stage_breakdown_ms[str(stage_name)] = round(float(stage_value), 3)
 
+    stage_started = _stage_start(stage_timings_enabled)
+    core_feature_stage_breakdown_ms: Dict[str, float] = {}
+    substage_started = _stage_start(stage_timings_enabled)
     placements = derive_placements(planets)
     core_aspects = derive_core_aspects(aspects)
     composite_engine = CompositeEngine()
     composites = composite_engine.build_composites(chart_data)
+    _stage_end(
+        core_feature_stage_breakdown_ms,
+        "core_feature_layers.feature_extract",
+        substage_started,
+    )
+    substage_started = _stage_start(stage_timings_enabled)
     dispositor_engine = DispositorFlowEngine()
     dispositor_flow = dispositor_engine.build(placements)
     axis_engine = AxisActivationEngine()
@@ -1483,6 +1616,12 @@ def _prepare_payload_from_chart(
     aspect_mechanics = aspect_engine.build(aspects)
     sensitivity_engine = ActivationSensitivityEngine()
     activation_sensitivity = sensitivity_engine.build(composites, aspect_mechanics)
+    _stage_end(
+        core_feature_stage_breakdown_ms,
+        "core_feature_layers.weighting",
+        substage_started,
+    )
+    substage_started = _stage_start(stage_timings_enabled)
     pattern_engine = PatternEmphasisEngine()
     patterns = pattern_engine.build(
         composites,
@@ -1500,6 +1639,12 @@ def _prepare_payload_from_chart(
         axis_activation,
     )
     compressed_domains = phase2_fragments.pop("__compressed_domains__", None)
+    _stage_end(
+        core_feature_stage_breakdown_ms,
+        "core_feature_layers.pattern_context",
+        substage_started,
+    )
+    substage_started = _stage_start(stage_timings_enabled)
     latent_engine = LatentPotentialEngine()
     latent_potential = latent_engine.build(composites, patterns, aspect_mechanics)
     upper_engine = UpperMeaningEngine()
@@ -1509,7 +1654,16 @@ def _prepare_payload_from_chart(
         core_aspects=core_aspects,
         aspect_mechanics=aspect_mechanics,
     )
+    _stage_end(
+        core_feature_stage_breakdown_ms,
+        "core_feature_layers.aggregation",
+        substage_started,
+    )
+    _stage_end(prepare_stage_breakdown_ms, "core_feature_layers", stage_started)
+    for stage_name, stage_value in core_feature_stage_breakdown_ms.items():
+        prepare_stage_breakdown_ms[stage_name] = round(float(stage_value), 3)
 
+    stage_started = _stage_start(stage_timings_enabled)
     composite_guidance = build_guidance(
         composites,
         patterns,
@@ -1688,6 +1842,7 @@ def _prepare_payload_from_chart(
         builder,
         debug_mode,
     )
+    _stage_end(prepare_stage_breakdown_ms, "narrative_layers", stage_started)
 
     runtime_info = {
         "engine": rule_engine.__class__.__name__,
@@ -1790,12 +1945,19 @@ def _prepare_payload_from_chart(
                 "mode_reason": str(((voice_profile_v2.get("debug") or {}).get("mode_reason") or "")),
             },
         }
+    stage_started = _stage_start(stage_timings_enabled)
+    surface_stage_breakdown_ms: Dict[str, float] = {}
+    substage_started = _stage_start(stage_timings_enabled)
     sections_v2 = build_sections_v2(
         chart_data=chart_data,
         planets=planets,
         natal_graph=natal_graph,
         master_selector=master_selector_v1 if surface_migration_enabled else None,
         migration_mode=surface_migration_public_mode,
+    )
+    threads_use_prebuilt_sections = (
+        os.getenv("NATAL_THREADS_USE_PREBUILT_SECTIONS", "true").strip().lower()
+        in _ENABLED_ENV_VALUES
     )
     supporting_threads = build_supporting_threads(
         chart_data=chart_data,
@@ -1804,7 +1966,14 @@ def _prepare_payload_from_chart(
         max_threads=4,
         master_selector=master_selector_v1 if surface_migration_enabled else None,
         migration_mode=surface_migration_public_mode,
+        sections=sections_v2 if threads_use_prebuilt_sections else None,
     )
+    _stage_end(
+        surface_stage_breakdown_ms,
+        "surface_layers.summary_build",
+        substage_started,
+    )
+    substage_started = _stage_start(stage_timings_enabled)
     profile_narrative = build_profile_narrative(
         chart_data,
         natal_graph,
@@ -1823,6 +1992,12 @@ def _prepare_payload_from_chart(
         master_selector=master_selector_v1,
         migration_mode="active" if surface_migration_enabled else ("shadow" if surface_migration_shadow else "legacy"),
     )
+    _stage_end(
+        surface_stage_breakdown_ms,
+        "surface_layers.card_assembly",
+        substage_started,
+    )
+    substage_started = _stage_start(stage_timings_enabled)
     category_support_bundle = build_natal_category_support_bundle(
         chart_data=chart_data,
         planets=planets,
@@ -1832,10 +2007,25 @@ def _prepare_payload_from_chart(
         contradiction_signatures=contradiction_signatures_v1,
         master_selector=master_selector_v1,
     )
+    _stage_end(
+        surface_stage_breakdown_ms,
+        "surface_layers.theme_scores",
+        substage_started,
+    )
+    substage_started = _stage_start(stage_timings_enabled)
     sections_v2 = apply_category_support_to_sections(sections_v2, category_support_bundle)
     supporting_threads = apply_category_support_to_threads(supporting_threads, category_support_bundle)
     profile_narrative = apply_category_support_to_profile_narrative(profile_narrative, category_support_bundle)
     personality_imprint = apply_category_support_to_personality_imprint(personality_imprint, category_support_bundle)
+    _stage_end(
+        surface_stage_breakdown_ms,
+        "surface_layers.payload_pack",
+        substage_started,
+    )
+    _stage_end(prepare_stage_breakdown_ms, "surface_layers", stage_started)
+    for stage_name, stage_value in surface_stage_breakdown_ms.items():
+        prepare_stage_breakdown_ms[stage_name] = round(float(stage_value), 3)
+    stage_started = _stage_start(stage_timings_enabled)
     if debug_mode:
         profile_internal = profile_narrative.get("profile_internal") if isinstance(profile_narrative.get("profile_internal"), Mapping) else {}
         imprint_debug = personality_imprint.get("selection_debug") if isinstance(personality_imprint.get("selection_debug"), Mapping) else {}
@@ -1865,6 +2055,7 @@ def _prepare_payload_from_chart(
                 max_threads=4,
                 master_selector=master_selector_v1,
                 migration_mode="active",
+                sections=surface_migration_debug["sections_v2_shadow"] if threads_use_prebuilt_sections else None,
             )
         debug_info["surface_migration_v1"] = surface_migration_debug
     if debug_mode:
@@ -1900,6 +2091,16 @@ def _prepare_payload_from_chart(
                 },
             },
         }
+    _stage_end(prepare_stage_breakdown_ms, "prepare_debug_layers", stage_started)
+    _log_natal_stage_timing(
+        phase="prepare_payload",
+        stage_breakdown_ms=prepare_stage_breakdown_ms,
+        compute_groups=list(prepare_stage_breakdown_ms.keys()),
+        route=resolved_route,
+        request_id=resolved_request_id,
+        debug=debug_mode,
+        chart_data=chart_data,
+    )
     return {
         "chart_data": chart_data,
         "metadata": _build_metadata(request, chart_data) if request else _build_metadata_from_chart(chart_data),
@@ -1986,7 +2187,11 @@ def _finalize_response(
     premium_mode: bool,
     debug_mode: bool = False,
     output_profile: str = "user_compact",
+    route: str | None = None,
+    request_id: str | None = None,
 ) -> Dict[str, Any]:
+    resolved_route = route or "natal_internal"
+    resolved_request_id = _resolve_request_id(request_id)
     legacy_enabled = os.getenv("ENABLE_LEGACY_NARRATIVE", "false").strip().lower() == "true"
     dynamic_enabled = os.getenv("ENABLE_DYNAMIC_INSIGHTS", "false").strip().lower() == "true"
     phase2_snapshot = base_payload.get("_phase2_snapshot") or {}
@@ -2030,6 +2235,9 @@ def _finalize_response(
         "premium_mode": premium_mode,
         "expression_profile": base_payload.get("expression_profile"),
     }
+    stage_timings_enabled = _stage_timings_enabled()
+    finalize_stage_breakdown_ms: Dict[str, float] = {}
+    stage_started = _stage_start(stage_timings_enabled)
     dynamic_insights = None
     enable_pattern_context = os.getenv("ENABLE_PATTERN_CONTEXT", "true").strip().lower() in {"1", "true", "yes", "on"}
     render_pattern_context = os.getenv("RENDER_PATTERN_CONTEXT", "false").strip().lower() in {"1", "true", "yes", "on"}
@@ -2053,6 +2261,8 @@ def _finalize_response(
         response["theme_scores"] = theme_scores
         response["dynamic_insights"] = dynamic_insights_payload
         dynamic_insights = response.get("dynamic_insights")
+    _stage_end(finalize_stage_breakdown_ms, "dynamic_insights", stage_started)
+    stage_started = _stage_start(stage_timings_enabled)
     if dynamic_insights and enable_pattern_context:
         patterns = (base_payload.get("meta_info") or {}).get("aspect_patterns") or []
         pattern_engine = PatternContextEngine()
@@ -2064,13 +2274,8 @@ def _finalize_response(
         dynamic_insights["selected"] = updated_spines
         if render_pattern_context:
             dynamic_insights["render_pattern_context"] = True
-    chart_payload = {
-        "planets": base_payload.get("planets") or [],
-        "aspects": base_payload.get("aspects") or [],
-        "formatted_positions": base_payload.get("formatted_positions") or [],
-        "formatted_aspects": base_payload.get("formatted_aspects") or [],
-        "formatted_houses": base_payload.get("formatted_houses") or [],
-    }
+    _stage_end(finalize_stage_breakdown_ms, "pattern_context", stage_started)
+    stage_started = _stage_start(stage_timings_enabled)
     composite_engine = CompositeMeaningEngineV1()
     composite_meanings = composite_engine.build_composite_meanings_v1(
         composites=base_payload.get("composites") or [],
@@ -2079,6 +2284,8 @@ def _finalize_response(
         debug=debug_mode,
     )
     response["composite_meanings"] = composite_meanings
+    _stage_end(finalize_stage_breakdown_ms, "composite_meanings", stage_started)
+    stage_started = _stage_start(stage_timings_enabled)
     local_pressure = compute_local_pressure(
         base_payload.get("meta_info") or {},
         phase2_snapshot,
@@ -2142,6 +2349,7 @@ def _finalize_response(
             meta_summary=base_payload.get("meta_summary") or {},
             pressure_support=pressure_support,
         )
+    _stage_end(finalize_stage_breakdown_ms, "upper_meaning_refresh", stage_started)
     if legacy_enabled:
         _ensure_narrative_presence(base_payload, response)
     else:
@@ -2150,6 +2358,7 @@ def _finalize_response(
             debug_entry["narrative_deprecation"] = (
                 "legacy narrative_interpretation is disabled; use core_story."
             )
+    stage_started = _stage_start(stage_timings_enabled)
     narrative_fragments = base_payload.get("__narrative_fragments") or {}
     response["core_story_plan"] = build_core_story_plan(
         phase2_snapshot,
@@ -2174,6 +2383,8 @@ def _finalize_response(
         planets=base_payload.get("planets") or [],
         natal_graph=base_payload.get("natal_graph") or {},
     )
+    _stage_end(finalize_stage_breakdown_ms, "core_story_layers", stage_started)
+    stage_started = _stage_start(stage_timings_enabled)
     if debug_mode:
         layer_arbitration_v1 = arbitrate_natal_layers(
             master_selector=base_payload.get("_master_selector_v1") or {},
@@ -2210,6 +2421,8 @@ def _finalize_response(
                     },
                 },
             }
+    _stage_end(finalize_stage_breakdown_ms, "finalize_debug_layers", stage_started)
+    stage_started = _stage_start(stage_timings_enabled)
     response["data_quality"] = _build_data_quality_payload(
         response.get("core_story_plan") or {},
         base_payload.get("meta_summary") or {},
@@ -2240,6 +2453,16 @@ def _finalize_response(
         )
     if debug_mode:
         _record_final_response_snapshot(response, base_payload.get("debug") or {})
+    _stage_end(finalize_stage_breakdown_ms, "finalize_payload", stage_started)
+    _log_natal_stage_timing(
+        phase="finalize_response",
+        stage_breakdown_ms=finalize_stage_breakdown_ms,
+        compute_groups=list(finalize_stage_breakdown_ms.keys()),
+        route=resolved_route,
+        request_id=resolved_request_id,
+        debug=debug_mode,
+        chart_data=base_payload.get("chart_data") if isinstance(base_payload.get("chart_data"), Mapping) else None,
+    )
     return response
 
 

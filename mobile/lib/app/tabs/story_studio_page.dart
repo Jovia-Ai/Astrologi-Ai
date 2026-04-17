@@ -44,7 +44,7 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
     final spacing = theme.spacing;
     final palette = _StoryStudioReferencePalette.of(context);
     final profileAsync = ref.watch(userProfileProvider);
-    final profile = profileAsync.valueOrNull;
+    final profile = profileAsync.asData?.value;
 
     if (profile != null) {
       _maybeLoadImprint(profile);

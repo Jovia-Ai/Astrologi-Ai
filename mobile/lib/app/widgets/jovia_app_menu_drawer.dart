@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:mobile/app/ai/revenuecat_service.dart';
+import 'package:mobile/app/auth/account_service.dart';
+import 'package:mobile/app/legal/external_link_service.dart';
 import 'package:mobile/app/people/people_providers.dart';
 import 'package:mobile/app/preferences/jovia_app_preferences_provider.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
@@ -15,18 +18,32 @@ typedef JoviaAppMenuAction =
     Future<void> Function(BuildContext context, Map<String, dynamic>? profile);
 
 class JoviaAppMenuDrawer extends ConsumerWidget {
-  const JoviaAppMenuDrawer({
+  JoviaAppMenuDrawer({
     super.key,
     this.onEditProfile,
     this.onOpenPeople,
     this.onOpenCalendar,
     this.onOpenArchetype,
-  });
+    this.currentUser,
+    ExternalLinkService? externalLinkService,
+    RevenueCatService? revenueCatService,
+    AccountService? accountService,
+    Future<void> Function()? onSignOut,
+  }) : _externalLinkService =
+           externalLinkService ?? const ExternalLinkService(),
+       _revenueCatService = revenueCatService ?? RevenueCatService(),
+       _accountService = accountService ?? AccountService(),
+       _onSignOut = onSignOut;
 
   final JoviaAppMenuAction? onEditProfile;
   final JoviaAppMenuAction? onOpenPeople;
   final JoviaAppMenuAction? onOpenCalendar;
   final JoviaAppMenuAction? onOpenArchetype;
+  final User? currentUser;
+  final ExternalLinkService _externalLinkService;
+  final RevenueCatService _revenueCatService;
+  final AccountService _accountService;
+  final Future<void> Function()? _onSignOut;
 
   static Future<void> closeThenRun(
     BuildContext context,
@@ -44,13 +61,173 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
     await action(context, profile);
   }
 
+  Future<void> _restorePurchases(BuildContext context) async {
+    Navigator.of(context).pop();
+    await Future<void>.delayed(const Duration(milliseconds: 180));
+    if (!context.mounted) {
+      return;
+    }
+
+    final result = await _revenueCatService.restorePurchases();
+    if (!context.mounted) {
+      return;
+    }
+
+    final messenger = ScaffoldMessenger.of(context);
+    switch (result.status) {
+      case RestorePurchasesStatus.restored:
+        messenger.showSnackBar(
+          SnackBar(content: Text(context.l10n.restorePurchasesSuccess)),
+        );
+        break;
+      case RestorePurchasesStatus.noActivePurchases:
+        messenger.showSnackBar(
+          SnackBar(content: Text(context.l10n.restorePurchasesNoActive)),
+        );
+        break;
+      case RestorePurchasesStatus.failed:
+        final errorMessage = (result.errorMessage ?? '').trim();
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              errorMessage.isNotEmpty
+                  ? errorMessage
+                  : context.l10n.restorePurchasesError,
+            ),
+          ),
+        );
+        break;
+    }
+  }
+
+  Future<void> _openExternalLink(
+    BuildContext context,
+    Future<void> Function() openLink,
+  ) async {
+    Navigator.of(context).pop();
+    await Future<void>.delayed(const Duration(milliseconds: 180));
+    if (!context.mounted) {
+      return;
+    }
+    try {
+      await openLink();
+    } catch (_) {
+      if (!context.mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(context.l10n.externalLinkOpenFailed)),
+      );
+    }
+  }
+
+  Future<void> _confirmDeleteAccount(BuildContext context) async {
+    Navigator.of(context).pop();
+    await Future<void>.delayed(const Duration(milliseconds: 180));
+    if (!context.mounted) {
+      return;
+    }
+
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        final l10n = dialogContext.l10n;
+        return AlertDialog(
+          title: Text(l10n.deleteAccountDialogTitle),
+          content: Text(
+            '${l10n.deleteAccountDialogBody}\n\n${l10n.deleteAccountSubscriptionNote}',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: Text(l10n.deleteAccountCancel),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: Text(l10n.deleteAccountConfirm),
+            ),
+          ],
+        );
+      },
+    );
+    if (confirmed != true || !context.mounted) {
+      return;
+    }
+
+    _showAccountDeletionProgress(context);
+    try {
+      await _accountService.deleteCurrentAccount();
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.deleteAccountSuccess)),
+        );
+      }
+      try {
+        await _signOut();
+      } catch (_) {
+        // The backend may already have invalidated the remote session.
+      }
+    } on AccountDeletionException catch (error) {
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              error.message.trim().isEmpty
+                  ? context.l10n.deleteAccountError
+                  : error.message,
+            ),
+          ),
+        );
+      }
+    } catch (_) {
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.deleteAccountError)),
+        );
+      }
+    }
+  }
+
+  void _showAccountDeletionProgress(BuildContext context) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (dialogContext) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+              const SizedBox(width: 16),
+              Expanded(child: Text(dialogContext.l10n.deleteAccountProgress)),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _signOut() async {
+    if (_onSignOut != null) {
+      await _onSignOut();
+      return;
+    }
+    await Supabase.instance.client.auth.signOut();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = context.profileTheme;
     final l10n = context.l10n;
-    final authUser = Supabase.instance.client.auth.currentUser;
-    final profileMap = ref.watch(userProfileProvider).valueOrNull;
-    final peopleCount = ref.watch(peopleListProvider).valueOrNull?.length ?? 0;
+    final authUser = currentUser ?? Supabase.instance.client.auth.currentUser;
+    final profileMap = ref.watch(userProfileProvider).asData?.value;
+    final peopleCount = ref.watch(peopleListProvider).asData?.value.length ?? 0;
     final prefs = ref.watch(joviaAppPreferencesProvider);
     final themeMode = ref.watch(joviaThemeModeProvider);
     final hasBirthData = _hasBirthData(profileMap);
@@ -349,13 +526,87 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                               onTap: () => _showPremiumSheet(context, ref),
                             ),
                           ),
+                          const SizedBox(height: 10),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 410),
+                            child: _JoviaAppMenuActionTile(
+                              title: l10n.restorePurchasesTitle,
+                              subtitle: l10n.restorePurchasesDescription,
+                              iconAsset: JoviaUiAsset.checkSeal,
+                              onTap: () => _restorePurchases(context),
+                            ),
+                          ),
+                          const SizedBox(height: 18),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 430),
+                            child: _JoviaAppMenuSectionLabel(
+                              label: l10n.menuInfoAndSupport,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 450),
+                            child: _JoviaAppMenuActionTile(
+                              title: l10n.privacyPolicyTitle,
+                              subtitle: l10n.privacyPolicyDescription,
+                              iconAsset: JoviaUiAsset.settingsRings,
+                              onTap: () => _openExternalLink(
+                                context,
+                                _externalLinkService.openPrivacyPolicy,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 470),
+                            child: _JoviaAppMenuActionTile(
+                              title: l10n.termsOfUseTitle,
+                              subtitle: l10n.termsOfUseDescription,
+                              iconAsset: JoviaUiAsset.editPen,
+                              onTap: () => _openExternalLink(
+                                context,
+                                _externalLinkService.openTermsOfUse,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 10),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 490),
+                            child: _JoviaAppMenuActionTile(
+                              title: l10n.supportTitle,
+                              subtitle: l10n.supportDescription,
+                              iconAsset: JoviaUiAsset.connectionsTwins,
+                              onTap: () => _openExternalLink(
+                                context,
+                                _externalLinkService.openSupport,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 18),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 510),
+                            child: _JoviaAppMenuSectionLabel(
+                              label: l10n.menuAccount,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 530),
+                            child: _JoviaAppMenuActionTile(
+                              title: l10n.deleteAccountTitle,
+                              subtitle: l10n.deleteAccountDescription,
+                              iconAsset: JoviaUiAsset.logoutArc,
+                              danger: true,
+                              onTap: () => _confirmDeleteAccount(context),
+                            ),
+                          ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 14),
                   JoviaReveal(
-                    delay: const Duration(milliseconds: 430),
+                    delay: const Duration(milliseconds: 560),
                     child: _JoviaAppMenuActionTile(
                       title: l10n.menuSignOut,
                       subtitle: l10n.menuSignOutSubtitle,
@@ -366,7 +617,7 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                         await Future<void>.delayed(
                           const Duration(milliseconds: 180),
                         );
-                        await Supabase.instance.client.auth.signOut();
+                        await _signOut();
                       },
                     ),
                   ),
@@ -648,7 +899,9 @@ class _JoviaAppMenuActionTile extends StatelessWidget {
                         if ((trailingLabel ?? '').trim().isNotEmpty)
                           Padding(
                             padding: const EdgeInsets.only(left: 8),
-                            child: JoviaMetaPill(label: trailingLabel!.trim()),
+                            child: JoviaMetaPill(
+                              label: (trailingLabel ?? '').trim(),
+                            ),
                           ),
                       ],
                     ),

@@ -153,6 +153,11 @@ class _OnboardingBirthPageState extends State<OnboardingBirthPage> {
                 centerText: l10n.onboardingBirthTopCenter,
                 reserveTrailingSpace: true,
               ),
+              SizedBox(height: spacing.s16),
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: JoviaBrandMark(width: 62, opacity: 0.84),
+              ),
               SizedBox(height: spacing.s24),
               JoviaSectionHeader(
                 label: l10n.onboardingSectionLabel,

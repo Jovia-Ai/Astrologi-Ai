@@ -9,8 +9,10 @@ import 'package:intl/intl.dart';
 
 import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
+import 'package:mobile/app/tabs/period_detail_navigation.dart';
 import 'package:mobile/app/tabs/period_detail_page.dart';
 import 'package:mobile/app/tabs/period_marker_detail_page.dart';
+import 'package:mobile/app/telemetry/perf_telemetry.dart';
 import 'package:mobile/app/timing/daily_transit_selection.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/period_peak_timeline_widget.dart';
@@ -228,6 +230,135 @@ String _currentCalendarLanguageCode([String? preferred]) {
 AppLocalizations _currentCalendarL10n() {
   final languageCode = _currentCalendarLanguageCode();
   return lookupAppLocalizations(Locale(languageCode));
+}
+
+int _calendarHubFlowSequence = 0;
+
+String _calendarHubDateToken(DateTime value) =>
+    TransitRequestBuilder.fmtDate(TransitRequestBuilder.stripDate(value));
+
+String _calendarHubMonthToken(DateTime value) {
+  final normalized = TransitRequestBuilder.stripDate(value);
+  final month = normalized.month.toString().padLeft(2, '0');
+  return '${normalized.year}-$month';
+}
+
+String _nextCalendarHubFlowId({
+  required String mode,
+  required String source,
+  required DateTime selectedDate,
+}) {
+  _calendarHubFlowSequence = (_calendarHubFlowSequence + 1) % 1000000;
+  final micros = DateTime.now().toUtc().microsecondsSinceEpoch;
+  final normalizedMode = mode.trim().isEmpty ? 'unknown' : mode.trim();
+  final normalizedSource = source.trim().isEmpty ? 'unknown' : source.trim();
+  final dateToken = _calendarHubDateToken(selectedDate);
+  return 'calhub_${normalizedMode}_${normalizedSource}_${dateToken}_${micros}_${_calendarHubFlowSequence.toString().padLeft(6, '0')}';
+}
+
+int _calendarHubListCount(Map<String, dynamic> map, String key) {
+  final value = map[key];
+  return value is List ? value.length : 0;
+}
+
+Map<String, Object?> _calendarHubItemCounts({
+  required String endpoint,
+  required Map<String, dynamic> payload,
+}) {
+  if (endpoint == '/transit/narrative') {
+    final publicPayload = payload['public'] is Map
+        ? Map<String, dynamic>.from(payload['public'] as Map)
+        : payload;
+    final bestTimesRaw =
+        publicPayload['best_times'] ??
+        payload['best_times'] ??
+        payload['windows'] ??
+        payload['candidates'];
+    return <String, Object?>{
+      'daily_event_cards': _calendarHubListCount(publicPayload, 'daily_event_cards'),
+      'period_event_cards': _calendarHubListCount(publicPayload, 'period_event_cards'),
+      'event_cards': _calendarHubListCount(publicPayload, 'event_cards'),
+      'period_peak_timeline': _calendarHubListCount(publicPayload, 'period_peak_timeline'),
+      'calendar_days': _calendarHubListCount(
+        publicPayload['calendar'] is Map
+            ? Map<String, dynamic>.from(publicPayload['calendar'] as Map)
+            : const <String, dynamic>{},
+        'days',
+      ),
+      'best_times': bestTimesRaw is List ? bestTimesRaw.length : 0,
+    };
+  }
+  if (endpoint == '/transit/calendar') {
+    final calendarPayload = payload['calendar'] is Map
+        ? Map<String, dynamic>.from(payload['calendar'] as Map)
+        : payload;
+    return <String, Object?>{
+      'calendar_days': _calendarHubListCount(calendarPayload, 'days'),
+      'markers': _calendarHubListCount(payload, 'markers'),
+      'themes': _calendarHubListCount(payload, 'themes'),
+      'intent_summary': _calendarHubListCount(payload, 'intent_summary'),
+    };
+  }
+  if (endpoint == '/transit/calendar/best-times') {
+    final bestTimes =
+        payload['best_times'] ??
+        payload['windows'] ??
+        payload['candidates'];
+    return <String, Object?>{
+      'best_times': bestTimes is List ? bestTimes.length : 0,
+    };
+  }
+  return const <String, Object?>{};
+}
+
+Future<Map<String, dynamic>> _trackCalendarHubRequest({
+  required String flowId,
+  required String mode,
+  required String endpoint,
+  required String source,
+  required DateTime selectedDate,
+  required DateTime focusedDate,
+  required bool usedFallback,
+  required Future<Map<String, dynamic>> Function() run,
+}) async {
+  // Keep telemetry shape stable so parallel fan-out in one UI action is traceable.
+  final span = PerfTelemetry.startSpan(
+    'calendar_hub_request',
+    startEvent: 'calendar_hub_request_start',
+    finishEvent: 'calendar_hub_request_end',
+    data: <String, Object?>{
+      'flow_id': flowId,
+      'surface': 'calendar_hub',
+      'mode': mode,
+      'endpoint': endpoint,
+      'source': source,
+      'used_fallback': usedFallback,
+      'selected_date': _calendarHubDateToken(selectedDate),
+      'focused_month': _calendarHubMonthToken(focusedDate),
+    },
+  );
+  try {
+    final payload = await run();
+    span.finish(
+      status: 'success',
+      data: <String, Object?>{
+        'success': true,
+        'failure': false,
+        'item_counts': _calendarHubItemCounts(endpoint: endpoint, payload: payload),
+      },
+    );
+    return payload;
+  } catch (error) {
+    span.finish(
+      status: 'failure',
+      data: <String, Object?>{
+        'success': false,
+        'failure': true,
+        'error_type': error.runtimeType.toString(),
+      },
+    );
+    rethrow;
+  }
 }
 
 String _formatCalendarMonthTitle(BuildContext context, DateTime date) =>
@@ -1490,6 +1621,9 @@ Future<CalendarDayBundle> _loadCalendarDayBundle({
   required Map<String, dynamic> profile,
   required DateTime selectedDay,
   required String locale,
+  required String flowId,
+  String mode = 'day',
+  String source = 'day',
   CalendarDayBundle? seedBundle,
 }) async {
   final normalizedDate = TransitRequestBuilder.stripDate(selectedDay);
@@ -1501,10 +1635,19 @@ Future<CalendarDayBundle> _loadCalendarDayBundle({
   await Future.wait<void>([
     () async {
       try {
-        narrativeMap = await dataSource.fetchDailyNarrative(
-          profile: profile,
+        narrativeMap = await _trackCalendarHubRequest(
+          flowId: flowId,
+          mode: mode,
+          endpoint: '/transit/narrative',
+          source: source,
           selectedDate: normalizedDate,
-          locale: locale,
+          focusedDate: normalizedDate,
+          usedFallback: false,
+          run: () => dataSource.fetchDailyNarrative(
+            profile: profile,
+            selectedDate: normalizedDate,
+            locale: locale,
+          ),
         );
       } catch (error) {
         narrativeError = error;
@@ -1512,11 +1655,20 @@ Future<CalendarDayBundle> _loadCalendarDayBundle({
     }(),
     () async {
       try {
-        calendarMap = await dataSource.fetchCalendar(
-          profile: profile,
+        calendarMap = await _trackCalendarHubRequest(
+          flowId: flowId,
+          mode: mode,
+          endpoint: '/transit/calendar',
+          source: source,
+          selectedDate: normalizedDate,
           focusedDate: normalizedDate,
-          include: 'markers',
-          locale: locale,
+          usedFallback: false,
+          run: () => dataSource.fetchCalendar(
+            profile: profile,
+            focusedDate: normalizedDate,
+            include: 'markers',
+            locale: locale,
+          ),
         );
       } catch (error) {
         calendarError = error;
@@ -1539,10 +1691,19 @@ Future<CalendarDayBundle> _loadCalendarDayBundle({
   if (narrativeBest.isEmpty) {
     try {
       fallbackBest = _extractBestTimesFromBestTimesPayload(
-        await dataSource.fetchBestTimes(
-          profile: profile,
+        await _trackCalendarHubRequest(
+          flowId: flowId,
+          mode: mode,
+          endpoint: '/transit/calendar/best-times',
+          source: '${source}_fallback',
+          selectedDate: normalizedDate,
           focusedDate: normalizedDate,
-          locale: locale,
+          usedFallback: true,
+          run: () => dataSource.fetchBestTimes(
+            profile: profile,
+            focusedDate: normalizedDate,
+            locale: locale,
+          ),
         ),
       );
     } catch (_) {}
@@ -1871,7 +2032,7 @@ class _CalendarHubPageState extends ConsumerState<CalendarHubPage>
     final profileAsync = widget.profileOverride == null
         ? ref.watch(userProfileProvider)
         : const AsyncValue<Map<String, dynamic>?>.data(null);
-    final profileMap = widget.profileOverride ?? profileAsync.valueOrNull;
+    final profileMap = widget.profileOverride ?? profileAsync.asData?.value;
     _maybeBootstrap(profileMap);
 
     return Scaffold(
@@ -2143,7 +2304,7 @@ class _CalendarHubPageState extends ConsumerState<CalendarHubPage>
         builder: (_) => PeriodDetailPage(
           card: card,
           periodCore: _bundle?.periodCore,
-          routeSource: 'calendar_hub_long_term',
+          routeSource: PeriodDetailRouteSource.calendarHubLongTerm,
         ),
       ),
     );
@@ -3161,7 +3322,7 @@ class _ProfileCalendarPreviewStripState
     final profileAsync = widget.profileOverride == null
         ? ref.watch(userProfileProvider)
         : const AsyncValue<Map<String, dynamic>?>.data(null);
-    final profile = widget.profileOverride ?? profileAsync.valueOrNull;
+    final profile = widget.profileOverride ?? profileAsync.asData?.value;
     final l10n = context.l10n;
     _maybeBootstrap(profile);
 
@@ -3893,6 +4054,7 @@ class _CalendarDayPageState extends State<CalendarDayPage> {
   final Map<String, CalendarDayBundle> _cache = <String, CalendarDayBundle>{};
   final Set<String> _loadingKeys = <String>{};
   final Map<String, String> _loadErrors = <String, String>{};
+  bool _initialPrimaryLoadPending = true;
 
   @override
   void initState() {
@@ -3915,6 +4077,16 @@ class _CalendarDayPageState extends State<CalendarDayPage> {
         _loadingKeys.contains(key)) {
       return;
     }
+    final activeKey = _calendarDayKey(_activeDate);
+    final isPrimaryDay = key == activeKey;
+    final isInitialPrimaryLoad = _initialPrimaryLoadPending && isPrimaryDay;
+    final mode = isInitialPrimaryLoad ? 'initial' : 'day';
+    final source = isPrimaryDay ? 'day' : 'prefetch';
+    final flowId = _nextCalendarHubFlowId(
+      mode: mode,
+      source: source,
+      selectedDate: date,
+    );
     setState(() {
       _loadingKeys.add(key);
       _loadErrors.remove(key);
@@ -3925,6 +4097,9 @@ class _CalendarDayPageState extends State<CalendarDayPage> {
         profile: widget.profile,
         selectedDay: date,
         locale: _currentCalendarLanguageCode(widget.localeCode),
+        flowId: flowId,
+        mode: mode,
+        source: source,
         seedBundle: cached,
       );
       if (!mounted) {
@@ -3934,6 +4109,9 @@ class _CalendarDayPageState extends State<CalendarDayPage> {
         _cache[key] = bundle;
         _loadingKeys.remove(key);
         _loadErrors.remove(key);
+        if (isInitialPrimaryLoad) {
+          _initialPrimaryLoadPending = false;
+        }
       });
     } catch (error) {
       if (!mounted) {
@@ -3945,6 +4123,9 @@ class _CalendarDayPageState extends State<CalendarDayPage> {
           _currentCalendarL10n(),
           error,
         );
+        if (isInitialPrimaryLoad) {
+          _initialPrimaryLoadPending = false;
+        }
       });
     }
   }
@@ -4114,17 +4295,14 @@ class _CalendarDayPageContent extends StatelessWidget {
               timeline: bundle!.timeline,
               periodCore: bundle!.periodCore,
               onOpenEventCard: (card) {
-                Navigator.of(context, rootNavigator: true).push(
-                  MaterialPageRoute<void>(
-                    builder: (_) => PeriodDetailPage(
-                      card: PeriodCardDto.fromEventCard(
-                        eventCard: card,
-                        index: 0,
-                      ),
-                      periodCore: bundle!.periodCore,
-                      routeSource: '${source}_day_card',
-                    ),
+                openPeriodDetailFromEventCard(
+                  context: context,
+                  eventCard: card,
+                  periodCore: bundle!.periodCore,
+                  routeSource: PeriodDetailRouteSource.calendarHubDayCard(
+                    source,
                   ),
+                  surface: 'calendar_hub_editorial_day',
                 );
               },
               onOpenPeriodCard: (card) {
@@ -4133,7 +4311,9 @@ class _CalendarDayPageContent extends StatelessWidget {
                     builder: (_) => PeriodDetailPage(
                       card: card,
                       periodCore: bundle!.periodCore,
-                      routeSource: '${source}_day_period',
+                      routeSource: PeriodDetailRouteSource.calendarHubDayPeriod(
+                        source,
+                      ),
                     ),
                   ),
                 );
@@ -4521,6 +4701,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
   Map<String, NarrativeCalendarDay> _calendarDays =
       const <String, NarrativeCalendarDay>{};
   TimelineDto? _dailyTimeline;
+  PeriodCoreDto? _periodCore;
   bool _wrongSource = false;
   String _periodOnlyNote = '';
   String? _lastProfileKey;
@@ -4531,7 +4712,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
     final profileAsync = widget.profileOverride == null
         ? ref.watch(userProfileProvider)
         : const AsyncValue<Map<String, dynamic>?>.data(null);
-    final profile = widget.profileOverride ?? profileAsync.valueOrNull;
+    final profile = widget.profileOverride ?? profileAsync.asData?.value;
     final l10n = context.l10n;
     _maybeBootstrap(profile);
 
@@ -4558,6 +4739,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
       periodOnlyNote: _periodOnlyNote,
       markers: _dailyMarkers,
       timeline: _dailyTimeline,
+      periodCore: _periodCore,
       calendarDays: _calendarDays,
       onPickDate: () => _showDatePicker(profile!),
       onSelectDay: (day) => _handleDaySelection(profile!, day),
@@ -4568,13 +4750,13 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
 
     if (widget.embedded) {
       return RefreshIndicator(
-        onRefresh: () => _loadDaily(profile!),
+        onRefresh: () => _loadDaily(profile!, mode: 'refresh', source: 'refresh'),
         child: content,
       );
     }
 
     return RefreshIndicator(
-      onRefresh: () => _loadDaily(profile!),
+      onRefresh: () => _loadDaily(profile!, mode: 'refresh', source: 'refresh'),
       child: Padding(
         padding: EdgeInsets.fromLTRB(
           profileTheme.spacing.pageHorizontal,
@@ -4602,7 +4784,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
       return;
     }
     setState(() => _selectedDay = normalized);
-    await _loadDaily(profile);
+    await _loadDaily(profile, mode: 'day', source: 'day');
   }
 
   Future<void> _handleDaySelection(
@@ -4615,14 +4797,14 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
     }
     HapticFeedback.selectionClick();
     setState(() => _selectedDay = normalized);
-    await _loadDaily(profile);
+    await _loadDaily(profile, mode: 'day', source: 'day');
   }
 
   Future<void> _shiftMonth(Map<String, dynamic> profile, int delta) async {
     final targetMonth = DateTime(_selectedDay.year, _selectedDay.month + delta);
     final clamped = _clampSelectedDayToMonth(_selectedDay, targetMonth);
     setState(() => _selectedDay = clamped);
-    await _loadDaily(profile);
+    await _loadDaily(profile, mode: 'day', source: 'day');
   }
 
   DateTime _clampSelectedDayToMonth(
@@ -4673,15 +4855,12 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
       TransitRequestBuilder.fmtDate(TransitRequestBuilder.stripDate(value));
 
   void _openDailyDetail(EventCardDto card) {
-    final detailCard = PeriodCardDto.fromEventCard(eventCard: card, index: 0);
-    Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute<void>(
-        builder: (_) => PeriodDetailPage(
-          card: detailCard,
-          periodCore: null,
-          routeSource: 'calendar_hub_daily',
-        ),
-      ),
+    openPeriodDetailFromEventCard(
+      context: context,
+      eventCard: card,
+      periodCore: _periodCore,
+      routeSource: PeriodDetailRouteSource.calendarHubDaily,
+      surface: 'calendar_hub_daily_tab',
     );
   }
 
@@ -4693,7 +4872,18 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
     );
   }
 
-  Future<void> _loadDaily(Map<String, dynamic> profile) async {
+  Future<void> _loadDaily(
+    Map<String, dynamic> profile, {
+    String mode = 'day',
+    String source = 'day',
+  }) async {
+    final normalizedMode = mode.trim().isEmpty ? 'day' : mode.trim();
+    final normalizedSource = source.trim().isEmpty ? 'day' : source.trim();
+    final flowId = _nextCalendarHubFlowId(
+      mode: normalizedMode,
+      source: normalizedSource,
+      selectedDate: _selectedDay,
+    );
     setState(() {
       _loading = true;
       _error = null;
@@ -4704,20 +4894,38 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
     try {
       final locale = Localizations.localeOf(context).languageCode;
       final responses = await Future.wait<Map<String, dynamic>>([
-        _narrativeRepository.fetchDailyNarrative(
-          profile: profile,
+        _trackCalendarHubRequest(
+          flowId: flowId,
+          mode: normalizedMode,
+          endpoint: '/transit/narrative',
+          source: normalizedSource,
           selectedDate: _selectedDay,
-          includeBestTimes: false,
-          payloadProfile: TransitPayloadProfile.calendarDay,
-          requestSla: ApiRequestSla.interactive,
-          locale: locale,
-        ),
-        _calendarRepository.fetchCalendar(
-          profile: profile,
           focusedDate: _selectedDay,
-          include: 'markers',
-          requestSla: ApiRequestSla.interactive,
-          locale: locale,
+          usedFallback: false,
+          run: () => _narrativeRepository.fetchDailyNarrative(
+            profile: profile,
+            selectedDate: _selectedDay,
+            includeBestTimes: false,
+            payloadProfile: TransitPayloadProfile.calendarDay,
+            requestSla: ApiRequestSla.interactive,
+            locale: locale,
+          ),
+        ),
+        _trackCalendarHubRequest(
+          flowId: flowId,
+          mode: normalizedMode,
+          endpoint: '/transit/calendar',
+          source: normalizedSource,
+          selectedDate: _selectedDay,
+          focusedDate: _selectedDay,
+          usedFallback: false,
+          run: () => _calendarRepository.fetchCalendar(
+            profile: profile,
+            focusedDate: _selectedDay,
+            include: 'markers',
+            requestSla: ApiRequestSla.interactive,
+            locale: locale,
+          ),
         ),
       ]);
       final map = responses[0];
@@ -4733,7 +4941,12 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
       final narrativeBest = _extractBestTimesFromNarrativeMap(map);
       final fallbackBest = narrativeBest.isNotEmpty
           ? const <CalendarBestTimeItem>[]
-          : await _loadBestTimesFallback(profile);
+          : await _loadBestTimesFallback(
+              profile,
+              flowId: flowId,
+              mode: normalizedMode,
+              source: 'fallback',
+            );
       final selection = _deriveEventCardSelection(
         narrative: narrative,
         selectedDate: _selectedDay,
@@ -4763,6 +4976,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
         _dailyTimeline = narrative.timeline;
         _bestTimes = narrativeBest.isNotEmpty ? narrativeBest : fallbackBest;
         _periodOnlyNote = selection.periodOnlyNote;
+        _periodCore = narrative.periodCore ?? periodCalendar.periodCore;
         _wrongSource =
             (periodInNarrative || selection.dailyCards.isEmpty) &&
             _periodEventCards.isEmpty;
@@ -4780,6 +4994,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
         _dailyTimeline = null;
         _bestTimes = const <CalendarBestTimeItem>[];
         _periodOnlyNote = '';
+        _periodCore = null;
         _error = _friendlyError(exc);
       });
     } catch (exc) {
@@ -4794,21 +5009,34 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
         _dailyTimeline = null;
         _bestTimes = const <CalendarBestTimeItem>[];
         _periodOnlyNote = '';
+        _periodCore = null;
         _error = exc.toString();
       });
     }
   }
 
   Future<List<CalendarBestTimeItem>> _loadBestTimesFallback(
-    Map<String, dynamic> profile,
-  ) async {
+    Map<String, dynamic> profile, {
+    required String flowId,
+    required String mode,
+    String source = 'fallback',
+  }) async {
     try {
       final locale = Localizations.localeOf(context).languageCode;
-      final map = await _calendarRepository.fetchBestTimes(
-        profile: profile,
+      final map = await _trackCalendarHubRequest(
+        flowId: flowId,
+        mode: mode,
+        endpoint: '/transit/calendar/best-times',
+        source: source,
+        selectedDate: _selectedDay,
         focusedDate: _selectedDay,
-        requestSla: ApiRequestSla.background,
-        locale: locale,
+        usedFallback: true,
+        run: () => _calendarRepository.fetchBestTimes(
+          profile: profile,
+          focusedDate: _selectedDay,
+          requestSla: ApiRequestSla.background,
+          locale: locale,
+        ),
       );
       return _extractBestTimesFromBestTimesMap(map);
     } catch (_) {
@@ -4830,7 +5058,7 @@ class _DailyCalendarTabState extends ConsumerState<DailyCalendarTab> {
       if (!mounted || profile == null) {
         return;
       }
-      _loadDaily(profile);
+      _loadDaily(profile, mode: 'initial', source: 'day');
     });
   }
 
@@ -4992,6 +5220,7 @@ class _DailyCalendarContent extends StatelessWidget {
     required this.periodOnlyNote,
     required this.markers,
     required this.timeline,
+    required this.periodCore,
     required this.calendarDays,
     required this.onPickDate,
     required this.onSelectDay,
@@ -5012,6 +5241,7 @@ class _DailyCalendarContent extends StatelessWidget {
   final String periodOnlyNote;
   final List<PeriodMarkerDto> markers;
   final TimelineDto? timeline;
+  final PeriodCoreDto? periodCore;
   final Map<String, NarrativeCalendarDay> calendarDays;
   final VoidCallback onPickDate;
   final ValueChanged<DateTime> onSelectDay;
@@ -5030,7 +5260,7 @@ class _DailyCalendarContent extends StatelessWidget {
       markers: markers,
       bestTimes: bestTimes,
       timeline: timeline,
-      periodCore: null,
+      periodCore: periodCore,
     );
 
     return ListView(
@@ -5077,15 +5307,15 @@ class _DailyCalendarContent extends StatelessWidget {
             markers: markers,
             bestTimes: bestTimes,
             timeline: timeline,
-            periodCore: null,
+            periodCore: periodCore,
             onOpenEventCard: onOpenEventCard,
             onOpenPeriodCard: (card) {
               Navigator.of(context, rootNavigator: true).push(
                 MaterialPageRoute<void>(
                   builder: (_) => PeriodDetailPage(
                     card: card,
-                    periodCore: null,
-                    routeSource: 'calendar_hub_period_section',
+                    periodCore: periodCore,
+                    routeSource: PeriodDetailRouteSource.calendarHubPeriodSection,
                   ),
                 ),
               );
@@ -5392,15 +5622,18 @@ class _CalendarDayCellState extends State<_CalendarDayCell>
       duration: const Duration(milliseconds: 380),
       vsync: this,
     );
-    _springAnimation = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.88), weight: 25),
-      TweenSequenceItem(tween: Tween(begin: 0.88, end: 1.12), weight: 40),
-      TweenSequenceItem(tween: Tween(begin: 1.12, end: 0.97), weight: 20),
-      TweenSequenceItem(tween: Tween(begin: 0.97, end: 1.0), weight: 15),
-    ]).animate(CurvedAnimation(
-      parent: _springController,
-      curve: Curves.easeOutCubic,
-    ));
+    _springAnimation =
+        TweenSequence<double>([
+          TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.88), weight: 25),
+          TweenSequenceItem(tween: Tween(begin: 0.88, end: 1.12), weight: 40),
+          TweenSequenceItem(tween: Tween(begin: 1.12, end: 0.97), weight: 20),
+          TweenSequenceItem(tween: Tween(begin: 0.97, end: 1.0), weight: 15),
+        ]).animate(
+          CurvedAnimation(
+            parent: _springController,
+            curve: Curves.easeOutCubic,
+          ),
+        );
   }
 
   @override
@@ -5458,8 +5691,9 @@ class _CalendarDayCellState extends State<_CalendarDayCell>
               final dotSpacing = compact ? 3.0 : 4.0;
               final dayStyle = profile.typography.cardTitle.copyWith(
                 color: textColor,
-                fontWeight:
-                    widget.isSelected ? FontWeight.w700 : FontWeight.w600,
+                fontWeight: widget.isSelected
+                    ? FontWeight.w700
+                    : FontWeight.w600,
                 fontSize: compact ? 15 : 17,
                 height: 1.0,
               );
@@ -5650,7 +5884,7 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
     final profileAsync = widget.profileOverride == null
         ? ref.watch(userProfileProvider)
         : const AsyncValue<Map<String, dynamic>?>.data(null);
-    final profile = widget.profileOverride ?? profileAsync.valueOrNull;
+    final profile = widget.profileOverride ?? profileAsync.asData?.value;
     _maybeBootstrap(profile);
 
     if (profileAsync.isLoading && profile == null) {
@@ -5776,7 +6010,7 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
                             builder: (_) => PeriodDetailPage(
                               card: visibleCards[index],
                               periodCore: _periodCore,
-                              routeSource: 'profile_timing',
+                              routeSource: PeriodDetailRouteSource.profileTiming,
                             ),
                           ),
                         );
@@ -5898,7 +6132,7 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
                               builder: (_) => PeriodDetailPage(
                                 card: cards[index],
                                 periodCore: _periodCore,
-                                routeSource: 'calendar_hub_period',
+                                routeSource: PeriodDetailRouteSource.calendarHubPeriod,
                               ),
                             ),
                           );
@@ -5919,28 +6153,48 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
     }
 
     return RefreshIndicator(
-      onRefresh: () => _loadPeriod(profile!),
+      onRefresh: () => _loadPeriod(profile!, mode: 'refresh', source: 'refresh'),
       child: ListView(padding: EdgeInsets.zero, children: [content]),
     );
   }
 
-  Future<void> _loadPeriod(Map<String, dynamic> profile) async {
+  Future<void> _loadPeriod(
+    Map<String, dynamic> profile, {
+    String mode = 'period',
+    String source = 'period',
+  }) async {
+    final now = DateTime.now();
+    final normalizedMode = mode.trim().isEmpty ? 'period' : mode.trim();
+    final normalizedSource = source.trim().isEmpty ? 'period' : source.trim();
+    final flowId = _nextCalendarHubFlowId(
+      mode: normalizedMode,
+      source: normalizedSource,
+      selectedDate: now,
+    );
     setState(() {
       _loading = true;
       _error = null;
     });
 
     try {
-      final now = DateTime.now();
       final locale = Localizations.localeOf(context).languageCode;
-      final narrativeMap = await _narrativeRepository.fetchDailyNarrative(
-        profile: profile,
+      final narrativeMap = await _trackCalendarHubRequest(
+        flowId: flowId,
+        mode: normalizedMode,
+        endpoint: '/transit/narrative',
+        source: normalizedSource,
         selectedDate: now,
-        includeBestTimes: false,
-        payloadProfile: TransitPayloadProfile.calendarPeriod,
-        visibleDaysLimit: 7,
-        requestSla: ApiRequestSla.interactive,
-        locale: locale,
+        focusedDate: now,
+        usedFallback: false,
+        run: () => _narrativeRepository.fetchDailyNarrative(
+          profile: profile,
+          selectedDate: now,
+          includeBestTimes: false,
+          payloadProfile: TransitPayloadProfile.calendarPeriod,
+          visibleDaysLimit: 7,
+          requestSla: ApiRequestSla.interactive,
+          locale: locale,
+        ),
       );
       final narrative = NarrativeResponse.fromMap(narrativeMap);
       final periodEvents = pickPeriodEventCards(
@@ -5960,12 +6214,21 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
         hasWrongSource: false,
       );
       if (narrative.periodCore == null && narrativeCards.isEmpty) {
-        final calendarMap = await _calendarRepository.fetchCalendar(
-          profile: profile,
+        final calendarMap = await _trackCalendarHubRequest(
+          flowId: flowId,
+          mode: normalizedMode,
+          endpoint: '/transit/calendar',
+          source: 'period_fallback',
+          selectedDate: now,
           focusedDate: now,
-          include: 'markers,themes,intent_summary',
-          requestSla: ApiRequestSla.interactive,
-          locale: locale,
+          usedFallback: true,
+          run: () => _calendarRepository.fetchCalendar(
+            profile: profile,
+            focusedDate: now,
+            include: 'markers,themes,intent_summary',
+            requestSla: ApiRequestSla.interactive,
+            locale: locale,
+          ),
         );
         calendar = PeriodCalendarDto.fromMap(calendarMap);
       }
@@ -6014,7 +6277,7 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
       if (!mounted || profile == null) {
         return;
       }
-      _loadPeriod(profile);
+      _loadPeriod(profile, mode: 'initial', source: 'period');
     });
   }
 
@@ -6039,15 +6302,12 @@ class _PeriodCalendarTabState extends ConsumerState<PeriodCalendarTab> {
     if (eventCard == null) {
       return;
     }
-    final card = PeriodCardDto.fromEventCard(eventCard: eventCard, index: 0);
-    Navigator.of(context, rootNavigator: true).push(
-      MaterialPageRoute<void>(
-        builder: (_) => PeriodDetailPage(
-          card: card,
-          periodCore: _periodCore,
-          routeSource: 'calendar_hub_timeline',
-        ),
-      ),
+    openPeriodDetailFromEventCard(
+      context: context,
+      eventCard: eventCard,
+      periodCore: _periodCore,
+      routeSource: PeriodDetailRouteSource.calendarHubTimeline,
+      surface: 'calendar_hub_timeline',
     );
   }
 

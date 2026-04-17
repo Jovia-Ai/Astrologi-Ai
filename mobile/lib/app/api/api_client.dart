@@ -90,6 +90,23 @@ class ApiClient {
     );
   }
 
+  Future<Response<dynamic>> delete(
+    String path, {
+    Object? data,
+    Map<String, dynamic>? queryParameters,
+    Duration? receiveTimeout,
+    ApiRequestSla? requestSla,
+  }) {
+    return _request(
+      method: 'DELETE',
+      path: path,
+      data: data,
+      queryParameters: queryParameters,
+      receiveTimeout: receiveTimeout,
+      requestSla: requestSla,
+    );
+  }
+
   Future<Response<dynamic>> _request({
     required String method,
     required String path,

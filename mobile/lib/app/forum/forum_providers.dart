@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:mobile/app/forum/forum_models.dart';
 import 'package:mobile/app/forum/forum_service.dart';
+
 
 final forumServiceProvider = Provider<ForumService>((_) => ForumService());
 

@@ -5,6 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mobile/app/tabs/profile_detail_flow_page.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'support/test_app.dart';
 
 void main() {
   testWidgets('detail flow uses a vertical PageView player', (tester) async {
@@ -219,8 +220,8 @@ void main() {
     await tester.pumpWidget(
       DefaultAssetBundle(
         bundle: _FakeSvgAssetBundle(),
-        child: const MaterialApp(
-          home: ProfileDetailPage(
+        child: buildTestApp(
+          child: const ProfileDetailPage(
             flowTitle: 'Zihin-eylem-kontrol',
             flowSubtitle:
                 'Burada ana portreni tamamlayan diger taraflar one cikiyor.',
@@ -283,8 +284,8 @@ Future<void> _pumpDetailFlow(
   await tester.pumpWidget(
     DefaultAssetBundle(
       bundle: _FakeSvgAssetBundle(),
-      child: MaterialApp(
-        home: ProfileDetailFlowPage(
+      child: buildTestApp(
+        child: ProfileDetailFlowPage(
           flowTitle: 'Kimlik okuması',
           flowSubtitle: 'Detay flow test',
           scenes: scenes,

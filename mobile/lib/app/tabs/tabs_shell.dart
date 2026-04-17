@@ -130,11 +130,16 @@ class _TabsShellState extends State<TabsShell> {
       await _openProfile(context, profile);
       return;
     }
+    final resolvedProfile = profile;
+    if (resolvedProfile == null) {
+      await _openProfile(context, profile);
+      return;
+    }
     await Navigator.of(context).push(
       MaterialPageRoute<void>(
         builder: (_) => ProfileArchetypeExperiencePage(
           displayName: _displayName(profile, context.l10n.tabsProfile),
-          requestPayload: _buildArchetypePayload(profile!),
+          requestPayload: _buildArchetypePayload(resolvedProfile),
           baseUrl: _baseUrl,
         ),
       ),

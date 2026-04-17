@@ -199,6 +199,51 @@ def test_public_response_includes_layered_fields() -> None:
     assert "lines" in timeline and len(timeline["lines"]) >= 1
 
 
+def test_public_response_supports_english_public_copy() -> None:
+    response = {
+        "locale": "en",
+        "transit_date": "2026-03-10",
+        "metrics": {"pressure_index": 0.62, "support_index": 0.54},
+        "presentable": {"summary": {"main_theme": "mind", "one_liner": "Period theme"}},
+        "natal": _natal_snapshot(),
+        "display": {
+            "items": [
+                _event(
+                    event_id="evt_saturn",
+                    body="Saturn",
+                    natal="Mercury",
+                    aspect="square",
+                    house=3,
+                    weight=1.4,
+                ),
+            ]
+        },
+    }
+
+    out = build_public_response(response)
+    period = out["period"]
+    first = out["event_cards"][0]
+    timeline = out["timeline"]
+
+    merged = " ".join(
+        [
+            str(period.get("core_story") or ""),
+            str((period.get("summary") or {}).get("one_liner") or ""),
+            str(first.get("headline") or ""),
+            str(first.get("summary") or ""),
+            str(first.get("conflict") or ""),
+            str(first.get("upper_meaning") or ""),
+            str(timeline.get("summary") or ""),
+        ]
+    ).lower()
+
+    assert "you " in merged or "your " in merged
+    assert "etkisi" not in merged
+    assert "dönem" not in merged
+    assert "gün" not in merged
+    assert "saturn" in merged
+
+
 def test_saturn_aries_third_house_combined_meaning_keywords() -> None:
     event = _event(
         event_id="evt_saturn_aries_3",

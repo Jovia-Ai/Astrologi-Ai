@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import re
-from typing import Any, Dict, List, Mapping
+from typing import Any, Dict, List, Mapping, Sequence
 
 from app.narrative.editorial_render_policy import editorialize_micro, select_rhythm_family
 from app.natal.natal_graph import TRADITIONAL_RULERS
@@ -2095,16 +2095,21 @@ def build_supporting_threads(
     max_threads: int = 4,
     master_selector: Mapping[str, Any] | None = None,
     migration_mode: str = "legacy",
+    sections: Sequence[Mapping[str, Any]] | None = None,
 ) -> List[Dict[str, Any]]:
-    sections = build_sections_v2(
-        chart_data=chart_data,
-        planets=planets,
-        natal_graph=natal_graph,
-        master_selector=master_selector,
-        migration_mode=migration_mode,
+    sections_payload = (
+        list(sections)
+        if isinstance(sections, Sequence)
+        else build_sections_v2(
+            chart_data=chart_data,
+            planets=planets,
+            natal_graph=natal_graph,
+            master_selector=master_selector,
+            migration_mode=migration_mode,
+        )
     )
     threads: List[Dict[str, Any]] = []
-    for section in sections[: min(max_threads, 3)]:
+    for section in sections_payload[: min(max_threads, 3)]:
         body = str(section.get("body") or "").strip()
         micro = str(section.get("micro") or "").strip()
         threads.append(

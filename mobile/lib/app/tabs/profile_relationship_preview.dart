@@ -68,6 +68,7 @@ class _ProfileRelationshipPreviewState
       narrative,
       selectedDate: _selectedDate,
     );
+    final primaryCard = viewModel.primary;
     final colors = context.profileTheme.colors;
     final typo = context.profileTheme.typography;
 
@@ -75,7 +76,7 @@ class _ProfileRelationshipPreviewState
       return JoviaReadingPanel(
         label: l10n.relationshipPreviewLabel,
         title: l10n.relationshipPreviewLoadFailedTitle,
-        body: _error!,
+        body: (_error ?? '').trim(),
       );
     }
 
@@ -108,14 +109,14 @@ class _ProfileRelationshipPreviewState
                     height: 1.45,
                   ),
                 ),
-                if (viewModel.primary != null) ...[
+                if (primaryCard != null) ...[
                   const SizedBox(height: 14),
-                  _RelationshipMiniTimeline(card: viewModel.primary!),
+                  _RelationshipMiniTimeline(card: primaryCard),
                 ],
                 if (_error != null) ...[
                   const SizedBox(height: 8),
                   Text(
-                    _error!,
+                    (_error ?? '').trim(),
                     style: typo.meta.copyWith(
                       color: Theme.of(context).colorScheme.error,
                       height: 1.4,
@@ -124,7 +125,7 @@ class _ProfileRelationshipPreviewState
                 ] else if ((_notice ?? '').trim().isNotEmpty) ...[
                   const SizedBox(height: 8),
                   Text(
-                    _notice!,
+                    (_notice ?? '').trim(),
                     style: typo.meta.copyWith(
                       color: colors.textLight,
                       height: 1.4,
@@ -362,13 +363,15 @@ class _ProfileRelationshipViewModel {
       drivers: blocks.driverCards,
       backdrops: blocks.backdropCards,
     );
+    final primaryTimeHint = (primary?.timeHintTr ?? '').trim();
+    final primaryTimingNote = (primary?.timing.timingNote ?? '').trim();
 
     final metaPieces = <String>[
       _formatDateLabel(selectedDate),
-      if ((primary?.timeHintTr ?? '').trim().isNotEmpty)
-        primary!.timeHintTr.trim()
-      else if ((primary?.timing.timingNote ?? '').trim().isNotEmpty)
-        primary!.timing.timingNote.trim(),
+      if (primaryTimeHint.isNotEmpty)
+        primaryTimeHint
+      else if (primaryTimingNote.isNotEmpty)
+        primaryTimingNote,
       if (primary?.isPeriodDerived == true)
         currentL10n().relationshipPreviewPeriodToToday,
     ];
@@ -436,7 +439,7 @@ class _RelationshipNarrativeSection extends StatelessWidget {
           ),
           if (index != cleanParagraphs.length - 1) const SizedBox(height: 12),
         ],
-        if (child != null) ...[child!],
+        if (child case final resolvedChild?) ...[resolvedChild],
       ],
     );
   }

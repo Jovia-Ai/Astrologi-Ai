@@ -8,6 +8,7 @@ import 'package:mobile/app/api/api_client.dart';
 import 'package:mobile/app/tabs/profile_relationship_preview.dart';
 import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
+import 'support/test_app.dart';
 
 String tr(String value) => normalizeTurkishText(value);
 
@@ -198,7 +199,7 @@ Future<void> _pumpHarness(WidgetTester tester, {required Widget child}) async {
   await tester.pumpWidget(
     DefaultAssetBundle(
       bundle: _FakeSvgAssetBundle(),
-      child: MaterialApp(home: child),
+      child: buildTestApp(child: child),
     ),
   );
   await tester.pump();
@@ -228,6 +229,8 @@ class _FakeNarrativeRepository extends NarrativeRepository {
     TransitPayloadProfile payloadProfile = TransitPayloadProfile.full,
     SubscriptionTier? subscriptionTier,
     int? visibleDaysLimit,
+    Duration? cacheTtl,
+    NarrativeCachePolicy cachePolicy = NarrativeCachePolicy.defaultPolicy,
     Duration? receiveTimeout,
     ApiRequestSla requestSla = ApiRequestSla.interactive,
   }) async {

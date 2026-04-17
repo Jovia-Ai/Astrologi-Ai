@@ -14,10 +14,18 @@ def test_public_natal_view_includes_supporting_threads_and_graph() -> None:
             {"planet": "Moon", "house": 8, "sign": "Scorpio"},
             {"planet": "Saturn", "house": 4, "sign": "Aquarius"},
             {"planet": "Mercury", "house": 3, "sign": "Virgo"},
+            {"planet": "Venus", "house": 12, "sign": "Libra"},
+            {"planet": "Mars", "house": 7, "sign": "Aries"},
+            {"planet": "Jupiter", "house": 1, "sign": "Capricorn"},
+            {"planet": "Fortune", "house": 5, "sign": "Taurus"},
+            {"planet": "North Node", "house": 9, "sign": "Libra"},
         ],
         "aspects": [
             {"planet1": "Moon", "planet2": "Saturn", "aspect": "square", "orb": 0.8},
             {"planet1": "Mercury", "planet2": "Saturn", "aspect": "trine", "orb": 1.1},
+            {"planet1": "Moon", "planet2": "Venus", "aspect": "trine", "orb": 0.42},
+            {"planet1": "Fortune", "planet2": "Jupiter", "aspect": "trine", "orb": 0.67},
+            {"planet1": "Venus", "planet2": "Mars", "aspect": "trine", "orb": 1.4},
         ],
         "meta": {"pressure_index": 0.4, "support_index": 0.6},
         "meaning_weighting": {"primary_theme": "identity", "confidence": 0.72},
@@ -213,6 +221,21 @@ def test_public_natal_view_includes_supporting_threads_and_graph() -> None:
     selector = public["narrative_v2"]["aspect_bundle_selector"]
     assert selector["selected_bundles"]
     assert selector["max_primary_bundles"] == 3
+    assert isinstance(public.get("profile_v8"), dict)
+    assert isinstance(public.get("full_map_v8"), dict)
+    profile_v8 = public["profile_v8"]
+    assert profile_v8["hero"]["sun_sign"] or profile_v8["hero"]["moon_sign"] or profile_v8["hero"]["rising_sign"]
+    assert isinstance(profile_v8["insight_strip"], list)
+    assert len(profile_v8["insight_strip"]) == 3
+    assert isinstance(profile_v8["differentiators"], list)
+    assert any(item.get("stat_label") == "orb" for item in profile_v8["differentiators"])
+    full_map_v8 = public["full_map_v8"]
+    assert set(full_map_v8.keys()) == {"kimlik", "iliski", "kariyer", "golge"}
+    serialized_v8 = json.dumps({"profile_v8": profile_v8, "full_map_v8": full_map_v8}, ensure_ascii=False).lower()
+    assert "_debug" not in serialized_v8
+    assert "_internal" not in serialized_v8
+    assert "_pattern" not in serialized_v8
+    assert "_bundle" not in serialized_v8
 
     debug_public = build_public_natal_view(response, locale="tr", include_debug=True)
     assert debug_public["personality_imprint"]["selection_debug"]["selected_keys"] == ["sun_house_10"]

@@ -52,6 +52,8 @@ class PublicNatalView(BaseModel):
     natal_graph_compact: Optional[Dict[str, Any]] = None
     personality_imprint: Optional[Dict[str, Any]] = None
     profile_narrative: Optional[Dict[str, Any]] = None
+    profile_v8: Optional[Dict[str, Any]] = None
+    full_map_v8: Optional[Dict[str, Any]] = None
     sections_v2: List[Dict[str, Any]] = Field(default_factory=list)
     supporting_threads: List[Dict[str, Any]] = Field(default_factory=list)
     narrative_v2: Optional[Dict[str, Any]] = None

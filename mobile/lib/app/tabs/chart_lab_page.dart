@@ -949,7 +949,7 @@ class _ChartLabPageState extends ConsumerState<ChartLabPage> {
       );
     }
     final profileAsync = ref.watch(userProfileProvider);
-    final profile = profileAsync.valueOrNull;
+    final profile = profileAsync.asData?.value;
     if (profile != null) {
       _autofillFromProfile(profile);
     }

@@ -731,6 +731,7 @@ def build_transit_calendar_public(
     transit_timezone: str | None = None,
     lens: str = "general",
     options: Mapping[str, Any] | None = None,
+    include_intent_summary: bool = True,
 ) -> Dict[str, Any]:
     start_date = _parse_date(start)
     end_date = _parse_date(end)
@@ -1119,12 +1120,8 @@ def build_transit_calendar_public(
         items_map_raw=items_map_raw_spikes,
         themes=themes,
         context=None,
+        include_intent_summary=include_intent_summary,
     )
-    dbg = payload.get("calendar_internal") or payload
-    print("DBG internal keys:", dbg.keys())
-    print("DBG markers:", len(dbg.get("markers", [])))
-    print("DBG themes:", len(dbg.get("themes", [])))
-    print("DBG items_map_raw:", len(dbg.get("items_map_raw", {})))
     return enrich_calendar_payload(payload)
 
 
@@ -1180,6 +1177,7 @@ def build_calendar_payload(
     pin_phase_into_top: bool = True,
     phase_pin_max: int = 2,
     context: Optional[Dict[str, Any]] = None,
+    include_intent_summary: bool = True,
 ) -> Dict[str, Any]:
     context = context or {}
 
@@ -1238,17 +1236,22 @@ def build_calendar_payload(
         "themes": themes,
     }
 
-    default_intents = ["beauty_care", "business", "money", "relationship"]
-    intent_summary: Dict[str, Dict[str, Any]] = {}
-    for intent in default_intents:
-        try:
-            scored = score_month_payload_for_intent(intent=intent, payload=payload, max_why=3)
-        except Exception:
-            continue
-        by_date = {s.date: {"score": s.score, "rating": s.rating} for s in scored if s.date}
-        intent_summary[intent] = {"by_date": by_date}
+    if include_intent_summary:
+        default_intents = ["beauty_care", "business", "money", "relationship"]
+        intent_summary: Dict[str, Dict[str, Any]] = {}
+        for intent in default_intents:
+            try:
+                scored = score_month_payload_for_intent(intent=intent, payload=payload, max_why=3)
+            except Exception:
+                continue
+            by_date = {
+                s.date: {"score": s.score, "rating": s.rating}
+                for s in scored
+                if s.date
+            }
+            intent_summary[intent] = {"by_date": by_date}
 
-    payload["intent_summary"] = intent_summary
+        payload["intent_summary"] = intent_summary
 
     public_payload = build_calendar_public(payload, intent="transit", lens_suffix=None)
     # Quick self-check: lengths should match

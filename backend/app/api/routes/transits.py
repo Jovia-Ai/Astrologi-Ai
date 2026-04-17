@@ -117,7 +117,7 @@ def _transit_narrative_cache_key(request: "TransitNarrativeRequest") -> str:
         "payload_profile": _normalize_payload_profile(request.payload_profile),
         "subscription_tier": _normalize_subscription_tier(request.subscription_tier),
         "visible_days_limit": int(request.visible_days_limit or 0),
-        "version": "v3",
+        "version": "v4",
     }
     digest = hashlib.sha1(
         json.dumps(
@@ -379,6 +379,67 @@ def _empty_public_narrative_payload() -> Dict[str, Any]:
     }
 
 
+def _mapping_has_non_empty_text(mapping: Mapping[str, Any] | None) -> bool:
+    if not isinstance(mapping, Mapping):
+        return False
+    for value in mapping.values():
+        if isinstance(value, str) and value.strip():
+            return True
+        if isinstance(value, Mapping) and _mapping_has_non_empty_text(value):
+            return True
+    return False
+
+
+def _has_non_empty_card_list(
+    public_payload: Mapping[str, Any],
+    key: str,
+) -> bool:
+    value = public_payload.get(key)
+    return isinstance(value, list) and bool(value)
+
+
+def _home_public_only_has_daily_or_period_cards(
+    public_payload: Mapping[str, Any],
+) -> bool:
+    return _has_non_empty_card_list(public_payload, "daily_event_cards") or _has_non_empty_card_list(
+        public_payload,
+        "period_event_cards",
+    )
+
+
+def _should_cache_transit_narrative_response(
+    response: Mapping[str, Any],
+    *,
+    payload_profile: str,
+    response_mode: str,
+) -> bool:
+    public_payload = response.get("public") if isinstance(response.get("public"), Mapping) else {}
+    if not isinstance(public_payload, Mapping):
+        public_payload = {}
+
+    has_public_cards = any(
+        isinstance(public_payload.get(key), list) and bool(public_payload.get(key))
+        for key in ("daily_event_cards", "period_event_cards", "event_cards", "period_peak_timeline")
+    )
+    has_period_core = _mapping_has_non_empty_text(
+        public_payload.get("period_core") if isinstance(public_payload.get("period_core"), Mapping) else {}
+    )
+    has_timeline = _mapping_has_non_empty_text(
+        public_payload.get("timeline") if isinstance(public_payload.get("timeline"), Mapping) else {}
+    )
+
+    if payload_profile == "home" and response_mode == "public_only":
+        return _home_public_only_has_daily_or_period_cards(public_payload)
+
+    if payload_profile in {"home", "calendar_day"}:
+        return has_public_cards or has_period_core or has_timeline
+
+    if response_mode == "public_only":
+        return has_public_cards or has_period_core or has_timeline
+
+    return True
+
+
 def _trace_logs_enabled() -> bool:
     return os.getenv("ENABLE_TIMING_LOGS", "true").strip().lower() in {
         "1",
@@ -556,6 +617,7 @@ def _selected_day_context_for_request(
             tz=request.tz,
             lens=request.lens,
             options=None,
+            include_intent_summary=False,
         )
     except Exception:
         logger.exception("selected day context build failed")
@@ -653,6 +715,7 @@ def _select_daily_and_period_event_cards(
     natal: Mapping[str, Any] | None = None,
     event_v2_by_id: Mapping[str, Mapping[str, Any]] | None = None,
     lens: str = "general",
+    include_debug_meta: bool = False,
 ) -> Dict[str, Any]:
     return build_daily_event_buckets(
         raw_events=raw_events,
@@ -662,6 +725,7 @@ def _select_daily_and_period_event_cards(
         natal=natal,
         event_v2_by_id=event_v2_by_id,
         lens=lens,
+        include_debug_meta=include_debug_meta,
     )
 
 
@@ -759,6 +823,153 @@ def _log_transit_timing(
         ),
     )
 
+
+def _log_transit_metric(metric: str, **fields: Any) -> None:
+    if not _trace_logs_enabled():
+        return
+    payload = {"metric": metric, **fields}
+    logger.info(
+        "transit_metric %s",
+        json.dumps(
+            payload,
+            ensure_ascii=False,
+            sort_keys=True,
+            default=_json_safe,
+        ),
+    )
+
+
+_TRANSIT_NARRATIVE_STAGE_ORDER: Tuple[str, ...] = (
+    "parse_request",
+    "narrative_cache_lookup",
+    "calendar_build",
+    "selected_day_context_build",
+    "raw_event_engine_build",
+    "narrative_public_payload_build",
+    "daily_period_selection",
+    "best_times_build",
+    "response_shape",
+    "total",
+)
+
+
+def _record_stage_duration(stage_map: Dict[str, float], stage: str, started_at: float) -> None:
+    stage_map[stage] = stage_map.get(stage, 0.0) + ((perf_counter() - started_at) * 1000.0)
+
+
+def _timing_probe_record_stage(timing_probe: Dict[str, Any] | None, stage: str, duration_ms: float) -> None:
+    if not isinstance(timing_probe, dict):
+        return
+    stages = timing_probe.get("stages")
+    if not isinstance(stages, dict):
+        stages = {}
+        timing_probe["stages"] = stages
+    current = stages.get(stage)
+    base = float(current) if isinstance(current, (int, float)) else 0.0
+    stages[stage] = base + float(duration_ms)
+
+
+def _timing_probe_set_metric(timing_probe: Dict[str, Any] | None, key: str, value: Any) -> None:
+    if not isinstance(timing_probe, dict):
+        return
+    metrics = timing_probe.get("metrics")
+    if not isinstance(metrics, dict):
+        metrics = {}
+        timing_probe["metrics"] = metrics
+    metrics[key] = value
+
+
+def _safe_list_count(value: Any) -> int:
+    return len(value) if isinstance(value, list) else 0
+
+
+def _best_times_count(best_times_payload: Mapping[str, Any] | None) -> int:
+    if not isinstance(best_times_payload, Mapping):
+        return 0
+    candidates = best_times_payload.get("candidates")
+    if isinstance(candidates, list):
+        return len(candidates)
+    windows = best_times_payload.get("windows")
+    if isinstance(windows, list):
+        return len(windows)
+    return 0
+
+
+def _log_transit_stage_timing(
+    *,
+    endpoint: str,
+    snapshot_id: str,
+    request: "TransitNarrativeRequest",
+    response: Mapping[str, Any],
+    payload_profile: str,
+    response_mode: str,
+    selected_date: str,
+    cache_status: str,
+    cache_key: str | None,
+    visible_days_limit: int | None,
+    best_times_enabled: bool,
+    stage_durations: Mapping[str, float],
+    timing_probe: Mapping[str, Any] | None = None,
+    marker_count: int | None = None,
+) -> None:
+    if not _trace_logs_enabled():
+        return
+    probe_stages = timing_probe.get("stages") if isinstance(timing_probe, Mapping) else {}
+    probe_metrics = timing_probe.get("metrics") if isinstance(timing_probe, Mapping) else {}
+    merged_stages: Dict[str, float] = {
+        key: float(value)
+        for key, value in stage_durations.items()
+        if isinstance(value, (int, float))
+    }
+    if isinstance(probe_stages, Mapping):
+        for key, value in probe_stages.items():
+            if isinstance(value, (int, float)):
+                merged_stages[str(key)] = float(value)
+    stage_timings = [
+        {
+            "stage": stage_name,
+            "duration_ms": round(merged_stages[stage_name], 3)
+            if stage_name in merged_stages
+            else None,
+        }
+        for stage_name in _TRANSIT_NARRATIVE_STAGE_ORDER
+    ]
+    public_payload = response.get("public") if isinstance(response.get("public"), Mapping) else {}
+    raw_event_count = 0
+    if isinstance(probe_metrics, Mapping):
+        raw_metric = probe_metrics.get("raw_event_count")
+        if isinstance(raw_metric, (int, float)):
+            raw_event_count = int(raw_metric)
+    marker_count_value = marker_count if isinstance(marker_count, int) else 0
+    best_times_payload = response.get("best_times") if isinstance(response.get("best_times"), Mapping) else None
+    logger.info(
+        "transit_stage_timing %s",
+        json.dumps(
+            {
+                "endpoint": endpoint,
+                "snapshot_id": snapshot_id,
+                "payload_profile": payload_profile,
+                "response_mode": response_mode,
+                "selected_date": selected_date,
+                "cache_status": cache_status,
+                "cache_key": cache_key,
+                "include_best_times": best_times_enabled,
+                "visible_days_limit": visible_days_limit,
+                "stage_timings": stage_timings,
+                "payload_bytes": _payload_size_bytes(response),
+                "raw_event_count": raw_event_count,
+                "daily_event_cards_count": _safe_list_count(public_payload.get("daily_event_cards")),
+                "period_event_cards_count": _safe_list_count(public_payload.get("period_event_cards")),
+                "period_peak_timeline_count": _safe_list_count(public_payload.get("period_peak_timeline")),
+                "marker_count": marker_count_value,
+                "best_times_count": _best_times_count(best_times_payload),
+            },
+            ensure_ascii=False,
+            sort_keys=True,
+            default=_json_safe,
+        ),
+    )
+
 def _normalize_calendar_view(view: str) -> Literal["public", "internal", "both"]:
     """
     Backward-compatible view mapper.
@@ -776,6 +987,25 @@ def _normalize_calendar_view(view: str) -> Literal["public", "internal", "both"]
     if v in {"public", "internal", "both"}:
         return v
     return "public"
+
+
+def _calendar_include_set(include: str | None) -> set[str]:
+    include_raw = include if isinstance(include, str) else ""
+    if not include_raw.strip():
+        return set()
+    return {part.strip().lower() for part in include_raw.split(",") if part.strip()}
+
+
+def _should_include_calendar_intent_summary(
+    *,
+    view: str,
+    include: str | None,
+) -> bool:
+    normalized_view = _normalize_calendar_view(view)
+    if normalized_view in {"internal", "both"}:
+        return True
+    include_set = _calendar_include_set(include)
+    return "intent_summary" in include_set or "calendar_internal" in include_set
 
 
 def _parse_iso_date(value: str, *, field_name: str) -> date_type:
@@ -1927,6 +2157,7 @@ def _build_narrative_public_payload(
     start_date: date_type,
     *,
     selected_day_context: Mapping[str, Any] | None = None,
+    timing_probe: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     transit_date = request.selected_date or start_date.isoformat()
     core_request = TransitRequest(
@@ -1946,13 +2177,27 @@ def _build_narrative_public_payload(
         context_mode="context-lite",
         locale=request.locale,
     )
+    raw_event_engine_started = perf_counter()
     core_response = _build_transits_engine_response(core_request)
-    public_payload = build_public_response(core_response)
+    _timing_probe_record_stage(
+        timing_probe,
+        "raw_event_engine_build",
+        (perf_counter() - raw_event_engine_started) * 1000.0,
+    )
+    public_response_signature = inspect.signature(build_public_response)
+    if "include_debug_artifacts" in public_response_signature.parameters:
+        public_payload = build_public_response(
+            core_response,
+            include_debug_artifacts=bool(request.debug),
+        )
+    else:  # pragma: no cover - compatibility for monkeypatched test doubles
+        public_payload = build_public_response(core_response)
     period_core_raw = public_payload.get("period_core") if isinstance(public_payload.get("period_core"), Mapping) else {}
     period_core = dict(period_core_raw)
     period_root_causes = period_core.pop("_debug_root_causes", [])
     events_debug = public_payload.get("_events_debug") if isinstance(public_payload.get("_events_debug"), list) else []
     items_unscored = (core_response.get("display") or {}).get("items") or []
+    _timing_probe_set_metric(timing_probe, "raw_event_count", len(items_unscored) if isinstance(items_unscored, list) else 0)
     selected_events, period_selection = select_event_ids(
         [item for item in items_unscored if isinstance(item, Mapping)],
         max_cards=5,
@@ -1994,6 +2239,7 @@ def _build_narrative_public_payload(
             for item in daily_selection_events
             if str(item.get("event_id") or "").strip() in event_card_ids
         ]
+    daily_period_selection_started = perf_counter()
     selected_buckets = _select_daily_and_period_event_cards(
         raw_events=daily_selection_events,
         event_cards=event_cards,
@@ -2002,11 +2248,17 @@ def _build_narrative_public_payload(
         natal=core_response.get("natal") if isinstance(core_response.get("natal"), Mapping) else None,
         event_v2_by_id=event_v2_by_id,
         lens=request.lens,
+        include_debug_meta=bool(request.debug),
     )
     selected_buckets["daily_event_cards"] = _attach_period_story_to_daily_cards(
         [dict(card) for card in (selected_buckets.get("daily_event_cards") or []) if isinstance(card, Mapping)],
         period_core=period_core,
         lens=request.lens,
+    )
+    _timing_probe_record_stage(
+        timing_probe,
+        "daily_period_selection",
+        (perf_counter() - daily_period_selection_started) * 1000.0,
     )
     period_peak_timeline = []
     for item in (public_payload.get("period_peak_timeline") or []):
@@ -2230,7 +2482,7 @@ def build_transits(
     started = perf_counter()
     snapshot_id = generate_snapshot_id()
     response = _build_transits_engine_response(request)
-    public = build_public_response(response)
+    public = build_public_response(response, include_debug_artifacts=False)
     return _finalize_route_response(
         public,
         endpoint="/transits",
@@ -2296,6 +2548,7 @@ def build_transit_calendar(
 ) -> Dict[str, Any]:
     started = perf_counter()
     snapshot_id = generate_snapshot_id()
+    v = _normalize_calendar_view(view)
     payload = build_transit_calendar_public(
         birth_date=birth_date,
         birth_time=birth_time,
@@ -2312,8 +2565,8 @@ def build_transit_calendar(
         tz=tz,
         lens=lens,
         options=None,
+        include_intent_summary=_should_include_calendar_intent_summary(view=v, include=include),
     )
-    v = _normalize_calendar_view(view)
     internal = payload.get("calendar_internal") or payload
     public = payload.get("calendar_public") or {}
     normalized_tier = _normalize_subscription_tier(subscription_tier)
@@ -2370,9 +2623,8 @@ def build_transit_calendar(
         anchor_date=normalized_anchor,
         visible_days_limit=effective_visible_limit,
     )
-    include_raw = include if isinstance(include, str) else ""
-    if include_raw.strip():
-        inc = {p.strip().lower() for p in include_raw.split(",") if p.strip()}
+    inc = _calendar_include_set(include)
+    if inc:
         if "markers" in inc:
             out["markers"] = internal.get("markers", [])
         if "items_map" in inc:
@@ -2461,6 +2713,7 @@ def transit_calendar_best_times(
             tz=tz,
             lens=lens,
             options=None,
+            include_intent_summary=False,
         )
 
         internal_payload = payload.get("calendar_internal") or payload
@@ -2592,6 +2845,7 @@ def build_transit_calendar_day(
                 tz=tz,
                 lens="general",
                 options=None,
+                include_intent_summary=False,
             )
             internal = payload.get("calendar_internal") or payload
             public = payload.get("calendar_public") or {}
@@ -2632,6 +2886,7 @@ def build_transit_calendar_day(
             tz=tz,
             lens="general",
             options=None,
+            include_intent_summary=False,
         )
         internal = payload.get("calendar_internal") or payload
         public = payload.get("calendar_public") or {}
@@ -2669,6 +2924,9 @@ def build_transit_narrative(
     client_surface: Annotated[str | None, Header(alias="X-Transit-Surface")] = None,
 ) -> Dict[str, Any]:
     started = perf_counter()
+    stage_durations: Dict[str, float] = {}
+    timing_probe: Dict[str, Any] = {"stages": {}, "metrics": {}}
+    parse_request_started = perf_counter()
     snapshot_id = generate_snapshot_id()
     response_mode = _normalize_narrative_response_mode(request.response_mode)
     payload_profile = _normalize_payload_profile(request.payload_profile)
@@ -2694,9 +2952,18 @@ def build_transit_narrative(
                 "message": "start must be earlier than or equal to end.",
             },
         )
+    _record_stage_duration(stage_durations, "parse_request", parse_request_started)
+    selected_date_for_logs = str(request.selected_date or anchor_date.isoformat())
+    narrative_public_payload_signature = inspect.signature(_build_narrative_public_payload)
+    supports_selected_day_context = "selected_day_context" in narrative_public_payload_signature.parameters
+    supports_timing_probe = "timing_probe" in narrative_public_payload_signature.parameters
     cache_key = _transit_narrative_cache_key(request)
+    lookup = None
+    narrative_cache_lookup_started = perf_counter()
     if _transit_narrative_cache_enabled():
         lookup = default_cache_store.get(cache_key, now=utc_now())
+    _record_stage_duration(stage_durations, "narrative_cache_lookup", narrative_cache_lookup_started)
+    if lookup is not None:
         if lookup.status in {"hit", "stale"} and lookup.entry is not None:
             response = copy.deepcopy(dict(lookup.entry.value or {}))
             _annotate_transit_narrative_debug(
@@ -2704,6 +2971,7 @@ def build_transit_narrative(
                 cache_status=lookup.status,
                 cache_key=cache_key,
             )
+            response_shape_started = perf_counter()
             response = _finalize_route_response(
                 response,
                 endpoint="/transit/narrative",
@@ -2725,11 +2993,30 @@ def build_transit_narrative(
                     "cache_key": cache_key,
                 },
             )
+            _record_stage_duration(stage_durations, "response_shape", response_shape_started)
+            total_duration_ms = (perf_counter() - started) * 1000.0
+            stage_durations["total"] = total_duration_ms
+            _log_transit_stage_timing(
+                endpoint="/transit/narrative",
+                snapshot_id=snapshot_id,
+                request=request,
+                response=response,
+                payload_profile=payload_profile,
+                response_mode=response_mode,
+                selected_date=selected_date_for_logs,
+                cache_status=lookup.status,
+                cache_key=cache_key,
+                visible_days_limit=effective_visible_limit,
+                best_times_enabled=best_times_enabled,
+                stage_durations=stage_durations,
+                timing_probe=timing_probe,
+                marker_count=0,
+            )
             _log_transit_timing(
                 endpoint="/transit/narrative",
                 request=request,
                 response=response,
-                duration_ms=(perf_counter() - started) * 1000.0,
+                duration_ms=total_duration_ms,
                 cache_status=lookup.status,
                 cache_key=cache_key,
             )
@@ -2747,16 +3034,28 @@ def build_transit_narrative(
         period_selection_debug: Dict[str, Any] = {}
         period_root_causes_debug: List[Dict[str, Any]] = []
         public_events_debug: List[Dict[str, Any]] = []
-        selected_public_date = str(request.selected_date or start_date.isoformat()).strip()
+        degraded_path_active = False
+        degraded_path_reason = ""
+        degraded_path_error_type = ""
+        selected_public_date = anchor_date.isoformat()
         selected_day_context: Dict[str, Any] = {}
         try:
+            selected_day_context_started = perf_counter()
             if selected_public_date:
                 selected_day_context = _selected_day_context_for_request(
                     request,
                     selected_date=selected_public_date,
                 )
-            signature = inspect.signature(_build_narrative_public_payload)
-            if "selected_day_context" in signature.parameters:
+            _record_stage_duration(stage_durations, "selected_day_context_build", selected_day_context_started)
+            narrative_public_payload_started = perf_counter()
+            if supports_selected_day_context and supports_timing_probe:
+                response["public"] = _build_narrative_public_payload(
+                    request,
+                    start_date,
+                    selected_day_context=selected_day_context,
+                    timing_probe=timing_probe,
+                )
+            elif supports_selected_day_context:
                 response["public"] = _build_narrative_public_payload(
                     request,
                     start_date,
@@ -2764,6 +3063,7 @@ def build_transit_narrative(
                 )
             else:  # pragma: no cover - compatibility for monkeypatched test doubles
                 response["public"] = _build_narrative_public_payload(request, start_date)
+            _record_stage_duration(stage_durations, "narrative_public_payload_build", narrative_public_payload_started)
             if isinstance(response.get("public"), Mapping):
                 period_coverage_debug = dict(response["public"].get("_period_coverage") or {})
                 response["public"].pop("_period_coverage", None)
@@ -2787,8 +3087,11 @@ def build_transit_narrative(
                         selected_day_context=selected_day_context,
                         daily_cards=response["public"].get("daily_event_cards") or [],
                     )
-        except Exception:  # pragma: no cover - defensive; keep lightweight surface resilient
+        except Exception as exc:  # pragma: no cover - defensive; keep lightweight surface resilient
             logger.exception("transit narrative public-only payload failed")
+            degraded_path_active = True
+            degraded_path_reason = "public_payload_exception"
+            degraded_path_error_type = exc.__class__.__name__
             response["public"] = _empty_public_narrative_payload()
             if payload_profile == "home":
                 response["calendar"] = _minimal_calendar_payload_for_selected_day(
@@ -2796,6 +3099,14 @@ def build_transit_narrative(
                     selected_day_context=selected_day_context,
                     daily_cards=[],
                 )
+                _log_transit_metric(
+                    "home_public_only_degraded",
+                    reason=degraded_path_reason,
+                    error_type=degraded_path_error_type,
+                    selected_date=selected_public_date,
+                )
+        if "selected_day_context_build" not in stage_durations:
+            stage_durations["selected_day_context_build"] = 0.0
 
         if request.debug:
             public_payload = response.get("public", {}) if isinstance(response.get("public"), Mapping) else {}
@@ -2809,8 +3120,13 @@ def build_transit_narrative(
                 "period_selection": period_selection_debug,
                 "period_root_causes": period_root_causes_debug,
                 "events_debug": public_events_debug,
+                "degraded_path": {
+                    "active": degraded_path_active,
+                    "reason": degraded_path_reason,
+                    "error_type": degraded_path_error_type,
+                },
                 "selected_day_public": {
-                    "date": str(request.selected_date or start_date.isoformat()),
+                    "date": selected_public_date,
                     "daily_event_cards_count": len((public_payload.get("daily_event_cards") or [])),
                     "period_event_cards_count": len((public_payload.get("period_event_cards") or [])),
                     "legacy_event_cards_count": len((public_payload.get("event_cards") or [])),
@@ -2826,13 +3142,43 @@ def build_transit_narrative(
             cache_key=cache_key,
         )
         if _transit_narrative_cache_enabled():
-            default_cache_store.set(
-                cache_key,
-                copy.deepcopy(response),
-                ttl_seconds=settings.transit_narrative_ttl_seconds,
-                stale_ttl_seconds=settings.transit_narrative_stale_ttl_seconds,
-                now=utc_now(),
+            should_cache = _should_cache_transit_narrative_response(
+                response,
+                payload_profile=payload_profile,
+                response_mode=response_mode,
             )
+            if should_cache:
+                default_cache_store.set(
+                    cache_key,
+                    copy.deepcopy(response),
+                    ttl_seconds=settings.transit_narrative_ttl_seconds,
+                    stale_ttl_seconds=settings.transit_narrative_stale_ttl_seconds,
+                    now=utc_now(),
+                )
+            elif payload_profile == "home":
+                public_payload = (
+                    response.get("public")
+                    if isinstance(response.get("public"), Mapping)
+                    else {}
+                )
+                daily_count = (
+                    len(public_payload.get("daily_event_cards") or [])
+                    if isinstance(public_payload, Mapping)
+                    else 0
+                )
+                period_count = (
+                    len(public_payload.get("period_event_cards") or [])
+                    if isinstance(public_payload, Mapping)
+                    else 0
+                )
+                _log_transit_metric(
+                    "home_cache_skip_no_daily",
+                    selected_date=selected_public_date,
+                    response_mode=response_mode,
+                    daily_event_cards_count=daily_count,
+                    period_event_cards_count=period_count,
+                )
+        response_shape_started = perf_counter()
         response = _finalize_route_response(
             response,
             endpoint="/transit/narrative",
@@ -2852,18 +3198,40 @@ def build_transit_narrative(
                 "visible_days_limit": effective_visible_limit,
                 "cache_status": "miss",
                 "cache_key": cache_key,
+                "degraded_path": degraded_path_active,
+                "degraded_reason": degraded_path_reason or None,
             },
+        )
+        _record_stage_duration(stage_durations, "response_shape", response_shape_started)
+        total_duration_ms = (perf_counter() - started) * 1000.0
+        stage_durations["total"] = total_duration_ms
+        _log_transit_stage_timing(
+            endpoint="/transit/narrative",
+            snapshot_id=snapshot_id,
+            request=request,
+            response=response,
+            payload_profile=payload_profile,
+            response_mode=response_mode,
+            selected_date=selected_date_for_logs,
+            cache_status="miss",
+            cache_key=cache_key,
+            visible_days_limit=effective_visible_limit,
+            best_times_enabled=False,
+            stage_durations=stage_durations,
+            timing_probe=timing_probe,
+            marker_count=0,
         )
         _log_transit_timing(
             endpoint="/transit/narrative",
             request=request,
             response=response,
-            duration_ms=(perf_counter() - started) * 1000.0,
+            duration_ms=total_duration_ms,
             cache_status="miss",
             cache_key=cache_key,
         )
         return response
 
+    calendar_build_started = perf_counter()
     payload = build_transit_calendar_public(
         birth_date=request.birth_date,
         birth_time=request.birth_time,
@@ -2880,6 +3248,7 @@ def build_transit_narrative(
         tz=request.tz,
         lens=request.lens,
         options=None,
+        include_intent_summary=False,
     )
     internal = payload.get("calendar_internal") or payload
     calendar_public = to_ui_calendar(internal, lens=request.lens)
@@ -2904,9 +3273,12 @@ def build_transit_narrative(
         **dict(calendar_public),
         "days": calendar_days_for_response,
     }
+    _record_stage_duration(stage_durations, "calendar_build", calendar_build_started)
+    marker_count = _safe_list_count(internal.get("markers")) if isinstance(internal, Mapping) else 0
 
     best_times_public: Dict[str, Any] | None = None
     best_times_internal: Dict[str, Any] | None = None
+    best_times_build_started = perf_counter()
     if best_times_enabled:
         normalized_intent, normalized_sub_intent, public_intent = _parse_best_times_intent(
             request.intent or "",
@@ -2928,6 +3300,8 @@ def build_transit_narrative(
             tz=request.tz,
             intent=public_intent,
         )
+    if best_times_enabled:
+        _record_stage_duration(stage_durations, "best_times_build", best_times_build_started)
 
     blocks = []
     screens: Dict[str, Any] = {}
@@ -3031,12 +3405,22 @@ def build_transit_narrative(
     public_events_debug: List[Dict[str, Any]] = []
     selected_day_micro_summary_source = "calendar.signal_label_tr"
     try:
+        selected_public_date = anchor_date.isoformat()
+        selected_day_context_started = perf_counter()
         selected_day_context = _selected_day_context_from_calendar(
             internal,
-            request.selected_date or start_date.isoformat(),
+            selected_public_date,
         )
-        signature = inspect.signature(_build_narrative_public_payload)
-        if "selected_day_context" in signature.parameters:
+        _record_stage_duration(stage_durations, "selected_day_context_build", selected_day_context_started)
+        narrative_public_payload_started = perf_counter()
+        if supports_selected_day_context and supports_timing_probe:
+            response["public"] = _build_narrative_public_payload(
+                request,
+                start_date,
+                selected_day_context=selected_day_context,
+                timing_probe=timing_probe,
+            )
+        elif supports_selected_day_context:
             response["public"] = _build_narrative_public_payload(
                 request,
                 start_date,
@@ -3044,6 +3428,7 @@ def build_transit_narrative(
             )
         else:  # pragma: no cover - compatibility for monkeypatched test doubles
             response["public"] = _build_narrative_public_payload(request, start_date)
+        _record_stage_duration(stage_durations, "narrative_public_payload_build", narrative_public_payload_started)
         if isinstance(response.get("public"), Mapping):
             period_coverage_debug = dict(response["public"].get("_period_coverage") or {})
             response["public"].pop("_period_coverage", None)
@@ -3061,7 +3446,6 @@ def build_transit_narrative(
                 if isinstance(item, Mapping)
             ]
             response["public"].pop("_events_debug", None)
-            selected_public_date = str(request.selected_date or start_date.isoformat())
             daily_cards = response["public"].get("daily_event_cards") or []
             if isinstance(daily_cards, list) and daily_cards:
                 summary = summarize_daily_micro_copy(daily_cards[0])
@@ -3097,6 +3481,8 @@ def build_transit_narrative(
             "structural_chapter_rail": [],
             "solar_year_frame": {},
         }
+    if "selected_day_context_build" not in stage_durations:
+        stage_durations["selected_day_context_build"] = 0.0
     if best_times_public is not None:
         response["best_times"] = best_times_public
     if request.debug:
@@ -3124,7 +3510,7 @@ def build_transit_narrative(
             "period_root_causes": period_root_causes_debug,
             "events_debug": public_events_debug,
             "selected_day_public": {
-                "date": str(request.selected_date or start_date.isoformat()),
+                "date": anchor_date.isoformat(),
                 "daily_event_cards_count": len(
                     (
                         response.get("public", {}).get("daily_event_cards")
@@ -3159,7 +3545,7 @@ def build_transit_narrative(
                         str(day.get("micro_summary_tr") or "")
                         for day in calendar_days
                         if str(day.get("date") or "")
-                        == str(request.selected_date or start_date.isoformat())
+                        == anchor_date.isoformat()
                     ),
                     "",
                 ),
@@ -3175,7 +3561,11 @@ def build_transit_narrative(
         cache_status="miss",
         cache_key=cache_key,
     )
-    if _transit_narrative_cache_enabled():
+    if _transit_narrative_cache_enabled() and _should_cache_transit_narrative_response(
+        response,
+        payload_profile=payload_profile,
+        response_mode=response_mode,
+    ):
         default_cache_store.set(
             cache_key,
             copy.deepcopy(response),
@@ -3183,6 +3573,7 @@ def build_transit_narrative(
             stale_ttl_seconds=settings.transit_narrative_stale_ttl_seconds,
             now=utc_now(),
         )
+    response_shape_started = perf_counter()
     response = _finalize_route_response(
         response,
         endpoint="/transit/narrative",
@@ -3204,11 +3595,30 @@ def build_transit_narrative(
             "cache_key": cache_key,
         },
     )
+    _record_stage_duration(stage_durations, "response_shape", response_shape_started)
+    total_duration_ms = (perf_counter() - started) * 1000.0
+    stage_durations["total"] = total_duration_ms
+    _log_transit_stage_timing(
+        endpoint="/transit/narrative",
+        snapshot_id=snapshot_id,
+        request=request,
+        response=response,
+        payload_profile=payload_profile,
+        response_mode=response_mode,
+        selected_date=selected_date_for_logs,
+        cache_status="miss",
+        cache_key=cache_key,
+        visible_days_limit=effective_visible_limit,
+        best_times_enabled=best_times_enabled,
+        stage_durations=stage_durations,
+        timing_probe=timing_probe,
+        marker_count=marker_count,
+    )
     _log_transit_timing(
         endpoint="/transit/narrative",
         request=request,
         response=response,
-        duration_ms=(perf_counter() - started) * 1000.0,
+        duration_ms=total_duration_ms,
         cache_status="miss",
         cache_key=cache_key,
     )

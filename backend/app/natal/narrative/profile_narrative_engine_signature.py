@@ -4,9 +4,19 @@ import re
 from typing import Any, Dict, Mapping
 
 from app.narrative.editorial_render_policy import apply_phrase_policy, select_rhythm_family
+from app.narrative.humanize_en import clean_public_block_en
 from app.narrative.humanize_tr import clean_public_block_tr
 from app.natal.narrative.micro_example_engine_tr import choose_micro_example
 from app.natal.narrative.primitive_engine import build_primitives
+from app.natal.narrative.phrase_lib_en_profile import (
+    humanize_public_chips as humanize_public_chips_en,
+)
+from app.natal.narrative.phrase_lib_en_profile import (
+    render_block_template as render_block_template_en,
+)
+from app.natal.narrative.phrase_lib_en_profile import (
+    soft_public_astro_hint as soft_public_astro_hint_en,
+)
 from app.natal.narrative.phrase_lib_tr_profile import (
     humanize_public_chips,
     render_block_template,
@@ -62,6 +72,102 @@ PLANET_LABELS_TR = {
     "Chiron": "Kiron",
     "Vertex": "Vertex",
     "Lilith": "Lilith",
+}
+
+ASPECT_LABELS_EN = {
+    "conjunction": "conjunct",
+    "opposition": "opposite",
+    "square": "square",
+    "trine": "trine",
+    "sextile": "sextile",
+}
+
+ANGLE_LABELS_EN = {
+    "ASC": "Ascendant",
+    "MC": "Midheaven",
+    "DSC": "Descendant",
+    "IC": "IC",
+}
+
+PLANET_LABELS_EN = {
+    "Sun": "Sun",
+    "Moon": "Moon",
+    "Mercury": "Mercury",
+    "Venus": "Venus",
+    "Mars": "Mars",
+    "Jupiter": "Jupiter",
+    "Saturn": "Saturn",
+    "Uranus": "Uranus",
+    "Neptune": "Neptune",
+    "Pluto": "Pluto",
+    "Ascendant": "Ascendant",
+    "Midheaven": "Midheaven",
+    "Descendant": "Descendant",
+    "Imum Coeli": "IC",
+    "Fortune": "Fortune",
+    "Chiron": "Chiron",
+    "Vertex": "Vertex",
+    "Lilith": "Lilith",
+}
+
+SIGN_VIBE_EN = {
+    "Aries": "direct and fast-moving",
+    "Taurus": "steady and grounded",
+    "Gemini": "quick, curious, and mentally alert",
+    "Cancer": "soft, protective, and emotionally aware",
+    "Leo": "warm, visible, and self-possessed",
+    "Virgo": "measured, precise, and composed",
+    "Libra": "diplomatic and balanced",
+    "Scorpio": "private, intense, and controlled",
+    "Sagittarius": "open, candid, and future-facing",
+    "Capricorn": "serious, contained, and goal-oriented",
+    "Aquarius": "independent and unmistakably individual",
+    "Pisces": "intuitive, porous, and fluid",
+}
+
+HOUSE_ARENA_EN = {
+    1: "identity and the way you carry yourself",
+    2: "self-worth, security, and resources",
+    3: "language, tone, and everyday communication",
+    4: "home, emotional grounding, and private life",
+    5: "expression, creativity, and what brings you alive",
+    6: "routine, work habits, and daily systems",
+    7: "close relationships and the way you meet another person",
+    8: "trust, vulnerability, and emotional depth",
+    9: "meaning, perspective, and the direction of your mind",
+    10: "career, visibility, and public direction",
+    11: "networks, communities, and future plans",
+    12: "your inner world, retreat, and what happens offstage",
+}
+
+_RULER_SIGN_BALANCE_EN = {
+    "Aries": {"gift": "more direct, brave, and willing to go first", "shadow": "too quick on the draw or overly reactive"},
+    "Taurus": {"gift": "steady, reliable, and hard to knock off course", "shadow": "too fixed or slow to loosen your grip"},
+    "Gemini": {"gift": "adaptable, articulate, and mentally agile", "shadow": "scattered or split between too many options"},
+    "Cancer": {"gift": "emotionally intelligent, protective, and responsive", "shadow": "overly guarded, moody, or quick to withdraw"},
+    "Leo": {"gift": "warm, expressive, and easy to feel", "shadow": "too proud to soften once hurt"},
+    "Virgo": {"gift": "clear, thoughtful, and exacting in a useful way", "shadow": "over-editing, overthinking, or delaying too long"},
+    "Libra": {"gift": "graceful, relational, and skilled at reading a room", "shadow": "stalling inside indecision or over-accommodation"},
+    "Scorpio": {"gift": "deeply focused, loyal, and emotionally exact", "shadow": "too suspicious, controlling, or braced"},
+    "Sagittarius": {"gift": "bold, expansive, and naturally future-facing", "shadow": "too blunt, too fast, or too willing to leap"},
+    "Capricorn": {"gift": "solid, self-respecting, and quietly authoritative", "shadow": "too defended, burdened, or hard on yourself"},
+    "Aquarius": {"gift": "independent, original, and hard to flatten into a type", "shadow": "too detached, distant, or hard to read"},
+    "Pisces": {"gift": "imaginative, receptive, and intuitively tuned in", "shadow": "too uncontained, avoidant, or hard to ground"},
+}
+
+_RELATIONSHIP_SIGN_OPENING_EN = {
+    "Aries": "clarity, honesty, and emotional momentum",
+    "Taurus": "stability, consistency, and room to settle into the bond",
+    "Gemini": "conversation, curiosity, and mental ease",
+    "Cancer": "warmth, emotional safety, and a feeling of home",
+    "Leo": "open affection, warmth, and a visible sense of being chosen",
+    "Virgo": "care, reliability, and attention to the small things",
+    "Libra": "mutuality, fairness, and emotional reciprocity",
+    "Scorpio": "honesty, depth, and emotional nakedness",
+    "Sagittarius": "space, truth, and a shared horizon",
+    "Capricorn": "trust, seriousness, and emotional backbone",
+    "Aquarius": "closeness without losing your own shape",
+    "Pisces": "softness, intuition, and emotional permeability",
 }
 
 _RULER_SIGN_BALANCE_TR = {
@@ -279,8 +385,16 @@ def _planet_label(value: Any) -> str:
     return PLANET_LABELS_TR.get(str(value or "").strip(), str(value or "").strip())
 
 
+def _planet_label_en(value: Any) -> str:
+    return PLANET_LABELS_EN.get(str(value or "").strip(), str(value or "").strip())
+
+
 def _sign_vibe(value: Any) -> str:
     return SIGN_VIBE_TR.get(str(value or "").strip(), "")
+
+
+def _sign_vibe_en(value: Any) -> str:
+    return SIGN_VIBE_EN.get(str(value or "").strip(), "")
 
 
 def _sign_balance(sign: str) -> Dict[str, str]:
@@ -288,9 +402,19 @@ def _sign_balance(sign: str) -> Dict[str, str]:
     return dict(payload) if isinstance(payload, dict) else {}
 
 
+def _sign_balance_en(sign: str) -> Dict[str, str]:
+    payload = _RULER_SIGN_BALANCE_EN.get(str(sign or "").strip())
+    return dict(payload) if isinstance(payload, dict) else {}
+
+
 def _house_arena(value: Any) -> str:
     resolved = _safe_house(value)
     return HOUSE_ARENA_TR.get(resolved, "") if resolved is not None else ""
+
+
+def _house_arena_en(value: Any) -> str:
+    resolved = _safe_house(value)
+    return HOUSE_ARENA_EN.get(resolved, "") if resolved is not None else ""
 
 
 def _house_ruler_payload(facts: Mapping[str, Any], house: int) -> tuple[str, str, int | None]:
@@ -305,6 +429,54 @@ def _house_ruler_payload(facts: Mapping[str, Any], house: int) -> tuple[str, str
 def _house_label(value: Any) -> str:
     resolved = _safe_house(value)
     return f"{resolved}. ev" if resolved is not None else ""
+
+
+def _house_label_en(value: Any) -> str:
+    resolved = _safe_house(value)
+    if resolved is None:
+        return ""
+    suffix = "th"
+    if resolved % 10 == 1 and resolved % 100 != 11:
+        suffix = "st"
+    elif resolved % 10 == 2 and resolved % 100 != 12:
+        suffix = "nd"
+    elif resolved % 10 == 3 and resolved % 100 != 13:
+        suffix = "rd"
+    return f"{resolved}{suffix} house"
+
+
+def _planet_payload(facts: Mapping[str, Any], planet: str) -> tuple[str, int | None]:
+    planets = facts.get("planets") if isinstance(facts.get("planets"), Mapping) else {}
+    payload = planets.get(planet) if isinstance(planets.get(planet), Mapping) else {}
+    return str(payload.get("sign") or "").strip(), _safe_house(payload.get("house"))
+
+
+def _selection_signature_ids(selection: Mapping[str, Any]) -> set[str]:
+    out: set[str] = set()
+    for key in ("primary", "spine_signature", "spark_signature", "area_signature", "tone_modifier"):
+        candidate = selection.get(key) if isinstance(selection.get(key), Mapping) else {}
+        value = str(candidate.get("signature_id") or candidate.get("id") or "").strip()
+        if value:
+            out.add(value)
+    return out
+
+
+def _gift_clause_en(text: str) -> str:
+    value = str(text or "").strip()
+    if not value:
+        return ""
+    if value.lower().startswith(("you ", "your ", "there is ", "it becomes ")):
+        return value
+    return f"you come through as {value}"
+
+
+def _shadow_clause_en(text: str) -> str:
+    value = str(text or "").strip()
+    if not value:
+        return ""
+    if value.lower().startswith(("you ", "your ", "there is ", "it can ")):
+        return value
+    return f"you can become {value}"
 
 
 def _compact_join(parts: list[str]) -> str:
@@ -366,6 +538,61 @@ def _astro_item_label(item: Mapping[str, Any]) -> str:
     return ""
 
 
+def _astro_item_label_en(item: Mapping[str, Any]) -> str:
+    item_type = str(item.get("type") or "").strip().lower()
+
+    if item_type == "placement":
+        return _compact_join([_planet_label_en(item.get("planet")), _house_label_en(item.get("house"))])
+
+    if item_type == "stellium":
+        return _compact_join([_house_label_en(item.get("house")), "stellium"])
+
+    if item_type == "house_emphasis":
+        return _compact_join([_house_label_en(item.get("house")), "emphasis"])
+
+    if item_type == "house_ruler":
+        return _compact_join(
+            [
+                _house_label_en(item.get("house")),
+                "ruler",
+                _planet_label_en(item.get("ruler")),
+                _house_label_en(item.get("ruler_house")),
+            ]
+        )
+
+    if item_type == "angle":
+        return _compact_join(
+            [
+                ANGLE_LABELS_EN.get(str(item.get("angle") or "").strip(), str(item.get("angle") or "").strip()),
+                str(item.get("sign") or "").strip(),
+            ]
+        )
+
+    if item_type == "aspect":
+        return _compact_join(
+            [
+                _planet_label_en(item.get("planet1") or item.get("a")),
+                ASPECT_LABELS_EN.get(str(item.get("aspect") or item.get("type_name") or "").strip().lower(), ""),
+                _planet_label_en(item.get("planet2") or item.get("b")),
+            ]
+        )
+
+    if item_type == "ruler_chain":
+        return _compact_join([_house_label_en(item.get("house")), "ruler in", _house_label_en(item.get("target_house"))])
+
+    if item_type == "retrograde":
+        return _compact_join([_planet_label_en(item.get("planet")), "retrograde"])
+
+    planet = _planet_label_en(item.get("planet"))
+    house = _house_label_en(item.get("house") or item.get("target_house"))
+    sign = str(item.get("sign") or "").strip()
+    if planet and house:
+        return _compact_join([planet, house])
+    if planet and sign:
+        return _compact_join([planet, sign])
+    return ""
+
+
 def _astro_hint(block_id: str, selection: Mapping[str, Any], facts: Mapping[str, Any]) -> str:
     labels: list[str] = []
     seen: set[str] = set()
@@ -405,6 +632,52 @@ def _astro_hint(block_id: str, selection: Mapping[str, Any], facts: Mapping[str,
     primary = selection.get("primary") if isinstance(selection.get("primary"), Mapping) else {}
     raw_hint = ", ".join(labels[:2])
     return soft_public_astro_hint(
+        block_id,
+        raw_hint,
+        seed=str(facts.get("seed") or ""),
+        signature_id=str(primary.get("signature_id") or ""),
+    )
+
+
+def _astro_hint_en(block_id: str, selection: Mapping[str, Any], facts: Mapping[str, Any]) -> str:
+    labels: list[str] = []
+    seen: set[str] = set()
+
+    def add_label(value: str) -> None:
+        clean = str(value or "").strip()
+        if not clean:
+            return
+        key = clean.lower()
+        if key in seen:
+            return
+        seen.add(key)
+        labels.append(clean)
+
+    for candidate in (selection.get("primary"), selection.get("color")):
+        if not isinstance(candidate, Mapping):
+            continue
+        for item in candidate.get("astro_tokens") or []:
+            if isinstance(item, Mapping):
+                add_label(_astro_item_label_en(item))
+            if len(labels) >= 2:
+                break
+        for item in candidate.get("evidence") or []:
+            if isinstance(item, Mapping):
+                add_label(_astro_item_label_en(item))
+            if len(labels) >= 2:
+                break
+        if len(labels) >= 2:
+            break
+
+    for item in _fallback_evidence(block_id, facts):
+        if isinstance(item, Mapping):
+            add_label(_astro_item_label_en(item))
+        if len(labels) >= 2:
+            break
+
+    primary = selection.get("primary") if isinstance(selection.get("primary"), Mapping) else {}
+    raw_hint = ", ".join(labels[:2])
+    return soft_public_astro_hint_en(
         block_id,
         raw_hint,
         seed=str(facts.get("seed") or ""),
@@ -1134,6 +1407,250 @@ def _compose_copy(
     return copy_payload
 
 
+def _micro_line_en(block_id: str, facts: Mapping[str, Any]) -> str:
+    if block_id == "identity_aura":
+        return "You usually read the room before you decide how fully to step in."
+    if block_id == "mind_voice":
+        return "A sentence often gets one more pass in your head before it leaves your mouth."
+    if block_id == "drive_rhythm":
+        return "Once the direction feels true, your momentum picks up fast."
+    if block_id == "love_depth":
+        return "You rarely open all at once; trust usually comes first."
+    if block_id == "career_visibility":
+        return "You want the work to feel solid before you make it public."
+    if block_id == "home_roots":
+        return "Your own space is where your system settles back into rhythm."
+    if block_id == "luck_creation":
+        return "Things tend to move once you stop hovering and actually put something out there."
+    return ""
+
+
+def _compose_copy_en(
+    block_id: str,
+    selection: Mapping[str, Any],
+    primitive_hits: list[Mapping[str, Any]],
+    facts: Mapping[str, Any],
+) -> Dict[str, str]:
+    _ = primitive_hits
+    ids = _selection_signature_ids(selection)
+    angle_signs = facts.get("angle_signs") if isinstance(facts.get("angle_signs"), Mapping) else {}
+    asc_sign = str(angle_signs.get("ASC") or "").strip()
+    dsc_sign = str(angle_signs.get("DSC") or "").strip()
+    mc_sign = str(angle_signs.get("MC") or "").strip()
+    ic_sign = str(angle_signs.get("IC") or "").strip()
+    chart_ruler, chart_ruler_sign, chart_ruler_house = _house_ruler_payload(facts, 1)
+    rel_ruler, rel_ruler_sign, rel_ruler_house = _house_ruler_payload(facts, 7)
+    career_ruler, career_ruler_sign, career_ruler_house = _house_ruler_payload(facts, 10)
+    home_ruler, home_ruler_sign, home_ruler_house = _house_ruler_payload(facts, 4)
+    mercury_sign, mercury_house = _planet_payload(facts, "Mercury")
+    mars_sign, mars_house = _planet_payload(facts, "Mars")
+    fortune_sign, fortune_house = _planet_payload(facts, "Fortune")
+    jupiter_sign, jupiter_house = _planet_payload(facts, "Jupiter")
+
+    if block_id == "identity_aura":
+        outer_vibe = _sign_vibe_en(asc_sign) or "measured and self-possessed"
+        arena = _house_arena_en(chart_ruler_house) or "the way you move through life"
+        balance = _sign_balance_en(chart_ruler_sign or asc_sign)
+        teaser = f"People usually meet the more {outer_vibe} version of you first."
+        core = "You rarely throw your whole self into a room immediately; you tend to take stock first and then decide how fully to step in."
+        mechanism = f"Your chart ruler works through {arena}, so keeping your own line intact matters more to you than people first realise."
+        if "identity_uranus_angular" in ids:
+            mechanism = f"Your chart ruler works through {arena}, but there is also a strong refusal to become generic or predictable."
+        elif "identity_jupiter_neptune_vision" in ids:
+            mechanism = f"Your chart ruler works through {arena}, and there is usually a bigger picture running quietly behind your decisions."
+        shadow = _shadow_clause_en(balance.get("shadow") or "you can over-manage yourself while trying to make the right move")
+        gift = _gift_clause_en(balance.get("gift") or "steady, self-defined, and quietly compelling")
+        return {
+            "teaser": teaser,
+            "core": _ensure_sentence(core),
+            "mechanism": _ensure_sentence(mechanism),
+            "shadow": _ensure_sentence(shadow),
+            "gift": _ensure_sentence(gift),
+        }
+
+    if block_id == "mind_voice":
+        inner_sign = mercury_sign or chart_ruler_sign
+        inner_house = mercury_house or chart_ruler_house
+        inner_vibe = _sign_vibe_en(inner_sign) or "fast, alert, and self-monitoring"
+        arena = _house_arena_en(inner_house or 3) or "the way you think and speak"
+        balance = _sign_balance_en(inner_sign)
+        teaser = f"Your mind does not really idle; even when you look calm, there is usually another internal pass happening in the background."
+        core = f"On the surface you can seem more contained, but underneath there is a much more {inner_vibe} mental pace."
+        mechanism = f"This becomes especially visible around {arena}; you may hold a sentence back for a while and then suddenly say it with real force."
+        if "mind_saturn_3rd_boundary" in ids:
+            core = "You usually think before you speak, and once a sentence matters to you, you feel the weight of it."
+        if "mind_mercury_rx_refine" in ids:
+            shadow = "you can keep editing past the point where the thought is already ready"
+            gift = "you are able to refine language until it becomes clear, exact, and trustworthy"
+        else:
+            shadow = _shadow_clause_en(balance.get("shadow") or "you can tighten around the wording and lose the timing")
+            gift = _gift_clause_en(balance.get("gift") or "clear, precise, and trustworthy")
+        return {
+            "teaser": teaser,
+            "core": _ensure_sentence(core),
+            "mechanism": _ensure_sentence(mechanism),
+            "shadow": _ensure_sentence(shadow),
+            "gift": _ensure_sentence(gift),
+        }
+
+    if block_id == "drive_rhythm":
+        drive_sign = mars_sign or chart_ruler_sign
+        drive_house = mars_house or 9
+        arena = _house_arena_en(drive_house) or "the way you build momentum"
+        balance = _sign_balance_en(drive_sign)
+        teaser = "Your momentum tends to grow when instinct has a direction, not just energy."
+        core = "You usually work best when movement and meaning are linked; random effort drains you much faster than purposeful effort."
+        mechanism = f"That shows up most clearly around {arena}; once the line of travel feels right, you can suddenly become much more decisive."
+        if "drive_mars_opp_saturn_push_pull" in ids:
+            shadow = "you can get stuck between the part of you that wants to move now and the part that wants to get it exactly right first"
+            gift = "you end up with both courage and staying power"
+        elif "drive_mars_trine_neptune_inspired_action" in ids:
+            shadow = "inspiration can diffuse if it is not given a shape quickly enough"
+            gift = "you know how to turn instinct and imagination into movement"
+        else:
+            shadow = _shadow_clause_en(balance.get("shadow") or "you can either scatter your force or hesitate too long at the edge of action")
+            gift = _gift_clause_en(balance.get("gift") or "clearer, more focused, and easier to trust")
+        return {
+            "teaser": teaser,
+            "core": _ensure_sentence(core),
+            "mechanism": _ensure_sentence(mechanism),
+            "shadow": _ensure_sentence(shadow),
+            "gift": _ensure_sentence(gift),
+        }
+
+    if block_id == "love_depth":
+        need = _RELATIONSHIP_SIGN_OPENING_EN.get(dsc_sign, "emotional safety and a real sense of being met")
+        arena = _house_arena_en(rel_ruler_house) or "the way closeness actually unfolds"
+        balance = _sign_balance_en(rel_ruler_sign or dsc_sign)
+        teaser = f"You are not looking for chemistry without substance; in love you need {need}."
+        core = "When you let someone in, it usually is not a light or half-hearted thing. The bond tends to matter to you in a real way."
+        mechanism = f"This gets especially visible around {arena}; if the bond does not feel emotionally real, your system does not fully relax into it."
+        if rel_ruler and rel_ruler_house:
+            mechanism = f"{mechanism.rstrip('.')}. Part of that story runs through your {rel_ruler} placement, so closeness is rarely just about attraction for you."
+        shadow = _shadow_clause_en(balance.get("shadow") or "ambiguity can keep you braced for too long")
+        gift = _gift_clause_en(balance.get("gift") or "steady, warm, and deep in the way you love")
+        return {
+            "teaser": teaser,
+            "core": _ensure_sentence(core),
+            "mechanism": _ensure_sentence(mechanism),
+            "shadow": _ensure_sentence(shadow),
+            "gift": _ensure_sentence(gift),
+        }
+
+    if block_id == "career_visibility":
+        arena = _house_arena_en(career_ruler_house) or "the way your public life actually gets built"
+        balance = _sign_balance_en(career_ruler_sign or mc_sign)
+        public_tone = _sign_balance_en(mc_sign)
+        teaser = f"People often notice the {public_tone.get('gift', 'clarity and presence')} side of you first when it comes to work."
+        core = "For you, visibility is rarely just about being seen. It also has to feel earned, coherent, and internally solid."
+        mechanism = f"The real engine sits in {arena}; you usually want the work to hold together before you push it outward."
+        if career_ruler and career_ruler_house:
+            mechanism = f"{mechanism.rstrip('.')}. That is why public growth is usually tied to what your {career_ruler} is doing in the chart."
+        shadow = _shadow_clause_en(public_tone.get("shadow") or balance.get("shadow") or "you can wait too long for the perfect moment to show the work")
+        gift = _gift_clause_en(public_tone.get("gift") or balance.get("gift") or "able to make work feel both polished and substantial")
+        return {
+            "teaser": teaser,
+            "core": _ensure_sentence(core),
+            "mechanism": _ensure_sentence(mechanism),
+            "shadow": _ensure_sentence(shadow),
+            "gift": _ensure_sentence(gift),
+        }
+
+    if block_id == "home_roots":
+        arena = _house_arena_en(home_ruler_house) or "your private rhythms"
+        balance = _sign_balance_en(home_ruler_sign or ic_sign)
+        teaser = "Home is not just where you rest. It is where you regulate."
+        core = "Your private world usually does more than give you comfort; it gives your system a way to return to itself."
+        mechanism = f"A lot of that runs through {arena}, so when your inner base feels off, the rest of life can start to feel louder and less workable."
+        shadow = _shadow_clause_en(balance.get("shadow") or "you can end up carrying too much on your own before you let yourself reset")
+        gift = _gift_clause_en(balance.get("gift") or "steadier and more resourced once you return to yourself")
+        return {
+            "teaser": teaser,
+            "core": _ensure_sentence(core),
+            "mechanism": _ensure_sentence(mechanism),
+            "shadow": _ensure_sentence(shadow),
+            "gift": _ensure_sentence(gift),
+        }
+
+    if block_id == "luck_creation":
+        luck_sign = fortune_sign or jupiter_sign
+        luck_house = fortune_house or jupiter_house
+        arena = _house_arena_en(luck_house or 5) or "the part of life that opens when you express something real"
+        balance = _sign_balance_en(luck_sign)
+        teaser = "Your luck usually does not feel random. It tends to open when you actually move something from inside to outside."
+        core = "Opportunity tends to build around expression, visibility, and the moments when you stop hovering and let something become real."
+        mechanism = f"That becomes most obvious around {arena}; life tends to answer you once you stop keeping everything in draft."
+        shadow = _shadow_clause_en(balance.get("shadow") or "hesitation can keep a door half-open for longer than necessary")
+        gift = _gift_clause_en(balance.get("gift") or "faster to notice and use openings once something is real")
+        return {
+            "teaser": teaser,
+            "core": _ensure_sentence(core),
+            "mechanism": _ensure_sentence(mechanism),
+            "shadow": _ensure_sentence(shadow),
+            "gift": _ensure_sentence(gift),
+        }
+
+    return {
+        "teaser": "There is a distinct inner pattern running through this part of your chart.",
+        "core": "A clear internal pattern shapes this area of life.",
+        "mechanism": "It tends to become visible once the pressure is real, not while everything is still hypothetical.",
+        "shadow": "you can over-manage this part of yourself under pressure",
+        "gift": "with maturity, it becomes steadier and easier to trust",
+    }
+
+
+def _render_block_en(
+    block_id: str,
+    selection: Mapping[str, Any],
+    seed: str,
+    *,
+    family: str,
+    facts: Mapping[str, Any],
+    used_openings: list[str],
+    used_bodies: list[str],
+) -> Dict[str, Any]:
+    primary = selection.get("primary") if isinstance(selection.get("primary"), Mapping) else {}
+    copy_payload = dict(primary.get("copy_en") or {})
+    slots = {
+        "copy": copy_payload,
+        "micro": _micro_line_en(block_id, facts),
+        "bridge": "",
+    }
+    return render_block_template_en(
+        block_id=block_id,
+        seed=seed,
+        slots=slots,
+        signature_id=str(primary.get("signature_id") or ""),
+        preferred_family=family,
+        used_openings=used_openings,
+        used_bodies=used_bodies,
+    )
+
+
+def _public_block_en(block_id: str, rendered: Mapping[str, Any], selection: Mapping[str, Any]) -> Dict[str, Any]:
+    primary = selection.get("primary") if isinstance(selection.get("primary"), Mapping) else {}
+    color = selection.get("color") if isinstance(selection.get("color"), Mapping) else {}
+    raw_chips: list[str] = []
+    for source in (primary.get("chips") or [], color.get("chips") or []):
+        for chip in source:
+            value = str(chip).strip()
+            if value and value not in raw_chips and len(raw_chips) < 6:
+                raw_chips.append(value)
+    return clean_public_block_en(
+        {
+            "id": block_id,
+            "headline": rendered.get("headline"),
+            "teaser": rendered.get("teaser"),
+            "subtitle": rendered.get("teaser"),
+            "body": rendered.get("body") or "",
+            "micro": rendered.get("micro") or "",
+            "astro_hint": rendered.get("astro_hint"),
+            "astro_sources": [],
+            "chips": humanize_public_chips_en(block_id, raw_chips),
+        }
+    )
+
+
 def _public_astro_sources(selection: Mapping[str, Any], facts: Mapping[str, Any]) -> list[str]:
     labels: list[str] = []
     seen: set[str] = set()
@@ -1267,6 +1784,7 @@ def build_profile_narrative_signature(
     block_spine_contract: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> Dict[str, Any]:
     locale = (locale or "tr").lower()
+    use_en = locale.startswith("en")
     facts = normalize_facts(chart, natal_graph)
     if seed_key:
         facts = dict(facts)
@@ -1298,23 +1816,42 @@ def build_profile_narrative_signature(
         selection.setdefault("spine_alignment_bonus", 0.0)
         primary = selection.get("primary")
         if isinstance(primary, dict):
-            primary["copy_tr"] = _compose_copy(block_id, selection, primitive_hits, facts)
+            if use_en:
+                primary["copy_en"] = _compose_copy_en(block_id, selection, primitive_hits, facts)
+            else:
+                primary["copy_tr"] = _compose_copy(block_id, selection, primitive_hits, facts)
         family = select_rhythm_family(str(facts.get("seed") or ""), "profile_narrative", block_id, used_families)
-        rendered = _render_block(
-            block_id,
-            selection,
-            str(facts.get("seed") or ""),
-            family=family,
-            used_openings=used_openings,
-            used_bodies=used_bodies,
-        )
-        rendered["astro_hint"] = _astro_hint(block_id, selection, facts) or None
+        if use_en:
+            rendered = _render_block_en(
+                block_id,
+                selection,
+                str(facts.get("seed") or ""),
+                family=family,
+                facts=facts,
+                used_openings=used_openings,
+                used_bodies=used_bodies,
+            )
+            rendered["astro_hint"] = _astro_hint_en(block_id, selection, facts) or None
+        else:
+            rendered = _render_block(
+                block_id,
+                selection,
+                str(facts.get("seed") or ""),
+                family=family,
+                used_openings=used_openings,
+                used_bodies=used_bodies,
+            )
+            rendered["astro_hint"] = _astro_hint(block_id, selection, facts) or None
         used_families.append(str(rendered.get("mode_label") or family))
         if rendered.get("opening_key"):
             used_openings.append(str(rendered.get("opening_key") or ""))
         if rendered.get("body"):
             used_bodies.append(str(rendered.get("body") or ""))
-        public_blocks.append(_public_block(block_id, rendered, selection, facts))
+        public_blocks.append(
+            _public_block_en(block_id, rendered, selection)
+            if use_en
+            else _public_block(block_id, rendered, selection, facts)
+        )
         if include_debug:
             debug_blocks.append(_debug_block(block_id, selection, rendered, facts))
 

@@ -8,11 +8,13 @@ import 'package:mobile/design/assets/element_asset_resolver.dart';
 import 'package:mobile/design/assets/editorial_art_asset_resolver.dart';
 import 'package:mobile/design/assets/planet_asset_resolver.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/shou_brand.dart';
 
 export 'package:mobile/design/assets/divider_asset_resolver.dart';
 export 'package:mobile/design/assets/element_asset_resolver.dart';
 export 'package:mobile/design/assets/editorial_art_asset_resolver.dart';
 export 'package:mobile/design/assets/planet_asset_resolver.dart';
+export 'package:mobile/design/widgets/shou_brand.dart';
 
 enum JoviaUiAsset {
   homePortal,
@@ -40,90 +42,29 @@ class JoviaBrandMark extends StatelessWidget {
     this.opacity = 0.88,
     this.alignment = Alignment.centerLeft,
     this.color,
+    this.tone = ShouWordmarkTone.auto,
   });
 
   final double width;
   final double opacity;
   final Alignment alignment;
   final Color? color;
+  final ShouWordmarkTone tone;
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.profileTheme;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final resolvedColor =
-        color ?? (isDark ? const Color(0xFFF8F2EC) : profile.colors.text);
-    final glyphStart = Color.alphaBlend(
-      profile.colors.warmAccent.withValues(alpha: isDark ? 0.34 : 0.76),
-      resolvedColor.withValues(alpha: 0.14),
-    );
-    final glyphEnd = Color.alphaBlend(
-      profile.colors.primary.withValues(alpha: isDark ? 0.42 : 0.56),
-      resolvedColor.withValues(alpha: 0.08),
-    );
     return Align(
       alignment: alignment,
       child: Opacity(
         opacity: opacity,
         child: SizedBox(
           width: width,
-          height: width * 0.28,
-          child: FittedBox(
+          child: ShouWordmark(
+            width: width,
             fit: BoxFit.contain,
             alignment: Alignment.centerLeft,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 18,
-                  height: 18,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [glyphStart, glyphEnd],
-                    ),
-                    border: Border.all(
-                      color: Colors.white.withValues(
-                        alpha: isDark ? 0.14 : 0.72,
-                      ),
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(
-                          alpha: isDark ? 0.18 : 0.08,
-                        ),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                        spreadRadius: -8,
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: Container(
-                      width: 5,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: resolvedColor.withValues(alpha: 0.88),
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Text(
-                  'SHOU',
-                  style: TextStyle(
-                    fontSize: 34,
-                    height: 1,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 4.2,
-                    color: resolvedColor,
-                  ),
-                ),
-              ],
-            ),
+            tone: tone,
+            color: color,
           ),
         ),
       ),

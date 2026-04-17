@@ -11,9 +11,10 @@ import 'package:mobile/l10n/l10n.dart';
 import 'user_bootstrap.dart';
 
 const double _kLoginMaxContentWidth = 460;
-const double _kLogoWidthFactor = 0.25;
-const double _kLogoMinWidth = 92;
-const double _kLogoMaxWidth = 132;
+const double _kLogoWidthFactor = 0.34;
+const double _kLogoMinWidth = 120;
+const double _kLogoMaxWidth = 176;
+const Color _kBrandLime = Color(0xFFCAFF4D);
 const String _kGoogleRedirectTo = 'com.sahra.jovia://login-callback/';
 
 class LoginPage extends StatefulWidget {
@@ -508,7 +509,13 @@ class _LoginBrandHeader extends StatelessWidget {
           width: logoWidth,
           opacity: 0.96,
           alignment: Alignment.center,
-          color: profile.colors.heroText,
+          tone: ShouWordmarkTone.light,
+        ),
+        const SizedBox(height: 10),
+        Container(
+          width: logoWidth.clamp(96, 164).toDouble(),
+          height: 2,
+          color: _kBrandLime,
         ),
         SizedBox(height: profile.spacing.s24),
         Text(

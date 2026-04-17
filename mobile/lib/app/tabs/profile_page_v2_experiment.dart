@@ -70,7 +70,7 @@ class _ProfilePageV2ExperimentState
         .currentUser
         ?.userMetadata?['avatar_url']
         ?.toString();
-    final profile = widget.profileOverride ?? profileAsync.valueOrNull;
+    final profile = widget.profileOverride ?? profileAsync.asData?.value;
     final elementScores = _computeElementScores(
       profile: profile,
       userId: widget.viewedUserId ?? uid,

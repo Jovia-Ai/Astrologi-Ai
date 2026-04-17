@@ -1,16 +1,14 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:mobile/app/telemetry/perf_telemetry.dart';
-import 'package:mobile/design/widgets/jovia_assets.dart';
 
-const Duration kSplashMotionDuration = Duration(milliseconds: 520);
-const Duration kSplashFadeDuration = Duration(milliseconds: 160);
-const double kSplashLogoWidthFactor = 0.7;
-const double kSplashLogoMinWidth = 220;
-const double kSplashLogoMaxWidth = 420;
-const double kSplashInitialScale = 0.92;
-const double kSplashPeakScale = 1.02;
-const double kSplashInitialOffsetY = 16;
-const Color kSplashBackgroundColor = Color(0xFF000000);
+const Duration kSplashMotionDuration = Duration(milliseconds: 2200);
+const Duration kSplashIdlePulseDuration = Duration(milliseconds: 3200);
+const Duration kSplashFadeDuration = Duration(milliseconds: 220);
+const double kSplashBackgroundColorAlpha = 1.0;
+const Color kSplashBackgroundColor = Color(0xFF111111);
+const Color kSplashLime = Color(0xFFCAFF4D);
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({
@@ -29,10 +27,8 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with TickerProviderStateMixin {
   late final AnimationController _motionController;
+  late final AnimationController _idleController;
   late final AnimationController _fadeController;
-  late final Animation<double> _logoOpacity;
-  late final Animation<double> _logoScale;
-  late final Animation<double> _logoOffsetY;
   late final Animation<double> _splashOpacity;
   late final Animation<double> _childOpacity;
 
@@ -46,45 +42,15 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: kSplashMotionDuration,
     );
+    _idleController = AnimationController(
+      vsync: this,
+      duration: kSplashIdlePulseDuration,
+    );
     _fadeController = AnimationController(
       vsync: this,
       duration: kSplashFadeDuration,
     );
 
-    _logoOpacity = CurvedAnimation(
-      parent: _motionController,
-      curve: const Interval(0.0, 0.26, curve: Curves.easeOutCubic),
-    );
-    _logoScale = TweenSequence<double>([
-      TweenSequenceItem<double>(
-        tween: Tween<double>(
-          begin: kSplashInitialScale,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeOutCubic)),
-        weight: 68,
-      ),
-      TweenSequenceItem<double>(
-        tween: Tween<double>(
-          begin: 1.0,
-          end: kSplashPeakScale,
-        ).chain(CurveTween(curve: Curves.easeOut)),
-        weight: 8,
-      ),
-      TweenSequenceItem<double>(
-        tween: Tween<double>(
-          begin: kSplashPeakScale,
-          end: 1.0,
-        ).chain(CurveTween(curve: Curves.easeInOutCubic)),
-        weight: 10,
-      ),
-      TweenSequenceItem<double>(tween: ConstantTween<double>(1.0), weight: 14),
-    ]).animate(_motionController);
-    _logoOffsetY = Tween<double>(begin: kSplashInitialOffsetY, end: 0).animate(
-      CurvedAnimation(
-        parent: _motionController,
-        curve: const Interval(0.0, 0.3, curve: Curves.easeOutCubic),
-      ),
-    );
     _splashOpacity = Tween<double>(begin: 1.0, end: 0.0).animate(
       CurvedAnimation(parent: _fadeController, curve: Curves.easeInOutCubic),
     );
@@ -94,13 +60,15 @@ class _SplashScreenState extends State<SplashScreen>
     );
 
     _motionController.addStatusListener((status) {
-      if (status != AnimationStatus.completed ||
-          !mounted ||
-          !widget.readyToReveal) {
+      if (status != AnimationStatus.completed) {
         return;
       }
-      setState(() => _showChild = true);
-      _fadeController.forward();
+      if (!_idleController.isAnimating) {
+        _idleController.repeat();
+      }
+      if (widget.readyToReveal) {
+        _revealChild();
+      }
     });
 
     _motionController.forward();
@@ -111,46 +79,303 @@ class _SplashScreenState extends State<SplashScreen>
     super.didUpdateWidget(oldWidget);
     if (!oldWidget.readyToReveal && widget.readyToReveal) {
       if (_motionController.status == AnimationStatus.completed) {
-        if (!_showChild) {
-          setState(() => _showChild = true);
+        if (!_idleController.isAnimating) {
+          _idleController.repeat();
         }
-        if (!_fadeController.isAnimating && !_fadeController.isCompleted) {
-          _fadeController.forward();
-        }
+        _revealChild();
       }
+    }
+  }
+
+  void _revealChild() {
+    if (!mounted || _showChild) {
+      return;
+    }
+    setState(() => _showChild = true);
+    if (!_fadeController.isAnimating && !_fadeController.isCompleted) {
+      _fadeController.forward();
     }
   }
 
   @override
   void dispose() {
     _motionController.dispose();
+    _idleController.dispose();
     _fadeController.dispose();
     super.dispose();
   }
 
+  double _interval(
+    double t,
+    double start,
+    double end, {
+    Curve curve = Curves.linear,
+  }) {
+    return _intervalRaw(t, start, end, curve: curve).clamp(0.0, 1.0);
+  }
+
+  double _intervalRaw(
+    double t,
+    double start,
+    double end, {
+    Curve curve = Curves.linear,
+  }) {
+    if (t <= start) {
+      return 0;
+    }
+    if (t >= end) {
+      return 1;
+    }
+    final normalized = (t - start) / (end - start);
+    return curve.transform(normalized.clamp(0.0, 1.0));
+  }
+
+  double _loadingProgress(double t) {
+    final elapsedMs = t * kSplashMotionDuration.inMilliseconds;
+    final p = ((elapsedMs - 800.0) / 2200.0).clamp(0.0, 1.0).toDouble();
+    if (p <= 0.2) {
+      return _lerp(0.0, 0.12, p / 0.2);
+    }
+    if (p <= 0.5) {
+      return _lerp(0.12, 0.45, (p - 0.2) / 0.3);
+    }
+    if (p <= 0.8) {
+      return _lerp(0.45, 0.78, (p - 0.5) / 0.3);
+    }
+    return _lerp(0.78, 1.0, (p - 0.8) / 0.2);
+  }
+
+  double _atMs(double ms) {
+    return (ms / kSplashMotionDuration.inMilliseconds).clamp(0.0, 1.0);
+  }
+
   double _logoWidth(BuildContext context) {
-    final width = MediaQuery.of(context).size.width * kSplashLogoWidthFactor;
-    return width.clamp(kSplashLogoMinWidth, kSplashLogoMaxWidth).toDouble();
+    final width = MediaQuery.of(context).size.width * 0.2667;
+    return width.clamp(98.0, 126.0).toDouble();
   }
 
   Widget _buildSplash(BuildContext context) {
-    return ColoredBox(
-      color: kSplashBackgroundColor,
-      child: Center(
-        child: FadeTransition(
-          opacity: _logoOpacity,
-          child: AnimatedBuilder(
-            animation: _motionController,
-            child: _SplashLogo(width: _logoWidth(context)),
-            builder: (context, child) {
-              return Transform.translate(
-                offset: Offset(0, _logoOffsetY.value),
-                child: Transform.scale(scale: _logoScale.value, child: child),
-              );
-            },
+    return AnimatedBuilder(
+      animation: Listenable.merge([_motionController, _idleController]),
+      builder: (context, _) {
+        final t = _motionController.value;
+        final idleT = _idleController.value;
+
+        final logoReveal = _interval(
+          t,
+          _atMs(100),
+          _atMs(700),
+          curve: Curves.easeOutCubic,
+        );
+        final outerProgress = _interval(
+          t,
+          _atMs(200),
+          _atMs(1600),
+          curve: Curves.easeInOutCubic,
+        );
+        final innerProgress = _interval(
+          t,
+          _atMs(550),
+          _atMs(1650),
+          curve: Curves.easeInOutCubic,
+        );
+        final centerPop = _intervalRaw(
+          t,
+          _atMs(850),
+          _atMs(1350),
+          curve: Curves.elasticOut,
+        );
+        final topDrop = _intervalRaw(
+          t,
+          _atMs(1000),
+          _atMs(1500),
+          curve: Curves.easeOutBack,
+        );
+        final lineGrow = _interval(
+          t,
+          _atMs(1100),
+          _atMs(1500),
+          curve: Curves.easeOutCubic,
+        );
+
+        final wordmarkTitle = _interval(
+          t,
+          _atMs(900),
+          _atMs(1600),
+          curve: Curves.easeOut,
+        );
+        final wordmarkSub = _interval(
+          t,
+          _atMs(1050),
+          _atMs(1750),
+          curve: Curves.easeOut,
+        );
+        final tagline = _interval(
+          t,
+          _atMs(1300),
+          _atMs(2100),
+          curve: Curves.easeOut,
+        );
+        final loading = _loadingProgress(t);
+        final loadingVisibility = _interval(
+          t,
+          _atMs(1000),
+          _atMs(1500),
+          curve: Curves.easeOut,
+        );
+        final glowOpacity = _interval(
+          t,
+          _atMs(400),
+          _atMs(1800),
+          curve: Curves.easeOut,
+        );
+        final ambientTurn =
+            _interval(
+                  t,
+                  _atMs(200),
+                  _atMs(1600),
+                  curve: Curves.easeInOutCubic,
+                ) *
+                0.14 +
+            (0.004 * math.sin(idleT * 2 * math.pi));
+
+        final breathe = 1 + 0.015 * math.sin(idleT * 2 * math.pi);
+        final centerPulseScale =
+            1 + 2.7 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi));
+        final centerPulseOpacity =
+            0.18 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi));
+        final topPulseScale =
+            1 + 1.6 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi + 1.1));
+        final topPulseOpacity =
+            0.14 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi + 1.1));
+
+        final logoScale = _lerp(0.88, 1.0, logoReveal) * breathe;
+        final logoOffsetY = _lerp(12, 0, logoReveal);
+
+        return ColoredBox(
+          color: kSplashBackgroundColor.withValues(
+            alpha: kSplashBackgroundColorAlpha,
           ),
-        ),
-      ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              _SplashAmbientBackground(
+                opacity: glowOpacity,
+                rotationTurns: ambientTurn,
+              ),
+              Center(
+                child: Transform.translate(
+                  offset: Offset(0, logoOffsetY),
+                  child: Transform.scale(
+                    scale: logoScale,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _SplashOrbitLogo(
+                          size: _logoWidth(context),
+                          outerProgress: outerProgress,
+                          innerProgress: innerProgress,
+                          centerDotProgress: centerPop,
+                          topDotProgress: topDrop,
+                          lineProgress: lineGrow,
+                          centerPulseScale: centerPulseScale,
+                          centerPulseOpacity: centerPulseOpacity,
+                          topPulseScale: topPulseScale,
+                          topPulseOpacity: topPulseOpacity,
+                        ),
+                        const SizedBox(height: 20),
+                        Transform.translate(
+                          offset: Offset(0, _lerp(10, 0, wordmarkTitle)),
+                          child: Opacity(
+                            opacity: wordmarkTitle,
+                            child: const Text(
+                              'SHOU',
+                              style: TextStyle(
+                                fontSize: 28,
+                                color: Colors.white,
+                                letterSpacing: 3.9,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Transform.translate(
+                          offset: Offset(0, _lerp(10, 0, wordmarkSub)),
+                          child: Opacity(
+                            opacity: wordmarkSub,
+                            child: const Text(
+                              'ASTROLOGI AI',
+                              style: TextStyle(
+                                fontSize: 9.3,
+                                color: Color(0xFF5A5A5A),
+                                letterSpacing: 1.9,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 36),
+                        Opacity(
+                          opacity: tagline,
+                          child: const Text(
+                            'Gökyüzü seni bekliyor.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: Color(0xFF4A4A4A),
+                              letterSpacing: 0.65,
+                              height: 1.7,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                left: 0,
+                right: 0,
+                bottom: 56,
+                child: Opacity(
+                  opacity: loadingVisibility,
+                  child: Center(
+                    child: SizedBox(
+                      width: 48,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            height: 1.5,
+                            width: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(1),
+                            ),
+                            alignment: Alignment.centerLeft,
+                            child: FractionallySizedBox(
+                              widthFactor: loading,
+                              alignment: Alignment.centerLeft,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: kSplashLime,
+                                  borderRadius: BorderRadius.circular(1),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -177,27 +402,325 @@ class _SplashScreenState extends State<SplashScreen>
   }
 }
 
-class _SplashLogo extends StatelessWidget {
-  const _SplashLogo({required this.width});
+class _SplashAmbientBackground extends StatelessWidget {
+  const _SplashAmbientBackground({
+    required this.opacity,
+    required this.rotationTurns,
+  });
 
-  final double width;
+  final double opacity;
+  final double rotationTurns;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: width,
-      constraints: const BoxConstraints(maxWidth: kSplashLogoMaxWidth),
-      decoration: const BoxDecoration(
-        boxShadow: [
-          BoxShadow(color: Color.fromRGBO(255, 255, 255, 0.05), blurRadius: 30),
+    return Opacity(
+      opacity: opacity,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Positioned.fill(
+            child: Transform.rotate(
+              angle: rotationTurns * 2 * math.pi,
+              child: CustomPaint(painter: _AmbientOrbitPainter()),
+            ),
+          ),
+          Align(
+            alignment: const Alignment(0, -0.16),
+            child: _GlowBlob(
+              width: 360,
+              height: 320,
+              color: kSplashLime.withValues(alpha: 0.06),
+            ),
+          ),
+          Align(
+            alignment: const Alignment(0.55, 0.22),
+            child: _GlowBlob(
+              width: 270,
+              height: 220,
+              color: const Color(0xFF7F77DD).withValues(alpha: 0.08),
+            ),
+          ),
+          Align(
+            alignment: const Alignment(-0.55, 0.32),
+            child: _GlowBlob(
+              width: 220,
+              height: 190,
+              color: const Color(0xFFF9A8D4).withValues(alpha: 0.06),
+            ),
+          ),
         ],
-      ),
-      child: JoviaBrandMark(
-        width: width,
-        alignment: Alignment.center,
-        opacity: 1,
-        color: Colors.white,
       ),
     );
   }
+}
+
+class _GlowBlob extends StatelessWidget {
+  const _GlowBlob({
+    required this.width,
+    required this.height,
+    required this.color,
+  });
+
+  final double width;
+  final double height;
+  final Color color;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: width,
+      height: height,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          borderRadius: BorderRadius.circular(width),
+          gradient: RadialGradient(colors: [color, color.withValues(alpha: 0)]),
+        ),
+      ),
+    );
+  }
+}
+
+class _SplashOrbitLogo extends StatelessWidget {
+  const _SplashOrbitLogo({
+    required this.size,
+    required this.outerProgress,
+    required this.innerProgress,
+    required this.centerDotProgress,
+    required this.topDotProgress,
+    required this.lineProgress,
+    required this.centerPulseScale,
+    required this.centerPulseOpacity,
+    required this.topPulseScale,
+    required this.topPulseOpacity,
+  });
+
+  final double size;
+  final double outerProgress;
+  final double innerProgress;
+  final double centerDotProgress;
+  final double topDotProgress;
+  final double lineProgress;
+  final double centerPulseScale;
+  final double centerPulseOpacity;
+  final double topPulseScale;
+  final double topPulseOpacity;
+
+  @override
+  Widget build(BuildContext context) {
+    final centerDotSize = size * 0.08;
+    final topDotSize = size * 0.1;
+    final lineHeight = size * 0.15;
+    final lineWidth = 1.2;
+    final topDropY = _lerp(-12, 0, topDotProgress);
+    final topDotOpacity = topDotProgress.clamp(0.0, 1.0).toDouble();
+
+    return SizedBox(
+      width: size,
+      height: size,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Positioned.fill(
+            child: CustomPaint(
+              painter: _OrbitRingsPainter(
+                outerProgress: outerProgress,
+                innerProgress: innerProgress,
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Opacity(
+              opacity: centerPulseOpacity,
+              child: Transform.scale(
+                scale: centerPulseScale,
+                child: Container(
+                  width: centerDotSize,
+                  height: centerDotSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: kSplashLime.withValues(alpha: 0.9),
+                      width: 0.8,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: size * 0.5 - topDotSize * 0.5,
+            top: size * 0.08,
+            child: Opacity(
+              opacity: topPulseOpacity,
+              child: Transform.scale(
+                scale: topPulseScale,
+                child: Container(
+                  width: topDotSize,
+                  height: topDotSize,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: kSplashLime.withValues(alpha: 0.85),
+                      width: 0.8,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: size * 0.5 - lineWidth / 2,
+            top: size * 0.13,
+            child: Opacity(
+              opacity: lineProgress,
+              child: Transform.scale(
+                scaleY: lineProgress,
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  width: lineWidth,
+                  height: lineHeight,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Transform.scale(
+              scale: _lerp(0.0, 1.0, centerDotProgress),
+              child: Container(
+                width: centerDotSize,
+                height: centerDotSize,
+                decoration: const BoxDecoration(
+                  color: kSplashLime,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: size * 0.5 - topDotSize * 0.5,
+            top: size * 0.08,
+            child: Transform.translate(
+              offset: Offset(0, topDropY),
+              child: Opacity(
+                opacity: topDotOpacity,
+                child: Container(
+                  width: topDotSize,
+                  height: topDotSize,
+                  decoration: const BoxDecoration(
+                    color: kSplashLime,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _OrbitRingsPainter extends CustomPainter {
+  const _OrbitRingsPainter({
+    required this.outerProgress,
+    required this.innerProgress,
+  });
+
+  final double outerProgress;
+  final double innerProgress;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 1.5
+      ..color = Colors.white;
+
+    final center = Offset(size.width / 2, size.height / 2);
+    final outerRect = Rect.fromCircle(
+      center: center,
+      radius: size.width * 0.42,
+    );
+    final innerRect = Rect.fromCircle(
+      center: center,
+      radius: size.width * 0.22,
+    );
+
+    if (outerProgress > 0) {
+      canvas.drawArc(
+        outerRect,
+        -math.pi / 2,
+        (2 * math.pi) * outerProgress,
+        false,
+        stroke,
+      );
+    }
+
+    if (innerProgress > 0) {
+      canvas.drawArc(
+        innerRect,
+        -math.pi / 2,
+        (2 * math.pi) * innerProgress,
+        false,
+        stroke,
+      );
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _OrbitRingsPainter oldDelegate) {
+    return oldDelegate.outerProgress != outerProgress ||
+        oldDelegate.innerProgress != innerProgress;
+  }
+}
+
+class _AmbientOrbitPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height * 0.42);
+    final ring1 = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.8
+      ..color = Colors.white.withValues(alpha: 0.014);
+    final ring2 = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.8
+      ..color = Colors.white.withValues(alpha: 0.010);
+
+    _drawDashedCircle(canvas, center, size.shortestSide * 0.36, ring1, 3, 10);
+    _drawDashedCircle(canvas, center, size.shortestSide * 0.5, ring2, 2, 8);
+  }
+
+  void _drawDashedCircle(
+    Canvas canvas,
+    Offset center,
+    double radius,
+    Paint paint,
+    double dashLength,
+    double gapLength,
+  ) {
+    final circumference = 2 * math.pi * radius;
+    final segmentLength = dashLength + gapLength;
+    final count = (circumference / segmentLength).floor();
+    final rect = Rect.fromCircle(center: center, radius: radius);
+    for (var i = 0; i < count; i++) {
+      final start = (i * segmentLength / circumference) * 2 * math.pi;
+      final sweep = (dashLength / circumference) * 2 * math.pi;
+      canvas.drawArc(rect, start, sweep, false, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _AmbientOrbitPainter oldDelegate) => false;
+}
+
+double _lerp(double begin, double end, double t) {
+  return begin + (end - begin) * t.clamp(0.0, 1.0);
 }

@@ -21,6 +21,8 @@ enum TransitPayloadProfile {
 
 enum SubscriptionTier { free, premium }
 
+enum NarrativeCachePolicy { defaultPolicy, disabled }
+
 extension on TransitPayloadProfile {
   String get wireValue => switch (this) {
     TransitPayloadProfile.full => 'full',
@@ -353,11 +355,17 @@ class NarrativeRepository {
     int? visibleDaysLimit,
     Duration? receiveTimeout,
     ApiRequestSla requestSla = ApiRequestSla.interactive,
+    Duration? cacheTtl,
+    NarrativeCachePolicy cachePolicy = NarrativeCachePolicy.defaultPolicy,
     String locale = 'tr',
   }) async {
     final resolvedTier =
         subscriptionTier ??
         TransitRequestBuilder.resolveSubscriptionTier(profile);
+    final effectiveCacheTtl = switch (cachePolicy) {
+      NarrativeCachePolicy.defaultPolicy => cacheTtl ?? _narrativeCacheTtl,
+      NarrativeCachePolicy.disabled => null,
+    };
     final response = await _client.post(
       '/transit/narrative',
       data: TransitRequestBuilder.buildNarrativePayload(
@@ -374,7 +382,7 @@ class NarrativeRepository {
       ),
       receiveTimeout: receiveTimeout,
       requestSla: requestSla,
-      cacheTtl: _narrativeCacheTtl,
+      cacheTtl: effectiveCacheTtl,
     );
     return TransitRequestBuilder.asMap(response.data);
   }

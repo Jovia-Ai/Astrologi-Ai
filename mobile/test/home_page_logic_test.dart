@@ -12,7 +12,7 @@ void main() {
     final l10n = lookupAppLocalizations(const Locale('tr'));
 
     test(
-      'buildHomeTransitSnapshot uses period_event_cards and promotes transit fallback for home hero',
+      'buildHomeTransitSnapshot keeps period cards but does not promote them into daily slot',
       () {
         final narrative = NarrativeResponse.fromMap({
           'calendar': {
@@ -73,13 +73,7 @@ void main() {
         expect(snapshot.periodCore?.title, tr('Transit Donemi'));
         expect(snapshot.periodCards, hasLength(1));
         expect(snapshot.periodCards.first.title, tr('Transit Baslik'));
-        expect(snapshot.dailyCards, hasLength(1));
-        expect(snapshot.dailyCards.first.horizon, 'daily');
-        expect(snapshot.dailyCards.first.feltLineTr, tr('Transit Baslik'));
-        expect(
-          snapshot.dailyCards.first.whyItFeelsThisWayTr,
-          tr('Transit acilisi'),
-        );
+        expect(snapshot.dailyCards, isEmpty);
       },
     );
 
@@ -509,8 +503,89 @@ void main() {
           ),
           isTrue,
         );
+        expect(
+          hasStrongHomeDailyContent(dailyCards: const <EventCardDto>[]),
+          isFalse,
+        );
+        expect(
+          hasHomeMetaOnlyContent(
+            dailyCards: const <EventCardDto>[],
+            dayMeta: dayMeta,
+          ),
+          isTrue,
+        );
       },
     );
+
+    test('fast preview fallback never counts as ready daily', () {
+      final fastFallback = EventCardDto.fromMap({
+        'event_id': 'home-fast-daily-fallback',
+        'headline': 'Bugun bir vurgu var',
+        'opening': 'On izleme metni',
+        'horizon': 'daily',
+        'source_horizon': 'daily',
+        'tags': {'phase': 'preview', 'duration': 'day', 'domain': 'general'},
+      });
+
+      expect(
+        hasStrongHomeDailyContent(dailyCards: <EventCardDto>[fastFallback]),
+        isFalse,
+      );
+      expect(
+        resolveHomeDailyRenderState(
+          loading: false,
+          dailyCards: <EventCardDto>[fastFallback],
+          dayMeta: null,
+          errorMessage: null,
+        ),
+        HomeDailyRenderState.degraded,
+      );
+      expect(
+        homeDailyDegradedReason(
+          loading: false,
+          dailyCards: <EventCardDto>[fastFallback],
+          dayMeta: null,
+          errorMessage: null,
+        ),
+        'fast_preview_only',
+      );
+    });
+
+    test('period-derived daily card never counts as ready daily', () {
+      final periodDerived = EventCardDto.fromMap({
+        'event_id': 'evt_period_fallback',
+        'headline': 'Donem etkisi bugune tasiyor',
+        'opening': 'Bu kart period kaynakli.',
+        'horizon': 'daily',
+        'source_horizon': 'period',
+        'is_period_derived': true,
+        'today_facing_fallback': true,
+        'tags': {'phase': 'peak', 'duration': 'weeks', 'domain': 'general'},
+      });
+
+      expect(
+        hasStrongHomeDailyContent(dailyCards: <EventCardDto>[periodDerived]),
+        isFalse,
+      );
+      expect(
+        resolveHomeDailyRenderState(
+          loading: false,
+          dailyCards: <EventCardDto>[periodDerived],
+          dayMeta: null,
+          errorMessage: null,
+        ),
+        HomeDailyRenderState.degraded,
+      );
+      expect(
+        homeDailyDegradedReason(
+          loading: false,
+          dailyCards: <EventCardDto>[periodDerived],
+          dayMeta: null,
+          errorMessage: null,
+        ),
+        'period_derived_only',
+      );
+    });
 
     test(
       'hasUsableHomeDailyContent is true when a daily card carries copy',
@@ -530,8 +605,48 @@ void main() {
           ),
           isTrue,
         );
+        expect(
+          hasStrongHomeDailyContent(dailyCards: <EventCardDto>[dailyCard]),
+          isTrue,
+        );
       },
     );
+
+    test('meta-only content is degraded and never ready', () {
+      final dayMeta = NarrativeCalendarDay.fromMap({
+        'date': '2026-04-08',
+        'rating': 2,
+        'heat': 2,
+        'event_count': 1,
+        'signals_count': 1,
+        'has_signals': true,
+        'is_critical': false,
+        'labels': const <String>[],
+        'critical_reasons': const <String>[],
+        'signal_label_tr': 'Bugun tek tema var.',
+        'tone_label_tr': 'yogun',
+        'micro_summary_tr': 'Bugun bir sey aciliyor.',
+      });
+
+      expect(
+        resolveHomeDailyRenderState(
+          loading: false,
+          dailyCards: const <EventCardDto>[],
+          dayMeta: dayMeta,
+          errorMessage: null,
+        ),
+        HomeDailyRenderState.degraded,
+      );
+      expect(
+        homeDailyDegradedReason(
+          loading: false,
+          dailyCards: const <EventCardDto>[],
+          dayMeta: dayMeta,
+          errorMessage: null,
+        ),
+        'meta_only',
+      );
+    });
 
     test(
       'hasUsableHomeDailyContent is false when daily card only carries a title',
@@ -551,6 +666,120 @@ void main() {
             dayMeta: null,
           ),
           isFalse,
+        );
+        expect(
+          hasHomeMetaOnlyContent(
+            dailyCards: <EventCardDto>[dailyCard],
+            dayMeta: null,
+          ),
+          isFalse,
+        );
+      },
+    );
+
+    test('hasHomeMetaOnlyContent is false when strong daily card exists', () {
+      final dayMeta = NarrativeCalendarDay.fromMap({
+        'date': '2026-04-08',
+        'rating': 2,
+        'heat': 2,
+        'event_count': 1,
+        'signals_count': 1,
+        'has_signals': true,
+        'is_critical': false,
+        'labels': const <String>[],
+        'critical_reasons': const <String>[],
+        'signal_label_tr': 'Bugun tek tema var.',
+        'tone_label_tr': 'yogun',
+        'micro_summary_tr': 'Bugun bir sey aciliyor.',
+      });
+      final dailyCard = EventCardDto.fromMap({
+        'event_id': 'evt_daily_copy',
+        'headline': 'Bugunun karti',
+        'opening': 'Bugun sende bir vurgu var.',
+        'horizon': 'daily',
+        'tags': {'phase': 'exact', 'duration': 'day', 'domain': 'general'},
+      });
+
+      expect(
+        hasHomeMetaOnlyContent(
+          dailyCards: <EventCardDto>[dailyCard],
+          dayMeta: dayMeta,
+        ),
+        isFalse,
+      );
+    });
+
+    test('buildHomeDayContext normalizes day key using profile timezone', () {
+      final context = buildHomeDayContext(
+        <String, dynamic>{'timezone': 'Europe/Istanbul'},
+        utcNow: DateTime.utc(2026, 4, 14, 22, 30),
+        localNow: DateTime.utc(2026, 4, 14, 22, 30),
+      );
+
+      expect(context.dayKey, '2026-04-15');
+      expect(context.timezone, 'Europe/Istanbul');
+      expect(context.source, 'profile_timezone');
+    });
+
+    test(
+      'resolveHomeDailyResponseAnchorDay uses payload date when present',
+      () {
+        expect(
+          resolveHomeDailyResponseAnchorDay({
+            'selected_date': '2026-04-10',
+            'public': {'anchor_date': '2026-04-09'},
+          }, fallbackDayKey: '2026-04-08'),
+          '2026-04-10',
+        );
+        expect(
+          resolveHomeDailyResponseAnchorDay({
+            'public': {'selected_date': '2026-04-11'},
+          }, fallbackDayKey: '2026-04-08'),
+          '2026-04-11',
+        );
+        expect(
+          resolveHomeDailyResponseAnchorDay(
+            const {},
+            fallbackDayKey: '2026-04-08',
+          ),
+          '2026-04-08',
+        );
+      },
+    );
+
+    test(
+      'shouldRunHomeCalendarDayFallback is true when raw daily cards are empty even with micro summary',
+      () {
+        final dayMeta = NarrativeCalendarDay.fromMap({
+          'date': '2026-04-08',
+          'rating': 2,
+          'heat': 2,
+          'event_count': 1,
+          'signals_count': 1,
+          'has_signals': true,
+          'is_critical': false,
+          'labels': const <String>[],
+          'critical_reasons': const <String>[],
+          'signal_label_tr': 'Bugun tek tema var.',
+          'tone_label_tr': 'yogun',
+          'micro_summary_tr': 'Bugun bir sey aciliyor.',
+        });
+
+        expect(
+          shouldRunHomeCalendarDayFallback(
+            rawDailyEventCardsCount: 0,
+            dailyCards: const <EventCardDto>[],
+            dayMeta: dayMeta,
+          ),
+          isTrue,
+        );
+        expect(
+          homeCalendarDayFallbackReasonCode(
+            rawDailyEventCardsCount: 0,
+            dailyCards: const <EventCardDto>[],
+            dayMeta: dayMeta,
+          ),
+          'daily_event_cards_empty',
         );
       },
     );

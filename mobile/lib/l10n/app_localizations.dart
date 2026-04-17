@@ -98,8 +98,20 @@ abstract class AppLocalizations {
   /// No description provided for @appTitle.
   ///
   /// In en, this message translates to:
-  /// **'Astrologi AI'**
+  /// **'SHOU'**
   String get appTitle;
+
+  /// No description provided for @appStoreSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your personal astrology space'**
+  String get appStoreSubtitle;
+
+  /// No description provided for @appStoreShortDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'SHOU offers a deeper, more personal astrology experience across your natal chart, transits, and personal insight spaces.'**
+  String get appStoreShortDescription;
 
   /// No description provided for @supabaseConfigErrorTitle.
   ///
@@ -346,6 +358,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save'**
   String get commonSave;
+
+  /// No description provided for @externalLinkOpenFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open link.'**
+  String get externalLinkOpenFailed;
 
   /// No description provided for @tabsHome.
   ///
@@ -803,6 +821,18 @@ abstract class AppLocalizations {
   /// **'A deeper layer for longer readings and extended flows.'**
   String get menuPremiumDefaultSubtitle;
 
+  /// No description provided for @menuInfoAndSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Info and support'**
+  String get menuInfoAndSupport;
+
+  /// No description provided for @menuAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get menuAccount;
+
   /// No description provided for @menuInList.
   ///
   /// In en, this message translates to:
@@ -826,6 +856,132 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Close the current session and return to login.'**
   String get menuSignOutSubtitle;
+
+  /// No description provided for @restorePurchasesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore Purchases'**
+  String get restorePurchasesTitle;
+
+  /// No description provided for @restorePurchasesDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Restore your previous purchases or subscription access on this device.'**
+  String get restorePurchasesDescription;
+
+  /// No description provided for @restorePurchasesSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your purchases have been restored.'**
+  String get restorePurchasesSuccess;
+
+  /// No description provided for @restorePurchasesNoActive.
+  ///
+  /// In en, this message translates to:
+  /// **'No active purchases were found to restore.'**
+  String get restorePurchasesNoActive;
+
+  /// No description provided for @restorePurchasesError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not restore purchases. Please try again.'**
+  String get restorePurchasesError;
+
+  /// No description provided for @privacyPolicyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicyTitle;
+
+  /// No description provided for @privacyPolicyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'SHOU processes the data needed to create your account, personalize your experience, and provide app features.'**
+  String get privacyPolicyDescription;
+
+  /// No description provided for @termsOfUseTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Terms of Use'**
+  String get termsOfUseTitle;
+
+  /// No description provided for @termsOfUseDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'By using SHOU, you agree to the app\'s terms of use and the rules governing the digital services provided.'**
+  String get termsOfUseDescription;
+
+  /// No description provided for @supportTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Support'**
+  String get supportTitle;
+
+  /// No description provided for @supportDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'If you have questions, technical issues, or need help with your account, you can contact us here.'**
+  String get supportDescription;
+
+  /// No description provided for @deleteAccountTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccountTitle;
+
+  /// No description provided for @deleteAccountDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting your account permanently removes your profile, personal account data, and access within the app. This action cannot be undone.'**
+  String get deleteAccountDescription;
+
+  /// No description provided for @deleteAccountDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete your account?'**
+  String get deleteAccountDialogTitle;
+
+  /// No description provided for @deleteAccountDialogBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. Your account and associated personal data will be deleted. If you have an active subscription, you may also need to manage it through App Store subscriptions.'**
+  String get deleteAccountDialogBody;
+
+  /// No description provided for @deleteAccountSubscriptionNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting your account does not automatically cancel subscriptions managed through the App Store.'**
+  String get deleteAccountSubscriptionNote;
+
+  /// No description provided for @deleteAccountCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get deleteAccountCancel;
+
+  /// No description provided for @deleteAccountConfirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get deleteAccountConfirm;
+
+  /// No description provided for @deleteAccountSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been deleted.'**
+  String get deleteAccountSuccess;
+
+  /// No description provided for @deleteAccountError.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account could not be deleted. Please try again.'**
+  String get deleteAccountError;
+
+  /// No description provided for @deleteAccountProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleting your account...'**
+  String get deleteAccountProgress;
 
   /// No description provided for @menuPeopleCount.
   ///
@@ -1078,6 +1234,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Profile photo could not be uploaded: {error}'**
   String profileAvatarUploadFailed(Object error);
+
+  /// No description provided for @profileAvatarHelperText.
+  ///
+  /// In en, this message translates to:
+  /// **'You can add a photo to make your profile feel more like yours.'**
+  String get profileAvatarHelperText;
 
   /// No description provided for @profileInterpretationUnavailableTitle.
   ///
@@ -2170,6 +2332,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You used all 3 free questions. Buy a credit pack or unlock Pro to keep chatting.'**
   String get aiPaywallBody;
+
+  /// No description provided for @aiPaywallMembershipNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Start your membership to unlock SHOU\'s deeper readings and premium experience. If you already have a purchase, you can restore it below.'**
+  String get aiPaywallMembershipNote;
 
   /// No description provided for @aiPaywallLoading.
   ///

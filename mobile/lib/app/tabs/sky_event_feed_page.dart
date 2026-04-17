@@ -34,7 +34,7 @@ class _SkyEventFeedPageState extends ConsumerState<SkyEventFeedPage> {
       _error = null;
     });
     try {
-      final profile = ref.read(userProfileProvider).valueOrNull;
+      final profile = ref.read(userProfileProvider).asData?.value;
       final feed = await _repository.fetchFeed(
         tz: (profile?['timezone'] ?? 'Europe/Istanbul').toString().trim(),
         limit: 12,

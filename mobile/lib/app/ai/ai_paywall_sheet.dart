@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 import 'package:mobile/app/ai/revenuecat_service.dart';
+import 'package:mobile/design/widgets/shou_brand.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mobile/l10n/l10n.dart';
 
@@ -31,6 +32,7 @@ class _AiPaywallSheetState extends State<_AiPaywallSheet> {
   bool _loading = true;
   String? _errorMessage;
   String? _busyProductId;
+  bool _isRestoring = false;
   Map<String, StoreProduct> _productsById = const <String, StoreProduct>{};
 
   @override
@@ -102,6 +104,47 @@ class _AiPaywallSheetState extends State<_AiPaywallSheet> {
     }
   }
 
+  Future<void> _restorePurchases() async {
+    if (_isRestoring) {
+      return;
+    }
+    setState(() => _isRestoring = true);
+    final result = await _revenueCatService.restorePurchases();
+    if (!mounted) {
+      return;
+    }
+
+    switch (result.status) {
+      case RestorePurchasesStatus.restored:
+        widget.onPurchased();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.restorePurchasesSuccess)),
+        );
+        Navigator.of(context).pop();
+        break;
+      case RestorePurchasesStatus.noActivePurchases:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.restorePurchasesNoActive)),
+        );
+        break;
+      case RestorePurchasesStatus.failed:
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              result.errorMessage?.trim().isNotEmpty == true
+                  ? result.errorMessage!
+                  : context.l10n.restorePurchasesError,
+            ),
+          ),
+        );
+        break;
+    }
+
+    if (mounted) {
+      setState(() => _isRestoring = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -127,14 +170,35 @@ class _AiPaywallSheetState extends State<_AiPaywallSheet> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    l10n.aiPaywallTitle,
-                    style: theme.textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l10n.aiPaywallTitle,
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      const Opacity(
+                        opacity: 0.84,
+                        child: ShouWordmark(
+                          width: 62,
+                          tone: ShouWordmarkTone.auto,
+                        ),
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 8),
                   Text(l10n.aiPaywallBody, style: theme.textTheme.bodyMedium),
+                  const SizedBox(height: 8),
+                  Text(
+                    l10n.aiPaywallMembershipNote,
+                    style: theme.textTheme.bodySmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
                   const SizedBox(height: 16),
                   if (_loading)
                     Padding(
@@ -171,6 +235,23 @@ class _AiPaywallSheetState extends State<_AiPaywallSheet> {
                       ),
                       const SizedBox(height: 12),
                     ],
+                    const SizedBox(height: 4),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton(
+                        onPressed: _isRestoring ? null : _restorePurchases,
+                        child: _isRestoring
+                            ? const SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
+                              )
+                            : Text(l10n.restorePurchasesTitle),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
                     Text(
                       l10n.aiPaywallRestoreHint,
                       style: theme.textTheme.bodySmall?.copyWith(

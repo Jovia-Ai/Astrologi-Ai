@@ -36,7 +36,7 @@ class _SkyEventDetailPageState extends ConsumerState<SkyEventDetailPage> {
       _error = null;
     });
     try {
-      final profile = ref.read(userProfileProvider).valueOrNull;
+      final profile = ref.read(userProfileProvider).asData?.value;
       final detail = await _skyRepository.fetchEventDetail(
         idOrSlug: widget.item.eventKey,
         tz: _resolveTimezone(profile),
@@ -80,7 +80,7 @@ class _SkyEventDetailPageState extends ConsumerState<SkyEventDetailPage> {
     BuildContext context,
     SkyEventDetailDto detail,
   ) async {
-    final profile = ref.read(userProfileProvider).valueOrNull;
+    final profile = ref.read(userProfileProvider).asData?.value;
     if (!TransitRequestBuilder.hasProfile(profile)) {
       await showModalBottomSheet<void>(
         context: context,
@@ -113,7 +113,7 @@ class _SkyEventDetailPageState extends ConsumerState<SkyEventDetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    final profile = ref.watch(userProfileProvider).valueOrNull;
+    final profile = ref.watch(userProfileProvider).asData?.value;
     final profileTheme = context.profileTheme;
     final colors = profileTheme.colors;
     final previewTitle = widget.item.title.trim().isNotEmpty

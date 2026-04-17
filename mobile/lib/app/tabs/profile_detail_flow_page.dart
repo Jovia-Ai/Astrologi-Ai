@@ -462,8 +462,8 @@ class ProfileDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final firstScene = scenes.isNotEmpty ? scenes.first : null;
-    final topBarLabel = firstScene?.eyebrow.trim().isNotEmpty == true
-        ? firstScene!.eyebrow
+    final topBarLabel = (firstScene?.eyebrow ?? '').trim().isNotEmpty
+        ? (firstScene?.eyebrow ?? flowTitle)
         : flowTitle;
     final topBarCenterText =
         firstScene == null ||

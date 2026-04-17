@@ -278,7 +278,7 @@ class _PeopleListItem extends ConsumerWidget {
     final semanticAsync = ref.watch(
       personAuraSemanticProvider(PersonAuraRequest.fromPerson(person)),
     );
-    final semantic = semanticAsync.valueOrNull;
+    final semantic = semanticAsync.asData?.value;
     final aura = semantic == null
         ? fallbackAura
         : joviaAuraPaletteForSemantic(colors: colors, semantic: semantic);

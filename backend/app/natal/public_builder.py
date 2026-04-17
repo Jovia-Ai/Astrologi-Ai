@@ -14,6 +14,7 @@ from app.narrative.humanize_tr import (
     sentence_safe_clamp,
 )
 from app.natal.narrative.aspect_bundle_selector import select_aspect_bundles
+from app.natal.profile_v8_payload_builder import build_profile_and_full_map_v8_payload
 from app.natal.profile_insights import build_profile_insight_modules
 from app.natal.profile_detail_editorial import (
     build_editorial_detail_blocks_for_imprint_entry,
@@ -80,6 +81,15 @@ def build_public_natal_view(response: Dict[str, Any], *, locale: str = "tr", inc
         narrative_v2=narrative_v2,
         insight_modules=profile_insight_modules,
     )
+    sections_v2 = _humanize_sections_v2(response.get("sections_v2"))
+    profile_v8, full_map_v8 = build_profile_and_full_map_v8_payload(
+        response=response,
+        profile_narrative=profile_narrative or {},
+        sections_v2=sections_v2,
+        supporting_threads=supporting_threads,
+        narrative_v2=narrative_v2 or {},
+        personality_imprint=personality_imprint or {},
+    )
 
     public = PublicNatalView(
         locale=locale or "tr",
@@ -101,7 +111,9 @@ def build_public_natal_view(response: Dict[str, Any], *, locale: str = "tr", inc
         natal_graph_compact=_allowlist_natal_graph(response.get("natal_graph_compact")),
         personality_imprint=personality_imprint,
         profile_narrative=profile_narrative,
-        sections_v2=_humanize_sections_v2(response.get("sections_v2")),
+        profile_v8=profile_v8,
+        full_map_v8=full_map_v8,
+        sections_v2=sections_v2,
         supporting_threads=supporting_threads,
         narrative_v2=narrative_v2,
         flags=PublicFlags(

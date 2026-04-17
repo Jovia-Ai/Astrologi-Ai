@@ -11,8 +11,10 @@ import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mobile/app/api/api_client.dart';
+import 'package:mobile/app/performance/load_tuning.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
+import 'package:mobile/app/tabs/period_detail_navigation.dart';
 import 'package:mobile/app/tabs/period_detail_page.dart';
 import 'package:mobile/app/tabs/sky_event_detail_page.dart';
 import 'package:mobile/app/tabs/sky_event_feed_page.dart';
@@ -113,6 +115,8 @@ class HomeTransitSnapshot {
   final Map<String, NarrativeCalendarDay> calendarDays;
   final NarrativeCalendarDay? todayDayMeta;
 }
+
+enum HomeDailyRenderState { loading, ready, degraded, empty }
 
 class _HomeFastHighlight {
   const _HomeFastHighlight({
@@ -380,26 +384,18 @@ HomeTransitSnapshot buildHomeTransitSnapshot({
     selectedDate: today,
   );
   final periodEvents = selection.periodCards;
-  final fallbackDailyCards = selection.dailyCards.isNotEmpty
-      ? selection.dailyCards
-      : (periodEvents.isNotEmpty
-            ? <EventCardDto>[
-                _promoteHomePeriodEventToDaily(periodEvents.first, l10n: l10n),
-              ]
-            : const <EventCardDto>[]);
   final periodCards = <PeriodCardDto>[
     for (var i = 0; i < periodEvents.length; i++)
       PeriodCardDto.fromEventCard(eventCard: periodEvents[i], index: i),
   ];
-  if (periodCards.isEmpty && narrative.periodCore != null) {
-    periodCards.add(
-      _buildHomePeriodCoreFallbackCard(narrative.periodCore!, l10n: l10n),
-    );
+  final periodCore = narrative.periodCore;
+  if (periodCards.isEmpty && periodCore != null) {
+    periodCards.add(_buildHomePeriodCoreFallbackCard(periodCore, l10n: l10n));
   }
   return HomeTransitSnapshot(
     periodCore: narrative.periodCore,
     periodCards: periodCards,
-    dailyCards: fallbackDailyCards,
+    dailyCards: selection.dailyCards,
     calendarDays: narrative.calendarDays,
     todayDayMeta: narrative.calendarDays[todayKey],
   );
@@ -419,6 +415,64 @@ String describeHomeDailyCardSource(EventCardDto? card) {
     return 'daily_event_card';
   }
   return 'daily_unknown';
+}
+
+String resolveHomeDailySourceType({
+  required EventCardDto? card,
+  required NarrativeCalendarDay? dayMeta,
+}) {
+  if (hasAuthoritativeHomeDailyCard(card)) {
+    return 'authoritative_daily';
+  }
+  if (card != null && card.eventId.trim() == 'home-fast-daily-fallback') {
+    return 'fast_preview';
+  }
+  if (card != null && isDailyTransitCardBackedByPeriod(card)) {
+    return 'period_derived';
+  }
+  if ((dayMeta?.microSummaryTr.trim().isNotEmpty ?? false)) {
+    return 'meta_only';
+  }
+  if (card != null) {
+    return 'non_authoritative_daily';
+  }
+  return 'none';
+}
+
+String resolveHomeDailyResponseAnchorDay(
+  Map<String, dynamic> payload, {
+  required String fallbackDayKey,
+}) {
+  final direct = _firstHomeTextValue([
+    payload['selected_date']?.toString(),
+    payload['anchor_date']?.toString(),
+  ]);
+  if (direct.isNotEmpty) {
+    return direct;
+  }
+  final publicRaw = payload['public'] is Map
+      ? Map<String, dynamic>.from(payload['public'] as Map)
+      : const <String, dynamic>{};
+  final fromPublic = _firstHomeTextValue([
+    publicRaw['selected_date']?.toString(),
+    publicRaw['anchor_date']?.toString(),
+  ]);
+  if (fromPublic.isNotEmpty) {
+    return fromPublic;
+  }
+  final debugRaw = payload['debug'] is Map
+      ? Map<String, dynamic>.from(payload['debug'] as Map)
+      : const <String, dynamic>{};
+  final selectedDayPublic = debugRaw['selected_day_public'] is Map
+      ? Map<String, dynamic>.from(debugRaw['selected_day_public'] as Map)
+      : const <String, dynamic>{};
+  final fromDebug = _firstHomeTextValue([
+    selectedDayPublic['date']?.toString(),
+  ]);
+  if (fromDebug.isNotEmpty) {
+    return fromDebug;
+  }
+  return fallbackDayKey;
 }
 
 bool _sameHomeDailyCard(EventCardDto? left, EventCardDto? right) {
@@ -442,6 +496,30 @@ bool hasUsableHomeDailyCardCopy(EventCardDto? card) {
     card.guidanceMicroTr,
     card.essence,
   ]).isNotEmpty;
+}
+
+bool hasAuthoritativeHomeDailyCard(EventCardDto? card) {
+  if (card == null) {
+    return false;
+  }
+  if (!hasUsableHomeDailyCardCopy(card)) {
+    return false;
+  }
+  if (card.eventId.trim() == 'home-fast-daily-fallback') {
+    return false;
+  }
+  return !isDailyTransitCardBackedByPeriod(card);
+}
+
+bool hasAuthoritativeHomeDailyContent({
+  required List<EventCardDto> dailyCards,
+}) {
+  for (final card in dailyCards) {
+    if (hasAuthoritativeHomeDailyCard(card)) {
+      return true;
+    }
+  }
+  return false;
 }
 
 int scoreHomeDailyCardStrength(EventCardDto? card) {
@@ -510,31 +588,228 @@ String _homeDailyResolutionReason({
   required List<EventCardDto> dailyCards,
   required NarrativeCalendarDay? dayMeta,
 }) {
-  if (dailyCards.isNotEmpty) {
-    return isDailyTransitCardBackedByPeriod(dailyCards.first)
-        ? 'period_fallback'
-        : 'daily_card';
+  if (hasAuthoritativeHomeDailyContent(dailyCards: dailyCards)) {
+    return 'authoritative_daily_card';
   }
-  if (dayMeta != null) {
-    return 'day_meta_only';
+  final firstCard = dailyCards.isNotEmpty ? dailyCards.first : null;
+  if (firstCard != null &&
+      firstCard.eventId.trim() == 'home-fast-daily-fallback') {
+    return 'fast_preview_only';
+  }
+  if (firstCard != null && isDailyTransitCardBackedByPeriod(firstCard)) {
+    return 'period_derived_only';
+  }
+  if (hasHomeMetaOnlyContent(dailyCards: dailyCards, dayMeta: dayMeta)) {
+    return 'meta_only';
   }
   return 'empty';
+}
+
+String homeDailyDegradedReason({
+  required bool loading,
+  required List<EventCardDto> dailyCards,
+  required NarrativeCalendarDay? dayMeta,
+  required String? errorMessage,
+}) {
+  if (hasAuthoritativeHomeDailyContent(dailyCards: dailyCards)) {
+    return 'none';
+  }
+  if (loading) {
+    return 'loading';
+  }
+  final firstCard = dailyCards.isNotEmpty ? dailyCards.first : null;
+  if (firstCard != null &&
+      firstCard.eventId.trim() == 'home-fast-daily-fallback') {
+    return 'fast_preview_only';
+  }
+  if (firstCard != null && isDailyTransitCardBackedByPeriod(firstCard)) {
+    return 'period_derived_only';
+  }
+  if (hasHomeMetaOnlyContent(dailyCards: dailyCards, dayMeta: dayMeta)) {
+    return 'meta_only';
+  }
+  if ((errorMessage ?? '').trim().isNotEmpty) {
+    return 'request_error';
+  }
+  if (dailyCards.isNotEmpty) {
+    return 'non_authoritative_card';
+  }
+  return 'empty';
+}
+
+HomeDailyRenderState resolveHomeDailyRenderState({
+  required bool loading,
+  required List<EventCardDto> dailyCards,
+  required NarrativeCalendarDay? dayMeta,
+  required String? errorMessage,
+}) {
+  if (hasAuthoritativeHomeDailyContent(dailyCards: dailyCards)) {
+    return HomeDailyRenderState.ready;
+  }
+  if (loading) {
+    return HomeDailyRenderState.loading;
+  }
+  final reason = homeDailyDegradedReason(
+    loading: loading,
+    dailyCards: dailyCards,
+    dayMeta: dayMeta,
+    errorMessage: errorMessage,
+  );
+  if (reason == 'empty') {
+    return HomeDailyRenderState.empty;
+  }
+  return HomeDailyRenderState.degraded;
+}
+
+String homeDailyRenderStateToken(HomeDailyRenderState state) {
+  return switch (state) {
+    HomeDailyRenderState.loading => 'loading',
+    HomeDailyRenderState.ready => 'ready',
+    HomeDailyRenderState.degraded => 'degraded',
+    HomeDailyRenderState.empty => 'empty',
+  };
+}
+
+String homeDailyRenderStateCopy(
+  HomeDailyRenderState state, {
+  required AppLocalizations l10n,
+  required String degradedReason,
+}) {
+  return switch (state) {
+    HomeDailyRenderState.loading => l10n.homeStoryLoading,
+    HomeDailyRenderState.ready => '',
+    HomeDailyRenderState.degraded =>
+      degradedReason == 'meta_only'
+          ? l10n.homePeriodCardsPending
+          : l10n.homeStoryUnavailable,
+    HomeDailyRenderState.empty => l10n.homePeriodCardsPending,
+  };
+}
+
+class HomeDayContext {
+  const HomeDayContext({
+    required this.timezone,
+    required this.nowProfileTimezone,
+    required this.today,
+    required this.dayKey,
+    required this.source,
+  });
+
+  final String timezone;
+  final DateTime nowProfileTimezone;
+  final DateTime today;
+  final String dayKey;
+  final String source;
+}
+
+Duration? _parseTimezoneOffset(String rawTimezone, {Duration? fallbackOffset}) {
+  final normalized = rawTimezone.trim();
+  if (normalized.isEmpty) {
+    return fallbackOffset;
+  }
+  final lower = normalized.toLowerCase();
+  if (lower == 'utc' || lower == 'gmt' || lower == 'z') {
+    return Duration.zero;
+  }
+  if (lower == 'europe/istanbul' || lower == 'turkey') {
+    return const Duration(hours: 3);
+  }
+  final compact = normalized.replaceAll(' ', '');
+  final patterns = <RegExp>[
+    RegExp(r'^(?:utc|gmt)([+-])(\d{1,2})(?::?(\d{2}))?$', caseSensitive: false),
+    RegExp(r'^([+-])(\d{1,2})(?::?(\d{2}))?$'),
+  ];
+  for (final pattern in patterns) {
+    final match = pattern.firstMatch(compact);
+    if (match == null) {
+      continue;
+    }
+    final sign = match.group(1) == '-' ? -1 : 1;
+    final hours = int.tryParse(match.group(2) ?? '') ?? 0;
+    final minutes = int.tryParse(match.group(3) ?? '') ?? 0;
+    return Duration(hours: hours * sign, minutes: minutes * sign);
+  }
+  return fallbackOffset;
+}
+
+HomeDayContext buildHomeDayContext(
+  Map<String, dynamic>? profile, {
+  DateTime? utcNow,
+  DateTime? localNow,
+}) {
+  final nowLocal = localNow ?? DateTime.now();
+  final resolvedProfile = profile ?? const <String, dynamic>{};
+  final timezone = TransitRequestBuilder.resolveTimezone(resolvedProfile);
+  final localTimezoneName = nowLocal.timeZoneName.trim().toLowerCase();
+  final fallbackOffset =
+      localTimezoneName.isNotEmpty &&
+          timezone.trim().toLowerCase() == localTimezoneName
+      ? nowLocal.timeZoneOffset
+      : null;
+  final parsedOffset = _parseTimezoneOffset(
+    timezone,
+    fallbackOffset: fallbackOffset,
+  );
+  final nowInProfileTimezone = parsedOffset == null
+      ? nowLocal
+      : (utcNow ?? nowLocal.toUtc()).add(parsedOffset);
+  final normalizedToday = TransitRequestBuilder.stripDate(nowInProfileTimezone);
+  return HomeDayContext(
+    timezone: timezone,
+    nowProfileTimezone: nowInProfileTimezone,
+    today: normalizedToday,
+    dayKey: TransitRequestBuilder.fmtDate(normalizedToday),
+    source: parsedOffset == null ? 'local_fallback' : 'profile_timezone',
+  );
+}
+
+bool hasStrongHomeDailyContent({required List<EventCardDto> dailyCards}) {
+  return hasAuthoritativeHomeDailyContent(dailyCards: dailyCards);
+}
+
+bool hasHomeMetaOnlyContent({
+  required List<EventCardDto> dailyCards,
+  required NarrativeCalendarDay? dayMeta,
+}) {
+  final microSummary = dayMeta?.microSummaryTr.trim() ?? '';
+  return microSummary.isNotEmpty &&
+      !hasStrongHomeDailyContent(dailyCards: dailyCards);
 }
 
 bool hasUsableHomeDailyContent({
   required List<EventCardDto> dailyCards,
   required NarrativeCalendarDay? dayMeta,
 }) {
-  final microSummary = dayMeta?.microSummaryTr.trim() ?? '';
-  if (microSummary.isNotEmpty) {
+  return hasStrongHomeDailyContent(dailyCards: dailyCards) ||
+      hasHomeMetaOnlyContent(dailyCards: dailyCards, dayMeta: dayMeta);
+}
+
+String homeCalendarDayFallbackReasonCode({
+  required int rawDailyEventCardsCount,
+  required List<EventCardDto> dailyCards,
+  required NarrativeCalendarDay? dayMeta,
+}) {
+  if (rawDailyEventCardsCount == 0) {
+    return 'daily_event_cards_empty';
+  }
+  if (hasHomeMetaOnlyContent(dailyCards: dailyCards, dayMeta: dayMeta)) {
+    return 'meta_only_content';
+  }
+  if (!hasStrongHomeDailyContent(dailyCards: dailyCards)) {
+    return 'no_strong_daily_card';
+  }
+  return 'none';
+}
+
+bool shouldRunHomeCalendarDayFallback({
+  required int rawDailyEventCardsCount,
+  required List<EventCardDto> dailyCards,
+  required NarrativeCalendarDay? dayMeta,
+}) {
+  if (rawDailyEventCardsCount == 0) {
     return true;
   }
-  for (final card in dailyCards) {
-    if (hasUsableHomeDailyCardCopy(card)) {
-      return true;
-    }
-  }
-  return false;
+  return !hasAuthoritativeHomeDailyContent(dailyCards: dailyCards);
 }
 
 HomeTransitSnapshot mergeHomeTransitSnapshot({
@@ -642,15 +917,6 @@ class HomePage extends ConsumerStatefulWidget {
 class _HomePageState extends ConsumerState<HomePage>
     with WidgetsBindingObserver, TickerProviderStateMixin {
   static const String _baseUrl = 'http://127.0.0.1:5000';
-  static const Duration _homeFastTimeout = Duration(seconds: 3);
-  static const Duration _natalCacheTtl = Duration(minutes: 5);
-  static const Duration _skyCacheTtl = Duration(seconds: 60);
-  static const Duration _homeNarrativeTimeout = Duration(seconds: 18);
-  static const Duration _homeWeekNarrativeTimeout = Duration(seconds: 18);
-  static const Duration _homeFastDeferredRetryDelay = Duration(
-    milliseconds: 1400,
-  );
-  static const int _maxHomeFastDeferredRetries = 2;
 
   bool _loading = false;
   int _homeLoadVersion = 0;
@@ -670,6 +936,7 @@ class _HomePageState extends ConsumerState<HomePage>
   NarrativeCalendarDay? _todayDayMeta;
   String? _lastKey;
   String? _lastLoadedDayKey;
+  HomeDayContext? _homeDayContext;
   int _homeFastRetryAttempt = 0;
   int _selectedWeekIndex = 0;
   final NarrativeRepository _narrativeRepository = NarrativeRepository();
@@ -680,6 +947,12 @@ class _HomePageState extends ConsumerState<HomePage>
 
   String _firstHomeText(Iterable<String?> values) {
     return _firstHomeTextValue(values);
+  }
+
+  HomeDayContext _resolveDayContext(Map<String, dynamic>? profile) {
+    final context = buildHomeDayContext(profile);
+    _homeDayContext = context;
+    return context;
   }
 
   @override
@@ -749,18 +1022,14 @@ class _HomePageState extends ConsumerState<HomePage>
     if (state != AppLifecycleState.resumed) {
       return;
     }
-    final profile = ref.read(userProfileProvider).valueOrNull;
+    final profile = ref.read(userProfileProvider).asData?.value;
     if (!_hasProfile(profile)) {
       return;
     }
-    final todayKey = TransitRequestBuilder.fmtDate(
-      TransitRequestBuilder.stripDate(DateTime.now()),
-    );
+    final dayContext = _resolveDayContext(profile);
+    final todayKey = dayContext.dayKey;
     if (_lastLoadedDayKey != todayKey ||
-        !hasUsableHomeDailyContent(
-          dailyCards: _todayDailyCards,
-          dayMeta: _todayDayMeta,
-        )) {
+        !hasStrongHomeDailyContent(dailyCards: _todayDailyCards)) {
       _lastKey = null;
       _maybeBootstrap(profile, Supabase.instance.client.auth.currentUser);
     }
@@ -769,8 +1038,9 @@ class _HomePageState extends ConsumerState<HomePage>
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final profile = ref.watch(userProfileProvider).valueOrNull;
+    final profile = ref.watch(userProfileProvider).asData?.value;
     final user = Supabase.instance.client.auth.currentUser;
+    final dayContext = _homeDayContext ?? buildHomeDayContext(profile);
     _maybeBootstrap(profile, user);
 
     final scores = _computeElementScores(
@@ -824,6 +1094,7 @@ class _HomePageState extends ConsumerState<HomePage>
             weekPreviewCards,
             calendarDays: _homeCalendarDays,
             selectedIndex: _selectedWeekIndex,
+            baseDay: dayContext.today,
           );
           final selectedWeekItem = weekItems.isEmpty
               ? null
@@ -834,14 +1105,28 @@ class _HomePageState extends ConsumerState<HomePage>
           final selectedDayMeta = isSelectedToday
               ? (selectedWeekItem?.dayMeta ?? _todayDayMeta)
               : selectedWeekItem.dayMeta;
-          final hasSelectedDailyContent = hasUsableHomeDailyContent(
-            dailyCards: selectedDailyCard == null
-                ? const <EventCardDto>[]
-                : <EventCardDto>[selectedDailyCard],
+          final selectedDailyCards = selectedDailyCard == null
+              ? const <EventCardDto>[]
+              : <EventCardDto>[selectedDailyCard];
+          final selectedDailyRenderState = resolveHomeDailyRenderState(
+            loading: _loading,
+            dailyCards: selectedDailyCards,
             dayMeta: selectedDayMeta,
+            errorMessage: _error,
+          );
+          final selectedDailyDegradedReason = homeDailyDegradedReason(
+            loading: _loading,
+            dailyCards: selectedDailyCards,
+            dayMeta: selectedDayMeta,
+            errorMessage: _error,
+          );
+          final selectedDailyStatusCopy = homeDailyRenderStateCopy(
+            selectedDailyRenderState,
+            l10n: l10n,
+            degradedReason: selectedDailyDegradedReason,
           );
           final shouldUsePeriodHeroFallback =
-              !hasSelectedDailyContent &&
+              selectedDailyRenderState != HomeDailyRenderState.ready &&
               (activeCard != null || _periodCore != null);
           final todayFallbackTitle = _firstHomeText([
             todayDailyCard?.feltLineTr,
@@ -930,10 +1215,13 @@ class _HomePageState extends ConsumerState<HomePage>
               ? periodFallbackTitle
               : resolvedDailyTitle;
           final activeSubtitle = shouldUsePeriodHeroFallback
-              ? periodFallbackPrompt
+              ? _firstHomeText([selectedDailyStatusCopy, periodFallbackPrompt])
               : resolvedDailySubtitle;
           final selectedHeroBody = shouldUsePeriodHeroFallback
-              ? periodFallbackBody
+              ? _firstHomeTextValue([
+                  selectedDailyStatusCopy,
+                  periodFallbackBody,
+                ])
               : resolvedDailyBody;
           final showTimingPanel = _shouldShowTimingPanel(
             periodCore: _periodCore,
@@ -963,7 +1251,7 @@ class _HomePageState extends ConsumerState<HomePage>
                 children: [
                   _HomeReferenceHeader(
                     displayName: displayName,
-                    dateLabel: _formatHomeToday(context, DateTime.now()),
+                    dateLabel: _formatHomeToday(context, dayContext.today),
                     onActionTap: () =>
                         JoviaAppMenuScope.maybeOf(context)?.openMenu(),
                   ),
@@ -974,13 +1262,16 @@ class _HomePageState extends ConsumerState<HomePage>
                       curve: Curves.easeOutCubic,
                     ),
                     child: SlideTransition(
-                      position: Tween<Offset>(
-                        begin: const Offset(0, 0.08),
-                        end: Offset.zero,
-                      ).animate(CurvedAnimation(
-                        parent: _heroEnterController,
-                        curve: Curves.easeOutCubic,
-                      )),
+                      position:
+                          Tween<Offset>(
+                            begin: const Offset(0, 0.08),
+                            end: Offset.zero,
+                          ).animate(
+                            CurvedAnimation(
+                              parent: _heroEnterController,
+                              curve: Curves.easeOutCubic,
+                            ),
+                          ),
                       child: _HomeReferenceHeroCard(
                         title: activeTitle,
                         body: selectedHeroBody,
@@ -1006,9 +1297,9 @@ class _HomePageState extends ConsumerState<HomePage>
                         onOpen: () => _openHomeDay(
                           context,
                           profile,
-                          selectedWeekItem?.date ?? DateTime.now(),
+                          selectedWeekItem?.date ?? dayContext.today,
                           initialBundle: _buildInitialHomeDayBundle(
-                            date: selectedWeekItem?.date ?? DateTime.now(),
+                            date: selectedWeekItem?.date ?? dayContext.today,
                             card: selectedWeekItem?.card,
                             dayMeta: selectedWeekItem?.dayMeta,
                           ),
@@ -1048,7 +1339,7 @@ class _HomePageState extends ConsumerState<HomePage>
                       onOpenActive: activeCard == null
                           ? () => _openTiming(context)
                           : () =>
-                              _openTransitCard(context, profile, activeCard),
+                                _openTransitCard(context, profile, activeCard),
                       onOpenCard: (card) =>
                           _openTransitCard(context, profile, card),
                       onOpenSky: () {
@@ -1156,9 +1447,10 @@ class _HomePageState extends ConsumerState<HomePage>
     List<EventCardDto> cards, {
     required Map<String, NarrativeCalendarDay> calendarDays,
     required int selectedIndex,
+    required DateTime baseDay,
   }) {
     final locale = Localizations.localeOf(context).toLanguageTag();
-    final now = DateTime.now();
+    final now = TransitRequestBuilder.stripDate(baseDay);
     return List<_HomeWeekItemData>.generate(7, (index) {
       final date = DateTime(now.year, now.month, now.day + index);
       final card = index < cards.length ? cards[index] : null;
@@ -1207,8 +1499,9 @@ class _HomePageState extends ConsumerState<HomePage>
     required PeriodCardDto? selectedCard,
     required String fallbackTitle,
   }) {
-    if (selectedCard?.title.trim().isNotEmpty == true) {
-      return selectedCard!.title.trim();
+    final selectedTitle = selectedCard?.title.trim() ?? '';
+    if (selectedTitle.isNotEmpty) {
+      return selectedTitle;
     }
     return fallbackTitle;
   }
@@ -1335,7 +1628,7 @@ class _HomePageState extends ConsumerState<HomePage>
   Widget _buildTransitCarousel(BuildContext context) {
     final profileTheme = context.profileTheme;
     final typo = profileTheme.typography;
-    final profile = ref.read(userProfileProvider).valueOrNull;
+    final profile = ref.read(userProfileProvider).asData?.value;
 
     if (_loading && _periodCards.isEmpty) {
       return ListView.separated(
@@ -1388,9 +1681,8 @@ class _HomePageState extends ConsumerState<HomePage>
     if (!_hasProfile(profile)) {
       return;
     }
-    final todayKey = TransitRequestBuilder.fmtDate(
-      TransitRequestBuilder.stripDate(DateTime.now()),
-    );
+    final dayContext = _resolveDayContext(profile);
+    final todayKey = dayContext.dayKey;
     final key =
         '${profile?['birth_date']}|${profile?['birth_time']}|${profile?['place'] ?? profile?['city']}|${profile?['timezone']}|${user?.id}|$todayKey';
     if (_lastKey == key) {
@@ -1401,16 +1693,18 @@ class _HomePageState extends ConsumerState<HomePage>
       if (!mounted || profile == null) {
         return;
       }
-      _loadHomeData(profile);
+      _loadHomeData(profile, dayContext: dayContext);
     });
   }
 
-  Future<void> _loadHomeData(Map<String, dynamic> profile) async {
+  Future<void> _loadHomeData(
+    Map<String, dynamic> profile, {
+    required HomeDayContext dayContext,
+  }) async {
     final requestVersion = ++_homeLoadVersion;
     _homeFastRetryAttempt = 0;
-    _lastLoadedDayKey = TransitRequestBuilder.fmtDate(
-      TransitRequestBuilder.stripDate(DateTime.now()),
-    );
+    _homeDayContext = dayContext;
+    _lastLoadedDayKey = dayContext.dayKey;
     setState(() {
       _loading = true;
       _error = null;
@@ -1428,19 +1722,21 @@ class _HomePageState extends ConsumerState<HomePage>
       ),
     );
 
-    await _loadFastHomePreview(
-      client: client,
-      profile: profile,
-      userId: userId,
-      requestVersion: requestVersion,
-    );
-
-    if (!_isActiveHomeLoad(requestVersion)) {
-      return;
-    }
-
     unawaited(
-      _loadNarrativeSection(profile: profile, requestVersion: requestVersion),
+      _loadFastHomePreview(
+        client: client,
+        profile: profile,
+        userId: userId,
+        requestVersion: requestVersion,
+        dayContext: dayContext,
+      ),
+    );
+    unawaited(
+      _loadNarrativeSection(
+        profile: profile,
+        requestVersion: requestVersion,
+        dayContext: dayContext,
+      ),
     );
     unawaited(
       _loadNatalSection(
@@ -1455,35 +1751,38 @@ class _HomePageState extends ConsumerState<HomePage>
       mounted && requestVersion == _homeLoadVersion;
 
   bool _hasResolvedTodayTransit() {
-    return hasUsableHomeDailyContent(
-      dailyCards: _todayDailyCards,
-      dayMeta: _todayDayMeta,
-    );
+    return hasStrongHomeDailyContent(dailyCards: _todayDailyCards);
   }
 
   Future<void> _loadNarrativeSection({
     required Map<String, dynamic> profile,
     required int requestVersion,
+    required HomeDayContext dayContext,
   }) async {
     final localeCode = Localizations.localeOf(context).languageCode;
     final l10n = context.l10n;
     try {
       final periodMap = await _narrativeRepository.fetchDailyNarrative(
         profile: profile,
-        selectedDate: DateTime.now(),
+        selectedDate: dayContext.today,
         focusedRange: true,
         includeBestTimes: false,
         responseMode: 'public_only',
         payloadProfile: TransitPayloadProfile.home,
         visibleDaysLimit: 7,
-        receiveTimeout: _homeNarrativeTimeout,
+        receiveTimeout: LoadTuning.homeNarrativeTimeout,
         requestSla: ApiRequestSla.background,
+        cachePolicy: NarrativeCachePolicy.disabled,
         locale: localeCode,
+      );
+      final responseAnchorDay = resolveHomeDailyResponseAnchorDay(
+        periodMap,
+        fallbackDayKey: dayContext.dayKey,
       );
       final periodNarrative = NarrativeResponse.fromMap(periodMap);
       final snapshot = buildHomeTransitSnapshot(
         narrative: periodNarrative,
-        today: DateTime.now(),
+        today: dayContext.today,
         l10n: l10n,
       );
       final mergedSnapshot = mergeHomeTransitSnapshot(
@@ -1496,15 +1795,61 @@ class _HomePageState extends ConsumerState<HomePage>
       );
       HomeTransitSnapshot resolvedSnapshot = mergedSnapshot;
 
-      if (!hasUsableHomeDailyContent(
+      final hasStrongIncomingContent = hasStrongHomeDailyContent(
+        dailyCards: resolvedSnapshot.dailyCards,
+      );
+      final hasMetaOnlyIncomingContent = hasHomeMetaOnlyContent(
         dailyCards: resolvedSnapshot.dailyCards,
         dayMeta: resolvedSnapshot.todayDayMeta,
-      )) {
+      );
+      final fallbackReasonCode = homeCalendarDayFallbackReasonCode(
+        rawDailyEventCardsCount: periodNarrative.dailyEventCards.length,
+        dailyCards: resolvedSnapshot.dailyCards,
+        dayMeta: resolvedSnapshot.todayDayMeta,
+      );
+      final shouldRunFallback = shouldRunHomeCalendarDayFallback(
+        rawDailyEventCardsCount: periodNarrative.dailyEventCards.length,
+        dailyCards: resolvedSnapshot.dailyCards,
+        dayMeta: resolvedSnapshot.todayDayMeta,
+      );
+
+      if (shouldRunFallback) {
+        PerfTelemetry.logEvent(
+          'forced_calendar_day_fallback',
+          data: <String, Object?>{
+            'selected_day_key': dayContext.dayKey,
+            'response_anchor_day': responseAnchorDay,
+            'timezone': dayContext.timezone,
+            'day_context_source': dayContext.source,
+            'reason_code': fallbackReasonCode,
+            'incoming_daily_count': snapshot.dailyCards.length,
+            'raw_daily_event_cards_count':
+                periodNarrative.dailyEventCards.length,
+            'incoming_has_meta_only': hasMetaOnlyIncomingContent,
+            'source_type': resolveHomeDailySourceType(
+              card: snapshot.dailyCards.isNotEmpty
+                  ? snapshot.dailyCards.first
+                  : null,
+              dayMeta: snapshot.todayDayMeta,
+            ),
+            'has_authoritative_daily_card': hasAuthoritativeHomeDailyContent(
+              dailyCards: snapshot.dailyCards,
+            ),
+            'degraded_reason': homeDailyDegradedReason(
+              loading: false,
+              dailyCards: snapshot.dailyCards,
+              dayMeta: snapshot.todayDayMeta,
+              errorMessage: null,
+            ),
+          },
+        );
         final detailFallbackSnapshot = await _loadHomeDailyCalendarDayFallback(
           profile: profile,
           localeCode: localeCode,
           l10n: l10n,
           requestVersion: requestVersion,
+          dayContext: dayContext,
+          reasonCode: fallbackReasonCode,
         );
         if (detailFallbackSnapshot != null) {
           resolvedSnapshot = mergeHomeTransitSnapshot(
@@ -1531,22 +1876,61 @@ class _HomePageState extends ConsumerState<HomePage>
       final resolvedDailyCard = resolvedSnapshot.dailyCards.isNotEmpty
           ? resolvedSnapshot.dailyCards.first
           : null;
+      final hasStrongResolvedContent = hasStrongHomeDailyContent(
+        dailyCards: resolvedSnapshot.dailyCards,
+      );
+      final hasMetaOnlyResolvedContent = hasHomeMetaOnlyContent(
+        dailyCards: resolvedSnapshot.dailyCards,
+        dayMeta: resolvedSnapshot.todayDayMeta,
+      );
+      final hasAuthoritativeDailyCard = hasAuthoritativeHomeDailyContent(
+        dailyCards: resolvedSnapshot.dailyCards,
+      );
+      final sourceType = resolveHomeDailySourceType(
+        card: resolvedDailyCard,
+        dayMeta: resolvedSnapshot.todayDayMeta,
+      );
+      final degradedReason = homeDailyDegradedReason(
+        loading: false,
+        dailyCards: resolvedSnapshot.dailyCards,
+        dayMeta: resolvedSnapshot.todayDayMeta,
+        errorMessage: null,
+      );
+      final renderState = resolveHomeDailyRenderState(
+        loading: false,
+        dailyCards: resolvedSnapshot.dailyCards,
+        dayMeta: resolvedSnapshot.todayDayMeta,
+        errorMessage: null,
+      );
       PerfTelemetry.logEvent(
         'home_daily_transit_merge',
         data: <String, Object?>{
-          'selected_day_key': TransitRequestBuilder.fmtDate(
-            TransitRequestBuilder.stripDate(DateTime.now()),
-          ),
+          'selected_day_key': dayContext.dayKey,
+          'response_anchor_day': responseAnchorDay,
+          'timezone': dayContext.timezone,
+          'day_context_source': dayContext.source,
           'response_mode': 'public_only',
           'current_daily_count': _todayDailyCards.length,
           'incoming_daily_count': snapshot.dailyCards.length,
           'resolved_daily_count': resolvedSnapshot.dailyCards.length,
+          'raw_daily_event_cards_count': periodNarrative.dailyEventCards.length,
           'current_source': describeHomeDailyCardSource(currentDailyCard),
           'incoming_source': describeHomeDailyCardSource(incomingDailyCard),
           'resolved_source': describeHomeDailyCardSource(resolvedDailyCard),
+          'source_type': sourceType,
           'current_strength': scoreHomeDailyCardStrength(currentDailyCard),
           'incoming_strength': scoreHomeDailyCardStrength(incomingDailyCard),
           'resolved_strength': scoreHomeDailyCardStrength(resolvedDailyCard),
+          'incoming_has_strong_content': hasStrongIncomingContent,
+          'incoming_has_meta_only_content': hasMetaOnlyIncomingContent,
+          'resolved_has_strong_content': hasStrongResolvedContent,
+          'resolved_has_meta_only_content': hasMetaOnlyResolvedContent,
+          'has_authoritative_daily_card': hasAuthoritativeDailyCard,
+          'degraded_reason': degradedReason,
+          'render_state': homeDailyRenderStateToken(renderState),
+          'fallback_reason_code': shouldRunFallback
+              ? fallbackReasonCode
+              : 'none',
           'incoming_calendar_days': snapshot.calendarDays.length,
           'resolved_calendar_days': resolvedSnapshot.calendarDays.length,
           'incoming_has_today_day_meta': snapshot.todayDayMeta != null,
@@ -1562,6 +1946,35 @@ class _HomePageState extends ConsumerState<HomePage>
           ),
         },
       );
+      PerfTelemetry.logEvent(
+        'home_daily_render_state',
+        data: <String, Object?>{
+          'selected_day_key': dayContext.dayKey,
+          'response_anchor_day': responseAnchorDay,
+          'source_type': sourceType,
+          'has_authoritative_daily_card': hasAuthoritativeDailyCard,
+          'degraded_reason': degradedReason,
+          'render_state': homeDailyRenderStateToken(renderState),
+        },
+      );
+      if (hasMetaOnlyResolvedContent && !hasStrongResolvedContent) {
+        PerfTelemetry.logEvent(
+          'meta_only_render',
+          data: <String, Object?>{
+            'selected_day_key': dayContext.dayKey,
+            'response_anchor_day': responseAnchorDay,
+            'timezone': dayContext.timezone,
+            'day_context_source': dayContext.source,
+            'resolved_daily_count': resolvedSnapshot.dailyCards.length,
+            'fallback_reason_code': shouldRunFallback
+                ? fallbackReasonCode
+                : 'none',
+            'source_type': sourceType,
+            'has_authoritative_daily_card': hasAuthoritativeDailyCard,
+            'degraded_reason': degradedReason,
+          },
+        );
+      }
 
       setState(() {
         _periodCore = resolvedSnapshot.periodCore;
@@ -1576,12 +1989,36 @@ class _HomePageState extends ConsumerState<HomePage>
         _hydrateHomeWeekCalendarDays(
           profile: profile,
           requestVersion: requestVersion,
+          dayContext: dayContext,
         );
       }
     } catch (e) {
       if (!_isActiveHomeLoad(requestVersion)) {
         return;
       }
+      PerfTelemetry.logEvent(
+        'home_daily_render_state',
+        data: <String, Object?>{
+          'selected_day_key': dayContext.dayKey,
+          'response_anchor_day': dayContext.dayKey,
+          'source_type': resolveHomeDailySourceType(
+            card: _todayDailyCards.isNotEmpty ? _todayDailyCards.first : null,
+            dayMeta: _todayDayMeta,
+          ),
+          'has_authoritative_daily_card': hasAuthoritativeHomeDailyContent(
+            dailyCards: _todayDailyCards,
+          ),
+          'degraded_reason': 'request_error',
+          'render_state': homeDailyRenderStateToken(
+            resolveHomeDailyRenderState(
+              loading: false,
+              dailyCards: _todayDailyCards,
+              dayMeta: _todayDayMeta,
+              errorMessage: '$e',
+            ),
+          ),
+        },
+      );
       setState(() {
         _loading = false;
         final hasFallbackContent =
@@ -1604,27 +2041,35 @@ class _HomePageState extends ConsumerState<HomePage>
     required String localeCode,
     required AppLocalizations l10n,
     required int requestVersion,
+    required HomeDayContext dayContext,
+    required String reasonCode,
   }) async {
     PerfTelemetry.logEvent(
       'home_daily_transit_detail_fallback_start',
       data: <String, Object?>{
-        'selected_day_key': TransitRequestBuilder.fmtDate(
-          TransitRequestBuilder.stripDate(DateTime.now()),
-        ),
+        'selected_day_key': dayContext.dayKey,
+        'timezone': dayContext.timezone,
+        'day_context_source': dayContext.source,
+        'reason_code': reasonCode,
       },
     );
     try {
       final narrativeMap = await _narrativeRepository.fetchDailyNarrative(
         profile: profile,
-        selectedDate: DateTime.now(),
+        selectedDate: dayContext.today,
         focusedRange: true,
         includeBestTimes: false,
         responseMode: 'full',
         payloadProfile: TransitPayloadProfile.calendarDay,
         visibleDaysLimit: 7,
-        receiveTimeout: _homeNarrativeTimeout,
+        receiveTimeout: LoadTuning.homeNarrativeTimeout,
         requestSla: ApiRequestSla.background,
+        cachePolicy: NarrativeCachePolicy.disabled,
         locale: localeCode,
+      );
+      final responseAnchorDay = resolveHomeDailyResponseAnchorDay(
+        narrativeMap,
+        fallbackDayKey: dayContext.dayKey,
       );
       if (!_isActiveHomeLoad(requestVersion)) {
         return null;
@@ -1632,8 +2077,21 @@ class _HomePageState extends ConsumerState<HomePage>
       final narrative = NarrativeResponse.fromMap(narrativeMap);
       final snapshot = buildHomeTransitSnapshot(
         narrative: narrative,
-        today: DateTime.now(),
+        today: dayContext.today,
         l10n: l10n,
+      );
+      final sourceType = resolveHomeDailySourceType(
+        card: snapshot.dailyCards.isNotEmpty ? snapshot.dailyCards.first : null,
+        dayMeta: snapshot.todayDayMeta,
+      );
+      final hasAuthoritativeDailyCard = hasAuthoritativeHomeDailyContent(
+        dailyCards: snapshot.dailyCards,
+      );
+      final degradedReason = homeDailyDegradedReason(
+        loading: false,
+        dailyCards: snapshot.dailyCards,
+        dayMeta: snapshot.todayDayMeta,
+        errorMessage: null,
       );
       PerfTelemetry.logEvent(
         'home_daily_transit_detail_fallback_end',
@@ -1642,9 +2100,14 @@ class _HomePageState extends ConsumerState<HomePage>
           'daily_count': snapshot.dailyCards.length,
           'calendar_days': snapshot.calendarDays.length,
           'has_today_day_meta': snapshot.todayDayMeta != null,
-          'selected_day_key': TransitRequestBuilder.fmtDate(
-            TransitRequestBuilder.stripDate(DateTime.now()),
-          ),
+          'selected_day_key': dayContext.dayKey,
+          'response_anchor_day': responseAnchorDay,
+          'timezone': dayContext.timezone,
+          'day_context_source': dayContext.source,
+          'reason_code': reasonCode,
+          'source_type': sourceType,
+          'has_authoritative_daily_card': hasAuthoritativeDailyCard,
+          'degraded_reason': degradedReason,
         },
       );
       return snapshot;
@@ -1654,9 +2117,14 @@ class _HomePageState extends ConsumerState<HomePage>
         data: <String, Object?>{
           'status': 'error',
           'error_type': error.runtimeType.toString(),
-          'selected_day_key': TransitRequestBuilder.fmtDate(
-            TransitRequestBuilder.stripDate(DateTime.now()),
-          ),
+          'selected_day_key': dayContext.dayKey,
+          'response_anchor_day': dayContext.dayKey,
+          'timezone': dayContext.timezone,
+          'day_context_source': dayContext.source,
+          'reason_code': reasonCode,
+          'source_type': 'none',
+          'has_authoritative_daily_card': false,
+          'degraded_reason': 'request_error',
         },
       );
       return null;
@@ -1666,19 +2134,21 @@ class _HomePageState extends ConsumerState<HomePage>
   Future<void> _hydrateHomeWeekCalendarDays({
     required Map<String, dynamic> profile,
     required int requestVersion,
+    required HomeDayContext dayContext,
   }) async {
     final localeCode = Localizations.localeOf(context).languageCode;
     try {
       final narrativeMap = await _narrativeRepository.fetchDailyNarrative(
         profile: profile,
-        selectedDate: DateTime.now(),
+        selectedDate: dayContext.today,
         focusedRange: false,
         includeBestTimes: false,
         responseMode: 'full',
         payloadProfile: TransitPayloadProfile.calendarPeriod,
         visibleDaysLimit: 7,
-        receiveTimeout: _homeWeekNarrativeTimeout,
+        receiveTimeout: LoadTuning.homeWeekNarrativeTimeout,
         requestSla: ApiRequestSla.background,
+        cachePolicy: NarrativeCachePolicy.disabled,
         locale: localeCode,
       );
       if (!_isActiveHomeLoad(requestVersion)) {
@@ -1688,9 +2158,7 @@ class _HomePageState extends ConsumerState<HomePage>
       if (narrative.calendarDays.isEmpty) {
         return;
       }
-      final todayKey = TransitRequestBuilder.fmtDate(
-        TransitRequestBuilder.stripDate(DateTime.now()),
-      );
+      final todayKey = dayContext.dayKey;
       setState(() {
         _homeCalendarDays = narrative.calendarDays;
         _todayDayMeta = narrative.calendarDays[todayKey] ?? _todayDayMeta;
@@ -1703,26 +2171,32 @@ class _HomePageState extends ConsumerState<HomePage>
     required Map<String, dynamic> profile,
     required String? userId,
     required int requestVersion,
+    required HomeDayContext dayContext,
     int attempt = 0,
   }) async {
     final l10n = context.l10n;
     try {
       final response = await client.get(
         '/home/fast',
-        queryParameters: _buildHomeFastQuery(profile, userId: userId),
-        receiveTimeout: _homeFastTimeout,
+        queryParameters: _buildHomeFastQuery(
+          profile,
+          userId: userId,
+          dayContext: dayContext,
+        ),
+        receiveTimeout: LoadTuning.homeFastTimeout,
         requestSla: ApiRequestSla.fast,
       );
       final payload = _HomeFastPayload.fromMap(_asMap(response.data));
       if (!_isActiveHomeLoad(requestVersion) || !payload.hasContent) {
         if (payload.isTransitDeferred &&
-            attempt < _maxHomeFastDeferredRetries) {
+            attempt < LoadTuning.maxHomeFastDeferredRetries) {
           _scheduleFastHomeRetry(
             client: client,
             profile: profile,
             userId: userId,
             requestVersion: requestVersion,
             nextAttempt: attempt + 1,
+            dayContext: dayContext,
           );
         }
         return;
@@ -1733,19 +2207,26 @@ class _HomePageState extends ConsumerState<HomePage>
         payload,
         l10n: l10n,
       );
+      if (fastDailyFallback != null &&
+          !hasAuthoritativeHomeDailyContent(dailyCards: _todayDailyCards)) {
+        PerfTelemetry.logEvent(
+          'home_daily_fast_preview_ignored',
+          data: <String, Object?>{
+            'selected_day_key': dayContext.dayKey,
+            'response_anchor_day': dayContext.dayKey,
+            'source_type': 'fast_preview',
+            'has_authoritative_daily_card': false,
+            'degraded_reason': 'fast_preview_only',
+            'transit_summary_state': payload.transitSummaryState,
+          },
+        );
+      }
       setState(() {
         if (_periodCore == null && fastPeriodCore != null) {
           _periodCore = fastPeriodCore;
         }
         if (_periodCards.isEmpty && fastPeriodCards.isNotEmpty) {
           _periodCards = fastPeriodCards;
-        }
-        if (!hasUsableHomeDailyContent(
-              dailyCards: _todayDailyCards,
-              dayMeta: _todayDayMeta,
-            ) &&
-            fastDailyFallback != null) {
-          _todayDailyCards = <EventCardDto>[fastDailyFallback];
         }
         if (_coreStory.trim().isEmpty && payload.summary.isNotEmpty) {
           _coreStory = payload.summary;
@@ -1762,18 +2243,20 @@ class _HomePageState extends ConsumerState<HomePage>
           _loading = false;
         }
       });
-      if (payload.isTransitDeferred && attempt < _maxHomeFastDeferredRetries) {
+      if (payload.isTransitDeferred &&
+          attempt < LoadTuning.maxHomeFastDeferredRetries) {
         _scheduleFastHomeRetry(
           client: client,
           profile: profile,
           userId: userId,
           requestVersion: requestVersion,
           nextAttempt: attempt + 1,
+          dayContext: dayContext,
         );
       }
     } catch (e) {
       debugPrint('Home fast load skipped: $e');
-      if (attempt < _maxHomeFastDeferredRetries &&
+      if (attempt < LoadTuning.maxHomeFastDeferredRetries &&
           _isActiveHomeLoad(requestVersion) &&
           !_hasResolvedTodayTransit()) {
         _scheduleFastHomeRetry(
@@ -1782,6 +2265,7 @@ class _HomePageState extends ConsumerState<HomePage>
           userId: userId,
           requestVersion: requestVersion,
           nextAttempt: attempt + 1,
+          dayContext: dayContext,
         );
       }
     }
@@ -1793,13 +2277,14 @@ class _HomePageState extends ConsumerState<HomePage>
     required String? userId,
     required int requestVersion,
     required int nextAttempt,
+    required HomeDayContext dayContext,
   }) {
     if (nextAttempt <= _homeFastRetryAttempt ||
-        nextAttempt > _maxHomeFastDeferredRetries) {
+        nextAttempt > LoadTuning.maxHomeFastDeferredRetries) {
       return;
     }
     _homeFastRetryAttempt = nextAttempt;
-    Future<void>.delayed(_homeFastDeferredRetryDelay).then((_) {
+    Future<void>.delayed(LoadTuning.homeFastDeferredRetryDelay).then((_) {
       if (!_isActiveHomeLoad(requestVersion) || _hasResolvedTodayTransit()) {
         return;
       }
@@ -1808,6 +2293,7 @@ class _HomePageState extends ConsumerState<HomePage>
         profile: profile,
         userId: userId,
         requestVersion: requestVersion,
+        dayContext: dayContext,
         attempt: nextAttempt,
       );
     });
@@ -1825,7 +2311,8 @@ class _HomePageState extends ConsumerState<HomePage>
           'tz': _resolveTimezone(profile),
           'limit': 4,
         },
-        cacheTtl: _skyCacheTtl,
+        receiveTimeout: LoadTuning.homeSkyTimeout,
+        cacheTtl: LoadTuning.homeSkyCacheTtl,
       );
       final skyMap = _asMap((response).data);
       if (!_isActiveHomeLoad(requestVersion)) {
@@ -1895,7 +2382,7 @@ class _HomePageState extends ConsumerState<HomePage>
       '/interpret/ui',
       data: <String, dynamic>{...natalPayload, 'summary_only': true},
       requestSla: ApiRequestSla.background,
-      cacheTtl: _natalCacheTtl,
+      cacheTtl: LoadTuning.homeNatalCacheTtl,
     );
   }
 
@@ -1916,6 +2403,7 @@ class _HomePageState extends ConsumerState<HomePage>
   Map<String, dynamic> _buildHomeFastQuery(
     Map<String, dynamic> profile, {
     required String? userId,
+    required HomeDayContext dayContext,
   }) {
     final place = _resolvePlace(profile);
     final query = <String, dynamic>{
@@ -1925,7 +2413,7 @@ class _HomePageState extends ConsumerState<HomePage>
       ),
       'birth_place': place,
       'transit_place': place,
-      'date': TransitRequestBuilder.fmtDate(DateTime.now()),
+      'date': dayContext.dayKey,
       'tz': _resolveTimezone(profile),
       'locale': Localizations.localeOf(context).languageCode,
       'lens': 'general',
@@ -2003,6 +2491,11 @@ class _HomePageState extends ConsumerState<HomePage>
       _openTiming(context);
       return;
     }
+    final resolvedProfile = profile;
+    if (resolvedProfile == null) {
+      _openTiming(context);
+      return;
+    }
     final localeCode = Localizations.localeOf(context).languageCode;
     final returnedDate = await Navigator.of(context, rootNavigator: true)
         .push<DateTime>(
@@ -2011,7 +2504,7 @@ class _HomePageState extends ConsumerState<HomePage>
             initialDate: DateTime(day.year, day.month, day.day),
             source: 'home_preview',
             builder: (_) => CalendarDayPage(
-              profile: profile!,
+              profile: resolvedProfile,
               initialDate: DateTime(day.year, day.month, day.day),
               initialBundle: initialBundle,
               localeCode: localeCode,
@@ -2027,8 +2520,8 @@ class _HomePageState extends ConsumerState<HomePage>
       returnedDate.month,
       returnedDate.day,
     );
-    final today = DateTime.now();
-    final todayDate = DateTime(today.year, today.month, today.day);
+    final dayContext = _homeDayContext ?? _resolveDayContext(profile);
+    final todayDate = dayContext.today;
     final dayOffset = normalized.difference(todayDate).inDays;
     if (dayOffset >= 0 && dayOffset < 7 && dayOffset != _selectedWeekIndex) {
       setState(() => _selectedWeekIndex = dayOffset);
@@ -2056,9 +2549,10 @@ class _HomePageState extends ConsumerState<HomePage>
     Map<String, dynamic>? profile,
     PeriodCardDto card,
   ) {
+    final dayContext = _homeDayContext ?? _resolveDayContext(profile);
     final focusDay = resolvePeriodCardFocusDate(
       card,
-      fallbackDay: DateTime.now(),
+      fallbackDay: dayContext.today,
     );
     if (focusDay != null) {
       _openHomeDay(
@@ -2082,7 +2576,11 @@ class _HomePageState extends ConsumerState<HomePage>
     }
     Navigator.of(context, rootNavigator: true).push(
       MaterialPageRoute<void>(
-        builder: (_) => PeriodDetailPage(card: card, periodCore: _periodCore),
+        builder: (_) => PeriodDetailPage(
+          card: card,
+          periodCore: _periodCore,
+          routeSource: PeriodDetailRouteSource.home,
+        ),
       ),
     );
   }
@@ -3028,15 +3526,18 @@ class _HomeHeroAnimatedTextState extends State<_HomeHeroAnimatedText>
 
   @override
   Widget build(BuildContext context) {
-    if (_previousText == null) {
+    final previousText = _previousText;
+    if (previousText == null) {
       return Align(
         alignment: Alignment.topLeft,
         child: _buildText(_currentText),
       );
     }
 
+    final controllerDuration =
+        _controller.duration ?? const Duration(milliseconds: 320);
     final delayFraction =
-        widget.delay.inMilliseconds / _controller.duration!.inMilliseconds;
+        widget.delay.inMilliseconds / controllerDuration.inMilliseconds;
     final outgoingEnd = (delayFraction + 0.44).clamp(0.0, 0.86);
     final incomingStart = (delayFraction + 0.16).clamp(0.0, 0.94);
 
@@ -3063,12 +3564,12 @@ class _HomeHeroAnimatedTextState extends State<_HomeHeroAnimatedText>
           child: Stack(
             alignment: Alignment.topLeft,
             children: [
-              if (_previousText != null)
+              if (previousText.isNotEmpty)
                 Opacity(
                   opacity: 1 - outgoing.value,
                   child: Transform.translate(
                     offset: Offset(0, -10 * outgoing.value),
-                    child: _buildText(_previousText!),
+                    child: _buildText(previousText),
                   ),
                 ),
               Opacity(
@@ -3160,24 +3661,25 @@ class _HomeReferencePlanBoard extends StatelessWidget {
     final l10n = context.l10n;
     final compact = MediaQuery.of(context).size.width < 392;
     final skyTitle = skyItem?.title ?? l10n.homeCollectivePulse;
-    final skyBody = skyItem?.hook.isNotEmpty == true
-        ? skyItem!.hook
-        : bulletin.summary;
+    final skyHook = skyItem?.hook.trim() ?? '';
+    final skyBody = skyHook.isNotEmpty ? skyHook : bulletin.summary;
     final thirdCard = dailyCards.length > 1 ? dailyCards[1] : activeCard;
+    final activeTimeHint = activeCard?.timeHint.trim() ?? '';
+    final skyBadge = skyItem?.badge.trim() ?? '';
+    final thirdTimeHint = thirdCard?.timeHint.trim() ?? '';
+    final activeTitle = activeCard?.title.trim() ?? '';
+    final activeSubtitle = activeCard?.subtitle.trim() ?? '';
+    final activeSignature = activeCard?.eventCard?.signatureTr.trim() ?? '';
+    final thirdTitle = thirdCard?.title.trim() ?? '';
+    final thirdSubtitle = thirdCard?.subtitle.trim() ?? '';
     final activeMeta = _compactHomeMeta(
-      activeCard?.timeHint.trim().isNotEmpty == true
-          ? activeCard!.timeHint.trim()
-          : l10n.homePrimaryMeta,
+      activeTimeHint.isNotEmpty ? activeTimeHint : l10n.homePrimaryMeta,
     );
     final skyMeta = _compactHomeMeta(
-      skyItem?.badge.isNotEmpty == true
-          ? skyItem!.badge
-          : l10n.homeCollectiveMeta,
+      skyBadge.isNotEmpty ? skyBadge : l10n.homeCollectiveMeta,
     );
     final weekMeta = _compactHomeMeta(
-      thirdCard?.timeHint.trim().isNotEmpty == true
-          ? thirdCard!.timeHint.trim()
-          : l10n.homeWeekMeta,
+      thirdTimeHint.isNotEmpty ? thirdTimeHint : l10n.homeWeekMeta,
     );
 
     if (loading && activeCard == null && dailyCards.isEmpty) {
@@ -3197,17 +3699,13 @@ class _HomeReferencePlanBoard extends StatelessWidget {
               Expanded(
                 flex: compact ? 1 : 11,
                 child: _HomeColorPlanCard(
-                  title: activeCard?.title.isNotEmpty == true
-                      ? activeCard!.title
+                  title: activeTitle.isNotEmpty
+                      ? activeTitle
                       : l10n.homeDayPlan,
                   metaTop: activeMeta,
-                  body: activeCard?.subtitle.trim().isNotEmpty == true
-                      ? activeCard!.subtitle.trim()
-                      : lineText,
-                  footer:
-                      activeCard?.eventCard?.signatureTr.trim().isNotEmpty ==
-                          true
-                      ? activeCard!.eventCard!.signatureTr.trim()
+                  body: activeSubtitle.isNotEmpty ? activeSubtitle : lineText,
+                  footer: activeSignature.isNotEmpty
+                      ? activeSignature
                       : l10n.homeGoToCalendar,
                   palette: const _HomeCardPalette.sunset(),
                   onTap: onOpenActive,
@@ -3231,12 +3729,12 @@ class _HomeReferencePlanBoard extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     _HomeColorPlanCard(
-                      title: thirdCard?.title.isNotEmpty == true
-                          ? thirdCard!.title
+                      title: thirdTitle.isNotEmpty
+                          ? thirdTitle
                           : l10n.homeCalendarTitle,
                       metaTop: weekMeta,
-                      body: thirdCard?.subtitle.trim().isNotEmpty == true
-                          ? thirdCard!.subtitle.trim()
+                      body: thirdSubtitle.isNotEmpty
+                          ? thirdSubtitle
                           : l10n.homeWeekFlowOpen,
                       footer: l10n.homeWeekView,
                       palette: const _HomeCardPalette.candy(),
@@ -4783,7 +5281,9 @@ class _TransitSummaryCard extends StatelessWidget {
                         child: Material(
                           type: MaterialType.transparency,
                           child: Text(
-                            card.title.isNotEmpty ? card.title : 'Aktif Transit',
+                            card.title.isNotEmpty
+                                ? card.title
+                                : 'Aktif Transit',
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: typo.body.copyWith(

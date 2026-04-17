@@ -9,7 +9,13 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'Astrologi AI';
+  String get appTitle => 'SHOU';
+
+  @override
+  String get appStoreSubtitle => 'Your personal astrology space';
+
+  @override
+  String get appStoreShortDescription => 'SHOU offers a deeper, more personal astrology experience across your natal chart, transits, and personal insight spaces.';
 
   @override
   String get supabaseConfigErrorTitle => 'Supabase Configuration Error';
@@ -133,6 +139,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get commonSave => 'Save';
+
+  @override
+  String get externalLinkOpenFailed => 'Could not open link.';
 
   @override
   String get tabsHome => 'Home';
@@ -373,6 +382,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get menuPremiumDefaultSubtitle => 'A deeper layer for longer readings and extended flows.';
 
   @override
+  String get menuInfoAndSupport => 'Info and support';
+
+  @override
+  String get menuAccount => 'Account';
+
+  @override
   String get menuInList => 'On list';
 
   @override
@@ -383,6 +398,69 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get menuSignOutSubtitle => 'Close the current session and return to login.';
+
+  @override
+  String get restorePurchasesTitle => 'Restore Purchases';
+
+  @override
+  String get restorePurchasesDescription => 'Restore your previous purchases or subscription access on this device.';
+
+  @override
+  String get restorePurchasesSuccess => 'Your purchases have been restored.';
+
+  @override
+  String get restorePurchasesNoActive => 'No active purchases were found to restore.';
+
+  @override
+  String get restorePurchasesError => 'Could not restore purchases. Please try again.';
+
+  @override
+  String get privacyPolicyTitle => 'Privacy Policy';
+
+  @override
+  String get privacyPolicyDescription => 'SHOU processes the data needed to create your account, personalize your experience, and provide app features.';
+
+  @override
+  String get termsOfUseTitle => 'Terms of Use';
+
+  @override
+  String get termsOfUseDescription => 'By using SHOU, you agree to the app\'s terms of use and the rules governing the digital services provided.';
+
+  @override
+  String get supportTitle => 'Support';
+
+  @override
+  String get supportDescription => 'If you have questions, technical issues, or need help with your account, you can contact us here.';
+
+  @override
+  String get deleteAccountTitle => 'Delete Account';
+
+  @override
+  String get deleteAccountDescription => 'Deleting your account permanently removes your profile, personal account data, and access within the app. This action cannot be undone.';
+
+  @override
+  String get deleteAccountDialogTitle => 'Are you sure you want to delete your account?';
+
+  @override
+  String get deleteAccountDialogBody => 'This action cannot be undone. Your account and associated personal data will be deleted. If you have an active subscription, you may also need to manage it through App Store subscriptions.';
+
+  @override
+  String get deleteAccountSubscriptionNote => 'Deleting your account does not automatically cancel subscriptions managed through the App Store.';
+
+  @override
+  String get deleteAccountCancel => 'Cancel';
+
+  @override
+  String get deleteAccountConfirm => 'Delete Account';
+
+  @override
+  String get deleteAccountSuccess => 'Your account has been deleted.';
+
+  @override
+  String get deleteAccountError => 'Your account could not be deleted. Please try again.';
+
+  @override
+  String get deleteAccountProgress => 'Deleting your account...';
 
   @override
   String menuPeopleCount(int count) {
@@ -517,6 +595,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String profileAvatarUploadFailed(Object error) {
     return 'Profile photo could not be uploaded: $error';
   }
+
+  @override
+  String get profileAvatarHelperText => 'You can add a photo to make your profile feel more like yours.';
 
   @override
   String get profileInterpretationUnavailableTitle => 'Reading stream unavailable';
@@ -1097,6 +1178,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get aiPaywallBody => 'You used all 3 free questions. Buy a credit pack or unlock Pro to keep chatting.';
+
+  @override
+  String get aiPaywallMembershipNote => 'Start your membership to unlock SHOU\'s deeper readings and premium experience. If you already have a purchase, you can restore it below.';
 
   @override
   String get aiPaywallLoading => 'Loading products...';

@@ -1192,6 +1192,7 @@ def select_daily_and_period_event_cards(
     natal: Mapping[str, Any] | None = None,
     event_v2_by_id: Mapping[str, Mapping[str, Any]] | None = None,
     lens: str = "general",
+    include_debug_meta: bool = True,
 ) -> Dict[str, Any]:
     config = load_daily_selection_config()
     thresholds = config.get("thresholds") if isinstance(config.get("thresholds"), Mapping) else {}
@@ -1321,18 +1322,68 @@ def select_daily_and_period_event_cards(
         period_card["chapter_role"] = dict(row.get("chapter_role") or {})
         period_cards.append(period_card)
 
+    daily_selection: Dict[str, Any] = {
+        "used_period_fallback": used_period_fallback,
+        "period_only_note": (
+            "Bugün kısa vadeli bir tetikten çok, arkada çalışan tema öne çıkıyor."
+            if used_period_fallback and period_cards
+            else ""
+        ),
+        "daily_count": len(daily_cards),
+        "period_count": len(period_cards),
+        "candidate_event_ids": [str(row["event_id"]) for row in daily_rows],
+    }
+
+    if include_debug_meta:
+        daily_selection["score_breakdown"] = {
+            str(row["event_id"]): {
+                "strength_score": row["strength_score"],
+                "today_score": row["today_score"],
+                "narrative_score": row["narrative_score"],
+                "delta_salience_score": row.get("delta_salience_score"),
+                "personalization_score": row.get("personalization_score"),
+                "final_daily_score": row["score"],
+                "rerank_score": row.get("rerank_score"),
+                "rerank_penalties": row.get("rerank_penalties", []),
+                "source_horizon": row["source_horizon"],
+                "tone_face": row["tone_face"],
+                "aspect_mode": row["aspect_mode"],
+                "cluster_key": row.get("cluster_key"),
+                "cluster_size": row.get("cluster_size"),
+            }
+            for row in scored_rows[:10]
+        }
+        daily_selection["selection_v3"] = {
+            "feature_vectors": {
+                str(row["event_id"]): _selection_v3_meta(row)
+                for row in scored_rows[:10]
+            },
+            "chapter_roles": {
+                str(event_id): dict(row_by_event_id[event_id].get("chapter_role") or {})
+                for event_id in list(row_by_event_id.keys())[:10]
+            },
+            "experience_clusters": [
+                {
+                    "cluster_key": str(cluster.get("cluster_key") or ""),
+                    "cluster_score": cluster.get("cluster_score"),
+                    "cluster_size": cluster.get("cluster_size"),
+                    "representative_event_id": str((cluster.get("representative_row") or {}).get("event_id") or ""),
+                    "support_event_ids": list(cluster.get("support_event_ids") or []),
+                }
+                for cluster in experience_clusters[:10]
+            ],
+            "evaluation": evaluate_daily_selection(
+                scored_rows=scored_rows,
+                daily_rows=daily_rows,
+                used_period_fallback=used_period_fallback,
+            ),
+        }
+
     return {
         "daily_event_cards": daily_cards,
         "period_event_cards": period_cards,
         "daily_selection": {
-            "used_period_fallback": used_period_fallback,
-            "period_only_note": (
-                "Bugün kısa vadeli bir tetikten çok, arkada çalışan tema öne çıkıyor."
-                if used_period_fallback and period_cards
-                else ""
-            ),
-            "daily_count": len(daily_cards),
-            "period_count": len(period_cards),
+            **daily_selection,
             "selected_day_top_event_ids": sorted(
                 {
                     str(token).strip()
@@ -1340,49 +1391,5 @@ def select_daily_and_period_event_cards(
                     if str(token).strip()
                 }
             ),
-            "candidate_event_ids": [str(row["event_id"]) for row in daily_rows],
-            "score_breakdown": {
-                str(row["event_id"]): {
-                    "strength_score": row["strength_score"],
-                    "today_score": row["today_score"],
-                    "narrative_score": row["narrative_score"],
-                    "delta_salience_score": row.get("delta_salience_score"),
-                    "personalization_score": row.get("personalization_score"),
-                    "final_daily_score": row["score"],
-                    "rerank_score": row.get("rerank_score"),
-                    "rerank_penalties": row.get("rerank_penalties", []),
-                    "source_horizon": row["source_horizon"],
-                    "tone_face": row["tone_face"],
-                    "aspect_mode": row["aspect_mode"],
-                    "cluster_key": row.get("cluster_key"),
-                    "cluster_size": row.get("cluster_size"),
-                }
-                for row in scored_rows[:10]
-            },
-            "selection_v3": {
-                "feature_vectors": {
-                    str(row["event_id"]): _selection_v3_meta(row)
-                    for row in scored_rows[:10]
-                },
-                "chapter_roles": {
-                    str(event_id): dict(row_by_event_id[event_id].get("chapter_role") or {})
-                    for event_id in list(row_by_event_id.keys())[:10]
-                },
-                "experience_clusters": [
-                    {
-                        "cluster_key": str(cluster.get("cluster_key") or ""),
-                        "cluster_score": cluster.get("cluster_score"),
-                        "cluster_size": cluster.get("cluster_size"),
-                        "representative_event_id": str((cluster.get("representative_row") or {}).get("event_id") or ""),
-                        "support_event_ids": list(cluster.get("support_event_ids") or []),
-                    }
-                    for cluster in experience_clusters[:10]
-                ],
-                "evaluation": evaluate_daily_selection(
-                    scored_rows=scored_rows,
-                    daily_rows=daily_rows,
-                    used_period_fallback=used_period_fallback,
-                ),
-            },
         },
     }

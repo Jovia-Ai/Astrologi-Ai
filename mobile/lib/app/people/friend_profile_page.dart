@@ -124,7 +124,7 @@ class _FriendAuraBadge extends ConsumerWidget {
     final semanticAsync = ref.watch(
       personAuraSemanticProvider(PersonAuraRequest.fromPerson(person)),
     );
-    final semantic = semanticAsync.valueOrNull;
+    final semantic = semanticAsync.asData?.value;
     final aura = semantic == null
         ? fallbackAura
         : joviaAuraPaletteForSemantic(
@@ -132,7 +132,7 @@ class _FriendAuraBadge extends ConsumerWidget {
             semantic: semantic,
           );
     final eyebrow = semantic?.sourceLabel.trim().isNotEmpty == true
-        ? semantic!.sourceLabel
+        ? (semantic?.sourceLabel ?? '')
         : 'Aura';
     final title = semantic?.displayLabel ?? fallbackAura.label;
 

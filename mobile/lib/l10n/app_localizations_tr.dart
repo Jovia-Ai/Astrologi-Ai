@@ -9,7 +9,13 @@ class AppLocalizationsTr extends AppLocalizations {
   AppLocalizationsTr([String locale = 'tr']) : super(locale);
 
   @override
-  String get appTitle => 'Astrologi AI';
+  String get appTitle => 'SHOU';
+
+  @override
+  String get appStoreSubtitle => 'Sana özel astroloji deneyimi';
+
+  @override
+  String get appStoreShortDescription => 'SHOU, doğum haritan, transitlerin ve kişisel içgörü alanların arasında daha derin ve kişisel bir astroloji deneyimi sunar.';
 
   @override
   String get supabaseConfigErrorTitle => 'Supabase Konfigürasyon Hatası';
@@ -133,6 +139,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get commonSave => 'Kaydet';
+
+  @override
+  String get externalLinkOpenFailed => 'Bağlantı açılamadı.';
 
   @override
   String get tabsHome => 'Ana sayfa';
@@ -373,6 +382,12 @@ class AppLocalizationsTr extends AppLocalizations {
   String get menuPremiumDefaultSubtitle => 'Daha uzun yorumlar ve geniş akışlar için derin katman.';
 
   @override
+  String get menuInfoAndSupport => 'Bilgi ve destek';
+
+  @override
+  String get menuAccount => 'Hesap';
+
+  @override
   String get menuInList => 'Listede';
 
   @override
@@ -383,6 +398,69 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get menuSignOutSubtitle => 'Mevcut oturumu kapat ve giriş ekranına dön.';
+
+  @override
+  String get restorePurchasesTitle => 'Satın Alımları Geri Yükle';
+
+  @override
+  String get restorePurchasesDescription => 'Daha önce yaptığın satın alımları veya abonelik erişimini bu cihazda yeniden eşitle.';
+
+  @override
+  String get restorePurchasesSuccess => 'Satın alımların geri yüklendi.';
+
+  @override
+  String get restorePurchasesNoActive => 'Geri yüklenecek aktif bir satın alım bulunamadı.';
+
+  @override
+  String get restorePurchasesError => 'Satın alımlar geri yüklenemedi. Lütfen tekrar dene.';
+
+  @override
+  String get privacyPolicyTitle => 'Gizlilik Politikası';
+
+  @override
+  String get privacyPolicyDescription => 'SHOU, hesabını oluşturmak, deneyimini kişiselleştirmek ve uygulama özelliklerini sunmak için gerekli verileri işler.';
+
+  @override
+  String get termsOfUseTitle => 'Kullanım Koşulları';
+
+  @override
+  String get termsOfUseDescription => 'SHOU\'yu kullanarak uygulamanın kullanım koşullarını ve sunulan dijital hizmetlere ilişkin kuralları kabul etmiş olursun.';
+
+  @override
+  String get supportTitle => 'Destek';
+
+  @override
+  String get supportDescription => 'Soruların, teknik bir problemin veya hesabınla ilgili bir desteğe ihtiyacın varsa bizimle iletişime geçebilirsin.';
+
+  @override
+  String get deleteAccountTitle => 'Hesabı Sil';
+
+  @override
+  String get deleteAccountDescription => 'Hesabını sildiğinde profilin, kişisel hesap verilerin ve uygulama içi erişimin kalıcı olarak kaldırılır. Bu işlem geri alınamaz.';
+
+  @override
+  String get deleteAccountDialogTitle => 'Hesabını silmek istediğine emin misin?';
+
+  @override
+  String get deleteAccountDialogBody => 'Bu işlem geri alınamaz. Hesabın ve ilişkili kişisel verilerin silinir. Aktif aboneliğin varsa App Store abonelik yönetimi ayrıca kontrol edilmelidir.';
+
+  @override
+  String get deleteAccountSubscriptionNote => 'Hesabını silmek, App Store üzerinden yönetilen aboneliğini otomatik olarak iptal etmez.';
+
+  @override
+  String get deleteAccountCancel => 'Vazgeç';
+
+  @override
+  String get deleteAccountConfirm => 'Hesabı Sil';
+
+  @override
+  String get deleteAccountSuccess => 'Hesabın silindi.';
+
+  @override
+  String get deleteAccountError => 'Hesabın silinemedi. Lütfen tekrar dene.';
+
+  @override
+  String get deleteAccountProgress => 'Hesap siliniyor...';
 
   @override
   String menuPeopleCount(int count) {
@@ -517,6 +595,9 @@ class AppLocalizationsTr extends AppLocalizations {
   String profileAvatarUploadFailed(Object error) {
     return 'Profil resmi yüklenemedi: $error';
   }
+
+  @override
+  String get profileAvatarHelperText => 'Profilini sana daha ait hissettirmek için bir fotoğraf ekleyebilirsin.';
 
   @override
   String get profileInterpretationUnavailableTitle => 'Yorum akışı alınamadı';
@@ -1097,6 +1178,9 @@ class AppLocalizationsTr extends AppLocalizations {
 
   @override
   String get aiPaywallBody => '3 ücretsiz sorunu kullandın. Sohbete devam etmek için kredi paketi al veya Pro\'yu aç.';
+
+  @override
+  String get aiPaywallMembershipNote => 'SHOU\'nun daha derin yorumlarına ve premium deneyimine erişmek için üyeliğini başlatabilirsin. Mevcut satın alımın varsa aşağıdan geri yükleyebilirsin.';
 
   @override
   String get aiPaywallLoading => 'Ürünler yükleniyor...';

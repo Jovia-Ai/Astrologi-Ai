@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Mapping, Sequence
 
@@ -116,6 +117,7 @@ def build_composite_meanings_v1(
     return payload
 
 
+@lru_cache(maxsize=1)
 def _load_composite_templates() -> Dict[str, Dict[str, Any]]:
     base_dir = Path(__file__).resolve().parents[1] / "data" / "astro_rules" / "composite"
     templates: Dict[str, Dict[str, Any]] = {}
@@ -142,6 +144,10 @@ def _load_composite_templates() -> Dict[str, Dict[str, Any]]:
             "templates": templates_payload,
         }
     return templates
+
+
+def clear_composite_template_cache() -> None:
+    _load_composite_templates.cache_clear()
 
 
 def _normalize_domains(value: Any) -> List[str]:

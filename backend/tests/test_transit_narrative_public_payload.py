@@ -740,6 +740,207 @@ def test_transit_narrative_public_only_home_includes_selected_day_calendar(monke
     assert response["calendar"]["days"][0]["micro_summary_tr"] == "Bugün bir konu netleşiyor."
 
 
+def test_transit_narrative_public_only_home_empty_payload_does_not_cache(monkeypatch) -> None:
+    calls = {"calendar": 0}
+
+    monkeypatch.setattr(
+        transits,
+        "build_transit_calendar_public",
+        lambda **_: (
+            calls.__setitem__("calendar", calls["calendar"] + 1) or {
+                "calendar_internal": {"days": []}
+            }
+        ),
+    )
+    monkeypatch.setattr(
+        transits,
+        "_build_narrative_public_payload",
+        lambda _request, _start_date, selected_day_context=None: {
+            "period_core": {},
+            "daily_event_cards": [],
+            "period_event_cards": [],
+            "daily_selection": {},
+            "event_cards": [],
+            "period_peak_timeline": [],
+            "timeline": {},
+        },
+    )
+
+    first = transits.build_transit_narrative(
+        _request(
+            selected_date="2026-03-10",
+            response_mode="public_only",
+            payload_profile="home",
+            start="2026-03-10",
+            end="2026-03-10",
+            debug=True,
+        )
+    )
+    second = transits.build_transit_narrative(
+        _request(
+            selected_date="2026-03-10",
+            response_mode="public_only",
+            payload_profile="home",
+            start="2026-03-10",
+            end="2026-03-10",
+            debug=True,
+        )
+    )
+
+    assert first["debug"]["cache_status"] == "miss"
+    assert second["debug"]["cache_status"] == "miss"
+    assert calls["calendar"] == 2
+
+
+def test_transit_narrative_public_only_home_timeline_only_payload_does_not_cache(monkeypatch) -> None:
+    calls = {"calendar": 0}
+
+    monkeypatch.setattr(
+        transits,
+        "build_transit_calendar_public",
+        lambda **_: (
+            calls.__setitem__("calendar", calls["calendar"] + 1) or {
+                "calendar_internal": {"days": []}
+            }
+        ),
+    )
+    monkeypatch.setattr(
+        transits,
+        "_build_narrative_public_payload",
+        lambda _request, _start_date, selected_day_context=None: {
+            "period_core": {"title": "Home core"},
+            "daily_event_cards": [],
+            "period_event_cards": [],
+            "daily_selection": {},
+            "event_cards": [],
+            "period_peak_timeline": [],
+            "timeline": {"summary": "timeline-only"},
+        },
+    )
+
+    first = transits.build_transit_narrative(
+        _request(
+            selected_date="2026-03-10",
+            response_mode="public_only",
+            payload_profile="home",
+            start="2026-03-10",
+            end="2026-03-10",
+            debug=True,
+        )
+    )
+    second = transits.build_transit_narrative(
+        _request(
+            selected_date="2026-03-10",
+            response_mode="public_only",
+            payload_profile="home",
+            start="2026-03-10",
+            end="2026-03-10",
+            debug=True,
+        )
+    )
+
+    assert first["debug"]["cache_status"] == "miss"
+    assert second["debug"]["cache_status"] == "miss"
+    assert calls["calendar"] == 2
+
+
+def test_transit_narrative_public_only_home_exception_marks_degraded_debug(monkeypatch) -> None:
+    monkeypatch.setattr(
+        transits,
+        "build_transit_calendar_public",
+        lambda **_: {
+            "calendar_internal": {
+                "days": [
+                    {
+                        "date": "2026-03-10",
+                        "labels": ["mind"],
+                        "top_event_ids": ["evt_context"],
+                        "event_count": 2,
+                        "signals_count": 3,
+                        "is_critical": False,
+                    }
+                ]
+            }
+        },
+    )
+
+    def _raise(*_args, **_kwargs):
+        raise RuntimeError("home public_only failure")
+
+    monkeypatch.setattr(transits, "_build_narrative_public_payload", _raise)
+
+    response = transits.build_transit_narrative(
+        _request(
+            selected_date="2026-03-10",
+            response_mode="public_only",
+            payload_profile="home",
+            start="2026-03-10",
+            end="2026-03-10",
+            debug=True,
+        )
+    )
+
+    assert response["public"]["daily_event_cards"] == []
+    assert response["calendar"]["days"][0]["date"] == "2026-03-10"
+    assert response["debug"]["degraded_path"]["active"] is True
+    assert response["debug"]["degraded_path"]["reason"] == "public_payload_exception"
+    assert response["debug"]["degraded_path"]["error_type"] == "RuntimeError"
+
+
+def test_transit_narrative_public_only_home_invalid_selected_date_falls_back_to_anchor(monkeypatch) -> None:
+    monkeypatch.setattr(
+        transits,
+        "build_transit_calendar_public",
+        lambda **_: {
+            "calendar_internal": {
+                "days": [
+                    {
+                        "date": "2026-03-10",
+                        "labels": ["mind"],
+                        "top_event_ids": ["evt_context"],
+                        "event_count": 2,
+                        "signals_count": 3,
+                        "is_critical": False,
+                    }
+                ]
+            }
+        },
+    )
+    monkeypatch.setattr(
+        transits,
+        "_build_narrative_public_payload",
+        lambda _request, _start_date, selected_day_context=None: {
+            "period_core": {"title": "Home core"},
+            "daily_event_cards": [
+                {
+                    "event_id": "evt_daily",
+                    "felt_line_tr": "Bugün bir konu netleşiyor.",
+                    "why_it_feels_this_way_tr": "Zihin ve yakın çevre alanı aktif.",
+                }
+            ],
+            "period_event_cards": [],
+            "daily_selection": {"daily_count": 1, "period_count": 0},
+            "event_cards": [{"event_id": "evt_daily"}],
+            "period_peak_timeline": [],
+            "timeline": {"summary": "line"},
+        },
+    )
+
+    response = transits.build_transit_narrative(
+        _request(
+            selected_date="not-a-date",
+            response_mode="public_only",
+            payload_profile="home",
+            start="2026-03-10",
+            end="2026-03-10",
+            debug=True,
+        )
+    )
+
+    assert response["calendar"]["days"][0]["date"] == "2026-03-10"
+    assert response["debug"]["selected_day_public"]["date"] == "2026-03-10"
+
+
 def test_transit_narrative_calendar_period_profile_skips_block_assembly(monkeypatch) -> None:
     monkeypatch.setattr(
         transits,

@@ -117,6 +117,11 @@ class _RegisterPageState extends State<RegisterPage> {
                     centerText: l10n.registerTopCenter,
                     reserveTrailingSpace: true,
                   ),
+                  SizedBox(height: spacing.s16),
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: JoviaBrandMark(width: 62, opacity: 0.84),
+                  ),
                   SizedBox(height: spacing.s24),
                   JoviaSectionHeader(
                     label: l10n.registerSectionLabel,

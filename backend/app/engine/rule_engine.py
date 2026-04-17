@@ -5,8 +5,12 @@ import copy
 import json
 import logging
 import hashlib
+import os
+from datetime import datetime, timezone
 from pathlib import Path
+from time import perf_counter
 from typing import Any, Dict, Iterable, List, Mapping, MutableMapping, Sequence, Set, Tuple
+from uuid import uuid4
 
 from app.helpers.meta_detectors import (
     analyze_planets,
@@ -22,11 +26,14 @@ TYPE_NAMES = ("cause", "mechanism", "effect", "shadow", "potential")
 CATEGORIES = canonical_domains()
 
 logger = logging.getLogger(__name__)
+timing_logger = logging.getLogger("natal.timing")
+_ENABLED_ENV_VALUES = {"1", "true", "yes", "on"}
 
 class RuleEngine:
     """Loads planet/sign/house, aspect, and meta rules and evaluates them."""
 
     def __init__(self, rules_path: str | None = None) -> None:
+        init_started = perf_counter()
         rules_dir = (
             Path(rules_path)
             if rules_path
@@ -59,6 +66,8 @@ class RuleEngine:
         self.planet_house_rules = self._normalize_rule_list(all_house_rules)
         self.aspect_rules = self._normalize_rule_list(all_aspect_rules)
         self.meta_rules = self._normalize_rule_list(all_meta_rules)
+        self._init_rule_load_ms = round((perf_counter() - init_started) * 1000.0, 3)
+        self._init_timing_emitted = False
         print("RuleEngine initialized with", len(self.planet_sign_rules), "planet sign rules")
         self.interpretation: Dict[str, List[Dict[str, Any]]] = {category: [] for category in CATEGORIES}
 
@@ -68,16 +77,42 @@ class RuleEngine:
         aspects: List[Dict[str, Any]],
         *,
         return_meta: bool = False,
-    ) -> Tuple[Dict[str, List[str]], Dict[str, Any]] | Dict[str, List[str]]:
+        return_stage_breakdown: bool = False,
+    ) -> Any:
         """
         Evaluate all rule types and return interpretations grouped by category.
 
         Returns (interpretation, meta_info) when return_meta=True; otherwise just interpretation.
         """
 
-        logger.info("PLANETS INPUT: %s", planets)
+        stage_breakdown_ms: Dict[str, float] = {}
+        fragment_build_ms = 0.0
+        fragment_build_stage_breakdown_ms: Dict[str, float] = {
+            "rule_engine.fragment_build.deepcopy": 0.0,
+            "rule_engine.fragment_build.trigger_derivation": 0.0,
+            "rule_engine.fragment_build.normalize": 0.0,
+            "rule_engine.fragment_build.hash": 0.0,
+            "rule_engine.fragment_build.dedup": 0.0,
+        }
+        normalize_slot_cache: Dict[Tuple[str, str], str] = {}
+        self._emit_init_timing_event()
+
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug("PLANETS INPUT: %s", planets)
+
+        stage_started = perf_counter()
         meta_info = analyze_planets(planets)
+        stage_breakdown_ms["rule_engine.meta_analysis"] = round(
+            (perf_counter() - stage_started) * 1000.0, 3
+        )
+
+        stage_started = perf_counter()
         meta_info["aspect_pairs"] = self._build_aspect_pairs(aspects)
+        stage_breakdown_ms["rule_engine.aspect_pairs"] = round(
+            (perf_counter() - stage_started) * 1000.0, 3
+        )
+
+        stage_started = perf_counter()
         dominance_engine = DominanceEngine()
         meta_info.update(
             dominance_engine.compute(
@@ -87,6 +122,11 @@ class RuleEngine:
                 meta_info=meta_info,
             )
         )
+        stage_breakdown_ms["rule_engine.dominance"] = round(
+            (perf_counter() - stage_started) * 1000.0, 3
+        )
+
+        stage_started = perf_counter()
         aspect_pattern_engine = AspectPatternEngine()
         meta_info.update(
             aspect_pattern_engine.compute(
@@ -94,6 +134,9 @@ class RuleEngine:
                 planets=meta_info.get("normalized_planets", {}),
                 meta_info=meta_info,
             )
+        )
+        stage_breakdown_ms["rule_engine.aspect_patterns"] = round(
+            (perf_counter() - stage_started) * 1000.0, 3
         )
 
         results: Dict[str, Dict[str, List[Dict[str, Any]]]] = {
@@ -103,28 +146,124 @@ class RuleEngine:
 
         meta_info["aspects_list"] = aspects
         seen_fragments: Set[Tuple[str, str, str, str, str, str]] = set()
+
+        stage_started = perf_counter()
         for rule in self.planet_sign_rules:
-            logger.info("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
             if self._conditions_met(rule.get("conditions"), meta_info, rule_id=rule.get("id")):
-                self._append_output(results, rule.get("output"), rule, meta_info, seen_fragments)
+                append_started = perf_counter()
+                self._append_output(
+                    results,
+                    rule.get("output"),
+                    rule,
+                    meta_info,
+                    seen_fragments,
+                    fragment_metrics=fragment_build_stage_breakdown_ms,
+                    normalize_slot_cache=normalize_slot_cache,
+                )
+                fragment_build_ms += (perf_counter() - append_started) * 1000.0
+        stage_breakdown_ms["rule_engine.scan_planet_sign_rules"] = round(
+            (perf_counter() - stage_started) * 1000.0, 3
+        )
+
+        stage_started = perf_counter()
         for rule in self.planet_house_rules:
-            logger.info("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
             if self._conditions_met(rule.get("conditions"), meta_info, rule_id=rule.get("id")):
-                self._append_output(results, rule.get("output"), rule, meta_info, seen_fragments)
+                append_started = perf_counter()
+                self._append_output(
+                    results,
+                    rule.get("output"),
+                    rule,
+                    meta_info,
+                    seen_fragments,
+                    fragment_metrics=fragment_build_stage_breakdown_ms,
+                    normalize_slot_cache=normalize_slot_cache,
+                )
+                fragment_build_ms += (perf_counter() - append_started) * 1000.0
+        stage_breakdown_ms["rule_engine.scan_planet_house_rules"] = round(
+            (perf_counter() - stage_started) * 1000.0, 3
+        )
+
+        stage_started = perf_counter()
         for rule in self.aspect_rules:
-            logger.info("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
             if self._conditions_met(rule.get("conditions"), meta_info, rule_id=rule.get("id")):
-                self._append_output(results, rule.get("output"), rule, meta_info, seen_fragments)
+                append_started = perf_counter()
+                self._append_output(
+                    results,
+                    rule.get("output"),
+                    rule,
+                    meta_info,
+                    seen_fragments,
+                    fragment_metrics=fragment_build_stage_breakdown_ms,
+                    normalize_slot_cache=normalize_slot_cache,
+                )
+                fragment_build_ms += (perf_counter() - append_started) * 1000.0
+        stage_breakdown_ms["rule_engine.scan_aspect_rules"] = round(
+            (perf_counter() - stage_started) * 1000.0, 3
+        )
+
+        stage_started = perf_counter()
         for rule in self.meta_rules:
-            logger.info("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("CHECKING RULE: %s → conditions: %s", rule.get("id"), rule.get("conditions"))
             if self._conditions_met(rule.get("conditions"), meta_info, rule_id=rule.get("id")):
-                self._append_output(results, rule.get("output"), rule, meta_info, seen_fragments)
+                append_started = perf_counter()
+                self._append_output(
+                    results,
+                    rule.get("output"),
+                    rule,
+                    meta_info,
+                    seen_fragments,
+                    fragment_metrics=fragment_build_stage_breakdown_ms,
+                    normalize_slot_cache=normalize_slot_cache,
+                )
+                fragment_build_ms += (perf_counter() - append_started) * 1000.0
+        stage_breakdown_ms["rule_engine.scan_meta_rules"] = round(
+            (perf_counter() - stage_started) * 1000.0, 3
+        )
+        stage_breakdown_ms["rule_engine.fragment_build"] = round(fragment_build_ms, 3)
+        for stage_name, stage_value in fragment_build_stage_breakdown_ms.items():
+            stage_breakdown_ms[stage_name] = round(float(stage_value), 3)
 
         self.interpretation = results
 
         if return_meta:
+            if return_stage_breakdown:
+                return results, meta_info, stage_breakdown_ms
             return results, meta_info
+        if return_stage_breakdown:
+            return results, stage_breakdown_ms
         return results
+
+    def _emit_init_timing_event(self) -> None:
+        if self._init_timing_emitted:
+            return
+        if os.getenv("ENABLE_TIMING_LOGS", "true").strip().lower() not in _ENABLED_ENV_VALUES:
+            return
+        timing_logger.info(
+            json.dumps(
+                {
+                    "type": "natal_stage_timing",
+                    "timestamp": datetime.now(timezone.utc).isoformat(),
+                    "route": "rule_engine.__init__",
+                    "request_id": f"rule_engine_init_{uuid4().hex[:12]}",
+                    "debug": False,
+                    "status": "ok",
+                    "phase": "engine_init",
+                    "stage": "rule_engine.init_rule_load",
+                    "compute_groups": ["rule_engine.init_rule_load"],
+                    "duration_ms": self._init_rule_load_ms,
+                },
+                ensure_ascii=False,
+                sort_keys=True,
+            )
+        )
+        self._init_timing_emitted = True
 
     def get_sentence(self, category: str, type_name: str) -> str | None:
         bucket = self.interpretation.get(category, {})
@@ -221,15 +360,16 @@ class RuleEngine:
             except (TypeError, ValueError):
                 return False
 
-        logger.info(
-            "MATCH CHECK: planet=%s, expected=%s, actual=%s/%s, expected_sign=%s, expected_house=%s",
-            expected_planet,
-            condition.get("planet"),
-            actual_sign,
-            actual_house,
-            expected_sign,
-            expected_house,
-        )
+        if logger.isEnabledFor(logging.DEBUG):
+            logger.debug(
+                "MATCH CHECK: planet=%s, expected=%s, actual=%s/%s, expected_sign=%s, expected_house=%s",
+                expected_planet,
+                condition.get("planet"),
+                actual_sign,
+                actual_house,
+                expected_sign,
+                expected_house,
+            )
 
         if expected_sign:
             if not isinstance(actual_sign, str) or actual_sign.strip().lower() != expected_sign:
@@ -240,7 +380,7 @@ class RuleEngine:
                 return False
 
         if rule_id:
-            logger.info("✔ MATCHED RULE: %s", rule_id)
+            logger.debug("✔ MATCHED RULE: %s", rule_id)
         return True
 
     def _match_aspect_condition(self, condition: Mapping[str, Any], meta_info: Mapping[str, Any]) -> bool:
@@ -303,6 +443,9 @@ class RuleEngine:
         rule: Mapping[str, Any],
         meta_info: Mapping[str, Any],
         dedup_keys: Set[Tuple[str, str, str, str, str, str]],
+        *,
+        fragment_metrics: Dict[str, float] | None = None,
+        normalize_slot_cache: Dict[Tuple[str, str], str] | None = None,
     ) -> None:
         """
         Merge rule output (tagged) into the global results dictionary.
@@ -320,7 +463,16 @@ class RuleEngine:
         if not isinstance(output, Mapping):
             return
 
+        if fragment_metrics is None:
+            fragment_metrics = {}
+
+        stage_started = perf_counter()
         tagged_copy = copy.deepcopy(output)
+        self._accumulate_metric(
+            fragment_metrics,
+            "rule_engine.fragment_build.deepcopy",
+            (perf_counter() - stage_started) * 1000.0,
+        )
         for category, tagged in tagged_copy.items():
             canonical_category = canon_domain(category)
             if not canonical_category or canonical_category not in results or not isinstance(tagged, Mapping):
@@ -330,15 +482,46 @@ class RuleEngine:
                 bucket = results[canonical_category].get(type_name)
                 if bucket is None:
                     continue
+                stage_started = perf_counter()
                 trigger = self._derive_trigger(rule, meta_info)
+                self._accumulate_metric(
+                    fragment_metrics,
+                    "rule_engine.fragment_build.trigger_derivation",
+                    (perf_counter() - stage_started) * 1000.0,
+                )
                 rule_id = str(rule.get("id") or "").strip()
-                normalized = self._normalize_fragments(sentences, type_name, trigger, canonical_category, rule_id)
+                stage_started = perf_counter()
+                normalized = self._normalize_fragments(
+                    sentences,
+                    type_name,
+                    trigger,
+                    canonical_category,
+                    rule_id,
+                    fragment_metrics=fragment_metrics,
+                    normalize_slot_cache=normalize_slot_cache,
+                )
+                self._accumulate_metric(
+                    fragment_metrics,
+                    "rule_engine.fragment_build.normalize",
+                    (perf_counter() - stage_started) * 1000.0,
+                )
                 for fragment in normalized:
+                    stage_started = perf_counter()
                     key = self._fragment_dedup_key(fragment, type_name, rule_id)
                     if key in dedup_keys:
+                        self._accumulate_metric(
+                            fragment_metrics,
+                            "rule_engine.fragment_build.dedup",
+                            (perf_counter() - stage_started) * 1000.0,
+                        )
                         continue
                     dedup_keys.add(key)
                     bucket.append(fragment)
+                    self._accumulate_metric(
+                        fragment_metrics,
+                        "rule_engine.fragment_build.dedup",
+                        (perf_counter() - stage_started) * 1000.0,
+                    )
 
     def _derive_trigger(self, rule: Mapping[str, Any], meta_info: Mapping[str, Any]) -> Mapping[str, Any]:
         conditions = rule.get("conditions")
@@ -399,6 +582,9 @@ class RuleEngine:
         trigger: Mapping[str, Any],
         domain: str,
         rule_id: str,
+        *,
+        fragment_metrics: Dict[str, float] | None = None,
+        normalize_slot_cache: Dict[Tuple[str, str], str] | None = None,
     ) -> Dict[str, Any]:
         fragment: Dict[str, Any] = {
             "text": text,
@@ -410,10 +596,21 @@ class RuleEngine:
         }
         planet_name = trigger.get("planet") or trigger.get("planet1") or ""
         fragment["planet"] = planet_name
-        normalized_text = normalize_slot_text(text, slot)
+        normalized_text = self._normalize_slot_text_cached(
+            text,
+            slot,
+            normalize_slot_cache=normalize_slot_cache,
+        )
         trigger_signature = self._trigger_signature(trigger)
         base = f"{domain}|{slot}|{rule_id}|{normalized_text}|{trigger_signature}"
+        stage_started = perf_counter()
         fragment["fragment_id"] = hashlib.sha256(base.encode("utf-8")).hexdigest()
+        if fragment_metrics is not None:
+            self._accumulate_metric(
+                fragment_metrics,
+                "rule_engine.fragment_build.hash",
+                (perf_counter() - stage_started) * 1000.0,
+            )
         return fragment
 
     def _trigger_signature(self, trigger: Mapping[str, Any]) -> str:
@@ -436,19 +633,52 @@ class RuleEngine:
         trigger: Mapping[str, Any],
         category: str,
         rule_id: str,
+        *,
+        fragment_metrics: Dict[str, float] | None = None,
+        normalize_slot_cache: Dict[Tuple[str, str], str] | None = None,
     ) -> List[Dict[str, Any]]:
         if isinstance(value, Mapping):
             fragments: List[Dict[str, Any]] = []
             for sub_value in value.values():
-                fragments.extend(self._normalize_fragments(sub_value, slot, trigger, category, rule_id))
+                fragments.extend(
+                    self._normalize_fragments(
+                        sub_value,
+                        slot,
+                        trigger,
+                        category,
+                        rule_id,
+                        fragment_metrics=fragment_metrics,
+                        normalize_slot_cache=normalize_slot_cache,
+                    )
+                )
             return fragments
         if isinstance(value, str):
             cleaned = value.strip()
-            return [self._build_fragment(cleaned, slot, trigger, category, rule_id)] if cleaned else []
+            return [
+                self._build_fragment(
+                    cleaned,
+                    slot,
+                    trigger,
+                    category,
+                    rule_id,
+                    fragment_metrics=fragment_metrics,
+                    normalize_slot_cache=normalize_slot_cache,
+                )
+            ] if cleaned else []
         if isinstance(value, Sequence) and not isinstance(value, (str, bytes)):
             fragments: List[Dict[str, Any]] = []
             for item in value:
-                fragments.extend(self._normalize_fragments(item, slot, trigger, category, rule_id))
+                fragments.extend(
+                    self._normalize_fragments(
+                        item,
+                        slot,
+                        trigger,
+                        category,
+                        rule_id,
+                        fragment_metrics=fragment_metrics,
+                        normalize_slot_cache=normalize_slot_cache,
+                    )
+                )
             return fragments
         return []
 
@@ -468,3 +698,26 @@ class RuleEngine:
     def _normalize_text_for_dedup(text: str) -> str:
         normalized = " ".join(text.strip().lower().split())
         return normalized
+
+    @staticmethod
+    def _normalize_slot_text_cached(
+        text: str,
+        slot: str,
+        *,
+        normalize_slot_cache: Dict[Tuple[str, str], str] | None,
+    ) -> str:
+        if normalize_slot_cache is None:
+            return normalize_slot_text(text, slot)
+        cache_key = (text, slot)
+        cached = normalize_slot_cache.get(cache_key)
+        if cached is not None:
+            return cached
+        normalized = normalize_slot_text(text, slot)
+        normalize_slot_cache[cache_key] = normalized
+        return normalized
+
+    @staticmethod
+    def _accumulate_metric(metrics: Dict[str, float], key: str, elapsed_ms: float) -> None:
+        if elapsed_ms <= 0:
+            return
+        metrics[key] = float(metrics.get(key, 0.0)) + float(elapsed_ms)

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'support/test_app.dart';
 
 void main() {
   testWidgets('nav icons stay aligned without showing labels', (
@@ -12,9 +12,8 @@ void main() {
     const addKey = Key('add-icon');
 
     await tester.pumpWidget(
-      MaterialApp(
-        theme: withProfileTheme(ThemeData.light()),
-        home: Scaffold(
+      buildTestApp(
+        child: Scaffold(
           bottomNavigationBar: JoviaBottomNavBar(
             currentIndex: 0,
             onTap: (_) {},

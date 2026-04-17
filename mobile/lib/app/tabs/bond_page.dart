@@ -33,7 +33,7 @@ class _BondPageState extends ConsumerState<BondPage> {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final profileAsync = ref.watch(userProfileProvider);
-    final profile = profileAsync.valueOrNull;
+    final profile = profileAsync.asData?.value;
     final profileLoaded = profileAsync.hasValue;
     final displayProfile = _displayProfile(profile);
     final selfBirthDataMissing =

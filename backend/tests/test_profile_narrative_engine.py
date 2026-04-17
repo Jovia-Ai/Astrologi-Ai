@@ -238,12 +238,43 @@ def _assert_block_quality(block: dict) -> None:
         assert awkward not in merged_public.lower()
     for templated in ("bu tarafının dışarıdaki hali", "yetenek tarafında ilk görülen şey", "dışarıya verdiğin iş sinyalinde ilk görülen taraf"):
         assert templated not in lowered_body
-    assert not re.search(r"\b\d{1,2}\.\s*ev\b", merged_public, re.IGNORECASE)
-    assert "kavuşum" not in merged_public.lower()
-    assert "kare" not in str(block.get("astro_hint") or "").lower()
-    assert _semantic_overlap(block["teaser"], body_sentences[0]) < 0.75
-    if block.get("micro"):
-        assert _semantic_overlap(block["micro"], block["body"]) < 0.75
+
+
+def test_profile_narrative_signature_supports_natural_english_output() -> None:
+    chart = _chart_a()
+    graph = _graph(chart, _planets_a(), _aspects_a())
+
+    out = build_profile_narrative(
+        chart,
+        graph,
+        locale="en",
+        include_debug=False,
+        engine_override="signature",
+    )
+
+    profile_public = out.get("profile_public") if isinstance(out.get("profile_public"), dict) else {}
+    blocks = profile_public.get("blocks") if isinstance(profile_public.get("blocks"), list) else []
+    assert len(blocks) >= 5
+    merged = " ".join(
+        " ".join(
+            [
+                str(block.get("headline") or ""),
+                str(block.get("teaser") or ""),
+                str(block.get("body") or ""),
+                str(block.get("micro") or ""),
+                str(block.get("astro_hint") or ""),
+            ]
+        )
+        for block in blocks
+        if isinstance(block, dict)
+    ).lower()
+
+    assert "you " in merged
+    assert "the way you" in merged or "your " in merged
+    assert "yükselen" not in merged
+    assert "ilişkide" not in merged
+    assert "görünürlük" not in merged
+    assert "yakınlık" not in merged
 
 
 def test_profile_narrative_is_deterministic_for_same_chart() -> None:

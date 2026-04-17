@@ -1,5 +1,6 @@
 // ignore_for_file: unused_element
 
+import 'dart:async';
 import 'dart:ui' as ui;
 
 import 'package:dio/dio.dart';
@@ -10,12 +11,15 @@ import 'package:intl/intl.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'package:mobile/app/api/api_client.dart';
+import 'package:mobile/app/performance/load_tuning.dart';
 import 'package:mobile/app/people/friend_profile_page.dart';
 import 'package:mobile/app/people/people_list_page.dart';
 import 'package:mobile/app/people/person_profile.dart';
 import 'package:mobile/app/people/people_providers.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/profile/profile_repository.dart';
+import 'package:mobile/app/profile/profile_v8_adapter.dart';
+import 'package:mobile/app/profile/profile_v8_sections.dart';
 import 'package:mobile/app/telemetry/perf_telemetry.dart';
 import 'package:mobile/app/tabs/profile_archetype_page.dart';
 import 'package:mobile/app/tabs/calendar_hub_page.dart';
@@ -39,7 +43,8 @@ const Color _kProfilePosterSurface = Color(0xFF050505);
 const Color _kProfilePosterSurfaceSoft = Color(0xFF090807);
 const Color _kProfilePosterStroke = Color(0x285B4736);
 const Color _kProfilePosterMuted = Color(0xFFC5BCD0);
-const Color _kProfilePosterAccent = Color(0xFFFF8A1C);
+const Color _kProfileFigmaLime = Color(0xFFCAFF4D);
+const Color _kProfilePosterAccent = _kProfileFigmaLime;
 const Color _kProfilePosterLilac = Color(0xFFB58DFF);
 const Color _kProfilePosterBlush = Color(0xFFFFC5E7);
 const Color _kProfilePosterMint = Color(0xFF9EF0E7);
@@ -162,9 +167,9 @@ _ProfilePosterPalette _profilePosterPalette(BuildContext context) {
     text: profile.colors.text,
     textSoft: profile.colors.text.withValues(alpha: 0.84),
     muted: profile.colors.muted,
-    accent: const Color(0xFF8F73FF),
+    accent: _kProfileFigmaLime,
     accentSoft: Color.alphaBlend(
-      profile.colors.lime.withValues(alpha: 0.72),
+      _kProfileFigmaLime.withValues(alpha: 0.22),
       Colors.white,
     ),
     accentWarm: Color.alphaBlend(
@@ -240,9 +245,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  static const String _baseUrl = 'http://127.0.0.1:5000';
-  static const Duration _natalCacheTtl = Duration(minutes: 5);
-  static const Duration _fastProfileCacheTtl = Duration(minutes: 5);
   static const String _natalPayloadVersion = 'natal_profile_v3_2026_04_02';
 
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -272,6 +274,8 @@ class _ProfilePageState extends State<ProfilePage> {
   String _moonSign = '—';
   String _risingSign = '—';
   _ProfileIdentityContext? _identityContext;
+  Map<String, dynamic>? _activeProfilePayload;
+  Map<String, dynamic>? _fastProfilePayload;
   String? _lastNatalKey;
   bool _isArchetypeSummaryLoading = false;
   String? _archetypeSummaryError;
@@ -339,7 +343,7 @@ class _ProfilePageState extends State<ProfilePage> {
             .currentUser
             ?.userMetadata?['avatar_url']
             ?.toString();
-        final profile = widget.profileOverride ?? profileAsync.valueOrNull;
+        final profile = widget.profileOverride ?? profileAsync.asData?.value;
         final elementScores = _computeElementScores(
           profile: profile,
           userId: widget.viewedUserId ?? uid,
@@ -355,679 +359,957 @@ class _ProfilePageState extends State<ProfilePage> {
           data: themed,
           child: Builder(
             builder: (context) {
-              if (profile != null) {
-                if (!_didSeed) {
-                  _nameController.text = _nameController.text.isEmpty
-                      ? (profile['full_name'] ?? profile['name'] ?? '')
-                            .toString()
-                      : _nameController.text;
-                  _birthDateController.text = _birthDateController.text.isEmpty
-                      ? (profile['birth_date'] ?? '').toString()
-                      : _birthDateController.text;
-                  _birthTimeController.text = _birthTimeController.text.isEmpty
-                      ? (profile['birth_time'] ?? '').toString()
-                      : _birthTimeController.text;
-                  _cityController.text = _cityController.text.isEmpty
-                      ? (profile['city'] ?? '').toString()
-                      : _cityController.text;
-                  _countryController.text = _countryController.text.isEmpty
-                      ? (profile['country'] ?? '').toString()
-                      : _countryController.text;
-                  _avatarUrl = (profile['avatar_url'] ?? authAvatarUrl ?? '')
-                      .toString();
-                  _didSeed = true;
-                }
-                _maybeLoadNatalInterpretation(profile);
-                _maybeLoadArchetypeSummary(
-                  profile,
-                  repo: repo,
-                  currentUserId: uid,
+              final posterPalette = _profilePosterPalette(context);
+              if (widget.profileOverride == null &&
+                  profileAsync is AsyncLoading<Map<String, dynamic>?>) {
+                return Scaffold(
+                  backgroundColor: posterPalette.bg,
+                  body: SafeArea(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            CircularProgressIndicator(),
+                            SizedBox(height: 14),
+                            Text('Profil yükleniyor...'),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }
+              if (widget.profileOverride == null &&
+                  profileAsync is AsyncError<Map<String, dynamic>?>) {
+                final profileError = profileAsync.error;
+                return Scaffold(
+                  backgroundColor: posterPalette.bg,
+                  body: SafeArea(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: JoviaReadingPanel(
+                          label: 'HATA',
+                          title: 'Profil yüklenemedi',
+                          body: profileError.toString(),
+                        ),
+                      ),
+                    ),
+                  ),
+                  floatingActionButton: FloatingActionButton.extended(
+                    onPressed: () => ref.invalidate(userProfileProvider),
+                    label: const Text('Tekrar dene'),
+                  ),
+                );
+              }
+              if (profile == null) {
+                return Scaffold(
+                  backgroundColor: posterPalette.bg,
+                  body: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(16, 20, 16, 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          JoviaReadingPanel(
+                            label: context.l10n.tabsProfile,
+                            title: context.l10n.profileBirthDataPendingTitle,
+                            body: context.l10n.profileBirthDataPendingBodyLight,
+                          ),
+                          const SizedBox(height: 14),
+                          if (uid != null)
+                            FilledButton(
+                              onPressed: () => _showSettingsSheet(
+                                context: context,
+                                ref: ref,
+                                uid: uid,
+                                repo: repo,
+                                currentUserEmail: currentUserEmail,
+                              ),
+                              child: Text(
+                                context.l10n.profileCompleteBirthData,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
                 );
               }
 
-              final displayName = _displayName(profile);
-              final username = _displayUsername(
-                profile: profile,
-                email: currentUserEmail,
-              );
-              final avatarUrl = (_avatarUrl ?? authAvatarUrl ?? '').trim();
-              final summaryText = (_natalSummary ?? '').trim();
-              final dominantElementLabel = _dominantElementLabel(elementScores);
-              final identityHeadline =
-                  (_identityContext?.headline ?? _natalHeadline ?? '').trim();
-              final identitySummary =
-                  (_identityContext?.overview ?? summaryText).trim();
-              final identityDrivers = _identityContext?.drivers ?? const [];
-              final imprintHeadline = (_identityContext?.imprintHeadline ?? '')
-                  .trim();
-              final leadInsight = _pickLeadInsightModule();
-              final curatedCards = _uniqueNarrativeCards([
-                ..._profilePrimaryCards,
-                ..._profileExtraCards,
-              ]).where((item) => !item.isPlacementLike).toList();
-              final headlineCard = _pickNarrativeCard(
-                source: curatedCards,
-                preferredFamilies: const {
-                  'outer_inner_split',
-                  'contradiction_core',
-                  'self_definition',
-                  'identity',
-                },
-                keywords: const [
-                  'dışarıda',
-                  'disarida',
-                  'disaridan',
-                  'içeride',
-                  'iceride',
-                  'farklı',
-                  'farkli',
-                  'ilk his',
-                ],
-              );
-              final featuredCard = _pickNarrativeCard(
-                source: curatedCards,
-                preferredFamilies: const {
-                  'self_definition',
-                  'outer_inner_split',
-                  'creative_channel',
-                  'intimacy_guard',
-                  'mind_mechanics',
-                },
-                keywords: const [
-                  'ilk his',
-                  'dışarıda',
-                  'disarida',
-                  'iceride',
-                  'zihin',
-                  'mind',
-                  'yakınlık',
-                  'yakinlik',
-                  'ilişki',
-                  'iliski',
-                  'içeride',
-                  'iceride',
-                  'akış',
-                  'akis',
-                ],
-                excludedKeys: headlineCard == null
-                    ? const <String>{}
-                    : <String>{_cardIdentity(headlineCard)},
-              );
-              final heroNarrativeCard = featuredCard ?? headlineCard;
-              final teaserCards = curatedCards
-                  .where(
-                    (item) =>
-                        (heroNarrativeCard == null ||
-                            _cardIdentity(item) !=
-                                _cardIdentity(heroNarrativeCard)) &&
-                        (headlineCard == null ||
-                            _cardIdentity(item) != _cardIdentity(headlineCard)),
-                  )
-                  .take(2)
-                  .toList();
-              final allSignatureCards = _profilePlacementCards.isNotEmpty
-                  ? _profilePlacementCards
-                  : _profileBundleTeasers
-                        .map((item) => item.toNarrativeCard())
-                        .take(12)
-                        .toList();
-              final signatureCards = allSignatureCards
-                  .take(_kProfilePlacementPreviewLimit)
-                  .toList();
-              final sideThemes = _supportingThreads.take(3).toList();
-              final mainHeadlineText = _profilePosterLeadText(
-                headlineCard: headlineCard ?? heroNarrativeCard,
-                identityHeadline: identityHeadline,
-                identitySummary: identitySummary,
-              );
-              final locationLabel = _profileLocation(profile);
-              final heroMetaLabel = [
-                locationLabel,
-                _profileAgeLabel(profile),
-              ].where((item) => item.trim().isNotEmpty).join(' • ');
-              final posterPalette = _profilePosterPalette(context);
-              final isOwnProfile =
-                  !widget.readOnly &&
-                  (widget.viewedUserId == null || widget.viewedUserId == uid);
-              int readProfileCount(List<String> keys) {
-                for (final key in keys) {
-                  final parsed = int.tryParse((profile?[key] ?? '').toString());
-                  if (parsed != null) {
-                    return parsed;
+              try {
+                if (profile != null) {
+                  if (!_didSeed) {
+                    _nameController.text = _nameController.text.isEmpty
+                        ? (profile['full_name'] ?? profile['name'] ?? '')
+                              .toString()
+                        : _nameController.text;
+                    _birthDateController.text =
+                        _birthDateController.text.isEmpty
+                        ? (profile['birth_date'] ?? '').toString()
+                        : _birthDateController.text;
+                    _birthTimeController.text =
+                        _birthTimeController.text.isEmpty
+                        ? (profile['birth_time'] ?? '').toString()
+                        : _birthTimeController.text;
+                    _cityController.text = _cityController.text.isEmpty
+                        ? (profile['city'] ?? '').toString()
+                        : _cityController.text;
+                    _countryController.text = _countryController.text.isEmpty
+                        ? (profile['country'] ?? '').toString()
+                        : _countryController.text;
+                    _avatarUrl = (profile['avatar_url'] ?? authAvatarUrl ?? '')
+                        .toString();
+                    _didSeed = true;
                   }
+                  _maybeLoadNatalInterpretation(profile);
+                  _maybeLoadArchetypeSummary(
+                    profile,
+                    repo: repo,
+                    currentUserId: uid,
+                  );
                 }
-                return 0;
-              }
 
-              final connectedPeople = isOwnProfile
-                  ? (peopleAsync.valueOrNull ?? const <PersonProfile>[])
-                  : const <PersonProfile>[];
-              final followingCount = connectedPeople.isNotEmpty
-                  ? connectedPeople.length
-                  : readProfileCount(const [
-                      'following_count',
-                      'following',
-                      'friends_count',
-                    ]);
-              final followerCount = readProfileCount(const [
-                'followers_count',
-                'followers',
-                'follower_count',
-              ]);
-              final peoplePreview = connectedPeople.take(4).toList();
-              final profileMenuTap = widget.readOnly || uid == null
-                  ? null
-                  : () => _scaffoldKey.currentState?.openEndDrawer();
-              final editorialStatementTitle = _profilePosterEditorialTitle(
-                identityHeadline: identityHeadline,
-                heroNarrativeCard: heroNarrativeCard,
-                mainHeadlineText: mainHeadlineText,
-              );
-              final editorialStatementBody = _profilePosterEditorialBody(
-                identitySummary: identitySummary,
-                headlineCard: headlineCard ?? heroNarrativeCard,
-                mainHeadlineText: mainHeadlineText,
-              );
-              final leadSectionBody = _profilePosterLeadNarrative(
-                displayName: displayName,
-                mainHeadlineText: mainHeadlineText,
-                editorialStatementBody: editorialStatementBody,
-                headlineCard: headlineCard,
-                heroNarrativeCard: heroNarrativeCard,
-              );
-              final leadSectionChips = _profilePosterLeadChips(
-                headlineCard: headlineCard,
-                heroNarrativeCard: heroNarrativeCard,
-                drivers: identityDrivers,
-              );
-              final showLeadSection =
-                  heroNarrativeCard != null &&
-                  (leadSectionBody.trim().isNotEmpty ||
-                      mainHeadlineText.trim().isNotEmpty);
-              final featureTiles = <_ProfilePosterFeatureTileData>[
-                for (final card in teaserCards.take(2))
-                  _ProfilePosterFeatureTileData(
-                    title: card.title,
-                    subtitle: card.summary.isNotEmpty
-                        ? card.summary
-                        : card.previewBody,
-                    asset: _illustrationForCard(card),
-                    onTap: () => _openNarrativeFlow(selectedCard: card),
-                  ),
-                if (leadInsight != null)
-                  _ProfilePosterFeatureTileData(
-                    title: leadInsight.title,
-                    subtitle: leadInsight.subheadline.isNotEmpty
-                        ? leadInsight.subheadline
-                        : leadInsight.headline,
-                    asset: JoviaIllustrationAsset.blocks,
-                    onTap: () => _openInsightFlow(module: leadInsight),
-                  )
-                else if (sideThemes.isNotEmpty)
-                  _ProfilePosterFeatureTileData(
-                    title: sideThemes.first.title,
-                    subtitle: sideThemes.first.oneLiner,
-                    asset:
-                        _containsAny(
-                          '${sideThemes.first.title} ${sideThemes.first.oneLiner}',
-                          const ['sevgi', 'yakın', 'yakin', 'kalp', 'ilişki'],
-                        )
-                        ? JoviaIllustrationAsset.heart
-                        : JoviaIllustrationAsset.layers,
-                    onTap: () => _openSideThemesFlow(
-                      items: sideThemes,
-                      selected: sideThemes.first,
-                    ),
-                  ),
-              ].take(3).toList();
-              final darkContentView = Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (_natalError != null &&
-                      _natalError!.trim().isNotEmpty &&
-                      identityHeadline.isEmpty &&
-                      curatedCards.isEmpty) ...[
-                    _ProfilePosterMessageCard(
-                      title: context.l10n.profileInterpretationUnavailableTitle,
-                      body: _natalError!,
-                    ),
-                    const SizedBox(height: 20),
+                final displayName = _displayName(profile);
+                final username = _displayUsername(
+                  profile: profile,
+                  email: currentUserEmail,
+                );
+                final avatarUrl = (_avatarUrl ?? authAvatarUrl ?? '').trim();
+                final summaryText = (_natalSummary ?? '').trim();
+                final dominantElementLabel = _dominantElementLabel(
+                  elementScores,
+                );
+                final identityHeadline =
+                    (_identityContext?.headline ?? _natalHeadline ?? '').trim();
+                final identitySummary =
+                    (_identityContext?.overview ?? summaryText).trim();
+                final identityDrivers = _identityContext?.drivers ?? const [];
+                final imprintHeadline =
+                    (_identityContext?.imprintHeadline ?? '').trim();
+                final leadInsight = _pickLeadInsightModule();
+                final curatedCards = _uniqueNarrativeCards([
+                  ..._profilePrimaryCards,
+                  ..._profileExtraCards,
+                ]).where((item) => !item.isPlacementLike).toList();
+                final headlineCard = _pickNarrativeCard(
+                  source: curatedCards,
+                  preferredFamilies: const {
+                    'outer_inner_split',
+                    'contradiction_core',
+                    'self_definition',
+                    'identity',
+                  },
+                  keywords: const [
+                    'dışarıda',
+                    'disarida',
+                    'disaridan',
+                    'içeride',
+                    'iceride',
+                    'farklı',
+                    'farkli',
+                    'ilk his',
                   ],
-                  if (!_hasBirthData(profile)) ...[
-                    _ProfilePosterMessageCard(
-                      title: context.l10n.profileBirthDataPendingTitle,
-                      body: context.l10n.profileBirthDataPendingBodyDark,
-                    ),
-                  ] else ...[
-                    if (_isNatalLoading &&
-                        identitySummary.isEmpty &&
-                        curatedCards.isEmpty)
-                      const _ProfilePosterLoadingCard(),
-                    Center(
-                      child: _ProfilePosterSectionTag(
-                        label: context.l10n.profileIdentityAxis,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    Center(
-                      child: _ProfilePosterQuickInfoRow(
-                        dominantElementLabel: dominantElementLabel,
-                        auraSourceLabel:
-                            _identityContext?.auraSourceLabel ?? '',
-                        rulerName: _identityContext?.rulerName ?? '',
-                        rulerHouse: _identityContext?.rulerHouse,
-                        element: elementScores.dominant,
-                        risingSign: _risingSign,
-                        onTap: () => _openIdentityFlow(
-                          displayName: displayName,
-                          headline: identityHeadline,
-                          summary: identitySummary,
-                          drivers: identityDrivers,
-                        ),
-                      ),
-                    ),
-                    if (editorialStatementTitle.trim().isNotEmpty ||
-                        editorialStatementBody.trim().isNotEmpty) ...[
-                      const SizedBox(height: 30),
-                      Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 420),
-                          child: _ProfilePosterEditorialStatement(
-                            title: editorialStatementTitle,
-                            body: editorialStatementBody,
-                            onTap: () => _openIdentityFlow(
-                              displayName: displayName,
-                              headline: identityHeadline,
-                              summary: identitySummary,
-                              drivers: identityDrivers,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                    const SizedBox(height: 24),
-                    Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 248),
-                        child: _ProfilePosterModeSwitch(
-                          currentIndex: _segmentIndex,
-                          onChanged: (value) {
-                            if (value == _segmentIndex) {
-                              return;
-                            }
-                            setState(() => _segmentIndex = value);
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    if (_segmentIndex == 0) ...[
-                      if (showLeadSection) ...[
-                        _ProfilePosterLeadSection(
-                          title: context.l10n.profileMainStory,
-                          subtitle: '',
-                          intro: mainHeadlineText,
-                          body: leadSectionBody,
-                          chips: leadSectionChips,
-                          illustrationAsset: _profilePosterIllustrationForCard(
-                            heroNarrativeCard,
-                          ),
-                          onTap: () => _openNarrativeFlow(
-                            selectedCard: heroNarrativeCard,
-                          ),
-                        ),
-                      ] else if (heroNarrativeCard != null) ...[
-                        _NarrativeCardLarge(
-                          eyebrow: heroNarrativeCard.eyebrow,
-                          title: heroNarrativeCard.title,
-                          intro: heroNarrativeCard.summary,
-                          body: heroNarrativeCard.previewBody,
-                          chips: heroNarrativeCard.chips,
-                          illustrationAsset: JoviaIllustrationAsset.rocks,
-                          actionLabel: context.l10n.profileOpenFullReading,
-                          nextLabel: teaserCards.isNotEmpty
-                              ? teaserCards.first.title
-                              : (signatureCards.isNotEmpty
-                                    ? context.l10n.profileSignatureLayers
-                                    : context.l10n.profileSideThemes),
-                          onTap: () => _openNarrativeFlow(
-                            selectedCard: heroNarrativeCard,
-                          ),
-                        ),
-                      ],
-                      if (featureTiles.isNotEmpty) ...[
-                        const SizedBox(height: 24),
-                        _ProfilePosterFeatureRail(items: featureTiles),
-                      ],
-                      if (leadInsight != null) ...[
-                        const SizedBox(height: 30),
-                        _ProfilePosterInsightEntryCard(
-                          title: leadInsight.title,
-                          body: leadInsight.subheadline.isNotEmpty
-                              ? leadInsight.subheadline
-                              : leadInsight.headline,
-                          ctaLabel: context.l10n.profileOpenDefensePattern,
-                          onTap: () => _openInsightFlow(module: leadInsight),
-                        ),
-                      ],
-                      if (signatureCards.isNotEmpty) ...[
-                        const SizedBox(height: 30),
-                        _ProfilePosterPlacementsStrip(
-                          sectionTitle: imprintHeadline.isNotEmpty
-                              ? imprintHeadline
-                              : context.l10n.profileSignatureLayers,
-                          cards: signatureCards,
-                          showOpenAll:
-                              allSignatureCards.length >
-                              _kProfilePlacementPreviewLimit,
-                          onOpenAll: () => _openSignatureFlow(
-                            title: imprintHeadline.isNotEmpty
-                                ? imprintHeadline
-                                : context.l10n.profileSignatureLayers,
-                            cards: allSignatureCards,
-                          ),
-                          onOpenCard: (card) => _openSignatureFlow(
-                            title: imprintHeadline.isNotEmpty
-                                ? imprintHeadline
-                                : context.l10n.profileSignatureLayers,
-                            cards: allSignatureCards,
-                            selected: card,
-                          ),
-                        ),
-                      ],
-                      if (sideThemes.isNotEmpty) ...[
-                        const SizedBox(height: 28),
-                        _ProfilePosterThreadSection(
-                          items: sideThemes,
-                          onOpenAll: () =>
-                              _openSideThemesFlow(items: sideThemes),
-                          onOpenThread: (thread) => _openSideThemesFlow(
-                            items: sideThemes,
-                            selected: thread,
-                          ),
-                        ),
-                      ],
-                    ] else if (_segmentIndex == 1) ...[
-                      ProfileRelationshipPreview(profile: profile),
-                    ] else ...[
-                      ProfileCalendarPreviewStrip(
-                        profileOverride: widget.profileOverride,
-                      ),
-                    ],
+                );
+                final featuredCard = _pickNarrativeCard(
+                  source: curatedCards,
+                  preferredFamilies: const {
+                    'self_definition',
+                    'outer_inner_split',
+                    'creative_channel',
+                    'intimacy_guard',
+                    'mind_mechanics',
+                  },
+                  keywords: const [
+                    'ilk his',
+                    'dışarıda',
+                    'disarida',
+                    'iceride',
+                    'zihin',
+                    'mind',
+                    'yakınlık',
+                    'yakinlik',
+                    'ilişki',
+                    'iliski',
+                    'içeride',
+                    'iceride',
+                    'akış',
+                    'akis',
                   ],
-                ],
-              );
-
-              final lightContentView = Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (_natalError != null &&
-                      _natalError!.trim().isNotEmpty &&
-                      identityHeadline.isEmpty &&
-                      curatedCards.isEmpty) ...[
-                    JoviaReadingPanel(
-                      label: context.l10n.profileWarning,
-                      title: context.l10n.profileInterpretationUnavailableTitle,
-                      body: _natalError!,
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                  if (!_hasBirthData(profile)) ...[
-                    JoviaReadingPanel(
-                      label: context.l10n.tabsProfile,
-                      title: context.l10n.profileBirthDataPendingTitle,
-                      body: context.l10n.profileBirthDataPendingBodyLight,
-                    ),
-                  ] else ...[
-                    if (_identityContext != null) ...[
-                      _ProfileIdentityQuickSection(
-                        contextData: _identityContext!,
-                        dominantElementLabel: dominantElementLabel,
-                        onTap: () => _openIdentityFlow(
-                          displayName: displayName,
-                          headline: identityHeadline,
-                          summary: identitySummary,
-                          drivers: identityDrivers,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                    ],
-                    if (editorialStatementTitle.trim().isNotEmpty ||
-                        editorialStatementBody.trim().isNotEmpty) ...[
-                      JoviaPressable(
-                        onTap: () => _openIdentityFlow(
-                          displayName: displayName,
-                          headline: identityHeadline,
-                          summary: identitySummary,
-                          drivers: identityDrivers,
-                        ),
-                        borderRadius: BorderRadius.circular(24),
-                        child: JoviaReadingPanel(
-                          label: context.l10n.profileIdentityAxis,
-                          title: editorialStatementTitle.trim().isNotEmpty
-                              ? editorialStatementTitle
-                              : context.l10n.profileIdentityAxis,
-                          body: editorialStatementBody,
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                    ],
-                    Center(
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 248),
-                        child: _ProfilePosterModeSwitch(
-                          currentIndex: _segmentIndex,
-                          onChanged: (value) {
-                            if (value == _segmentIndex) {
-                              return;
-                            }
-                            setState(() => _segmentIndex = value);
-                          },
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    if (_segmentIndex == 0)
-                      _ProfileRecoveryReadingBody(
-                        isLoading: _isNatalLoading,
-                        error: _natalError,
-                        summary: identitySummary,
-                        supportingThreads: sideThemes,
-                        primaryCards: curatedCards,
-                        placementCards: allSignatureCards,
-                        insightModules: _profileInsightModules,
-                        onOpenPlacementFlow: allSignatureCards.isEmpty
-                            ? null
-                            : () => _openSignatureFlow(
-                                title: imprintHeadline.isNotEmpty
-                                    ? imprintHeadline
-                                    : context.l10n.profileSignatureLayers,
-                                cards: allSignatureCards,
-                              ),
-                        onOpenPlacementCard: (card) => _openSignatureFlow(
-                          title: imprintHeadline.isNotEmpty
-                              ? imprintHeadline
-                              : context.l10n.profileSignatureLayers,
-                          cards: allSignatureCards,
-                          selected: card,
-                        ),
-                        onOpenNarrativeCard: (card) =>
-                            _openNarrativeFlow(selectedCard: card),
-                        onOpenInsightModule: (module) =>
-                            _openInsightFlow(module: module),
-                        onOpenSupportingThread: (thread) => _openSideThemesFlow(
-                          items: sideThemes,
-                          selected: thread,
-                        ),
-                        onOpenSummary: () => _openIdentityFlow(
-                          displayName: displayName,
-                          headline: identityHeadline,
-                          summary: identitySummary,
-                          drivers: identityDrivers,
-                        ),
-                        readOnly: widget.readOnly,
-                      )
-                    else if (_segmentIndex == 1)
-                      ProfileRelationshipPreview(profile: profile)
-                    else
-                      ProfileCalendarPreviewStrip(
-                        profileOverride: widget.profileOverride,
-                      ),
-                  ],
-                ],
-              );
-
-              final footer = widget.readOnly
-                  ? _ProfilePosterFooterButton(
-                      label: context.l10n.profileBack,
-                      onTap: () =>
-                          Navigator.of(context, rootNavigator: true).maybePop(),
+                  excludedKeys: headlineCard == null
+                      ? const <String>{}
+                      : <String>{_cardIdentity(headlineCard)},
+                );
+                final heroNarrativeCard = featuredCard ?? headlineCard;
+                final teaserCards = curatedCards
+                    .where(
+                      (item) =>
+                          (heroNarrativeCard == null ||
+                              _cardIdentity(item) !=
+                                  _cardIdentity(heroNarrativeCard)) &&
+                          (headlineCard == null ||
+                              _cardIdentity(item) !=
+                                  _cardIdentity(headlineCard)),
                     )
-                  : Row(
-                      children: [
-                        Expanded(
-                          child: _ProfilePosterFooterButton(
-                            label: switch (_segmentIndex) {
-                              0 => context.l10n.profileOpenRelationshipFlow,
-                              1 => context.l10n.profileOpenTimingFlow,
-                              _ => context.l10n.profileReturnToChartFlow,
-                            },
-                            emphasized: true,
-                            onTap: () {
-                              setState(
-                                () => _segmentIndex = (_segmentIndex + 1) % 3,
-                              );
-                            },
+                    .take(2)
+                    .toList();
+                final allSignatureCards = _profilePlacementCards.isNotEmpty
+                    ? _profilePlacementCards
+                    : _profileBundleTeasers
+                          .map((item) => item.toNarrativeCard())
+                          .take(12)
+                          .toList();
+                final signatureCards = allSignatureCards
+                    .take(_kProfilePlacementPreviewLimit)
+                    .toList();
+                final sideThemes = _supportingThreads.take(3).toList();
+                final natalErrorText = (_natalError ?? '').trim();
+                final auraLine = (_identityContext?.auraLine ?? '').trim();
+                final auraSourceLabel =
+                    (_identityContext?.auraSourceLabel ?? '').trim();
+                final rulerName = (_identityContext?.rulerName ?? '').trim();
+                final rulerHouse = _identityContext?.rulerHouse;
+                final mainHeadlineText = _profilePosterLeadText(
+                  headlineCard: headlineCard ?? heroNarrativeCard,
+                  identityHeadline: identityHeadline,
+                  identitySummary: identitySummary,
+                );
+                final locationLabel = _profileLocation(profile);
+                final heroMetaLabel = [
+                  locationLabel,
+                  _profileAgeLabel(profile),
+                ].where((item) => item.trim().isNotEmpty).join(' • ');
+                final isOwnProfile =
+                    !widget.readOnly &&
+                    (widget.viewedUserId == null || widget.viewedUserId == uid);
+                int readProfileCount(List<String> keys) {
+                  for (final key in keys) {
+                    final parsed = int.tryParse(
+                      (profile?[key] ?? '').toString(),
+                    );
+                    if (parsed != null) {
+                      return parsed;
+                    }
+                  }
+                  return 0;
+                }
+
+                final connectedPeople = isOwnProfile
+                    ? (peopleAsync.asData?.value ?? const <PersonProfile>[])
+                    : const <PersonProfile>[];
+                final followingCount = connectedPeople.isNotEmpty
+                    ? connectedPeople.length
+                    : readProfileCount(const [
+                        'following_count',
+                        'following',
+                        'friends_count',
+                      ]);
+                final followerCount = readProfileCount(const [
+                  'followers_count',
+                  'followers',
+                  'follower_count',
+                ]);
+                final peoplePreview = connectedPeople.take(4).toList();
+                final profileMenuTap = widget.readOnly || uid == null
+                    ? null
+                    : () => _scaffoldKey.currentState?.openEndDrawer();
+                final editorialStatementTitle = _profilePosterEditorialTitle(
+                  identityHeadline: identityHeadline,
+                  heroNarrativeCard: heroNarrativeCard,
+                  mainHeadlineText: mainHeadlineText,
+                );
+                final editorialStatementBody = _profilePosterEditorialBody(
+                  identitySummary: identitySummary,
+                  headlineCard: headlineCard ?? heroNarrativeCard,
+                  mainHeadlineText: mainHeadlineText,
+                );
+                final leadSectionBody = _profilePosterLeadNarrative(
+                  displayName: displayName,
+                  mainHeadlineText: mainHeadlineText,
+                  editorialStatementBody: editorialStatementBody,
+                  headlineCard: headlineCard,
+                  heroNarrativeCard: heroNarrativeCard,
+                );
+                final leadSectionChips = _profilePosterLeadChips(
+                  headlineCard: headlineCard,
+                  heroNarrativeCard: heroNarrativeCard,
+                  drivers: identityDrivers,
+                );
+                final showLeadSection =
+                    heroNarrativeCard != null &&
+                    (leadSectionBody.trim().isNotEmpty ||
+                        mainHeadlineText.trim().isNotEmpty);
+                final featureTiles = <_ProfilePosterFeatureTileData>[
+                  for (final card in teaserCards.take(2))
+                    _ProfilePosterFeatureTileData(
+                      title: card.title,
+                      subtitle: card.summary.isNotEmpty
+                          ? card.summary
+                          : card.previewBody,
+                      asset: _illustrationForCard(card),
+                      onTap: () => _openNarrativeFlow(selectedCard: card),
+                    ),
+                  if (leadInsight != null)
+                    _ProfilePosterFeatureTileData(
+                      title: leadInsight.title,
+                      subtitle: leadInsight.subheadline.isNotEmpty
+                          ? leadInsight.subheadline
+                          : leadInsight.headline,
+                      asset: JoviaIllustrationAsset.blocks,
+                      onTap: () => _openInsightFlow(module: leadInsight),
+                    )
+                  else if (sideThemes.isNotEmpty)
+                    _ProfilePosterFeatureTileData(
+                      title: sideThemes.first.title,
+                      subtitle: sideThemes.first.oneLiner,
+                      asset:
+                          _containsAny(
+                            '${sideThemes.first.title} ${sideThemes.first.oneLiner}',
+                            const ['sevgi', 'yakın', 'yakin', 'kalp', 'ilişki'],
+                          )
+                          ? JoviaIllustrationAsset.heart
+                          : JoviaIllustrationAsset.layers,
+                      onTap: () => _openSideThemesFlow(
+                        items: sideThemes,
+                        selected: sideThemes.first,
+                      ),
+                    ),
+                ].take(3).toList();
+                Widget buildDarkContentView() {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (natalErrorText.isNotEmpty &&
+                          identityHeadline.isEmpty &&
+                          curatedCards.isEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _ProfilePosterMessageCard(
+                            title: context
+                                .l10n
+                                .profileInterpretationUnavailableTitle,
+                            body: natalErrorText,
                           ),
                         ),
+                        const SizedBox(height: 20),
                       ],
-                    );
-
-              return Scaffold(
-                key: _scaffoldKey,
-                backgroundColor: posterPalette.bg,
-                endDrawerEnableOpenDragGesture: false,
-                endDrawer: profileMenuTap == null
-                    ? null
-                    : JoviaAppMenuDrawer(
-                        onEditProfile: (context, profile) => _showSettingsSheet(
-                          context: context,
-                          ref: ref,
-                          uid: uid!,
-                          repo: repo,
-                          currentUserEmail: currentUserEmail,
+                      if (!_hasBirthData(profile)) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: _ProfilePosterMessageCard(
+                            title: context.l10n.profileBirthDataPendingTitle,
+                            body: context.l10n.profileBirthDataPendingBodyDark,
+                          ),
                         ),
-                        onOpenPeople: (context, profile) async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (_) => const PeopleListPage(),
-                            ),
-                          );
-                        },
-                        onOpenCalendar: (context, profile) async {
-                          await Navigator.of(context).push(
-                            MaterialPageRoute<void>(
-                              builder: (_) =>
-                                  CalendarHubPage(profileOverride: profile),
-                            ),
-                          );
-                        },
-                        onOpenArchetype: (context, profile) async {
-                          if (profile == null || !_hasBirthData(profile)) {
-                            await _showSettingsSheet(
-                              context: context,
-                              ref: ref,
-                              uid: uid!,
-                              repo: repo,
-                              currentUserEmail: currentUserEmail,
-                            );
-                            return;
-                          }
-                          await _openArchetypeExperience(
-                            profile: profile,
+                      ] else ...[
+                        if (_isNatalLoading &&
+                            identitySummary.isEmpty &&
+                            curatedCards.isEmpty)
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: _ProfilePosterLoadingCard(),
+                          ),
+                        _ProfileFigmaPullQuote(
+                          label: context.l10n.profileIdentityAxis,
+                          title: identityHeadline.isNotEmpty
+                              ? identityHeadline
+                              : (editorialStatementTitle.trim().isNotEmpty
+                                    ? editorialStatementTitle
+                                    : context.l10n.profileIdentityAxis),
+                          onTap: () => _openIdentityFlow(
                             displayName: displayName,
-                          );
-                        },
-                      ),
-                body: ColoredBox(
-                  color: posterPalette.bg,
-                  child: Stack(
-                    children: [
-                      JoviaPageScaffold(
-                        padding: const EdgeInsets.fromLTRB(0, 14, 0, 28),
-                        child: ListView(
-                          padding: EdgeInsets.zero,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: _ProfilePosterTopBar(
-                                username: username,
-                                readOnly: widget.readOnly,
-                                onLeadingTap: widget.readOnly
-                                    ? () => Navigator.of(
-                                        context,
-                                        rootNavigator: true,
-                                      ).maybePop()
-                                    : null,
-                                onActionTap: profileMenuTap,
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            _ProfilePosterHeader(
-                              displayName: displayName,
-                              avatarUrl: avatarUrl.isEmpty ? null : avatarUrl,
-                              isAvatarUploading: _isAvatarUploading,
-                              onAvatarEdit: widget.readOnly
-                                  ? null
-                                  : _pickAndUploadAvatar,
-                              metaLabel: heroMetaLabel,
-                              followingCount: followingCount,
-                              followerCount: followerCount,
-                              peoplePreview: peoplePreview,
-                              sunSign: _sunSign,
-                              moonSign: _moonSign,
-                              risingSign: _risingSign,
-                              onConnectionsTap: connectedPeople.isEmpty
-                                  ? null
-                                  : () =>
-                                        _showConnectionsSheet(connectedPeople),
-                              onPrimaryTap: () => _openIdentityFlow(
-                                displayName: displayName,
-                                headline: identityHeadline,
-                                summary: identitySummary,
-                                drivers: identityDrivers,
-                              ),
-                            ),
-                            if (profile != null) ...[
-                              const SizedBox(height: 18),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                ),
-                                child: _ProfilePosterArchetypeEntryCard(
-                                  title: context.l10n.profileSeeArchetype,
-                                  body: _hasBirthData(profile)
-                                      ? context.l10n.profileArchetypeBodyReady
-                                      : context
-                                            .l10n
-                                            .profileArchetypeBodyPending,
-                                  ctaLabel: _hasBirthData(profile)
-                                      ? context.l10n.profileSeeArchetype
-                                      : context.l10n.profileCompleteBirthData,
-                                  onTap: () => _openArchetypeExperience(
-                                    profile: profile,
-                                    displayName: displayName,
+                            headline: identityHeadline,
+                            summary: identitySummary,
+                            drivers: identityDrivers,
+                          ),
+                        ),
+                        _ProfileFigmaInsightStrip(
+                          auraValue: auraLine.isEmpty
+                              ? dominantElementLabel
+                                    .replaceAll(
+                                      RegExp('baskın', caseSensitive: false),
+                                      '',
+                                    )
+                                    .trim()
+                              : auraLine,
+                          auraSubtitle: auraSourceLabel,
+                          rulerValue: rulerName,
+                          rulerSubtitle: rulerHouse == null
+                              ? ''
+                              : context.l10n.profileHouseEmphasis(rulerHouse),
+                          rhythmValue: identityDrivers.isNotEmpty
+                              ? identityDrivers.first
+                              : imprintHeadline,
+                          rhythmSubtitle: identityDrivers.length > 1
+                              ? identityDrivers[1]
+                              : '',
+                          onTap: () => _openIdentityFlow(
+                            displayName: displayName,
+                            headline: identityHeadline,
+                            summary: identitySummary,
+                            drivers: identityDrivers,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Center(
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 248,
+                                  ),
+                                  child: _ProfilePosterModeSwitch(
+                                    currentIndex: _segmentIndex,
+                                    onChanged: (value) {
+                                      if (value == _segmentIndex) {
+                                        return;
+                                      }
+                                      setState(() => _segmentIndex = value);
+                                    },
                                   ),
                                 ),
                               ),
+                              const SizedBox(height: 24),
+                              if (_segmentIndex == 0) ...[
+                                if (showLeadSection) ...[
+                                  _ProfilePosterLeadSection(
+                                    title: context.l10n.profileMainStory,
+                                    subtitle: '',
+                                    intro: mainHeadlineText,
+                                    body: leadSectionBody,
+                                    chips: leadSectionChips,
+                                    illustrationAsset:
+                                        _profilePosterIllustrationForCard(
+                                          heroNarrativeCard,
+                                        ),
+                                    onTap: () => _openNarrativeFlow(
+                                      selectedCard: heroNarrativeCard,
+                                    ),
+                                  ),
+                                ] else if (heroNarrativeCard != null) ...[
+                                  _NarrativeCardLarge(
+                                    eyebrow: heroNarrativeCard.eyebrow,
+                                    title: heroNarrativeCard.title,
+                                    intro: heroNarrativeCard.summary,
+                                    body: heroNarrativeCard.previewBody,
+                                    chips: heroNarrativeCard.chips,
+                                    illustrationAsset:
+                                        JoviaIllustrationAsset.rocks,
+                                    actionLabel:
+                                        context.l10n.profileOpenFullReading,
+                                    nextLabel: teaserCards.isNotEmpty
+                                        ? teaserCards.first.title
+                                        : (signatureCards.isNotEmpty
+                                              ? context
+                                                    .l10n
+                                                    .profileSignatureLayers
+                                              : context.l10n.profileSideThemes),
+                                    onTap: () => _openNarrativeFlow(
+                                      selectedCard: heroNarrativeCard,
+                                    ),
+                                  ),
+                                ],
+                                if (featureTiles.isNotEmpty) ...[
+                                  const SizedBox(height: 24),
+                                  _ProfilePosterFeatureRail(
+                                    items: featureTiles,
+                                  ),
+                                ],
+                                if (leadInsight != null) ...[
+                                  const SizedBox(height: 30),
+                                  _ProfilePosterInsightEntryCard(
+                                    title: leadInsight.title,
+                                    body: leadInsight.subheadline.isNotEmpty
+                                        ? leadInsight.subheadline
+                                        : leadInsight.headline,
+                                    ctaLabel:
+                                        context.l10n.profileOpenDefensePattern,
+                                    onTap: () =>
+                                        _openInsightFlow(module: leadInsight),
+                                  ),
+                                ],
+                                if (signatureCards.isNotEmpty) ...[
+                                  const SizedBox(height: 30),
+                                  _ProfilePosterPlacementsStrip(
+                                    sectionTitle: imprintHeadline.isNotEmpty
+                                        ? imprintHeadline
+                                        : context.l10n.profileSignatureLayers,
+                                    cards: signatureCards,
+                                    showOpenAll:
+                                        allSignatureCards.length >
+                                        _kProfilePlacementPreviewLimit,
+                                    onOpenAll: () => _openSignatureFlow(
+                                      title: imprintHeadline.isNotEmpty
+                                          ? imprintHeadline
+                                          : context.l10n.profileSignatureLayers,
+                                      cards: allSignatureCards,
+                                    ),
+                                    onOpenCard: (card) => _openSignatureFlow(
+                                      title: imprintHeadline.isNotEmpty
+                                          ? imprintHeadline
+                                          : context.l10n.profileSignatureLayers,
+                                      cards: allSignatureCards,
+                                      selected: card,
+                                    ),
+                                  ),
+                                ],
+                                if (sideThemes.isNotEmpty) ...[
+                                  const SizedBox(height: 28),
+                                  _ProfilePosterThreadSection(
+                                    items: sideThemes,
+                                    onOpenAll: () =>
+                                        _openSideThemesFlow(items: sideThemes),
+                                    onOpenThread: (thread) =>
+                                        _openSideThemesFlow(
+                                          items: sideThemes,
+                                          selected: thread,
+                                        ),
+                                  ),
+                                ],
+                              ] else if (_segmentIndex == 1) ...[
+                                ProfileRelationshipPreview(profile: profile),
+                              ] else ...[
+                                ProfileCalendarPreviewStrip(
+                                  profileOverride: widget.profileOverride,
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                }
+
+                Widget buildLightContentView() {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (natalErrorText.isNotEmpty &&
+                          identityHeadline.isEmpty &&
+                          curatedCards.isEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: JoviaReadingPanel(
+                            label: context.l10n.profileWarning,
+                            title: context
+                                .l10n
+                                .profileInterpretationUnavailableTitle,
+                            body: natalErrorText,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                      ],
+                      if (!_hasBirthData(profile)) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: JoviaReadingPanel(
+                            label: context.l10n.tabsProfile,
+                            title: context.l10n.profileBirthDataPendingTitle,
+                            body: context.l10n.profileBirthDataPendingBodyLight,
+                          ),
+                        ),
+                      ] else ...[
+                        _ProfileFigmaPullQuote(
+                          label: context.l10n.profileIdentityAxis,
+                          title: identityHeadline.isNotEmpty
+                              ? identityHeadline
+                              : (editorialStatementTitle.trim().isNotEmpty
+                                    ? editorialStatementTitle
+                                    : context.l10n.profileIdentityAxis),
+                          onTap: () => _openIdentityFlow(
+                            displayName: displayName,
+                            headline: identityHeadline,
+                            summary: identitySummary,
+                            drivers: identityDrivers,
+                          ),
+                        ),
+                        _ProfileFigmaInsightStrip(
+                          auraValue: auraLine.isEmpty
+                              ? dominantElementLabel
+                                    .replaceAll(
+                                      RegExp('baskın', caseSensitive: false),
+                                      '',
+                                    )
+                                    .trim()
+                              : auraLine,
+                          auraSubtitle: auraSourceLabel,
+                          rulerValue: rulerName,
+                          rulerSubtitle: rulerHouse == null
+                              ? ''
+                              : context.l10n.profileHouseEmphasis(rulerHouse),
+                          rhythmValue: identityDrivers.isNotEmpty
+                              ? identityDrivers.first
+                              : imprintHeadline,
+                          rhythmSubtitle: identityDrivers.length > 1
+                              ? identityDrivers[1]
+                              : '',
+                          onTap: () => _openIdentityFlow(
+                            displayName: displayName,
+                            headline: identityHeadline,
+                            summary: identitySummary,
+                            drivers: identityDrivers,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              Center(
+                                child: ConstrainedBox(
+                                  constraints: const BoxConstraints(
+                                    maxWidth: 248,
+                                  ),
+                                  child: _ProfilePosterModeSwitch(
+                                    currentIndex: _segmentIndex,
+                                    onChanged: (value) {
+                                      if (value == _segmentIndex) {
+                                        return;
+                                      }
+                                      setState(() => _segmentIndex = value);
+                                    },
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 24),
+                              if (_segmentIndex == 0)
+                                _ProfileRecoveryReadingBody(
+                                  isLoading: _isNatalLoading,
+                                  error: _natalError,
+                                  summary: identitySummary,
+                                  supportingThreads: sideThemes,
+                                  primaryCards: curatedCards,
+                                  placementCards: allSignatureCards,
+                                  insightModules: _profileInsightModules,
+                                  onOpenPlacementFlow: allSignatureCards.isEmpty
+                                      ? null
+                                      : () => _openSignatureFlow(
+                                          title: imprintHeadline.isNotEmpty
+                                              ? imprintHeadline
+                                              : context
+                                                    .l10n
+                                                    .profileSignatureLayers,
+                                          cards: allSignatureCards,
+                                        ),
+                                  onOpenPlacementCard: (card) =>
+                                      _openSignatureFlow(
+                                        title: imprintHeadline.isNotEmpty
+                                            ? imprintHeadline
+                                            : context
+                                                  .l10n
+                                                  .profileSignatureLayers,
+                                        cards: allSignatureCards,
+                                        selected: card,
+                                      ),
+                                  onOpenNarrativeCard: (card) =>
+                                      _openNarrativeFlow(selectedCard: card),
+                                  onOpenInsightModule: (module) =>
+                                      _openInsightFlow(module: module),
+                                  onOpenSupportingThread: (thread) =>
+                                      _openSideThemesFlow(
+                                        items: sideThemes,
+                                        selected: thread,
+                                      ),
+                                  onOpenSummary: () => _openIdentityFlow(
+                                    displayName: displayName,
+                                    headline: identityHeadline,
+                                    summary: identitySummary,
+                                    drivers: identityDrivers,
+                                  ),
+                                  readOnly: widget.readOnly,
+                                )
+                              else if (_segmentIndex == 1)
+                                ProfileRelationshipPreview(profile: profile)
+                              else
+                                ProfileCalendarPreviewStrip(
+                                  profileOverride: widget.profileOverride,
+                                ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ],
+                  );
+                }
+
+                final narrativeCardsForV8 =
+                    [...curatedCards, ...allSignatureCards].map(
+                      (card) => <String, dynamic>{
+                        'card_key': card.cardKey,
+                        'id': card.id,
+                        'family': card.family,
+                        'eyebrow': card.eyebrow,
+                        'title': card.title,
+                        'summary': card.summary,
+                        'body': card.body,
+                        'micro': card.micro,
+                        'detail_blocks': card.detailBlocks,
+                        'chips': card.chips,
+                        'astro_sources': card.astroSources,
+                      },
+                    );
+                final insightModulesForV8 = _profileInsightModules.map(
+                  (module) => <String, dynamic>{
+                    'module_id': module.moduleId,
+                    'headline': module.headline,
+                    'subheadline': module.subheadline,
+                    'title': module.title,
+                    'body': module.body,
+                  },
+                );
+                final supportingThreadsForV8 = _supportingThreads.map(
+                  (thread) => <String, dynamic>{
+                    'id': thread.id,
+                    'title': thread.title,
+                    'one_liner': thread.oneLiner,
+                    'paragraph': thread.paragraph,
+                    'detail_blocks': thread.detailBlocks,
+                    'chips': thread.chips,
+                  },
+                );
+                final profileV8Data = ProfileV8Adapter.fromPayload(
+                  payload: _activeProfilePayload,
+                  fastPayload: _fastProfilePayload,
+                  identityHeadline: identityHeadline,
+                  identitySummary: identitySummary,
+                  identityDrivers: identityDrivers,
+                  dominantElementLabel: dominantElementLabel,
+                  narrativeCards: narrativeCardsForV8,
+                  insightModules: insightModulesForV8,
+                  supportingThreads: supportingThreadsForV8,
+                );
+
+                final legacyContentView = posterPalette.isDark
+                    ? buildDarkContentView()
+                    : buildLightContentView();
+                final profileContentView = !_hasBirthData(profile)
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: JoviaReadingPanel(
+                          label: context.l10n.tabsProfile,
+                          title: context.l10n.profileBirthDataPendingTitle,
+                          body: context.l10n.profileBirthDataPendingBodyLight,
+                        ),
+                      )
+                    : (_segmentIndex == 0
+                          ? (profileV8Data.hasRenderableContent ||
+                                    _isNatalLoading ||
+                                    (_natalError ?? '').trim().isNotEmpty
+                                ? ProfileV8SectionsView(
+                                    data: profileV8Data,
+                                    isLoading: _isNatalLoading,
+                                    error: _natalError,
+                                    onOpenIdentity: () => _openIdentityFlow(
+                                      displayName: displayName,
+                                      headline: identityHeadline,
+                                      summary: identitySummary,
+                                      drivers: identityDrivers,
+                                    ),
+                                    onOpenCta: () => _openArchetypeExperience(
+                                      profile: profile,
+                                      displayName: displayName,
+                                    ),
+                                  )
+                                : legacyContentView)
+                          : Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: _segmentIndex == 1
+                                  ? ProfileRelationshipPreview(profile: profile)
+                                  : ProfileCalendarPreviewStrip(
+                                      profileOverride: widget.profileOverride,
+                                    ),
+                            ));
+
+                final footer = widget.readOnly
+                    ? _ProfilePosterFooterButton(
+                        label: context.l10n.profileBack,
+                        onTap: () => Navigator.of(
+                          context,
+                          rootNavigator: true,
+                        ).maybePop(),
+                      )
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: _ProfilePosterFooterButton(
+                              label: switch (_segmentIndex) {
+                                0 => context.l10n.profileOpenRelationshipFlow,
+                                1 => context.l10n.profileOpenTimingFlow,
+                                _ => context.l10n.profileReturnToChartFlow,
+                              },
+                              emphasized: true,
+                              onTap: () {
+                                setState(
+                                  () => _segmentIndex = (_segmentIndex + 1) % 3,
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+
+                return Scaffold(
+                  key: _scaffoldKey,
+                  backgroundColor: posterPalette.bg,
+                  endDrawerEnableOpenDragGesture: false,
+                  endDrawer: profileMenuTap == null
+                      ? null
+                      : JoviaAppMenuDrawer(
+                          onEditProfile: (context, profile) async {
+                            if (uid == null) {
+                              return;
+                            }
+                            await _showSettingsSheet(
+                              context: context,
+                              ref: ref,
+                              uid: uid,
+                              repo: repo,
+                              currentUserEmail: currentUserEmail,
+                            );
+                          },
+                          onOpenPeople: (context, profile) async {
+                            await Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) => const PeopleListPage(),
+                              ),
+                            );
+                          },
+                          onOpenCalendar: (context, profile) async {
+                            await Navigator.of(context).push(
+                              MaterialPageRoute<void>(
+                                builder: (_) =>
+                                    CalendarHubPage(profileOverride: profile),
+                              ),
+                            );
+                          },
+                          onOpenArchetype: (context, profile) async {
+                            if (profile == null || !_hasBirthData(profile)) {
+                              if (uid == null) {
+                                return;
+                              }
+                              await _showSettingsSheet(
+                                context: context,
+                                ref: ref,
+                                uid: uid,
+                                repo: repo,
+                                currentUserEmail: currentUserEmail,
+                              );
+                              return;
+                            }
+                            await _openArchetypeExperience(
+                              profile: profile,
+                              displayName: displayName,
+                            );
+                          },
+                        ),
+                  body: ColoredBox(
+                    color: posterPalette.bg,
+                    child: Stack(
+                      children: [
+                        JoviaPageScaffold(
+                          padding: const EdgeInsets.fromLTRB(0, 0, 0, 28),
+                          child: ListView(
+                            padding: EdgeInsets.zero,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            children: [
+                              Container(
+                                color: const Color(0xFFE2E2E8),
+                                padding: const EdgeInsets.all(10),
+                                child: Container(
+                                  clipBehavior: Clip.antiAlias,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
+                                    children: [
+                                      Container(
+                                        color: const Color(0xFF111111),
+                                        child: SafeArea(
+                                          bottom: false,
+                                          child: Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                              20,
+                                              12,
+                                              20,
+                                              12,
+                                            ),
+                                            child: _ProfilePosterTopBar(
+                                              username: username,
+                                              readOnly: widget.readOnly,
+                                              onLeadingTap: widget.readOnly
+                                                  ? () => Navigator.of(
+                                                      context,
+                                                      rootNavigator: true,
+                                                    ).maybePop()
+                                                  : null,
+                                              onActionTap: profileMenuTap,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      _ProfilePosterHeader(
+                                        displayName: displayName,
+                                        avatarUrl: avatarUrl.isEmpty
+                                            ? null
+                                            : avatarUrl,
+                                        isAvatarUploading: _isAvatarUploading,
+                                        onAvatarEdit: widget.readOnly
+                                            ? null
+                                            : _pickAndUploadAvatar,
+                                        metaLabel: heroMetaLabel,
+                                        followingCount: followingCount,
+                                        followerCount: followerCount,
+                                        peoplePreview: peoplePreview,
+                                        sunSign: _sunSign,
+                                        moonSign: _moonSign,
+                                        risingSign: _risingSign,
+                                        onConnectionsTap:
+                                            connectedPeople.isEmpty
+                                            ? null
+                                            : () => _showConnectionsSheet(
+                                                connectedPeople,
+                                              ),
+                                        onPrimaryTap: () => _openIdentityFlow(
+                                          displayName: displayName,
+                                          headline: identityHeadline,
+                                          summary: identitySummary,
+                                          drivers: identityDrivers,
+                                        ),
+                                        onOpenMapTap: () =>
+                                            _openArchetypeExperience(
+                                              profile: profile,
+                                              displayName: displayName,
+                                            ),
+                                      ),
+                                      Container(
+                                        height: 2,
+                                        color: _kProfileFigmaLime,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              profileContentView,
                               if (_isArchetypeSummaryLoading ||
                                   _archetypeSummary != null ||
                                   (_archetypeSummaryError ?? '')
                                       .trim()
                                       .isNotEmpty) ...[
-                                const SizedBox(height: 14),
+                                const SizedBox(height: 24),
                                 Padding(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 16,
@@ -1043,30 +1325,41 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                               ],
+                              const SizedBox(height: 20),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                ),
+                                child: footer,
+                              ),
                             ],
-                            const SizedBox(height: 24),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: posterPalette.isDark
-                                  ? darkContentView
-                                  : lightContentView,
-                            ),
-                            const SizedBox(height: 20),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: footer,
-                            ),
-                          ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              } catch (error) {
+                return Scaffold(
+                  backgroundColor: posterPalette.bg,
+                  body: SafeArea(
+                    child: Center(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: JoviaReadingPanel(
+                          label: 'HATA',
+                          title: 'Profil ekranı açılırken hata oluştu',
+                          body: error.toString(),
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              );
+                  floatingActionButton: FloatingActionButton.extended(
+                    onPressed: () => ref.invalidate(userProfileProvider),
+                    label: const Text('Tekrar dene'),
+                  ),
+                );
+              }
             },
           ),
         );
@@ -1399,8 +1692,12 @@ class _ProfilePageState extends State<ProfilePage> {
     final sectionsV2 = public['sections_v2'];
     final profileNarrative = public['profile_narrative'];
     final personalityImprint = public['personality_imprint'];
+    final profileV8 = public['profile_v8'];
+    final fullMapV8 = public['full_map_v8'];
     return <String, Object?>{
       'has_public': payload['public'] is Map,
+      'has_profile_v8': profileV8 is Map && profileV8.isNotEmpty,
+      'has_full_map_v8': fullMapV8 is Map && fullMapV8.isNotEmpty,
       'has_sections_v2': sectionsV2 is List && sectionsV2.isNotEmpty,
       'has_supporting_threads':
           supportingThreads is List && supportingThreads.isNotEmpty,
@@ -1437,6 +1734,8 @@ class _ProfilePageState extends State<ProfilePage> {
     String path, {
     required Map<String, dynamic> data,
     Duration? cacheTtl,
+    Duration? receiveTimeout,
+    ApiRequestSla requestSla = ApiRequestSla.interactive,
     required String telemetryName,
   }) async {
     final span = PerfTelemetry.startSpan(
@@ -1445,7 +1744,13 @@ class _ProfilePageState extends State<ProfilePage> {
       data: <String, Object?>{'endpoint': path},
     );
     try {
-      final response = await client.post(path, data: data, cacheTtl: cacheTtl);
+      final response = await client.post(
+        path,
+        data: data,
+        cacheTtl: cacheTtl,
+        receiveTimeout: receiveTimeout,
+        requestSla: requestSla,
+      );
       final map = _asMap(response.data);
       final telemetry = _apiTelemetry(response);
       final failureReason = response.data != null && map.isEmpty
@@ -1667,30 +1972,41 @@ class _ProfilePageState extends State<ProfilePage> {
     );
 
     try {
-      final client = ApiClient(baseUrl: _baseUrl);
-      final responses = await Future.wait<_ProfileApiCallResult>([
-        _postProfileMap(
-          client,
-          '/interpret/ui',
-          data: payload,
-          cacheTtl: _natalCacheTtl,
-          telemetryName: 'interpret_ui_request',
-        ),
-        _postProfileMap(
-          client,
-          '/profile/fast',
-          data: payload,
-          cacheTtl: _fastProfileCacheTtl,
-          telemetryName: 'profile_fast_request',
-        ),
-      ]);
-      final publicResult = responses[0];
-      final fastResult = responses[1];
+      final client = ApiClient();
+      _ProfileApiCallResult? fastResult;
+      final publicFuture = _postProfileMap(
+        client,
+        '/interpret/ui',
+        data: payload,
+        cacheTtl: LoadTuning.profileNatalCacheTtl,
+        receiveTimeout: LoadTuning.profileInterpretUiTimeout,
+        requestSla: LoadTuning.profileInterpretUiRequestSla,
+        telemetryName: 'interpret_ui_request',
+      );
+      final fastFuture = _postProfileMap(
+        client,
+        '/profile/fast',
+        data: payload,
+        cacheTtl: LoadTuning.profileFastCacheTtl,
+        receiveTimeout: LoadTuning.profileFastTimeout,
+        requestSla: LoadTuning.profileFastRequestSla,
+        telemetryName: 'profile_fast_request',
+      );
+      unawaited(
+        fastFuture
+            .then((result) {
+              fastResult = result;
+              _applyFastProfileSnapshot(result.data);
+            })
+            .catchError((_) {}),
+      );
+
+      final publicResult = await publicFuture;
       final publicMap = publicResult.data;
-      final fastMap = fastResult.data;
+      final fastMap = fastResult?.data ?? const <String, dynamic>{};
       final loadedFromCache =
           (publicResult.telemetry['cache_status'] ?? '') == 'hit' ||
-          (fastResult.telemetry['cache_status'] ?? '') == 'hit';
+          ((fastResult?.telemetry['cache_status'] ?? '') == 'hit');
       PerfTelemetry.logPoint(
         loadedFromCache
             ? 'profile_loaded_from_cache'
@@ -1721,7 +2037,7 @@ class _ProfilePageState extends State<ProfilePage> {
           'reason_code': fallbackReason,
           'elapsed_ms': natalLoadSpan.elapsedMs(),
           'interpret_ui_cache_status': publicResult.telemetry['cache_status'],
-          'profile_fast_cache_status': fastResult.telemetry['cache_status'],
+          'profile_fast_cache_status': fastResult?.telemetry['cache_status'],
         },
       );
       final legacyResult = shouldLoadLegacyFallback
@@ -1729,7 +2045,9 @@ class _ProfilePageState extends State<ProfilePage> {
               client,
               '/interpret',
               data: payload,
-              cacheTtl: _natalCacheTtl,
+              cacheTtl: LoadTuning.profileNatalCacheTtl,
+              receiveTimeout: LoadTuning.profileLegacyInterpretTimeout,
+              requestSla: LoadTuning.profileLegacyInterpretRequestSla,
               telemetryName: 'interpret_legacy_request',
             )
           : const _ProfileApiCallResult(
@@ -1815,6 +2133,8 @@ class _ProfilePageState extends State<ProfilePage> {
         _profileInsightModules = insightModules;
         _profileBundleTeasers = bundleTeasers;
         _identityContext = identityContext;
+        _activeProfilePayload = activeMap;
+        _fastProfilePayload = fastMap;
         _sunSign = _toTrSign(sun);
         _moonSign = _toTrSign(moon);
         _risingSign = _toTrSign(rising);
@@ -1852,6 +2172,8 @@ class _ProfilePageState extends State<ProfilePage> {
         _supportingThreads = const [];
         _profileExtraCards = const [];
         _profileBundleTeasers = const [];
+        _activeProfilePayload = null;
+        _fastProfilePayload = null;
         _natalError = context.l10n.profileNatalLoadFailed('$e');
       });
       natalLoadSpan.finish(
@@ -2140,6 +2462,16 @@ class _ProfilePageState extends State<ProfilePage> {
     return <String, dynamic>{};
   }
 
+  List<Map<String, dynamic>> _asListOfMaps(dynamic value) {
+    if (value is! List) {
+      return const <Map<String, dynamic>>[];
+    }
+    return value
+        .whereType<Map>()
+        .map((item) => Map<String, dynamic>.from(item))
+        .toList(growable: false);
+  }
+
   Map<String, dynamic> _mergeMaps(
     Map<String, dynamic> primary,
     Map<String, dynamic> fallback,
@@ -2177,43 +2509,65 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   String _extractNatalSummary(Map<String, dynamic> map) {
+    final profileV8 = _extractPublicField(map, 'profile_v8');
+    final identityAxis = _asMap(profileV8['identity_axis']);
+    final fromV8Body = ProfileV8Adapter.safeText(identityAxis['body']);
+    if ((fromV8Body ?? '').trim().isNotEmpty) {
+      return fromV8Body?.trim() ?? '';
+    }
     final public = map['public'];
     if (public is Map) {
       final ui = public['core_story_ui'];
-      if (ui is Map && (ui['text'] ?? '').toString().trim().isNotEmpty) {
-        return (ui['text'] ?? '').toString().trim();
+      if (ui is Map) {
+        final uiText = ProfileV8Adapter.safeText(ui['text']);
+        if ((uiText ?? '').trim().isNotEmpty) {
+          return uiText?.trim() ?? '';
+        }
       }
-      if ((public['core_story'] ?? '').toString().trim().isNotEmpty) {
-        return (public['core_story'] ?? '').toString();
+      final coreStory = ProfileV8Adapter.safeText(public['core_story']);
+      if ((coreStory ?? '').trim().isNotEmpty) {
+        return coreStory?.trim() ?? '';
       }
     }
     final directUi = map['core_story_ui'];
-    if (directUi is Map &&
-        (directUi['text'] ?? '').toString().trim().isNotEmpty) {
-      return (directUi['text'] ?? '').toString().trim();
+    if (directUi is Map) {
+      final uiText = ProfileV8Adapter.safeText(directUi['text']);
+      if ((uiText ?? '').trim().isNotEmpty) {
+        return uiText?.trim() ?? '';
+      }
     }
-    final direct = (map['core_story'] ?? '').toString().trim();
-    if (direct.isNotEmpty) {
-      return direct;
+    final direct = ProfileV8Adapter.safeText(map['core_story']);
+    if ((direct ?? '').trim().isNotEmpty) {
+      return direct?.trim() ?? '';
     }
-    final fallback = (map['narrative_text'] ?? map['summary'] ?? '')
-        .toString()
-        .trim();
-    return fallback;
+    return ProfileV8Adapter.safeText(map['narrative_text']) ??
+        ProfileV8Adapter.safeText(map['summary']) ??
+        '';
   }
 
   String _extractNatalHeadline(Map<String, dynamic> map) {
+    final profileV8 = _extractPublicField(map, 'profile_v8');
+    final identityAxis = _asMap(profileV8['identity_axis']);
+    final fromV8Headline = ProfileV8Adapter.safeText(identityAxis['headline']);
+    if ((fromV8Headline ?? '').trim().isNotEmpty) {
+      return fromV8Headline?.trim() ?? '';
+    }
     final public = map['public'];
     if (public is Map) {
       final ui = public['core_story_ui'];
-      if (ui is Map && (ui['headline'] ?? '').toString().trim().isNotEmpty) {
-        return (ui['headline'] ?? '').toString().trim();
+      if (ui is Map) {
+        final headline = ProfileV8Adapter.safeText(ui['headline']);
+        if ((headline ?? '').trim().isNotEmpty) {
+          return headline?.trim() ?? '';
+        }
       }
     }
     final directUi = map['core_story_ui'];
-    if (directUi is Map &&
-        (directUi['headline'] ?? '').toString().trim().isNotEmpty) {
-      return (directUi['headline'] ?? '').toString().trim();
+    if (directUi is Map) {
+      final headline = ProfileV8Adapter.safeText(directUi['headline']);
+      if ((headline ?? '').trim().isNotEmpty) {
+        return headline?.trim() ?? '';
+      }
     }
     final blocks = _extractProfileNarrativeCards(map, field: 'core_blocks');
     if (blocks.isNotEmpty) {
@@ -2224,14 +2578,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   List<String> _extractCoreStoryDrivers(Map<String, dynamic> map) {
     List<String> read(dynamic raw) {
-      if (raw is! List) {
-        return const <String>[];
-      }
-      return raw
-          .map((item) => item.toString().trim())
-          .where((item) => item.isNotEmpty)
-          .take(3)
-          .toList();
+      return ProfileV8Adapter.safeTextList(raw, max: 3);
     }
 
     final public = map['public'];
@@ -2256,7 +2603,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   String _extractPersonalityImprintHeadline(Map<String, dynamic> map) {
     final personalityImprint = _extractPublicField(map, 'personality_imprint');
-    return (personalityImprint['headline'] ?? '').toString().trim();
+    return ProfileV8Adapter.safeText(personalityImprint['headline']) ?? '';
   }
 
   Map<String, dynamic> _extractProfilePublicPayload(Map<String, dynamic> map) {
@@ -2546,6 +2893,11 @@ class _ProfilePageState extends State<ProfilePage> {
   List<_SupportingThreadItem> _extractSupportingThreads(
     Map<String, dynamic> map,
   ) {
+    final fullMapThreads = _extractSupportingThreadsFromFullMapV8(map);
+    if (fullMapThreads.isNotEmpty) {
+      return fullMapThreads;
+    }
+
     for (final scope in _natalScopes(map)) {
       final raw = scope['sections_v2'];
       if (raw is! List) {
@@ -2589,6 +2941,190 @@ class _ProfilePageState extends State<ProfilePage> {
     return const [];
   }
 
+  List<_SupportingThreadItem> _extractSupportingThreadsFromFullMapV8(
+    Map<String, dynamic> map,
+  ) {
+    final fullMapV8 = _extractFullMapV8Payload(map);
+    if (fullMapV8.isEmpty) {
+      return const [];
+    }
+    const order = <String>['kimlik', 'iliski', 'kariyer', 'golge'];
+    final result = <_SupportingThreadItem>[];
+    for (final tabKey in order) {
+      final tab = _asMap(fullMapV8[tabKey]);
+      if (tab.isEmpty) {
+        continue;
+      }
+      final item = _threadFromFullMapTab(tabKey: tabKey, tab: tab);
+      if (item == null) {
+        continue;
+      }
+      result.add(item);
+    }
+    return result;
+  }
+
+  Map<String, dynamic> _extractFullMapV8Payload(Map<String, dynamic> map) {
+    for (final scope in _natalScopes(map)) {
+      final direct = _asMap(scope['full_map_v8']);
+      if (direct.isNotEmpty) {
+        return direct;
+      }
+      final scopePublic = _asMap(scope['public']);
+      final nested = _asMap(scopePublic['full_map_v8']);
+      if (nested.isNotEmpty) {
+        return nested;
+      }
+    }
+    return <String, dynamic>{};
+  }
+
+  _SupportingThreadItem? _threadFromFullMapTab({
+    required String tabKey,
+    required Map<String, dynamic> tab,
+  }) {
+    final pullQuote = _asMap(tab['pull_quote']);
+    final mechanism = _asMap(tab['mechanism']);
+    final openingPoint = _asMap(tab['opening_point']);
+    final mission = _asMap(tab['mission']);
+    final past = _asListOfMaps(tab['past_fragments']);
+    final shadow = _asListOfMaps(tab['shadow_fragments']);
+    final potentials = _asListOfMaps(tab['potentials']);
+    final detailBlocks = <String>[];
+    final chips = <String>[];
+
+    void addChips(dynamic raw) {
+      for (final chip in _sanitizeUserFacingChips(raw, max: 6)) {
+        final duplicate = chips.any(
+          (existing) => existing.toLowerCase() == chip.toLowerCase(),
+        );
+        if (!duplicate) {
+          chips.add(chip);
+        }
+        if (chips.length >= 4) {
+          return;
+        }
+      }
+    }
+
+    void addEditorial(dynamic raw, {String prefix = ''}) {
+      final section = _asMap(raw);
+      if (section.isEmpty) {
+        return;
+      }
+      addChips(section['chips']);
+      final headline = _safeThreadText(section['headline']);
+      final body = _safeThreadText(section['body']);
+      final compact = <String>[
+        if (prefix.trim().isNotEmpty) prefix.trim(),
+        if (headline.trim().isNotEmpty) headline.trim(),
+      ].join(' · ');
+      final line = body.trim().isNotEmpty
+          ? (compact.isEmpty ? body.trim() : '$compact — ${body.trim()}')
+          : compact;
+      final clean = normalizeTurkishText(line);
+      if (clean.isEmpty) {
+        return;
+      }
+      detailBlocks.add(_shortenThreadText(clean, limit: 220));
+    }
+
+    addEditorial(pullQuote, prefix: 'Öne çıkan');
+    for (final item in past.take(3)) {
+      addEditorial(item, prefix: 'Geçmiş izi');
+    }
+    addEditorial(mechanism, prefix: 'Mekanizma');
+    addEditorial(openingPoint, prefix: 'Açılış');
+    addEditorial(mission, prefix: 'Misyon');
+    for (final step in _asListOfMaps(mission['steps']).take(3)) {
+      final label = _safeThreadText(step['label']);
+      final text = _safeThreadText(step['text']);
+      final line = <String>[
+        if (label.trim().isNotEmpty) label.trim(),
+        if (text.trim().isNotEmpty) text.trim(),
+      ].join(' — ');
+      final clean = normalizeTurkishText(line);
+      if (clean.isEmpty) {
+        continue;
+      }
+      detailBlocks.add(_shortenThreadText(clean, limit: 220));
+    }
+    for (final item in shadow.take(2)) {
+      addEditorial(item, prefix: 'Gölge');
+    }
+    for (final item in potentials.take(2)) {
+      addEditorial(item, prefix: 'Potansiyel');
+    }
+
+    final title = _fullMapTabTitle(tabKey);
+    final oneLiner = _shortenThreadText(
+      _firstThreadText(<dynamic>[
+            pullQuote['headline'],
+            pullQuote['body'],
+            openingPoint['headline'],
+            mechanism['headline'],
+            mission['headline'],
+            detailBlocks.isNotEmpty ? detailBlocks.first : null,
+          ]) ??
+          '',
+      limit: 136,
+    );
+    final paragraph = detailBlocks.join('\n\n').trim();
+    if (title.trim().isEmpty &&
+        oneLiner.trim().isEmpty &&
+        paragraph.trim().isEmpty) {
+      return null;
+    }
+    return _SupportingThreadItem(
+      id: tabKey,
+      title: title,
+      oneLiner: oneLiner.trim().isNotEmpty
+          ? oneLiner
+          : context.l10n.profileSideThemesFlowSubtitle,
+      paragraph: paragraph,
+      detailBlocks: _sanitizeUserFacingParagraphs(detailBlocks, max: 10),
+      chips: chips,
+      astroSources: const <String>[],
+    );
+  }
+
+  String _fullMapTabTitle(String tabKey) {
+    switch (tabKey.trim().toLowerCase()) {
+      case 'kimlik':
+        return 'Kimlik';
+      case 'iliski':
+        return 'İlişki';
+      case 'kariyer':
+        return 'Kariyer';
+      case 'golge':
+        return 'Gölge';
+      default:
+        return normalizeTurkishText(tabKey.replaceAll('_', ' '));
+    }
+  }
+
+  String? _firstThreadText(Iterable<dynamic> values) {
+    for (final value in values) {
+      final text = _safeThreadText(value);
+      if (text.trim().isNotEmpty) {
+        return text.trim();
+      }
+    }
+    return null;
+  }
+
+  String _safeThreadText(dynamic value) {
+    return ProfileV8Adapter.safeText(value) ?? '';
+  }
+
+  String _shortenThreadText(String value, {required int limit}) {
+    final normalized = normalizeTurkishText(value);
+    if (normalized.length <= limit) {
+      return normalized;
+    }
+    return '${normalized.substring(0, limit - 1).trimRight()}…';
+  }
+
   Map<String, dynamic> _extractPublicField(
     Map<String, dynamic> map,
     String field,
@@ -2627,9 +3163,8 @@ class _ProfilePageState extends State<ProfilePage> {
     final headline = _extractNatalHeadline(map);
     final drivers = _extractCoreStoryDrivers(map);
     final overview = _extractNatalSummary(map);
-    final detailBody = leadIdentityCard?.body.isNotEmpty == true
-        ? leadIdentityCard!.body
-        : overview;
+    final leadBody = (leadIdentityCard?.body ?? '').trim();
+    final detailBody = leadBody.isNotEmpty ? leadBody : overview;
     final imprintHeadline = _extractPersonalityImprintHeadline(map);
     return _ProfileIdentityContext(
       headline: headline,
@@ -2675,6 +3210,35 @@ class _ProfilePageState extends State<ProfilePage> {
       chartRuler: (raw['chart_ruler'] ?? '').toString().trim(),
       chartRulerHouse: _asInt(raw['chart_ruler_house']),
     );
+  }
+
+  void _applyFastProfileSnapshot(Map<String, dynamic> map) {
+    final snapshot = _extractProfileFastSnapshot(map);
+    if (snapshot == null || !mounted) {
+      return;
+    }
+
+    final nextSun = snapshot.sunSign.trim().isEmpty
+        ? _sunSign
+        : _toTrSign(snapshot.sunSign);
+    final nextMoon = snapshot.moonSign.trim().isEmpty
+        ? _moonSign
+        : _toTrSign(snapshot.moonSign);
+    final nextRising = snapshot.risingSign.trim().isEmpty
+        ? _risingSign
+        : _toTrSign(snapshot.risingSign);
+
+    if (nextSun == _sunSign &&
+        nextMoon == _moonSign &&
+        nextRising == _risingSign) {
+      return;
+    }
+
+    setState(() {
+      _sunSign = nextSun;
+      _moonSign = nextMoon;
+      _risingSign = nextRising;
+    });
   }
 
   _ProfileNarrativeCard? _pickLeadIdentityCard(
@@ -3283,10 +3847,12 @@ class _ProfilePageState extends State<ProfilePage> {
     required List<String> drivers,
     required _ProfileIdentityContext? identityContext,
   }) {
+    final rulerName = (identityContext?.rulerName ?? '').trim();
+    final rulerHouse = identityContext?.rulerHouse;
     final parts = <String>[
       if (drivers.isNotEmpty) drivers.take(3).join(' • '),
-      if ((identityContext?.rulerName ?? '').trim().isNotEmpty)
-        '${identityContext!.rulerName}${identityContext.rulerHouse == null ? '' : ' • ${identityContext.rulerHouse}. ev'}',
+      if (rulerName.isNotEmpty)
+        '$rulerName${rulerHouse == null ? '' : ' • $rulerHouse. ev'}',
     ];
     if (parts.isNotEmpty) {
       return '$displayName için bu okuma ${parts.join(' / ')} izleri üzerinden kuruluyor.';
@@ -3538,9 +4104,8 @@ class _ProfilePageState extends State<ProfilePage> {
     required String summary,
     required List<String> drivers,
   }) {
-    final bodyText = (_identityContext?.detailBody ?? '').trim().isNotEmpty
-        ? _identityContext!.detailBody
-        : summary;
+    final detailBody = (_identityContext?.detailBody ?? '').trim();
+    final bodyText = detailBody.isNotEmpty ? detailBody : summary;
     return ProfileDetailSceneData(
       id: 'identity_flow',
       eyebrow: context.l10n.profileIdentityEyebrow,
@@ -3656,7 +4221,6 @@ class _ProfilePageState extends State<ProfilePage> {
         builder: (context) => ProfileArchetypeExperiencePage(
           displayName: displayName,
           requestPayload: payload,
-          baseUrl: _baseUrl,
         ),
       ),
     );
@@ -3823,9 +4387,8 @@ class _ProfilePageState extends State<ProfilePage> {
     String? micro,
     List<String> chips = const <String>[],
   }) async {
-    final resolvedBody = body.trim().isNotEmpty
-        ? body.trim()
-        : (micro ?? '').trim();
+    final microText = (micro ?? '').trim();
+    final resolvedBody = body.trim().isNotEmpty ? body.trim() : microText;
     if (resolvedBody.isEmpty) {
       return;
     }
@@ -3875,10 +4438,10 @@ class _ProfilePageState extends State<ProfilePage> {
                       height: 1.65,
                     ),
                   ),
-                  if ((micro ?? '').trim().isNotEmpty) ...[
+                  if (microText.isNotEmpty) ...[
                     const SizedBox(height: 16),
                     Text(
-                      micro!,
+                      microText,
                       style: profile.typography.micro.copyWith(
                         color: palette.muted,
                       ),
@@ -3930,19 +4493,17 @@ class _SupportingThreadItem {
   });
 
   factory _SupportingThreadItem.fromMap(Map<String, dynamic> map) {
-    String s(String key) => (map[key] ?? '').toString().trim();
+    String s(String key) => ProfileV8Adapter.safeText(map[key]) ?? '';
     List<String> readList(String key) {
-      return _sanitizeUserFacingChips(map[key], max: 3);
+      return _sanitizeUserFacingChips(
+        ProfileV8Adapter.safeTextList(map[key], max: 6),
+        max: 3,
+      );
     }
 
     List<String> readAstroSources(String key) {
-      final raw = map[key];
-      if (raw is! List) {
-        return const <String>[];
-      }
       final sources = <String>[];
-      for (final item in raw) {
-        final value = item.toString().trim();
+      for (final value in ProfileV8Adapter.safeTextList(map[key], max: 5)) {
         if (value.isEmpty) {
           continue;
         }
@@ -3965,7 +4526,10 @@ class _SupportingThreadItem {
       title: s('title'),
       oneLiner: s('one_liner'),
       paragraph: s('paragraph'),
-      detailBlocks: _sanitizeUserFacingParagraphs(map['detail_blocks'], max: 8),
+      detailBlocks: _sanitizeUserFacingParagraphs(
+        ProfileV8Adapter.safeTextList(map['detail_blocks'], max: 8),
+        max: 8,
+      ),
       chips: readList('chips'),
       astroSources: readAstroSources('astro_sources'),
     );
@@ -4276,16 +4840,15 @@ class _ProfileNarrativeCard {
 
   factory _ProfileNarrativeCard.fromMap(Map<String, dynamic> map) {
     List<String> normalizeChips(dynamic raw) {
-      return _sanitizeUserFacingChips(raw, max: 4);
+      return _sanitizeUserFacingChips(
+        ProfileV8Adapter.safeTextList(raw, max: 8),
+        max: 4,
+      );
     }
 
     List<String> normalizeAstroSources(dynamic raw) {
-      if (raw is! List) {
-        return const <String>[];
-      }
       final sources = <String>[];
-      for (final item in raw) {
-        final value = item.toString().trim();
+      for (final value in ProfileV8Adapter.safeTextList(raw, max: 6)) {
         if (value.isEmpty) {
           continue;
         }
@@ -4304,24 +4867,24 @@ class _ProfileNarrativeCard {
     }
 
     String pickTitle() {
-      final title = (map['title'] ?? '').toString().trim();
-      if (title.isNotEmpty) {
+      final title = ProfileV8Adapter.safeText(map['title']) ?? '';
+      if (title.trim().isNotEmpty) {
         return title;
       }
-      return (map['headline'] ?? '').toString().trim();
+      return ProfileV8Adapter.safeText(map['headline']) ?? '';
     }
 
     String pickSummary() {
-      final teaser = (map['teaser'] ?? '').toString().trim();
-      if (teaser.isNotEmpty) {
+      final teaser = ProfileV8Adapter.safeText(map['teaser']) ?? '';
+      if (teaser.trim().isNotEmpty) {
         return teaser;
       }
-      return (map['summary'] ?? '').toString().trim();
+      return ProfileV8Adapter.safeText(map['summary']) ?? '';
     }
 
     String pickEyebrow() {
       final l10n = _currentProfileL10n();
-      final eyebrow = (map['eyebrow'] ?? '').toString().trim();
+      final eyebrow = ProfileV8Adapter.safeText(map['eyebrow']) ?? '';
       final lowerEyebrow = eyebrow.toLowerCase();
       if (lowerEyebrow == 'kişilik izi' ||
           lowerEyebrow == 'kisilik izi' ||
@@ -4332,7 +4895,7 @@ class _ProfileNarrativeCard {
       if (eyebrow.isNotEmpty) {
         return eyebrow;
       }
-      final family = (map['family'] ?? '').toString().trim();
+      final family = ProfileV8Adapter.safeText(map['family']) ?? '';
       return switch (family) {
         'placement_signature' => l10n.profileFeaturedTheme,
         'tone_signature' => l10n.profileFeaturedTheme,
@@ -4349,16 +4912,19 @@ class _ProfileNarrativeCard {
     }
 
     return _ProfileNarrativeCard(
-      cardKey: (map['card_key'] ?? '').toString().trim(),
-      id: (map['id'] ?? '').toString().trim(),
-      family: (map['family'] ?? '').toString().trim(),
-      origin: (map['origin'] ?? '').toString().trim(),
+      cardKey: ProfileV8Adapter.safeText(map['card_key']) ?? '',
+      id: ProfileV8Adapter.safeText(map['id']) ?? '',
+      family: ProfileV8Adapter.safeText(map['family']) ?? '',
+      origin: ProfileV8Adapter.safeText(map['origin']) ?? '',
       eyebrow: pickEyebrow(),
       title: pickTitle(),
       summary: pickSummary(),
-      body: (map['body'] ?? '').toString().trim(),
-      micro: (map['micro'] ?? '').toString().trim(),
-      detailBlocks: _sanitizeUserFacingParagraphs(map['detail_blocks'], max: 7),
+      body: ProfileV8Adapter.safeText(map['body']) ?? '',
+      micro: ProfileV8Adapter.safeText(map['micro']) ?? '',
+      detailBlocks: _sanitizeUserFacingParagraphs(
+        ProfileV8Adapter.safeTextList(map['detail_blocks'], max: 7),
+        max: 7,
+      ),
       chips: normalizeChips(map['chips']),
       astroSources: normalizeAstroSources(map['astro_sources']),
     );
@@ -4387,11 +4953,17 @@ class _ProfileInsightModule {
               ? Map<String, dynamic>.from(map['content'] as Map)
               : <String, dynamic>{});
     return _ProfileInsightModule(
-      moduleId: (map['module_id'] ?? '').toString().trim(),
-      headline: (map['headline'] ?? '').toString().trim(),
-      subheadline: (map['subheadline'] ?? '').toString().trim(),
-      title: (content['title'] ?? map['title'] ?? '').toString().trim(),
-      body: (content['body'] ?? map['body'] ?? '').toString().trim(),
+      moduleId: ProfileV8Adapter.safeText(map['module_id']) ?? '',
+      headline: ProfileV8Adapter.safeText(map['headline']) ?? '',
+      subheadline: ProfileV8Adapter.safeText(map['subheadline']) ?? '',
+      title:
+          ProfileV8Adapter.safeText(content['title']) ??
+          ProfileV8Adapter.safeText(map['title']) ??
+          '',
+      body:
+          ProfileV8Adapter.safeText(content['body']) ??
+          ProfileV8Adapter.safeText(map['body']) ??
+          '',
     );
   }
 }
@@ -4411,64 +4983,71 @@ class _ProfilePosterTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.profileTheme;
-    final palette = _profilePosterPalette(context);
-    return Row(
-      children: [
-        SizedBox(
-          width: 72,
-          child: readOnly
-              ? Align(
-                  alignment: Alignment.centerLeft,
-                  child: _ProfilePosterIconButton(
-                    onTap: onLeadingTap,
-                    child: JoviaUiIcon(
-                      asset: JoviaUiAsset.back,
-                      size: 18,
-                      color: palette.text,
-                    ),
-                  ),
-                )
-              : Text(
-                  'PROFIL',
-                  style: profile.typography.eyebrow.copyWith(
-                    color: palette.text,
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 2.4,
-                  ),
-                ),
-        ),
-        Expanded(
-          child: Text(
-            username,
-            textAlign: TextAlign.center,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: profile.typography.micro.copyWith(
-              color: palette.textSoft,
-              fontSize: 13.5,
-              fontWeight: FontWeight.w600,
+    const muted = Color(0xFF555555);
+    Widget rightAction = const SizedBox(width: 15, height: 11);
+    if (onActionTap != null) {
+      rightAction = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onActionTap,
+        child: const SizedBox(
+          width: 24,
+          height: 24,
+          child: Center(
+            child: JoviaUiIcon(
+              asset: JoviaUiAsset.menuStack,
+              size: 15,
+              color: muted,
             ),
           ),
         ),
-        SizedBox(
-          width: 72,
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: onActionTap == null
-                ? const SizedBox(width: 40, height: 40)
-                : _ProfilePosterIconButton(
-                    onTap: onActionTap,
-                    child: JoviaUiIcon(
-                      asset: JoviaUiAsset.menuStack,
-                      size: 18,
-                      color: palette.text,
-                    ),
+      );
+    }
+    return SizedBox(
+      height: 18,
+      child: Row(
+        children: [
+          if (readOnly)
+            GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: onLeadingTap,
+              child: const SizedBox(
+                width: 24,
+                height: 24,
+                child: Center(
+                  child: JoviaUiIcon(
+                    asset: JoviaUiAsset.back,
+                    size: 14,
+                    color: Colors.white,
                   ),
+                ),
+              ),
+            )
+          else
+            Container(
+              width: 5,
+              height: 5,
+              decoration: BoxDecoration(
+                color: _kProfileFigmaLime,
+                borderRadius: BorderRadius.circular(2.5),
+              ),
+            ),
+          const SizedBox(width: 6),
+          Expanded(
+            child: Text(
+              username,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: context.profileTheme.typography.micro.copyWith(
+                color: muted,
+                fontSize: 9.5,
+                fontWeight: FontWeight.w400,
+                letterSpacing: 0.4,
+              ),
+            ),
           ),
-        ),
-      ],
+          rightAction,
+        ],
+      ),
     );
   }
 }
@@ -4488,6 +5067,7 @@ class _ProfilePosterHeader extends StatelessWidget {
     required this.risingSign,
     this.onConnectionsTap,
     this.onPrimaryTap,
+    this.onOpenMapTap,
   });
 
   final String displayName;
@@ -4503,157 +5083,309 @@ class _ProfilePosterHeader extends StatelessWidget {
   final String risingSign;
   final VoidCallback? onConnectionsTap;
   final VoidCallback? onPrimaryTap;
+  final VoidCallback? onOpenMapTap;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    final palette = _profilePosterPalette(context);
-    final content = Container(
-      constraints: const BoxConstraints(minHeight: 180),
-      padding: const EdgeInsets.fromLTRB(20, 26, 20, 26),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-          colors: palette.isDark
-              ? const <Color>[
-                  Color(0xFF090807),
-                  Color(0xFF12100F),
-                  Color(0xFF161312),
-                ]
-              : <Color>[
-                  Colors.white,
-                  palette.surfaceDeep,
-                  Color.alphaBlend(
-                    palette.accentSoft.withValues(alpha: 0.34),
-                    Colors.white,
+    final locale = Localizations.localeOf(context);
+
+    final friendCount = followerCount > 0
+        ? followerCount
+        : peoplePreview.length;
+    final isTurkish = locale.languageCode == 'tr';
+    final followLabel = isTurkish ? 'Takip' : 'Following';
+    final friendLabel = isTurkish ? 'Arkadaş' : 'Friends';
+    final mapTitle = isTurkish ? 'Haritamı gör' : 'See my chart';
+    final forumLabel = isTurkish ? 'Forum aktif' : 'Forum active';
+    final forumCount = isTurkish
+        ? '$followingCount takip'
+        : '$followingCount following';
+    final mapBadges = isTurkish
+        ? const <String>['Kimlik', 'İlişki', 'Kariyer', 'Gölge']
+        : const <String>['Identity', 'Relation', 'Career', 'Shadow'];
+
+    Widget astroChip(String text, {bool moon = false}) {
+      return Container(
+        height: 29,
+        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4.5),
+        decoration: BoxDecoration(
+          color: moon ? const Color(0xFFF1EFFF) : const Color(0xFFF6F6F9),
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(
+            color: moon
+                ? const Color.fromRGBO(83, 74, 183, 0.13)
+                : const Color.fromRGBO(0, 0, 0, 0.055),
+            width: 0.9,
+          ),
+        ),
+        child: Text(
+          text,
+          style: profile.typography.micro.copyWith(
+            color: moon ? const Color(0xFF4E45B4) : const Color(0xFF6B6B6B),
+            fontSize: 8.7,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.02,
+          ),
+        ),
+      );
+    }
+
+    Widget overlapDot(Color color) {
+      return Container(
+        width: 16,
+        height: 16,
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Colors.white),
+        ),
+      );
+    }
+
+    Widget avatar() {
+      final resolvedAvatarUrl = (avatarUrl ?? '').trim();
+      final content = SizedBox(
+        width: 86,
+        height: 86,
+        child: Stack(
+          children: [
+            Positioned.fill(
+              child: IgnorePointer(
+                child: CustomPaint(
+                  painter: _ProfilePosterDashedRingPainter(
+                    color: _kProfileFigmaLime,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              left: 10,
+              top: 10,
+              child: Container(
+                width: 66,
+                height: 66,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF1A2A0E),
+                  borderRadius: BorderRadius.circular(33),
+                ),
+                alignment: Alignment.center,
+                child: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2E4A18),
+                    borderRadius: BorderRadius.circular(21),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: resolvedAvatarUrl.isEmpty
+                      ? null
+                      : Image.network(
+                          resolvedAvatarUrl,
+                          fit: BoxFit.cover,
+                          errorBuilder: (_, _, _) => const SizedBox.shrink(),
+                        ),
+                ),
+              ),
+            ),
+            Positioned(
+              right: 13,
+              bottom: 13,
+              child: Container(
+                width: 11,
+                height: 11,
+                decoration: BoxDecoration(
+                  color: _kProfileFigmaLime,
+                  borderRadius: BorderRadius.circular(5.5),
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+      if (onAvatarEdit == null) {
+        return content;
+      }
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onAvatarEdit,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            content,
+            if (isAvatarUploading)
+              const SizedBox(
+                width: 18,
+                height: 18,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+          ],
+        ),
+      );
+    }
+
+    Widget identityRow = Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        avatar(),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 4),
+              Text(
+                displayName,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: profile.typography.heroName.copyWith(
+                  color: const Color(0xFF111111),
+                  fontSize: 21.9,
+                  height: 1.06,
+                  letterSpacing: -0.48,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(height: 4),
+              if (metaLabel.trim().isNotEmpty)
+                Text(
+                  metaLabel,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: profile.typography.micro.copyWith(
+                    color: const Color(0xFFC2C2C2),
+                    fontSize: 10.35,
+                    fontWeight: FontWeight.w400,
+                    letterSpacing: 0.02,
+                  ),
+                ),
+              const SizedBox(height: 7),
+              Wrap(
+                spacing: 3.5,
+                runSpacing: 3.5,
+                children: [
+                  astroChip('☀ ${sunSign.trim().isEmpty ? '—' : sunSign}'),
+                  astroChip(
+                    '↗ ${risingSign.trim().isEmpty ? '—' : risingSign}',
+                  ),
+                  astroChip(
+                    '☽ ${moonSign.trim().isEmpty ? '—' : moonSign}',
+                    moon: true,
                   ),
                 ],
+              ),
+            ],
+          ),
         ),
-        border: palette.isDark ? null : Border.all(color: palette.stroke),
-        boxShadow: palette.isDark
-            ? null
-            : [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 26,
-                  offset: const Offset(0, 16),
-                  spreadRadius: -22,
-                ),
-              ],
+      ],
+    );
+
+    if (onPrimaryTap != null) {
+      identityRow = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onPrimaryTap,
+        child: identityRow,
+      );
+    }
+
+    Widget socialStats = Container(
+      height: 56.8,
+      decoration: BoxDecoration(
+        color: const Color.fromRGBO(0, 0, 0, 0.048),
+        borderRadius: BorderRadius.circular(14),
       ),
-      child: Stack(
+      padding: const EdgeInsets.all(0.45),
+      child: Row(
         children: [
-          Positioned(
-            right: -34,
-            top: -18,
-            child: Container(
-              width: 170,
-              height: 170,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    (palette.isDark ? Colors.white : palette.accent).withValues(
-                      alpha: palette.isDark ? 0.08 : 0.12,
+          Expanded(
+            child: _ProfilePosterStatCell(
+              value: '$followingCount',
+              label: followLabel,
+            ),
+          ),
+          Container(
+            width: 0.45,
+            color: const Color.fromRGBO(0, 0, 0, 0.045),
+          ),
+          Expanded(
+            child: _ProfilePosterStatCell(
+              value: '$friendCount',
+              label: friendLabel,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (onConnectionsTap != null) {
+      socialStats = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onConnectionsTap,
+        child: socialStats,
+      );
+    }
+
+    Widget forumRow = Container(
+      decoration: BoxDecoration(
+        color: const Color.fromRGBO(202, 255, 77, 0.06),
+        border: Border.all(color: const Color.fromRGBO(202, 255, 77, 0.26)),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+      child: Row(
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 7,
+                height: 7,
+                decoration: BoxDecoration(
+                  color: _kProfileFigmaLime,
+                  borderRadius: BorderRadius.circular(3.5),
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                forumLabel,
+                style: profile.typography.micro.copyWith(
+                  color: const Color(0xFF1A3300),
+                  fontSize: 10.3,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          const Spacer(),
+          Row(
+            children: [
+              SizedBox(
+                width: 38,
+                height: 16,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: 0,
+                      child: overlapDot(const Color(0xFFDDD8FC)),
                     ),
-                    Colors.transparent,
+                    Positioned(
+                      left: 11,
+                      child: overlapDot(const Color(0xFFD2F2A0)),
+                    ),
+                    Positioned(
+                      left: 22,
+                      child: overlapDot(const Color(0xFFE8E8EC)),
+                    ),
                   ],
                 ),
               ),
-            ),
-          ),
-          Positioned(
-            right: 14,
-            top: 14,
-            child: JoviaIllustrationAccent(
-              asset: JoviaIllustrationAsset.sunGrowth,
-              width: 84,
-              height: 84,
-              opacity: palette.isDark ? 0.82 : 0.56,
-            ),
-          ),
-          Positioned(
-            right: 8,
-            bottom: 6,
-            child: Opacity(
-              opacity: palette.isDark ? 0.8 : 0.96,
-              child: JoviaMoodStickerCluster(
-                size: 22,
-                colors: <Color>[
-                  palette.accent,
-                  palette.accentWarm,
-                  palette.accentSoft,
-                ],
-              ),
-            ),
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _AvatarHalo(
-                size: 74,
-                imageUrl: avatarUrl,
-                onEdit: onAvatarEdit,
-                isUploading: isAvatarUploading,
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      displayName,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: profile.typography.heroName.copyWith(
-                        color: palette.text,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 25.5,
-                        height: 0.98,
-                      ),
-                    ),
-                    const SizedBox(height: 7),
-                    _ProfilePosterFollowStatsRow(
-                      followingCount: followingCount,
-                      followerCount: followerCount,
-                      people: peoplePreview,
-                      onOpenConnections: onConnectionsTap,
-                    ),
-                    const SizedBox(height: 11),
-                    Wrap(
-                      spacing: 12,
-                      runSpacing: 8,
-                      children: [
-                        _ProfilePosterAstroItem(
-                          label: context.l10n.profileSunLabel,
-                          value: sunSign,
-                        ),
-                        _ProfilePosterAstroItem(
-                          label: context.l10n.profileRisingLabel,
-                          value: risingSign,
-                        ),
-                        _ProfilePosterAstroItem(
-                          label: context.l10n.profileMoonLabel,
-                          value: moonSign,
-                        ),
-                      ],
-                    ),
-                    if (metaLabel.trim().isNotEmpty) ...[
-                      const SizedBox(height: 10),
-                      Text(
-                        metaLabel,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: profile.typography.micro.copyWith(
-                          color: palette.muted,
-                          fontSize: 12.8,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ],
-                  ],
+              const SizedBox(width: 5),
+              Text(
+                forumCount,
+                style: profile.typography.micro.copyWith(
+                  color: const Color(0xFF3B6D11),
+                  fontSize: 8.8,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ],
@@ -4661,13 +5393,220 @@ class _ProfilePosterHeader extends StatelessWidget {
         ],
       ),
     );
-    if (onPrimaryTap == null) {
-      return content;
+
+    if (onConnectionsTap != null) {
+      forumRow = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onConnectionsTap,
+        child: forumRow,
+      );
     }
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(onTap: onPrimaryTap, child: content),
+
+    Widget mapCta = Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFFCFCFD),
+        border: Border.all(color: const Color.fromRGBO(0, 0, 0, 0.09)),
+        borderRadius: BorderRadius.circular(14),
+      ),
+      padding: const EdgeInsets.fromLTRB(15, 17, 15, 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: 34,
+                  height: 34,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    border: Border.all(
+                      color: const Color.fromRGBO(0, 0, 0, 0.08),
+                    ),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: const Center(
+                    child: JoviaUiIcon(
+                      asset: JoviaUiAsset.orbitPlanet,
+                      size: 16,
+                      color: Color(0xFF666666),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        mapTitle,
+                        style: profile.typography.micro.copyWith(
+                          color: const Color(0xFF111111),
+                          fontSize: 11.7,
+                          letterSpacing: -0.1,
+                          fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Wrap(
+                        spacing: 4,
+                        runSpacing: 4,
+                        children: [
+                          for (final badge in mapBadges)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF5F5F8),
+                                borderRadius: BorderRadius.circular(4),
+                                border: Border.all(
+                                  color: const Color.fromRGBO(0, 0, 0, 0.07),
+                                ),
+                              ),
+                              child: Text(
+                                badge,
+                                style: profile.typography.micro.copyWith(
+                                  color: const Color(0xFF555555),
+                                  fontSize: 7.9,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 10),
+          Container(
+            width: 28,
+            height: 28,
+            decoration: BoxDecoration(
+              color: const Color(0xFF111111),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Center(
+              child: JoviaUiIcon(
+                asset: JoviaUiAsset.chevronRight,
+                size: 10,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
+
+    if (onOpenMapTap != null) {
+      mapCta = GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onOpenMapTap,
+        child: mapCta,
+      );
+    }
+
+    final content = Container(
+      color: Colors.white,
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: identityRow,
+          ),
+          socialStats,
+          const SizedBox(height: 8),
+          forumRow,
+          const SizedBox(height: 8),
+          mapCta,
+        ],
+      ),
+    );
+    return ExcludeSemantics(child: content);
+  }
+}
+
+class _ProfilePosterStatCell extends StatelessWidget {
+  const _ProfilePosterStatCell({required this.value, required this.label});
+
+  final String value;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final locale = Localizations.localeOf(context);
+    final upperLabel = locale.languageCode == 'tr'
+        ? turkishToUpper(label)
+        : label.toUpperCase();
+    return Container(
+      color: Colors.white,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 6, 0, 7),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              value,
+              style: profile.typography.heroName.copyWith(
+                color: const Color(0xFF111111),
+                fontSize: 17.8,
+                height: 19.8 / 18,
+                letterSpacing: -0.4,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              upperLabel,
+              style: profile.typography.micro.copyWith(
+                color: const Color(0xFFD2D2D2),
+                fontSize: 8,
+                letterSpacing: 0.78,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ProfilePosterDashedRingPainter extends CustomPainter {
+  const _ProfilePosterDashedRingPainter({required this.color});
+
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final stroke = Paint()
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2
+      ..color = color;
+    final radius = (size.shortestSide - stroke.strokeWidth) / 2;
+    final center = Offset(size.width / 2, size.height / 2);
+    final rect = Rect.fromCircle(center: center, radius: radius);
+    const dashCount = 24;
+    const gapRatio = 0.38;
+    final step = (2 * 3.141592653589793) / dashCount;
+    final sweep = step * (1 - gapRatio);
+    for (var i = 0; i < dashCount; i++) {
+      final start = i * step;
+      canvas.drawArc(rect, start, sweep, false, stroke);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant _ProfilePosterDashedRingPainter oldDelegate) {
+    return oldDelegate.color != color;
   }
 }
 
@@ -4676,13 +5615,11 @@ class _ProfilePosterFollowStatsRow extends StatelessWidget {
     required this.followingCount,
     required this.followerCount,
     required this.people,
-    this.onOpenConnections,
   });
 
   final int followingCount;
   final int followerCount;
   final List<PersonProfile> people;
-  final VoidCallback? onOpenConnections;
 
   @override
   Widget build(BuildContext context) {
@@ -4722,17 +5659,7 @@ class _ProfilePosterFollowStatsRow extends StatelessWidget {
           ],
         ),
       );
-      if (onOpenConnections == null || people.isEmpty) {
-        return child;
-      }
-      return Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(999),
-          onTap: onOpenConnections,
-          child: child,
-        ),
-      );
+      return child;
     }
 
     return Column(
@@ -4748,57 +5675,50 @@ class _ProfilePosterFollowStatsRow extends StatelessWidget {
         ),
         if (people.isNotEmpty) ...[
           const SizedBox(height: 10),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(999),
-              onTap: onOpenConnections,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SizedBox(
-                      width: 72,
-                      height: 28,
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          for (
-                            var index = 0;
-                            index < people.take(3).length;
-                            index++
-                          )
-                            Positioned(
-                              left: index * 20,
-                              child: _ProfilePosterMiniAvatar(
-                                name: people[index].name,
-                                tint: _profilePosterFeatureColor(index + 1),
-                                size: 28,
-                                showIndicator: false,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      people.length == 1
-                          ? context.l10n.profileOpenSinglePersonProfile(
-                              people.first.name,
-                            )
-                          : context.l10n.profileOpenManyPersonProfiles(
-                              people.length,
-                            ),
-                      style: profile.typography.micro.copyWith(
-                        color: palette.muted,
-                        fontSize: 12.4,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 2),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 72,
+                  height: 28,
+                  child: Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      for (
+                        var index = 0;
+                        index < people.take(3).length;
+                        index++
+                      )
+                        Positioned(
+                          left: index * 20,
+                          child: _ProfilePosterMiniAvatar(
+                            name: people[index].name,
+                            tint: _profilePosterFeatureColor(index + 1),
+                            size: 28,
+                            showIndicator: false,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8),
+                Text(
+                  people.length == 1
+                      ? context.l10n.profileOpenSinglePersonProfile(
+                          people.first.name,
+                        )
+                      : context.l10n.profileOpenManyPersonProfiles(
+                          people.length,
+                        ),
+                  style: profile.typography.micro.copyWith(
+                    color: palette.muted,
+                    fontSize: 12.4,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -4905,16 +5825,246 @@ class _ProfilePosterSectionTag extends StatelessWidget {
   }
 }
 
+class _ProfileFigmaPullQuote extends StatelessWidget {
+  const _ProfileFigmaPullQuote({
+    required this.label,
+    required this.title,
+    this.onTap,
+  });
+
+  final String label;
+  final String title;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
+    final isDark = palette.isDark;
+    final locale = Localizations.localeOf(context);
+    final upperLabel = locale.languageCode == 'tr'
+        ? turkishToUpper(label)
+        : label.toUpperCase();
+
+    final content = Container(
+      color: isDark ? const Color(0xFF111111) : const Color(0xFFFAFAFA),
+      padding: const EdgeInsets.fromLTRB(20, 33, 20, 34),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+            upperLabel,
+            textAlign: TextAlign.center,
+            style: profile.typography.micro.copyWith(
+              color: isDark
+                  ? Colors.white.withValues(alpha: 0.6)
+                  : const Color(0xFFCCCCCC),
+              fontSize: 9,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.08,
+            ),
+          ),
+          const SizedBox(height: 18),
+          Text(
+            title.trim().isEmpty ? '—' : title.trim(),
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: profile.typography.section.copyWith(
+              color: isDark ? palette.text : const Color(0xFF111111),
+              fontSize: 22.7,
+              height: 1.27,
+              letterSpacing: -0.5,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(width: 20, height: 2, color: _kProfileFigmaLime),
+        ],
+      ),
+    );
+
+    if (onTap == null) {
+      return content;
+    }
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(onTap: onTap, child: content),
+    );
+  }
+}
+
+class _ProfileFigmaInsightStrip extends StatelessWidget {
+  const _ProfileFigmaInsightStrip({
+    required this.auraValue,
+    required this.auraSubtitle,
+    required this.rulerValue,
+    required this.rulerSubtitle,
+    required this.rhythmValue,
+    required this.rhythmSubtitle,
+    this.onTap,
+  });
+
+  final String auraValue;
+  final String auraSubtitle;
+  final String rulerValue;
+  final String rulerSubtitle;
+  final String rhythmValue;
+  final String rhythmSubtitle;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final profile = context.profileTheme;
+    final palette = _profilePosterPalette(context);
+    final isDark = palette.isDark;
+    final locale = Localizations.localeOf(context);
+    String upper(String value) => locale.languageCode == 'tr'
+        ? turkishToUpper(value)
+        : value.toUpperCase();
+
+    final stripBg = isDark
+        ? Colors.white.withValues(alpha: 0.06)
+        : Colors.black.withValues(alpha: 0.06);
+    final cardBg = isDark ? const Color(0xFF111111) : Colors.white;
+    final labelColor = isDark
+        ? Colors.white.withValues(alpha: 0.5)
+        : const Color(0xFFBBBBBB);
+    final valueColor = isDark ? palette.text : const Color(0xFF111111);
+    final subtitleColor = isDark
+        ? Colors.white.withValues(alpha: 0.4)
+        : const Color(0xFFAAAAAA);
+
+    final rhythmLabel = locale.languageCode == 'tr'
+        ? 'İç ritim'
+        : 'Inner rhythm';
+
+    Widget item({
+      required String label,
+      required Color iconBg,
+      required IconData icon,
+      required String title,
+      required String subtitle,
+    }) {
+      return Container(
+        color: cardBg,
+        padding: const EdgeInsets.fromLTRB(12, 15, 12, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              upper(label),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: profile.typography.micro.copyWith(
+                color: labelColor,
+                fontSize: 8,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.72,
+              ),
+            ),
+            const SizedBox(height: 9),
+            Container(
+              width: 28,
+              height: 28,
+              decoration: BoxDecoration(
+                color: iconBg,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Center(
+                child: Icon(
+                  icon,
+                  size: 13,
+                  color: isDark
+                      ? Colors.white.withValues(alpha: 0.82)
+                      : const Color(0xFF111111),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              title.trim().isEmpty ? '—' : title.trim(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: profile.typography.micro.copyWith(
+                color: valueColor,
+                fontSize: 12.4,
+                fontWeight: FontWeight.w600,
+                letterSpacing: -0.1,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              subtitle.trim(),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: profile.typography.micro.copyWith(
+                color: subtitleColor,
+                fontSize: 9.2,
+                height: 1.45,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    final content = Container(
+      color: stripBg,
+      height: 128,
+      child: Row(
+        children: [
+          Expanded(
+            child: item(
+              label: 'Aura',
+              iconBg: const Color(0xFFD2F2A0),
+              icon: Icons.blur_on_rounded,
+              title: auraValue,
+              subtitle: auraSubtitle,
+            ),
+          ),
+          const SizedBox(width: 1),
+          Expanded(
+            child: item(
+              label: context.l10n.profileRuler,
+              iconBg: const Color(0xFFF0F0F3),
+              icon: Icons.public_rounded,
+              title: rulerValue,
+              subtitle: rulerSubtitle,
+            ),
+          ),
+          const SizedBox(width: 1),
+          Expanded(
+            child: item(
+              label: rhythmLabel,
+              iconBg: const Color(0xFFDDD8FC),
+              icon: Icons.graphic_eq_rounded,
+              title: rhythmValue,
+              subtitle: rhythmSubtitle,
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (onTap == null) {
+      return content;
+    }
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(onTap: onTap, child: content),
+    );
+  }
+}
+
 class _ProfilePosterEditorialStatement extends StatelessWidget {
   const _ProfilePosterEditorialStatement({
     required this.title,
     required this.body,
-    this.onTap,
   });
 
   final String title;
   final String body;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -4967,17 +6117,7 @@ class _ProfilePosterEditorialStatement extends StatelessWidget {
         ],
       ],
     );
-    if (onTap == null) {
-      return content;
-    }
-    return JoviaPressable(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(18),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        child: content,
-      ),
-    );
+    return content;
   }
 }
 
@@ -5070,7 +6210,6 @@ class _ProfilePosterQuickInfoRow extends StatelessWidget {
     required this.rulerHouse,
     required this.element,
     required this.risingSign,
-    this.onTap,
   });
 
   final String dominantElementLabel;
@@ -5079,7 +6218,6 @@ class _ProfilePosterQuickInfoRow extends StatelessWidget {
   final int? rulerHouse;
   final AstroElement element;
   final String risingSign;
-  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -5098,9 +6236,10 @@ class _ProfilePosterQuickInfoRow extends StatelessWidget {
               : (risingSign.trim().isNotEmpty && risingSign.trim() != '—'
                     ? context.l10n.profileSignRuler(risingSign)
                     : context.l10n.profileChartBackbone));
-    final rulerBody = rulerHouse == null
+    final resolvedRulerHouse = rulerHouse;
+    final rulerBody = resolvedRulerHouse == null
         ? ''
-        : context.l10n.profileHouseEmphasis(rulerHouse!);
+        : context.l10n.profileHouseEmphasis(resolvedRulerHouse);
     final content = ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 300),
       child: Row(
@@ -5129,14 +6268,7 @@ class _ProfilePosterQuickInfoRow extends StatelessWidget {
         ],
       ),
     );
-    if (onTap == null) {
-      return content;
-    }
-    return JoviaPressable(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(26),
-      child: content,
-    );
+    return content;
   }
 }
 
@@ -7082,116 +8214,84 @@ class _ProfilePosterArchetypeEntryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    final palette = _profilePosterPalette(context);
+    final locale = Localizations.localeOf(context);
+    final buttonLabel = ctaLabel.trim().isNotEmpty
+        ? ctaLabel.trim()
+        : (locale.languageCode == 'tr' ? 'Aç' : 'Open');
+    final fullButtonLabel = buttonLabel.endsWith('→')
+        ? buttonLabel
+        : '$buttonLabel →';
+
     return JoviaPressable(
       onTap: onTap,
       borderRadius: BorderRadius.circular(30),
-      child: JoviaSurfaceCard(
-        radius: 30,
-        backgroundColor: Color.alphaBlend(
-          const Color(0x26FF8A4C),
-          palette.surfaceStrong,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 22, 20, 22),
+        decoration: BoxDecoration(
+          color: _kProfileFigmaLime,
+          borderRadius: BorderRadius.circular(30),
         ),
-        borderColor: palette.stroke,
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'ARKETIP PORTALI',
-                    style: profile.typography.monoEyebrow.copyWith(
-                      color: palette.accent,
-                      fontSize: 11.0,
-                      letterSpacing: 1.7,
+                    locale.languageCode == 'tr'
+                        ? 'ARKETİP PORTALI'
+                        : 'ARCHETYPE PORTAL',
+                    style: profile.typography.micro.copyWith(
+                      color: const Color(0xFF3B6D11),
+                      fontSize: 8,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.8,
                     ),
                   ),
-                  const SizedBox(height: 10),
+                  const SizedBox(height: 8),
                   Text(
                     title,
                     style: profile.typography.section.copyWith(
-                      color: palette.text,
-                      fontSize: 24,
-                      height: 1.05,
+                      color: const Color(0xFF1A3300),
+                      fontSize: 15.9,
+                      height: 1.24,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: -0.25,
                     ),
                   ),
                   if (body.trim().isNotEmpty) ...[
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 8),
                     Text(
                       body,
-                      style: profile.typography.bodyReading.copyWith(
-                        color: palette.textSoft,
-                        fontSize: 14.3,
-                        height: 1.58,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: profile.typography.micro.copyWith(
+                        color: const Color(0xFF3B6D11),
+                        fontSize: 10,
+                        height: 1.35,
                       ),
                     ),
                   ],
-                  const SizedBox(height: 16),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: [
-                      JoviaMetaPill(label: context.l10n.profileIdentityFlow),
-                      JoviaMetaPill(label: ctaLabel),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  JoviaPrimaryButton(
-                    label: ctaLabel,
-                    onTap: onTap,
-                    leading: const JoviaUiIcon(
-                      asset: JoviaUiAsset.orbitPlanet,
-                      size: 16,
-                    ),
-                  ),
                 ],
               ),
             ),
-            const SizedBox(width: 16),
-            SizedBox(
-              width: 88,
-              height: 88,
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  Container(
-                    width: 88,
-                    height: 88,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: palette.accent.withValues(alpha: 0.16),
-                    ),
-                  ),
-                  Container(
-                    width: 58,
-                    height: 58,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        colors: [
-                          Colors.white.withValues(alpha: 0.9),
-                          Color.alphaBlend(
-                            palette.accent.withValues(alpha: 0.18),
-                            palette.surface,
-                          ),
-                        ],
-                      ),
-                      border: Border.all(color: palette.stroke),
-                    ),
-                    child: Center(
-                      child: JoviaIllustrationAccent(
-                        asset: JoviaIllustrationAsset.planet,
-                        width: 34,
-                        height: 34,
-                        opacity: 1,
-                      ),
-                    ),
-                  ),
-                ],
+            const SizedBox(width: 12),
+            Container(
+              height: 36,
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF111111),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                fullButtonLabel,
+                style: profile.typography.micro.copyWith(
+                  color: _kProfileFigmaLime,
+                  fontSize: 11.8,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
           ],
@@ -7291,7 +8391,7 @@ class _ProfilePosterArchetypeSnapshotCard extends StatelessWidget {
             )
           else if ((error ?? '').trim().isNotEmpty && payload == null)
             Text(
-              error!,
+              (error ?? '').trim(),
               style: profile.typography.bodyReading.copyWith(
                 color: palette.textSoft,
                 fontSize: 14.2,
@@ -7415,7 +8515,7 @@ class _ProfilePosterTimingPreviewSection extends StatelessWidget {
           else if ((error ?? '').trim().isNotEmpty && core == null)
             _ProfilePosterMessageCard(
               title: context.l10n.profileTimingFlowUnavailable,
-              body: error!,
+              body: (error ?? '').trim(),
             )
           else if (core == null)
             _ProfilePosterMessageCard(
@@ -8140,6 +9240,9 @@ String _sanitizeUserFacingChip(String raw) {
     'career': 'Kariyer',
     'home': 'Ev',
     'inner': 'İç Dünya',
+    'relational_pattern_bundle': 'İlişki akışı',
+    'angle_identity_bundle': 'Kimlik ekseni',
+    'soft_capacity_bundle': 'Yumuşak kapasite',
   };
   final lower = normalized.toLowerCase();
   final replaced = chipReplacements[lower];
@@ -8169,9 +9272,19 @@ String _sanitizeUserFacingChip(String raw) {
   if (hiddenWhole.contains(lower)) {
     return '';
   }
-  if (lower.contains('angle_identity_bundle') ||
-      lower.contains('type: angle') ||
-      lower.contains('key: asc')) {
+  if (lower.contains('type: angle') || lower.contains('key: asc')) {
+    return '';
+  }
+  if (lower.endsWith('_bundle') ||
+      lower.endsWith('_pattern') ||
+      lower.endsWith('_internal') ||
+      lower.endsWith('_debug')) {
+    return '';
+  }
+  if (lower.contains('_bundle') ||
+      lower.contains('_pattern') ||
+      lower.contains('_internal') ||
+      lower.contains('_debug')) {
     return '';
   }
   if (lower.contains('_') && !lower.contains(' ')) {
@@ -8838,12 +9951,10 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
   const _ProfileIdentityQuickSection({
     required this.contextData,
     required this.dominantElementLabel,
-    this.onTap,
   });
 
   final _ProfileIdentityContext contextData;
   final String dominantElementLabel;
-  final VoidCallback? onTap;
 
   String _auraTitle(BuildContext context) {
     final normalized = dominantElementLabel.trim();
@@ -8875,9 +9986,10 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
       ),
     ];
     if (contextData.rulerName.trim().isNotEmpty) {
-      final houseLabel = contextData.rulerHouse == null
+      final rulerHouse = contextData.rulerHouse;
+      final houseLabel = rulerHouse == null
           ? ''
-          : context.l10n.profileHouseEmphasis(contextData.rulerHouse!);
+          : context.l10n.profileHouseEmphasis(rulerHouse);
       cards.add(const SizedBox(width: 12));
       cards.add(
         Expanded(
@@ -8910,14 +10022,7 @@ class _ProfileIdentityQuickSection extends StatelessWidget {
         Row(children: cards),
       ],
     );
-    if (onTap == null) {
-      return content;
-    }
-    return JoviaPressable(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
-      child: content,
-    );
+    return content;
   }
 }
 
@@ -9114,6 +10219,23 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (insightModules.isNotEmpty) ...[
+          for (final module in insightModules) ...[
+            _ProfileInsightModuleCard(
+              module: module,
+              onTap: () => onOpenInsightModule(module),
+            ),
+            if (module != insightModules.last) const SizedBox(height: 18),
+          ],
+          const SizedBox(height: 24),
+        ],
+        if (primaryCards.isNotEmpty) ...[
+          _ProfileEditorialFlow(
+            cards: primaryCards,
+            onOpenCard: onOpenNarrativeCard,
+          ),
+          const SizedBox(height: 24),
+        ],
         if (placementPreviewCards.isNotEmpty) ...[
           _ProfileEditorialFlow(
             cards: placementPreviewCards,
@@ -9130,26 +10252,7 @@ class _ProfileRecoveryReadingBody extends StatelessWidget {
               ),
             ),
           ],
-        ],
-        if (insightModules.isNotEmpty) ...[
           const SizedBox(height: 24),
-          for (final module in insightModules) ...[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: _ProfileInsightModuleCard(
-                module: module,
-                onTap: () => onOpenInsightModule(module),
-              ),
-            ),
-            if (module != insightModules.last) const SizedBox(height: 18),
-          ],
-        ],
-        if (primaryCards.isNotEmpty) ...[
-          const SizedBox(height: 24),
-          _ProfileEditorialFlow(
-            cards: primaryCards,
-            onOpenCard: onOpenNarrativeCard,
-          ),
         ],
         if (showSummaryPanel) ...[
           JoviaPressable(
@@ -9265,7 +10368,7 @@ class _ProfileRecoverySummaryBlock extends StatelessWidget {
     }
     if ((error ?? '').trim().isNotEmpty) {
       return Text(
-        error!,
+        (error ?? '').trim(),
         style: context.profileTheme.typography.bodyCompact.copyWith(
           color: Theme.of(context).colorScheme.error,
         ),
@@ -9303,130 +10406,436 @@ class _ProfileEditorialCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
     final title = _displayTitleForCard(card);
-    final highlightLines = joviaHighlightLinesFromText(
-      card.previewBody,
-      maxLines: featured ? 2 : 1,
-      maxLength: featured ? 46 : 42,
-    );
-    final ruleColor = profile.colors.text.withValues(alpha: 0.14);
-    final paperTint = featured
-        ? const Color(0xFFF6F1E7)
-        : const Color(0xFFF8F4EC);
-    final content = DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.white,
-            Color.alphaBlend(paperTint.withValues(alpha: 0.38), Colors.white),
-            Colors.white,
+    final family = card.family.trim();
+    final isMind = family == 'mind_mechanics';
+    final isDefense = family == 'protection_pattern';
+    final isWarm = family == 'intimacy_guard';
+
+    Widget pill({
+      required String label,
+      required Color borderColor,
+      required Color textColor,
+      Color? backgroundColor,
+      double fontSize = 9.7,
+      double height = 25,
+    }) {
+      return Container(
+        height: height,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: backgroundColor ?? Colors.transparent,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: borderColor),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: profile.typography.micro.copyWith(
+            color: textColor,
+            fontSize: fontSize,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      );
+    }
+
+    Widget themedCard({
+      required Color background,
+      required BorderRadius borderRadius,
+      required EdgeInsets padding,
+      required Widget child,
+      Border? border,
+    }) {
+      return Container(
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: borderRadius,
+          border: border,
+        ),
+        padding: padding,
+        child: child,
+      );
+    }
+
+    final borderRadius = BorderRadius.circular(24);
+
+    Widget content;
+    if (isMind) {
+      final chips = card.chips.take(2).toList();
+      content = themedCard(
+        background: const Color(0xFF111111),
+        borderRadius: borderRadius,
+        padding: const EdgeInsets.fromLTRB(20, 23, 20, 20),
+        child: Stack(
+          children: [
+            Positioned(
+              right: -2,
+              top: -2,
+              child: JoviaIllustrationAccent(
+                asset: JoviaIllustrationAsset.dots,
+                width: 52,
+                height: 58,
+                opacity: 0.6,
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  turkishToUpper(
+                    card.eyebrow.trim().isNotEmpty
+                        ? card.eyebrow
+                        : context.l10n.profileMindWorks,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: profile.typography.micro.copyWith(
+                    color: const Color(0xFF333333),
+                    fontSize: 8,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.8,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  title.isEmpty ? '—' : title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: profile.typography.section.copyWith(
+                    color: Colors.white,
+                    fontSize: 16.9,
+                    height: 1.35,
+                    letterSpacing: -0.3,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (card.previewBody.trim().isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    card.previewBody,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: profile.typography.micro.copyWith(
+                      color: const Color(0xFF666666),
+                      fontSize: 10.8,
+                      height: 1.55,
+                    ),
+                  ),
+                ],
+                if (chips.isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final chip in chips)
+                        pill(
+                          label: chip,
+                          borderColor: const Color(0xFF222222),
+                          textColor: const Color(0xFF555555),
+                          fontSize: 9.5,
+                          height: 24,
+                        ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
           ],
         ),
-        border: Border(
-          top: BorderSide(color: ruleColor, width: 1),
-          bottom: BorderSide(color: ruleColor, width: 1),
-        ),
-      ),
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          featured ? 18 : 14,
-          featured ? 30 : 24,
-          featured ? 18 : 14,
-          featured ? 28 : 22,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+      );
+    } else if (isDefense) {
+      final chips = card.chips.take(2).toList();
+      content = themedCard(
+        background: const Color(0xFFDDD8FC),
+        borderRadius: borderRadius,
+        padding: const EdgeInsets.fromLTRB(20, 23, 20, 20),
+        child: Stack(
           children: [
-            Align(
-              alignment: Alignment.centerRight,
-              child: JoviaMoodStickerCluster(
-                size: featured ? 26 : 22,
-                colors: <Color>[
-                  profile.colors.warmAccent,
-                  profile.colors.primary,
-                  profile.colors.lavender,
-                ],
+            Positioned(
+              right: -4,
+              top: -2,
+              child: JoviaIllustrationAccent(
+                asset: JoviaIllustrationAsset.shape,
+                width: 54,
+                height: 62,
+                opacity: 0.62,
               ),
             ),
-            const SizedBox(height: 6),
-            if (card.eyebrow.trim().isNotEmpty) ...[
-              Container(width: featured ? 96 : 82, height: 1, color: ruleColor),
-              const SizedBox(height: 12),
-              Text(
-                turkishToUpper(card.eyebrow),
-                textAlign: TextAlign.center,
-                style: profile.typography.monoEyebrow.copyWith(
-                  color: profile.colors.textLight.withValues(alpha: 0.92),
-                  fontSize: 11.2,
-                  letterSpacing: 2.2,
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  turkishToUpper(
+                    card.eyebrow.trim().isNotEmpty
+                        ? card.eyebrow
+                        : context.l10n.profileSelfProtection,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: profile.typography.micro.copyWith(
+                    color: const Color(0xFF7F77DD),
+                    fontSize: 7.9,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.8,
+                  ),
                 ),
+                const SizedBox(height: 10),
+                Text(
+                  title.isEmpty ? '—' : title,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: profile.typography.section.copyWith(
+                    color: const Color(0xFF26215C),
+                    fontSize: 16.7,
+                    height: 1.35,
+                    letterSpacing: -0.3,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                if (card.previewBody.trim().isNotEmpty) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    card.previewBody,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: profile.typography.micro.copyWith(
+                      color: const Color(0xFF6B63CC),
+                      fontSize: 10.8,
+                      height: 1.55,
+                    ),
+                  ),
+                ],
+                if (chips.isNotEmpty) ...[
+                  const SizedBox(height: 14),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      for (final chip in chips)
+                        pill(
+                          label: chip,
+                          borderColor: const Color(
+                            0xFF534AB7,
+                          ).withValues(alpha: 0.14),
+                          textColor: const Color(0xFF3C3489),
+                          backgroundColor: const Color(
+                            0xFF534AB7,
+                          ).withValues(alpha: 0.14),
+                          fontSize: 9.5,
+                          height: 22,
+                        ),
+                    ],
+                  ),
+                ],
+              ],
+            ),
+          ],
+        ),
+      );
+    } else if (featured) {
+      final ruleColor = Colors.black.withValues(alpha: 0.07);
+      final chips = card.chips.take(3).toList();
+      content = themedCard(
+        background: Colors.white,
+        borderRadius: borderRadius,
+        padding: const EdgeInsets.fromLTRB(20, 24, 20, 22),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (card.eyebrow.trim().isNotEmpty) ...[
+              Row(
+                children: [
+                  Expanded(child: Container(height: 0.5, color: ruleColor)),
+                  const SizedBox(width: 10),
+                  Text(
+                    turkishToUpper(card.eyebrow),
+                    style: profile.typography.micro.copyWith(
+                      color: const Color(0xFFCCCCCC),
+                      fontSize: 7.6,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.8,
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(child: Container(height: 0.5, color: ruleColor)),
+                ],
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 18),
             ],
             Text(
-              title,
-              textAlign: TextAlign.center,
-              style: profile.typography
-                  .headlineFor(title, color: profile.colors.text)
-                  .copyWith(
-                    fontSize: featured ? 36 : 29,
-                    height: featured ? 1.06 : 1.1,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: featured ? -0.92 : -0.56,
-                  ),
+              title.isEmpty ? '—' : title,
+              style: profile.typography.section.copyWith(
+                color: const Color(0xFF111111),
+                fontSize: 22.3,
+                height: 1.24,
+                letterSpacing: -0.45,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-            if (highlightLines.isNotEmpty) ...[
+            if (chips.isNotEmpty) ...[
               const SizedBox(height: 16),
-              JoviaSentenceBubbleStack(
-                lines: highlightLines,
-                centered: true,
-                compact: true,
-                accents: <Color>[
-                  profile.colors.warmAccent,
-                  profile.colors.primary,
-                  profile.colors.lavender,
-                ],
-              ),
-            ],
-            const SizedBox(height: 12),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: featured ? 440 : 400),
-              child: Text(
-                card.previewBody,
-                maxLines: featured ? 6 : 4,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: profile.typography.bodyReading.copyWith(
-                  color: profile.colors.text.withValues(alpha: 0.76),
-                  fontSize: featured ? 15.2 : 14.2,
-                  height: featured ? 1.54 : 1.58,
-                ),
-              ),
-            ),
-            if (card.chips.isNotEmpty) ...[
-              const SizedBox(height: 18),
               Wrap(
-                alignment: WrapAlignment.center,
                 spacing: 10,
                 runSpacing: 10,
                 children: [
-                  for (final chip in card.chips)
-                    _ProfileEditorialChip(label: chip),
+                  for (final chip in chips)
+                    pill(
+                      label: chip,
+                      borderColor: const Color(0xFFE0E0E0),
+                      textColor: const Color(0xFF444444),
+                      fontSize: 9.7,
+                      height: 25,
+                    ),
                 ],
               ),
             ],
-            const SizedBox(height: 2),
           ],
         ),
-      ),
-    );
+      );
+    } else if (isWarm) {
+      final chips = card.chips.take(3).toList();
+      content = themedCard(
+        background: const Color(0xFFF6F1E7),
+        borderRadius: borderRadius,
+        padding: const EdgeInsets.fromLTRB(20, 23, 20, 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (card.eyebrow.trim().isNotEmpty)
+              Text(
+                turkishToUpper(card.eyebrow),
+                style: profile.typography.micro.copyWith(
+                  color: const Color(0xFFCCCCCC),
+                  fontSize: 7.6,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            const SizedBox(height: 10),
+            Text(
+              title.isEmpty ? '—' : title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: profile.typography.section.copyWith(
+                color: const Color(0xFF111111),
+                fontSize: 16.9,
+                height: 1.35,
+                letterSpacing: -0.3,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if (card.previewBody.trim().isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Text(
+                card.previewBody,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: profile.typography.micro.copyWith(
+                  color: const Color(0xFF444444),
+                  fontSize: 10.8,
+                  height: 1.55,
+                ),
+              ),
+            ],
+            if (chips.isNotEmpty) ...[
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final chip in chips)
+                    pill(
+                      label: chip,
+                      borderColor: const Color(0xFFE0E0E0),
+                      textColor: const Color(0xFF444444),
+                      fontSize: 9.7,
+                      height: 25,
+                      backgroundColor: Colors.white.withValues(alpha: 0.55),
+                    ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      );
+    } else {
+      final chips = card.chips.take(3).toList();
+      content = themedCard(
+        background: Colors.white,
+        borderRadius: borderRadius,
+        padding: const EdgeInsets.fromLTRB(20, 23, 20, 20),
+        border: Border.all(color: Colors.black.withValues(alpha: 0.06)),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (card.eyebrow.trim().isNotEmpty)
+              Text(
+                turkishToUpper(card.eyebrow),
+                style: profile.typography.micro.copyWith(
+                  color: const Color(0xFFCCCCCC),
+                  fontSize: 7.6,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                ),
+              ),
+            const SizedBox(height: 10),
+            Text(
+              title.isEmpty ? '—' : title,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: profile.typography.section.copyWith(
+                color: const Color(0xFF111111),
+                fontSize: 16.9,
+                height: 1.35,
+                letterSpacing: -0.3,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if (card.previewBody.trim().isNotEmpty) ...[
+              const SizedBox(height: 10),
+              Text(
+                card.previewBody,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+                style: profile.typography.micro.copyWith(
+                  color: const Color(0xFF666666),
+                  fontSize: 10.8,
+                  height: 1.55,
+                ),
+              ),
+            ],
+            if (chips.isNotEmpty) ...[
+              const SizedBox(height: 14),
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
+                children: [
+                  for (final chip in chips)
+                    pill(
+                      label: chip,
+                      borderColor: const Color(0xFFE0E0E0),
+                      textColor: const Color(0xFF444444),
+                      fontSize: 9.7,
+                      height: 25,
+                      backgroundColor: const Color(0xFFF8F5EE),
+                    ),
+                ],
+              ),
+            ],
+          ],
+        ),
+      );
+    }
+
     if (onTap == null) {
       return content;
     }
     return JoviaPressable(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(featured ? 28 : 22),
+      borderRadius: BorderRadius.circular(24),
       child: content,
     );
   }
@@ -9469,21 +10878,89 @@ class _ProfileInsightModuleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final card = _ProfileNarrativeCard(
-      cardKey: module.moduleId,
-      id: module.moduleId,
-      family: 'protection_pattern',
-      origin: 'insight_module',
-      eyebrow: module.headline,
-      title: module.title,
-      summary: module.subheadline,
-      body: module.body,
-      micro: '',
-      detailBlocks: const <String>[],
-      chips: const [],
-      astroSources: const [],
+    final profile = context.profileTheme;
+    final headline = module.headline.trim().isNotEmpty
+        ? module.headline.trim()
+        : context.l10n.profileSelfProtection;
+    final title = module.title.trim().isNotEmpty
+        ? module.title.trim()
+        : module.subheadline.trim();
+    final body = module.body.trim().isNotEmpty
+        ? module.body.trim()
+        : module.subheadline.trim();
+
+    final content = Container(
+      padding: const EdgeInsets.fromLTRB(20, 23, 20, 22),
+      decoration: BoxDecoration(
+        color: const Color(0xFFDDD8FC),
+        borderRadius: BorderRadius.circular(24),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: -4,
+            top: -2,
+            child: JoviaIllustrationAccent(
+              asset: JoviaIllustrationAsset.shape,
+              width: 54,
+              height: 62,
+              opacity: 0.62,
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                turkishToUpper(headline),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: profile.typography.micro.copyWith(
+                  color: const Color(0xFF7F77DD),
+                  fontSize: 7.9,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 0.8,
+                ),
+              ),
+              const SizedBox(height: 10),
+              Text(
+                title.isEmpty ? '—' : title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: profile.typography.section.copyWith(
+                  color: const Color(0xFF26215C),
+                  fontSize: 16.7,
+                  height: 1.35,
+                  letterSpacing: -0.3,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              if (body.isNotEmpty) ...[
+                const SizedBox(height: 10),
+                Text(
+                  body,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: profile.typography.micro.copyWith(
+                    color: const Color(0xFF6B63CC),
+                    fontSize: 10.8,
+                    height: 1.55,
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ],
+      ),
     );
-    return _ProfileEditorialCard(card: card, onTap: onTap);
+
+    if (onTap == null) {
+      return content;
+    }
+    return JoviaPressable(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(24),
+      child: content,
+    );
   }
 }
 
@@ -9786,7 +11263,7 @@ class _AvatarHalo extends StatelessWidget {
                             : profile.colors.primary.withValues(alpha: 0.78),
                       )
                     : Image.network(
-                        imageUrl!,
+                        (imageUrl ?? '').trim(),
                         fit: BoxFit.cover,
                         errorBuilder: (_, _, _) => Icon(
                           Icons.person_rounded,
