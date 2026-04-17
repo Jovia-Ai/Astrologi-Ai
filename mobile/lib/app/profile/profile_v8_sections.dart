@@ -825,12 +825,17 @@ class _V8PastTeaserCard extends StatelessWidget {
     final body = section.body.trim().isEmpty
         ? 'Zamanında öğrendiğin bir savunma bugün hâlâ görünür olabilir.'
         : section.body.trim();
+    final innerEyebrow = section.chips
+        .where((item) => item.trim().isNotEmpty)
+        .take(2)
+        .map((item) => item.trim())
+        .join(' · ');
     return Container(
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color.fromRGBO(0, 0, 0, 0.07)),
+        border: Border.all(color: const Color.fromRGBO(83, 74, 183, 0.15)),
       ),
       child: Stack(
         children: [
@@ -873,16 +878,28 @@ class _V8PastTeaserCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
+                  if (innerEyebrow.isNotEmpty) ...[
+                    Text(
+                      innerEyebrow,
+                      style: profile.typography.micro.copyWith(
+                        color: const Color(0xFF7F77DD),
+                        fontSize: 8,
+                        letterSpacing: 0.7,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    const SizedBox(height: 7),
+                  ],
                   Text(
                     title,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: profile.typography.section.copyWith(
                       color: const Color(0xFF111111),
-                      fontSize: 16,
-                      height: 1.36,
-                      letterSpacing: -0.3,
+                      fontSize: 13.5,
+                      height: 1.48,
+                      letterSpacing: -0.15,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -973,7 +990,7 @@ class _V8PastTeaserCard extends StatelessWidget {
             left: 0,
             top: 0,
             bottom: 0,
-            width: 3,
+            width: 2.5,
             child: Container(color: const Color(0xFF7F77DD)),
           ),
         ],
