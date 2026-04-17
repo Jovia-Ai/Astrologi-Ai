@@ -8,6 +8,7 @@ import 'ai_page.dart';
 import 'bond_page.dart';
 import 'chart_lab_page.dart';
 import 'home_page.dart';
+import 'home_page_v2.dart';
 import 'profile_page.dart';
 import 'profile_archetype_page.dart';
 import 'story_studio_page.dart';
@@ -16,6 +17,12 @@ import 'package:mobile/design/widgets/jovia_app_menu_scope.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 import 'package:mobile/app/widgets/jovia_app_menu_drawer.dart';
 import 'package:mobile/l10n/l10n.dart';
+
+/// While the SHOU v2 home is being built from the Figma design, keep the
+/// legacy [HomePage] wired up by default. Flip this to `true` during
+/// development to preview [HomePageV2] in the first tab. Once the v2 page
+/// reaches feature parity we'll drop the flag and delete the legacy file.
+const bool kUseHomeV2 = true;
 
 class TabsShell extends StatefulWidget {
   const TabsShell({super.key});
@@ -50,7 +57,7 @@ class _TabsShellState extends State<TabsShell> {
     final l10n = context.l10n;
     return <_TabItem>[
       _TabItem(
-        page: const HomePage(),
+        page: kUseHomeV2 ? const HomePageV2() : const HomePage(),
         item: JoviaBottomNavItem(
           icon: const Icon(Icons.home_outlined, size: 24),
           label: l10n.tabsHome,
