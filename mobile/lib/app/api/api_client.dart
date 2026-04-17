@@ -181,6 +181,7 @@ class ApiClient {
               requestSla: requestSla,
             )
             .then((response) {
+              final backendTiming = _extractBackendTiming(response.data);
               final telemetry = <String, Object?>{
                 ...baseTelemetry,
                 'cache_status': cacheTtl != null ? 'miss' : 'disabled',
@@ -190,6 +191,7 @@ class ApiClient {
                 'status_code': response.statusCode ?? 0,
                 'payload_bytes': _payloadSizeBytes(response.data),
                 'payload_kb': _payloadSizeKb(response.data),
+                if (backendTiming != null) ...backendTiming,
               };
               _attachTelemetry(response, telemetry);
               if (cacheTtl != null && (response.statusCode ?? 200) < 400) {
@@ -304,6 +306,42 @@ class ApiClient {
 
   static double _payloadSizeKb(Object? value) {
     return double.parse((_payloadSizeBytes(value) / 1024).toStringAsFixed(3));
+  }
+
+  static Map<String, Object?>? _extractBackendTiming(Object? data) {
+    if (data is! Map) {
+      return null;
+    }
+    final timing = data['_debug_timing'];
+    if (timing is! Map) {
+      return null;
+    }
+    final result = <String, Object?>{};
+    final totalMs = timing['total_ms'];
+    if (totalMs is num) {
+      result['backend_total_ms'] = totalMs;
+    }
+    final cacheStatus = timing['cache_status'];
+    if (cacheStatus is String) {
+      result['backend_cache_status'] = cacheStatus;
+    }
+    final breakdown = timing['stage_breakdown_ms'];
+    if (breakdown is Map) {
+      double slowestMs = 0.0;
+      String? slowestName;
+      for (final entry in breakdown.entries) {
+        final value = entry.value;
+        if (value is num && value > slowestMs) {
+          slowestMs = value.toDouble();
+          slowestName = entry.key.toString();
+        }
+      }
+      if (slowestName != null) {
+        result['backend_slowest_stage'] = slowestName;
+        result['backend_slowest_stage_ms'] = slowestMs;
+      }
+    }
+    return result.isEmpty ? null : result;
   }
 }
 

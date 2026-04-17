@@ -1,12 +1,15 @@
 from __future__ import annotations
 
 import hashlib
+import logging
 import os
 from typing import Any, Dict, Mapping, Optional
 
 from .natal_selection_config import get_natal_selection_v3_config
 from .profile_narrative_engine_legacy import build_profile_narrative_legacy
 from .profile_narrative_engine_signature import build_profile_narrative_signature
+
+logger = logging.getLogger(__name__)
 
 
 _PROFILE_BLOCK_SLOT = {
@@ -144,14 +147,29 @@ def build_profile_narrative(
     migration_mode: Optional[str] = None,
 ) -> Dict[str, Any]:
     seed_material = seed_key or _default_seed_key(chart)
-    engine = _select_engine(seed_material, engine_override)
+    engine_pre_force = _select_engine(seed_material, engine_override)
+    engine = engine_pre_force
+    legacy_force_promoted = False
     if engine == "legacy" and not include_debug:
         engine = "signature"
+        legacy_force_promoted = True
     resolved_migration_mode = _surface_migration_mode(
         include_debug=include_debug,
         explicit_mode=migration_mode,
     )
     block_spine_contract = _profile_block_spine_contract(master_selector)
+    logger.info(
+        "profile_narrative_engine_selection",
+        extra={
+            "profile_narrative_engine": engine,
+            "profile_narrative_engine_pre_force": engine_pre_force,
+            "profile_narrative_legacy_force_promoted": legacy_force_promoted,
+            "profile_narrative_engine_override_present": engine_override is not None,
+            "profile_narrative_seed_key_hash": hashlib.sha256(seed_material.encode("utf-8")).hexdigest()[:12],
+            "profile_narrative_migration_mode": resolved_migration_mode,
+            "profile_narrative_include_debug": include_debug,
+        },
+    )
 
     if engine == "legacy":
         out = build_profile_narrative_legacy(
@@ -215,6 +233,16 @@ def build_profile_narrative(
             block.setdefault("engine", engine)
             block.setdefault("seed_material", seed_material)
             block.setdefault("migration_mode", resolved_migration_mode)
+        internal.setdefault(
+            "engine_telemetry",
+            {
+                "engine": engine,
+                "engine_pre_force": engine_pre_force,
+                "legacy_force_promoted": legacy_force_promoted,
+                "migration_mode": resolved_migration_mode,
+                "engine_override_present": engine_override is not None,
+            },
+        )
         out["profile_internal"] = internal
 
     return out

@@ -22,7 +22,6 @@ from app.ai.narrative.formatter import (
     build_formatted_planet_positions,
 )
 from app.builders.composite_builder import build_composite_layer, split_composites
-from app.builders.composite_fragments import CompositeFragmentsBuilder
 from app.builders.composite_guidance import build_guidance
 from app.builders.composite_interpreter import CompositeInterpretationBuilder
 from app.builders.composite_regulator import build_composite_regulation
@@ -70,6 +69,7 @@ from app.natal.category_support_engine import (
     apply_category_support_to_threads,
     build_natal_category_support_bundle,
 )
+from app.natal.natal_context import NatalContext
 from app.natal.natal_graph import build_natal_graph
 from app.natal.natal_graph_v2 import build_natal_graph_v2
 from app.natal.archetype_profile import build_archetype_profile, get_archetype_runtime_versions
@@ -840,6 +840,7 @@ def _log_profile_fast_timing(
 @router.post("/profile/fast")
 def profile_fast(
     request: NatalInterpretationRequest,
+    debug: bool = False,
     x_request_id: str | None = Header(default=None, alias="X-Request-Id"),
 ) -> Dict[str, Any]:
     started = perf_counter()
@@ -849,6 +850,15 @@ def profile_fast(
     if lookup.status == "hit" and lookup.entry is not None:
         payload = dict(lookup.entry.value)
         payload["cache_status"] = "hit"
+        if debug:
+            payload["_debug_timing"] = {
+                "endpoint": "/profile/fast",
+                "cache_status": "hit",
+                "total_ms": round((perf_counter() - started) * 1000.0, 3),
+                "chart_compute_ms": 0.0,
+                "serialization_ms": 0.0,
+                "payload_bytes": _payload_size_bytes(payload),
+            }
         _log_profile_fast_timing(
             request=request,
             response=payload,
@@ -873,6 +883,15 @@ def profile_fast(
         stale_ttl_seconds=5 * 60,
         now=utc_now(),
     )
+    if debug:
+        response["_debug_timing"] = {
+            "endpoint": "/profile/fast",
+            "cache_status": "miss",
+            "total_ms": round((perf_counter() - started) * 1000.0, 3),
+            "chart_compute_ms": round(float(timing.get("chart_compute_ms", 0.0)), 3),
+            "serialization_ms": round(float(timing.get("serialization_ms", 0.0)), 3),
+            "payload_bytes": _payload_size_bytes(response),
+        }
     _log_profile_fast_timing(
         request=request,
         response=response,
@@ -1199,6 +1218,14 @@ def interpret_natal_chart_ui(
                     payload = copy.deepcopy(lookup.entry.value)
                     with timer.stage("response_finalize"):
                         _natal_payload_shape(payload)
+                    if debug:
+                        payload["_debug_timing"] = {
+                            "endpoint": "/interpret/ui",
+                            "cache_status": cache_status,
+                            "total_ms": round((perf_counter() - started) * 1000.0, 3),
+                            "stage_breakdown_ms": dict(timer.stage_breakdown_ms),
+                            "payload_bytes": _payload_size_bytes(payload),
+                        }
                     _log_natal_timing(
                         endpoint="/interpret/ui",
                         request=request,
@@ -1278,6 +1305,15 @@ def interpret_natal_chart_ui(
                 )
             else:
                 cache_write = "stored"
+        if debug:
+            payload["_debug_timing"] = {
+                "endpoint": "/interpret/ui",
+                "cache_status": cache_status,
+                "cache_write": cache_write,
+                "total_ms": round((perf_counter() - started) * 1000.0, 3),
+                "stage_breakdown_ms": dict(timer.stage_breakdown_ms),
+                "payload_bytes": _payload_size_bytes(payload),
+            }
         _log_natal_timing(
             endpoint="/interpret/ui",
             request=request,
@@ -1521,31 +1557,11 @@ def _prepare_payload_from_chart(
     stage_timings_enabled = _stage_timings_enabled()
     prepare_stage_breakdown_ms: Dict[str, float] = {}
     stage_started = _stage_start(stage_timings_enabled)
-    planets = serialize_planets(chart_data.get("planets", {}))
-    angles = chart_data.get("angles") if isinstance(chart_data, Mapping) else None
-    if isinstance(angles, Mapping):
-        asc_sign = angles.get("ascendant_sign")
-        if asc_sign and not any(
-            str(entry.get("planet") or "").strip().lower() == "ascendant"
-            for entry in planets
-            if isinstance(entry, Mapping)
-        ):
-            planets.append(
-                {
-                    "planet": "Ascendant",
-                    "sign": asc_sign,
-                    "house": 1,
-                    "degree": angles.get("ascendant"),
-                    "is_point": True,
-                }
-            )
-    aspects = serialize_aspects(chart_data.get("aspects", []))
+    natal_context = NatalContext.from_chart(chart_data)
+    planets = natal_context.planets
+    aspects = natal_context.aspects
     natal_graph = build_natal_graph(chart_data=chart_data, planets=planets, aspects=aspects)
-    chart_for_selection = {
-        **dict(chart_data or {}),
-        "planets": list(planets or []),
-        "aspects": list(aspects or []),
-    }
+    chart_for_selection = natal_context.chart_for_selection
     _stage_end(prepare_stage_breakdown_ms, "normalize_chart_inputs", stage_started)
     natal_graph_v2_debug: Dict[str, Any] | None = None
     natal_feature_graph_v2: Dict[str, Any] | None = None
@@ -1554,11 +1570,19 @@ def _prepare_payload_from_chart(
     master_selector_v1: Dict[str, Any] | None = None
     layer_arbitration_v1: Dict[str, Any] | None = None
     stage_started = _stage_start(stage_timings_enabled)
+    selection_substage_breakdown_ms: Dict[str, float] = {}
     if selection_runtime_enabled:
+        substage_started = _stage_start(stage_timings_enabled)
         natal_graph_v2_debug = build_natal_graph_v2(
             chart_for_selection,
             natal_graph=natal_graph,
         )
+        _stage_end(
+            selection_substage_breakdown_ms,
+            "selection_runtime.graph_v2",
+            substage_started,
+        )
+        substage_started = _stage_start(stage_timings_enabled)
         natal_feature_graph_v2 = build_natal_feature_graph(
             chart_data=chart_for_selection,
             planets=planets,
@@ -1566,22 +1590,47 @@ def _prepare_payload_from_chart(
             natal_graph=natal_graph,
             natal_graph_v2=natal_graph_v2_debug,
         )
+        _stage_end(
+            selection_substage_breakdown_ms,
+            "selection_runtime.feature_graph",
+            substage_started,
+        )
+        substage_started = _stage_start(stage_timings_enabled)
         primitive_scores_v2 = build_primitives_v2(
             chart_for_selection,
             natal_graph=natal_graph,
             natal_feature_graph=natal_feature_graph_v2,
             natal_graph_v2=natal_graph_v2_debug,
         )
+        _stage_end(
+            selection_substage_breakdown_ms,
+            "selection_runtime.primitives_v2",
+            substage_started,
+        )
+        substage_started = _stage_start(stage_timings_enabled)
         contradiction_signatures_v1 = build_contradiction_signatures(
             natal_feature_graph=natal_feature_graph_v2,
             primitive_scores=primitive_scores_v2,
         )
+        _stage_end(
+            selection_substage_breakdown_ms,
+            "selection_runtime.contradiction",
+            substage_started,
+        )
+        substage_started = _stage_start(stage_timings_enabled)
         master_selector_v1 = build_master_natal_selector(
             primitive_scores=primitive_scores_v2,
             natal_feature_graph=natal_feature_graph_v2,
             contradiction_signatures=contradiction_signatures_v1,
         )
+        _stage_end(
+            selection_substage_breakdown_ms,
+            "selection_runtime.master_selector",
+            substage_started,
+        )
     _stage_end(prepare_stage_breakdown_ms, "selection_runtime", stage_started)
+    for stage_name, stage_value in selection_substage_breakdown_ms.items():
+        prepare_stage_breakdown_ms[stage_name] = round(float(stage_value), 3)
     stage_started = _stage_start(stage_timings_enabled)
     interpretation, meta_info, rule_engine_stage_breakdown = rule_engine.interpret(
         planets=planets,
@@ -1598,8 +1647,8 @@ def _prepare_payload_from_chart(
     stage_started = _stage_start(stage_timings_enabled)
     core_feature_stage_breakdown_ms: Dict[str, float] = {}
     substage_started = _stage_start(stage_timings_enabled)
-    placements = derive_placements(planets)
-    core_aspects = derive_core_aspects(aspects)
+    placements = natal_context.placements
+    core_aspects = natal_context.core_aspects
     composite_engine = CompositeEngine()
     composites = composite_engine.build_composites(chart_data)
     _stage_end(
@@ -1806,6 +1855,8 @@ def _prepare_payload_from_chart(
         "fallback_mode": expression_profile.get("fallback_mode"),
         "tone_source": expression_profile.get("tone_source"),
     }
+    narrative_substage_breakdown_ms: Dict[str, float] = {}
+    substage_started = _stage_start(stage_timings_enabled)
     builder = JoviaSemanticNarrativeBuilder(
         SimpleNamespace(
             composites=composites,
@@ -1828,6 +1879,11 @@ def _prepare_payload_from_chart(
         )
     )
     narrative = builder.build()
+    _stage_end(
+        narrative_substage_breakdown_ms,
+        "narrative_layers.semantic_build",
+        substage_started,
+    )
     if builder.fallback_used:
         narrative_meta["fallback_used"] = True
     narrative_meta["expression_profile"] = expression_profile
@@ -1843,6 +1899,8 @@ def _prepare_payload_from_chart(
         debug_mode,
     )
     _stage_end(prepare_stage_breakdown_ms, "narrative_layers", stage_started)
+    for stage_name, stage_value in narrative_substage_breakdown_ms.items():
+        prepare_stage_breakdown_ms[stage_name] = round(float(stage_value), 3)
 
     runtime_info = {
         "engine": rule_engine.__class__.__name__,

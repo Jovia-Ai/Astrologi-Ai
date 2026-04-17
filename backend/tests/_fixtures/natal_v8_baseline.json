@@ -1,0 +1,128 @@
+{
+  "version": 2,
+  "purpose": "Faz 1 refactor öncesi natal payload referans haritalar. Yeni motor / kod değişiklikleri sonrası diff için.",
+  "created": "2026-04-17",
+  "notes": "Her fixture explicit latitude/longitude/timezone içerir — OpenCage geocoding'i bypass eder, test reproducibility tam.",
+  "fixtures": [
+    {
+      "id": "fix01_leo_leo_classic",
+      "label": "Aslan güneş + Aslan yükselen — klasik 1. ev güçlü kimlik",
+      "birth_date": "1995-08-10",
+      "birth_time": "14:30",
+      "birth_place": "New York, US",
+      "birth_latitude": 40.7128,
+      "birth_longitude": -74.0060,
+      "birth_timezone": "America/New_York",
+      "expected_signature": ["sun_leo", "asc_leo"],
+      "tags": ["luminary_strong", "fire_dominant"]
+    },
+    {
+      "id": "fix02_capricorn_stellium",
+      "label": "Oğlak/Oğlak — 1. ev stellium (4+ gezegen)",
+      "birth_date": "1996-12-28",
+      "birth_time": "07:10",
+      "birth_place": "Istanbul, TR",
+      "birth_latitude": 41.0082,
+      "birth_longitude": 28.9784,
+      "birth_timezone": "Europe/Istanbul",
+      "expected_signature": ["sun_capricorn", "asc_capricorn", "house_1_stellium"],
+      "tags": ["stellium_h1", "earth_dominant", "saturn_emphasized"]
+    },
+    {
+      "id": "fix03_pisces_cancer_water",
+      "label": "Balık güneş + Yengeç yükselen — su ağırlık",
+      "birth_date": "1989-03-05",
+      "birth_time": "04:15",
+      "birth_place": "London, GB",
+      "birth_latitude": 51.5074,
+      "birth_longitude": -0.1278,
+      "birth_timezone": "Europe/London",
+      "expected_signature": ["sun_pisces", "asc_cancer"],
+      "tags": ["water_dominant", "neptune_emphasized"]
+    },
+    {
+      "id": "fix04_h10_career_stellium",
+      "label": "10. ev stellium — kariyer/visibility ağırlığı",
+      "birth_date": "1985-06-15",
+      "birth_time": "12:00",
+      "birth_place": "Tokyo, JP",
+      "birth_latitude": 35.6762,
+      "birth_longitude": 139.6503,
+      "birth_timezone": "Asia/Tokyo",
+      "expected_signature": ["sun_gemini", "house_10_emphasis"],
+      "tags": ["mc_emphasis", "career_axis"]
+    },
+    {
+      "id": "fix05_t_square_tense",
+      "label": "T-square paterni — gerilim odaklı",
+      "birth_date": "1992-04-22",
+      "birth_time": "18:30",
+      "birth_place": "Buenos Aires, AR",
+      "birth_latitude": -34.6037,
+      "birth_longitude": -58.3816,
+      "birth_timezone": "America/Argentina/Buenos_Aires",
+      "expected_signature": ["sun_taurus"],
+      "tags": ["t_square", "tension_pattern"]
+    },
+    {
+      "id": "fix06_grand_trine_flow",
+      "label": "Grand Trine — akış paterni",
+      "birth_date": "1978-11-10",
+      "birth_time": "23:45",
+      "birth_place": "Sydney, AU",
+      "birth_latitude": -33.8688,
+      "birth_longitude": 151.2093,
+      "birth_timezone": "Australia/Sydney",
+      "expected_signature": ["sun_scorpio"],
+      "tags": ["grand_trine", "flow_pattern"]
+    },
+    {
+      "id": "fix07_aries_libra_nodes",
+      "label": "GAD Koç / KAD Terazi — yalnız → birlik ekseni",
+      "birth_date": "1982-07-04",
+      "birth_time": "09:00",
+      "birth_place": "Madrid, ES",
+      "birth_latitude": 40.4168,
+      "birth_longitude": -3.7038,
+      "birth_timezone": "Europe/Madrid",
+      "expected_signature": ["sun_cancer", "node_aries_libra"],
+      "tags": ["nodes_aries_libra", "mission_self_to_other"]
+    },
+    {
+      "id": "fix08_cancer_capricorn_nodes",
+      "label": "GAD Yengeç / KAD Oğlak — duygusal güvenlik → yapı ekseni",
+      "birth_date": "1990-02-14",
+      "birth_time": "15:20",
+      "birth_place": "Mumbai, IN",
+      "birth_latitude": 19.0760,
+      "birth_longitude": 72.8777,
+      "birth_timezone": "Asia/Kolkata",
+      "expected_signature": ["sun_aquarius", "node_cancer_capricorn"],
+      "tags": ["nodes_cancer_capricorn", "mission_home_to_world"]
+    },
+    {
+      "id": "fix09_edge_cusp_planet",
+      "label": "Edge case — ekinoks tarihi, gezegen 0° cusp'ta",
+      "birth_date": "1975-09-23",
+      "birth_time": "06:00",
+      "birth_place": "Cairo, EG",
+      "birth_latitude": 30.0444,
+      "birth_longitude": 31.2357,
+      "birth_timezone": "Africa/Cairo",
+      "expected_signature": ["sun_libra", "equinox_birth"],
+      "tags": ["edge_case", "cusp_sensitivity"]
+    },
+    {
+      "id": "fix10_y2k_complex",
+      "label": "Multi-stellium karmaşık — 2000 başlangıcı",
+      "birth_date": "2000-01-01",
+      "birth_time": "00:00",
+      "birth_place": "Greenwich, GB",
+      "birth_latitude": 51.4769,
+      "birth_longitude": 0.0005,
+      "birth_timezone": "Europe/London",
+      "expected_signature": ["sun_capricorn", "y2k_marker"],
+      "tags": ["multi_stellium", "century_marker"]
+    }
+  ]
+}
