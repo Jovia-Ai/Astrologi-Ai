@@ -1,8 +1,15 @@
 from __future__ import annotations
 
+import hashlib
+import json
 import re
-from typing import Any, Dict, List, Mapping, Optional, Tuple
+from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 import unicodedata
+
+# S1-1: Period teaser + lock flag + version hash schema.
+# Bump this when the period_version hash algorithm or inputs change; all
+# previously cached hashes will naturally invalidate.
+PERIOD_VERSION_SCHEMA = "v1"
 
 from app.narrative.humanize_en import humanize_en_text
 from app.transit.narrative.archetype_engine import build_insight_pack
@@ -793,6 +800,103 @@ def _global_period_story(period_core: Mapping[str, Any]) -> Dict[str, str]:
     }
 
 
+# S1-1: Teaser + lock + version — Hybrid Teaser+Lock roadmap (docs/transit_audit_2026_04.md)
+# için additive payload alanları. Mevcut period_core alanları dokunulmaz;
+# teaser / locked / version EKLENİR. Mobile parse backward-compat.
+
+_FIRST_SENTENCE_RE = re.compile(r"^(.+?[.!?])(?:\s|$)", re.UNICODE | re.DOTALL)
+
+
+def _first_sentence(text: str) -> str:
+    """Metnin ilk cümlesini döner (nokta/ünlem/soru ile biten). Bulunamazsa tüm metin."""
+    raw = str(text or "").strip()
+    if not raw:
+        return ""
+    match = _FIRST_SENTENCE_RE.match(raw)
+    if match:
+        return match.group(1).strip()
+    return raw
+
+
+def _build_period_teaser(period_core: Mapping[str, Any]) -> Optional[Dict[str, str]]:
+    """hook = period_opening ilk cümlesi · highlight = big_picture ilk cümlesi.
+
+    Her iki kaynak da boşsa None döner (field response'a hiç eklenmez).
+    Char limit üretimde zorlamıyoruz; editorial disiplini test guard'ı ile
+    koruyoruz (≤120 char/alan hedef).
+    """
+    opening = str(period_core.get("period_opening") or "").strip()
+    big_picture = str(period_core.get("big_picture") or "").strip()
+    if not opening and not big_picture:
+        return None
+    hook = _first_sentence(opening)
+    highlight = _first_sentence(big_picture)
+    if not hook and not highlight:
+        return None
+    return {"hook": hook, "highlight": highlight}
+
+
+def _compute_transit_set_hash(period_core: Mapping[str, Any]) -> str:
+    """Period'un tanımlayıcı event imzası.
+
+    featured_events / events / items listelerinin ilk 5 event_id'sini
+    order-independent birleştirip sha1[:8] döner. Boş liste → 'none'.
+    """
+    events_raw = (
+        period_core.get("featured_events")
+        or period_core.get("events")
+        or period_core.get("items")
+        or []
+    )
+    event_ids: List[str] = []
+    if isinstance(events_raw, Sequence):
+        for event in events_raw[:5]:
+            if isinstance(event, Mapping):
+                event_id = str(event.get("event_id") or "").strip()
+                if event_id:
+                    event_ids.append(event_id)
+    if not event_ids:
+        return "none"
+    event_ids.sort()
+    return hashlib.sha1("|".join(event_ids).encode("utf-8")).hexdigest()[:8]
+
+
+def _natal_fingerprint(natal: Optional[Mapping[str, Any]]) -> str:
+    """Natal dict'in stable-subset sha1[:8] hash'i. Eksik veri → boş string."""
+    if not isinstance(natal, Mapping):
+        return ""
+    bodies = natal.get("bodies") if isinstance(natal.get("bodies"), list) else []
+    angles = natal.get("angles") if isinstance(natal.get("angles"), Mapping) else {}
+    cusps = natal.get("house_cusps") if isinstance(natal.get("house_cusps"), list) else []
+    if not bodies and not angles and not cusps:
+        return ""
+    try:
+        raw = json.dumps({"b": bodies, "a": angles, "c": cusps}, sort_keys=True, default=str)
+    except (TypeError, ValueError):
+        return ""
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:8]
+
+
+def _build_period_version(
+    natal: Optional[Mapping[str, Any]],
+    period_core: Mapping[str, Any],
+) -> str:
+    """Deterministic 8-hex period version hash.
+
+    Meaning-based: track_id + transit_set_hash + schema (+ natal_fp if available).
+    Takvim bazlı DEĞİL — period'un tematik/transit içeriği aynı kaldığı sürece
+    hash aynı kalır; mobile bunu unlock cache key olarak kullanır.
+    """
+    track_id = str(period_core.get("track_id") or "default")
+    transit_set_hash = _compute_transit_set_hash(period_core)
+    parts: List[str] = [PERIOD_VERSION_SCHEMA, track_id, transit_set_hash]
+    natal_fp = _natal_fingerprint(natal)
+    if natal_fp:
+        parts.insert(0, natal_fp)
+    raw = "|".join(parts)
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:8]
+
+
 def _enrich_period_story(
     card: Mapping[str, Any],
     *,
@@ -1113,6 +1217,19 @@ def build_public_response(
                     locale=locale,
                 ).model_dump()
             )
+    # S1-1: Additive period_core alanları — teaser / locked / version.
+    # Mevcut period_opening/big_picture/... DOKUNULMAZ; mobile backward-compat.
+    _teaser = _build_period_teaser(period_core)
+    if _teaser is not None:
+        period_core["period_teaser"] = _teaser
+    # period_locked şu an her zaman False — Sprint 1b'de subscription_tier +
+    # unlock_token mantığına bağlanacak.
+    period_core["period_locked"] = False
+    period_core["period_version"] = _build_period_version(
+        response.get("natal") if isinstance(response.get("natal"), Mapping) else None,
+        period_core,
+    )
+
     public = PublicTransitResponse(
         locale=locale,
         period=build_public_period(response, locale=locale),
