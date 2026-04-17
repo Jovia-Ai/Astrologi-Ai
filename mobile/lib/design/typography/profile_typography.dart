@@ -151,7 +151,7 @@ class ProfileTypography {
         TextStyle(
           fontSize: 30,
           height: 34 / 30,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w400,
           color: textColor,
           letterSpacing: -0.9,
         ),
