@@ -4,6 +4,21 @@ import 'package:flutter/services.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
 
 @immutable
+class ProfileSheetLayer {
+  const ProfileSheetLayer({
+    required this.placement,
+    required this.headline,
+    this.body = '',
+    this.highlight = '',
+  });
+
+  final String placement;
+  final String headline;
+  final String body;
+  final String highlight;
+}
+
+@immutable
 class ProfileDetailSheetData {
   const ProfileDetailSheetData({
     required this.eyebrow,
@@ -15,6 +30,8 @@ class ProfileDetailSheetData {
     this.highlight = '',
     this.chips = const <String>[],
     this.details = const <String>[],
+    this.extraLayers = const <ProfileSheetLayer>[],
+    this.extraLayersTitle = 'DAHA DA GEÇMİŞE',
     this.growthNote = '',
     this.ctaLabel,
     this.onCta,
@@ -29,6 +46,8 @@ class ProfileDetailSheetData {
   final String highlight;
   final List<String> chips;
   final List<String> details;
+  final List<ProfileSheetLayer> extraLayers;
+  final String extraLayersTitle;
   final String growthNote;
   final String? ctaLabel;
   final VoidCallback? onCta;
@@ -215,6 +234,36 @@ class _SheetBody extends StatelessWidget {
             if (i != data.details.length - 1) const SizedBox(height: 12),
           ],
         ],
+        if (data.extraLayers.isNotEmpty) ...[
+          const SizedBox(height: 22),
+          Row(
+            children: [
+              Container(
+                width: 5,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: data.accent,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Text(
+                data.extraLayersTitle,
+                style: const TextStyle(
+                  color: Color(0xFF9A9A9A),
+                  fontSize: 9,
+                  letterSpacing: 0.8,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          for (var i = 0; i < data.extraLayers.length; i++) ...[
+            _ExtraLayerCard(layer: data.extraLayers[i], accent: data.accent),
+            if (i != data.extraLayers.length - 1) const SizedBox(height: 8),
+          ],
+        ],
         if (data.chips.isNotEmpty) ...[
           const SizedBox(height: 18),
           Wrap(
@@ -302,6 +351,77 @@ class _HighlightHeadline extends StatelessWidget {
             style: TextStyle(backgroundColor: accent, color: accentInk),
           ),
           if (after.isNotEmpty) TextSpan(text: after),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExtraLayerCard extends StatelessWidget {
+  const _ExtraLayerCard({required this.layer, required this.accent});
+
+  final ProfileSheetLayer layer;
+  final Color accent;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: accent.withValues(alpha: 0.18)),
+      ),
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 12, 12, 12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (layer.placement.trim().isNotEmpty) ...[
+                  Text(
+                    layer.placement,
+                    style: TextStyle(
+                      color: accent,
+                      fontSize: 8,
+                      letterSpacing: 0.7,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                ],
+                Text(
+                  layer.headline,
+                  style: const TextStyle(
+                    color: Color(0xFF111111),
+                    fontSize: 13.5,
+                    height: 1.48,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+                if (layer.body.trim().isNotEmpty) ...[
+                  const SizedBox(height: 6),
+                  Text(
+                    layer.body,
+                    style: const TextStyle(
+                      color: Color(0xFF888888),
+                      fontSize: 11,
+                      height: 1.5,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 2.5,
+            child: Container(color: accent),
+          ),
         ],
       ),
     );

@@ -18,6 +18,27 @@ class ProfileV8InsightCell {
 }
 
 @immutable
+class ProfileV8PastLayer {
+  const ProfileV8PastLayer({
+    required this.eyebrow,
+    required this.placement,
+    required this.headline,
+    required this.body,
+    this.highlight = '',
+  });
+
+  final String eyebrow;
+  final String placement;
+  final String headline;
+  final String body;
+  final String highlight;
+
+  bool get hasContent {
+    return headline.trim().isNotEmpty || body.trim().isNotEmpty;
+  }
+}
+
+@immutable
 class ProfileV8Differentiator {
   const ProfileV8Differentiator({
     required this.eyebrow,
@@ -100,6 +121,7 @@ class ProfileV8Data {
     this.uniqueBlock,
     this.differentiators = const <ProfileV8Differentiator>[],
     this.originSection,
+    this.pastLayers = const <ProfileV8PastLayer>[],
     this.firstImpressionSection,
     this.talents = const <String>[],
     this.talentItems = const <ProfileV8Talent>[],
@@ -119,6 +141,7 @@ class ProfileV8Data {
   final ProfileV8TextSection? uniqueBlock;
   final List<ProfileV8Differentiator> differentiators;
   final ProfileV8TextSection? originSection;
+  final List<ProfileV8PastLayer> pastLayers;
   final ProfileV8TextSection? firstImpressionSection;
   final List<String> talents;
   final List<ProfileV8Talent> talentItems;
@@ -783,6 +806,7 @@ class ProfileV8Adapter {
     final originSection = _sectionFromEditorialMap(
       _asMap(profileV8['past_teaser']),
     );
+    final pastLayers = _buildPastLayers(profileV8['past_teasers']);
     final firstImpressionSection = _sectionFromEditorialMap(
       _asMap(profileV8['first_impression']),
     );
@@ -839,6 +863,7 @@ class ProfileV8Adapter {
       uniqueBlock: uniqueBlock,
       differentiators: differentiators,
       originSection: originSection,
+      pastLayers: pastLayers,
       firstImpressionSection: firstImpressionSection,
       talents: talents,
       talentItems: talentItems,
@@ -870,6 +895,9 @@ class ProfileV8Adapter {
           ? primary.differentiators
           : fallback.differentiators,
       originSection: _preferSection(primary.originSection, fallback.originSection),
+      pastLayers: primary.pastLayers.isNotEmpty
+          ? primary.pastLayers
+          : fallback.pastLayers,
       firstImpressionSection: _preferSection(
         primary.firstImpressionSection,
         fallback.firstImpressionSection,
@@ -1207,6 +1235,34 @@ class ProfileV8Adapter {
       }
     }
     return result;
+  }
+
+  static List<ProfileV8PastLayer> _buildPastLayers(dynamic raw) {
+    final out = <ProfileV8PastLayer>[];
+    for (final item in _asListOfMaps(raw)) {
+      final headline = _firstText(<dynamic>[item['headline']]) ?? '';
+      final body = _firstText(<dynamic>[item['body']]) ?? '';
+      if (headline.trim().isEmpty && body.trim().isEmpty) {
+        continue;
+      }
+      final placement = _sanitizeChipList(item['chips'], max: 2).join(' · ');
+      final highlight = _firstText(<dynamic>[item['highlight']]) ?? '';
+      out.add(
+        ProfileV8PastLayer(
+          eyebrow:
+              _firstText(<dynamic>[item['eyebrow']]) ??
+                  'BU NEREDEN GELİYOR OLABİLİR',
+          placement: placement,
+          headline: _shortenForProfile(headline, limit: 140),
+          body: _shortenForProfile(body, limit: 260),
+          highlight: highlight,
+        ),
+      );
+      if (out.length >= 4) {
+        break;
+      }
+    }
+    return List<ProfileV8PastLayer>.unmodifiable(out);
   }
 
   static List<ProfileV8Talent> _buildTalentItemsFromV8(dynamic raw) {

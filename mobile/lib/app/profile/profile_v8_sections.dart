@@ -117,16 +117,38 @@ class ProfileV8SectionsView extends StatelessWidget {
             .take(2)
             .map((item) => item.trim())
             .join(' · ');
+        final extraLayers = data.pastLayers.length > 1
+            ? <ProfileSheetLayer>[
+                for (final layer in data.pastLayers.skip(1))
+                  ProfileSheetLayer(
+                    placement: layer.placement,
+                    headline: layer.headline,
+                    body: layer.body,
+                    highlight: layer.highlight,
+                  ),
+              ]
+            : const <ProfileSheetLayer>[];
+        final (lavAccent, lavInk) = _v8AccentInkBySection['lavender']!;
         children.add(const SizedBox(height: 14));
         children.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: _v8Tappable(
-              data: _sheetFromSection(
-                section,
-                fallbackEyebrow: 'BU NEREDEN GELİYOR OLABİLİR',
-                accent: 'lavender',
+              data: ProfileDetailSheetData(
+                eyebrow: section.eyebrow.trim().isEmpty
+                    ? 'BU NEREDEN GELİYOR OLABİLİR'
+                    : section.eyebrow,
+                headline: section.headline.trim(),
+                body: section.body.trim(),
                 placement: placement,
+                accent: lavAccent,
+                accentInk: lavInk,
+                highlight: (section.callout ?? '').trim(),
+                chips: section.chips,
+                details: section.bullets
+                    .where((item) => item.trim().isNotEmpty)
+                    .toList(growable: false),
+                extraLayers: extraLayers,
               ),
               child: _V8PastTeaserCard(section: section),
             ),

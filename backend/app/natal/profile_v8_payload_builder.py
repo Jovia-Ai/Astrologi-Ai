@@ -150,6 +150,7 @@ class ProfileV8Payload:
     differentiators: list[UniqueFactPayload] = field(default_factory=list)
 
     past_teaser: Optional[EditorialSectionPayload] = None
+    past_teasers: list[EditorialSectionPayload] = field(default_factory=list)
     first_impression: Optional[EditorialSectionPayload] = None
     talents: list[TalentItemPayload] = field(default_factory=list)
     conversation_hooks: Optional[EditorialSectionPayload] = None
@@ -485,6 +486,10 @@ def select_for_profile_v8(
         insight_strip=build_insight_strip(facts=facts, fragments=visible),
         differentiators=build_differentiators(facts=facts),
         past_teaser=pick_past_teaser(
+            hinted=section_pick.get("past_teaser", []) or by_hint["past_teaser"],
+            fallback=by_domain["past_experience"],
+        ),
+        past_teasers=build_past_teasers(
             hinted=section_pick.get("past_teaser", []) or by_hint["past_teaser"],
             fallback=by_domain["past_experience"],
         ),
@@ -998,20 +1003,49 @@ def pick_past_teaser(
     hinted: list[NarrativeFragment],
     fallback: list[NarrativeFragment],
 ) -> EditorialSectionPayload | None:
+    layers = build_past_teasers(hinted=hinted, fallback=fallback)
+    if not layers:
+        return None
+    primary = layers[0]
+    extra = max(len(layers) - 1, 0)
+    return EditorialSectionPayload(
+        eyebrow=primary.eyebrow,
+        headline=primary.headline,
+        body=primary.body,
+        chips=primary.chips,
+        footer=f"{extra} geçmiş katman daha" if extra > 0 else None,
+        footer_cta="Tam haritada gör →" if extra > 0 else None,
+        highlight=primary.highlight,
+    )
+
+
+def build_past_teasers(
+    *,
+    hinted: list[NarrativeFragment],
+    fallback: list[NarrativeFragment],
+) -> list[EditorialSectionPayload]:
     source = hinted or fallback
     if not source:
-        return None
-
-    top = source[0]
-    return EditorialSectionPayload(
-        eyebrow="BU NEREDEN GELİYOR OLABİLİR",
-        headline=top.headline or "Geçmişten gelen bir iz var.",
-        body=top.text,
-        chips=top.chips[:3],
-        footer="3 geçmiş katman daha",
-        footer_cta="Tam haritada gör →",
-        highlight=top.highlight,
-    )
+        return []
+    seen: set[str] = set()
+    out: list[EditorialSectionPayload] = []
+    for fragment in source:
+        key = (fragment.trigger or fragment.id or "").strip().lower()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(
+            EditorialSectionPayload(
+                eyebrow="BU NEREDEN GELİYOR OLABİLİR",
+                headline=fragment.headline or "Geçmişten gelen bir iz var.",
+                body=fragment.text,
+                chips=fragment.chips[:3],
+                highlight=fragment.highlight,
+            )
+        )
+        if len(out) >= 4:
+            break
+    return out
 
 
 def build_first_impression(
