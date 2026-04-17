@@ -25,6 +25,15 @@ class ProfileColors {
     this.brandLime = const Color(0xFFCAFF4D),
     this.brandLavender = const Color(0xFF7F77DD),
     this.brandBlush = const Color(0xFFF9A8D4),
+    this.limeText = const Color(0xFF1A3300),
+    this.lavBg = const Color(0xFFDDD8FC),
+    this.lavText = const Color(0xFF26215C),
+    this.stone = const Color(0xFFF0EDE6),
+    this.stoneText = const Color(0xFF555555),
+    this.pastelBlush = const Color(0xFFFBB6D4),
+    this.pastelSky = const Color(0xFF93C5FD),
+    this.pastelSoftYellow = const Color(0xFFFDE68A),
+    this.pastelPink = const Color(0xFFF9A8D4),
   });
 
   final Color bg;
@@ -49,6 +58,15 @@ class ProfileColors {
   final Color brandLime;
   final Color brandLavender;
   final Color brandBlush;
+  final Color limeText;
+  final Color lavBg;
+  final Color lavText;
+  final Color stone;
+  final Color stoneText;
+  final Color pastelBlush;
+  final Color pastelSky;
+  final Color pastelSoftYellow;
+  final Color pastelPink;
 
   Color get canvas => bg;
   Color get canvasAlt => heroBase;

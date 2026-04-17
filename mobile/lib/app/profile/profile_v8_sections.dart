@@ -1884,8 +1884,8 @@ class _V8SectionCard extends StatelessWidget {
               section.headline.trim(),
               style: profile.typography.section.copyWith(
                 color: textColor,
-                fontSize: 18,
-                height: 1.32,
+                fontSize: 16.5,
+                height: 1.35,
                 letterSpacing: -0.2,
               ),
             ),
