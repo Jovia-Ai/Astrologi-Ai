@@ -2527,7 +2527,7 @@ ProfileDetailSheetData _sheetFromSection(
   required String fallbackEyebrow,
   String accent = 'lime',
   String placement = '',
-  String growthNote = '',
+  String? growthNote,
   List<String>? details,
   String? ctaLabel,
   VoidCallback? onCta,
@@ -2535,6 +2535,7 @@ ProfileDetailSheetData _sheetFromSection(
   final (accentColor, inkColor) = _v8AccentInkBySection[accent] ?? _v8AccentInkBySection['lime']!;
   final highlight = (section.callout ?? '').trim();
   final resolvedDetails = details ?? section.bullets;
+  final resolvedGrowth = growthNote ?? (section.growth ?? '');
   return ProfileDetailSheetData(
     eyebrow: section.eyebrow.trim().isEmpty ? fallbackEyebrow : section.eyebrow,
     headline: section.headline.trim(),
@@ -2547,7 +2548,7 @@ ProfileDetailSheetData _sheetFromSection(
     details: resolvedDetails
         .where((item) => item.trim().isNotEmpty)
         .toList(growable: false),
-    growthNote: growthNote,
+    growthNote: resolvedGrowth,
     ctaLabel: ctaLabel,
     onCta: onCta,
   );

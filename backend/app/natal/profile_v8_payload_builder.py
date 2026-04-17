@@ -116,6 +116,7 @@ class EditorialSectionPayload:
     footer: Optional[str] = None
     footer_cta: Optional[str] = None
     highlight: Optional[str] = None
+    growth: Optional[str] = None
 
 
 @dataclass
@@ -516,6 +517,7 @@ def select_for_profile_v8(
         defense=pick_defense(
             hinted=section_pick.get("defense", []) or by_hint["defense"],
             fallback=by_domain["shadow"],
+            growth_source=by_domain["mission"] + by_domain["talent"] + by_domain["identity"],
         ),
         first_felt=build_first_felt(
             hinted=section_pick.get("first_felt", []) or by_hint["first_felt"],
@@ -1141,18 +1143,35 @@ def pick_defense(
     *,
     hinted: list[NarrativeFragment],
     fallback: list[NarrativeFragment],
+    growth_source: list[NarrativeFragment] | None = None,
 ) -> EditorialSectionPayload | None:
     source = hinted or fallback
     if not source:
         return None
 
     top = source[0]
+    growth_text: str | None = None
+    if growth_source:
+        top_chips = {chip.strip().lower() for chip in top.chips if chip.strip()}
+        best = None
+        for fragment in growth_source:
+            text = (fragment.text or "").strip()
+            if not text:
+                continue
+            frag_chips = {chip.strip().lower() for chip in fragment.chips if chip.strip()}
+            if top_chips and frag_chips and top_chips & frag_chips:
+                best = fragment
+                break
+            best = best or fragment
+        if best is not None:
+            growth_text = _shorten(best.text, 160)
     return EditorialSectionPayload(
         eyebrow="SAVUNMA MEKANİZMAN",
         headline=top.headline or "Sevilmek için kendini değil, parlayan halini gösteriyorsun.",
         body=_shorten(top.text, 220),
         chips=top.chips[:3],
         highlight=top.highlight,
+        growth=growth_text,
     )
 
 
