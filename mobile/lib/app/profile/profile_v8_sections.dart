@@ -126,7 +126,11 @@ class ProfileV8SectionsView extends StatelessWidget {
       );
     }
 
-    void addWhiteSection(ProfileV8TextSection? section) {
+    void addWhiteSection(
+      ProfileV8TextSection? section, {
+      Color accent = const Color(0xFF7F77DD),
+      Color accentTextColor = const Color(0xFF26215C),
+    }) {
       if (section == null || !section.hasContent) {
         return;
       }
@@ -139,8 +143,8 @@ class ProfileV8SectionsView extends StatelessWidget {
             dark: false,
             subtle: false,
             leftAccent: false,
-            accent: const Color(0xFF7F77DD),
-            accentTextColor: const Color(0xFF26215C),
+            accent: accent,
+            accentTextColor: accentTextColor,
           ),
         ),
       );
@@ -205,7 +209,11 @@ class ProfileV8SectionsView extends StatelessWidget {
       }
     }
 
-    addWhiteSection(data.intimacySection);
+    addWhiteSection(
+      data.intimacySection,
+      accent: const Color(0xFFE8A020),
+      accentTextColor: const Color(0xFF8A5600),
+    );
     addWhiteSection(data.mindSection);
 
     if (_hasEditorialContent(data.ctaSection)) {
@@ -2146,7 +2154,7 @@ class _V8SectionCard extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         decoration: BoxDecoration(
           color: background,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(14),
           border: Border.all(color: borderColor),
         ),
         child: Stack(
