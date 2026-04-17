@@ -61,17 +61,27 @@ class ProfileV8SectionsView extends StatelessWidget {
 
     children.add(_V8InsightStrip(items: data.topInsights));
 
-    if (data.uniqueBlock?.hasContent == true) {
-      final section = data.uniqueBlock;
-      if (section != null) {
-        children.add(const SizedBox(height: 14));
-        children.add(
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _V8UniqueMetricSlab(section: section),
+    final uniqueSection = data.uniqueBlock;
+    final hasUniqueContent =
+        (uniqueSection?.hasContent == true) || data.differentiators.isNotEmpty;
+    if (hasUniqueContent) {
+      final section =
+          uniqueSection ??
+          const ProfileV8TextSection(
+            eyebrow: 'SENİ FARKLI KILAN',
+            headline: '',
+            body: '',
+          );
+      children.add(const SizedBox(height: 14));
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: _V8UniqueMetricSlab(
+            section: section,
+            differentiators: data.differentiators,
           ),
-        );
-      }
+        ),
+      );
     }
 
     if (_hasEditorialContent(data.originSection)) {
@@ -100,13 +110,18 @@ class ProfileV8SectionsView extends StatelessWidget {
       }
     }
 
-    final hasTalents = data.talents.any((item) => item.trim().isNotEmpty);
+    final hasTalents =
+        data.talentItems.any((item) => item.hasContent) ||
+        data.talents.any((item) => item.trim().isNotEmpty);
     if (hasTalents) {
       children.add(const SizedBox(height: 14));
       children.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _V8TalentsStrip(talents: data.talents),
+          child: _V8TalentsStrip(
+            talents: data.talents,
+            talentItems: data.talentItems,
+          ),
         ),
       );
     }
@@ -532,14 +547,20 @@ class _V8InsightStrip extends StatelessWidget {
 }
 
 class _V8UniqueMetricSlab extends StatelessWidget {
-  const _V8UniqueMetricSlab({required this.section});
+  const _V8UniqueMetricSlab({
+    required this.section,
+    this.differentiators = const <ProfileV8Differentiator>[],
+  });
 
   final ProfileV8TextSection section;
+  final List<ProfileV8Differentiator> differentiators;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    final rows = _rowsFromSection(section);
+    final rows = differentiators.isNotEmpty
+        ? _rowsFromDifferentiators(differentiators)
+        : _rowsFromSection(section);
     final headline = section.headline.trim().isEmpty
         ? 'Sende çalışan çizgi belirgin.'
         : section.headline.trim();
@@ -602,6 +623,28 @@ class _V8UniqueMetricSlab extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  static List<_V8MetricRowData> _rowsFromDifferentiators(
+    List<ProfileV8Differentiator> items,
+  ) {
+    final rows = <_V8MetricRowData>[];
+    for (final item in items.take(3)) {
+      final stat = item.stat.trim();
+      rows.add(
+        _V8MetricRowData(
+          eyebrow: item.eyebrow.trim().isEmpty ? 'İMZA' : item.eyebrow,
+          title: item.headline.trim().isEmpty
+              ? 'Belirgin bir imza taşıyorsun.'
+              : item.headline.trim(),
+          subtitle: item.body.trim(),
+          statValue: stat.isEmpty ? '•' : stat,
+          statLabel: item.statLabel.trim(),
+          accent: item.accent,
+        ),
+      );
+    }
+    return rows;
   }
 
   static List<_V8MetricRowData> _rowsFromSection(ProfileV8TextSection section) {
@@ -738,7 +781,7 @@ class _V8MetricRow extends StatelessWidget {
               Text(
                 row.statValue,
                 style: profile.typography.section.copyWith(
-                  color: const Color(0xFFCAFF4D),
+                  color: _v8StatColor(row.accent),
                   fontSize: 18,
                   height: 1.08,
                   fontWeight: FontWeight.w500,
@@ -1091,6 +1134,7 @@ class _V8MetricRowData {
     required this.subtitle,
     required this.statValue,
     required this.statLabel,
+    this.accent = 'lime',
   });
 
   final String eyebrow;
@@ -1098,17 +1142,37 @@ class _V8MetricRowData {
   final String subtitle;
   final String statValue;
   final String statLabel;
+  final String accent;
+}
+
+Color _v8StatColor(String accent) {
+  switch (accent.trim().toLowerCase()) {
+    case 'lavender':
+      return const Color(0xFF9B8FFF);
+    case 'stone':
+    case 'neutral':
+      return const Color(0xFFE0DED4);
+    case 'lime':
+    default:
+      return const Color(0xFFCAFF4D);
+  }
 }
 
 class _V8TalentsStrip extends StatelessWidget {
-  const _V8TalentsStrip({required this.talents});
+  const _V8TalentsStrip({
+    required this.talents,
+    this.talentItems = const <ProfileV8Talent>[],
+  });
 
   final List<String> talents;
+  final List<ProfileV8Talent> talentItems;
 
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    final items = _buildTalentItems(talents);
+    final items = talentItems.isNotEmpty
+        ? _fromStructured(talentItems)
+        : _buildTalentItems(talents);
     if (items.isEmpty) {
       return const SizedBox.shrink();
     }
@@ -1146,11 +1210,11 @@ class _V8TalentsStrip extends StatelessWidget {
                       width: 24,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: _talentTint(index),
+                        color: _talentTintFor(items[index].accent, index),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Icon(
-                        _talentIcon(index),
+                        _talentIconFor(items[index].accent, index),
                         size: 13,
                         color: const Color(0xFF111111),
                       ),
@@ -1208,6 +1272,51 @@ class _V8TalentsStrip extends StatelessWidget {
     return out.take(3).toList(growable: false);
   }
 
+  static List<_V8TalentItem> _fromStructured(List<ProfileV8Talent> source) {
+    final out = <_V8TalentItem>[];
+    for (final item in source.take(3)) {
+      if (!item.hasContent) {
+        continue;
+      }
+      out.add(
+        _V8TalentItem(
+          eyebrow: item.eyebrow.trim().isEmpty ? 'YETENEK' : item.eyebrow,
+          headline: item.headline,
+          accent: item.accent,
+        ),
+      );
+    }
+    return List<_V8TalentItem>.unmodifiable(out);
+  }
+
+  static IconData _talentIconFor(String? accent, int index) {
+    switch ((accent ?? '').trim().toLowerCase()) {
+      case 'lime':
+        return Icons.auto_awesome_rounded;
+      case 'lavender':
+        return Icons.graphic_eq_rounded;
+      case 'stone':
+      case 'neutral':
+        return Icons.adjust_rounded;
+      default:
+        return _talentIcon(index);
+    }
+  }
+
+  static Color _talentTintFor(String? accent, int index) {
+    switch ((accent ?? '').trim().toLowerCase()) {
+      case 'lime':
+        return const Color(0xFFD2F2A0);
+      case 'lavender':
+        return const Color(0xFFDDD8FC);
+      case 'stone':
+      case 'neutral':
+        return const Color(0xFFF0F0F3);
+      default:
+        return _talentTint(index);
+    }
+  }
+
   static IconData _talentIcon(int index) {
     switch (index) {
       case 0:
@@ -1240,10 +1349,15 @@ class _V8TalentsStrip extends StatelessWidget {
 }
 
 class _V8TalentItem {
-  const _V8TalentItem({required this.eyebrow, required this.headline});
+  const _V8TalentItem({
+    required this.eyebrow,
+    required this.headline,
+    this.accent,
+  });
 
   final String eyebrow;
   final String headline;
+  final String? accent;
 }
 
 class _V8ConversationCard extends StatelessWidget {

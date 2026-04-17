@@ -18,6 +18,48 @@ class ProfileV8InsightCell {
 }
 
 @immutable
+class ProfileV8Differentiator {
+  const ProfileV8Differentiator({
+    required this.eyebrow,
+    required this.headline,
+    required this.body,
+    required this.stat,
+    required this.statLabel,
+    required this.accent,
+  });
+
+  final String eyebrow;
+  final String headline;
+  final String body;
+  final String stat;
+  final String statLabel;
+  final String accent;
+
+  bool get hasContent {
+    return headline.trim().isNotEmpty ||
+        eyebrow.trim().isNotEmpty ||
+        stat.trim().isNotEmpty;
+  }
+}
+
+@immutable
+class ProfileV8Talent {
+  const ProfileV8Talent({
+    required this.eyebrow,
+    required this.headline,
+    required this.accent,
+  });
+
+  final String eyebrow;
+  final String headline;
+  final String accent;
+
+  bool get hasContent {
+    return eyebrow.trim().isNotEmpty || headline.trim().isNotEmpty;
+  }
+}
+
+@immutable
 class ProfileV8TextSection {
   const ProfileV8TextSection({
     required this.eyebrow,
@@ -56,9 +98,11 @@ class ProfileV8Data {
     required this.identityQuote,
     required this.topInsights,
     this.uniqueBlock,
+    this.differentiators = const <ProfileV8Differentiator>[],
     this.originSection,
     this.firstImpressionSection,
     this.talents = const <String>[],
+    this.talentItems = const <ProfileV8Talent>[],
     this.conversationSection,
     this.effectSection,
     this.defenseSection,
@@ -73,9 +117,11 @@ class ProfileV8Data {
   final String identityQuote;
   final List<ProfileV8InsightCell> topInsights;
   final ProfileV8TextSection? uniqueBlock;
+  final List<ProfileV8Differentiator> differentiators;
   final ProfileV8TextSection? originSection;
   final ProfileV8TextSection? firstImpressionSection;
   final List<String> talents;
+  final List<ProfileV8Talent> talentItems;
   final ProfileV8TextSection? conversationSection;
   final ProfileV8TextSection? effectSection;
   final ProfileV8TextSection? defenseSection;
@@ -93,9 +139,11 @@ class ProfileV8Data {
               item.title.trim().isNotEmpty || item.subtitle.trim().isNotEmpty,
         ) ||
         uniqueBlock?.hasContent == true ||
+        differentiators.isNotEmpty ||
         originSection?.hasContent == true ||
         firstImpressionSection?.hasContent == true ||
         talents.isNotEmpty ||
+        talentItems.isNotEmpty ||
         conversationSection?.hasContent == true ||
         effectSection?.hasContent == true ||
         defenseSection?.hasContent == true ||
@@ -729,9 +777,9 @@ class ProfileV8Adapter {
       hero: hero,
       dominantElementLabel: dominantElementLabel,
     );
-    final uniqueBlock = _buildDifferentiatorsSection(
-      _asListOfMaps(profileV8['differentiators']),
-    );
+    final differentiatorMaps = _asListOfMaps(profileV8['differentiators']);
+    final uniqueBlock = _buildDifferentiatorsSection(differentiatorMaps);
+    final differentiators = _buildDifferentiatorsList(differentiatorMaps);
     final originSection = _sectionFromEditorialMap(
       _asMap(profileV8['past_teaser']),
     );
@@ -739,6 +787,7 @@ class ProfileV8Adapter {
       _asMap(profileV8['first_impression']),
     );
     final talents = _buildTalentsFromV8(profileV8['talents']);
+    final talentItems = _buildTalentItemsFromV8(profileV8['talents']);
     final conversationSection = _sectionFromEditorialMap(
       _asMap(profileV8['conversation_hooks']),
     );
@@ -788,9 +837,11 @@ class ProfileV8Adapter {
       identityQuote: quote,
       topInsights: topInsights,
       uniqueBlock: uniqueBlock,
+      differentiators: differentiators,
       originSection: originSection,
       firstImpressionSection: firstImpressionSection,
       talents: talents,
+      talentItems: talentItems,
       conversationSection: conversationSection,
       effectSection: effectSection,
       defenseSection: defenseSection,
@@ -815,12 +866,18 @@ class ProfileV8Adapter {
           ? primary.topInsights
           : fallback.topInsights,
       uniqueBlock: _preferSection(primary.uniqueBlock, fallback.uniqueBlock),
+      differentiators: primary.differentiators.isNotEmpty
+          ? primary.differentiators
+          : fallback.differentiators,
       originSection: _preferSection(primary.originSection, fallback.originSection),
       firstImpressionSection: _preferSection(
         primary.firstImpressionSection,
         fallback.firstImpressionSection,
       ),
       talents: primary.talents.isNotEmpty ? primary.talents : fallback.talents,
+      talentItems: primary.talentItems.isNotEmpty
+          ? primary.talentItems
+          : fallback.talentItems,
       conversationSection: _preferSection(
         primary.conversationSection,
         fallback.conversationSection,
@@ -1032,6 +1089,34 @@ class ProfileV8Adapter {
     return section.hasContent ? section : null;
   }
 
+  static List<ProfileV8Differentiator> _buildDifferentiatorsList(
+    List<Map<String, dynamic>> items,
+  ) {
+    final out = <ProfileV8Differentiator>[];
+    for (final item in items.take(3)) {
+      final eyebrow = _firstText(<dynamic>[item['eyebrow']]) ?? '';
+      final headline = _firstText(<dynamic>[item['headline']]) ?? '';
+      final body = _firstText(<dynamic>[item['body']]) ?? '';
+      final stat = _firstText(<dynamic>[item['stat']]) ?? '';
+      final statLabel = _firstText(<dynamic>[item['stat_label']]) ?? '';
+      final accent = (_firstText(<dynamic>[item['accent']]) ?? 'lime')
+          .trim()
+          .toLowerCase();
+      final entry = ProfileV8Differentiator(
+        eyebrow: _shortenForProfile(eyebrow, limit: 40),
+        headline: _shortenForProfile(headline, limit: 80),
+        body: _shortenForProfile(body, limit: 100),
+        stat: stat.trim(),
+        statLabel: statLabel.trim(),
+        accent: accent,
+      );
+      if (entry.hasContent) {
+        out.add(entry);
+      }
+    }
+    return List<ProfileV8Differentiator>.unmodifiable(out);
+  }
+
   static ProfileV8TextSection? _sectionFromEditorialMap(
     Map<String, dynamic> section,
   ) {
@@ -1122,6 +1207,42 @@ class ProfileV8Adapter {
       }
     }
     return result;
+  }
+
+  static List<ProfileV8Talent> _buildTalentItemsFromV8(dynamic raw) {
+    final out = <ProfileV8Talent>[];
+    for (final item in _asListOfMaps(raw).take(3)) {
+      final eyebrow = _firstText(<dynamic>[item['eyebrow']]) ?? '';
+      final text = _firstText(<dynamic>[item['text']]) ?? '';
+      if (text.trim().isEmpty) {
+        continue;
+      }
+      final accent = (_firstText(<dynamic>[item['accent']]) ?? 'lime')
+          .trim()
+          .toLowerCase();
+      final headline = _shortenForProfile(
+        _humanizeInsightText(text),
+        limit: 64,
+      );
+      if (_isInternalKey(headline) || _looksLikeAstroPlacement(headline)) {
+        continue;
+      }
+      final duplicate = out.any(
+        (existing) =>
+            existing.headline.toLowerCase() == headline.toLowerCase(),
+      );
+      if (duplicate) {
+        continue;
+      }
+      out.add(
+        ProfileV8Talent(
+          eyebrow: _shortenForProfile(eyebrow, limit: 24),
+          headline: headline,
+          accent: accent,
+        ),
+      );
+    }
+    return List<ProfileV8Talent>.unmodifiable(out);
   }
 
   static ProfileV8TextSection? _buildArchetypePortalSection(
