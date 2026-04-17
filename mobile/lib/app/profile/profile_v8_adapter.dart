@@ -471,6 +471,10 @@ class ProfileV8Adapter {
         originThread?['body'],
         originThread?['subtitle'],
       ],
+      bulletCandidates: <dynamic>[
+        originThread?['detail_blocks'],
+        originCard?['detail_blocks'],
+      ],
       chipCandidates: <dynamic>[
         originCard?['chips'],
         extraEntries.isNotEmpty ? extraEntries.first['tags'] : null,
@@ -496,6 +500,7 @@ class ProfileV8Adapter {
         firstImpressionCard?['summary'],
         firstImpressionCard?['body'],
       ],
+      bulletCandidates: <dynamic>[firstImpressionCard?['detail_blocks']],
       chipCandidates: <dynamic>[firstImpressionCard?['chips']],
     );
 
@@ -536,6 +541,10 @@ class ProfileV8Adapter {
         conversationThread?['subtitle'],
         conversationCard?['summary'],
         conversationCard?['body'],
+      ],
+      bulletCandidates: <dynamic>[
+        conversationThread?['detail_blocks'],
+        conversationCard?['detail_blocks'],
       ],
       chipCandidates: <dynamic>[
         conversationThread?['chips'],
@@ -593,6 +602,7 @@ class ProfileV8Adapter {
         defenseCard?['summary'],
         defenseCard?['body'],
       ],
+      bulletCandidates: <dynamic>[defenseCard?['detail_blocks']],
       chipCandidates: <dynamic>[defenseCard?['chips']],
     );
 
@@ -612,6 +622,7 @@ class ProfileV8Adapter {
         firstFeltCard?['summary'],
         firstFeltCard?['body'],
       ],
+      bulletCandidates: <dynamic>[firstFeltCard?['detail_blocks']],
       chipCandidates: <dynamic>[firstFeltCard?['chips']],
     );
 
@@ -662,6 +673,10 @@ class ProfileV8Adapter {
         intimacyThread?['subtitle'],
         intimacyThread?['body'],
       ],
+      bulletCandidates: <dynamic>[
+        intimacyThread?['detail_blocks'],
+        intimacyCard?['detail_blocks'],
+      ],
       chipCandidates: <dynamic>[
         intimacyCard?['chips'],
         intimacyThread?['chips'],
@@ -686,6 +701,10 @@ class ProfileV8Adapter {
         mindCard?['body'],
         mindThread?['subtitle'],
         mindThread?['body'],
+      ],
+      bulletCandidates: <dynamic>[
+        mindThread?['detail_blocks'],
+        mindCard?['detail_blocks'],
       ],
       chipCandidates: <dynamic>[mindCard?['chips'], mindThread?['chips']],
     );
@@ -942,6 +961,22 @@ class ProfileV8Adapter {
     ProfileV8TextSection? fallback,
   ) {
     if (primary != null && primary.hasContent) {
+      final hasBullets = primary.bullets.any((item) => item.trim().isNotEmpty);
+      final fallbackBullets =
+          fallback?.bullets.where((item) => item.trim().isNotEmpty).toList() ??
+              const <String>[];
+      if (!hasBullets && fallbackBullets.isNotEmpty) {
+        return ProfileV8TextSection(
+          eyebrow: primary.eyebrow,
+          headline: primary.headline,
+          body: primary.body,
+          bullets: fallbackBullets,
+          chips: primary.chips.isNotEmpty ? primary.chips : (fallback?.chips ?? const <String>[]),
+          callout: primary.callout,
+          footer: primary.footer,
+          cta: primary.cta,
+        );
+      }
       return primary;
     }
     if (fallback != null && fallback.hasContent) {
