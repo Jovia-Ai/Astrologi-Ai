@@ -1664,111 +1664,122 @@ class _V8DefenseCard extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFFF7F4FF),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color.fromRGBO(83, 74, 183, 0.16)),
+        border: Border.all(color: const Color.fromRGBO(0, 0, 0, 0.07)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 3,
-            margin: const EdgeInsets.only(top: 8, bottom: 8, left: 8),
-            decoration: BoxDecoration(
-              color: const Color(0xFF7F77DD),
-              borderRadius: BorderRadius.circular(2),
-            ),
+            width: 2.5,
+            margin: const EdgeInsets.symmetric(vertical: 12),
+            decoration: const BoxDecoration(color: Color(0xFF7F77DD)),
           ),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(11, 12, 12, 12),
+              padding: const EdgeInsets.fromLTRB(12, 14, 14, 14),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    turkishToUpper(
-                      section.eyebrow.trim().isEmpty
-                          ? 'SAVUNMA MEKANİZMAN'
-                          : section.eyebrow,
-                    ),
-                    style: profile.typography.micro.copyWith(
-                      color: const Color(0xFF8C84E0),
-                      fontSize: 8,
-                      letterSpacing: 0.8,
-                      fontWeight: FontWeight.w600,
-                    ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 5,
+                        height: 5,
+                        decoration: const BoxDecoration(
+                          color: Color(0xFF7F77DD),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        turkishToUpper(
+                          section.eyebrow.trim().isEmpty
+                              ? 'SAVUNMA MEKANİZMAN'
+                              : section.eyebrow,
+                        ),
+                        style: profile.typography.micro.copyWith(
+                          color: const Color(0xFFBBBBBB),
+                          fontSize: 8,
+                          letterSpacing: 0.8,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                   if (showHighlight)
                     Container(
+                      margin: const EdgeInsets.only(bottom: 4),
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 7,
-                        vertical: 4,
+                        horizontal: 6,
+                        vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE6E1FF),
-                        borderRadius: BorderRadius.circular(4),
+                        color: const Color(0xFFDDD8FC),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                       child: Text(
                         split.$1.trim(),
                         style: profile.typography.bodyCompact.copyWith(
-                          color: const Color(0xFF3D348B),
-                          fontSize: 12.2,
-                          height: 1.34,
-                          fontWeight: FontWeight.w500,
+                          color: const Color(0xFF26215C),
+                          fontSize: 15.2,
+                          height: 1.33,
+                          letterSpacing: -0.28,
+                          fontWeight: FontWeight.w400,
                         ),
                       ),
                     ),
-                  const SizedBox(height: 5),
                   Text(
                     headlineMain,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: profile.typography.section.copyWith(
-                      color: const Color(0xFF1D1847),
-                      fontSize: 16.2,
-                      height: 1.33,
-                      letterSpacing: -0.24,
+                      color: const Color(0xFF111111),
+                      fontSize: 16,
+                      height: 1.375,
+                      letterSpacing: -0.3,
                       fontWeight: FontWeight.w400,
                     ),
                   ),
                   if (body.trim().isNotEmpty) ...[
-                    const SizedBox(height: 7),
+                    const SizedBox(height: 8),
                     Text(
                       body,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: profile.typography.micro.copyWith(
-                        color: const Color(0xFF655EA8),
-                        fontSize: 10.3,
-                        height: 1.48,
+                        color: const Color(0xFF888888),
+                        fontSize: 10.8,
+                        height: 1.66,
                       ),
                     ),
                   ],
                   if (section.chips.isNotEmpty) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 10),
                     Wrap(
-                      spacing: 6,
-                      runSpacing: 6,
+                      spacing: 5,
+                      runSpacing: 5,
                       children: [
                         for (final chip in section.chips.take(4))
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
+                              horizontal: 9,
                               vertical: 4,
                             ),
                             decoration: BoxDecoration(
                               color: Colors.transparent,
                               borderRadius: BorderRadius.circular(20),
                               border: Border.all(
-                                color: const Color.fromRGBO(83, 74, 183, 0.2),
+                                color: const Color.fromRGBO(127, 119, 221, 0.2),
                               ),
                             ),
                             child: Text(
                               chip,
                               style: profile.typography.micro.copyWith(
-                                color: const Color(0xFF5A52A7),
-                                fontSize: 8.8,
+                                color: const Color(0xFF7F77DD),
+                                fontSize: 9.5,
                               ),
                             ),
                           ),
