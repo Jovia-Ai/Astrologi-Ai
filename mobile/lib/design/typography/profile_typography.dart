@@ -50,7 +50,7 @@ class ProfileTypography {
   TextStyle get buttonLabel => chipLabel.copyWith(
     fontSize: 12.5,
     height: 16 / 12.5,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w500,
     letterSpacing: 0.04,
   );
   TextStyle get metaSoft => meta.copyWith(
@@ -73,7 +73,7 @@ class ProfileTypography {
       color: color ?? sectionLabel.color,
       fontSize: 11.5,
       height: 15 / 11.5,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500,
       letterSpacing: 1.35,
     );
   }
@@ -93,7 +93,7 @@ class ProfileTypography {
       color: color ?? pageTitle.color,
       fontSize: 17,
       height: 22 / 17,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500,
       letterSpacing: -0.18,
     );
   }
@@ -137,21 +137,21 @@ class ProfileTypography {
         ),
       ),
       pageTitle: apply(
-        display,
+        body,
         TextStyle(
           fontSize: 36,
           height: 40 / 36,
-          fontWeight: FontWeight.w300,
+          fontWeight: FontWeight.w400,
           color: textColor,
           letterSpacing: -1.24,
         ),
       ),
       sectionTitle: apply(
-        display,
+        body,
         TextStyle(
           fontSize: 30,
           height: 34 / 30,
-          fontWeight: FontWeight.w300,
+          fontWeight: FontWeight.w400,
           color: textColor,
           letterSpacing: -0.9,
         ),
@@ -201,17 +201,17 @@ class ProfileTypography {
         TextStyle(
           fontSize: 12.5,
           height: 16 / 12.5,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w500,
           color: textColor,
           letterSpacing: 0.02,
         ),
       ),
       heroEditorial: apply(
-        display,
+        body,
         TextStyle(
           fontSize: 52,
           height: 54 / 52,
-          fontWeight: FontWeight.w300,
+          fontWeight: FontWeight.w400,
           color: textColor,
           letterSpacing: -1.72,
         ),
