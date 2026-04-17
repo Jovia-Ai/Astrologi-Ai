@@ -22,6 +22,9 @@ class ProfileColors {
     required this.heroBase,
     required this.neonPink,
     required this.neonCyan,
+    this.brandLime = const Color(0xFFCAFF4D),
+    this.brandLavender = const Color(0xFF7F77DD),
+    this.brandBlush = const Color(0xFFF9A8D4),
   });
 
   final Color bg;
@@ -43,6 +46,9 @@ class ProfileColors {
   final Color heroBase;
   final Color neonPink;
   final Color neonCyan;
+  final Color brandLime;
+  final Color brandLavender;
+  final Color brandBlush;
 
   Color get canvas => bg;
   Color get canvasAlt => heroBase;
@@ -64,8 +70,6 @@ class ProfileColors {
   Color get bgBase => bg;
   Color get surfaceCard => surface;
   Color get brandPurple => primary;
-  Color get brandLime => lime;
-  Color get brandLavender => lavender;
   Color get strokeDivider => separator;
   Color get bgPrimary => bg;
   Color get bgSecondary => heroBase;
