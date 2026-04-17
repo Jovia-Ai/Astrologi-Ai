@@ -166,6 +166,41 @@ HOUSE_MOTIFS_TR: Dict[int, Sequence[str]] = {
 }
 
 PLANET_ARCHETYPES_TR: Dict[str, Dict[str, Sequence[str]]] = {
+    "sun": {
+        "verbs": ("aydınlatır", "merkezler", "sahneye çıkarır"),
+        "shadow": ("ego gerginliği", "onay arayışı", "abartılı sahne"),
+        "gift": ("otantik ışık", "içten cesaret", "canlandırıcı netlik"),
+    },
+    "moon": {
+        "verbs": ("hissettirir", "yumuşatır", "köke çeker"),
+        "shadow": ("duygusal dalga", "içe kapanış", "geçmişe takılma"),
+        "gift": ("duyulmuş ihtiyaç", "sezgisel bakım", "sakin kök"),
+    },
+    "mercury": {
+        "verbs": ("taşır", "bağlar", "çevirir"),
+        "shadow": ("dağılma", "fazla söz", "yanlış okuma"),
+        "gift": ("net iletim", "hızlı algı", "köprüleyen dil"),
+    },
+    "venus": {
+        "verbs": ("çeker", "yumuşatır", "değer verir"),
+        "shadow": ("onay kıskacı", "erteleme", "yüzey zevki"),
+        "gift": ("samimi bağ", "estetik ayar", "kalp ısısı"),
+    },
+    "mars": {
+        "verbs": ("başlatır", "iter", "hamleyi açar"),
+        "shadow": ("acele", "sertleşme", "tepkisellik"),
+        "gift": ("doğru hamle", "cesur netlik", "odak"),
+    },
+    "jupiter": {
+        "verbs": ("büyütür", "genişletir", "anlam açar"),
+        "shadow": ("abartı", "aşırı vaat", "yerleşememe"),
+        "gift": ("cömert vizyon", "öğrenilmiş bilgelik", "şans açan cesaret"),
+    },
+    "saturn": {
+        "verbs": ("test eder", "sıkılaştırır", "olgunlaştırır"),
+        "shadow": ("katılık", "aşırı yük", "yavaş kilitlenme"),
+        "gift": ("ustalık", "kalıcı sistem", "iç otorite"),
+    },
     "uranus": {
         "verbs": ("sarsar", "uyandırır", "yeni yol açar"),
         "shadow": ("sabırsız kopuş", "ani karar", "kanal dağılması"),
@@ -176,15 +211,10 @@ PLANET_ARCHETYPES_TR: Dict[str, Dict[str, Sequence[str]]] = {
         "shadow": ("sınır erimesi", "projeksiyon", "yanlış okuma"),
         "gift": ("sezgiyi ayıklama", "nazik sınır", "ilhamlı netlik"),
     },
-    "mars": {
-        "verbs": ("başlatır", "iter", "hamleyi açar"),
-        "shadow": ("acele", "sertleşme", "tepkisellik"),
-        "gift": ("doğru hamle", "cesur netlik", "odak"),
-    },
-    "saturn": {
-        "verbs": ("test eder", "sıkılaştırır", "olgunlaştırır"),
-        "shadow": ("katılık", "aşırı yük", "yavaş kilitlenme"),
-        "gift": ("ustalık", "kalıcı sistem", "iç otorite"),
+    "pluto": {
+        "verbs": ("derinleştirir", "dönüştürür", "örter ve açar"),
+        "shadow": ("kontrol saplantısı", "takıntı", "sessiz yıkım"),
+        "gift": ("gerçek güç", "köklü değişim", "içten otorite"),
     },
 }
 

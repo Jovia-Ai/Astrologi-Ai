@@ -1,4 +1,8 @@
-from app.transit.narrative.phrase_lib_tr import SIGN_STYLES_TR, compose_phrase_pack
+from app.transit.narrative.phrase_lib_tr import (
+    PLANET_ARCHETYPES_TR,
+    SIGN_STYLES_TR,
+    compose_phrase_pack,
+)
 
 
 # S0-1: 12 burç coverage, mevcut 5 burcun değerlerinin frozen (regression) olduğu,
@@ -57,6 +61,72 @@ def test_sign_styles_value_length_guard() -> None:
         for key, value in entry.items():
             assert len(value) <= 32, f"{sign}.{key} çok uzun: '{value}'"
             assert len(value.split()) <= 4, f"{sign}.{key} çok fazla kelime: '{value}'"
+
+
+# S0-2: PLANET_ARCHETYPES_TR — 10 gezegen coverage + frozen baseline + shape + blocklist + length.
+
+_PLANET_ARCHETYPES_BASELINE = {
+    "uranus": {
+        "verbs": ("sarsar", "uyandırır", "yeni yol açar"),
+        "shadow": ("sabırsız kopuş", "ani karar", "kanal dağılması"),
+        "gift": ("yaratıcı sıçrama", "elektrik netlik", "yenilik cesareti"),
+    },
+    "neptune": {
+        "verbs": ("bulanıklaştırır", "yumuşatır", "sezdirir"),
+        "shadow": ("sınır erimesi", "projeksiyon", "yanlış okuma"),
+        "gift": ("sezgiyi ayıklama", "nazik sınır", "ilhamlı netlik"),
+    },
+    "mars": {
+        "verbs": ("başlatır", "iter", "hamleyi açar"),
+        "shadow": ("acele", "sertleşme", "tepkisellik"),
+        "gift": ("doğru hamle", "cesur netlik", "odak"),
+    },
+    "saturn": {
+        "verbs": ("test eder", "sıkılaştırır", "olgunlaştırır"),
+        "shadow": ("katılık", "aşırı yük", "yavaş kilitlenme"),
+        "gift": ("ustalık", "kalıcı sistem", "iç otorite"),
+    },
+}
+
+
+def test_planet_archetypes_covers_all_ten_planets() -> None:
+    expected = {
+        "sun", "moon", "mercury", "venus", "mars",
+        "jupiter", "saturn", "uranus", "neptune", "pluto",
+    }
+    assert set(PLANET_ARCHETYPES_TR.keys()) == expected
+
+
+def test_planet_archetypes_existing_values_are_frozen() -> None:
+    for planet, baseline in _PLANET_ARCHETYPES_BASELINE.items():
+        assert PLANET_ARCHETYPES_TR[planet] == baseline, (
+            f"{planet} baseline değişti; regression."
+        )
+
+
+def test_planet_archetypes_entries_have_required_shape() -> None:
+    for planet, entry in PLANET_ARCHETYPES_TR.items():
+        assert set(entry.keys()) == {"verbs", "shadow", "gift"}, planet
+        for key, values in entry.items():
+            assert isinstance(values, tuple) and len(values) == 3, f"{planet}.{key} 3-tuple değil"
+            for v in values:
+                assert isinstance(v, str) and v.strip(), f"{planet}.{key} boş değer"
+
+
+def test_planet_archetypes_no_blocklist_jargon() -> None:
+    for planet, entry in PLANET_ARCHETYPES_TR.items():
+        merged = " ".join(v for values in entry.values() for v in values).lower()
+        for banned in _SIGN_STYLES_BLOCKLIST:
+            assert banned not in merged, f"{planet} içinde yasaklı ifade: {banned}"
+
+
+def test_planet_archetypes_value_length_guard() -> None:
+    # editorial disiplin: her değer ≤ 32 karakter, ≤ 4 kelime
+    for planet, entry in PLANET_ARCHETYPES_TR.items():
+        for key, values in entry.items():
+            for v in values:
+                assert len(v) <= 32, f"{planet}.{key} çok uzun: '{v}'"
+                assert len(v.split()) <= 4, f"{planet}.{key} çok fazla kelime: '{v}'"
 
 
 
