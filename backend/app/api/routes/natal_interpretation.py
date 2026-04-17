@@ -84,7 +84,10 @@ from app.natal.narrative.contradiction_engine import build_contradiction_signatu
 from app.natal.narrative.layer_arbitrator import arbitrate_natal_layers
 from app.natal.narrative.master_selector import build_master_natal_selector
 from app.natal.narrative.natal_feature_graph import build_natal_feature_graph
-from app.natal.narrative.natal_selection_config import get_natal_selection_v3_config
+from app.natal.narrative.natal_selection_config import (
+    get_natal_selection_v3_config,
+    is_selection_v3_active_for_seed,
+)
 from app.natal.narrative.primitive_engine_v2 import build_primitives_v2
 from app.natal.personality_imprint import build_personality_imprint
 from app.natal.narrative.profile_narrative_engine import build_profile_narrative
@@ -1534,11 +1537,31 @@ def _prepare_payload_from_chart(
         if isinstance(natal_selection_config.get("phase_flags"), Mapping)
         else {}
     )
-    master_selector_enabled = bool(phase_flags.get("master_selector_enabled"))
-    contradiction_engine_enabled = bool(phase_flags.get("contradiction_engine_enabled"))
-    layer_arbitration_enabled = bool(phase_flags.get("layer_arbitration_enabled"))
-    voice_profile_enabled = bool(phase_flags.get("voice_profile_enabled"))
-    surface_migration_enabled = bool(phase_flags.get("surface_migration_enabled"))
+    # Selection V3 hash bazlı canary rollout (S1.5):
+    # SELECTION_V3_ROLLOUT_PCT > 0 ise per-user (seed_key) bucket içindeki
+    # request'ler için tüm Selection V3 phase'leri aktive olur.
+    # Mevcut boolean phase_flags hâlâ override (herhangi biri true → herkese aç).
+    selection_seed_key = _natal_selection_seed_key(chart_data)
+    rollout_decision = is_selection_v3_active_for_seed(
+        selection_seed_key,
+        phase_flags=phase_flags,
+    )
+    canary_active = rollout_decision["active"] and rollout_decision["decision"] == "canary"
+    master_selector_enabled = (
+        bool(phase_flags.get("master_selector_enabled")) or canary_active
+    )
+    contradiction_engine_enabled = (
+        bool(phase_flags.get("contradiction_engine_enabled")) or canary_active
+    )
+    layer_arbitration_enabled = (
+        bool(phase_flags.get("layer_arbitration_enabled")) or canary_active
+    )
+    voice_profile_enabled = (
+        bool(phase_flags.get("voice_profile_enabled")) or canary_active
+    )
+    surface_migration_enabled = (
+        bool(phase_flags.get("surface_migration_enabled")) or canary_active
+    )
     surface_migration_shadow = debug_mode and not surface_migration_enabled and bool(
         phase_flags.get("surface_migration_debug_only", True)
     )
@@ -1552,6 +1575,18 @@ def _prepare_payload_from_chart(
             surface_migration_enabled,
             voice_profile_enabled,
         )
+    )
+    logger.info(
+        "selection_v3_rollout_decision",
+        extra={
+            "selection_v3_decision": rollout_decision["decision"],
+            "selection_v3_rollout_pct": rollout_decision["rollout_pct"],
+            "selection_v3_active": rollout_decision["active"],
+            "selection_v3_seed_hash": rollout_decision["seed_hash_short"],
+            "selection_runtime_enabled": selection_runtime_enabled,
+            "route": resolved_route,
+            "request_id": resolved_request_id,
+        },
     )
 
     stage_timings_enabled = _stage_timings_enabled()
@@ -1783,7 +1818,7 @@ def _prepare_payload_from_chart(
         contradiction_signatures=contradiction_signatures_v1,
         natal_feature_graph=natal_feature_graph_v2,
         primitive_scores=primitive_scores_v2,
-        seed_key=_natal_selection_seed_key(chart_data),
+        seed_key=selection_seed_key,
         include_debug=debug_mode,
     )
     voice_profile_v2 = (

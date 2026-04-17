@@ -205,7 +205,7 @@ Plana başlamadan önce **netleşmesi gereken** kararlar (✅ = 2026-04-17 onayl
 |---|---|---|
 | K1 | **Çalışan kapasitesi & astrolog reviewer** | ✅ **Sen + Claude Code çift.** Faz 0-1'de astrolog reviewer = **sen (Sahra)**. Faz 2'de dış astrolog danışmanı devreye alınacak. |
 | K2 | **Faz öncelik sırası** | ✅ **Sıralı** (0 → 1 → 2 → 3 → 4). Faz 4 (mobile yeni tasarım) öne alınmaz; backend sözleşmesi önce oturur. |
-| K3 | **Selection V3 canary stratejisi** | ✅ **Kademeli rollout**: %10 → %50 → %100. S1.5'te %10 başla, 24 saat error rate < %0.1 ise S2.6'da %50, 48 saat sağlam ise %100. |
+| K3 | **Selection V3 canary stratejisi** | ✅ **Kademeli rollout**: %10 → %50 → %100. S1.5'te %10 başla, 24 saat error rate < %0.1 ise S2.6'da %50, 48 saat sağlam ise %100. **Render env var**: `SELECTION_V3_ROLLOUT_PCT=10` (default 0). Hash bazlı per-user (SHA256(seed_key) % 100 < pct), deterministik. Boolean phase flag'ler hâlâ override (herhangi biri true → herkese açık). Telemetri: `selection_v3_rollout_decision` log event'i her request'te basılır. |
 | K4 | **LLM provider önceliği (Faz 3)** | ✅ **Default: Groq → OpenAI fallback** (mevcut zincir). Premium akış için OpenAI birincil. |
 | K5 | **Astrolog review bütçesi (Faz 2)** | ✅ Faz 2 başlamadan önce dış astrolog danışmanı seçilir. Sahra Faz 0-1 review'larını kendi yapar. |
 | K6 | **Mobile rollout (Faz 4)** | ✅ TestFlight beta 1 hafta → store release. |

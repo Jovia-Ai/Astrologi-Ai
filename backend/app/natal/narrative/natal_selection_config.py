@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+import hashlib
+import os
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Mapping
 
 import yaml
 
@@ -114,6 +116,90 @@ def _merge_dicts(base: Dict[str, Any], override: Dict[str, Any]) -> Dict[str, An
 
 def _config_path() -> Path:
     return Path(__file__).resolve().parents[2] / "config" / "natal" / "natal_selection_v3.yaml"
+
+
+def _resolve_rollout_pct() -> int:
+    """`SELECTION_V3_ROLLOUT_PCT` env var'ından %X canary oranını oku.
+
+    Default 0 (Selection V3 hash bazlı rollout kapalı). Geçersiz değer → 0.
+    Clamp to [0, 100].
+    """
+    raw = os.getenv("SELECTION_V3_ROLLOUT_PCT", "").strip()
+    if not raw:
+        return 0
+    try:
+        pct = int(raw)
+    except ValueError:
+        return 0
+    return max(0, min(100, pct))
+
+
+def _seed_in_rollout_bucket(seed_key: str, pct: int) -> bool:
+    """SHA256(seed_key) % 100 < pct ise True (per-user stable)."""
+    if pct <= 0 or not seed_key:
+        return False
+    if pct >= 100:
+        return True
+    digest = hashlib.sha256(seed_key.encode("utf-8")).hexdigest()
+    bucket = int(digest[:8], 16) % 100
+    return bucket < pct
+
+
+def is_selection_v3_active_for_seed(
+    seed_key: str,
+    *,
+    phase_flags: Mapping[str, Any] | None = None,
+) -> Dict[str, Any]:
+    """Selection V3 omurgasının bu user için aktif olup olmadığını döndür.
+
+    Karar sırası (hangisi önce True ise o belirler):
+    1. Mevcut boolean flag'lerden herhangi biri True → "config_flag" (herkese aç)
+    2. SELECTION_V3_ROLLOUT_PCT > 0 ve seed bucket içinde → "canary" (per-user)
+    3. Aksi halde → "off"
+
+    Returns:
+        {
+          "active": bool,
+          "decision": "config_flag" | "canary" | "off",
+          "rollout_pct": int,
+          "seed_hash_short": str,
+        }
+    """
+    flags = phase_flags or {}
+    config_flag_active = any(
+        (
+            bool(flags.get("master_selector_enabled")),
+            bool(flags.get("contradiction_engine_enabled")),
+            bool(flags.get("layer_arbitration_enabled")),
+            bool(flags.get("surface_migration_enabled")),
+            bool(flags.get("voice_profile_enabled")),
+        )
+    )
+    rollout_pct = _resolve_rollout_pct()
+    seed_hash_short = (
+        hashlib.sha256(seed_key.encode("utf-8")).hexdigest()[:12]
+        if seed_key else ""
+    )
+    if config_flag_active:
+        return {
+            "active": True,
+            "decision": "config_flag",
+            "rollout_pct": rollout_pct,
+            "seed_hash_short": seed_hash_short,
+        }
+    if _seed_in_rollout_bucket(seed_key, rollout_pct):
+        return {
+            "active": True,
+            "decision": "canary",
+            "rollout_pct": rollout_pct,
+            "seed_hash_short": seed_hash_short,
+        }
+    return {
+        "active": False,
+        "decision": "off",
+        "rollout_pct": rollout_pct,
+        "seed_hash_short": seed_hash_short,
+    }
 
 
 def get_natal_selection_v3_config() -> Dict[str, Any]:
