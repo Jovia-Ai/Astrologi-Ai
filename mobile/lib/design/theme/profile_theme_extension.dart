@@ -1,9 +1,16 @@
 import 'dart:ui' show lerpDouble;
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:mobile/design/tokens/profile_tokens.dart';
 import 'package:mobile/design/typography/profile_typography.dart';
+
+TextStyle _applyFraunces(TextStyle base) =>
+    GoogleFonts.fraunces(textStyle: base);
+TextStyle _applyInter(TextStyle base) => GoogleFonts.inter(textStyle: base);
+TextStyle _applyJetBrainsMono(TextStyle base) =>
+    GoogleFonts.jetBrainsMono(textStyle: base);
 
 @immutable
 class ProfileTheme extends ThemeExtension<ProfileTheme> {
@@ -35,6 +42,9 @@ class ProfileTheme extends ThemeExtension<ProfileTheme> {
         textColor: colors.text,
         secondaryColor: colors.muted,
         mutedLabelColor: colors.textLight,
+        display: _applyFraunces,
+        body: _applyInter,
+        mono: _applyJetBrainsMono,
       ),
     );
   }
@@ -51,6 +61,9 @@ class ProfileTheme extends ThemeExtension<ProfileTheme> {
         textColor: colors.text,
         secondaryColor: colors.muted,
         mutedLabelColor: colors.textLight,
+        display: _applyFraunces,
+        body: _applyInter,
+        mono: _applyJetBrainsMono,
       ),
     );
   }

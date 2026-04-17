@@ -40,17 +40,17 @@ class ProfileTypography {
   TextStyle get editorialHeadline => heroEditorial.copyWith(
     fontSize: 38,
     height: 1.06,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     letterSpacing: -0.96,
   );
   TextStyle get monoEyebrow =>
-      sectionLabel.copyWith(fontWeight: FontWeight.w700, letterSpacing: 2.35);
+      sectionLabel.copyWith(fontWeight: FontWeight.w500, letterSpacing: 2.35);
   TextStyle get bodyReading =>
       bodyLarge.copyWith(fontSize: 15.5, height: 1.74, letterSpacing: -0.08);
   TextStyle get buttonLabel => chipLabel.copyWith(
     fontSize: 12.5,
     height: 16 / 12.5,
-    fontWeight: FontWeight.w600,
+    fontWeight: FontWeight.w500,
     letterSpacing: 0.04,
   );
   TextStyle get metaSoft => meta.copyWith(
@@ -73,7 +73,7 @@ class ProfileTypography {
       color: color ?? sectionLabel.color,
       fontSize: 11.5,
       height: 15 / 11.5,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500,
       letterSpacing: 1.35,
     );
   }
@@ -93,7 +93,7 @@ class ProfileTypography {
       color: color ?? pageTitle.color,
       fontSize: 17,
       height: 22 / 17,
-      fontWeight: FontWeight.w600,
+      fontWeight: FontWeight.w500,
       letterSpacing: -0.18,
     );
   }
@@ -116,70 +116,105 @@ class ProfileTypography {
     required Color textColor,
     required Color secondaryColor,
     required Color mutedLabelColor,
+    TextStyle Function(TextStyle base)? display,
+    TextStyle Function(TextStyle base)? body,
+    TextStyle Function(TextStyle base)? mono,
   }) {
+    TextStyle apply(
+      TextStyle Function(TextStyle base)? wrap,
+      TextStyle base,
+    ) => wrap != null ? wrap(base) : base;
+
     return ProfileTypography(
-      sectionLabel: TextStyle(
-        fontSize: 11,
-        height: 15 / 11,
-        fontWeight: FontWeight.w700,
-        color: mutedLabelColor,
-        letterSpacing: 1.7,
+      sectionLabel: apply(
+        mono,
+        TextStyle(
+          fontSize: 11,
+          height: 15 / 11,
+          fontWeight: FontWeight.w500,
+          color: mutedLabelColor,
+          letterSpacing: 1.7,
+        ),
       ),
-      pageTitle: TextStyle(
-        fontSize: 36,
-        height: 40 / 36,
-        fontWeight: FontWeight.w500,
-        color: textColor,
-        letterSpacing: -1.24,
+      pageTitle: apply(
+        body,
+        TextStyle(
+          fontSize: 36,
+          height: 40 / 36,
+          fontWeight: FontWeight.w400,
+          color: textColor,
+          letterSpacing: -1.24,
+        ),
       ),
-      sectionTitle: TextStyle(
-        fontSize: 30,
-        height: 34 / 30,
-        fontWeight: FontWeight.w500,
-        color: textColor,
-        letterSpacing: -0.9,
+      sectionTitle: apply(
+        body,
+        TextStyle(
+          fontSize: 30,
+          height: 34 / 30,
+          fontWeight: FontWeight.w400,
+          color: textColor,
+          letterSpacing: -0.9,
+        ),
       ),
-      cardTitle: TextStyle(
-        fontSize: 18,
-        height: 24 / 18,
-        fontWeight: FontWeight.w500,
-        color: textColor,
-        letterSpacing: -0.22,
+      cardTitle: apply(
+        body,
+        TextStyle(
+          fontSize: 18,
+          height: 24 / 18,
+          fontWeight: FontWeight.w500,
+          color: textColor,
+          letterSpacing: -0.22,
+        ),
       ),
-      bodyLarge: TextStyle(
-        fontSize: 15.5,
-        height: 26 / 15.5,
-        fontWeight: FontWeight.w400,
-        color: textColor,
-        letterSpacing: -0.08,
+      bodyLarge: apply(
+        body,
+        TextStyle(
+          fontSize: 15.5,
+          height: 26 / 15.5,
+          fontWeight: FontWeight.w400,
+          color: textColor,
+          letterSpacing: -0.08,
+        ),
       ),
-      bodyCompact: TextStyle(
-        fontSize: 14.5,
-        height: 22 / 14.5,
-        fontWeight: FontWeight.w400,
-        color: textColor,
-        letterSpacing: -0.05,
+      bodyCompact: apply(
+        body,
+        TextStyle(
+          fontSize: 14.5,
+          height: 22 / 14.5,
+          fontWeight: FontWeight.w400,
+          color: textColor,
+          letterSpacing: -0.05,
+        ),
       ),
-      meta: TextStyle(
-        fontSize: 13,
-        height: 18 / 13,
-        fontWeight: FontWeight.w500,
-        color: secondaryColor,
-        letterSpacing: 0.01,
+      meta: apply(
+        body,
+        TextStyle(
+          fontSize: 13,
+          height: 18 / 13,
+          fontWeight: FontWeight.w400,
+          color: secondaryColor,
+          letterSpacing: 0.01,
+        ),
       ),
-      chipLabel: TextStyle(
-        fontSize: 12.5,
-        height: 16 / 12.5,
-        fontWeight: FontWeight.w600,
-        color: textColor,
-        letterSpacing: 0.02,
+      chipLabel: apply(
+        body,
+        TextStyle(
+          fontSize: 12.5,
+          height: 16 / 12.5,
+          fontWeight: FontWeight.w500,
+          color: textColor,
+          letterSpacing: 0.02,
+        ),
       ),
-      heroEditorial: TextStyle(
-        fontSize: 52,
-        height: 54 / 52,
-        fontWeight: FontWeight.w500,
-        color: textColor,
-        letterSpacing: -1.72,
+      heroEditorial: apply(
+        body,
+        TextStyle(
+          fontSize: 52,
+          height: 54 / 52,
+          fontWeight: FontWeight.w400,
+          color: textColor,
+          letterSpacing: -1.72,
+        ),
       ),
     );
   }

@@ -124,6 +124,8 @@ class ProfileV8SectionsView extends StatelessWidget {
             dark: false,
             subtle: false,
             leftAccent: false,
+            accent: const Color(0xFF7F77DD),
+            accentTextColor: const Color(0xFF26215C),
           ),
         ),
       );
@@ -179,8 +181,9 @@ class ProfileV8SectionsView extends StatelessWidget {
             child: _V8SectionCard(
               section: section,
               dark: false,
-              subtle: true,
+              subtle: false,
               leftAccent: false,
+              accent: const Color(0xFFCAFF4D),
             ),
           ),
         );
@@ -772,19 +775,19 @@ class _V8PastTeaserCard extends StatelessWidget {
         ? 'Zamanında öğrendiğin bir savunma bugün hâlâ görünür olabilir.'
         : section.body.trim();
     return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: const Border(
-          left: BorderSide(color: Color(0xFF7F77DD), width: 3),
-          top: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.07)),
-          right: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.07)),
-          bottom: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.07)),
-        ),
+        border: Border.all(color: const Color.fromRGBO(0, 0, 0, 0.07)),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 3),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(13, 12, 13, 12),
@@ -911,6 +914,16 @@ class _V8PastTeaserCard extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+              ],
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 3,
+            child: Container(color: const Color(0xFF7F77DD)),
           ),
         ],
       ),
@@ -1305,7 +1318,7 @@ class _V8ConversationCard extends StatelessWidget {
                 fontSize: 16.2,
                 height: 1.33,
                 letterSpacing: -0.28,
-                fontWeight: FontWeight.w500,
+                fontWeight: FontWeight.w400,
               ),
             ),
           ],
@@ -1411,7 +1424,7 @@ class _V8AffectsCard extends StatelessWidget {
               fontSize: 17,
               height: 1.33,
               letterSpacing: -0.3,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
             ),
           ),
           const SizedBox(height: 6),
@@ -1584,7 +1597,7 @@ class _V8DefenseCard extends StatelessWidget {
                       fontSize: 16.2,
                       height: 1.33,
                       letterSpacing: -0.24,
-                      fontWeight: FontWeight.w500,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
                   if (body.trim().isNotEmpty) ...[
@@ -1728,7 +1741,7 @@ class _V8FirstFeltCard extends StatelessWidget {
               fontSize: 17,
               height: 1.33,
               letterSpacing: -0.28,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
             ),
           ),
           const SizedBox(height: 8),
@@ -1804,12 +1817,16 @@ class _V8SectionCard extends StatelessWidget {
     required this.dark,
     required this.subtle,
     required this.leftAccent,
+    this.accent,
+    this.accentTextColor,
   });
 
   final ProfileV8TextSection section;
   final bool dark;
   final bool subtle;
   final bool leftAccent;
+  final Color? accent;
+  final Color? accentTextColor;
 
   @override
   Widget build(BuildContext context) {
@@ -1835,6 +1852,14 @@ class _V8SectionCard extends StatelessWidget {
         ? Colors.white.withValues(alpha: 0.74)
         : const Color(0xFF5C5C5C);
 
+    final eyebrowColor = accent != null && !dark && !isDarkTheme
+        ? (accentTextColor ?? accent!)
+        : (dark
+              ? const Color(0xFFCAFF4D)
+              : (isDarkTheme
+                    ? Colors.white.withValues(alpha: 0.66)
+                    : const Color(0xFF8A8A8A)));
+
     final card = Container(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
       decoration: BoxDecoration(
@@ -1848,12 +1873,8 @@ class _V8SectionCard extends StatelessWidget {
           Text(
             turkishToUpper(section.eyebrow),
             style: profile.typography.micro.copyWith(
-              color: dark
-                  ? const Color(0xFFCAFF4D)
-                  : (isDarkTheme
-                        ? Colors.white.withValues(alpha: 0.66)
-                        : const Color(0xFF8A8A8A)),
-              fontWeight: FontWeight.w700,
+              color: eyebrowColor,
+              fontWeight: FontWeight.w500,
               letterSpacing: 0.8,
             ),
           ),
@@ -1863,8 +1884,9 @@ class _V8SectionCard extends StatelessWidget {
               section.headline.trim(),
               style: profile.typography.section.copyWith(
                 color: textColor,
-                fontSize: 22,
-                height: 1.3,
+                fontSize: 16.5,
+                height: 1.35,
+                letterSpacing: -0.2,
               ),
             ),
           ],
@@ -1975,6 +1997,32 @@ class _V8SectionCard extends StatelessWidget {
         ],
       ),
     );
+
+    if (accent != null && !dark && !isDarkTheme) {
+      return Container(
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          color: background,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: borderColor),
+        ),
+        child: Stack(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(18.5, 16, 16, 16),
+              child: card.child!,
+            ),
+            Positioned(
+              left: 0,
+              top: 0,
+              bottom: 0,
+              width: 2.5,
+              child: Container(color: accent),
+            ),
+          ],
+        ),
+      );
+    }
 
     if (!leftAccent) {
       return card;

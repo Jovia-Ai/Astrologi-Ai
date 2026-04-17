@@ -167,15 +167,16 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
                                       vertical: 12,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: const Color(0xFF6D5CF6),
+                                      color: theme.colors.warmAccent,
                                       borderRadius: BorderRadius.circular(999),
                                     ),
                                     child: Text(
                                       l10n.commonRetry,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w700,
-                                      ),
+                                      style: theme.typography.buttonLabel
+                                          .copyWith(
+                                            color: theme.colors.heroText,
+                                            fontWeight: FontWeight.w700,
+                                          ),
                                     ),
                                   ),
                                 ),
@@ -426,30 +427,18 @@ class _StoryStudioReferencePalette {
   final Color softText;
 
   static _StoryStudioReferencePalette of(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return isDark
-        ? const _StoryStudioReferencePalette(
-            canvas: Color(0xFF080607),
-            lowerGlow: Color(0xFF131010),
-            panelFill: Color(0xFF100B0C),
-            softFill: Color(0xFF1A1414),
-            edge: Color(0xFFB97B46),
-            rule: Color(0xFF4A3A33),
-            text: Color(0xFFF6F1EB),
-            mutedText: Color(0xFFC9BEB3),
-            softText: Color(0xFFB6A99D),
-          )
-        : const _StoryStudioReferencePalette(
-            canvas: Color(0xFFF5F0E8),
-            lowerGlow: Color(0xFFEEE2D6),
-            panelFill: Color(0xFFFBF6EF),
-            softFill: Color(0xFFF2E7D9),
-            edge: Color(0xFFD6945A),
-            rule: Color(0xFF7E6959),
-            text: Color(0xFF181211),
-            mutedText: Color(0xFF6F6156),
-            softText: Color(0xFF998474),
-          );
+    final colors = context.profileTheme.colors;
+    return _StoryStudioReferencePalette(
+      canvas: colors.bg,
+      lowerGlow: colors.heroBase,
+      panelFill: colors.surface,
+      softFill: colors.heroBase,
+      edge: colors.warmAccent,
+      rule: colors.strokeSoft,
+      text: colors.text,
+      mutedText: colors.muted,
+      softText: colors.textLight,
+    );
   }
 }
 
