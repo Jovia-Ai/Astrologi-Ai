@@ -12,6 +12,11 @@ TRACK_IDS = {
     "method_shift_9_virgo",
     "network_transform_11",
     "mirror_axis_1_7",
+    "resource_axis_2_8",
+    "healing_axis_6_12",
+    "creativity_5",
+    "root_4",
+    "dissolution_12",
     "default",
 }
 ANGLE_POINTS = {"ASC", "DSC", "MC", "IC"}
@@ -119,6 +124,26 @@ def infer_story_track_id(
         return "method_shift_9_virgo"
     if transit_body == "pluto" or target == "PLUTO":
         return "network_transform_11"
+
+    # S0-3b: natal-house fallback rules. Sırasıyla: dissolution (Neptune × 12 keskin
+    # imza), healing (6/12 catch-all), resource (2/8), creativity (5), root (4).
+    # Deterministic; ilk match kazanır. House okuması yoksa default'a düşer.
+    houses = card.get("houses")
+    transit_in_natal_house = None
+    if isinstance(houses, Mapping):
+        transit_in_natal_house = _safe_int(houses.get("transit_in_natal_house"))
+
+    if transit_body == "neptune" and transit_in_natal_house == 12:
+        return "dissolution_12"
+    if transit_in_natal_house in {6, 12}:
+        return "healing_axis_6_12"
+    if transit_in_natal_house in {2, 8}:
+        return "resource_axis_2_8"
+    if transit_in_natal_house == 5:
+        return "creativity_5"
+    if transit_in_natal_house == 4:
+        return "root_4"
+
     return "default"
 
 
