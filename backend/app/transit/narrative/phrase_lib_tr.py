@@ -512,6 +512,141 @@ PERIOD_TRACK_COPY_TR: Dict[str, Dict[str, Any]] = {
             "Bu dönem sende ilişkide beklentiyi açık kurma kasını güçlendiriyor.",
         ),
     },
+    "resource_axis_2_8": {
+        "version": "v2",
+        "period_opening": (
+            "Bu dönem neyi sahiplendiğin ve neyi ortak kullanacağın daha görünür hale geliyor.",
+            "Şu sıralar mesele kazançtan çok, kaynağı neye bağladığın ve kiminle paylaştığın.",
+        ),
+        "big_picture": (
+            "Kendi değerinle başka bir güç arasındaki sınır yeniden çiziliyor; ne senin ne karşı tarafın değil, ortak çerçeve belirleyici hale geliyor.",
+            "Buradaki kazanım daha çok para değil; güvenilir bir kaynak hattı ve paylaşılan bir değer düzeni kurmak.",
+        ),
+        "mechanism": (
+            "Süreç önce kendi değerini ölçme, fiyat koyma tarafında başlıyor; sonra ortak paranın, borcun ve dayanışmanın düzeninde görülüyor.",
+            "Önce kişisel kaynak netleşiyor, ardından ortak alanda güç dağılımı kendini yeniden ayarlıyor.",
+        ),
+        "growth_edge": (
+            "Risk, kişisel değeri başkasının onayına ya da başka birinin gücüne bağlamak.",
+            "Kaynağı fazla sıkarsan güven daralır; çok gevşetirsen de sınır kaybolur.",
+        ),
+        "relational_or_life_expression": (
+            "Günlük hayatta bu; bir ödeme planı, bir sözleşme, bir borç meselesi ya da ortak bir kararın netleşmesi olarak görünebilir.",
+            "Kiminle kaynağı paylaşacağın ve nasıl güveneceğin konusunda daha seçici olursun.",
+        ),
+        "what_it_builds": (
+            "Bu dönem sende kendi değerini net koyma kasını geliştiriyor.",
+            "Bu dönem sende ortak kaynakta sağlam sınır kurma kasını güçlendiriyor.",
+        ),
+    },
+    "healing_axis_6_12": {
+        "version": "v2",
+        "period_opening": (
+            "Bu dönem günlük ritmin ve iç sessizliğin arasında yeni bir denge kuruluyor.",
+            "Şu sıralar mesele daha çok iş çıkarmak değil; yorduğun yeri görmek ve yükü hafifletmek.",
+        ),
+        "big_picture": (
+            "Bedenin ve zihnin küçük uyarılar veriyor; bu dönem onları kesintiye uğratmadan dinlemek önem kazanıyor.",
+            "Buradaki kazanım daha fazla üretmek değil; taşımaya değenle değmeyenin ayrılması.",
+        ),
+        "mechanism": (
+            "Süreç önce günlük alışkanlıklarda, çalışma temposunda ve bedensel sinyallerde başlıyor; sonra iç dünyada bırakma ve arınma hattına taşınıyor.",
+            "Önce ritim sadeleşiyor, ardından içeride biriken yük çözülmeye başlıyor.",
+        ),
+        "growth_edge": (
+            "Risk, yorgunluğu görmezden gelip aynı temponun devam edeceğini varsaymak.",
+            "İhmal ettiğin küçük sinyaller uzun vadede büyük bir kopuşa dönüşebilir.",
+        ),
+        "relational_or_life_expression": (
+            "Günlük hayatta bu; daha düzenli bir rutin, sağlıkla ilgili bir karar, yalnız kalma ihtiyacı veya eski bir yükü bırakma olarak hissedilebilir.",
+            "Kendine hizmet etme biçimini yeniden tanımlarsın.",
+        ),
+        "what_it_builds": (
+            "Bu dönem sende kendini yormadan sürdürme kasını geliştiriyor.",
+            "Bu dönem sende taşımaya değenle değmeyeni ayırma kasını güçlendiriyor.",
+        ),
+    },
+    "creativity_5": {
+        "version": "v2",
+        "period_opening": (
+            "Bu dönem kendini ortaya koyma biçimin yeniden şekilleniyor.",
+            "Şu sıralar mesele sadece üretmek değil; senin imzanı taşıyan bir şeyi görünür kılmak.",
+        ),
+        "big_picture": (
+            "İçeride biriken bir ses dışarı çıkmak istiyor; bu dönem onu zanaata ve ritme bağlayan hat güçleniyor.",
+            "Buradaki kazanım sahne almak değil; kendine ait olanı sulandırmadan paylaşabilmek.",
+        ),
+        "mechanism": (
+            "Süreç önce oyun, deneme ve keyif tarafında başlıyor; sonra bunun karşılığı somut bir üretimde ve ifadede görülüyor.",
+            "Önce içten gelen kıvılcım kendini belli ediyor, ardından bunu taşıyacak form kuruluyor.",
+        ),
+        "growth_edge": (
+            "Risk, görünür olma isteğini onay arayışına çevirmek ya da ilk heyecan geçtiğinde işi yarım bırakmak.",
+            "Oyunu başarıya sıkıştırırsan yaratıcı kanal tıkanır.",
+        ),
+        "relational_or_life_expression": (
+            "Günlük hayatta bu; yeni bir proje, bir flört hattı, bir hobi ya da çocukla ilgili bir konu olarak görünebilir.",
+            "Kendini ifade etme isteği artar; ama bu kez daha özenli, daha seçerek.",
+        ),
+        "what_it_builds": (
+            "Bu dönem sende kendine ait olanı görünür kılma kasını geliştiriyor.",
+            "Bu dönem sende oyunu ciddiye alma kasını güçlendiriyor.",
+        ),
+    },
+    "root_4": {
+        "version": "v2",
+        "period_opening": (
+            "Bu dönem güvenin ve aidiyetin nereden geldiğini daha net soruyorsun.",
+            "Şu sıralar mesele dışarıdaki hareket değil; içeride neyin seni tuttuğu.",
+        ),
+        "big_picture": (
+            "Kökte — aile, ev, çocukluk duygusu — bir şey yer değiştiriyor; bu iç zeminin üstündeki her şeyi etkiliyor.",
+            "Buradaki kazanım görünür bir sonuç değil; kendi içinde sessizce yeniden kök salmak.",
+        ),
+        "mechanism": (
+            "Süreç önce ev düzeninde, aile ilişkilerinde ve özel alanda başlıyor; sonra duygusal güven duygusunda ve kimlik hissinde görülüyor.",
+            "Önce somut mekân ve bağlar yer değiştiriyor, ardından iç ev kendini yeniden kuruyor.",
+        ),
+        "growth_edge": (
+            "Risk, eski güven kalıbını olduğu gibi korumaya çalışmak ya da her şeyi birden değiştirmeye kalkmak.",
+            "Kökü çok hızlı sallayan değişim aidiyet duygusunu zayıflatabilir.",
+        ),
+        "relational_or_life_expression": (
+            "Günlük hayatta bu; taşınma düşüncesi, ev düzenine müdahale, aileyle yeni bir konuşma ya da özel alanın yeniden tanımlanması olarak görünebilir.",
+            "Kiminle, nerede, hangi ritimde yaşadığın önem kazanır.",
+        ),
+        "what_it_builds": (
+            "Bu dönem sende kendi zeminini kurma kasını geliştiriyor.",
+            "Bu dönem sende duygusal güveni dışarıya bağlamadan taşıma kasını güçlendiriyor.",
+        ),
+    },
+    "dissolution_12": {
+        "version": "v2",
+        "period_opening": (
+            "Bu dönem bir şeyler yavaşça çözülüyor; bunu kayıp değil, yer açma olarak okumak mümkün.",
+            "Şu sıralar mesele yeni bir şey kurmaktan çok, artık gerekmeyeni bırakmak.",
+        ),
+        "big_picture": (
+            "Görünür hat incelirken iç dünya genişliyor; bu dönem içeride olan, dışarıdaki hareketten daha belirleyici.",
+            "Buradaki kazanım bir başarı değil; sınırın inceldiği yerde kendini kaybetmeden sezebilmek.",
+        ),
+        "mechanism": (
+            "Süreç önce yalnızlık, geri çekilme ve içsel çağrı tarafında başlıyor; sonra bunun karşılığı bir rolün, alışkanlığın ya da kimliğin çözülmesinde görülüyor.",
+            "Önce görünürden bir şey azalıyor, ardından içeride yeni bir anlam katmanı açılıyor.",
+        ),
+        "growth_edge": (
+            "Risk, belirsizliği kaçış olarak kullanmak ya da her şeyi sezgiye devredip gerçeklik kontrolünü kaybetmek.",
+            "Sınır inceldiğinde başka birinin sesini kendi sesin sanmak kolaylaşır.",
+        ),
+        "relational_or_life_expression": (
+            "Günlük hayatta bu; yalnız kalma ihtiyacı, bir alanı bırakma isteği, düşlerin ve sezgilerin yoğunlaşması olarak yaşanabilir.",
+            "Bazı bağlar seni taşımayı bırakır; bunu doğal akışıyla gören bir bakış açısı gerekir.",
+        ),
+        "what_it_builds": (
+            "Bu dönem sende artık gerekmeyeni bırakma kasını geliştiriyor.",
+            "Bu dönem sende belirsizlik içinde kendini kaybetmeden durma kasını güçlendiriyor.",
+        ),
+    },
     "default": {
         "version": "v2",
         "period_opening": ("Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.",),

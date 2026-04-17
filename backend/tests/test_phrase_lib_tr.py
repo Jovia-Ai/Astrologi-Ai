@@ -1,4 +1,5 @@
 from app.transit.narrative.phrase_lib_tr import (
+    PERIOD_TRACK_COPY_TR,
     PLANET_ARCHETYPES_TR,
     SIGN_STYLES_TR,
     compose_phrase_pack,
@@ -127,6 +128,103 @@ def test_planet_archetypes_value_length_guard() -> None:
             for v in values:
                 assert len(v) <= 32, f"{planet}.{key} çok uzun: '{v}'"
                 assert len(v.split()) <= 4, f"{planet}.{key} çok fazla kelime: '{v}'"
+
+
+# S0-3: PERIOD_TRACK_COPY_TR — 9 track coverage (default dahil), mevcut 4 + default
+# frozen, yeni 5 track'in shape/field/version doğruluğu, blocklist.
+
+_PERIOD_TRACK_REQUIRED_FIELDS = {
+    "period_opening",
+    "big_picture",
+    "mechanism",
+    "growth_edge",
+    "relational_or_life_expression",
+    "what_it_builds",
+}
+
+_PERIOD_TRACK_BASELINE_KEYS = {
+    "identity_spine",
+    "method_shift_9_virgo",
+    "network_transform_11",
+    "mirror_axis_1_7",
+    "default",
+}
+
+_PERIOD_TRACK_NEW_KEYS = {
+    "resource_axis_2_8",
+    "healing_axis_6_12",
+    "creativity_5",
+    "root_4",
+    "dissolution_12",
+}
+
+
+def test_period_track_covers_nine_keys() -> None:
+    expected = _PERIOD_TRACK_BASELINE_KEYS | _PERIOD_TRACK_NEW_KEYS
+    assert set(PERIOD_TRACK_COPY_TR.keys()) == expected
+
+
+def test_period_track_baseline_tracks_exist_and_keep_version_v2() -> None:
+    # Mevcut 4 track + default hâlâ var ve version='v2'. İçerik kontrolü aşağıda.
+    for key in _PERIOD_TRACK_BASELINE_KEYS:
+        assert key in PERIOD_TRACK_COPY_TR, f"{key} track'i kaybolmuş"
+        assert PERIOD_TRACK_COPY_TR[key].get("version") == "v2", key
+
+
+def test_period_track_identity_spine_frozen_snapshot() -> None:
+    # identity_spine — tam içerik frozen (regression).
+    track = PERIOD_TRACK_COPY_TR["identity_spine"]
+    assert track["period_opening"] == (
+        "Bu dönem önce kendini nasıl anlattığın değişiyor, sonra bunun etkisi dışarıda nasıl göründüğüne yansıyor.",
+        "Şu sıralar mesele daha çok görünmek değil; daha anlaşılır, daha tutarlı görünmek.",
+    )
+    assert track["what_it_builds"] == (
+        "Bu dönem sende kendini daha net ifade etme kasını geliştiriyor.",
+        "Bu dönem sende yanlış anlaşılma payını azaltan daha temiz bir ifade kası kuruyor.",
+    )
+
+
+def test_period_track_default_frozen_snapshot() -> None:
+    # default catchall — tam içerik frozen.
+    track = PERIOD_TRACK_COPY_TR["default"]
+    assert track["period_opening"] == (
+        "Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.",
+    )
+    assert track["what_it_builds"] == (
+        "Bu dönem sende daha net seçim yapma kasını geliştiriyor.",
+    )
+
+
+def test_period_track_new_tracks_have_required_shape() -> None:
+    # Yeni 5 track: version=v2 + 6 required field + her field >=1 varyant (tuple).
+    for key in _PERIOD_TRACK_NEW_KEYS:
+        track = PERIOD_TRACK_COPY_TR[key]
+        assert track.get("version") == "v2", key
+        missing = _PERIOD_TRACK_REQUIRED_FIELDS - set(track.keys())
+        assert not missing, f"{key} eksik alan: {missing}"
+        for field in _PERIOD_TRACK_REQUIRED_FIELDS:
+            values = track[field]
+            assert isinstance(values, tuple) and len(values) >= 1, f"{key}.{field} tuple değil veya boş"
+            for v in values:
+                assert isinstance(v, str) and v.strip(), f"{key}.{field} boş cümle"
+
+
+def test_period_track_new_tracks_have_two_variants_per_field() -> None:
+    # Yeni 5 track her field için tam 2 varyant (roadmap spec).
+    for key in _PERIOD_TRACK_NEW_KEYS:
+        track = PERIOD_TRACK_COPY_TR[key]
+        for field in _PERIOD_TRACK_REQUIRED_FIELDS:
+            assert len(track[field]) == 2, f"{key}.{field} 2 varyant değil"
+
+
+def test_period_track_all_content_blocklist_clean() -> None:
+    # 9 track × tüm cümleler, yasak editorial jargon içermemeli.
+    for key, track in PERIOD_TRACK_COPY_TR.items():
+        for field in _PERIOD_TRACK_REQUIRED_FIELDS:
+            values = track.get(field, ())
+            merged = " ".join(values).lower()
+            for banned in _SIGN_STYLES_BLOCKLIST:
+                assert banned not in merged, f"{key}.{field} içinde yasak ifade: {banned}"
 
 
 
