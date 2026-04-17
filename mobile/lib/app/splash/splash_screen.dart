@@ -10,6 +10,9 @@ const double kSplashBackgroundColorAlpha = 1.0;
 const Color kSplashBackgroundColor = Color(0xFF111111);
 const Color kSplashLime = Color(0xFFCAFF4D);
 
+const Cubic _kSplashStandardEase = Cubic(0.4, 0.0, 0.2, 1.0);
+const Cubic _kSplashBackEase = Cubic(0.34, 1.56, 0.64, 1.0);
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({
     super.key,
@@ -165,104 +168,93 @@ class _SplashScreenState extends State<SplashScreen>
           t,
           _atMs(100),
           _atMs(700),
-          curve: Curves.easeOutCubic,
+          curve: _kSplashStandardEase,
         );
         final outerProgress = _interval(
           t,
           _atMs(200),
           _atMs(1600),
-          curve: Curves.easeInOutCubic,
+          curve: _kSplashStandardEase,
         );
         final innerProgress = _interval(
           t,
           _atMs(550),
           _atMs(1650),
-          curve: Curves.easeInOutCubic,
+          curve: _kSplashStandardEase,
         );
-        final centerPop = _intervalRaw(
+        final centerPop = _interval(
           t,
           _atMs(850),
           _atMs(1350),
-          curve: Curves.elasticOut,
+          curve: _kSplashBackEase,
         );
+        final centerDotScale = _centerDotKeyframeScale(centerPop);
         final topDrop = _intervalRaw(
           t,
           _atMs(1000),
           _atMs(1500),
-          curve: Curves.easeOutBack,
+          curve: _kSplashBackEase,
         );
         final lineGrow = _interval(
           t,
           _atMs(1100),
           _atMs(1500),
-          curve: Curves.easeOutCubic,
+          curve: _kSplashStandardEase,
         );
 
         final wordmarkTitle = _interval(
           t,
           _atMs(900),
           _atMs(1600),
-          curve: Curves.easeOut,
+          curve: Curves.ease,
         );
         final wordmarkSub = _interval(
           t,
           _atMs(1050),
           _atMs(1750),
-          curve: Curves.easeOut,
+          curve: Curves.ease,
         );
         final tagline = _interval(
           t,
           _atMs(1300),
           _atMs(2100),
-          curve: Curves.easeOut,
+          curve: Curves.ease,
         );
         final loading = _loadingProgress(t);
         final loadingVisibility = _interval(
           t,
           _atMs(1000),
           _atMs(1500),
-          curve: Curves.easeOut,
+          curve: Curves.ease,
         );
         final glowOpacity = _interval(
           t,
           _atMs(400),
-          _atMs(1800),
+          _atMs(2200),
           curve: Curves.easeOut,
         );
-        final ambientTurn =
-            _interval(
-                  t,
-                  _atMs(200),
-                  _atMs(1600),
-                  curve: Curves.easeInOutCubic,
-                ) *
-                0.14 +
-            (0.004 * math.sin(idleT * 2 * math.pi));
 
         final breathe = 1 + 0.015 * math.sin(idleT * 2 * math.pi);
         final centerPulseScale =
-            1 + 2.7 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi));
+            1 + 3.5 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi));
         final centerPulseOpacity =
-            0.18 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi));
+            0.3 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi));
         final topPulseScale =
-            1 + 1.6 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi + 1.1));
+            1 + 1.4 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi + 1.1));
         final topPulseOpacity =
-            0.14 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi + 1.1));
+            0.25 * (0.5 + 0.5 * math.sin(idleT * 2 * math.pi + 1.1));
 
         final logoScale = _lerp(0.88, 1.0, logoReveal) * breathe;
         final logoOffsetY = _lerp(12, 0, logoReveal);
 
-        return ColoredBox(
+        return Material(
           color: kSplashBackgroundColor.withValues(
             alpha: kSplashBackgroundColorAlpha,
           ),
           child: Stack(
             fit: StackFit.expand,
             children: [
-              _SplashAmbientBackground(
-                opacity: glowOpacity,
-                rotationTurns: ambientTurn,
-              ),
+              _SplashAmbientBackground(opacity: glowOpacity),
               Center(
                 child: Transform.translate(
                   offset: Offset(0, logoOffsetY),
@@ -275,7 +267,7 @@ class _SplashScreenState extends State<SplashScreen>
                           size: _logoWidth(context),
                           outerProgress: outerProgress,
                           innerProgress: innerProgress,
-                          centerDotProgress: centerPop,
+                          centerDotScale: centerDotScale,
                           topDotProgress: topDrop,
                           lineProgress: lineGrow,
                           centerPulseScale: centerPulseScale,
@@ -295,6 +287,7 @@ class _SplashScreenState extends State<SplashScreen>
                                 color: Colors.white,
                                 letterSpacing: 3.9,
                                 fontWeight: FontWeight.w400,
+                                decoration: TextDecoration.none,
                               ),
                             ),
                           ),
@@ -308,9 +301,10 @@ class _SplashScreenState extends State<SplashScreen>
                               'ASTROLOGI AI',
                               style: TextStyle(
                                 fontSize: 9.3,
-                                color: Color(0xFF5A5A5A),
+                                color: Color(0xFF888888),
                                 letterSpacing: 1.9,
                                 fontWeight: FontWeight.w400,
+                                decoration: TextDecoration.none,
                               ),
                             ),
                           ),
@@ -323,10 +317,11 @@ class _SplashScreenState extends State<SplashScreen>
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 13,
-                              color: Color(0xFF4A4A4A),
+                              color: Color(0xFF9A9A9A),
                               letterSpacing: 0.65,
                               height: 1.7,
                               fontWeight: FontWeight.w400,
+                              decoration: TextDecoration.none,
                             ),
                           ),
                         ),
@@ -403,13 +398,9 @@ class _SplashScreenState extends State<SplashScreen>
 }
 
 class _SplashAmbientBackground extends StatelessWidget {
-  const _SplashAmbientBackground({
-    required this.opacity,
-    required this.rotationTurns,
-  });
+  const _SplashAmbientBackground({required this.opacity});
 
   final double opacity;
-  final double rotationTurns;
 
   @override
   Widget build(BuildContext context) {
@@ -418,12 +409,7 @@ class _SplashAmbientBackground extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Positioned.fill(
-            child: Transform.rotate(
-              angle: rotationTurns * 2 * math.pi,
-              child: CustomPaint(painter: _AmbientOrbitPainter()),
-            ),
-          ),
+          Positioned.fill(child: CustomPaint(painter: _AmbientOrbitPainter())),
           Align(
             alignment: const Alignment(0, -0.16),
             child: _GlowBlob(
@@ -486,7 +472,7 @@ class _SplashOrbitLogo extends StatelessWidget {
     required this.size,
     required this.outerProgress,
     required this.innerProgress,
-    required this.centerDotProgress,
+    required this.centerDotScale,
     required this.topDotProgress,
     required this.lineProgress,
     required this.centerPulseScale,
@@ -498,7 +484,7 @@ class _SplashOrbitLogo extends StatelessWidget {
   final double size;
   final double outerProgress;
   final double innerProgress;
-  final double centerDotProgress;
+  final double centerDotScale;
   final double topDotProgress;
   final double lineProgress;
   final double centerPulseScale;
@@ -592,7 +578,7 @@ class _SplashOrbitLogo extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: Transform.scale(
-              scale: _lerp(0.0, 1.0, centerDotProgress),
+              scale: centerDotScale,
               child: Container(
                 width: centerDotSize,
                 height: centerDotSize,
@@ -723,4 +709,15 @@ class _AmbientOrbitPainter extends CustomPainter {
 
 double _lerp(double begin, double end, double t) {
   return begin + (end - begin) * t.clamp(0.0, 1.0);
+}
+
+double _centerDotKeyframeScale(double t) {
+  final p = t.clamp(0.0, 1.0).toDouble();
+  if (p <= 0.0) {
+    return 0.0;
+  }
+  if (p <= 0.6) {
+    return _lerp(0.0, 1.3, p / 0.6);
+  }
+  return _lerp(1.3, 1.0, (p - 0.6) / 0.4);
 }
