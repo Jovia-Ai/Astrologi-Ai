@@ -321,8 +321,14 @@ def test_phrase_pack_contains_basak_and_9th_house_context() -> None:
             " ".join(str(x) for x in pack.get("guidance_add", [])),
         ]
     )
+    # Editorial tone refactor (commit 3e60237): "9. Ev" teknik terimi artık
+    # semantic ev temasıyla değiştiriliyor (öğrenme / yön / ufuk / uzmanlaşma).
+    # Sign tr adı hâlâ aynen korunuyor.
     assert "Başak" in merged
-    assert "9. Ev" in merged
+    house_9_themes = ("öğrenme", "yön", "ufuk", "uzmanlaşma")
+    assert any(theme in merged.lower() for theme in house_9_themes), (
+        f"9. ev teması semantic olarak bulunmadı: {merged}"
+    )
 
 
 def test_phrase_pack_has_no_banned_tokens() -> None:
@@ -413,7 +419,16 @@ def test_phrase_pack_tone_section_labels_and_why_now() -> None:
         assert pack["section_labels"]["conflict"] == conflict_label
         why_now = str(pack.get("why_now") or "")
         assert why_now.endswith(".")
-        assert "Orb" in why_now
-        assert "süren etki" in why_now
+        # Editorial tone refactor (commit 3e60237): _build_why_now artık "Orb" /
+        # "süren etki" gibi teknik terimler yerine semantic orb_phrase +
+        # duration_phrase + angle_phrase üretiyor (phrase_lib_tr.py:1043).
+        # Minimum olarak bir etki/tema markörü + süre ifadesi içermeli.
+        lower_now = why_now.lower()
+        assert any(m in lower_now for m in ("etki", "tema", "dalga", "vurgu")), (
+            f"why_now temporal marker yok: {why_now}"
+        )
+        assert any(m in lower_now for m in ("sürebilir", "sürdür", "kalabilir", "çalışır", "pencere")), (
+            f"why_now süre ifadesi yok: {why_now}"
+        )
         for token in ("south node", "north node", "lilith", "vertex", "fortune", "chiron"):
-            assert token not in why_now.lower()
+            assert token not in lower_now
