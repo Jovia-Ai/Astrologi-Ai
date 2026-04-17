@@ -78,13 +78,11 @@ flutter_launcher_icons:
 #    dart run flutter_native_splash:create
 flutter_native_splash:
   color: "#090A0E"
-  image: assets/logos/splash_shou_symbol_dark_2048.png
   android: true
   ios: true
   web: false
   android_12:
     color: "#090A0E"
-    image: assets/logos/splash_shou_symbol_dark_2048.png
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
