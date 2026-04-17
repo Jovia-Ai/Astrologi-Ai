@@ -2250,15 +2250,17 @@ class _V8LimeCta extends StatelessWidget {
         ? 'Akışı aç'
         : (section.cta ?? '').trim();
 
+    final chipLine = section.chips
+        .where((item) => item.trim().isNotEmpty)
+        .take(4)
+        .map((item) => item.trim())
+        .join(' · ');
+
     final content = Container(
-      padding: const EdgeInsets.fromLTRB(13, 10, 10, 10),
-      decoration: BoxDecoration(
-        color: const Color(0xFFEFFECC),
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFCAE88A)),
-      ),
+      padding: const EdgeInsets.fromLTRB(20, 18, 14, 18),
+      decoration: const BoxDecoration(color: Color(0xFFCAFF4D)),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
             child: Column(
@@ -2267,86 +2269,67 @@ class _V8LimeCta extends StatelessWidget {
                 Text(
                   turkishToUpper(eyebrow),
                   style: profile.typography.micro.copyWith(
-                    color: const Color(0xFF556D1D),
+                    color: const Color(0xFF3B6D11),
                     fontSize: 8,
                     letterSpacing: 0.8,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: 6),
                 Text(
                   headline,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: profile.typography.section.copyWith(
-                    color: const Color(0xFF1A2608),
-                    fontSize: 15.6,
-                    height: 1.33,
-                    letterSpacing: -0.28,
-                    fontWeight: FontWeight.w600,
+                    color: const Color(0xFF1A3300),
+                    fontSize: 15.9,
+                    height: 1.34,
+                    letterSpacing: -0.25,
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  body,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: profile.typography.micro.copyWith(
-                    color: const Color(0xFF5F742D),
-                    fontSize: 10,
-                    height: 1.42,
+                if (chipLine.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    chipLine,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: profile.typography.micro.copyWith(
+                      color: const Color(0xFF3B6D11),
+                      fontSize: 10,
+                      height: 1.4,
+                    ),
                   ),
-                ),
-                if (section.chips.isNotEmpty) ...[
-                  const SizedBox(height: 6),
-                  Wrap(
-                    spacing: 5,
-                    runSpacing: 5,
-                    children: [
-                      for (final chip in section.chips.take(3))
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6.5,
-                            vertical: 3.5,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.62),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: const Color(
-                                0xFF2E3A12,
-                              ).withValues(alpha: 0.14),
-                            ),
-                          ),
-                          child: Text(
-                            chip,
-                            style: profile.typography.micro.copyWith(
-                              color: const Color(0xFF324211),
-                              fontSize: 8.3,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                    ],
+                ] else if (body.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    body,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: profile.typography.micro.copyWith(
+                      color: const Color(0xFF3B6D11),
+                      fontSize: 10,
+                      height: 1.42,
+                    ),
                   ),
                 ],
               ],
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 10),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             decoration: BoxDecoration(
               color: const Color(0xFF111111),
-              borderRadius: BorderRadius.circular(999),
+              borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               cta,
               style: profile.typography.micro.copyWith(
-                color: Colors.white,
-                fontSize: 8.5,
+                color: const Color(0xFFCAFF4D),
+                fontSize: 11.8,
                 letterSpacing: 0.2,
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ),
@@ -2360,11 +2343,7 @@ class _V8LimeCta extends StatelessWidget {
 
     return Material(
       color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
-        child: content,
-      ),
+      child: InkWell(onTap: onTap, child: content),
     );
   }
 }
