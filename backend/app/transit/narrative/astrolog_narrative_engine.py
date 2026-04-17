@@ -6,6 +6,7 @@ import hashlib
 
 from app.transit.narrative import phrase_lib_tr
 from app.transit.narrative import text_quality_tr
+from app.transit.narrative.natal_promise import HOUSE_DOMAIN_HINTS
 
 TRACK_IDS = {
     "identity_spine",
@@ -191,7 +192,10 @@ def build_period_story(ctx: PeriodStoryContext) -> PeriodNarrative:
     track_id = infer_story_track_id(spine, root_causes)
     track_story = build_story_track_copy(track_id, spine)
 
-    opening = _with_chapter_role_opening(track_story.get("period_opening") or _build_period_opening(ctx, spine, supports), spine)
+    opening_raw = track_story.get("period_opening") or _build_period_opening(ctx, spine, supports)
+    wrapped_opening = _with_chapter_role_opening(opening_raw, spine)
+    promise_prefix = _build_promise_prefix(ctx.natal_promise, spine)
+    opening = f"{promise_prefix} {wrapped_opening}".strip() if promise_prefix else wrapped_opening
     big_picture = track_story.get("big_picture") or _build_big_picture(ctx, spine, supports)
     mechanism = _build_chain_paragraph(ctx, spine, supports)
     growth_edge = track_story.get("growth_edge") or _build_growth_edge(ctx, spine, supports)
@@ -333,6 +337,39 @@ def _with_chapter_role_opening(opening: str, spine: Mapping[str, Any]) -> str:
     if prefix_probe and prefix_probe in lowered:
         return text
     return f"{prefix} {text}".strip()
+
+
+# S0-4: Natal promise → period_opening bağlam cümlesi.
+# Sadece verdict in {strong, exact} + bilinen domain (HOUSE_DOMAIN_HINTS)
+# + "general" değil → bir cümle döner. Aksi halde None → mevcut davranış.
+_PROMISE_STRONG_VERDICTS = frozenset({"strong", "exact"})
+
+
+def _build_promise_prefix(
+    natal_promise: Mapping[str, Any] | None,
+    spine: Mapping[str, Any],
+) -> Optional[str]:
+    if not isinstance(natal_promise, Mapping):
+        return None
+    verdict = str(natal_promise.get("verdict") or "").strip().lower()
+    if verdict not in _PROMISE_STRONG_VERDICTS:
+        return None
+    connected = natal_promise.get("connected_points")
+    if not isinstance(connected, Sequence) or not connected:
+        return None
+    first = connected[0] if isinstance(connected[0], Mapping) else {}
+    house = _safe_int(first.get("house"))
+    if house is None:
+        return None
+    domain = HOUSE_DOMAIN_HINTS.get(house, "general")
+    if domain == "general":
+        return None
+    variants = getattr(phrase_lib_tr, "PROMISE_DOMAIN_CONTEXT_TR", {}).get(domain)
+    if not variants:
+        return None
+    seed = str(spine.get("event_id") or "") + "|promise"
+    idx = int(hashlib.sha1(seed.encode("utf-8")).hexdigest(), 16) % len(variants)
+    return str(variants[idx]).strip() or None
 
 
 def _build_growth_edge(

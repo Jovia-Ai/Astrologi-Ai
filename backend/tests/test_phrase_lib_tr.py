@@ -1,6 +1,7 @@
 from app.transit.narrative.phrase_lib_tr import (
     PERIOD_TRACK_COPY_TR,
     PLANET_ARCHETYPES_TR,
+    PROMISE_DOMAIN_CONTEXT_TR,
     SIGN_STYLES_TR,
     compose_phrase_pack,
 )
@@ -225,6 +226,40 @@ def test_period_track_all_content_blocklist_clean() -> None:
             merged = " ".join(values).lower()
             for banned in _SIGN_STYLES_BLOCKLIST:
                 assert banned not in merged, f"{key}.{field} içinde yasak ifade: {banned}"
+
+
+# S0-4: PROMISE_DOMAIN_CONTEXT_TR — 6 domain coverage + shape + blocklist.
+
+_PROMISE_DOMAIN_EXPECTED = {"career", "identity", "relationships", "home", "mind", "inner"}
+
+
+def test_promise_domain_context_covers_six_known_domains() -> None:
+    # "general" KASITLI hariç — o durumda prefix eklenmiyor.
+    assert set(PROMISE_DOMAIN_CONTEXT_TR.keys()) == _PROMISE_DOMAIN_EXPECTED
+
+
+def test_promise_domain_context_two_variants_per_domain() -> None:
+    for domain, variants in PROMISE_DOMAIN_CONTEXT_TR.items():
+        assert isinstance(variants, tuple) and len(variants) == 2, domain
+        for v in variants:
+            assert isinstance(v, str) and v.strip(), domain
+
+
+def test_promise_domain_context_blocklist_clean() -> None:
+    for domain, variants in PROMISE_DOMAIN_CONTEXT_TR.items():
+        merged = " ".join(variants).lower()
+        for banned in _SIGN_STYLES_BLOCKLIST:
+            assert banned not in merged, f"{domain} içinde yasak ifade: {banned}"
+
+
+def test_promise_domain_context_does_not_start_with_bu_donem() -> None:
+    # A seçeneği 3-cümle durumunda "Bu dönem" tekrarını önlemek için prefix
+    # farklı bir sesle başlamalı (Haritanda/Natal/Kimlik/Kök/Zihin/İç dünya).
+    for domain, variants in PROMISE_DOMAIN_CONTEXT_TR.items():
+        for v in variants:
+            assert not v.lower().startswith("bu dönem"), (
+                f"{domain} prefix 'Bu dönem' ile başlıyor — tekrar riski"
+            )
 
 
 

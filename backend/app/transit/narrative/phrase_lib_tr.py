@@ -338,6 +338,36 @@ HOUSE_SCENES_TR: Dict[int, Dict[str, Sequence[str]]] = {
     },
 }
 
+PROMISE_DOMAIN_CONTEXT_TR: Dict[str, Sequence[str]] = {
+    # S0-4: natal promise verdict == strong/exact iken period_opening'in önüne
+    # eklenen domain-aware bağlam cümlesi. "general" domain kasıtlı hariç — o
+    # durumda prefix eklenmez.
+    "career": (
+        "Haritanda kariyer hattı belirgin; bu dönem tam oraya değiyor.",
+        "Natal kariyer taşıyıcın güçlüyken bu dönem onu devreye alıyor.",
+    ),
+    "identity": (
+        "Kimlik hattın zaten vurgulu; bu dönem onu açık biçimde sınıyor.",
+        "Natal kimlik omurgan belirgin; bu dönem ona sesini ekliyor.",
+    ),
+    "relationships": (
+        "Haritanda ilişki ekseni yüklü; bu dönem tam o eksende konuşuyor.",
+        "Natal bağ taşıyıcın güçlü; bu dönem onun ritmini hızlandırıyor.",
+    ),
+    "home": (
+        "Kök ve ev hattın vurgulu; bu dönem onu sessizce hareket ettiriyor.",
+        "Natal zemin taşıyıcın güçlüyken bu dönem oraya temas ediyor.",
+    ),
+    "mind": (
+        "Zihin ve iletişim hattın belirgin; bu dönem tam o kanalda işliyor.",
+        "Natal düşünce taşıyıcın güçlü; bu dönem onu test ediyor.",
+    ),
+    "inner": (
+        "İç dünya hattın yüklü; bu dönem onu görünür hâle getiriyor.",
+        "Natal derinlik taşıyıcın güçlüyken bu dönem oraya dokunuyor.",
+    ),
+}
+
 SIGN_STYLES_TR: Dict[str, Dict[str, str]] = {
     "aries": {"style": "ilk hamle", "pitfall": "acele patlama", "superpower": "cesur başlatma"},
     "taurus": {"style": "sabır ve değer", "pitfall": "değişime direnç", "superpower": "kalıcı inşa"},
