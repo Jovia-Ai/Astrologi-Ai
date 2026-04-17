@@ -141,7 +141,7 @@ class ProfileTypography {
         TextStyle(
           fontSize: 36,
           height: 40 / 36,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w300,
           color: textColor,
           letterSpacing: -1.24,
         ),
@@ -151,7 +151,7 @@ class ProfileTypography {
         TextStyle(
           fontSize: 30,
           height: 34 / 30,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w300,
           color: textColor,
           letterSpacing: -0.9,
         ),
@@ -211,7 +211,7 @@ class ProfileTypography {
         TextStyle(
           fontSize: 52,
           height: 54 / 52,
-          fontWeight: FontWeight.w400,
+          fontWeight: FontWeight.w300,
           color: textColor,
           letterSpacing: -1.72,
         ),
