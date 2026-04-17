@@ -309,9 +309,16 @@ HOUSE_SCENES_TR: Dict[int, Dict[str, Sequence[str]]] = {
 }
 
 SIGN_STYLES_TR: Dict[str, Dict[str, str]] = {
-    "virgo": {"style": "metod ve iyileştirme", "pitfall": "mükemmellik ertelemesi", "superpower": "ölçülü ustalık"},
-    "capricorn": {"style": "yapı ve sorumluluk", "pitfall": "aşırı kontrol", "superpower": "sürdürülebilir sonuç"},
     "aries": {"style": "ilk hamle", "pitfall": "acele patlama", "superpower": "cesur başlatma"},
+    "taurus": {"style": "sabır ve değer", "pitfall": "değişime direnç", "superpower": "kalıcı inşa"},
+    "gemini": {"style": "merak ve bağ", "pitfall": "dağılma", "superpower": "hızlı öğrenme"},
+    "cancer": {"style": "bakım ve kök", "pitfall": "içe çekilme", "superpower": "güvenli alan kurma"},
+    "leo": {"style": "kendini ortaya koyma", "pitfall": "onay ihtiyacı", "superpower": "otantik görünürlük"},
+    "virgo": {"style": "metod ve iyileştirme", "pitfall": "mükemmellik ertelemesi", "superpower": "ölçülü ustalık"},
+    "libra": {"style": "denge ve ilişki", "pitfall": "karar erteleme", "superpower": "adil köprü kurma"},
+    "scorpio": {"style": "derinlik ve dönüşüm", "pitfall": "kontrol şüphesi", "superpower": "gerçeğe inme"},
+    "sagittarius": {"style": "ufuk ve inanç", "pitfall": "aşırı genelleme", "superpower": "büyük resim görme"},
+    "capricorn": {"style": "yapı ve sorumluluk", "pitfall": "aşırı kontrol", "superpower": "sürdürülebilir sonuç"},
     "aquarius": {"style": "yenilik", "pitfall": "ani kopuş", "superpower": "yaratıcı sıçrama"},
     "pisces": {"style": "sezgi", "pitfall": "sınır erimesi", "superpower": "ince duyarlık"},
 }

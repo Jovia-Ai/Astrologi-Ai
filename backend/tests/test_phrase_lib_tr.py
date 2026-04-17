@@ -1,4 +1,63 @@
-from app.transit.narrative.phrase_lib_tr import compose_phrase_pack
+from app.transit.narrative.phrase_lib_tr import SIGN_STYLES_TR, compose_phrase_pack
+
+
+# S0-1: 12 burç coverage, mevcut 5 burcun değerlerinin frozen (regression) olduğu,
+# editorial blocklist ve length guard'larını doğrulayan testler.
+
+_SIGN_STYLES_BASELINE = {
+    "virgo": {"style": "metod ve iyileştirme", "pitfall": "mükemmellik ertelemesi", "superpower": "ölçülü ustalık"},
+    "capricorn": {"style": "yapı ve sorumluluk", "pitfall": "aşırı kontrol", "superpower": "sürdürülebilir sonuç"},
+    "aries": {"style": "ilk hamle", "pitfall": "acele patlama", "superpower": "cesur başlatma"},
+    "aquarius": {"style": "yenilik", "pitfall": "ani kopuş", "superpower": "yaratıcı sıçrama"},
+    "pisces": {"style": "sezgi", "pitfall": "sınır erimesi", "superpower": "ince duyarlık"},
+}
+
+_SIGN_STYLES_BLOCKLIST = (
+    "enerji",
+    "evren sana",
+    "çakra",
+    "frekans",
+    "titreşim",
+    "etkisi altında",
+)
+
+
+def test_sign_styles_covers_all_twelve_signs() -> None:
+    expected = {
+        "aries", "taurus", "gemini", "cancer", "leo", "virgo",
+        "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces",
+    }
+    assert set(SIGN_STYLES_TR.keys()) == expected
+
+
+def test_sign_styles_existing_values_are_frozen() -> None:
+    for sign, baseline in _SIGN_STYLES_BASELINE.items():
+        assert SIGN_STYLES_TR[sign] == baseline, (
+            f"{sign} baseline değişti; regression."
+        )
+
+
+def test_sign_styles_entries_have_required_keys() -> None:
+    for sign, entry in SIGN_STYLES_TR.items():
+        assert set(entry.keys()) == {"style", "pitfall", "superpower"}, sign
+        for key, value in entry.items():
+            assert isinstance(value, str) and value.strip(), f"{sign}.{key} boş"
+
+
+def test_sign_styles_no_blocklist_jargon() -> None:
+    for sign, entry in SIGN_STYLES_TR.items():
+        merged = " ".join(entry.values()).lower()
+        for banned in _SIGN_STYLES_BLOCKLIST:
+            assert banned not in merged, f"{sign} içinde yasaklı ifade: {banned}"
+
+
+def test_sign_styles_value_length_guard() -> None:
+    # editorial disiplin: her tamlama ≤ 32 karakter, ≤ 4 kelime
+    for sign, entry in SIGN_STYLES_TR.items():
+        for key, value in entry.items():
+            assert len(value) <= 32, f"{sign}.{key} çok uzun: '{value}'"
+            assert len(value.split()) <= 4, f"{sign}.{key} çok fazla kelime: '{value}'"
+
 
 
 def _context_pack_mars_virgo_9() -> dict:
