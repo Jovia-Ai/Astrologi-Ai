@@ -44,7 +44,6 @@ const Color _kProfilePosterSurfaceSoft = Color(0xFF090807);
 const Color _kProfilePosterStroke = Color(0x285B4736);
 const Color _kProfilePosterMuted = Color(0xFFC5BCD0);
 const Color _kProfileFigmaLime = Color(0xFFCAFF4D);
-const Color _kProfilePosterAccent = _kProfileFigmaLime;
 const Color _kProfilePosterLilac = Color(0xFFB58DFF);
 const Color _kProfilePosterBlush = Color(0xFFFFC5E7);
 const Color _kProfilePosterMint = Color(0xFF9EF0E7);
@@ -134,7 +133,7 @@ _ProfilePosterPalette _profilePosterPalette(BuildContext context) {
       text: const Color(0xFFF5F2EE),
       textSoft: Colors.white.withValues(alpha: 0.86),
       muted: _kProfilePosterMuted,
-      accent: _kProfilePosterAccent,
+      accent: profile.colors.brandLime,
       accentSoft: _kProfilePosterMint,
       accentWarm: _kProfilePosterBlush,
       butter: _kProfilePosterButter,
@@ -167,9 +166,9 @@ _ProfilePosterPalette _profilePosterPalette(BuildContext context) {
     text: profile.colors.text,
     textSoft: profile.colors.text.withValues(alpha: 0.84),
     muted: profile.colors.muted,
-    accent: _kProfileFigmaLime,
+    accent: profile.colors.brandLime,
     accentSoft: Color.alphaBlend(
-      _kProfileFigmaLime.withValues(alpha: 0.22),
+      profile.colors.brandLime.withValues(alpha: 0.22),
       Colors.white,
     ),
     accentWarm: Color.alphaBlend(
