@@ -6,9 +6,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:mobile/design/tokens/profile_tokens.dart';
 import 'package:mobile/design/typography/profile_typography.dart';
 
-String? _frauncesFamily() => GoogleFonts.fraunces().fontFamily;
-String? _interFamily() => GoogleFonts.inter().fontFamily;
-String? _jetBrainsMonoFamily() => GoogleFonts.jetBrainsMono().fontFamily;
+TextStyle _applyFraunces(TextStyle base) =>
+    GoogleFonts.fraunces(textStyle: base);
+TextStyle _applyInter(TextStyle base) => GoogleFonts.inter(textStyle: base);
+TextStyle _applyJetBrainsMono(TextStyle base) =>
+    GoogleFonts.jetBrainsMono(textStyle: base);
 
 @immutable
 class ProfileTheme extends ThemeExtension<ProfileTheme> {
@@ -40,9 +42,9 @@ class ProfileTheme extends ThemeExtension<ProfileTheme> {
         textColor: colors.text,
         secondaryColor: colors.muted,
         mutedLabelColor: colors.textLight,
-        displayFontFamily: _frauncesFamily(),
-        bodyFontFamily: _interFamily(),
-        monoFontFamily: _jetBrainsMonoFamily(),
+        display: _applyFraunces,
+        body: _applyInter,
+        mono: _applyJetBrainsMono,
       ),
     );
   }
@@ -59,9 +61,9 @@ class ProfileTheme extends ThemeExtension<ProfileTheme> {
         textColor: colors.text,
         secondaryColor: colors.muted,
         mutedLabelColor: colors.textLight,
-        displayFontFamily: _frauncesFamily(),
-        bodyFontFamily: _interFamily(),
-        monoFontFamily: _jetBrainsMonoFamily(),
+        display: _applyFraunces,
+        body: _applyInter,
+        mono: _applyJetBrainsMono,
       ),
     );
   }

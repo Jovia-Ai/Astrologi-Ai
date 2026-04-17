@@ -116,82 +116,105 @@ class ProfileTypography {
     required Color textColor,
     required Color secondaryColor,
     required Color mutedLabelColor,
-    String? displayFontFamily,
-    String? bodyFontFamily,
-    String? monoFontFamily,
+    TextStyle Function(TextStyle base)? display,
+    TextStyle Function(TextStyle base)? body,
+    TextStyle Function(TextStyle base)? mono,
   }) {
+    TextStyle apply(
+      TextStyle Function(TextStyle base)? wrap,
+      TextStyle base,
+    ) => wrap != null ? wrap(base) : base;
+
     return ProfileTypography(
-      sectionLabel: TextStyle(
-        fontFamily: monoFontFamily,
-        fontSize: 11,
-        height: 15 / 11,
-        fontWeight: FontWeight.w500,
-        color: mutedLabelColor,
-        letterSpacing: 1.7,
+      sectionLabel: apply(
+        mono,
+        TextStyle(
+          fontSize: 11,
+          height: 15 / 11,
+          fontWeight: FontWeight.w500,
+          color: mutedLabelColor,
+          letterSpacing: 1.7,
+        ),
       ),
-      pageTitle: TextStyle(
-        fontFamily: displayFontFamily,
-        fontSize: 36,
-        height: 40 / 36,
-        fontWeight: FontWeight.w400,
-        color: textColor,
-        letterSpacing: -1.24,
+      pageTitle: apply(
+        display,
+        TextStyle(
+          fontSize: 36,
+          height: 40 / 36,
+          fontWeight: FontWeight.w400,
+          color: textColor,
+          letterSpacing: -1.24,
+        ),
       ),
-      sectionTitle: TextStyle(
-        fontFamily: displayFontFamily,
-        fontSize: 30,
-        height: 34 / 30,
-        fontWeight: FontWeight.w500,
-        color: textColor,
-        letterSpacing: -0.9,
+      sectionTitle: apply(
+        display,
+        TextStyle(
+          fontSize: 30,
+          height: 34 / 30,
+          fontWeight: FontWeight.w500,
+          color: textColor,
+          letterSpacing: -0.9,
+        ),
       ),
-      cardTitle: TextStyle(
-        fontFamily: bodyFontFamily,
-        fontSize: 18,
-        height: 24 / 18,
-        fontWeight: FontWeight.w500,
-        color: textColor,
-        letterSpacing: -0.22,
+      cardTitle: apply(
+        body,
+        TextStyle(
+          fontSize: 18,
+          height: 24 / 18,
+          fontWeight: FontWeight.w500,
+          color: textColor,
+          letterSpacing: -0.22,
+        ),
       ),
-      bodyLarge: TextStyle(
-        fontFamily: bodyFontFamily,
-        fontSize: 15.5,
-        height: 26 / 15.5,
-        fontWeight: FontWeight.w400,
-        color: textColor,
-        letterSpacing: -0.08,
+      bodyLarge: apply(
+        body,
+        TextStyle(
+          fontSize: 15.5,
+          height: 26 / 15.5,
+          fontWeight: FontWeight.w400,
+          color: textColor,
+          letterSpacing: -0.08,
+        ),
       ),
-      bodyCompact: TextStyle(
-        fontFamily: bodyFontFamily,
-        fontSize: 14.5,
-        height: 22 / 14.5,
-        fontWeight: FontWeight.w400,
-        color: textColor,
-        letterSpacing: -0.05,
+      bodyCompact: apply(
+        body,
+        TextStyle(
+          fontSize: 14.5,
+          height: 22 / 14.5,
+          fontWeight: FontWeight.w400,
+          color: textColor,
+          letterSpacing: -0.05,
+        ),
       ),
-      meta: TextStyle(
-        fontFamily: bodyFontFamily,
-        fontSize: 13,
-        height: 18 / 13,
-        fontWeight: FontWeight.w400,
-        color: secondaryColor,
-        letterSpacing: 0.01,
+      meta: apply(
+        body,
+        TextStyle(
+          fontSize: 13,
+          height: 18 / 13,
+          fontWeight: FontWeight.w400,
+          color: secondaryColor,
+          letterSpacing: 0.01,
+        ),
       ),
-      chipLabel: TextStyle(
-        fontFamily: bodyFontFamily,
-        fontSize: 12.5,
-        height: 16 / 12.5,
-        fontWeight: FontWeight.w600,
-        color: textColor,
-        letterSpacing: 0.02,
+      chipLabel: apply(
+        body,
+        TextStyle(
+          fontSize: 12.5,
+          height: 16 / 12.5,
+          fontWeight: FontWeight.w600,
+          color: textColor,
+          letterSpacing: 0.02,
+        ),
       ),
-      heroEditorial: TextStyle(
-        fontFamily: displayFontFamily,
-        fontSize: 52,
-        height: 54 / 52,
-        fontWeight: FontWeight.w400,
-        color: textColor,
-        letterSpacing: -1.72,
+      heroEditorial: apply(
+        display,
+        TextStyle(
+          fontSize: 52,
+          height: 54 / 52,
+          fontWeight: FontWeight.w400,
+          color: textColor,
+          letterSpacing: -1.72,
+        ),
       ),
     );
   }
