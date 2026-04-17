@@ -778,10 +778,13 @@ class _V8PastTeaserCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(14),
         border: Border.all(color: const Color.fromRGBO(0, 0, 0, 0.07)),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Stack(
         children: [
-          Container(width: 3, color: const Color(0xFF7F77DD)),
+          Padding(
+            padding: const EdgeInsets.only(left: 3),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(13, 12, 13, 12),
@@ -908,6 +911,16 @@ class _V8PastTeaserCard extends StatelessWidget {
                 ],
               ),
             ),
+          ),
+              ],
+            ),
+          ),
+          Positioned(
+            left: 0,
+            top: 0,
+            bottom: 0,
+            width: 3,
+            child: Container(color: const Color(0xFF7F77DD)),
           ),
         ],
       ),
