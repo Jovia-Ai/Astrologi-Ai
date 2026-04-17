@@ -40,11 +40,11 @@ class ProfileTypography {
   TextStyle get editorialHeadline => heroEditorial.copyWith(
     fontSize: 38,
     height: 1.06,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w400,
     letterSpacing: -0.96,
   );
   TextStyle get monoEyebrow =>
-      sectionLabel.copyWith(fontWeight: FontWeight.w700, letterSpacing: 2.35);
+      sectionLabel.copyWith(fontWeight: FontWeight.w500, letterSpacing: 2.35);
   TextStyle get bodyReading =>
       bodyLarge.copyWith(fontSize: 15.5, height: 1.74, letterSpacing: -0.08);
   TextStyle get buttonLabel => chipLabel.copyWith(
@@ -125,7 +125,7 @@ class ProfileTypography {
         fontFamily: monoFontFamily,
         fontSize: 11,
         height: 15 / 11,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w500,
         color: mutedLabelColor,
         letterSpacing: 1.7,
       ),
@@ -133,7 +133,7 @@ class ProfileTypography {
         fontFamily: displayFontFamily,
         fontSize: 36,
         height: 40 / 36,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
         color: textColor,
         letterSpacing: -1.24,
       ),
@@ -173,7 +173,7 @@ class ProfileTypography {
         fontFamily: bodyFontFamily,
         fontSize: 13,
         height: 18 / 13,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
         color: secondaryColor,
         letterSpacing: 0.01,
       ),
@@ -189,7 +189,7 @@ class ProfileTypography {
         fontFamily: displayFontFamily,
         fontSize: 52,
         height: 54 / 52,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
         color: textColor,
         letterSpacing: -1.72,
       ),
