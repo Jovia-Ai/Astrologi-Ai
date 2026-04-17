@@ -1571,22 +1571,22 @@ class _V8AffectsCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: 4,
-                            height: 4,
-                            margin: const EdgeInsets.only(top: 5),
+                            width: 7,
+                            height: 7,
+                            margin: const EdgeInsets.only(top: 4),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFB8B8B8),
-                              borderRadius: BorderRadius.circular(2),
+                              color: _v8AffectsDotColor(i),
+                              borderRadius: BorderRadius.circular(3.5),
                             ),
                           ),
-                          const SizedBox(width: 7),
+                          const SizedBox(width: 9),
                           Expanded(
                             child: Text(
                               rows[i],
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: profile.typography.bodyCompact.copyWith(
-                                color: const Color(0xFF4C4C4C),
+                                color: _v8AffectsTextColor(i),
                                 fontSize: 10.3,
                                 height: 1.4,
                               ),
@@ -1621,6 +1621,24 @@ class _V8AffectsCard extends StatelessWidget {
       ),
     );
   }
+}
+
+Color _v8AffectsDotColor(int index) {
+  switch (index) {
+    case 0:
+      return const Color(0xFF7F77DD);
+    case 1:
+      return const Color(0xFFCAFF4D);
+    default:
+      return const Color(0xFFDDDDDD);
+  }
+}
+
+Color _v8AffectsTextColor(int index) {
+  if (index >= 2) {
+    return const Color(0xFFAAAAAA);
+  }
+  return const Color(0xFF444444);
 }
 
 class _V8DefenseCard extends StatelessWidget {
