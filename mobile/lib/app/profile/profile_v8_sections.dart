@@ -772,19 +772,16 @@ class _V8PastTeaserCard extends StatelessWidget {
         ? 'Zamanında öğrendiğin bir savunma bugün hâlâ görünür olabilir.'
         : section.body.trim();
     return Container(
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(14),
-        border: const Border(
-          left: BorderSide(color: Color(0xFF7F77DD), width: 3),
-          top: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.07)),
-          right: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.07)),
-          bottom: BorderSide(color: Color.fromRGBO(0, 0, 0, 0.07)),
-        ),
+        border: Border.all(color: const Color.fromRGBO(0, 0, 0, 0.07)),
       ),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
+          Container(width: 3, color: const Color(0xFF7F77DD)),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.fromLTRB(13, 12, 13, 12),
