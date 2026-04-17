@@ -14,6 +14,7 @@ class ProfileDetailSheetData {
     this.accentInk = const Color(0xFF1A3300),
     this.highlight = '',
     this.chips = const <String>[],
+    this.details = const <String>[],
     this.growthNote = '',
     this.ctaLabel,
     this.onCta,
@@ -27,6 +28,7 @@ class ProfileDetailSheetData {
   final Color accentInk;
   final String highlight;
   final List<String> chips;
+  final List<String> details;
   final String growthNote;
   final String? ctaLabel;
   final VoidCallback? onCta;
@@ -174,6 +176,44 @@ class _SheetBody extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
           ),
+        ],
+        if (data.details.isNotEmpty) ...[
+          const SizedBox(height: 22),
+          Row(
+            children: [
+              Container(
+                width: 5,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: data.accent,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 8),
+              const Text(
+                'MEKANİZMA',
+                style: TextStyle(
+                  color: Color(0xFF9A9A9A),
+                  fontSize: 9,
+                  letterSpacing: 0.8,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          for (var i = 0; i < data.details.length; i++) ...[
+            Text(
+              data.details[i],
+              style: const TextStyle(
+                color: Color(0xFF4F4F4F),
+                fontSize: 14,
+                height: 1.58,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+            if (i != data.details.length - 1) const SizedBox(height: 12),
+          ],
         ],
         if (data.chips.isNotEmpty) ...[
           const SizedBox(height: 18),

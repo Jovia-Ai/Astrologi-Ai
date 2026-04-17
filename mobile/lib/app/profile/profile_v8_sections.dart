@@ -90,6 +90,9 @@ class ProfileV8SectionsView extends StatelessWidget {
             ? 'Haritadaki sayısal imzalar bunu destekliyor.'
             : section.body.trim(),
         chips: differentiatorChips,
+        details: section.bullets
+            .where((item) => item.trim().isNotEmpty)
+            .toList(growable: false),
       );
       children.add(const SizedBox(height: 14));
       children.add(
@@ -2503,11 +2506,13 @@ ProfileDetailSheetData _sheetFromSection(
   String accent = 'lime',
   String placement = '',
   String growthNote = '',
+  List<String>? details,
   String? ctaLabel,
   VoidCallback? onCta,
 }) {
   final (accentColor, inkColor) = _v8AccentInkBySection[accent] ?? _v8AccentInkBySection['lime']!;
   final highlight = (section.callout ?? '').trim();
+  final resolvedDetails = details ?? section.bullets;
   return ProfileDetailSheetData(
     eyebrow: section.eyebrow.trim().isEmpty ? fallbackEyebrow : section.eyebrow,
     headline: section.headline.trim(),
@@ -2517,6 +2522,9 @@ ProfileDetailSheetData _sheetFromSection(
     accentInk: inkColor,
     highlight: highlight,
     chips: section.chips,
+    details: resolvedDetails
+        .where((item) => item.trim().isNotEmpty)
+        .toList(growable: false),
     growthNote: growthNote,
     ctaLabel: ctaLabel,
     onCta: onCta,
