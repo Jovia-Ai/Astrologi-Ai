@@ -1397,37 +1397,54 @@ class _V8ConversationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            turkishToUpper(
-              section.eyebrow.trim().isEmpty
-                  ? 'BU KİŞİYLE NE KONUŞULUR'
-                  : section.eyebrow,
-            ),
-            style: profile.typography.micro.copyWith(
-              color: const Color(0xFFB3B3B3),
-              fontSize: 8,
-              letterSpacing: 0.8,
-              fontWeight: FontWeight.w500,
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: Container(
+                  height: 1,
+                  color: const Color.fromRGBO(0, 0, 0, 0.07),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                child: Text(
+                  turkishToUpper(
+                    section.eyebrow.trim().isEmpty
+                        ? 'BU KİŞİYLE NE KONUŞULUR'
+                        : section.eyebrow,
+                  ),
+                  style: profile.typography.micro.copyWith(
+                    color: const Color(0xFFBBBBBB),
+                    fontSize: 8,
+                    letterSpacing: 0.8,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  height: 1,
+                  color: const Color.fromRGBO(0, 0, 0, 0.07),
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 9),
+          const SizedBox(height: 10),
           if (split.$1.trim().isNotEmpty)
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
               decoration: BoxDecoration(
-                color: const Color(0xFFF0EEFF),
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(
-                  color: const Color.fromRGBO(83, 74, 183, 0.16),
-                ),
+                color: const Color(0xFFCAFF4D),
+                borderRadius: BorderRadius.circular(3),
               ),
               child: Text(
                 split.$1.trim(),
                 style: profile.typography.bodyCompact.copyWith(
-                  color: const Color(0xFF433A9F),
-                  fontSize: 13.7,
-                  height: 1.32,
-                  fontWeight: FontWeight.w500,
+                  color: const Color(0xFF1A3300),
+                  fontSize: 15.2,
+                  height: 1.33,
+                  letterSpacing: -0.28,
+                  fontWeight: FontWeight.w400,
                 ),
               ),
             ),
@@ -1458,21 +1475,36 @@ class _V8ConversationCard extends StatelessWidget {
           const SizedBox(height: 10),
           Container(
             width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
+            padding: const EdgeInsets.fromLTRB(13, 10, 13, 10),
             decoration: BoxDecoration(
-              color: const Color(0xFFFAFAFC),
-              borderRadius: BorderRadius.circular(10),
+              color: const Color(0xFFFAFAFA),
+              borderRadius: BorderRadius.circular(11),
               border: Border.all(color: const Color.fromRGBO(0, 0, 0, 0.06)),
             ),
-            child: Text(
-              callout,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: profile.typography.micro.copyWith(
-                color: const Color(0xFF5F5F5F),
-                fontSize: 9.7,
-                height: 1.4,
-              ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Text(
+                    callout,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: profile.typography.micro.copyWith(
+                      color: const Color(0xFF888888),
+                      fontSize: 10.5,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 10),
+                Text(
+                  '↗',
+                  style: profile.typography.micro.copyWith(
+                    color: const Color(0xFFCCCCCC),
+                    fontSize: 12,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
