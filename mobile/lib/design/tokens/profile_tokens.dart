@@ -124,7 +124,7 @@ class ProfileColors {
     auraStops: <Color>[Color(0xFF111111), Color(0xFF1A1A1A), Color(0xFF111111)],
     chipBg: Color(0xCC1A1A1A),
     chipBorder: Color(0x338899A8),
-    warmAccent: Color(0xFFC7D6E2),
+    warmAccent: Color(0xFFCAFF4D),
     heroText: Color(0xFF0A0A0A),
     heroBase: Color(0xFF0A0A0A),
     neonPink: Color(0xFF313E4B),
