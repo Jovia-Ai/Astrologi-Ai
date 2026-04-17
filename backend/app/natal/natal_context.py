@@ -19,6 +19,12 @@ from dataclasses import dataclass, field
 from typing import Any, Dict, List, Mapping, Sequence
 
 from app.helpers.narrative_context import derive_core_aspects, derive_placements
+from app.natal.dispositor_engine import (
+    build_angle_ruler_map,
+    build_house_ruler_map,
+    extract_aspects,
+    extract_planet_positions,
+)
 from app.services.chart_service import serialize_aspects, serialize_planets
 
 
@@ -29,6 +35,9 @@ class NatalContext:
     Engine'ler `chart_data` ham dict'ini değil, bu sınıfın property'lerini
     tüketir. Yeni türetilmiş view eklemek için: yeni bir lazy property ekle,
     `from_chart` içinde init etme — sadece ilk erişimde hesapla.
+
+    Cache scope: per-instance (per-request). Thread-safe by design — global
+    mutable state yok, her request kendi context objesini yaratır.
     """
 
     chart_data: Mapping[str, Any]
@@ -38,6 +47,10 @@ class NatalContext:
     _core_aspects: List[str] | None = field(default=None, init=False, repr=False)
     _angles: Mapping[str, Any] | None = field(default=None, init=False, repr=False)
     _chart_for_selection: Dict[str, Any] | None = field(default=None, init=False, repr=False)
+    _canonical_planet_map: Dict[str, Dict[str, Any]] | None = field(default=None, init=False, repr=False)
+    _canonical_aspects: List[Dict[str, Any]] | None = field(default=None, init=False, repr=False)
+    _house_ruler_map: Dict[str, Dict[str, Any]] | None = field(default=None, init=False, repr=False)
+    _angle_ruler_map: Dict[str, Any] | None = field(default=None, init=False, repr=False)
 
     @classmethod
     def from_chart(cls, chart_data: Mapping[str, Any]) -> "NatalContext":
@@ -110,6 +123,39 @@ class NatalContext:
                 "aspects": list(self.aspects or []),
             }
         return self._chart_for_selection
+
+    @property
+    def canonical_planet_map(self) -> Dict[str, Dict[str, Any]]:
+        """`dispositor_engine.extract_planet_positions(chart_data)` cache'li view.
+
+        `planets` property'sinden farklı: kanonik body ismi (alias resolve), sign
+        normalizasyonu, longitude fallback, retrograde flag içerir. Dispositor /
+        ruler / feature graph engine'leri bu formatı bekler.
+        """
+        if self._canonical_planet_map is None:
+            self._canonical_planet_map = extract_planet_positions(self.chart_data)
+        return self._canonical_planet_map
+
+    @property
+    def canonical_aspects(self) -> List[Dict[str, Any]]:
+        """`dispositor_engine.extract_aspects(chart_data)` cache'li view."""
+        if self._canonical_aspects is None:
+            self._canonical_aspects = extract_aspects(self.chart_data)
+        return self._canonical_aspects
+
+    @property
+    def house_ruler_map(self) -> Dict[str, Dict[str, Any]]:
+        """12 ev için sign + primary/secondary ruler + placement, cache'li."""
+        if self._house_ruler_map is None:
+            self._house_ruler_map = build_house_ruler_map(self.chart_data)
+        return self._house_ruler_map
+
+    @property
+    def angle_ruler_map(self) -> Dict[str, Any]:
+        """ASC + MC sign/ruler/placement view + house_rulers, cache'li."""
+        if self._angle_ruler_map is None:
+            self._angle_ruler_map = build_angle_ruler_map(self.chart_data)
+        return self._angle_ruler_map
 
     def planet_by_name(self, name: str) -> Dict[str, Any] | None:
         """Tek gezegen lookup, case-insensitive."""
