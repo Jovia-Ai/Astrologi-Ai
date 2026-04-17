@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:mobile/app/profile/profile_detail_sheet.dart';
 import 'package:mobile/app/profile/profile_v8_adapter.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
@@ -72,13 +73,34 @@ class ProfileV8SectionsView extends StatelessWidget {
             headline: '',
             body: '',
           );
+      final differentiatorChips = <String>[
+        for (final item in data.differentiators)
+          if (item.eyebrow.trim().isNotEmpty) item.eyebrow.trim(),
+      ];
+      final sheetData = ProfileDetailSheetData(
+        eyebrow: section.eyebrow.trim().isEmpty
+            ? 'SENİ FARKLI KILAN'
+            : section.eyebrow,
+        headline: section.headline.trim().isEmpty
+            ? (data.differentiators.isNotEmpty
+                  ? data.differentiators.first.headline
+                  : 'Sende çalışan çizgi belirgin.')
+            : section.headline.trim(),
+        body: section.body.trim().isEmpty
+            ? 'Haritadaki sayısal imzalar bunu destekliyor.'
+            : section.body.trim(),
+        chips: differentiatorChips,
+      );
       children.add(const SizedBox(height: 14));
       children.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _V8UniqueMetricSlab(
-            section: section,
-            differentiators: data.differentiators,
+          child: _v8Tappable(
+            data: sheetData,
+            child: _V8UniqueMetricSlab(
+              section: section,
+              differentiators: data.differentiators,
+            ),
           ),
         ),
       );
@@ -87,11 +109,24 @@ class ProfileV8SectionsView extends StatelessWidget {
     if (_hasEditorialContent(data.originSection)) {
       final section = data.originSection;
       if (section != null) {
+        final placement = section.chips
+            .where((item) => item.trim().isNotEmpty)
+            .take(2)
+            .map((item) => item.trim())
+            .join(' · ');
         children.add(const SizedBox(height: 14));
         children.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _V8PastTeaserCard(section: section),
+            child: _v8Tappable(
+              data: _sheetFromSection(
+                section,
+                fallbackEyebrow: 'BU NEREDEN GELİYOR OLABİLİR',
+                accent: 'lavender',
+                placement: placement,
+              ),
+              child: _V8PastTeaserCard(section: section),
+            ),
           ),
         );
       }
@@ -104,7 +139,14 @@ class ProfileV8SectionsView extends StatelessWidget {
         children.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _V8FirstImpressionCard(section: section),
+            child: _v8Tappable(
+              data: _sheetFromSection(
+                section,
+                fallbackEyebrow: 'İLK İZLENİM',
+                accent: 'stone',
+              ),
+              child: _V8FirstImpressionCard(section: section),
+            ),
           ),
         );
       }
@@ -128,6 +170,7 @@ class ProfileV8SectionsView extends StatelessWidget {
 
     void addWhiteSection(
       ProfileV8TextSection? section, {
+      required String fallbackEyebrow,
       Color accent = const Color(0xFF7F77DD),
       Color accentTextColor = const Color(0xFF26215C),
     }) {
@@ -138,54 +181,107 @@ class ProfileV8SectionsView extends StatelessWidget {
       children.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _V8SectionCard(
-            section: section,
-            dark: false,
-            subtle: false,
-            leftAccent: false,
-            accent: accent,
-            accentTextColor: accentTextColor,
+          child: _v8Tappable(
+            data: ProfileDetailSheetData(
+              eyebrow: section.eyebrow.trim().isEmpty
+                  ? fallbackEyebrow
+                  : section.eyebrow,
+              headline: section.headline.trim(),
+              body: section.body.trim(),
+              accent: accent,
+              accentInk: accentTextColor,
+              chips: section.chips,
+            ),
+            child: _V8SectionCard(
+              section: section,
+              dark: false,
+              subtle: false,
+              leftAccent: false,
+              accent: accent,
+              accentTextColor: accentTextColor,
+            ),
           ),
         ),
       );
     }
 
     if (_hasEditorialContent(data.conversationSection)) {
+      final section = data.conversationSection!;
       children.add(const SizedBox(height: 14));
       children.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _V8ConversationCard(section: data.conversationSection!),
+          child: _v8Tappable(
+            data: _sheetFromSection(
+              section,
+              fallbackEyebrow: 'BU KİŞİYLE NE KONUŞULUR',
+              accent: 'lime',
+            ),
+            child: _V8ConversationCard(section: section),
+          ),
         ),
       );
     }
 
     if (_hasEditorialContent(data.effectSection)) {
+      final section = data.effectSection!;
+      final effectChips = <String>[
+        ...section.chips,
+        ...section.bullets,
+      ];
       children.add(const SizedBox(height: 14));
       children.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _V8AffectsCard(section: data.effectSection!),
+          child: _v8Tappable(
+            data: ProfileDetailSheetData(
+              eyebrow: section.eyebrow.trim().isEmpty
+                  ? 'SENİ NASIL ETKİLER'
+                  : section.eyebrow,
+              headline: section.headline.trim(),
+              body: section.body.trim(),
+              accent: const Color(0xFF7F77DD),
+              accentInk: const Color(0xFF26215C),
+              chips: effectChips,
+            ),
+            child: _V8AffectsCard(section: section),
+          ),
         ),
       );
     }
 
     if (_hasEditorialContent(data.defenseSection)) {
+      final section = data.defenseSection!;
       children.add(const SizedBox(height: 14));
       children.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _V8DefenseCard(section: data.defenseSection!),
+          child: _v8Tappable(
+            data: _sheetFromSection(
+              section,
+              fallbackEyebrow: 'SAVUNMA MEKANİZMAN',
+              accent: 'lavender',
+            ),
+            child: _V8DefenseCard(section: section),
+          ),
         ),
       );
     }
 
     if (_hasEditorialContent(data.firstFeltSection)) {
+      final section = data.firstFeltSection!;
       children.add(const SizedBox(height: 14));
       children.add(
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: _V8FirstFeltCard(section: data.firstFeltSection!),
+          child: _v8Tappable(
+            data: _sheetFromSection(
+              section,
+              fallbackEyebrow: 'İLK HİSSEDİLEN ŞEY',
+              accent: 'lime',
+            ),
+            child: _V8FirstFeltCard(section: section),
+          ),
         ),
       );
     }
@@ -197,12 +293,24 @@ class ProfileV8SectionsView extends StatelessWidget {
         children.add(
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: _V8SectionCard(
-              section: section,
-              dark: false,
-              subtle: false,
-              leftAccent: false,
-              accent: const Color(0xFFCAFF4D),
+            child: _v8Tappable(
+              data: ProfileDetailSheetData(
+                eyebrow: section.eyebrow.trim().isEmpty
+                    ? 'MİSYON'
+                    : section.eyebrow,
+                headline: section.headline.trim(),
+                body: section.body.trim(),
+                accent: const Color(0xFFCAFF4D),
+                accentInk: const Color(0xFF1A3300),
+                chips: section.chips,
+              ),
+              child: _V8SectionCard(
+                section: section,
+                dark: false,
+                subtle: false,
+                leftAccent: false,
+                accent: const Color(0xFFCAFF4D),
+              ),
             ),
           ),
         );
@@ -211,10 +319,11 @@ class ProfileV8SectionsView extends StatelessWidget {
 
     addWhiteSection(
       data.intimacySection,
+      fallbackEyebrow: 'YAKINLIK',
       accent: const Color(0xFFE8A020),
       accentTextColor: const Color(0xFF8A5600),
     );
-    addWhiteSection(data.mindSection);
+    addWhiteSection(data.mindSection, fallbackEyebrow: 'ZİHİNSEL İŞLEYİŞ');
 
     if (_hasEditorialContent(data.ctaSection)) {
       final section = data.ctaSection;
@@ -2379,6 +2488,56 @@ bool _hasEditorialContent(ProfileV8TextSection? section) {
       hasRows ||
       hasChips ||
       hasCallout;
+}
+
+const Map<String, (Color, Color)> _v8AccentInkBySection = <String, (Color, Color)>{
+  'lime': (Color(0xFFCAFF4D), Color(0xFF1A3300)),
+  'lavender': (Color(0xFF7F77DD), Color(0xFF26215C)),
+  'amber': (Color(0xFFE8A020), Color(0xFF8A5600)),
+  'stone': (Color(0xFFE0DED4), Color(0xFF3A3A2E)),
+};
+
+ProfileDetailSheetData _sheetFromSection(
+  ProfileV8TextSection section, {
+  required String fallbackEyebrow,
+  String accent = 'lime',
+  String placement = '',
+  String growthNote = '',
+  String? ctaLabel,
+  VoidCallback? onCta,
+}) {
+  final (accentColor, inkColor) = _v8AccentInkBySection[accent] ?? _v8AccentInkBySection['lime']!;
+  final highlight = (section.callout ?? '').trim();
+  return ProfileDetailSheetData(
+    eyebrow: section.eyebrow.trim().isEmpty ? fallbackEyebrow : section.eyebrow,
+    headline: section.headline.trim(),
+    body: section.body.trim(),
+    placement: placement,
+    accent: accentColor,
+    accentInk: inkColor,
+    highlight: highlight,
+    chips: section.chips,
+    growthNote: growthNote,
+    ctaLabel: ctaLabel,
+    onCta: onCta,
+  );
+}
+
+Widget _v8Tappable({
+  required Widget child,
+  required ProfileDetailSheetData data,
+  double borderRadius = 14,
+}) {
+  return Builder(
+    builder: (ctx) => Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(borderRadius),
+        onTap: () => showProfileDetailSheet(ctx, data),
+        child: child,
+      ),
+    ),
+  );
 }
 
 String _dedupeBody(String body, String headline) {
