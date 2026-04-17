@@ -312,6 +312,26 @@ Bu, **Faz 1'in %30'u** ve hemen ölçülebilir bir kazanç (payload küçülme, 
 
 Bu işler ana fazlara dahil değil ama uzun vadede ürün sağlığı için kritik. Her biri **bağımsız sprint** olarak ele alınabilir, herhangi bir fazın yanında paralel ilerleyebilir.
 
+### 🌑 BL-02 — SwissEph extended ephe files deployment audit
+
+**Şu anki sorun**:
+- `backend/ephe/seas_18.se1` ve diğer extended dosyalar repo'da var.
+- Üretim ortamında `app.main.create_app()` `swe.set_ephe_path(settings.swisseph_path)` çağırarak path'i set ediyor → çalışıyor.
+- **Test ortamında** `create_app()` çağrılmıyor → `swe.set_ephe_path` set edilmiyor → Swiss Ephemeris sistem default path'inde (`/usr/share/swisseph`) arıyor → **Chiron, Juno, Vesta, Pallas hesaplanamıyor** (warning + None döner).
+- Kısmi düzeltildi: `backend/tests/conftest.py` ile session-level `swe.set_ephe_path(settings.swisseph_path)` çağrısı eklendi (Sprint 1, 2026-04-17).
+- **Geriye kalan risk**: Render production'da gerçekten tüm extended dosyalar deploy edildi mi? Build dizininde mevcut mu? Bunu doğrulamak için Render shell'den `ls /opt/render/project/src/backend/ephe/` kontrolü gerek.
+
+**Önerilen aksiyon**:
+1. Render production shell üzerinde ephe dizini doğrula
+2. Eksik dosya varsa `render.yaml` build script'ine ephe download adımı ekle veya `.gitattributes` ile LFS migration
+3. Test fixture'larına Chiron/Juno içeren kontrol case ekle (regression korumalı)
+
+**Kazanç**: Astrolojik içerik kalitesi (Chiron Wounded Healer, Juno relationship asteroid, Vesta sacred work — natal yorumlamada Faz 2 motorları için kritik).
+
+**Tahmini iş**: 2-4 saat.
+
+---
+
 ### 🌍 BL-01 — Offline geocoding (OpenCage bağımlılığını kaldır)
 
 **Şu anki sorun**:
