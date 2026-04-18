@@ -21,9 +21,11 @@ import 'package:mobile/app/tabs/sky_event_feed_page.dart';
 import 'package:mobile/app/telemetry/perf_telemetry.dart';
 import 'package:mobile/app/widgets/forum_cta.dart';
 import 'package:mobile/app/widgets/forum_social_preview_strip.dart';
+import 'package:mobile/app/preferences/jovia_app_preferences_provider.dart';
 import 'package:mobile/app/timing/daily_transit_selection.dart';
 import 'package:mobile/app/timing/narrative_dtos.dart';
 import 'package:mobile/app/timing/source_guards.dart';
+import 'package:mobile/app/timing/stack_clause_gate.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/design/astro/astro_theme_extension.dart';
@@ -1211,6 +1213,31 @@ class _HomePageState extends ConsumerState<HomePage>
                   dayMeta: selectedDayMeta,
                   fallbackBody: selectedFallbackBody,
                 );
+          // PR7b hand-off wiring: attach the stack synergy clause to whichever
+          // narrative line the user is about to see, gated by a rolling 7-day
+          // cooldown (per-device, persisted via Supabase auth metadata). Uses
+          // the active daily card's stack_clause_tr — the card the user is
+          // actually looking at (today when viewing today, selected otherwise).
+          // When shouldUsePeriodHeroFallback is true the daily path is skipped
+          // below, so `resolvedDailyBodyWithClause` never reaches the screen
+          // and markClauseShown is naturally skipped.
+          final activeDailyCard = isSelectedToday
+              ? todayDailyCard
+              : selectedDailyCard;
+          final stackClausePrefs = ref.watch(joviaAppPreferencesProvider);
+          final stackClauseEnabled = ref.watch(stackClauseFeatureEnabledProvider);
+          final stackClauseNowMs = DateTime.now().millisecondsSinceEpoch;
+          final showStackClause = stackClauseShouldShow(
+            stackClauseTr: activeDailyCard?.stackClauseTr ?? '',
+            lastShownMs: stackClausePrefs.stackClauseLastShownAtMs,
+            nowMs: stackClauseNowMs,
+            featureEnabled: stackClauseEnabled,
+          );
+          final resolvedDailyBodyWithClause = stackClauseComposeLine(
+            baseText: resolvedDailyBody,
+            stackClauseTr: activeDailyCard?.stackClauseTr ?? '',
+            showStackClause: showStackClause,
+          );
           final activeTitle = shouldUsePeriodHeroFallback
               ? periodFallbackTitle
               : resolvedDailyTitle;
@@ -1222,7 +1249,19 @@ class _HomePageState extends ConsumerState<HomePage>
                   selectedDailyStatusCopy,
                   periodFallbackBody,
                 ])
-              : resolvedDailyBody;
+              : resolvedDailyBodyWithClause;
+          // Mark the clause as shown only when we actually commit to the
+          // daily path AND the gate said yes. The period fallback branch
+          // above drops the clause silently, which is the intended
+          // behaviour (no "yoğun gün" cue attached to period narrative).
+          if (showStackClause && !shouldUsePeriodHeroFallback) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              if (!mounted) return;
+              ref
+                  .read(joviaAppPreferencesProvider.notifier)
+                  .markClauseShown(stackClauseNowMs);
+            });
+          }
           final showTimingPanel = _shouldShowTimingPanel(
             periodCore: _periodCore,
             heroBody: selectedHeroBody,
