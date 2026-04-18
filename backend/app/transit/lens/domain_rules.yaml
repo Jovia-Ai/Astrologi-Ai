@@ -25,6 +25,58 @@ rules:
       weight: 0.40
       priority: 4
 
+  # Passion / desire (Venus-Mars compound)
+  - match: "^tr\\.venus\\..*\\.mars"
+    add:
+      domains: ["relationship", "creativity"]
+      intents: ["attraction_window", "creative_output"]
+      tags: ["passion", "desire"]
+      weight: 0.22
+      priority: 3
+
+  - match: "^tr\\.mars\\..*\\.venus"
+    add:
+      domains: ["relationship", "creativity"]
+      intents: ["attraction_window", "creative_output"]
+      tags: ["passion", "desire"]
+      weight: 0.22
+      priority: 3
+
+  # Authority / legitimacy (Sun-Saturn: hard = test, soft = recognition)
+  - match: "^tr\\.sun\\.(square|opposition)\\.saturn"
+    add:
+      domains: ["career", "business"]
+      intents: ["authority_test"]
+      tags: ["accountability"]
+      weight: 0.12
+      priority: 2
+
+  - match: "^tr\\.sun\\.(trine|sextile|conjunction)\\.saturn"
+    add:
+      domains: ["career", "business"]
+      intents: ["recognition_window", "consolidation"]
+      tags: ["legitimacy"]
+      weight: 0.26
+      priority: 3
+
+  # Deep transformation (Mars-Pluto, Sun-Pluto - compulsive drive / power surfacing)
+  - match: "^tr\\.(mars|sun)\\..*\\.pluto"
+    add:
+      domains: ["business", "relationship"]
+      intents: ["power_dynamic", "avoid_escalation"]
+      tags: ["intensity", "power"]
+      weight: -0.08
+      priority: 3
+
+  # Soft dreaming / ambiguity caution (Moon-Neptune, Venus-Neptune)
+  - match: "^tr\\.(moon|venus)\\..*\\.neptune"
+    add:
+      domains: ["relationship", "creativity"]
+      intents: ["caution_window", "creative_output"]
+      tags: ["blur", "idealization"]
+      weight: -0.06
+      priority: 2
+
   - match: "^tr\\.jupiter\\."
     add:
       domains: ["relationship", "business", "career"]
