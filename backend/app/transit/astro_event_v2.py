@@ -1376,14 +1376,46 @@ def _aspect_summary_tr(transit_body: str, natal_point: str, aspect: Any, bucket:
 
 def _aspect_why_now_tr(transit_body: str, natal_point: str, phase: Any, houses: Any, solar_year: Mapping[str, Any] | None) -> str:
     phase_text = {"exact": "zirveye", "exactish": "zirveye", "applying": "yaklasirken", "separating": "cozulerken"}.get(str(phase or "").lower(), "calisirken")
-    resonance = ""
-    if isinstance(solar_year, Mapping) and solar_year:
-        dominant = [int(v) for v in (solar_year.get("dominant_houses") or []) if isinstance(v, int)]
-        if isinstance(houses, Mapping):
-            target_house = _safe_int(houses.get("natal_point_house"))
-            if target_house and target_house in dominant:
-                resonance = f" Bu alan ayni zamanda bu yilin ana sahnelerinden biri."
+    resonance = _solar_resonance_tr(transit_body, natal_point, houses, solar_year)
     return f"Etki su anda {phase_text}; bu da {PLANET_TR.get(natal_point, natal_point)} temasini daha fark edilir hale getiriyor.{resonance}"
+
+
+def _solar_resonance_tr(
+    transit_body: str,
+    natal_point: str,
+    houses: Any,
+    solar_year: Mapping[str, Any] | None,
+) -> str:
+    """Attach one short resonance sentence if this transit aligns with the solar year frame.
+
+    Checks four layers (priority order, first match wins):
+      1) transit body is the year ruler
+      2) natal point is the year ruler
+      3) target house is in solar dominant_houses
+      4) target house matches a solar-natal overlay (solar Sun/ruler → natal house)
+    """
+    if not isinstance(solar_year, Mapping) or not solar_year:
+        return ""
+    year_ruler = str(solar_year.get("year_ruler") or "")
+    target_house = _safe_int(houses.get("natal_point_house")) if isinstance(houses, Mapping) else None
+
+    if year_ruler and transit_body and transit_body == year_ruler:
+        return f" {PLANET_TR.get(transit_body, transit_body)} bu yilin yoneten gezegeni; o yuzden dokunusu daha belirleyici."
+
+    if year_ruler and natal_point and natal_point == year_ruler:
+        return f" Senin {PLANET_TR.get(natal_point, natal_point)}'un bu yilin yoneticisi; hat dogrudan yilin ritmine bagli."
+
+    if target_house:
+        overlays = solar_year.get("solar_natal_overlays") or []
+        overlay_houses = {int(o.get("natal_house")) for o in overlays if isinstance(o, Mapping) and o.get("natal_house") is not None}
+        if target_house in overlay_houses:
+            return " Bu alan, solar donus haritasinin isigini tasiyan yerle ortusuyor."
+
+        dominant = [int(v) for v in (solar_year.get("dominant_houses") or []) if isinstance(v, int)]
+        if target_house in dominant:
+            return " Bu alan ayni zamanda bu yilin ana sahnelerinden biri."
+
+    return ""
 
 
 def _aspect_guidance_tr(transit_body: str, natal_point: str, bucket: str) -> List[str]:
@@ -1559,11 +1591,9 @@ def _house_ingress_summary_tr(body: str, house: int, phase: str) -> str:
 
 
 def _house_ingress_why_now_tr(body: str, house: int, phase: str, solar_year: Mapping[str, Any] | None) -> str:
-    resonance = ""
-    if isinstance(solar_year, Mapping) and solar_year:
-        dominant = [int(v) for v in (solar_year.get("dominant_houses") or []) if isinstance(v, int)]
-        if house in dominant:
-            resonance = " Bu alan ayni zamanda yilin ana sahnesiyle de hizlaniyor."
+    resonance = _solar_resonance_tr(body, "", {"natal_point_house": house}, solar_year)
+    if not resonance:
+        return f"{PLANET_TR.get(body, body)} su anda {_house_name(house)} eksenini one cikariyor."
     return f"{PLANET_TR.get(body, body)} su anda {_house_name(house)} eksenini one cikariyor.{resonance}"
 
 
