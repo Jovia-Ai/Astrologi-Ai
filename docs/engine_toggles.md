@@ -103,6 +103,19 @@ body represent a single astrological contact and count once. The raw
 axis-partner events still receive the boost so their scores stay
 consistent. Non-stack events are unmodified.
 
+PR7.1a extends collapse to source-side node axis (NN/SN as transit
+source hitting the same target) and nodal ingress pairs (one rule
+covers both because both match on same event_family + axis-partner
+sources + equal target_points set, including empty-empty).
+
+PR7b adds a single-sentence narrative clause appended to `why_now_tr`
+on the top-sig stack member per day, gated by:
+  size >= 3 OR (size >= 2 AND boost >= 1.15)
+Marginal size=2-no-modifier stacks (boost=1.06) stay silent. The
+clause is idempotent via provenance.stack_narrative_applied flag.
+Disabling `apply_stack_boost` naturally silences the narrative too
+(no stack_meta → gate fails) — no separate toggle.
+
 Set to `False` to disable stack detection entirely. Events retain their
 individual significance scores; no stack_meta is emitted.
 

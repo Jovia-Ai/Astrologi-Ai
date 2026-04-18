@@ -477,6 +477,100 @@ def _apply_stack_boost(
     return stack_meta_by_id
 
 
+# --- PR7b: Stack-aware narrative clause ---
+#
+# When a stack passes the gate below, exactly ONE event per day (the top-sig
+# post-boost member) gets a short clause appended to its why_now_tr slot.
+# Other stack members stay silent to avoid redundant user cues.
+#
+# Gate intentionally stricter than the stack detection threshold: stack_meta
+# is written for every size>=2 stack (so downstream consumers like PR5 have
+# full signal), but narrative only fires when the stack is genuinely loaded.
+STACK_NARRATIVE_CLAUSE_TR = (
+    "Bu hat bugun tek basina degil; birkac konu ayni anda calisiyor."
+)
+STACK_NARRATIVE_GATE_MIN_SIZE = 3
+STACK_NARRATIVE_GATE_MIN_BOOST_FOR_SIZE2 = 1.15
+
+
+def _stack_narrative_passes_gate(stack_meta: Mapping[str, Any] | None) -> bool:
+    """Narrative gate: size>=3 OR (size>=2 AND boost>=1.15).
+
+    Stricter than stack detection itself so the user-facing "tek basina
+    degil" cue only fires on genuinely loaded days. Marginal size=2-no-mod
+    stacks (boost=1.06) are filtered out.
+    """
+    if not stack_meta:
+        return False
+    size = int(stack_meta.get("size") or 0)
+    boost = float(stack_meta.get("boost") or 1.0)
+    if size >= STACK_NARRATIVE_GATE_MIN_SIZE:
+        return True
+    if size >= 2 and boost >= STACK_NARRATIVE_GATE_MIN_BOOST_FOR_SIZE2:
+        return True
+    return False
+
+
+def _append_why_now_clause(current: str, clause: str) -> str:
+    """Append `clause` to `current` with safe spacing and punctuation.
+
+    Handles empty/whitespace-only current, missing terminator on current
+    (adds a period), and avoids double spaces or dangling punctuation.
+    """
+    existing = (current or "").strip()
+    if not existing:
+        return clause
+    if not existing.endswith((".", "!", "?", ":")):
+        existing = existing + "."
+    return f"{existing} {clause}"
+
+
+def _apply_stack_narrative(events: Sequence["AstroEventV2"]) -> Dict[str, str]:
+    """Apply the stack narrative clause to qualifying events.
+
+    For each day where any event passes the narrative gate, the single
+    top-sig event (post-collapse, post-boost significance_score) gets the
+    clause appended to its why_now_tr. Others stay silent.
+
+    Idempotent: an event whose provenance already records
+    stack_narrative_applied=True is skipped on re-entry.
+
+    Returns {event_id: appended_clause} for reporting.
+    """
+    if not events:
+        return {}
+
+    # Group gate-passing events by local stack day
+    by_day: Dict[str, List["AstroEventV2"]] = defaultdict(list)
+    for e in events:
+        prov = e.provenance or {}
+        sm = prov.get("stack_meta")
+        if not _stack_narrative_passes_gate(sm):
+            continue
+        if prov.get("stack_narrative_applied"):
+            continue  # idempotency guard across render passes
+        day = sm.get("day") if isinstance(sm, Mapping) else None
+        if not day:
+            continue
+        by_day[day].append(e)
+
+    applied: Dict[str, str] = {}
+    for day, day_events in by_day.items():
+        # Pick top-sig member; tie-break by existing sort contract
+        # (higher significance first, then event_id for stability)
+        top = max(
+            day_events,
+            key=lambda e: (float(e.significance_score), e.event_id),
+        )
+        top.why_now_tr = _append_why_now_clause(top.why_now_tr, STACK_NARRATIVE_CLAUSE_TR)
+        prov = dict(top.provenance or {})
+        prov["stack_narrative_applied"] = True
+        top.provenance = prov
+        applied[top.event_id] = STACK_NARRATIVE_CLAUSE_TR
+
+    return applied
+
+
 def build_personal_multi_event_payload(
     *,
     report: Mapping[str, Any],
@@ -575,6 +669,14 @@ def build_personal_multi_event_payload(
                 entry.event_id,
             ),
         )
+    # PR7b: stack-aware narrative clause. Runs after boost + re-sort so the
+    # "top member" is picked using post-boost significance. Kill-switch is
+    # reused from apply_stack_boost — if boost is off, stack_meta is empty,
+    # so the gate is naturally silent.
+    stack_narrative_map = _apply_stack_narrative(personal_events + structural_events)
+    narrative_fired_days = sorted({
+        stack_meta_map[eid]["day"] for eid in stack_narrative_map if eid in stack_meta_map
+    })
 
     by_id = {event.event_id: event.to_dict() for event in personal_events + structural_events}
     return {
@@ -589,6 +691,8 @@ def build_personal_multi_event_payload(
             "stack_days": sorted({m["day"] for m in stack_meta_map.values()}),
             "boosted_event_count": len(stack_meta_map),
             "capped_day_count": len({m["day"] for m in stack_meta_map.values() if m.get("capped")}),
+            "narrative_fired_days": narrative_fired_days,
+            "narrative_fired_event_count": len(stack_narrative_map),
         },
     }
 

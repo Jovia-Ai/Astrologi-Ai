@@ -146,8 +146,14 @@ def probe_fixture(name: str, window_days: int) -> Dict[str, Any]:
         "bucket_crossings": 0,
         "churn_non_stack_top5": 0,
         "examples": [],  # collect a few before/after samples
-        "size2_no_mod_days": set(),   # PR7.1a success metric
-        "size_ge_3_days": set(),       # PR7.1a success metric
+        "size2_no_mod_days": set(),
+        "size_ge_3_days": set(),
+        # PR7b: narrative fire-rate measurement.
+        # "narrative_fired_days_intersect" counts dates where the probed date
+        # itself (not ±window events) is a natal-local day with a fired clause.
+        # That's the UX-realistic metric: on the day the user opens the app,
+        # does ANY top-rail event carry the stack clause?
+        "narrative_fired_probed_dates": set(),
     }
 
     for td in window_dates:
@@ -157,6 +163,11 @@ def probe_fixture(name: str, window_days: int) -> Dict[str, Any]:
         sm = with_stack.get("stack_meta") or {}
         for d_iso in sm.get("stack_days", []):
             stats["stack_days_seen"].add(d_iso)
+        # PR7b: narrative fire-rate — is the probed date itself a day where
+        # any top-rail event carries the stack clause?
+        fired_days = set(sm.get("narrative_fired_days") or [])
+        if td in fired_days:
+            stats["narrative_fired_probed_dates"].add(td)
         stats["boosted_events"] += int(sm.get("boosted_event_count") or 0)
         # capped_day_count is per-call, but same stack day may recur across window slides
         # We track unique stack-days that had a cap
@@ -205,6 +216,7 @@ def probe_fixture(name: str, window_days: int) -> Dict[str, Any]:
     stats["capped_days_seen"] = sorted(stats["capped_days_seen"])
     stats["size2_no_mod_days"] = sorted(stats["size2_no_mod_days"])
     stats["size_ge_3_days"] = sorted(stats["size_ge_3_days"])
+    stats["narrative_fired_probed_dates"] = sorted(stats["narrative_fired_probed_dates"])
     return stats
 
 
@@ -247,6 +259,7 @@ def main() -> None:
         "boosted_events": 0,
         "bucket_crossings": 0,
         "churn_non_stack": 0,
+        "narrative_fired_probe_date_count": 0,
     }
 
     for name in FIXTURES:
@@ -265,6 +278,10 @@ def main() -> None:
         sz3_pct = 100.0 * sz3 / max(total_days, 1)
         print(f"  size=2 no-mod days:         {sz2} ({sz2_pct:.1f}% of stack days)")
         print(f"  size>=3 days:               {sz3} ({sz3_pct:.1f}% of stack days)")
+        fire_days = len(s["narrative_fired_probed_dates"])
+        fire_rate = 100.0 * fire_days / max(s["total_transit_dates"], 1)
+        print(f"  narrative fire-rate:        {fire_days}/{s['total_transit_dates']} probed "
+              f"dates = {fire_rate:.1f}%  (target <=15%)")
         if s["examples"]:
             ex = s["examples"][0].get("sample_event") or {}
             if ex:
@@ -281,6 +298,7 @@ def main() -> None:
         overall["boosted_events"] += s["boosted_events"]
         overall["bucket_crossings"] += s["bucket_crossings"]
         overall["churn_non_stack"] += s["churn_non_stack_top5"]
+        overall["narrative_fired_probe_date_count"] += len(s["narrative_fired_probed_dates"])
 
     print(f"=== Aggregate across {len(FIXTURES)} fixtures ===")
     print(f"  total dates probed:        {overall['total_transit_dates']}")
@@ -289,6 +307,9 @@ def main() -> None:
     print(f"  boosted event-applications {overall['boosted_events']}")
     print(f"  bucket crossings:          {overall['bucket_crossings']}")
     print(f"  non-stack-day churn:       {overall['churn_non_stack']}  (MUST be 0)")
+    agg_fire_rate = 100.0 * overall["narrative_fired_probe_date_count"] / max(overall["total_transit_dates"], 1)
+    print(f"  narrative fire-rate (agg): {overall['narrative_fired_probe_date_count']}/"
+          f"{overall['total_transit_dates']} = {agg_fire_rate:.1f}%  (target <=15%)")
 
 
 if __name__ == "__main__":
