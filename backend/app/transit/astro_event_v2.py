@@ -266,6 +266,64 @@ STACK_OUTER_BODIES = {"Saturn", "Uranus", "Neptune", "Pluto"}
 STACK_HARD_SUBTYPES = {"square", "opposition"}
 STACK_SOFT_SUBTYPES = {"trine", "sextile"}
 
+# PR7.1: Axis-shadow collapse. A single transiting position that touches a
+# natal axis point (ASC, MC, or a node) automatically contacts its opposite
+# partner too — e.g. Neptune-square-ASC implies Neptune-square-DSC. The
+# aspect emitter surfaces both as independent events; for stack-size counting
+# we treat them as one astrological contact.
+#
+# Scope intentionally narrow: only the three hardcoded pairs below. Natal
+# tight-opposition shadow (e.g. natal Venus 180° from natal Saturn creating a
+# simultaneous conj+opp contact from any transit) is a candidate for PR7.1b
+# if the re-probe shows further inflation; deferred by design.
+STACK_AXIS_PARTNERS = {
+    "ASC": "DSC", "DSC": "ASC",
+    "MC": "IC", "IC": "MC",
+    "North Node": "South Node", "South Node": "North Node",
+}
+
+
+def _collapse_axis_shadows(events: Sequence["AstroEventV2"]) -> List[List["AstroEventV2"]]:
+    """Group axis-partner event pairs within a single day.
+
+    Returns a list of groups; each group is 1 or 2 events that astrologically
+    represent a single transiting contact. The group count is the stack-size
+    after collapse; the flat set of events still receives the boost so an
+    axis-partner pair is both counted once AND has both members' significance
+    scaled consistently.
+
+    Two events collapse into one group when they share:
+      * event_family (aspect_event with aspect_event; cycle with cycle, etc.)
+      * source_bodies (same transit body set — usually a singleton)
+      * target_points[0] is a registered axis partner of the other's target
+    """
+    groups: List[List["AstroEventV2"]] = []
+    claimed: set[int] = set()
+    for i, e in enumerate(events):
+        if i in claimed:
+            continue
+        group = [e]
+        claimed.add(i)
+        target = e.target_points[0] if e.target_points else None
+        partner_target = STACK_AXIS_PARTNERS.get(target) if target else None
+        if partner_target is not None:
+            source = set(e.source_bodies or [])
+            for j in range(i + 1, len(events)):
+                if j in claimed:
+                    continue
+                f = events[j]
+                if f.event_family != e.event_family:
+                    continue
+                if set(f.source_bodies or []) != source:
+                    continue
+                f_target = f.target_points[0] if f.target_points else None
+                if f_target == partner_target:
+                    group.append(f)
+                    claimed.add(j)
+                    break  # one partner is enough; no chains
+        groups.append(group)
+    return groups
+
 
 def _event_local_date(event: "AstroEventV2", natal_timezone: str) -> Optional[date]:
     """Return the natal-local calendar date of the event's primary marker.
@@ -325,9 +383,19 @@ def _apply_stack_boost(
     for day, members in by_day.items():
         if len(members) < 2:
             continue
-        size = len(members)
 
-        aspect_subtypes = {e.event_subtype for e in members if e.event_family == "aspect_event"}
+        groups = _collapse_axis_shadows(members)
+        size = len(groups)  # PR7.1: collapsed size, not raw member count
+        if size < 2:
+            # A pure axis-partner pair on its own doesn't form a stack.
+            continue
+
+        # Aspect subtype set: one representative per group (axis partners
+        # share a transit body, so the aspect-family polarity is already
+        # represented by the first member).
+        aspect_subtypes = {
+            g[0].event_subtype for g in groups if g[0].event_family == "aspect_event"
+        }
         hard_present = bool(aspect_subtypes & STACK_HARD_SUBTYPES)
         soft_present = bool(aspect_subtypes & STACK_SOFT_SUBTYPES)
         polarity_mix = hard_present and soft_present
@@ -354,12 +422,15 @@ def _apply_stack_boost(
 
         meta = {
             "day": day.isoformat(),
-            "size": size,
+            "size": size,                   # collapsed — for downstream consumers
+            "raw_count": len(members),      # pre-collapse — for debugging only
             "boost": round(boost, 4),
             "raw_bonus": round(raw_bonus, 4),
             "flags": flags,
             "capped": capped,
         }
+        # Boost applies to every raw event, including axis-partner shadows,
+        # so their significance stays consistent with the group they belong to.
         for e in members:
             e.significance_score = e.significance_score * boost
             prov = dict(e.provenance or {})

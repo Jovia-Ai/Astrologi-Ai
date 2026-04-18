@@ -85,8 +85,23 @@ each clear `significance_score >= 0.42` receive a synergy boost:
     capped at 1.20
 
 Each boosted event's `significance_score` is scaled in place, and a
-`stack_meta` dict is written into the event's `provenance` field.
-Non-stack events are unmodified.
+`stack_meta` dict is written into the event's `provenance` field:
+
+    {
+      "day": "YYYY-MM-DD",      # natal-local calendar date
+      "size": 3,                # collapsed group count (PR7.1+)
+      "raw_count": 4,           # pre-collapse raw event count
+      "boost": 1.15,
+      "raw_bonus": 0.15,
+      "flags": ["planet_diversity"],
+      "capped": false
+    }
+
+PR7.1 adds axis-shadow collapse: targets that are axis partners
+(ASC/DSC, MC/IC, North Node/South Node) and share the same transit
+body represent a single astrological contact and count once. The raw
+axis-partner events still receive the boost so their scores stay
+consistent. Non-stack events are unmodified.
 
 Set to `False` to disable stack detection entirely. Events retain their
 individual significance scores; no stack_meta is emitted.

@@ -331,6 +331,7 @@ def _stack_event(
     significance: float,
     family: str = "aspect_event",
     exact_at: str = "2026-03-04T10:00:00+03:00",
+    target_points=None,
 ) -> event_v2.AstroEventV2:
     return event_v2.AstroEventV2(
         event_id=event_id,
@@ -359,6 +360,7 @@ def _stack_event(
         collective_interest_score=0.0,
         exact_at=[exact_at],
         source_bodies=list(source_bodies),
+        target_points=list(target_points or []),
     )
 
 
@@ -475,3 +477,127 @@ def test_stack_boost_disabled_is_no_op() -> None:
     assert meta == {}
     assert events[0].significance_score == 0.55
     assert events[1].significance_score == 0.60
+
+
+# --- PR7.1: axis-shadow collapse ---
+
+
+def test_stack_axis_collapse_asc_dsc_pair_alone_does_not_stack() -> None:
+    """Neptune-square-ASC + Neptune-square-DSC = one astrological contact.
+    Without a third distinct event, no stack forms."""
+    events = [
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Neptune"],
+                     significance=0.90, target_points=["ASC"]),
+        _stack_event(event_id="e2", subtype="square", source_bodies=["Neptune"],
+                     significance=0.90, target_points=["DSC"]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert meta == {}
+    # neither event gets boosted
+    assert events[0].significance_score == 0.90
+    assert events[1].significance_score == 0.90
+
+
+def test_stack_axis_collapse_asc_dsc_plus_third_event_stacks_as_size2() -> None:
+    """Axis pair + one distinct event = genuine 2-event stack after collapse.
+    All three raw events get the size=2 boost consistently."""
+    events = [
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Neptune"],
+                     significance=0.90, target_points=["ASC"]),
+        _stack_event(event_id="e2", subtype="square", source_bodies=["Neptune"],
+                     significance=0.90, target_points=["DSC"]),
+        _stack_event(event_id="e3", subtype="trine", source_bodies=["Venus"],
+                     significance=0.55, target_points=["Moon"]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert len(meta) == 3  # all three raw events get stack_meta
+    m = next(iter(meta.values()))
+    assert m["size"] == 2  # collapsed size, not raw 3
+    assert m["raw_count"] == 3
+    # Neptune is outer + axis contact — outer_present fires; no polarity mix
+    # (all square/trine is one hard + one soft = mix actually)
+    assert "outer_present" in m["flags"]
+    # size 2 bonus (0.06) + outer (0.05) + polarity_mix (0.05) = 0.16 → 1.16
+    assert abs(m["boost"] - 1.16) < 1e-9
+    # All three events boosted by the same multiplier
+    for e, initial in zip(events, [0.90, 0.90, 0.55]):
+        assert abs(e.significance_score - initial * 1.16) < 1e-6
+
+
+def test_stack_axis_collapse_mc_ic_pair_alone_does_not_stack() -> None:
+    events = [
+        _stack_event(event_id="e1", subtype="trine", source_bodies=["Mercury"],
+                     significance=0.70, target_points=["IC"]),
+        _stack_event(event_id="e2", subtype="sextile", source_bodies=["Mercury"],
+                     significance=0.70, target_points=["MC"]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert meta == {}
+
+
+def test_stack_axis_collapse_node_axis_pair_alone_does_not_stack() -> None:
+    events = [
+        _stack_event(event_id="e1", subtype="conjunction", source_bodies=["Chiron"],
+                     significance=0.72, target_points=["South Node"]),
+        _stack_event(event_id="e2", subtype="opposition", source_bodies=["Chiron"],
+                     significance=0.72, target_points=["North Node"]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert meta == {}
+
+
+def test_stack_axis_collapse_different_transit_bodies_do_not_collapse() -> None:
+    """Mars-square-ASC and Neptune-square-DSC share targets on the ASC/DSC
+    axis but have different transit bodies — two genuine events, not one."""
+    events = [
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Mars"],
+                     significance=0.70, target_points=["ASC"]),
+        _stack_event(event_id="e2", subtype="square", source_bodies=["Neptune"],
+                     significance=0.70, target_points=["DSC"]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert len(meta) == 2
+    m = next(iter(meta.values()))
+    assert m["size"] == 2
+    assert m["raw_count"] == 2  # no collapse happened
+
+
+def test_stack_axis_collapse_preserves_non_axis_targets() -> None:
+    """Targets that aren't axis partners shouldn't be collapsed even if they
+    happen to be opposite in the natal (that's a candidate for PR7.1b, not
+    covered here)."""
+    events = [
+        _stack_event(event_id="e1", subtype="conjunction", source_bodies=["Mars"],
+                     significance=0.60, target_points=["Venus"]),
+        _stack_event(event_id="e2", subtype="opposition", source_bodies=["Mars"],
+                     significance=0.60, target_points=["Saturn"]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    # Venus and Saturn are not in the hardcoded axis pair list, so no collapse.
+    # Natural 2-event stack forms.
+    assert len(meta) == 2
+    m = next(iter(meta.values()))
+    assert m["size"] == 2
+    assert m["raw_count"] == 2
+
+
+def test_stack_axis_collapse_five_raw_events_with_axis_shadow_becomes_size4() -> None:
+    """Realistic stack: axis shadow (Mars MC/IC) + 3 distinct aspects."""
+    events = [
+        _stack_event(event_id="e1", subtype="opposition", source_bodies=["Mars"],
+                     significance=0.76, target_points=["MC"]),
+        _stack_event(event_id="e2", subtype="conjunction", source_bodies=["Mars"],
+                     significance=0.76, target_points=["IC"]),
+        _stack_event(event_id="e3", subtype="quincunx", source_bodies=["Sun"],
+                     significance=0.72, target_points=["Mercury"]),
+        _stack_event(event_id="e4", subtype="quincunx", source_bodies=["Mars"],
+                     significance=0.70, target_points=["North Node"]),
+        _stack_event(event_id="e5", subtype="trine", source_bodies=["Venus"],
+                     significance=0.60, target_points=["Jupiter"]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert len(meta) == 5  # all raw events receive stack_meta
+    m = next(iter(meta.values()))
+    # MC/IC pair collapses → 4 groups: (Mars-MC+Mars-IC), Sun-Mercury, Mars-NN, Venus-Jupiter
+    assert m["size"] == 4
+    assert m["raw_count"] == 5
