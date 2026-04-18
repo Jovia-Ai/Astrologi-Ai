@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import 'package:mobile/app/api/api_client.dart';
+import 'package:mobile/app/profile/explainability_panel.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
@@ -346,6 +347,13 @@ class _ArchetypeResultView extends StatelessWidget {
             rank: index + 1,
             item: topArchetypes[index],
             chartOnly: chartOnly,
+            lunarPhase: _readString(payload['lunar_phase']).isEmpty
+                ? null
+                : _readString(payload['lunar_phase']),
+            dignityBonus: _dignityBonusFor(
+              _readString(topArchetypes[index]['id']),
+              priorItems,
+            ),
           ),
           if (index != topArchetypes.length - 1) const SizedBox(height: 12),
         ],
@@ -582,11 +590,15 @@ class _ArchetypeRankCard extends StatelessWidget {
     required this.rank,
     required this.item,
     required this.chartOnly,
+    this.lunarPhase,
+    this.dignityBonus = 0.0,
   });
 
   final int rank;
   final Map<String, dynamic> item;
   final bool chartOnly;
+  final String? lunarPhase;
+  final double dignityBonus;
 
   @override
   Widget build(BuildContext context) {
@@ -698,6 +710,15 @@ class _ArchetypeRankCard extends StatelessWidget {
                         color: profile.colors.lime,
                       ),
                   ],
+                ),
+                // Faz 2 PR 8b: inline explainability panel — tüm accumulative
+                // Faz 2 metadata'yı (why_this_not_that / dignity / lunar phase
+                // / aspect direction breakdown) editorial bir yüzeyde toplar.
+                ExplainabilityPanel(
+                  item: item,
+                  accent: accent,
+                  lunarPhase: lunarPhase,
+                  dignityBonus: dignityBonus,
                 ),
               ],
             ),
@@ -1533,6 +1554,25 @@ List<String> _mixinLabels(Map<String, dynamic> item) {
 double _readDouble(dynamic value) {
   if (value is num) {
     return value.toDouble().clamp(0.0, 1.0);
+  }
+  return 0.0;
+}
+
+double _readSignedDouble(dynamic value) {
+  if (value is num) return value.toDouble();
+  return 0.0;
+}
+
+// Faz 2 PR 8b: `chart_prior.items[...].components.dignity_bonus` lookup
+// Belirli bir arketip id için. Bulunamazsa 0.0 (peregrine fallback).
+double _dignityBonusFor(String archetypeId, List<Map<String, dynamic>> priorItems) {
+  if (archetypeId.isEmpty) return 0.0;
+  for (final item in priorItems) {
+    if (_readString(item['id']) != archetypeId) continue;
+    final components = item['components'];
+    if (components is Map) {
+      return _readSignedDouble(components['dignity_bonus']);
+    }
   }
   return 0.0;
 }
