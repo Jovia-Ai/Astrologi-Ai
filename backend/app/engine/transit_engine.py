@@ -36,6 +36,24 @@ ASPECT_ANGLES = {
     "semisextile": 30,
 }
 
+# Expected circular sign separation for each aspect type when formed "in sign".
+# Used to detect dissociate (out-of-sign) aspects — where the bodies are at
+# the geometric angle but in signs that don't match the aspect's natural
+# element/modality relationship. Out-of-sign aspects are real but muted.
+ASPECT_EXPECTED_SIGN_SEP = {
+    "conjunction": 0,
+    "semisextile": 1,
+    "sextile": 2,
+    "square": 3,
+    "trine": 4,
+    "quincunx": 5,
+    "opposition": 6,
+}
+
+# Multiplier applied to orb_max when an aspect is out-of-sign. A tight
+# dissociate aspect still qualifies, but a borderline one is filtered out.
+OUT_OF_SIGN_ORB_FACTOR = 0.6
+
 _TIMING_CACHE: dict[str, Dict[str, Any] | None] = {}
 _TIMING_CACHE_MAX = 4096
 
@@ -51,6 +69,7 @@ class TransitOptions:
     orbs: dict[str, float]
     max_aspects_per_transit_body: int
     debug: bool
+    apply_out_of_sign_filter: bool = True
 
 
 def build_transit_report(
@@ -440,6 +459,7 @@ def _normalize_options(options: Mapping[str, Any] | None) -> TransitOptions:
         },
         max_aspects_per_transit_body=int(raw.get("max_aspects_per_transit_body") or 12),
         debug=bool(raw.get("debug", False)),
+        apply_out_of_sign_filter=bool(raw.get("apply_out_of_sign_filter", True)),
     )
 
 
@@ -601,6 +621,7 @@ def _build_aspects(
                     allowed_types,
                     options.orbs,
                     transit_jd=transit_jd,
+                    apply_oos_filter=options.apply_out_of_sign_filter,
                 )
             )
         if options.include_angles:
@@ -640,15 +661,22 @@ def _aspects_for_pair(
     orbs: Mapping[str, float],
     *,
     transit_jd: float,
+    apply_oos_filter: bool = True,
 ) -> list[Dict[str, Any]]:
     aspects: list[Dict[str, Any]] = []
     for aspect_type in allowed_types:
         exact = ASPECT_ANGLES[aspect_type]
         orb = abs(_min_angle_diff(transit_lon - natal_lon) - exact)
         orb_max = float(orbs.get(aspect_type, 6.0))
-        if orb > orb_max:
+        expected_sep = ASPECT_EXPECTED_SIGN_SEP.get(aspect_type)
+        out_of_sign = False
+        if expected_sep is not None:
+            actual_sep = _sign_separation(transit_lon, natal_lon)
+            out_of_sign = actual_sep != expected_sep
+        effective_orb_max = orb_max * OUT_OF_SIGN_ORB_FACTOR if (out_of_sign and apply_oos_filter) else orb_max
+        if orb > effective_orb_max:
             continue
-        strength = clamp01(1 - orb / orb_max) if orb_max else 0.0
+        strength = clamp01(1 - orb / effective_orb_max) if effective_orb_max else 0.0
         polarity = "neutral"
         if aspect_type in {"square", "opposition"}:
             polarity = "hard"
@@ -660,7 +688,7 @@ def _aspects_for_pair(
             transit.get("body"),
             entry_speed=transit.get("speed"),
             orb=orb,
-            orb_max=orb_max,
+            orb_max=effective_orb_max,
             phase=phase,
         )
         aspects.append(
@@ -669,6 +697,7 @@ def _aspects_for_pair(
                 "orb": round(orb, 2),
                 "strength": round(strength, 3),
                 "polarity": polarity,
+                "out_of_sign": out_of_sign,
                 "transit": {
                     "body": transit.get("body"),
                     "lon": transit_lon,
@@ -683,6 +712,14 @@ def _aspects_for_pair(
             }
         )
     return aspects
+
+
+def _sign_separation(lon_a: float, lon_b: float) -> int:
+    """Circular separation between two zodiac signs, 0..6."""
+    sign_a = int((lon_a % 360.0) / 30.0)
+    sign_b = int((lon_b % 360.0) / 30.0)
+    diff = abs(sign_a - sign_b)
+    return min(diff, 12 - diff)
 
 
 def _cap_per_transit(aspects: list[Dict[str, Any]], cap: int) -> list[Dict[str, Any]]:

@@ -60,13 +60,14 @@ TRANSIT_DATES = [
 ]
 
 CONFIG_A = {
-    "label": "OLD (pre-PR1)",
+    "label": "OLD (pre-PR1, no OOS filter)",
     "orbs": {"conjunction": 6.0, "opposition": 6.0, "square": 6.0, "trine": 6.0, "sextile": 4.0},
     "aspect_types": ["conjunction", "opposition", "square", "trine", "sextile"],
+    "apply_out_of_sign_filter": False,
 }
 
 CONFIG_B = {
-    "label": "NEW (post-PR1)",
+    "label": "NEW (post-PR1+PR3)",
     "orbs": {
         "conjunction": 4.0, "opposition": 4.0, "square": 3.5, "trine": 3.0,
         "sextile": 2.5, "quincunx": 2.0, "semisextile": 1.5,
@@ -75,6 +76,7 @@ CONFIG_B = {
         "conjunction", "opposition", "square", "trine", "sextile",
         "quincunx", "semisextile",
     ],
+    "apply_out_of_sign_filter": True,
 }
 
 
@@ -91,6 +93,7 @@ def _run(config: Dict[str, Any], transit_date: str) -> Dict[str, Any]:
             "aspect_types": config["aspect_types"],
             "include_angles": True,
             "max_aspects_per_transit_body": 99,
+            "apply_out_of_sign_filter": config.get("apply_out_of_sign_filter", True),
         },
         assumptions=[],
         **BIRTH,
@@ -148,6 +151,7 @@ def run(as_json: bool = False) -> Dict[str, Any]:
             "delta_pct": 100.0 * (len(b_aspects) - len(a_aspects)) / max(len(a_aspects), 1),
             "top5_kept": len(top5_a & top5_b),
             "top10_kept": len(top10_a & top10_b),
+            "oos_b": sum(1 for x in b_aspects if x.get("out_of_sign")),
         })
 
         top10_details[td] = {
@@ -178,12 +182,12 @@ def run(as_json: bool = False) -> Dict[str, Any]:
     print(f"Natal: {BIRTH['birth_date']} {BIRTH['birth_time']} {BIRTH['birth_place']}")
     print(f"Dates: {', '.join(TRANSIT_DATES)}\n")
 
-    print(f"{'date':<12} {'count_a':>8} {'count_b':>8} {'delta%':>8} {'top5':>6} {'top10':>6}")
-    print("-" * 58)
+    print(f"{'date':<12} {'count_a':>8} {'count_b':>8} {'delta%':>8} {'top5':>6} {'top10':>6} {'oos_b':>6}")
+    print("-" * 66)
     for r in rows:
         print(f"{r['date']:<12} {r['count_a']:>8} {r['count_b']:>8} {r['delta_pct']:>+7.1f}% "
-              f"{r['top5_kept']:>3}/5  {r['top10_kept']:>3}/10")
-    print("-" * 58)
+              f"{r['top5_kept']:>3}/5  {r['top10_kept']:>3}/10 {r['oos_b']:>6}")
+    print("-" * 66)
     print(f"{'MEAN':<12} {summary['mean_count_a']:>8.1f} {summary['mean_count_b']:>8.1f} "
           f"{summary['mean_delta_pct']:>+7.1f}% "
           f"{summary['mean_top5_kept']:>3.1f}/5  {summary['mean_top10_kept']:>3.1f}/10")
