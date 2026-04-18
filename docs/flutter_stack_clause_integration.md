@@ -3,25 +3,47 @@
 Hand-off note for the UI rate-limit PR. Engine side is done — payload
 already carries what the client needs.
 
-## What the engine emits
+## Payload path (mobile-visible)
 
-Every transit event in `personal_transit_rail` / `structural_chapter_rail`
-has two independent text fields:
+`stack_clause_tr` reaches the mobile card via
+**`response.public.event_cards[].stack_clause_tr`** and, equivalently,
+**`response.public.period_peak_timeline[].event_card.stack_clause_tr`**.
 
-- **`why_now_tr`** — stable narrative content (aspect why-now + PR9 solar
-  resonance, if any). **Never contains the stack clause.** Render this
-  unconditionally.
-- **`stack_clause_tr`** — the stack synergy cue. Populated (non-empty) on
-  exactly ONE event per natal-local day: the top-significance event in a
-  gate-passing stack. Empty string `""` on every other event.
+The engine computes the clause on the `event_engine_v2` rail
+(`personal_transit_rail` / `structural_chapter_rail`), and
+`public_builder._merge_event_v2` whitelist-grafts it onto every
+`display.items`/`event_cards` entry whose `event_id` matches a v2
+event. Mobile's `EventCardDto` reads from the public path; rail events
+themselves are not consumed directly.
+
+## What the mobile card carries
+
+Two independent text fields on each event card:
+
+- **`why_now`** — the mobile card's narrative (card.why_now, consumed as
+  `EventCardDto.whyNow`). Unchanged by this work; continues to be built
+  by `deep_archetype_engine.build_event_card`. **Never contains the
+  stack clause.** Render this unconditionally.
+- **`stack_clause_tr`** — the stack synergy cue, propagated from the
+  engine's AstroEventV2. Populated (non-empty) on exactly ONE event per
+  natal-local day: the top-significance event in a gate-passing stack.
+  Empty string `""` on every other event. The full astro_event payload
+  is also accessible as `card.astro_event` if the client ever wants
+  the underlying `stack_meta`.
+
+Note: mobile's existing `why_now` field is snake_case `why_now` (no
+`_tr` suffix) because it originates from `build_event_card`, which
+predates the engine's `_tr` naming convention. The new field is
+`stack_clause_tr` to match the engine contract. The two fields coexist
+on the card dict and on the Flutter DTO.
 
 ## Concat rule (one line)
 
 ```dart
-final display = why_now_tr + (showStackClause ? ' ' + stack_clause_tr : '');
+final display = card.whyNow + (showStackClause ? ' ' + card.stackClauseTr : '');
 ```
 
-Where `showStackClause` is `stack_clause_tr.isNotEmpty && cooldownOk`.
+Where `showStackClause` is `stackClauseTr.isNotEmpty && cooldownOk`.
 
 ## Cooldown rule (rolling 7 days)
 
@@ -48,58 +70,38 @@ await prefs.setInt('stack_clause_last_shown_at_ms', nowMs);
 | First-ever user (no prefs entry) | Treat as cooldownOk → clause fires on first eligible event. |
 | Returning after long absence (>7d) | Same as cooldownOk → clause fires on first eligible event seen. |
 
-## Example payloads (real engine output, 2026-03-04 probe on simple fixture)
-
-### Event that gets the clause (top-sig member of a gated stack)
+## Example mobile-visible card payload (after v2 merge)
 
 ```json
 {
-  "event_id": "...",
-  "event_family": "aspect_event",
-  "event_subtype": "square",
-  "title_tr": "Neptun Yukselen hattini calistiriyor",
-  "why_now_tr": "Etki su anda zirveye; bu da Yukselen temasini daha fark edilir hale getiriyor.",
+  "event_id": "evt_xyz",
+  "why_now": "Etki su anda zirveye; bu da Yukselen temasini daha fark edilir hale getiriyor.",
   "stack_clause_tr": "Bu hat bugun tek basina degil; birkac konu ayni anda calisiyor.",
-  "significance_score": 1.043,
-  "provenance": {
-    "stack_meta": {
-      "day": "2026-03-05",
-      "size": 3,
-      "boost": 1.2,
-      "flags": ["polarity_mix", "planet_diversity", "outer_present"],
-      "capped": true
-    }
-  }
-}
-```
-
-### Event that stays silent (part of the same stack, but not the top member)
-
-```json
-{
-  "event_id": "...",
   "event_family": "aspect_event",
   "event_subtype": "square",
-  "title_tr": "Neptun Alcalan hattini calistiriyor",
-  "why_now_tr": "Etki su anda zirveye; bu da Alcalan temasini daha fark edilir hale getiriyor.",
-  "stack_clause_tr": "",
-  "significance_score": 1.043,
-  "provenance": {
-    "stack_meta": {
-      "day": "2026-03-05",
-      "size": 3,
-      "boost": 1.2,
-      "flags": ["polarity_mix", "planet_diversity", "outer_present"],
-      "capped": true
+  "significance_score": 0.872,
+  "astro_event": {
+    "stack_clause_tr": "Bu hat bugun tek basina degil; birkac konu ayni anda calisiyor.",
+    "significance_score": 0.872,
+    "provenance": {
+      "stack_meta": {
+        "day": "2026-03-05",
+        "size": 3,
+        "boost": 1.2,
+        "flags": ["polarity_mix", "planet_diversity", "outer_present"],
+        "capped": true
+      }
     }
   }
 }
 ```
 
-Both events share the same `stack_meta` (they belong to the same stack),
-but only one has a non-empty `stack_clause_tr`. The client should not
-derive clause eligibility from `stack_meta` directly — use
-`stack_clause_tr` as the source of truth.
+A non-top stack member on the same day looks identical in shape but has
+`stack_clause_tr: ""`. Both cards share the same `stack_meta`
+(accessible under `astro_event.provenance.stack_meta`), but only one
+has a non-empty `stack_clause_tr`. The client should NOT derive clause
+eligibility from `stack_meta.size` or `capped` — use `stack_clause_tr`
+as the single source of truth.
 
 ## Suggested Flutter unit tests
 
@@ -154,13 +156,16 @@ If the clause causes UX issues in prod:
 
 ## Engine contract guarantees (won't change without a follow-up PR)
 
-- `why_now_tr` will never contain the stack clause.
+- `why_now` (mobile card field) never contains the stack clause.
 - `stack_clause_tr` will only ever contain one fixed string:
   `"Bu hat bugun tek basina degil; birkac konu ayni anda calisiyor."`
   or an empty string. No variant forms, no templating.
-- At most ONE event per `stack_meta.day` has a non-empty
-  `stack_clause_tr`.
+- At most ONE event per natal-local day (the top-sig stack member) has
+  a non-empty `stack_clause_tr`.
 - Gate for population is `size >= 3 AND capped == True`
   (see `docs/engine_toggles.md` for the full spec).
+- `stack_clause_tr` is propagated via the `PUBLIC_EVENT_V2_FIELDS`
+  whitelist in `backend/app/transit/present/public_builder.py`. Any
+  mobile-reachable card that matches an engine v2 event id receives it.
 
 If any of these change, the commit must update this file in the same PR.

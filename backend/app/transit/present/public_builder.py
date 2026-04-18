@@ -118,6 +118,11 @@ PUBLIC_EVENT_V2_FIELDS = (
     "recognition_intensity",
     "importance_label_tr",
     "copy_mode",
+    # PR7b hand-off propagation: stack clause sibling field. Gated by
+    # size>=3 AND capped==True on the engine side; empty string on
+    # every non-top event per day. Mobile reads card.stack_clause_tr
+    # and composes with card.why_now conditionally via UI rate-limit.
+    "stack_clause_tr",
 )
 DEFAULT_PERIOD_PEAK_TIMELINE_ITEMS = 4
 

@@ -1080,3 +1080,68 @@ def test_transit_calendar_limits_public_days_for_free_window(monkeypatch) -> Non
         "2026-03-15",
         "2026-03-16",
     ]
+
+
+# --- PR7b hand-off propagation: stack_clause_tr reaches mobile card payload ---
+
+
+def test_merge_event_v2_propagates_stack_clause_to_card() -> None:
+    """A card whose matching event_engine_v2 entry carries stack_clause_tr
+    must surface that field on the merged card. This is the bridge between
+    the engine's AstroEventV2 layer and the presentable payload the mobile
+    client actually consumes."""
+    from app.transit.present.public_builder import _merge_event_v2
+
+    card = {"event_id": "evt_xyz", "why_now": "Etki su anda zirveye."}
+    event_meta = {
+        "event_family": "aspect_event",
+        "event_subtype": "square",
+        "significance_score": 0.872,
+        "stack_clause_tr": "Bu hat bugun tek basina degil; birkac konu ayni anda calisiyor.",
+    }
+    merged = _merge_event_v2(card, event_meta)
+    assert merged["stack_clause_tr"] == (
+        "Bu hat bugun tek basina degil; birkac konu ayni anda calisiyor."
+    )
+    # why_now stays untouched — engine contract guarantees the clause never
+    # appears inline in why_now.
+    assert merged["why_now"] == "Etki su anda zirveye."
+    # The full astro_event snapshot is also available under astro_event key
+    # (some consumers prefer the raw v2 payload).
+    assert merged["astro_event"]["stack_clause_tr"] == (
+        "Bu hat bugun tek basina degil; birkac konu ayni anda calisiyor."
+    )
+
+
+def test_merge_event_v2_empty_stack_clause_still_propagates() -> None:
+    """Non-top stack members and non-gated days emit empty string. Mobile
+    must still see the field (as empty) to distinguish 'engine said nothing'
+    from 'field missing entirely'."""
+    from app.transit.present.public_builder import _merge_event_v2
+
+    card = {"event_id": "evt_quiet", "why_now": "Sessiz bir hat."}
+    event_meta = {
+        "event_family": "aspect_event",
+        "event_subtype": "trine",
+        "significance_score": 0.45,
+        "stack_clause_tr": "",
+    }
+    merged = _merge_event_v2(card, event_meta)
+    assert merged["stack_clause_tr"] == ""
+
+
+def test_merge_event_v2_missing_stack_clause_field_is_tolerated() -> None:
+    """Backwards compatibility: an event meta dict that predates PR7b (no
+    stack_clause_tr key) should not crash the merge or leak None."""
+    from app.transit.present.public_builder import _merge_event_v2
+
+    card = {"event_id": "evt_legacy", "why_now": "Eski payload."}
+    event_meta = {
+        "event_family": "aspect_event",
+        "event_subtype": "opposition",
+        "significance_score": 0.65,
+        # no stack_clause_tr key
+    }
+    merged = _merge_event_v2(card, event_meta)
+    # Field simply isn't merged. Mobile side treats absence identically to "".
+    assert "stack_clause_tr" not in merged or merged["stack_clause_tr"] in ("", None)
