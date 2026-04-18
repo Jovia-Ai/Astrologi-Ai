@@ -71,7 +71,7 @@ def test_public_event_signature_follows_headline() -> None:
     signature = event.blocks[block_types.index("signature")]
     assert signature.text is not None
     assert "Saturn" in signature.text
-    assert "Koc" in signature.text
+    assert "Koç" in signature.text
     assert "3. Ev" in signature.text
     assert "□ Natal Mercury" in signature.text
     assert signature.text.startswith("Transit ")
