@@ -1485,6 +1485,7 @@ def build_archetype_profile(
 
     return {
         **get_archetype_runtime_versions(),
+        "scoring_profile_version": "v1",
         "chart_prior": {
             "items": chart_prior.get("items") or [],
             "weight_profile": profile_name,

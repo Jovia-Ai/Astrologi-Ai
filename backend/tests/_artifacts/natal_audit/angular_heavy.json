@@ -1,0 +1,53 @@
+{
+  "chart_prior_profile": "default",
+  "confidence": {
+    "chart": 0.85,
+    "global": 0.828,
+    "test": 0.81
+  },
+  "confidence_band": {
+    "chart": "high",
+    "global": "high"
+  },
+  "engine_version": "archetype_profile_v2",
+  "fusion_version": "archetype_fusion_v2:2.0.0",
+  "primary_archetype_ids": [
+    "builder",
+    "visionary",
+    "catalyst"
+  ],
+  "primary_contradiction_id": "visibility_vs_private_preparation",
+  "primary_contradiction_score": 0.74,
+  "scoring_profile_version": "v1",
+  "shadow_archetype_id": "depthkeeper",
+  "slots": {
+    "primary_identity_spine": "builder",
+    "relational_line": "depthkeeper",
+    "secondary_balancing_line": "visionary",
+    "shadow_protection_line": "depthkeeper",
+    "work_visibility_line": "builder"
+  },
+  "subprofile_ids": [
+    {
+      "archetype": "builder",
+      "is_softened": false,
+      "subprofile": "refinement_foreman"
+    },
+    {
+      "archetype": "visionary",
+      "is_softened": false,
+      "subprofile": "horizon_opener"
+    },
+    {
+      "archetype": "catalyst",
+      "is_softened": false,
+      "subprofile": "ignition_starter"
+    }
+  ],
+  "taxonomy_version": "archetype_taxonomy_v2:2.0.0",
+  "why_this_not_that_keys": [
+    [],
+    [],
+    []
+  ]
+}

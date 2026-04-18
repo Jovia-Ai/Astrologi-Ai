@@ -123,6 +123,19 @@
       "birth_timezone": "Europe/London",
       "expected_signature": ["sun_capricorn", "y2k_marker"],
       "tags": ["multi_stellium", "century_marker"]
+    },
+    {
+      "id": "fix11_unknown_birthtime",
+      "label": "Doğum saati bilinmeyen — noon konvansiyonu + confidence=unknown",
+      "birth_date": "1988-09-22",
+      "birth_time": "12:00",
+      "birth_time_confidence": "unknown",
+      "birth_place": "Ankara, TR",
+      "birth_latitude": 39.9208,
+      "birth_longitude": 32.8541,
+      "birth_timezone": "Europe/Istanbul",
+      "expected_signature": ["sun_virgo"],
+      "tags": ["unknown_birthtime", "confidence_floor_path"]
     }
   ]
 }

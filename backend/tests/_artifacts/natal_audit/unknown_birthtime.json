@@ -1,0 +1,53 @@
+{
+  "chart_prior_profile": "chart_only",
+  "confidence": {
+    "chart": 0.45,
+    "global": 0.45,
+    "test": 0.0
+  },
+  "confidence_band": {
+    "chart": "low",
+    "global": "low"
+  },
+  "engine_version": "archetype_profile_v2",
+  "fusion_version": "archetype_fusion_v2:2.0.0",
+  "primary_archetype_ids": [
+    "builder",
+    "catalyst",
+    "visionary"
+  ],
+  "primary_contradiction_id": "structure_vs_originality",
+  "primary_contradiction_score": 0.65,
+  "scoring_profile_version": "v1",
+  "shadow_archetype_id": "depthkeeper",
+  "slots": {
+    "primary_identity_spine": "builder",
+    "relational_line": "depthkeeper",
+    "secondary_balancing_line": "catalyst",
+    "shadow_protection_line": "depthkeeper",
+    "work_visibility_line": "builder"
+  },
+  "subprofile_ids": [
+    {
+      "archetype": "builder",
+      "is_softened": true,
+      "subprofile": "systems_architect"
+    },
+    {
+      "archetype": "catalyst",
+      "is_softened": true,
+      "subprofile": "rupture_driver"
+    },
+    {
+      "archetype": "visionary",
+      "is_softened": true,
+      "subprofile": "meaning_cartographer"
+    }
+  ],
+  "taxonomy_version": "archetype_taxonomy_v2:2.0.0",
+  "why_this_not_that_keys": [
+    [],
+    [],
+    []
+  ]
+}

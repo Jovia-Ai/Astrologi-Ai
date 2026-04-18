@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "purpose": "Faz 1 audit regression pack — temsilci natal senaryolarının natal_v8_baseline.json'daki fixture ID'lerine eşlenmesi. Her senaryo bir scoring/selection davranış alanını exercise eder.",
+  "created": "2026-04-18",
+  "scenarios": [
+    {
+      "scenario": "simple",
+      "fixture_id": "fix01_leo_leo_classic",
+      "exercises": "Baseline path — strong luminary, normal confidence",
+      "expect": "High confidence, clear primary archetype ordering"
+    },
+    {
+      "scenario": "angular_heavy",
+      "fixture_id": "fix04_h10_career_stellium",
+      "exercises": "10th house stellium — angular emphasis + visibility theme weighting",
+      "expect": "Visibility/work themes should rank high; angular bonus compounds"
+    },
+    {
+      "scenario": "stellium",
+      "fixture_id": "fix02_capricorn_stellium",
+      "exercises": "1st house stellium — multi-planet same sign/house; dispositor chain depth",
+      "expect": "Single archetype dominance; watch for weight saturation"
+    },
+    {
+      "scenario": "unknown_birthtime",
+      "fixture_id": "fix11_unknown_birthtime",
+      "exercises": "birth_time_confidence=unknown — chart_confidence drops to 0.45 floor, weight_profile switches to chart_only, narrative softened",
+      "expect": "Archetype IS selected (no silent failure — audit C3 revised: minimum_primary_score is declared in config but NOT enforced in code, so unknown-birthtime produces a working but softened profile). Faz 1 PR 4 will define explicit unknown-birthtime policy and clean up dead config fields."
+    },
+    {
+      "scenario": "contradiction_heavy",
+      "fixture_id": "fix05_t_square_tense",
+      "exercises": "T-square tension — contradiction signatures should surface; shadow selection path",
+      "expect": "Shadow archetype present; contradiction themes visible in why_this_not_that"
+    },
+    {
+      "scenario": "saturn_heavy",
+      "fixture_id": "fix02_capricorn_stellium",
+      "exercises": "Saturn-dominated chart (reuses Capricorn stellium) — tests dignity/weighting skew before essential dignity integration (Faz 2)",
+      "expect": "Documents pre-dignity scoring baseline for structure/responsibility themes"
+    }
+  ]
+}
