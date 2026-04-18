@@ -642,16 +642,33 @@ def test_stack_axis_collapse_source_side_node_ingress_pair_collapses() -> None:
     assert m["raw_count"] == 3
 
 
-def test_stack_narrative_gate_size3_passes() -> None:
-    assert event_v2._stack_narrative_passes_gate({"size": 3, "boost": 1.10}) is True
+def test_stack_narrative_gate_size3_capped_passes() -> None:
+    """PR7c: size>=3 AND capped==True is the only passing combination."""
+    assert event_v2._stack_narrative_passes_gate(
+        {"size": 3, "boost": 1.20, "capped": True}
+    ) is True
 
 
-def test_stack_narrative_gate_size2_low_boost_fails() -> None:
-    assert event_v2._stack_narrative_passes_gate({"size": 2, "boost": 1.11}) is False
+def test_stack_narrative_gate_size3_not_capped_fails() -> None:
+    """PR7c: size>=3 without cap is NOT enough — genuine density requires
+    both count and maxed modifiers."""
+    assert event_v2._stack_narrative_passes_gate(
+        {"size": 3, "boost": 1.15, "capped": False}
+    ) is False
 
 
-def test_stack_narrative_gate_size2_high_boost_passes() -> None:
-    assert event_v2._stack_narrative_passes_gate({"size": 2, "boost": 1.15}) is True
+def test_stack_narrative_gate_size4_capped_passes() -> None:
+    assert event_v2._stack_narrative_passes_gate(
+        {"size": 4, "boost": 1.20, "capped": True}
+    ) is True
+
+
+def test_stack_narrative_gate_size2_capped_fails() -> None:
+    """A capped size=2 stack (e.g. 2 events with all 3 modifiers) still
+    doesn't pass: PR7c requires size>=3 for genuine multi-event density."""
+    assert event_v2._stack_narrative_passes_gate(
+        {"size": 2, "boost": 1.20, "capped": True}
+    ) is False
 
 
 def test_stack_narrative_gate_empty_meta_fails() -> None:

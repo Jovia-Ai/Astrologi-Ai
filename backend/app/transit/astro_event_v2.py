@@ -453,7 +453,12 @@ def _apply_stack_boost(
             raw_bonus += STACK_MODIFIER_BONUS
             flags.append("outer_present")
 
-        capped = (1.0 + raw_bonus) > STACK_BOOST_CAP
+        # "capped" means the raw bonus reached OR exceeded the cap ceiling —
+        # i.e., the day is at max synergy regardless of additional modifiers.
+        # Using >= (not >) so a size=3 stack with polarity_mix + diversity
+        # (raw_bonus = 0.20 exactly) counts as capped: astrologically it's a
+        # fully-saturated 3-event day, not "almost at cap but not quite".
+        capped = (1.0 + raw_bonus) >= STACK_BOOST_CAP
         boost = min(1.0 + raw_bonus, STACK_BOOST_CAP)
 
         meta = {
@@ -490,25 +495,26 @@ STACK_NARRATIVE_CLAUSE_TR = (
     "Bu hat bugun tek basina degil; birkac konu ayni anda calisiyor."
 )
 STACK_NARRATIVE_GATE_MIN_SIZE = 3
-STACK_NARRATIVE_GATE_MIN_BOOST_FOR_SIZE2 = 1.15
 
 
 def _stack_narrative_passes_gate(stack_meta: Mapping[str, Any] | None) -> bool:
-    """Narrative gate: size>=3 OR (size>=2 AND boost>=1.15).
+    """Narrative gate: size>=3 AND capped==True.
 
-    Stricter than stack detection itself so the user-facing "tek basina
-    degil" cue only fires on genuinely loaded days. Marginal size=2-no-mod
-    stacks (boost=1.06) are filtered out.
+    PR7c tightened from the original (size>=3 OR size>=2+boost>=1.15) because
+    the looser gate fired on ~63% of probed dates — too frequent to function
+    as a "loaded day" cue. The stricter form requires BOTH genuine multi-event
+    count (>=3 groups post-collapse) AND maximum-effort boost (cap hit,
+    meaning raw_bonus > 0.20 = size+flags combine to max synergy).
+
+    Astrologically: a capped size>=3 stack is either "size=3 with all three
+    modifiers (polarity mix + diversity + outer)" or "size>=4 with 2+
+    modifiers" — genuinely dense days, not routine coincidence.
     """
     if not stack_meta:
         return False
     size = int(stack_meta.get("size") or 0)
-    boost = float(stack_meta.get("boost") or 1.0)
-    if size >= STACK_NARRATIVE_GATE_MIN_SIZE:
-        return True
-    if size >= 2 and boost >= STACK_NARRATIVE_GATE_MIN_BOOST_FOR_SIZE2:
-        return True
-    return False
+    capped = bool(stack_meta.get("capped"))
+    return size >= STACK_NARRATIVE_GATE_MIN_SIZE and capped
 
 
 def _append_why_now_clause(current: str, clause: str) -> str:

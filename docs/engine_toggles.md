@@ -109,12 +109,18 @@ covers both because both match on same event_family + axis-partner
 sources + equal target_points set, including empty-empty).
 
 PR7b adds a single-sentence narrative clause appended to `why_now_tr`
-on the top-sig stack member per day, gated by:
-  size >= 3 OR (size >= 2 AND boost >= 1.15)
-Marginal size=2-no-modifier stacks (boost=1.06) stay silent. The
-clause is idempotent via provenance.stack_narrative_applied flag.
-Disabling `apply_stack_boost` naturally silences the narrative too
-(no stack_meta → gate fails) — no separate toggle.
+on the top-sig stack member per day, idempotent via
+provenance.stack_narrative_applied flag. Disabling `apply_stack_boost`
+naturally silences the narrative too — no separate toggle.
+
+PR7c tightens the gate from the original (size>=3 OR size>=2+boost
+>=1.15) to:
+  size >= 3 AND capped == True
+where capped means raw_bonus >= 0.20 — i.e. a size>=3 stack with
+either all three modifiers (polarity mix + diversity + outer) or
+size>=4 with at least two modifiers. This is the genuinely dense
+day filter; the loose gate fired 62.7% of probed dates, the tight
+gate fires 22.7%.
 
 Set to `False` to disable stack detection entirely. Events retain their
 individual significance scores; no stack_meta is emitted.
