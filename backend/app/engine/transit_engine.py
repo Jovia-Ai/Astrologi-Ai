@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 import hashlib
+import math
 from typing import Any, Dict, Iterable, Mapping, Sequence
 import time
 
@@ -54,6 +55,39 @@ ASPECT_EXPECTED_SIGN_SEP = {
 # dissociate aspect still qualifies, but a borderline one is filtered out.
 OUT_OF_SIGN_ORB_FACTOR = 0.6
 
+# Gaussian decay sigma, expressed as a fraction of orb_max. sigma = orb_max/2
+# gives a softer decay near exact and a sharper tail; combined with the
+# edge-subtraction below it yields strength=1 at orb=0 and strength=0 at
+# orb=orb_max, with a bell-shaped curve in between.
+_GAUSSIAN_SIGMA_RATIO = 0.5
+
+
+def _decay_strength(orb: float, orb_max: float, mode: str) -> float:
+    """Map (orb, orb_max) → strength in [0, 1] under the requested decay curve.
+
+    linear:   strength = 1 - orb / orb_max                       (pre-PR6)
+    gaussian: strength = (g(orb) - g(orb_max)) / (1 - g(orb_max))
+              where g(x) = exp(-0.5 * (x / sigma)²), sigma = orb_max/2
+
+    The Gaussian variant is edge-subtracted so strength=0 at orb=orb_max,
+    keeping downstream threshold semantics (eligible_strength_min etc.)
+    interpretable. Gaussian rewards tight orbs more than linear (e.g. at
+    orb=orb_max/4: Gaussian ≈ 0.86 vs linear 0.75) and penalises borderline
+    orbs slightly more (at orb=0.75·orb_max: Gaussian ≈ 0.22 vs linear 0.25).
+    """
+    if orb_max <= 0:
+        return 0.0
+    ratio = orb / orb_max
+    if ratio >= 1.0:
+        return 0.0
+    if mode == "linear":
+        return clamp01(1.0 - ratio)
+    # gaussian (default)
+    sigma = _GAUSSIAN_SIGMA_RATIO
+    g_orb = math.exp(-0.5 * (ratio / sigma) ** 2)
+    g_edge = math.exp(-0.5 * (1.0 / sigma) ** 2)
+    return clamp01((g_orb - g_edge) / (1.0 - g_edge))
+
 _TIMING_CACHE: dict[str, Dict[str, Any] | None] = {}
 _TIMING_CACHE_MAX = 4096
 
@@ -70,6 +104,7 @@ class TransitOptions:
     max_aspects_per_transit_body: int
     debug: bool
     apply_out_of_sign_filter: bool = True
+    orb_decay_mode: str = "gaussian"
 
 
 def build_transit_report(
@@ -460,6 +495,7 @@ def _normalize_options(options: Mapping[str, Any] | None) -> TransitOptions:
         max_aspects_per_transit_body=int(raw.get("max_aspects_per_transit_body") or 12),
         debug=bool(raw.get("debug", False)),
         apply_out_of_sign_filter=bool(raw.get("apply_out_of_sign_filter", True)),
+        orb_decay_mode=str(raw.get("orb_decay_mode") or "gaussian").strip().lower(),
     )
 
 
@@ -622,6 +658,7 @@ def _build_aspects(
                     options.orbs,
                     transit_jd=transit_jd,
                     apply_oos_filter=options.apply_out_of_sign_filter,
+                    decay_mode=options.orb_decay_mode,
                 )
             )
         if options.include_angles:
@@ -662,6 +699,7 @@ def _aspects_for_pair(
     *,
     transit_jd: float,
     apply_oos_filter: bool = True,
+    decay_mode: str = "gaussian",
 ) -> list[Dict[str, Any]]:
     aspects: list[Dict[str, Any]] = []
     for aspect_type in allowed_types:
@@ -676,7 +714,7 @@ def _aspects_for_pair(
         effective_orb_max = orb_max * OUT_OF_SIGN_ORB_FACTOR if (out_of_sign and apply_oos_filter) else orb_max
         if orb > effective_orb_max:
             continue
-        strength = clamp01(1 - orb / effective_orb_max) if effective_orb_max else 0.0
+        strength = _decay_strength(orb, effective_orb_max, decay_mode)
         polarity = "neutral"
         if aspect_type in {"square", "opposition"}:
             polarity = "hard"

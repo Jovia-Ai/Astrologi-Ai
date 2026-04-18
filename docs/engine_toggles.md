@@ -39,9 +39,9 @@ Rollback scenario: if PR3's 0.6× multiplier turns out to over-filter a
 class of user-relevant aspects, this toggle lets production revert
 instantly via config without a redeploy.
 
-### `orb_decay_mode` · default `"gaussian"` *(planned, PR6a)*
+### `orb_decay_mode` · default `"gaussian"`
 
-Introduced: PR6a (planned).
+Introduced: PR6a.
 
 Selects the orb → strength decay curve:
 
@@ -49,10 +49,14 @@ Selects the orb → strength decay curve:
 - `"gaussian"` — `strength = exp(-0.5 * (orb / sigma)²)` with
   `sigma = orb_max / 2.355`
 
-Set to `"linear"` to reproduce the pre-PR6 engine. Thresholds
-(`eligible_strength_min`, etc.) are recalibrated as part of PR6a to be
-volume-neutral under the Gaussian curve; reverting to linear without
-reverting the thresholds will skew the eligibility surface.
+Set to `"linear"` to reproduce the pre-PR6 engine.
+
+PR6a measured threshold-bucket counts under both curves (probe in the
+commit message, 3 fixtures × 5 dates): all shifts within ±6%, so no
+threshold recalibration was needed. Reverting to linear is therefore
+safe — it will slightly decrease the "high" bucket (~-6%) and slightly
+increase the "eligible" bucket (~+4%), but no eligibility surface
+collapses.
 
 Rollback scenario: if the Gaussian curve shifts ranking in a way that
 hurts user experience at scale, flipping to `"linear"` restores prior
