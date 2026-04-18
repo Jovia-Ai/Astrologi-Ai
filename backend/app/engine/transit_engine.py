@@ -32,6 +32,8 @@ ASPECT_ANGLES = {
     "square": 90,
     "trine": 120,
     "sextile": 60,
+    "quincunx": 150,
+    "semisextile": 30,
 }
 
 _TIMING_CACHE: dict[str, Dict[str, Any] | None] = {}
@@ -428,11 +430,13 @@ def _normalize_options(options: Mapping[str, Any] | None) -> TransitOptions:
         include_house_cusps=bool(raw.get("include_house_cusps", True)),
         aspect_types=[str(item) for item in (raw.get("aspect_types") or list(ASPECT_ANGLES.keys()))],
         orbs={
-            "conjunction": float((raw.get("orbs") or {}).get("conjunction", 6.0)),
-            "opposition": float((raw.get("orbs") or {}).get("opposition", 6.0)),
-            "square": float((raw.get("orbs") or {}).get("square", 6.0)),
-            "trine": float((raw.get("orbs") or {}).get("trine", 6.0)),
-            "sextile": float((raw.get("orbs") or {}).get("sextile", 4.0)),
+            "conjunction": float((raw.get("orbs") or {}).get("conjunction", 4.0)),
+            "opposition": float((raw.get("orbs") or {}).get("opposition", 4.0)),
+            "square": float((raw.get("orbs") or {}).get("square", 3.5)),
+            "trine": float((raw.get("orbs") or {}).get("trine", 3.0)),
+            "sextile": float((raw.get("orbs") or {}).get("sextile", 2.5)),
+            "quincunx": float((raw.get("orbs") or {}).get("quincunx", 2.0)),
+            "semisextile": float((raw.get("orbs") or {}).get("semisextile", 1.5)),
         },
         max_aspects_per_transit_body=int(raw.get("max_aspects_per_transit_body") or 12),
         debug=bool(raw.get("debug", False)),
