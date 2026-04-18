@@ -114,6 +114,10 @@ def extract_planet_positions(
             "longitude": item.get("longitude"),
             "degree": item.get("degree"),
             "retrograde": bool(item.get("retrograde", False)),
+            # PR 5: speed Swiss Ephemeris'ten gelir (deg/gün, retrograde=negatif).
+            # Aspect direction hesabı için pass-through. None → aspect_direction
+            # modülü None döner ve wrapper multiplier=1.0 ile zero-diff fallback.
+            "speed": item.get("speed"),
         }
     if out:
         return out
@@ -130,6 +134,7 @@ def extract_planet_positions(
                 "longitude": payload.get("longitude"),
                 "degree": payload.get("degree"),
                 "retrograde": bool(payload.get("retrograde", False)),
+                "speed": payload.get("speed"),
             }
     return out
 
@@ -143,6 +148,13 @@ def extract_aspects(
         raw = natal_graph.get("chart_aspects")
     if not isinstance(raw, list):
         raw = []
+
+    # PR 5: direction hesabı için planet speed/longitude lookup.
+    # Eksik data → None → wrapper multiplier=1.0 fallback (zero-diff guarantee).
+    from app.astro.aspect_direction import compute_direction
+
+    positions = extract_planet_positions(chart, natal_graph)
+
     out: list[Dict[str, Any]] = []
     for item in raw:
         if not isinstance(item, Mapping):
@@ -156,7 +168,28 @@ def extract_aspects(
             orb = None
         if not planet1 or not planet2 or not aspect:
             continue
-        out.append({"planet1": planet1, "planet2": planet2, "aspect": aspect, "orb": orb})
+
+        # Upstream aspect dict'inde direction zaten varsa preserve et;
+        # yoksa positions'tan hesapla.
+        direction = item.get("direction")
+        if direction is None:
+            pos_a = positions.get(planet1) or {}
+            pos_b = positions.get(planet2) or {}
+            direction = compute_direction(
+                aspect,
+                pos_a.get("longitude"),
+                pos_b.get("longitude"),
+                pos_a.get("speed"),
+                pos_b.get("speed"),
+            )
+
+        out.append({
+            "planet1": planet1,
+            "planet2": planet2,
+            "aspect": aspect,
+            "orb": orb,
+            "direction": direction,
+        })
     return out
 
 

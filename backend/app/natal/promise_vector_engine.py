@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Mapping, Sequence
 
+from app.astro.aspect_direction import direction_multiplier
 from app.astro.orb_policy import MAX_ORB_BY_ASPECT, tightness as _orb_policy_tightness
 from app.natal.dispositor_engine import extract_aspects, extract_planet_positions
 
@@ -51,14 +52,21 @@ def _context(chart: Mapping[str, Any], natal_graph_v2_partial: Mapping[str, Any]
 def _aspect_tightness(aspect: Mapping[str, Any]) -> float:
     """Natal aspect tightness — default konvansiyon (orb=0 → 1.0).
 
-    Tek kaynak `app.astro.orb_policy.tightness`. Bu wrapper aspect dict'inden
-    alan çıkarma + None orb için 0.0 fallback'i yapar.
+    Base tightness `app.astro.orb_policy.tightness`'ten alınır. PR 5'te
+    direction multiplier (applying/exact → %10 bonus, separating → 1.0)
+    wrapper seviyesinde uygulanır — `orb_policy` imzası değişmez, synastry
+    tarafına sızmaz.
+
+    Direction None ise (eksik speed / bilinmeyen aspect / stasyoner)
+    multiplier 1.0 → zero-diff fallback. Sonuç max 1.0'a clamp'lenir.
     """
     aspect_name = str(aspect.get("aspect") or "").lower()
     orb_value = aspect.get("orb")
     if orb_value is None:
         return 0.0
-    return _orb_policy_tightness(aspect_name, orb_value)
+    base = _orb_policy_tightness(aspect_name, orb_value)
+    mult = direction_multiplier(aspect.get("direction"))
+    return min(1.0, base * mult)
 
 
 def _find_aspects(

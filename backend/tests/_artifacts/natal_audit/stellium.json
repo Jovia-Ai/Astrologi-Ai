@@ -33,7 +33,7 @@
       "meets_threshold": false
     }
   ],
-  "scoring_profile_version": "v1",
+  "scoring_profile_version": "v2",
   "shadow_archetype_id": "analyst",
   "slots": {
     "primary_identity_spine": "builder",

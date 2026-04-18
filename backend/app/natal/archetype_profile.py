@@ -1651,7 +1651,7 @@ def build_archetype_profile(
 
     return {
         **get_archetype_runtime_versions(),
-        "scoring_profile_version": "v1",
+        "scoring_profile_version": "v2",
         "birth_time_mode": birth_time_mode(birth_time_confidence),
         "chart_prior": {
             "items": chart_prior.get("items") or [],
