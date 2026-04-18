@@ -1458,6 +1458,7 @@ def build_archetype_profile(
     birth_time_confidence: str = "exact",
     answer_consistency: float | None = None,
     chart_planets: Mapping[str, Any] | None = None,
+    chart_aspects: "Sequence[Mapping[str, Any]] | None" = None,
 ) -> Dict[str, Any]:
     taxonomy = _taxonomy()
     fusion = _fusion()
@@ -1645,6 +1646,16 @@ def build_archetype_profile(
     for item in final_items:
         item["score_meets_primary_threshold"] = (
             _safe_float(item.get("score")) >= minimum_primary_score
+        )
+
+    # PR 8a: aspect direction breakdown per archetype — explainability surface,
+    # scoring'e etki etmez. Legacy caller chart_aspects geçmezse → all-zero
+    # (zero-diff fallback).
+    from app.astro.aspect_direction import aspect_direction_breakdown
+    for item in final_items:
+        item["aspect_direction_breakdown"] = aspect_direction_breakdown(
+            _safe_text(item.get("id")),
+            chart_aspects or [],
         )
 
     _attach_why_this_not_that(

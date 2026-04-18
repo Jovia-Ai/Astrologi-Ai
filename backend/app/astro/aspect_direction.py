@@ -156,3 +156,79 @@ def direction_multiplier(direction: Optional[str]) -> float:
     if direction is None:
         return 1.0
     return DIRECTION_TIGHTNESS_BONUS.get(direction, 1.0)
+
+
+# --------------------------------------------------------------------------
+# PR 8a: per-archetype aspect direction breakdown (explainability surface)
+# --------------------------------------------------------------------------
+
+# Breakdown'da görünecek kanonik count key'leri. `unknown` direction None veya
+# bilinmeyen string'ler için kullanılır — audit/explainability'de "eksik veri"
+# şeffaflığı.
+_BREAKDOWN_KEYS = ("applying", "separating", "exact", "unknown")
+
+
+def _zero_breakdown() -> dict[str, int]:
+    return {key: 0 for key in _BREAKDOWN_KEYS}
+
+
+def aspect_direction_breakdown(
+    archetype_id: str | None,
+    aspects: "list | tuple | None",
+    signature_planets: Mapping[str, "list | tuple"] | None = None,
+) -> dict[str, int]:
+    """Per-archetype aspect direction count.
+
+    Explainability surface — scoring'e etki etmez. Legacy caller (aspect'leri
+    geçirmeyen) → all-zero (zero-diff fallback).
+
+    Args:
+        archetype_id: Arketip id'si. `signature_planets` haritasında yoksa →
+            all-zero.
+        aspects: Aspect dict listesi (dispositor_engine.extract_aspects çıktısı
+            formatında — `planet1`, `planet2`, `direction` field'ları).
+        signature_planets: `{archetype_id: (planet_name, ...)}` — filter key'i.
+            None → dignity.ARCHETYPE_SIGNATURE_PLANETS default'u kullanılır.
+
+    Returns:
+        `{applying, separating, exact, unknown}` → int count'lar.
+        Signature'da yer alan planet'leri içeren aspect'ler sayılır (iki
+        planet'ten biri signature'da olması yeterli — ikili ilişki anlamlı).
+
+    Fail-safe:
+        - aspects None/boş → all-zero
+        - archetype_id bilinmiyor → all-zero
+        - aspect dict'inde planet veya direction eksik → sayılmaz
+        - direction string'i tanınmıyor → `unknown` sayılır
+    """
+    # Lazy import — dignity module'ü PR 6'da sonradan eklendi; circular risk yok
+    # ama import'u helper call-site'ına almak modül yükleme sırasını gevşetir.
+    if signature_planets is None:
+        from app.astro.dignity import ARCHETYPE_SIGNATURE_PLANETS
+        signature_planets = ARCHETYPE_SIGNATURE_PLANETS
+
+    counts = _zero_breakdown()
+    if not archetype_id or not aspects:
+        return counts
+
+    archetype_key = archetype_id.strip().lower() if isinstance(archetype_id, str) else ""
+    if not archetype_key:
+        return counts
+
+    signature = {p.lower() for p in signature_planets.get(archetype_key, ())}
+    if not signature:
+        return counts
+
+    for aspect in aspects:
+        if not isinstance(aspect, Mapping):
+            continue
+        planet1 = str(aspect.get("planet1") or "").lower()
+        planet2 = str(aspect.get("planet2") or "").lower()
+        if not (planet1 in signature or planet2 in signature):
+            continue
+        direction = aspect.get("direction")
+        if direction in _BREAKDOWN_KEYS[:3]:   # applying/separating/exact
+            counts[direction] += 1           # type: ignore[index]
+        else:
+            counts["unknown"] += 1
+    return counts

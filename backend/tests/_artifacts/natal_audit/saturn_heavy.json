@@ -1,4 +1,33 @@
 {
+  "aspect_direction_breakdowns": [
+    {
+      "archetype": "builder",
+      "breakdown": {
+        "applying": 0,
+        "exact": 0,
+        "separating": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "archetype": "guardian",
+      "breakdown": {
+        "applying": 0,
+        "exact": 0,
+        "separating": 0,
+        "unknown": 0
+      }
+    },
+    {
+      "archetype": "depthkeeper",
+      "breakdown": {
+        "applying": 0,
+        "exact": 0,
+        "separating": 0,
+        "unknown": 0
+      }
+    }
+  ],
   "birth_time_mode": "exact",
   "chart_prior_profile": "default",
   "confidence": {

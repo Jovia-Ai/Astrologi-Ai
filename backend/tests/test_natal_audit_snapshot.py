@@ -268,6 +268,13 @@ def _narrow_projection(payload: Dict[str, Any]) -> Dict[str, Any]:
         }
         for item in top
     ]
+    aspect_direction_breakdowns = [
+        {
+            "archetype": str(item.get("id") or ""),
+            "breakdown": item.get("aspect_direction_breakdown") or {},
+        }
+        for item in top
+    ]
 
     return {
         "engine_version": payload.get("engine_version"),
@@ -278,6 +285,7 @@ def _narrow_projection(payload: Dict[str, Any]) -> Dict[str, Any]:
         "lunar_phase": payload.get("lunar_phase"),
         "primary_archetype_ids": primary_ids,
         "primary_threshold_flags": primary_threshold_flags,
+        "aspect_direction_breakdowns": aspect_direction_breakdowns,
         "shadow_archetype_id": str(shadow.get("id") or ""),
         "primary_contradiction_id": str(contradiction.get("id") or ""),
         "primary_contradiction_score": round(float(contradiction.get("score") or 0.0), 4),
