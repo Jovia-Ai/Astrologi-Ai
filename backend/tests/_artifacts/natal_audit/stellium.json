@@ -12,6 +12,7 @@
   },
   "engine_version": "archetype_profile_v2",
   "fusion_version": "archetype_fusion_v2:2.0.0",
+  "lunar_phase": null,
   "primary_archetype_ids": [
     "builder",
     "visionary",

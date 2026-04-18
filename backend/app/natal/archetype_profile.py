@@ -1691,10 +1691,22 @@ def build_archetype_profile(
         subprofile_candidates=subprofile_selections,
     )
 
+    # PR 7: lunar phase top-level metadata. Narrative-only — ranking'e,
+    # shadow'a, confidence'a, chart_prior component'lerine sızmaz.
+    # chart_planets numeric longitude içermezse None (fail-safe fallback).
+    from app.astro.lunar_phase import compute_lunar_phase
+    _planets_map = chart_planets if isinstance(chart_planets, Mapping) else {}
+    _sun_payload = _planets_map.get("Sun") or _planets_map.get("sun") or {}
+    _moon_payload = _planets_map.get("Moon") or _planets_map.get("moon") or {}
+    _sun_lon = _sun_payload.get("longitude") if isinstance(_sun_payload, Mapping) else None
+    _moon_lon = _moon_payload.get("longitude") if isinstance(_moon_payload, Mapping) else None
+    _lunar_phase = compute_lunar_phase(_sun_lon, _moon_lon)
+
     return {
         **get_archetype_runtime_versions(),
         "scoring_profile_version": "v2",
         "birth_time_mode": birth_time_mode(birth_time_confidence),
+        "lunar_phase": _lunar_phase,
         "chart_prior": {
             "items": chart_prior.get("items") or [],
             "weight_profile": profile_name,

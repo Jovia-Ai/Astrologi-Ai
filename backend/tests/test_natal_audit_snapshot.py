@@ -275,6 +275,7 @@ def _narrow_projection(payload: Dict[str, Any]) -> Dict[str, Any]:
         "fusion_version": payload.get("fusion_version"),
         "scoring_profile_version": payload.get("scoring_profile_version"),
         "birth_time_mode": payload.get("birth_time_mode"),
+        "lunar_phase": payload.get("lunar_phase"),
         "primary_archetype_ids": primary_ids,
         "primary_threshold_flags": primary_threshold_flags,
         "shadow_archetype_id": str(shadow.get("id") or ""),
