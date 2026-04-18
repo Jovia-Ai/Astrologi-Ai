@@ -2467,6 +2467,7 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             transit_timezone=request.transit_timezone,
             window_report=window_report,
             solar_year=solar_year_frame,
+            birth_timezone=request.birth_timezone,
         )
         return response
     except Exception as exc:  # pragma: no cover - passthrough for API response

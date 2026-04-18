@@ -1,10 +1,16 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import asdict, dataclass, field
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 import hashlib
 import math
 from typing import Any, Dict, Iterable, List, Mapping, Optional, Sequence, Tuple
+
+try:
+    from zoneinfo import ZoneInfo
+except ImportError:  # pragma: no cover
+    ZoneInfo = None  # type: ignore
 
 from app.astro.chart_engine.builder import LocationData, resolve_location
 from app.astro.chart_engine.positions import get_zodiac_sign
@@ -237,6 +243,133 @@ class AstroEventV2:
         return payload
 
 
+# --- PR7: Stack detection (same-day event synergy) ---
+#
+# When 2+ meaningful events fall on the same calendar day (in the natal's
+# local timezone), apply a synergy boost to each member's significance_score.
+# Design decisions:
+#   - Event-level only. Aspect-level ranking is untouched — bench retention
+#     must stay stable (acceptance criterion).
+#   - Stack entry eligibility: significance_score >= STACK_MEANINGFUL_THRESHOLD
+#     so weak aspects can't fabricate synergy.
+#   - Additive modifiers with a hard cap; see STACK_* constants below.
+#   - Each boosted event gets a stack_meta entry in its provenance for
+#     downstream narrative consumers (not wired in this PR).
+#
+# Full spec and rationale: v1 plan in the PR7 review memo.
+STACK_MEANINGFUL_THRESHOLD = 0.42
+STACK_SIZE_BONUS = {2: 0.06, 3: 0.10}  # 4+ uses STACK_SIZE_BONUS_LARGE
+STACK_SIZE_BONUS_LARGE = 0.13
+STACK_MODIFIER_BONUS = 0.05  # equal weight for polarity_mix / diversity / outer
+STACK_BOOST_CAP = 1.20  # hard cap: no single event's significance *= more than this
+STACK_OUTER_BODIES = {"Saturn", "Uranus", "Neptune", "Pluto"}
+STACK_HARD_SUBTYPES = {"square", "opposition"}
+STACK_SOFT_SUBTYPES = {"trine", "sextile"}
+
+
+def _event_local_date(event: "AstroEventV2", natal_timezone: str) -> Optional[date]:
+    """Return the natal-local calendar date of the event's primary marker.
+
+    Prefers the first exact_at timestamp, falls back to start_at. ISO strings
+    that include a time component are parsed as aware datetimes (UTC if no
+    offset) and converted to the natal timezone. Date-only strings are used
+    as-is (assumed already natal-local).
+    """
+    ref = (event.exact_at[0] if event.exact_at else None) or event.start_at
+    if not ref:
+        return None
+    try:
+        if "T" in ref:
+            dt = datetime.fromisoformat(ref.replace("Z", "+00:00"))
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            if ZoneInfo is not None and natal_timezone:
+                try:
+                    dt = dt.astimezone(ZoneInfo(natal_timezone))
+                except Exception:
+                    pass
+            return dt.date()
+        return datetime.fromisoformat(ref[:10]).date()
+    except (ValueError, TypeError):
+        return None
+
+
+def _apply_stack_boost(
+    events: Sequence["AstroEventV2"],
+    natal_timezone: str,
+    *,
+    enabled: bool = True,
+) -> Dict[str, Dict[str, Any]]:
+    """Mutate `events` in place: detect same-local-day stacks and scale each
+    member's significance_score by the computed boost. Returns a map
+    {event_id: stack_meta} for reporting; also writes stack_meta into each
+    member's provenance dict.
+
+    Non-stack events are unmodified. Called once after all events (personal
+    aspect + structural cycle/ingress) are aggregated, so a stack can span
+    event families.
+    """
+    if not enabled or not events:
+        return {}
+
+    by_day: Dict[date, List["AstroEventV2"]] = defaultdict(list)
+    for e in events:
+        if e.significance_score < STACK_MEANINGFUL_THRESHOLD:
+            continue
+        day = _event_local_date(e, natal_timezone)
+        if day is None:
+            continue
+        by_day[day].append(e)
+
+    stack_meta_by_id: Dict[str, Dict[str, Any]] = {}
+    for day, members in by_day.items():
+        if len(members) < 2:
+            continue
+        size = len(members)
+
+        aspect_subtypes = {e.event_subtype for e in members if e.event_family == "aspect_event"}
+        hard_present = bool(aspect_subtypes & STACK_HARD_SUBTYPES)
+        soft_present = bool(aspect_subtypes & STACK_SOFT_SUBTYPES)
+        polarity_mix = hard_present and soft_present
+
+        all_bodies = {b for e in members for b in (e.source_bodies or [])}
+        planet_diversity = len(all_bodies) >= 3
+        outer_present = bool(all_bodies & STACK_OUTER_BODIES)
+
+        size_bonus = STACK_SIZE_BONUS.get(size, STACK_SIZE_BONUS_LARGE)
+        raw_bonus = size_bonus
+        flags: List[str] = []
+        if polarity_mix:
+            raw_bonus += STACK_MODIFIER_BONUS
+            flags.append("polarity_mix")
+        if planet_diversity:
+            raw_bonus += STACK_MODIFIER_BONUS
+            flags.append("planet_diversity")
+        if outer_present:
+            raw_bonus += STACK_MODIFIER_BONUS
+            flags.append("outer_present")
+
+        capped = (1.0 + raw_bonus) > STACK_BOOST_CAP
+        boost = min(1.0 + raw_bonus, STACK_BOOST_CAP)
+
+        meta = {
+            "day": day.isoformat(),
+            "size": size,
+            "boost": round(boost, 4),
+            "raw_bonus": round(raw_bonus, 4),
+            "flags": flags,
+            "capped": capped,
+        }
+        for e in members:
+            e.significance_score = e.significance_score * boost
+            prov = dict(e.provenance or {})
+            prov["stack_meta"] = meta
+            e.provenance = prov
+            stack_meta_by_id[e.event_id] = meta
+
+    return stack_meta_by_id
+
+
 def build_personal_multi_event_payload(
     *,
     report: Mapping[str, Any],
@@ -247,6 +380,8 @@ def build_personal_multi_event_payload(
     transit_timezone: str | None = None,
     window_report: Mapping[str, Any] | None = None,
     solar_year: Mapping[str, Any] | None = None,
+    birth_timezone: str | None = None,
+    apply_stack_boost: bool = True,
 ) -> Dict[str, Any]:
     natal = report.get("natal") if isinstance(report.get("natal"), Mapping) else {}
     display = report.get("display") if isinstance(report.get("display"), Mapping) else {}
@@ -303,6 +438,37 @@ def build_personal_multi_event_payload(
         ),
     )
 
+    # PR7: stack boost — applied across personal + structural so a stack can
+    # span event families (e.g. aspect event + house ingress on same day).
+    # Mutates significance_score in place; re-sort both lists afterwards.
+    resolved_natal_tz = (
+        birth_timezone
+        or str((report.get("request_echo") or {}).get("birth_timezone") or "")
+        or "UTC"
+    )
+    stack_meta_map = _apply_stack_boost(
+        personal_events + structural_events,
+        resolved_natal_tz,
+        enabled=apply_stack_boost,
+    )
+    if stack_meta_map:
+        personal_events = sorted(
+            personal_events,
+            key=lambda entry: (
+                -float(entry.significance_score),
+                -IMPORTANCE_ORDER.get(entry.importance_tier, 0),
+                entry.event_id,
+            ),
+        )
+        structural_events = sorted(
+            structural_events,
+            key=lambda entry: (
+                -float(entry.significance_score),
+                -IMPORTANCE_ORDER.get(entry.importance_tier, 0),
+                entry.event_id,
+            ),
+        )
+
     by_id = {event.event_id: event.to_dict() for event in personal_events + structural_events}
     return {
         "schema_version": "astro_event.v2",
@@ -310,6 +476,13 @@ def build_personal_multi_event_payload(
         "structural_chapter_rail": [event.to_dict() for event in structural_events[:12]],
         "solar_year_frame": solar_frame,
         "events_by_id": by_id,
+        "stack_meta": {
+            "enabled": apply_stack_boost,
+            "natal_timezone": resolved_natal_tz,
+            "stack_days": sorted({m["day"] for m in stack_meta_map.values()}),
+            "boosted_event_count": len(stack_meta_map),
+            "capped_day_count": len({m["day"] for m in stack_meta_map.values() if m.get("capped")}),
+        },
     }
 
 

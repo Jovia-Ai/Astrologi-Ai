@@ -62,6 +62,41 @@ Rollback scenario: if the Gaussian curve shifts ranking in a way that
 hurts user experience at scale, flipping to `"linear"` restores prior
 behavior.
 
+### `apply_stack_boost` · default `True`
+
+Introduced: PR7.
+
+Scope: **event-level**, not engine-level. The toggle is a kwarg on
+`app.transit.astro_event_v2.build_personal_multi_event_payload`, not on
+`TransitOptions`. The PR7 plan originally placed it on TransitOptions;
+during implementation it became clear that stack detection runs at
+event aggregation, not at aspect assembly, so the toggle lives at the
+correct layer.
+
+When `True`, events that fall on the same natal-local calendar day and
+each clear `significance_score >= 0.42` receive a synergy boost:
+
+    boost = 1.0
+            + size_bonus   (0.06 if size=2, 0.10 if size=3, 0.13 if size>=4)
+            + 0.05 per modifier present:
+                · polarity_mix       (at least one hard + one soft aspect)
+                · planet_diversity   (3+ distinct transit bodies)
+                · outer_present      (Saturn/Uranus/Neptune/Pluto in stack)
+    capped at 1.20
+
+Each boosted event's `significance_score` is scaled in place, and a
+`stack_meta` dict is written into the event's `provenance` field.
+Non-stack events are unmodified.
+
+Set to `False` to disable stack detection entirely. Events retain their
+individual significance scores; no stack_meta is emitted.
+
+Rollback scenario: if the boost shifts rankings in a way that hurts the
+daily highlight experience at scale, flipping to `False` restores
+pre-PR7 event ordering without a redeploy. Frozen baseline bench stays
+valid either way — stack boost is event-level, bench measures aspect
+ranking which is untouched.
+
 ## Deprecated / removed toggles
 
 None yet.

@@ -318,3 +318,160 @@ def test_public_response_exposes_multi_event_payload_and_card_metadata() -> None
     assert public["event_cards"]
     assert public["event_cards"][0]["event_kind"] == "transformation"
     assert public["event_cards"][0]["astro_event"]["event_id"] == "evt_pluto_asc"
+
+
+# --- PR7: stack boost tests ---
+
+
+def _stack_event(
+    *,
+    event_id: str,
+    subtype: str,
+    source_bodies,
+    significance: float,
+    family: str = "aspect_event",
+    exact_at: str = "2026-03-04T10:00:00+03:00",
+) -> event_v2.AstroEventV2:
+    return event_v2.AstroEventV2(
+        event_id=event_id,
+        event_family=family,
+        event_subtype=subtype,
+        audience="personal",
+        event_kind="transit",
+        importance_tier="standard",
+        planet_class="social",
+        time_scale="daily",
+        significance_score=significance,
+        lasting_change_score=0.0,
+        chapter_opening=False,
+        repeat_pass_count=1,
+        is_structural=False,
+        recognition_intensity="medium",
+        precision_signal=0.5,
+        planet_class_weight=0.5,
+        target_importance=0.5,
+        event_family_weight=0.46,
+        duration_weight=0.5,
+        repeat_pass_weight=0.5,
+        structural_significance=0.5,
+        angle_luminary_weight=0.0,
+        solar_resonance=0.0,
+        collective_interest_score=0.0,
+        exact_at=[exact_at],
+        source_bodies=list(source_bodies),
+    )
+
+
+def test_stack_boost_low_size2_homogeneous_applies_size_bonus_only() -> None:
+    """2 soft events, same body, no outer planet → only size-2 bonus (1.06)."""
+    events = [
+        _stack_event(event_id="e1", subtype="trine", source_bodies=["Venus"], significance=0.48),
+        _stack_event(event_id="e2", subtype="sextile", source_bodies=["Venus"], significance=0.44),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert len(meta) == 2
+    for m in meta.values():
+        assert m["size"] == 2
+        assert m["flags"] == []  # no polarity_mix (both soft), no diversity (1 body), no outer
+        assert abs(m["boost"] - 1.06) < 1e-9
+        assert m["capped"] is False
+    # significance scaled in place
+    assert abs(events[0].significance_score - 0.48 * 1.06) < 1e-6
+    assert abs(events[1].significance_score - 0.44 * 1.06) < 1e-6
+
+
+def test_stack_boost_mid_size3_mixed_polarity_triggers_modifiers() -> None:
+    """3 events, hard+soft mix, 3 distinct bodies, no outer → 1.20 (caps)."""
+    events = [
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Sun"], significance=0.52),
+        _stack_event(event_id="e2", subtype="trine", source_bodies=["Venus"], significance=0.61),
+        _stack_event(event_id="e3", subtype="sextile", source_bodies=["Mars"], significance=0.47),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert len(meta) == 3
+    m = next(iter(meta.values()))
+    assert m["size"] == 3
+    assert "polarity_mix" in m["flags"]
+    assert "planet_diversity" in m["flags"]
+    assert "outer_present" not in m["flags"]
+    # base 0.10 + polarity 0.05 + diversity 0.05 = 0.20 → 1.20, exactly at cap
+    assert abs(m["boost"] - 1.20) < 1e-9
+
+
+def test_stack_boost_high_size4_all_modifiers_hits_cap() -> None:
+    """4 events, all modifiers active → raw_bonus 0.28 but capped at 1.20."""
+    events = [
+        _stack_event(event_id="e1", subtype="conjunction", source_bodies=["Pluto"], significance=0.78),
+        _stack_event(event_id="e2", subtype="square", source_bodies=["Mars"], significance=0.58),
+        _stack_event(event_id="e3", subtype="trine", source_bodies=["Saturn"], significance=0.64),
+        _stack_event(event_id="e4", subtype="sextile", source_bodies=["Mercury"], significance=0.45),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert len(meta) == 4
+    m = next(iter(meta.values()))
+    assert m["size"] == 4
+    assert set(m["flags"]) == {"polarity_mix", "planet_diversity", "outer_present"}
+    # raw_bonus = 0.13 + 0.05*3 = 0.28 → 1.28 capped at 1.20
+    assert abs(m["raw_bonus"] - 0.28) < 1e-9
+    assert abs(m["boost"] - 1.20) < 1e-9
+    assert m["capped"] is True
+    # Pluto event: 0.78 * 1.20 = 0.936
+    assert abs(events[0].significance_score - 0.936) < 1e-6
+
+
+def test_stack_boost_below_threshold_events_excluded_from_stack() -> None:
+    """Events with significance < 0.42 don't participate in stack eligibility."""
+    events = [
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Sun"], significance=0.55),
+        _stack_event(event_id="e2", subtype="trine", source_bodies=["Venus"], significance=0.30),  # weak
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    # Only 1 eligible → no stack
+    assert meta == {}
+    assert events[0].significance_score == 0.55  # unchanged
+    assert events[1].significance_score == 0.30  # unchanged
+
+
+def test_stack_boost_different_days_do_not_stack() -> None:
+    """Events on different natal-local days are separate — no cross-day stack."""
+    events = [
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Sun"], significance=0.55,
+                     exact_at="2026-03-04T10:00:00+03:00"),
+        _stack_event(event_id="e2", subtype="trine", source_bodies=["Venus"], significance=0.60,
+                     exact_at="2026-03-05T10:00:00+03:00"),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert meta == {}
+
+
+def test_stack_boost_respects_natal_timezone_day_boundary() -> None:
+    """Two events with UTC times that fall on the same natal-local day stack,
+    even if they span a UTC date boundary."""
+    # 2026-03-04 22:30 Europe/Istanbul = 2026-03-04 19:30 UTC
+    # 2026-03-05 00:30 Europe/Istanbul = 2026-03-04 21:30 UTC
+    # Both are 2026-03-04 in Istanbul local, 2026-03-04 in UTC. Use clearer case:
+    # 2026-03-05 02:00 Europe/Istanbul = 2026-03-04 23:00 UTC
+    # 2026-03-05 10:00 Europe/Istanbul = 2026-03-05 07:00 UTC
+    # In UTC these are different days; in Istanbul local both are 2026-03-05.
+    events = [
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Sun"], significance=0.55,
+                     exact_at="2026-03-04T23:00:00+00:00"),
+        _stack_event(event_id="e2", subtype="trine", source_bodies=["Venus"], significance=0.60,
+                     exact_at="2026-03-05T07:00:00+00:00"),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    # Both events land on 2026-03-05 local → should stack
+    assert len(meta) == 2
+    for m in meta.values():
+        assert m["day"] == "2026-03-05"
+
+
+def test_stack_boost_disabled_is_no_op() -> None:
+    events = [
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Sun"], significance=0.55),
+        _stack_event(event_id="e2", subtype="trine", source_bodies=["Venus"], significance=0.60),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul", enabled=False)
+    assert meta == {}
+    assert events[0].significance_score == 0.55
+    assert events[1].significance_score == 0.60
