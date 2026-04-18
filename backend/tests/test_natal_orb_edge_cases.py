@@ -1,19 +1,15 @@
 """Faz 1 behavior-lock: promise_vector_engine orb/tightness boundaries.
 
-Mevcut davranışı (MAJOR_ORBS binary cutoff + linear tightness eğrisi)
-dondurur. Faz 1 PR 2 (orb policy unification) bu testleri kasıtlı olarak
-kıracak — o PR içinde yeni `orb_policy.yaml` SSoT üzerinden beklenen
-değerler güncellenir.
+PR 2 sonrası `promise_vector_engine._aspect_tightness` SSoT olarak
+`app.astro.orb_policy.tightness`'ı çağırıyor — ama bu test dosyası hâlâ
+binary cutoff + linear curve davranışını exercise eder (MAJOR_ORBS alias
+korunuyor).
 
-Bu test `promise_vector_engine._aspect_tightness` fonksiyonunu hedefler —
-tüm promise vector hesaplamalarının geçtiği çekirdek eğri.
-
-Audit bulguları korunur:
-- C1 (orb duality): weights.yaml:orb_curve ile promise_vector MAJOR_ORBS
-  arasındaki uyumsuzluk burada test edilmez; her iki yanı da PR 2 ele alır.
-  Burada sadece MAJOR_ORBS tarafı dondurulur.
-- C5 (double-penalty): tightness'ın downstream orb_curve ile çarpılmasına
-  karşı birim test yoktur — integration'da snapshot yakalar.
+Audit C1/C5 revize edildi (PR 2 pre-flight): `weights.yaml` dead'di,
+`engine/scoring_engine.py` dead'di. İkisi de PR 4b'de silindi.
+Audit seviyesinde "orb duality" ghost çıktı — tek canlı kaynak
+`MAJOR_ORBS` (şimdi `MAX_ORB_BY_ASPECT` alias'ı). Bu test o kaynağı
+dondurur.
 """
 from __future__ import annotations
 
@@ -97,10 +93,9 @@ def test_aspect_tightness_handles_missing_orb() -> None:
 def test_major_orbs_table_is_frozen() -> None:
     """MAJOR_ORBS değerleri behavior-lock altında.
 
-    Audit C1: bu tablo ile `config/scoring/weights.yaml:orb_curve` arasında
-    uyumsuzluk var. Faz 1 PR 2 tek kaynak `orb_policy.yaml`'a taşırken bu
-    sabitler silinecek; silme aynı PR'da `test_aspect_tightness_boundary_behavior`'ı
-    da güncellemeyi zorunlu kılar.
+    PR 2'de `app.astro.orb_policy.MAX_ORB_BY_ASPECT` SSoT'a alındı. Bu isim
+    natal modülünde alias olarak korunuyor. Test SSoT'un değerlerini
+    doğruluyor.
     """
     assert MAJOR_ORBS == {
         "conjunction": 8.0,
