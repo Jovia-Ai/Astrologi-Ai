@@ -394,6 +394,32 @@ def _weight_profile(name: str) -> Dict[str, float]:
     }
 
 
+# Birth time mode: `birth_time_confidence` inputunun kanonik üç-değerli özetine
+# map'lendiği TEK yer. Audit snapshot + explain katmanında bu alana bağlanılır.
+# Faz 1 PR 4'te implicit olan state (`chart_only weight_profile`, softening
+# trigger'ları) explicit metadata'ya dönüşür.
+_BIRTH_TIME_MODE_BY_CONFIDENCE: Mapping[str, str] = {
+    "exact": "exact",
+    "verified": "exact",
+    "rounded": "rounded",
+    "estimated": "rounded",
+    "unknown": "unknown",
+    "missing": "unknown",
+    "approx": "unknown",
+    "low": "unknown",
+}
+
+
+def birth_time_mode(birth_time_confidence: str) -> str:
+    """`birth_time_confidence` → kanonik `{exact, rounded, unknown}` mode.
+
+    Tek kaynak. Bilinmeyen/eşleşmeyen string → `"exact"` (muhafazakar default,
+    mevcut `_chart_confidence` 0.7 baseline'ı ile tutarlı).
+    """
+    normalized = _safe_text(birth_time_confidence).lower()
+    return _BIRTH_TIME_MODE_BY_CONFIDENCE.get(normalized, "exact")
+
+
 def _chart_confidence(birth_time_confidence: str) -> float:
     config = (
         ((_fusion().get("confidence") or {}).get("chart"))
@@ -1263,6 +1289,7 @@ def _attach_why_this_not_that(
     *,
     final_items: list[dict[str, Any]],
     subprofile_candidates: Mapping[str, Mapping[str, Any]],
+    minimum_gap_for_single_headline: float = 0.08,
 ) -> None:
     for index, item in enumerate(final_items):
         core_label = _safe_text(item.get("label"))
@@ -1272,7 +1299,7 @@ def _attach_why_this_not_that(
             runner_up = final_items[1]
             gap = _safe_float(item.get("score")) - _safe_float(runner_up.get("score"))
             runner_up_label = _safe_text(runner_up.get("label"))
-            if gap < 0.08 and runner_up_label:
+            if gap < minimum_gap_for_single_headline and runner_up_label:
                 item["why_this_not_that"] = (
                     f"Seni {runner_up_label.lower()} cizgisine yaklastiran sinyaller de var; "
                     f"ama {('simdilik ' if soften_subprofile else '')}{subprofile_label.lower()} tonu ve {_safe_text((item.get('differentiators') or [''])[0]).lower()} "
@@ -1563,11 +1590,27 @@ def build_archetype_profile(
             }
         )
 
-    _attach_why_this_not_that(final_items=final_items, subprofile_candidates=subprofile_selections)
-
     result_rules = (
         fusion.get("result_rules") if isinstance(fusion.get("result_rules"), Mapping) else {}
     )
+    minimum_primary_score = _safe_float(result_rules.get("minimum_primary_score")) or 0.52
+    minimum_gap_for_single_headline = (
+        _safe_float(result_rules.get("minimum_gap_for_single_headline")) or 0.08
+    )
+
+    # `minimum_primary_score` gate değil flag olarak wire'landı — silent failure
+    # yaratmıyor, consumer UI'a "düşük güven" sinyali veriyor.
+    for item in final_items:
+        item["score_meets_primary_threshold"] = (
+            _safe_float(item.get("score")) >= minimum_primary_score
+        )
+
+    _attach_why_this_not_that(
+        final_items=final_items,
+        subprofile_candidates=subprofile_selections,
+        minimum_gap_for_single_headline=minimum_gap_for_single_headline,
+    )
+
     top_count = max(int(result_rules.get("top_archetypes") or 3), 1)
     top_archetypes = final_items[:top_count]
 
@@ -1609,6 +1652,7 @@ def build_archetype_profile(
     return {
         **get_archetype_runtime_versions(),
         "scoring_profile_version": "v1",
+        "birth_time_mode": birth_time_mode(birth_time_confidence),
         "chart_prior": {
             "items": chart_prior.get("items") or [],
             "weight_profile": profile_name,

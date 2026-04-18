@@ -261,12 +261,22 @@ def _narrow_projection(payload: Dict[str, Any]) -> Dict[str, Any]:
 
     slots = payload.get("slots") or {}
 
+    primary_threshold_flags = [
+        {
+            "archetype": str(item.get("id") or ""),
+            "meets_threshold": bool(item.get("score_meets_primary_threshold")),
+        }
+        for item in top
+    ]
+
     return {
         "engine_version": payload.get("engine_version"),
         "taxonomy_version": payload.get("taxonomy_version"),
         "fusion_version": payload.get("fusion_version"),
         "scoring_profile_version": payload.get("scoring_profile_version"),
+        "birth_time_mode": payload.get("birth_time_mode"),
         "primary_archetype_ids": primary_ids,
+        "primary_threshold_flags": primary_threshold_flags,
         "shadow_archetype_id": str(shadow.get("id") or ""),
         "primary_contradiction_id": str(contradiction.get("id") or ""),
         "primary_contradiction_score": round(float(contradiction.get("score") or 0.0), 4),

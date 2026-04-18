@@ -1,4 +1,5 @@
 {
+  "birth_time_mode": "exact",
   "chart_prior_profile": "default",
   "confidence": {
     "chart": 0.85,
@@ -18,6 +19,20 @@
   ],
   "primary_contradiction_id": "structure_vs_originality",
   "primary_contradiction_score": 0.64,
+  "primary_threshold_flags": [
+    {
+      "archetype": "builder",
+      "meets_threshold": true
+    },
+    {
+      "archetype": "guardian",
+      "meets_threshold": true
+    },
+    {
+      "archetype": "depthkeeper",
+      "meets_threshold": true
+    }
+  ],
   "scoring_profile_version": "v1",
   "shadow_archetype_id": "catalyst",
   "slots": {
