@@ -108,10 +108,10 @@ source hitting the same target) and nodal ingress pairs (one rule
 covers both because both match on same event_family + axis-partner
 sources + equal target_points set, including empty-empty).
 
-PR7b adds a single-sentence narrative clause appended to `why_now_tr`
-on the top-sig stack member per day, idempotent via
-provenance.stack_narrative_applied flag. Disabling `apply_stack_boost`
-naturally silences the narrative too — no separate toggle.
+PR7b adds a single-sentence narrative clause on the top-sig stack
+member per day (idempotent via provenance.stack_narrative_applied).
+Disabling `apply_stack_boost` naturally silences the narrative too —
+no separate toggle.
 
 PR7c tightens the gate from the original (size>=3 OR size>=2+boost
 >=1.15) to:
@@ -120,7 +120,26 @@ where capped means raw_bonus >= 0.20 — i.e. a size>=3 stack with
 either all three modifiers (polarity mix + diversity + outer) or
 size>=4 with at least two modifiers. This is the genuinely dense
 day filter; the loose gate fired 62.7% of probed dates, the tight
-gate fires 22.7%.
+gate fires 22.7%. Still above the ≤15% user-day target — next step
+is UI-side rate limiting, not further engine tightening.
+
+### Payload contract for the stack clause (engine prep for UI rate-limit)
+
+The stack clause is emitted as a **separate sibling field** on the
+event, not appended to `why_now_tr`. This lets UI-side rate limiters
+decide per-render whether to show the clause, without string-stripping
+a composite field.
+
+  `why_now_tr`       : NEVER contains the stack clause. Stable across
+                       gate states; carries only aspect why-now +
+                       PR9 solar resonance content.
+
+  `stack_clause_tr`  : populated with the clause text only on the
+                       single top-sig gate-passing event per day.
+                       Empty string "" on every other event.
+
+Client rate-limiters combine (or skip) the two fields based on
+local cooldown state; the engine itself makes no cadence decisions.
 
 Set to `False` to disable stack detection entirely. Events retain their
 individual significance scores; no stack_meta is emitted.

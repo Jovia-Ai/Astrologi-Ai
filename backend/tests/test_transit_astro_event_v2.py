@@ -678,87 +678,80 @@ def test_stack_narrative_gate_empty_meta_fails() -> None:
 
 def test_stack_narrative_fires_only_on_top_member_per_day() -> None:
     """Three gate-passing events on the same day → only the top-sig one
-    gets the clause. Others stay silent."""
+    gets the clause populated in stack_clause_tr. Others stay "".
+
+    To reach the cap (required by PR7c gate) we need all 3 modifiers: hard
+    (square) + soft (trine) gives polarity_mix, 3 distinct bodies gives
+    diversity, and Saturn in source gives outer_present."""
     events = [
-        _stack_event(event_id="e1", subtype="square", source_bodies=["Sun"],
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Saturn"],
                      significance=0.52, target_points=["Moon"]),
         _stack_event(event_id="e2", subtype="trine", source_bodies=["Venus"],
-                     significance=0.61, target_points=["Saturn"]),
+                     significance=0.61, target_points=["Jupiter"]),
         _stack_event(event_id="e3", subtype="sextile", source_bodies=["Mars"],
                      significance=0.47, target_points=["MC"]),
     ]
-    # Run boost first so stack_meta is populated
     event_v2._apply_stack_boost(events, "Europe/Istanbul")
-    # Now narrative
     applied = event_v2._apply_stack_narrative(events)
     assert len(applied) == 1  # exactly one event got the clause
-    # The top-sig event after boost is e2 (0.61 * 1.20 = 0.732)
+    # Top-sig event after boost is e2 (0.61 * 1.20 = 0.732)
     assert "e2" in applied
-    # e1 and e3 unchanged
-    assert events[0].why_now_tr == ""
-    assert events[2].why_now_tr == ""
-    # e2 has the clause
-    assert event_v2.STACK_NARRATIVE_CLAUSE_TR in events[1].why_now_tr
+    # why_now_tr is NEVER touched — empty (or whatever the builder set)
+    for e in events:
+        assert e.why_now_tr == ""
+    # stack_clause_tr populated only on the top event
+    assert events[0].stack_clause_tr == ""
+    assert events[1].stack_clause_tr == event_v2.STACK_NARRATIVE_CLAUSE_TR
+    assert events[2].stack_clause_tr == ""
 
 
-def test_stack_narrative_appends_with_spacing_to_existing_why_now() -> None:
+def test_stack_narrative_does_not_touch_why_now_tr() -> None:
+    """Even when the gate fires, why_now_tr remains exactly as the builder
+    set it. The stack clause lives only in stack_clause_tr."""
     events = [
-        _stack_event(event_id="e1", subtype="square", source_bodies=["Sun"],
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Saturn"],
                      significance=0.52, target_points=["Moon"]),
         _stack_event(event_id="e2", subtype="trine", source_bodies=["Venus"],
-                     significance=0.61, target_points=["Saturn"]),
+                     significance=0.61, target_points=["Jupiter"]),
         _stack_event(event_id="e3", subtype="sextile", source_bodies=["Mars"],
                      significance=0.47, target_points=["MC"]),
     ]
-    events[1].why_now_tr = "Etki su anda zirveye."
+    # Builder has pre-populated why_now_tr with real content (aspect +
+    # PR9 solar resonance). The narrative apply must NOT append to it.
+    events[1].why_now_tr = "Etki su anda zirveye; bu da Jupiter temasini one cikariyor."
     event_v2._apply_stack_boost(events, "Europe/Istanbul")
     event_v2._apply_stack_narrative(events)
     assert events[1].why_now_tr == (
-        f"Etki su anda zirveye. {event_v2.STACK_NARRATIVE_CLAUSE_TR}"
+        "Etki su anda zirveye; bu da Jupiter temasini one cikariyor."
     )
-
-
-def test_stack_narrative_appends_terminator_when_missing() -> None:
-    events = [
-        _stack_event(event_id="e1", subtype="square", source_bodies=["Sun"],
-                     significance=0.52, target_points=["Moon"]),
-        _stack_event(event_id="e2", subtype="trine", source_bodies=["Venus"],
-                     significance=0.61, target_points=["Saturn"]),
-        _stack_event(event_id="e3", subtype="sextile", source_bodies=["Mars"],
-                     significance=0.47, target_points=["MC"]),
-    ]
-    events[1].why_now_tr = "Etki su anda zirveye"  # no trailing period
-    event_v2._apply_stack_boost(events, "Europe/Istanbul")
-    event_v2._apply_stack_narrative(events)
-    # Should add period before joining
-    assert events[1].why_now_tr == (
-        f"Etki su anda zirveye. {event_v2.STACK_NARRATIVE_CLAUSE_TR}"
-    )
+    assert events[1].stack_clause_tr == event_v2.STACK_NARRATIVE_CLAUSE_TR
 
 
 def test_stack_narrative_idempotent_on_repeat_call() -> None:
     events = [
-        _stack_event(event_id="e1", subtype="square", source_bodies=["Sun"],
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Saturn"],
                      significance=0.52, target_points=["Moon"]),
         _stack_event(event_id="e2", subtype="trine", source_bodies=["Venus"],
-                     significance=0.61, target_points=["Saturn"]),
+                     significance=0.61, target_points=["Jupiter"]),
         _stack_event(event_id="e3", subtype="sextile", source_bodies=["Mars"],
                      significance=0.47, target_points=["MC"]),
     ]
     event_v2._apply_stack_boost(events, "Europe/Istanbul")
     event_v2._apply_stack_narrative(events)
-    once = events[1].why_now_tr
+    once_clause = events[1].stack_clause_tr
+    once_why = events[1].why_now_tr
     event_v2._apply_stack_narrative(events)  # second call
-    assert events[1].why_now_tr == once  # no double-append
+    assert events[1].stack_clause_tr == once_clause  # no change
+    assert events[1].why_now_tr == once_why
 
 
 def test_stack_narrative_silent_when_boost_disabled() -> None:
-    """No stack_meta → gate silent → no clauses appended anywhere."""
+    """No stack_meta → gate silent → stack_clause_tr empty on all events."""
     events = [
-        _stack_event(event_id="e1", subtype="square", source_bodies=["Sun"],
+        _stack_event(event_id="e1", subtype="square", source_bodies=["Saturn"],
                      significance=0.52, target_points=["Moon"]),
         _stack_event(event_id="e2", subtype="trine", source_bodies=["Venus"],
-                     significance=0.61, target_points=["Saturn"]),
+                     significance=0.61, target_points=["Jupiter"]),
         _stack_event(event_id="e3", subtype="sextile", source_bodies=["Mars"],
                      significance=0.47, target_points=["MC"]),
     ]
@@ -766,7 +759,7 @@ def test_stack_narrative_silent_when_boost_disabled() -> None:
     applied = event_v2._apply_stack_narrative(events)
     assert applied == {}
     for e in events:
-        assert e.why_now_tr == ""
+        assert e.stack_clause_tr == ""
 
 
 def test_stack_narrative_silent_on_marginal_size2_stack() -> None:
@@ -781,7 +774,7 @@ def test_stack_narrative_silent_on_marginal_size2_stack() -> None:
     applied = event_v2._apply_stack_narrative(events)
     assert applied == {}
     for e in events:
-        assert e.why_now_tr == ""
+        assert e.stack_clause_tr == ""
 
 
 def test_stack_axis_collapse_source_side_different_targets_do_not_collapse() -> None:

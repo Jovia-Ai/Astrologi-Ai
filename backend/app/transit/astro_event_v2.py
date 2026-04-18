@@ -219,6 +219,12 @@ class AstroEventV2:
     subtitle_tr: str = ""
     summary_tr: str = ""
     why_now_tr: str = ""
+    # PR7-engine-prep: Stack clause emitted as a separate sibling field so
+    # UI-side rate limiters can conditionally append without string-stripping
+    # why_now_tr. Populated only on the top-sig gate-passing event per day;
+    # empty string "" for every other event. why_now_tr itself remains
+    # clause-free regardless of gate state.
+    stack_clause_tr: str = ""
     guidance_tr: List[str] = field(default_factory=list)
     watch_for_tr: List[str] = field(default_factory=list)
     time_hint_tr: str = ""
@@ -517,31 +523,24 @@ def _stack_narrative_passes_gate(stack_meta: Mapping[str, Any] | None) -> bool:
     return size >= STACK_NARRATIVE_GATE_MIN_SIZE and capped
 
 
-def _append_why_now_clause(current: str, clause: str) -> str:
-    """Append `clause` to `current` with safe spacing and punctuation.
-
-    Handles empty/whitespace-only current, missing terminator on current
-    (adds a period), and avoids double spaces or dangling punctuation.
-    """
-    existing = (current or "").strip()
-    if not existing:
-        return clause
-    if not existing.endswith((".", "!", "?", ":")):
-        existing = existing + "."
-    return f"{existing} {clause}"
-
-
 def _apply_stack_narrative(events: Sequence["AstroEventV2"]) -> Dict[str, str]:
-    """Apply the stack narrative clause to qualifying events.
+    """Populate stack_clause_tr on qualifying events.
 
-    For each day where any event passes the narrative gate, the single
-    top-sig event (post-collapse, post-boost significance_score) gets the
-    clause appended to its why_now_tr. Others stay silent.
+    Payload contract (engine prep refactor):
+      * why_now_tr: NEVER contains the stack clause. Stays consumer-stable
+        regardless of gate state; carries only aspect why-now + PR9 solar
+        resonance content.
+      * stack_clause_tr: populated with STACK_NARRATIVE_CLAUSE_TR only on
+        the single top-sig gate-passing event per day. Empty string "" for
+        every other event.
 
-    Idempotent: an event whose provenance already records
-    stack_narrative_applied=True is skipped on re-entry.
+    Client rate-limiters combine the two fields (or not) based on cooldown
+    state; engine makes no cadence decisions.
 
-    Returns {event_id: appended_clause} for reporting.
+    Idempotent: an event with provenance.stack_narrative_applied=True is
+    skipped on re-entry.
+
+    Returns {event_id: clause} for reporting.
     """
     if not events:
         return {}
@@ -568,7 +567,7 @@ def _apply_stack_narrative(events: Sequence["AstroEventV2"]) -> Dict[str, str]:
             day_events,
             key=lambda e: (float(e.significance_score), e.event_id),
         )
-        top.why_now_tr = _append_why_now_clause(top.why_now_tr, STACK_NARRATIVE_CLAUSE_TR)
+        top.stack_clause_tr = STACK_NARRATIVE_CLAUSE_TR
         prov = dict(top.provenance or {})
         prov["stack_narrative_applied"] = True
         top.provenance = prov
