@@ -1,0 +1,3585 @@
+{
+  "metadata": {
+    "benchmark_dates": [
+      "2026-02-01",
+      "2026-03-04",
+      "2026-05-15",
+      "2026-08-21",
+      "2026-11-10"
+    ],
+    "birth_data": {
+      "date": "2015-09-10",
+      "latitude": 41.0082,
+      "longitude": 28.9784,
+      "place": "Istanbul",
+      "time": "12:00",
+      "timezone": "Europe/Istanbul"
+    },
+    "body_set": [
+      "Sun",
+      "Moon",
+      "Mercury",
+      "Venus",
+      "Mars",
+      "Jupiter",
+      "Saturn",
+      "Uranus",
+      "Neptune",
+      "Pluto"
+    ],
+    "body_set_label": "traditional_10",
+    "classification": {
+      "notes": "SYNTHETIC FIXTURE — not a real person's chart. Birth time 12:00 is a NOON PLACEHOLDER. Moon is time-sensitive (~13°/day), so real-time charts on this date will differ. At noon Istanbul: Leo stellium — Moon + Venus + Mars, span 6.0°. Primary trait = STELLIUM. Intended as a controlled synthetic test case for stellium sensitivity logic.",
+      "primary_profile": "STELLIUM",
+      "secondary_traits": []
+    },
+    "classification_criteria_version": "v1",
+    "created_at_utc": "2026-04-18T13:51:14Z",
+    "engine_config": {
+      "apply_out_of_sign_filter": false,
+      "aspect_types": [
+        "conjunction",
+        "opposition",
+        "square",
+        "trine",
+        "sextile"
+      ],
+      "label": "OLD (pre-PR1: wide orbs, no minor aspects, no OOS filter, linear decay)",
+      "orb_decay_mode": "linear",
+      "orbs": {
+        "conjunction": 6.0,
+        "opposition": 6.0,
+        "sextile": 4.0,
+        "square": 6.0,
+        "trine": 6.0
+      }
+    },
+    "fixture_name": "stellium",
+    "hash_algorithm": "sha256",
+    "hash_canonical_form": "json.dumps(payload, sort_keys=True, separators=(',',':'), ensure_ascii=False) UTF-8 bytes; floats rounded to 4 decimals",
+    "hash_of_canonical_payload": "a0dada5566f2eba7f2b69181b3b42ca8ffee597f15e567940c6587640d2a69e7",
+    "hash_scope": "payload_only"
+  },
+  "payload": {
+    "2026-02-01": [
+      {
+        "orb": 0.03,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.993,
+        "target": "Sun",
+        "transit_body": "Jupiter",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.33,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.946,
+        "target": "Fortune",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 0.6,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.9,
+        "target": "Mars",
+        "transit_body": "Mercury",
+        "type": "opposition"
+      },
+      {
+        "orb": 0.64,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.893,
+        "target": "ASC",
+        "transit_body": "Mercury",
+        "type": "square"
+      },
+      {
+        "orb": 0.64,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.893,
+        "target": "DSC",
+        "transit_body": "Mercury",
+        "type": "square"
+      },
+      {
+        "orb": 0.43,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.892,
+        "target": "Uranus",
+        "transit_body": "Mercury",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.66,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.891,
+        "target": "Saturn",
+        "transit_body": "Neptune",
+        "type": "trine"
+      },
+      {
+        "orb": 0.82,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.864,
+        "target": "Saturn",
+        "transit_body": "Saturn",
+        "type": "trine"
+      },
+      {
+        "orb": 0.85,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.859,
+        "target": "ASC",
+        "transit_body": "Venus",
+        "type": "square"
+      },
+      {
+        "orb": 0.85,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.859,
+        "target": "DSC",
+        "transit_body": "Venus",
+        "type": "square"
+      },
+      {
+        "orb": 0.85,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.859,
+        "target": "ASC",
+        "transit_body": "Vertex",
+        "type": "square"
+      },
+      {
+        "orb": 0.85,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.859,
+        "target": "DSC",
+        "transit_body": "Vertex",
+        "type": "square"
+      },
+      {
+        "orb": 0.88,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.854,
+        "target": "North Node",
+        "transit_body": "Neptune",
+        "type": "opposition"
+      },
+      {
+        "orb": 0.88,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.854,
+        "target": "South Node",
+        "transit_body": "Neptune",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.9,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.851,
+        "target": "Mercury",
+        "transit_body": "Sun",
+        "type": "trine"
+      },
+      {
+        "orb": 0.94,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.843,
+        "target": "Neptune",
+        "transit_body": "North Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.94,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.843,
+        "target": "Neptune",
+        "transit_body": "South Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 1.0,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.833,
+        "target": "Fortune",
+        "transit_body": "Venus",
+        "type": "trine"
+      },
+      {
+        "orb": 1.0,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.833,
+        "target": "Fortune",
+        "transit_body": "Vertex",
+        "type": "trine"
+      },
+      {
+        "orb": 1.06,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.735,
+        "target": "Uranus",
+        "transit_body": "Venus",
+        "type": "sextile"
+      },
+      {
+        "orb": 1.06,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.735,
+        "target": "Uranus",
+        "transit_body": "Vertex",
+        "type": "sextile"
+      },
+      {
+        "orb": 1.64,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.726,
+        "target": "Lilith",
+        "transit_body": "Neptune",
+        "type": "opposition"
+      },
+      {
+        "orb": 1.72,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.714,
+        "target": "Jupiter",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 1.92,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.681,
+        "target": "Lilith",
+        "transit_body": "Pluto",
+        "type": "trine"
+      },
+      {
+        "orb": 1.98,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.67,
+        "target": "Chiron",
+        "transit_body": "Jupiter",
+        "type": "trine"
+      },
+      {
+        "orb": 2.03,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.661,
+        "target": "Saturn",
+        "transit_body": "Uranus",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.09,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.652,
+        "target": "Mars",
+        "transit_body": "Venus",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.09,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.652,
+        "target": "Mars",
+        "transit_body": "Vertex",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.18,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.637,
+        "target": "ASC",
+        "transit_body": "Jupiter",
+        "type": "trine"
+      },
+      {
+        "orb": 2.19,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.634,
+        "target": "Venus",
+        "transit_body": "Sun",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.19,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.634,
+        "target": "Vertex",
+        "transit_body": "Sun",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.27,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.621,
+        "target": "Mars",
+        "transit_body": "Chiron",
+        "type": "trine"
+      },
+      {
+        "orb": 2.35,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.609,
+        "target": "North Node",
+        "transit_body": "Saturn",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.35,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.609,
+        "target": "South Node",
+        "transit_body": "Saturn",
+        "type": "conjunction"
+      },
+      {
+        "orb": 2.39,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.602,
+        "target": "Uranus",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 2.49,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.585,
+        "target": "Fortune",
+        "transit_body": "Mercury",
+        "type": "trine"
+      },
+      {
+        "orb": 2.61,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.565,
+        "target": "Jupiter",
+        "transit_body": "North Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.61,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.565,
+        "target": "Jupiter",
+        "transit_body": "South Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 2.68,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.553,
+        "target": "North Node",
+        "transit_body": "Pluto",
+        "type": "trine"
+      },
+      {
+        "orb": 1.86,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.535,
+        "target": "Jupiter",
+        "transit_body": "Fortune",
+        "type": "sextile"
+      },
+      {
+        "orb": 2.99,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.502,
+        "target": "Moon",
+        "transit_body": "Sun",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.11,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.481,
+        "target": "Lilith",
+        "transit_body": "Saturn",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.15,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.475,
+        "target": "Moon",
+        "transit_body": "Venus",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.15,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.475,
+        "target": "Moon",
+        "transit_body": "Vertex",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.18,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.456,
+        "target": "DSC",
+        "transit_body": "Jupiter",
+        "type": "sextile"
+      },
+      {
+        "orb": 3.3,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.45,
+        "target": "Uranus",
+        "transit_body": "Chiron",
+        "type": "conjunction"
+      },
+      {
+        "orb": 3.38,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.436,
+        "target": "Neptune",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 3.53,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.412,
+        "target": "Neptune",
+        "transit_body": "Fortune",
+        "type": "trine"
+      },
+      {
+        "orb": 3.56,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.406,
+        "target": "North Node",
+        "transit_body": "Uranus",
+        "type": "trine"
+      },
+      {
+        "orb": 3.61,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.399,
+        "target": "IC",
+        "transit_body": "Fortune",
+        "type": "trine"
+      },
+      {
+        "orb": 3.74,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.376,
+        "target": "South Node",
+        "transit_body": "Lilith",
+        "type": "trine"
+      },
+      {
+        "orb": 3.75,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.375,
+        "target": "IC",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 3.75,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.375,
+        "target": "MC",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 3.92,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.347,
+        "target": "Mercury",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 3.93,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.345,
+        "target": "Pluto",
+        "transit_body": "South Node",
+        "type": "trine"
+      },
+      {
+        "orb": 3.95,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.342,
+        "target": "Venus",
+        "transit_body": "Venus",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.95,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.342,
+        "target": "Vertex",
+        "transit_body": "Venus",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.95,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.342,
+        "target": "Venus",
+        "transit_body": "Vertex",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.95,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.342,
+        "target": "Vertex",
+        "transit_body": "Vertex",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.68,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.329,
+        "target": "South Node",
+        "transit_body": "Pluto",
+        "type": "sextile"
+      },
+      {
+        "orb": 4.25,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.291,
+        "target": "South Node",
+        "transit_body": "Moon",
+        "type": "trine"
+      },
+      {
+        "orb": 4.29,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.285,
+        "target": "Pluto",
+        "transit_body": "Jupiter",
+        "type": "opposition"
+      },
+      {
+        "orb": 4.33,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.278,
+        "target": "Lilith",
+        "transit_body": "Uranus",
+        "type": "trine"
+      },
+      {
+        "orb": 2.98,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.255,
+        "target": "Lilith",
+        "transit_body": "Lilith",
+        "type": "sextile"
+      },
+      {
+        "orb": 4.64,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.227,
+        "target": "Moon",
+        "transit_body": "Mercury",
+        "type": "opposition"
+      },
+      {
+        "orb": 5.14,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.143,
+        "target": "Fortune",
+        "transit_body": "Sun",
+        "type": "trine"
+      },
+      {
+        "orb": 3.49,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.128,
+        "target": "Lilith",
+        "transit_body": "Moon",
+        "type": "sextile"
+      },
+      {
+        "orb": 5.23,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.128,
+        "target": "Lilith",
+        "transit_body": "Mars",
+        "type": "trine"
+      },
+      {
+        "orb": 5.25,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.126,
+        "target": "Mercury",
+        "transit_body": "Venus",
+        "type": "trine"
+      },
+      {
+        "orb": 5.25,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.126,
+        "target": "Mercury",
+        "transit_body": "Vertex",
+        "type": "trine"
+      },
+      {
+        "orb": 5.28,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.121,
+        "target": "Saturn",
+        "transit_body": "Lilith",
+        "type": "conjunction"
+      },
+      {
+        "orb": 3.56,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.109,
+        "target": "South Node",
+        "transit_body": "Uranus",
+        "type": "sextile"
+      },
+      {
+        "orb": 5.36,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.106,
+        "target": "Fortune",
+        "transit_body": "Chiron",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.61,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.098,
+        "target": "MC",
+        "transit_body": "Fortune",
+        "type": "sextile"
+      },
+      {
+        "orb": 5.44,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.094,
+        "target": "Venus",
+        "transit_body": "Mercury",
+        "type": "opposition"
+      },
+      {
+        "orb": 5.44,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.094,
+        "target": "Vertex",
+        "transit_body": "Mercury",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.74,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.064,
+        "target": "North Node",
+        "transit_body": "Lilith",
+        "type": "sextile"
+      },
+      {
+        "orb": 5.79,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.036,
+        "target": "Saturn",
+        "transit_body": "Moon",
+        "type": "trine"
+      },
+      {
+        "orb": 3.93,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.017,
+        "target": "Pluto",
+        "transit_body": "North Node",
+        "type": "sextile"
+      },
+      {
+        "orb": 3.56,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.012,
+        "target": "IC",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 3.56,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.012,
+        "target": "MC",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 6.0,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.001,
+        "target": "North Node",
+        "transit_body": "Mars",
+        "type": "trine"
+      }
+    ],
+    "2026-03-04": [
+      {
+        "orb": 0.09,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.985,
+        "target": "Neptune",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 0.14,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.977,
+        "target": "North Node",
+        "transit_body": "Neptune",
+        "type": "opposition"
+      },
+      {
+        "orb": 0.14,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.977,
+        "target": "South Node",
+        "transit_body": "Neptune",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.29,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.952,
+        "target": "ASC",
+        "transit_body": "Mercury",
+        "type": "trine"
+      },
+      {
+        "orb": 0.34,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.944,
+        "target": "Lilith",
+        "transit_body": "Saturn",
+        "type": "opposition"
+      },
+      {
+        "orb": 0.38,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.936,
+        "target": "IC",
+        "transit_body": "Mars",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.38,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.936,
+        "target": "MC",
+        "transit_body": "Mars",
+        "type": "opposition"
+      },
+      {
+        "orb": 0.29,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.929,
+        "target": "DSC",
+        "transit_body": "Mercury",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.48,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.92,
+        "target": "Chiron",
+        "transit_body": "Mercury",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.63,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.896,
+        "target": "Lilith",
+        "transit_body": "Neptune",
+        "type": "opposition"
+      },
+      {
+        "orb": 0.83,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.862,
+        "target": "Neptune",
+        "transit_body": "North Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.83,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.862,
+        "target": "Neptune",
+        "transit_body": "South Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 1.1,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.816,
+        "target": "North Node",
+        "transit_body": "Saturn",
+        "type": "opposition"
+      },
+      {
+        "orb": 1.1,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.816,
+        "target": "South Node",
+        "transit_body": "Saturn",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.76,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.81,
+        "target": "Pluto",
+        "transit_body": "Sun",
+        "type": "sextile"
+      },
+      {
+        "orb": 1.47,
+        "out_of_sign": true,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.755,
+        "target": "North Node",
+        "transit_body": "Fortune",
+        "type": "square"
+      },
+      {
+        "orb": 1.47,
+        "out_of_sign": true,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.755,
+        "target": "South Node",
+        "transit_body": "Fortune",
+        "type": "square"
+      },
+      {
+        "orb": 1.67,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.721,
+        "target": "Saturn",
+        "transit_body": "Neptune",
+        "type": "trine"
+      },
+      {
+        "orb": 1.68,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.719,
+        "target": "Saturn",
+        "transit_body": "Uranus",
+        "type": "opposition"
+      },
+      {
+        "orb": 1.76,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.707,
+        "target": "Mercury",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 1.76,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.707,
+        "target": "Jupiter",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 1.91,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.682,
+        "target": "Saturn",
+        "transit_body": "Mars",
+        "type": "square"
+      },
+      {
+        "orb": 2.07,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.654,
+        "target": "Saturn",
+        "transit_body": "Venus",
+        "type": "trine"
+      },
+      {
+        "orb": 2.07,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.654,
+        "target": "Saturn",
+        "transit_body": "Vertex",
+        "type": "trine"
+      },
+      {
+        "orb": 2.13,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.645,
+        "target": "Pluto",
+        "transit_body": "Jupiter",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.24,
+        "out_of_sign": true,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.627,
+        "target": "Lilith",
+        "transit_body": "Fortune",
+        "type": "square"
+      },
+      {
+        "orb": 1.46,
+        "out_of_sign": true,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.594,
+        "target": "MC",
+        "transit_body": "Fortune",
+        "type": "trine"
+      },
+      {
+        "orb": 2.44,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.594,
+        "target": "Sun",
+        "transit_body": "Mercury",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.48,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.586,
+        "target": "Fortune",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 2.49,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.584,
+        "target": "Jupiter",
+        "transit_body": "North Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.49,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.584,
+        "target": "Jupiter",
+        "transit_body": "South Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 2.63,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.561,
+        "target": "Saturn",
+        "transit_body": "Saturn",
+        "type": "trine"
+      },
+      {
+        "orb": 2.83,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.528,
+        "target": "Lilith",
+        "transit_body": "Pluto",
+        "type": "trine"
+      },
+      {
+        "orb": 3.22,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.464,
+        "target": "North Node",
+        "transit_body": "Uranus",
+        "type": "trine"
+      },
+      {
+        "orb": 2.19,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.454,
+        "target": "Sun",
+        "transit_body": "Jupiter",
+        "type": "sextile"
+      },
+      {
+        "orb": 3.47,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.422,
+        "target": "Mars",
+        "transit_body": "Chiron",
+        "type": "trine"
+      },
+      {
+        "orb": 3.56,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.407,
+        "target": "Sun",
+        "transit_body": "Sun",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.6,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.401,
+        "target": "North Node",
+        "transit_body": "Pluto",
+        "type": "trine"
+      },
+      {
+        "orb": 3.61,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.399,
+        "target": "North Node",
+        "transit_body": "Venus",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.61,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.399,
+        "target": "South Node",
+        "transit_body": "Venus",
+        "type": "conjunction"
+      },
+      {
+        "orb": 3.61,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.399,
+        "target": "North Node",
+        "transit_body": "Vertex",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.61,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.399,
+        "target": "South Node",
+        "transit_body": "Vertex",
+        "type": "conjunction"
+      },
+      {
+        "orb": 1.46,
+        "out_of_sign": true,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.39,
+        "target": "IC",
+        "transit_body": "Fortune",
+        "type": "sextile"
+      },
+      {
+        "orb": 3.98,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.336,
+        "target": "Lilith",
+        "transit_body": "Uranus",
+        "type": "trine"
+      },
+      {
+        "orb": 4.05,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.325,
+        "target": "Pluto",
+        "transit_body": "South Node",
+        "type": "trine"
+      },
+      {
+        "orb": 4.14,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.31,
+        "target": "Chiron",
+        "transit_body": "Jupiter",
+        "type": "trine"
+      },
+      {
+        "orb": 4.33,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.278,
+        "target": "ASC",
+        "transit_body": "Jupiter",
+        "type": "trine"
+      },
+      {
+        "orb": 4.37,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.271,
+        "target": "Lilith",
+        "transit_body": "Venus",
+        "type": "opposition"
+      },
+      {
+        "orb": 4.37,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.271,
+        "target": "Lilith",
+        "transit_body": "Vertex",
+        "type": "opposition"
+      },
+      {
+        "orb": 4.5,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.25,
+        "target": "Uranus",
+        "transit_body": "Chiron",
+        "type": "conjunction"
+      },
+      {
+        "orb": 4.54,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.243,
+        "target": "Uranus",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 3.22,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.196,
+        "target": "South Node",
+        "transit_body": "Uranus",
+        "type": "sextile"
+      },
+      {
+        "orb": 5.08,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.153,
+        "target": "Jupiter",
+        "transit_body": "Mars",
+        "type": "opposition"
+      },
+      {
+        "orb": 5.13,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.145,
+        "target": "DSC",
+        "transit_body": "Moon",
+        "type": "trine"
+      },
+      {
+        "orb": 5.32,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.113,
+        "target": "Chiron",
+        "transit_body": "Moon",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.21,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.108,
+        "target": "IC",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 3.21,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.108,
+        "target": "MC",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 3.6,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.101,
+        "target": "South Node",
+        "transit_body": "Pluto",
+        "type": "sextile"
+      },
+      {
+        "orb": 5.51,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.082,
+        "target": "Chiron",
+        "transit_body": "Sun",
+        "type": "conjunction"
+      },
+      {
+        "orb": 5.64,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.06,
+        "target": "Neptune",
+        "transit_body": "Sun",
+        "type": "conjunction"
+      },
+      {
+        "orb": 5.71,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.049,
+        "target": "ASC",
+        "transit_body": "Sun",
+        "type": "trine"
+      }
+    ],
+    "2026-05-15": [
+      {
+        "orb": 0.07,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.989,
+        "target": "North Node",
+        "transit_body": "Uranus",
+        "type": "trine"
+      },
+      {
+        "orb": 0.08,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.987,
+        "target": "IC",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 0.08,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.987,
+        "target": "MC",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 0.07,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.983,
+        "target": "South Node",
+        "transit_body": "Uranus",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.7,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.884,
+        "target": "Lilith",
+        "transit_body": "Uranus",
+        "type": "trine"
+      },
+      {
+        "orb": 0.82,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.864,
+        "target": "Moon",
+        "transit_body": "Lilith",
+        "type": "trine"
+      },
+      {
+        "orb": 0.91,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.848,
+        "target": "Jupiter",
+        "transit_body": "North Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 0.91,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.848,
+        "target": "Jupiter",
+        "transit_body": "South Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 1.04,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.827,
+        "target": "Sun",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 1.41,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.766,
+        "target": "Uranus",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 1.6,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.733,
+        "target": "Saturn",
+        "transit_body": "Uranus",
+        "type": "opposition"
+      },
+      {
+        "orb": 1.61,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.731,
+        "target": "Venus",
+        "transit_body": "Lilith",
+        "type": "trine"
+      },
+      {
+        "orb": 1.61,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.731,
+        "target": "Vertex",
+        "transit_body": "Lilith",
+        "type": "trine"
+      },
+      {
+        "orb": 1.62,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.731,
+        "target": "ASC",
+        "transit_body": "Jupiter",
+        "type": "trine"
+      },
+      {
+        "orb": 1.63,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.728,
+        "target": "Saturn",
+        "transit_body": "Fortune",
+        "type": "trine"
+      },
+      {
+        "orb": 1.81,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.698,
+        "target": "Chiron",
+        "transit_body": "Jupiter",
+        "type": "trine"
+      },
+      {
+        "orb": 1.89,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.686,
+        "target": "Lilith",
+        "transit_body": "Neptune",
+        "type": "opposition"
+      },
+      {
+        "orb": 1.33,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.667,
+        "target": "Fortune",
+        "transit_body": "Lilith",
+        "type": "sextile"
+      },
+      {
+        "orb": 2.34,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.61,
+        "target": "Pluto",
+        "transit_body": "Saturn",
+        "type": "square"
+      },
+      {
+        "orb": 1.62,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.596,
+        "target": "DSC",
+        "transit_body": "Jupiter",
+        "type": "sextile"
+      },
+      {
+        "orb": 2.49,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.585,
+        "target": "Jupiter",
+        "transit_body": "Moon",
+        "type": "trine"
+      },
+      {
+        "orb": 2.58,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.57,
+        "target": "Neptune",
+        "transit_body": "North Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 2.58,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.57,
+        "target": "Neptune",
+        "transit_body": "South Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.65,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.558,
+        "target": "North Node",
+        "transit_body": "Neptune",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.65,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.558,
+        "target": "South Node",
+        "transit_body": "Neptune",
+        "type": "conjunction"
+      },
+      {
+        "orb": 2.71,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.548,
+        "target": "Mercury",
+        "transit_body": "Saturn",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.98,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.504,
+        "target": "MC",
+        "transit_body": "Moon",
+        "type": "trine"
+      },
+      {
+        "orb": 2.99,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.502,
+        "target": "Chiron",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 3.17,
+        "out_of_sign": true,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.472,
+        "target": "South Node",
+        "transit_body": "Fortune",
+        "type": "trine"
+      },
+      {
+        "orb": 3.39,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.434,
+        "target": "Uranus",
+        "transit_body": "Lilith",
+        "type": "trine"
+      },
+      {
+        "orb": 3.47,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.422,
+        "target": "Fortune",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 3.7,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.383,
+        "target": "Lilith",
+        "transit_body": "Pluto",
+        "type": "trine"
+      },
+      {
+        "orb": 3.82,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.363,
+        "target": "Mars",
+        "transit_body": "Sun",
+        "type": "square"
+      },
+      {
+        "orb": 4.0,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.334,
+        "target": "Saturn",
+        "transit_body": "Mercury",
+        "type": "opposition"
+      },
+      {
+        "orb": 4.01,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.332,
+        "target": "Venus",
+        "transit_body": "Saturn",
+        "type": "trine"
+      },
+      {
+        "orb": 4.01,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.332,
+        "target": "Vertex",
+        "transit_body": "Saturn",
+        "type": "trine"
+      },
+      {
+        "orb": 4.18,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.303,
+        "target": "Saturn",
+        "transit_body": "Neptune",
+        "type": "trine"
+      },
+      {
+        "orb": 2.91,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.272,
+        "target": "Mercury",
+        "transit_body": "Lilith",
+        "type": "sextile"
+      },
+      {
+        "orb": 4.42,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.263,
+        "target": "Mars",
+        "transit_body": "Lilith",
+        "type": "trine"
+      },
+      {
+        "orb": 2.98,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.256,
+        "target": "IC",
+        "transit_body": "Moon",
+        "type": "sextile"
+      },
+      {
+        "orb": 4.47,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.256,
+        "target": "North Node",
+        "transit_body": "Pluto",
+        "type": "trine"
+      },
+      {
+        "orb": 2.7,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.251,
+        "target": "MC",
+        "transit_body": "Chiron",
+        "type": "trine"
+      },
+      {
+        "orb": 4.56,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.241,
+        "target": "IC",
+        "transit_body": "North Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 4.56,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.241,
+        "target": "MC",
+        "transit_body": "North Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 4.56,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.241,
+        "target": "IC",
+        "transit_body": "South Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 4.56,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.241,
+        "target": "MC",
+        "transit_body": "South Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 3.16,
+        "out_of_sign": true,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.209,
+        "target": "North Node",
+        "transit_body": "Fortune",
+        "type": "sextile"
+      },
+      {
+        "orb": 4.76,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.206,
+        "target": "Mars",
+        "transit_body": "Mercury",
+        "type": "square"
+      },
+      {
+        "orb": 4.8,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.199,
+        "target": "Moon",
+        "transit_body": "Saturn",
+        "type": "trine"
+      },
+      {
+        "orb": 4.94,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.177,
+        "target": "Saturn",
+        "transit_body": "Sun",
+        "type": "opposition"
+      },
+      {
+        "orb": 5.06,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.157,
+        "target": "ASC",
+        "transit_body": "Sun",
+        "type": "opposition"
+      },
+      {
+        "orb": 5.06,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.157,
+        "target": "DSC",
+        "transit_body": "Sun",
+        "type": "conjunction"
+      },
+      {
+        "orb": 5.39,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.101,
+        "target": "Jupiter",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 5.42,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.097,
+        "target": "North Node",
+        "transit_body": "Venus",
+        "type": "square"
+      },
+      {
+        "orb": 5.42,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.097,
+        "target": "South Node",
+        "transit_body": "Venus",
+        "type": "square"
+      },
+      {
+        "orb": 5.42,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.097,
+        "target": "North Node",
+        "transit_body": "Vertex",
+        "type": "square"
+      },
+      {
+        "orb": 5.42,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.097,
+        "target": "South Node",
+        "transit_body": "Vertex",
+        "type": "square"
+      },
+      {
+        "orb": 5.53,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.079,
+        "target": "North Node",
+        "transit_body": "Mercury",
+        "type": "trine"
+      },
+      {
+        "orb": 3.76,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.059,
+        "target": "Sun",
+        "transit_body": "Jupiter",
+        "type": "sextile"
+      },
+      {
+        "orb": 3.93,
+        "out_of_sign": true,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.017,
+        "target": "Lilith",
+        "transit_body": "Fortune",
+        "type": "sextile"
+      }
+    ],
+    "2026-08-21": [
+      {
+        "orb": 0.09,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.978,
+        "target": "Jupiter",
+        "transit_body": "Mars",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.29,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.952,
+        "target": "MC",
+        "transit_body": "Chiron",
+        "type": "trine"
+      },
+      {
+        "orb": 0.34,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.944,
+        "target": "Saturn",
+        "transit_body": "North Node",
+        "type": "square"
+      },
+      {
+        "orb": 0.34,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.944,
+        "target": "Saturn",
+        "transit_body": "South Node",
+        "type": "square"
+      },
+      {
+        "orb": 0.29,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.928,
+        "target": "IC",
+        "transit_body": "Chiron",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.49,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.918,
+        "target": "Venus",
+        "transit_body": "Saturn",
+        "type": "trine"
+      },
+      {
+        "orb": 0.49,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.918,
+        "target": "Vertex",
+        "transit_body": "Saturn",
+        "type": "trine"
+      },
+      {
+        "orb": 0.59,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.902,
+        "target": "Fortune",
+        "transit_body": "Fortune",
+        "type": "trine"
+      },
+      {
+        "orb": 0.65,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.891,
+        "target": "Mercury",
+        "transit_body": "Venus",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.65,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.891,
+        "target": "Mercury",
+        "transit_body": "Vertex",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.8,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.866,
+        "target": "Mercury",
+        "transit_body": "Saturn",
+        "type": "opposition"
+      },
+      {
+        "orb": 0.64,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.839,
+        "target": "Venus",
+        "transit_body": "Venus",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.64,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.839,
+        "target": "Vertex",
+        "transit_body": "Venus",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.64,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.839,
+        "target": "Venus",
+        "transit_body": "Vertex",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.64,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.839,
+        "target": "Vertex",
+        "transit_body": "Vertex",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.97,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.839,
+        "target": "Jupiter",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 1.03,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.829,
+        "target": "Pluto",
+        "transit_body": "Venus",
+        "type": "square"
+      },
+      {
+        "orb": 1.03,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.829,
+        "target": "Pluto",
+        "transit_body": "Vertex",
+        "type": "square"
+      },
+      {
+        "orb": 1.06,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.823,
+        "target": "Mars",
+        "transit_body": "Mercury",
+        "type": "conjunction"
+      },
+      {
+        "orb": 1.15,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.808,
+        "target": "Saturn",
+        "transit_body": "Sun",
+        "type": "square"
+      },
+      {
+        "orb": 1.17,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.804,
+        "target": "Pluto",
+        "transit_body": "Saturn",
+        "type": "square"
+      },
+      {
+        "orb": 1.26,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.789,
+        "target": "ASC",
+        "transit_body": "Fortune",
+        "type": "square"
+      },
+      {
+        "orb": 1.26,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.789,
+        "target": "DSC",
+        "transit_body": "Fortune",
+        "type": "square"
+      },
+      {
+        "orb": 1.29,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.785,
+        "target": "Moon",
+        "transit_body": "Saturn",
+        "type": "trine"
+      },
+      {
+        "orb": 1.58,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.737,
+        "target": "Neptune",
+        "transit_body": "Mars",
+        "type": "trine"
+      },
+      {
+        "orb": 1.21,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.698,
+        "target": "Mercury",
+        "transit_body": "Moon",
+        "type": "sextile"
+      },
+      {
+        "orb": 1.93,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.679,
+        "target": "Lilith",
+        "transit_body": "Pluto",
+        "type": "trine"
+      },
+      {
+        "orb": 1.19,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.67,
+        "target": "IC",
+        "transit_body": "North Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 1.19,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.67,
+        "target": "MC",
+        "transit_body": "North Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 1.19,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.67,
+        "target": "IC",
+        "transit_body": "South Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 1.19,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.67,
+        "target": "MC",
+        "transit_body": "South Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 2.09,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.652,
+        "target": "Uranus",
+        "transit_body": "Mercury",
+        "type": "trine"
+      },
+      {
+        "orb": 2.12,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.647,
+        "target": "Lilith",
+        "transit_body": "Neptune",
+        "type": "opposition"
+      },
+      {
+        "orb": 1.44,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.64,
+        "target": "Moon",
+        "transit_body": "Venus",
+        "type": "sextile"
+      },
+      {
+        "orb": 1.44,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.64,
+        "target": "Moon",
+        "transit_body": "Vertex",
+        "type": "sextile"
+      },
+      {
+        "orb": 1.47,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.632,
+        "target": "Uranus",
+        "transit_body": "Fortune",
+        "type": "sextile"
+      },
+      {
+        "orb": 2.3,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.617,
+        "target": "ASC",
+        "transit_body": "Mercury",
+        "type": "square"
+      },
+      {
+        "orb": 2.3,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.617,
+        "target": "DSC",
+        "transit_body": "Mercury",
+        "type": "square"
+      },
+      {
+        "orb": 2.5,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.583,
+        "target": "Mars",
+        "transit_body": "Fortune",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.5,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.583,
+        "target": "Venus",
+        "transit_body": "Moon",
+        "type": "trine"
+      },
+      {
+        "orb": 2.5,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.583,
+        "target": "Vertex",
+        "transit_body": "Moon",
+        "type": "trine"
+      },
+      {
+        "orb": 2.63,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.561,
+        "target": "Neptune",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 2.69,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.551,
+        "target": "North Node",
+        "transit_body": "Pluto",
+        "type": "trine"
+      },
+      {
+        "orb": 2.74,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.544,
+        "target": "Moon",
+        "transit_body": "Fortune",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.88,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.519,
+        "target": "North Node",
+        "transit_body": "Neptune",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.88,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.519,
+        "target": "South Node",
+        "transit_body": "Neptune",
+        "type": "conjunction"
+      },
+      {
+        "orb": 1.97,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.508,
+        "target": "Mercury",
+        "transit_body": "Jupiter",
+        "type": "sextile"
+      },
+      {
+        "orb": 3.26,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.456,
+        "target": "Venus",
+        "transit_body": "Jupiter",
+        "type": "conjunction"
+      },
+      {
+        "orb": 3.26,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.456,
+        "target": "Vertex",
+        "transit_body": "Jupiter",
+        "type": "conjunction"
+      },
+      {
+        "orb": 3.3,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.45,
+        "target": "Moon",
+        "transit_body": "Moon",
+        "type": "trine"
+      },
+      {
+        "orb": 3.44,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.426,
+        "target": "Fortune",
+        "transit_body": "Saturn",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.53,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.411,
+        "target": "Venus",
+        "transit_body": "Fortune",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.53,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.411,
+        "target": "Vertex",
+        "transit_body": "Fortune",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.59,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.402,
+        "target": "Fortune",
+        "transit_body": "Venus",
+        "type": "conjunction"
+      },
+      {
+        "orb": 3.59,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.402,
+        "target": "Fortune",
+        "transit_body": "Vertex",
+        "type": "conjunction"
+      },
+      {
+        "orb": 3.73,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.379,
+        "target": "Lilith",
+        "transit_body": "Uranus",
+        "type": "trine"
+      },
+      {
+        "orb": 3.75,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.376,
+        "target": "North Node",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 3.75,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.376,
+        "target": "South Node",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 2.69,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.327,
+        "target": "South Node",
+        "transit_body": "Pluto",
+        "type": "sextile"
+      },
+      {
+        "orb": 4.04,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.326,
+        "target": "Neptune",
+        "transit_body": "Moon",
+        "type": "square"
+      },
+      {
+        "orb": 4.06,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.323,
+        "target": "Moon",
+        "transit_body": "Jupiter",
+        "type": "conjunction"
+      },
+      {
+        "orb": 4.42,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.264,
+        "target": "Saturn",
+        "transit_body": "Neptune",
+        "type": "trine"
+      },
+      {
+        "orb": 2.68,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.256,
+        "target": "IC",
+        "transit_body": "Sun",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.68,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.256,
+        "target": "MC",
+        "transit_body": "Sun",
+        "type": "conjunction"
+      },
+      {
+        "orb": 4.49,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.251,
+        "target": "North Node",
+        "transit_body": "Uranus",
+        "type": "trine"
+      },
+      {
+        "orb": 4.5,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.25,
+        "target": "IC",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 4.5,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.25,
+        "target": "MC",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 4.51,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.248,
+        "target": "Lilith",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 4.78,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.203,
+        "target": "Lilith",
+        "transit_body": "Mars",
+        "type": "square"
+      },
+      {
+        "orb": 4.83,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.195,
+        "target": "Mercury",
+        "transit_body": "Fortune",
+        "type": "trine"
+      },
+      {
+        "orb": 5.15,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.141,
+        "target": "Sun",
+        "transit_body": "Moon",
+        "type": "square"
+      },
+      {
+        "orb": 5.5,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.083,
+        "target": "Uranus",
+        "transit_body": "Saturn",
+        "type": "conjunction"
+      },
+      {
+        "orb": 5.55,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.075,
+        "target": "North Node",
+        "transit_body": "Mars",
+        "type": "square"
+      },
+      {
+        "orb": 5.55,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.075,
+        "target": "South Node",
+        "transit_body": "Mars",
+        "type": "square"
+      },
+      {
+        "orb": 5.56,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.074,
+        "target": "IC",
+        "transit_body": "Mars",
+        "type": "trine"
+      },
+      {
+        "orb": 5.65,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.058,
+        "target": "Uranus",
+        "transit_body": "Venus",
+        "type": "opposition"
+      },
+      {
+        "orb": 5.65,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.058,
+        "target": "Uranus",
+        "transit_body": "Vertex",
+        "type": "opposition"
+      },
+      {
+        "orb": 5.71,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.049,
+        "target": "Jupiter",
+        "transit_body": "Moon",
+        "type": "square"
+      },
+      {
+        "orb": 5.76,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.041,
+        "target": "Jupiter",
+        "transit_body": "Chiron",
+        "type": "trine"
+      }
+    ],
+    "2026-11-10": [
+      {
+        "orb": 0.11,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.981,
+        "target": "Lilith",
+        "transit_body": "Neptune",
+        "type": "opposition"
+      },
+      {
+        "orb": 0.16,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.973,
+        "target": "Jupiter",
+        "transit_body": "Lilith",
+        "type": "trine"
+      },
+      {
+        "orb": 0.41,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.896,
+        "target": "Jupiter",
+        "transit_body": "Mercury",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.71,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.881,
+        "target": "Saturn",
+        "transit_body": "Moon",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.81,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.864,
+        "target": "IC",
+        "transit_body": "Moon",
+        "type": "square"
+      },
+      {
+        "orb": 0.81,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.864,
+        "target": "MC",
+        "transit_body": "Moon",
+        "type": "square"
+      },
+      {
+        "orb": 0.82,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.863,
+        "target": "South Node",
+        "transit_body": "Moon",
+        "type": "trine"
+      },
+      {
+        "orb": 0.88,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.854,
+        "target": "North Node",
+        "transit_body": "Neptune",
+        "type": "opposition"
+      },
+      {
+        "orb": 0.88,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.854,
+        "target": "South Node",
+        "transit_body": "Neptune",
+        "type": "conjunction"
+      },
+      {
+        "orb": 0.63,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.843,
+        "target": "Sun",
+        "transit_body": "Sun",
+        "type": "sextile"
+      },
+      {
+        "orb": 0.82,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.795,
+        "target": "North Node",
+        "transit_body": "Moon",
+        "type": "sextile"
+      },
+      {
+        "orb": 1.32,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.779,
+        "target": "Chiron",
+        "transit_body": "Sun",
+        "type": "trine"
+      },
+      {
+        "orb": 1.43,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.762,
+        "target": "Lilith",
+        "transit_body": "Pluto",
+        "type": "trine"
+      },
+      {
+        "orb": 1.52,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.747,
+        "target": "ASC",
+        "transit_body": "Sun",
+        "type": "conjunction"
+      },
+      {
+        "orb": 1.52,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.747,
+        "target": "DSC",
+        "transit_body": "Sun",
+        "type": "opposition"
+      },
+      {
+        "orb": 2.08,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.653,
+        "target": "Neptune",
+        "transit_body": "Mercury",
+        "type": "trine"
+      },
+      {
+        "orb": 2.17,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.639,
+        "target": "Jupiter",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 2.19,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.634,
+        "target": "North Node",
+        "transit_body": "Pluto",
+        "type": "trine"
+      },
+      {
+        "orb": 1.59,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.603,
+        "target": "Lilith",
+        "transit_body": "Moon",
+        "type": "sextile"
+      },
+      {
+        "orb": 2.41,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.598,
+        "target": "Saturn",
+        "transit_body": "Neptune",
+        "type": "trine"
+      },
+      {
+        "orb": 2.46,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.591,
+        "target": "Mars",
+        "transit_body": "Mars",
+        "type": "conjunction"
+      },
+      {
+        "orb": 2.48,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.586,
+        "target": "Moon",
+        "transit_body": "Sun",
+        "type": "square"
+      },
+      {
+        "orb": 2.53,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.579,
+        "target": "Lilith",
+        "transit_body": "Uranus",
+        "type": "trine"
+      },
+      {
+        "orb": 1.83,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.543,
+        "target": "Neptune",
+        "transit_body": "Lilith",
+        "type": "sextile"
+      },
+      {
+        "orb": 2.76,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.54,
+        "target": "Mars",
+        "transit_body": "Sun",
+        "type": "square"
+      },
+      {
+        "orb": 3.28,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.454,
+        "target": "Venus",
+        "transit_body": "Sun",
+        "type": "square"
+      },
+      {
+        "orb": 3.28,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.454,
+        "target": "Vertex",
+        "transit_body": "Sun",
+        "type": "square"
+      },
+      {
+        "orb": 2.19,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.452,
+        "target": "South Node",
+        "transit_body": "Pluto",
+        "type": "sextile"
+      },
+      {
+        "orb": 3.29,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.451,
+        "target": "North Node",
+        "transit_body": "Uranus",
+        "type": "trine"
+      },
+      {
+        "orb": 3.3,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.45,
+        "target": "IC",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 3.3,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.45,
+        "target": "MC",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 3.43,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.429,
+        "target": "Uranus",
+        "transit_body": "Venus",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.43,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.429,
+        "target": "Uranus",
+        "transit_body": "Vertex",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.44,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.427,
+        "target": "Uranus",
+        "transit_body": "Fortune",
+        "type": "square"
+      },
+      {
+        "orb": 3.48,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.419,
+        "target": "Uranus",
+        "transit_body": "Mars",
+        "type": "trine"
+      },
+      {
+        "orb": 3.55,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.408,
+        "target": "Saturn",
+        "transit_body": "North Node",
+        "type": "square"
+      },
+      {
+        "orb": 3.55,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.408,
+        "target": "Saturn",
+        "transit_body": "South Node",
+        "type": "square"
+      },
+      {
+        "orb": 2.4,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.4,
+        "target": "Mars",
+        "transit_body": "Venus",
+        "type": "sextile"
+      },
+      {
+        "orb": 2.4,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.4,
+        "target": "Mars",
+        "transit_body": "Vertex",
+        "type": "sextile"
+      },
+      {
+        "orb": 3.65,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.392,
+        "target": "DSC",
+        "transit_body": "Fortune",
+        "type": "trine"
+      },
+      {
+        "orb": 3.69,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.384,
+        "target": "ASC",
+        "transit_body": "Mars",
+        "type": "square"
+      },
+      {
+        "orb": 3.69,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.384,
+        "target": "DSC",
+        "transit_body": "Mars",
+        "type": "square"
+      },
+      {
+        "orb": 3.84,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.361,
+        "target": "Neptune",
+        "transit_body": "Uranus",
+        "type": "square"
+      },
+      {
+        "orb": 4.14,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.31,
+        "target": "Saturn",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 4.28,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.286,
+        "target": "Pluto",
+        "transit_body": "Saturn",
+        "type": "square"
+      },
+      {
+        "orb": 4.53,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.245,
+        "target": "Lilith",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 4.62,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "neutral",
+        "strength": 0.23,
+        "target": "Mars",
+        "transit_body": "Jupiter",
+        "type": "conjunction"
+      },
+      {
+        "orb": 4.65,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.225,
+        "target": "Mercury",
+        "transit_body": "Saturn",
+        "type": "opposition"
+      },
+      {
+        "orb": 4.82,
+        "out_of_sign": true,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.196,
+        "target": "Saturn",
+        "transit_body": "Uranus",
+        "type": "opposition"
+      },
+      {
+        "orb": 3.29,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.177,
+        "target": "South Node",
+        "transit_body": "Uranus",
+        "type": "sextile"
+      },
+      {
+        "orb": 5.05,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "soft",
+        "strength": 0.158,
+        "target": "IC",
+        "transit_body": "Mercury",
+        "type": "trine"
+      },
+      {
+        "orb": 5.21,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "hard",
+        "strength": 0.132,
+        "target": "Mars",
+        "transit_body": "North Node",
+        "type": "opposition"
+      },
+      {
+        "orb": 5.21,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.132,
+        "target": "Mars",
+        "transit_body": "South Node",
+        "type": "conjunction"
+      },
+      {
+        "orb": 5.3,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.117,
+        "target": "North Node",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 5.3,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.117,
+        "target": "South Node",
+        "transit_body": "Lilith",
+        "type": "square"
+      },
+      {
+        "orb": 5.3,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.116,
+        "target": "MC",
+        "transit_body": "Lilith",
+        "type": "trine"
+      },
+      {
+        "orb": 3.65,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.088,
+        "target": "ASC",
+        "transit_body": "Fortune",
+        "type": "sextile"
+      },
+      {
+        "orb": 5.49,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.085,
+        "target": "Fortune",
+        "transit_body": "Venus",
+        "type": "conjunction"
+      },
+      {
+        "orb": 5.49,
+        "out_of_sign": false,
+        "phase": "applying",
+        "polarity": "neutral",
+        "strength": 0.085,
+        "target": "Fortune",
+        "transit_body": "Vertex",
+        "type": "conjunction"
+      },
+      {
+        "orb": 5.5,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "hard",
+        "strength": 0.083,
+        "target": "Fortune",
+        "transit_body": "Fortune",
+        "type": "square"
+      },
+      {
+        "orb": 3.73,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.069,
+        "target": "Saturn",
+        "transit_body": "Pluto",
+        "type": "sextile"
+      },
+      {
+        "orb": 3.36,
+        "out_of_sign": true,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.066,
+        "target": "MC",
+        "transit_body": "Chiron",
+        "type": "trine"
+      },
+      {
+        "orb": 5.65,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.058,
+        "target": "Uranus",
+        "transit_body": "Jupiter",
+        "type": "trine"
+      },
+      {
+        "orb": 3.84,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.039,
+        "target": "Chiron",
+        "transit_body": "Fortune",
+        "type": "sextile"
+      },
+      {
+        "orb": 5.8,
+        "out_of_sign": false,
+        "phase": "unknown",
+        "polarity": "soft",
+        "strength": 0.034,
+        "target": "Sun",
+        "transit_body": "Fortune",
+        "type": "trine"
+      },
+      {
+        "orb": 5.86,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.023,
+        "target": "ASC",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 5.86,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "hard",
+        "strength": 0.023,
+        "target": "DSC",
+        "transit_body": "Jupiter",
+        "type": "square"
+      },
+      {
+        "orb": 5.95,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.008,
+        "target": "Venus",
+        "transit_body": "Saturn",
+        "type": "trine"
+      },
+      {
+        "orb": 5.95,
+        "out_of_sign": false,
+        "phase": "separating",
+        "polarity": "soft",
+        "strength": 0.008,
+        "target": "Vertex",
+        "transit_body": "Saturn",
+        "type": "trine"
+      }
+    ]
+  }
+}
