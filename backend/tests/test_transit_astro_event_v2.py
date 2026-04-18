@@ -581,6 +581,84 @@ def test_stack_axis_collapse_preserves_non_axis_targets() -> None:
     assert m["raw_count"] == 2
 
 
+def test_stack_axis_collapse_source_side_node_pair_alone_does_not_stack() -> None:
+    """PR7.1a: NN-conj-Neptune + SN-opp-Neptune = one nodal axis contact on
+    Neptune. Alone (no third event), no stack forms."""
+    events = [
+        _stack_event(event_id="e1", subtype="conjunction", source_bodies=["North Node"],
+                     significance=0.78, target_points=["Neptune"]),
+        _stack_event(event_id="e2", subtype="opposition", source_bodies=["South Node"],
+                     significance=0.78, target_points=["Neptune"]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert meta == {}
+    assert events[0].significance_score == 0.78
+    assert events[1].significance_score == 0.78
+
+
+def test_stack_axis_collapse_source_side_node_pair_with_third_event_stacks() -> None:
+    """Source-side node shadow + one distinct event = genuine size=2 stack."""
+    events = [
+        _stack_event(event_id="e1", subtype="conjunction", source_bodies=["North Node"],
+                     significance=0.78, target_points=["Neptune"]),
+        _stack_event(event_id="e2", subtype="opposition", source_bodies=["South Node"],
+                     significance=0.78, target_points=["Neptune"]),
+        _stack_event(event_id="e3", subtype="trine", source_bodies=["Mars"],
+                     significance=0.55, target_points=["Venus"]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    assert len(meta) == 3
+    m = next(iter(meta.values()))
+    assert m["size"] == 2  # collapsed
+    assert m["raw_count"] == 3  # pre-collapse
+    # All three events get the same boost
+    for e, initial in zip(events, [0.78, 0.78, 0.55]):
+        assert abs(e.significance_score - initial * m["boost"]) < 1e-6
+
+
+def test_stack_axis_collapse_source_side_node_ingress_pair_collapses() -> None:
+    """PR7.1a: nodal ingress pair (NN house_3 ingress + SN house_9 ingress)
+    represents one nodal shift. Collapsed even though target_points is empty
+    for both, because (empty == empty) satisfies the target-set equality."""
+    events = [
+        _stack_event(event_id="e1", subtype="north node.house_3",
+                     source_bodies=["North Node"], significance=0.81,
+                     family="house_ingress_event", target_points=[]),
+        _stack_event(event_id="e2", subtype="south node.house_9",
+                     source_bodies=["South Node"], significance=0.81,
+                     family="house_ingress_event", target_points=[]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    # No third event → collapsed to size=1 → no stack
+    assert meta == {}
+    # But the collapse itself worked: add a third event to prove
+    events.append(
+        _stack_event(event_id="e3", subtype="trine", source_bodies=["Mars"],
+                     significance=0.55, target_points=["Venus"])
+    )
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    m = next(iter(meta.values()))
+    assert m["size"] == 2  # NN+SN ingress pair collapsed into 1 group
+    assert m["raw_count"] == 3
+
+
+def test_stack_axis_collapse_source_side_different_targets_do_not_collapse() -> None:
+    """NN-conj-Sun + SN-conj-Moon: source is axis pair but targets differ,
+    so these are two genuine events."""
+    events = [
+        _stack_event(event_id="e1", subtype="conjunction", source_bodies=["North Node"],
+                     significance=0.60, target_points=["Sun"]),
+        _stack_event(event_id="e2", subtype="conjunction", source_bodies=["South Node"],
+                     significance=0.60, target_points=["Moon"]),
+    ]
+    meta = event_v2._apply_stack_boost(events, "Europe/Istanbul")
+    # Natural size=2 stack, no collapse
+    assert len(meta) == 2
+    m = next(iter(meta.values()))
+    assert m["size"] == 2
+    assert m["raw_count"] == 2
+
+
 def test_stack_axis_collapse_five_raw_events_with_axis_shadow_becomes_size4() -> None:
     """Realistic stack: axis shadow (Mars MC/IC) + 3 distinct aspects."""
     events = [

@@ -292,10 +292,22 @@ def _collapse_axis_shadows(events: Sequence["AstroEventV2"]) -> List[List["Astro
     axis-partner pair is both counted once AND has both members' significance
     scaled consistently.
 
-    Two events collapse into one group when they share:
-      * event_family (aspect_event with aspect_event; cycle with cycle, etc.)
-      * source_bodies (same transit body set — usually a singleton)
-      * target_points[0] is a registered axis partner of the other's target
+    Two axis-shadow patterns collapse (single rule, not two):
+
+    Target-side shadow (PR7.1): same transit body hits an axis partner pair
+      of natal targets. E.g. Neptune-square-ASC + Neptune-square-DSC is one
+      Neptune position contacting the ASC/DSC axis.
+
+    Source-side shadow (PR7.1a): the node axis (North/South Node) acts as
+      two opposite transit sources contacting the same target. E.g.
+      NN-conj-Neptune + SN-opp-Neptune is one nodal axis contact on Neptune.
+      The same rule also covers nodal ingress pairs — NN-house_3-ingress +
+      SN-house_9-ingress is one nodal shift, because both events share the
+      event_family and (empty) target_points set.
+
+    Collapse fires when two events share event_family AND either
+      (a) same source_bodies + target_points[0] is axis partner of other's, or
+      (b) source_bodies[0] is axis partner of other's + same target_points set.
     """
     groups: List[List["AstroEventV2"]] = []
     claimed: set[int] = set()
@@ -304,6 +316,8 @@ def _collapse_axis_shadows(events: Sequence["AstroEventV2"]) -> List[List["Astro
             continue
         group = [e]
         claimed.add(i)
+
+        # (a) Target-side axis shadow
         target = e.target_points[0] if e.target_points else None
         partner_target = STACK_AXIS_PARTNERS.get(target) if target else None
         if partner_target is not None:
@@ -321,6 +335,28 @@ def _collapse_axis_shadows(events: Sequence["AstroEventV2"]) -> List[List["Astro
                     group.append(f)
                     claimed.add(j)
                     break  # one partner is enough; no chains
+
+        # (b) Source-side axis shadow (only if no target-side partner matched)
+        if len(group) == 1:
+            source_body = e.source_bodies[0] if e.source_bodies else None
+            partner_source = STACK_AXIS_PARTNERS.get(source_body) if source_body else None
+            if partner_source is not None:
+                target_set = set(e.target_points or [])
+                for j in range(i + 1, len(events)):
+                    if j in claimed:
+                        continue
+                    f = events[j]
+                    if f.event_family != e.event_family:
+                        continue
+                    f_source = f.source_bodies[0] if f.source_bodies else None
+                    if f_source != partner_source:
+                        continue
+                    if set(f.target_points or []) != target_set:
+                        continue
+                    group.append(f)
+                    claimed.add(j)
+                    break
+
         groups.append(group)
     return groups
 

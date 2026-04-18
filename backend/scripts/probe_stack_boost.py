@@ -146,6 +146,8 @@ def probe_fixture(name: str, window_days: int) -> Dict[str, Any]:
         "bucket_crossings": 0,
         "churn_non_stack_top5": 0,
         "examples": [],  # collect a few before/after samples
+        "size2_no_mod_days": set(),   # PR7.1a success metric
+        "size_ge_3_days": set(),       # PR7.1a success metric
     }
 
     for td in window_dates:
@@ -163,8 +165,15 @@ def probe_fixture(name: str, window_days: int) -> Dict[str, Any]:
         for ev in pt_rail_stack:
             prov = ev.get("provenance") or {}
             st = prov.get("stack_meta")
-            if st and st.get("capped"):
+            if not st:
+                continue
+            if st.get("capped"):
                 stats["capped_days_seen"].add(st.get("day"))
+            # Distribution metrics: marginal (size=2, no modifier) vs real (size>=3)
+            if st.get("size", 0) >= 3:
+                stats["size_ge_3_days"].add(st.get("day"))
+            elif st.get("size") == 2 and not st.get("flags"):
+                stats["size2_no_mod_days"].add(st.get("day"))
 
         # Bucket crossings: for each matched event_id, compare bucket(plain) vs bucket(stack)
         by_id_plain = {e["event_id"]: e for e in pt_rail_plain}
@@ -194,6 +203,8 @@ def probe_fixture(name: str, window_days: int) -> Dict[str, Any]:
 
     stats["stack_days_seen"] = sorted(stats["stack_days_seen"])
     stats["capped_days_seen"] = sorted(stats["capped_days_seen"])
+    stats["size2_no_mod_days"] = sorted(stats["size2_no_mod_days"])
+    stats["size_ge_3_days"] = sorted(stats["size_ge_3_days"])
     return stats
 
 
@@ -247,6 +258,13 @@ def main() -> None:
         print(f"  boosted event-applications: {s['boosted_events']}")
         print(f"  bucket crossings:           {s['bucket_crossings']}")
         print(f"  non-stack-day top-5 churn:  {s['churn_non_stack_top5']}  (should be 0)")
+        total_days = len(s["stack_days_seen"])
+        sz2 = len(s["size2_no_mod_days"])
+        sz3 = len(s["size_ge_3_days"])
+        sz2_pct = 100.0 * sz2 / max(total_days, 1)
+        sz3_pct = 100.0 * sz3 / max(total_days, 1)
+        print(f"  size=2 no-mod days:         {sz2} ({sz2_pct:.1f}% of stack days)")
+        print(f"  size>=3 days:               {sz3} ({sz3_pct:.1f}% of stack days)")
         if s["examples"]:
             ex = s["examples"][0].get("sample_event") or {}
             if ex:
