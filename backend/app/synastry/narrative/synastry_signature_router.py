@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from typing import Any, Dict, Mapping, Sequence
 
+from app.astro.orb_policy import tightness as _orb_policy_tightness
 from app.synastry.activation_engine import clamp01
 from app.synastry.narrative.synastry_library_tr import (
     SYNSTRY_CATEGORY_BUNDLE_SUPPORT,
@@ -56,18 +57,18 @@ def _channel_support(category: str, corrected_scores: Mapping[str, Any]) -> floa
 
 
 def _orb_tightness(hit: Mapping[str, Any]) -> float:
+    """Synastry aspect tightness — zero-orb 'missing data' sentinel.
+
+    Tek kaynak `app.astro.orb_policy.tightness`. Synastry konvansiyonu
+    korunur: orb<=0 → 0.0. Natal ile semantik farkı `zero_orb_as_missing`
+    flag'iyle açık.
+
+    TODO(faz1-pr4): orb=0 hit'leri gerçekten missing mi yoksa exact 0° aspect
+    olarak sayılmalı mı — synastry data kaynağıyla birlikte gözden geçir.
+    """
     aspect = str(hit.get("aspect") or "").lower()
     orb = _safe_float(hit.get("orb_deg"))
-    if orb <= 0.0:
-        return 0.0
-    max_orb = {
-        "conjunction": 8.0,
-        "square": 7.0,
-        "opposition": 8.0,
-        "trine": 7.0,
-        "sextile": 5.0,
-    }.get(aspect, 6.0)
-    return clamp01(1.0 - (orb / max_orb))
+    return _orb_policy_tightness(aspect, orb, zero_orb_as_missing=True)
 
 
 def _aspect_source_key(hit: Mapping[str, Any]) -> str:

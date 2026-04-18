@@ -1,4 +1,20 @@
-"""Scoring engine that calculates deterministic weights for chart signals."""
+"""Scoring engine that calculates deterministic weights for chart signals.
+
+STATUS: DEAD CODE (Faz 1 PR 2 audit — 2026-04-18)
+==================================================
+
+Bu modülün canlı consumer'ı yok. `grep -r 'from engine' backend/ mobile/`
+sıfır eşleşme verir. Modül `config/scoring/weights.yaml`'ın `orb_curve`,
+`planet_class_weights`, `aspect_weights`, `dominance_bonus` alanlarını
+okuyan tek yer — bu YAML alanları da dolayısıyla runtime'da consume
+edilmiyor.
+
+Canlı natal + synastry orb policy: `backend/app/astro/orb_policy.py`.
+
+TODO(faz1-pr4): Bu dosyayı silmek veya farklı bir engine mimarisine
+promote etmek arasında policy kararı gerekli. Silinmeden önce
+`weights.yaml`'daki pasif alanları da temizleyecek sweep yapılmalı.
+"""
 
 from __future__ import annotations
 

@@ -2,16 +2,14 @@ from __future__ import annotations
 
 from typing import Any, Dict, Mapping, Sequence
 
+from app.astro.orb_policy import MAX_ORB_BY_ASPECT, tightness as _orb_policy_tightness
 from app.natal.dispositor_engine import extract_aspects, extract_planet_positions
 
 
-MAJOR_ORBS = {
-    "conjunction": 8.0,
-    "opposition": 8.0,
-    "square": 7.0,
-    "trine": 7.0,
-    "sextile": 5.0,
-}
+# Geriye dönük re-export — natal'daki major aspect tablosu. Tek canlı kaynak
+# `app.astro.orb_policy.MAX_ORB_BY_ASPECT`. Eski isim dışarıdan import
+# edilebilir olsun diye alias tutuluyor.
+MAJOR_ORBS = MAX_ORB_BY_ASPECT
 
 DOMAIN_NORMALIZER = 0.80
 FAMILIARITY_NORMALIZER = 0.70
@@ -51,13 +49,16 @@ def _context(chart: Mapping[str, Any], natal_graph_v2_partial: Mapping[str, Any]
 
 
 def _aspect_tightness(aspect: Mapping[str, Any]) -> float:
+    """Natal aspect tightness — default konvansiyon (orb=0 → 1.0).
+
+    Tek kaynak `app.astro.orb_policy.tightness`. Bu wrapper aspect dict'inden
+    alan çıkarma + None orb için 0.0 fallback'i yapar.
+    """
     aspect_name = str(aspect.get("aspect") or "").lower()
-    max_orb = MAJOR_ORBS.get(aspect_name, 6.0)
-    try:
-        orb = float(aspect.get("orb"))
-    except (TypeError, ValueError):
+    orb_value = aspect.get("orb")
+    if orb_value is None:
         return 0.0
-    return max(0.0, 1.0 - (orb / max_orb))
+    return _orb_policy_tightness(aspect_name, orb_value)
 
 
 def _find_aspects(
