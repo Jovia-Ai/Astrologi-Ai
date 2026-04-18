@@ -20,6 +20,7 @@ class JoviaAppPreferences {
     required this.skyAlertsEnabled,
     required this.socialAlertsEnabled,
     required this.premiumInterest,
+    this.stackClauseLastShownAtMs,
   });
 
   final JoviaAppLocale locale;
@@ -27,6 +28,11 @@ class JoviaAppPreferences {
   final bool skyAlertsEnabled;
   final bool socialAlertsEnabled;
   final bool premiumInterest;
+  // PR7b hand-off: epoch milliseconds of the last time the stack synergy
+  // clause was actually rendered on this device. null = never shown. Read
+  // by StackClauseGate to enforce a rolling 7-day cooldown. Written by
+  // JoviaAppPreferencesController.markClauseShown.
+  final int? stackClauseLastShownAtMs;
 
   JoviaAppPreferences copyWith({
     JoviaAppLocale? locale,
@@ -34,6 +40,7 @@ class JoviaAppPreferences {
     bool? skyAlertsEnabled,
     bool? socialAlertsEnabled,
     bool? premiumInterest,
+    int? stackClauseLastShownAtMs,
   }) {
     return JoviaAppPreferences(
       locale: locale ?? this.locale,
@@ -41,6 +48,8 @@ class JoviaAppPreferences {
       skyAlertsEnabled: skyAlertsEnabled ?? this.skyAlertsEnabled,
       socialAlertsEnabled: socialAlertsEnabled ?? this.socialAlertsEnabled,
       premiumInterest: premiumInterest ?? this.premiumInterest,
+      stackClauseLastShownAtMs:
+          stackClauseLastShownAtMs ?? this.stackClauseLastShownAtMs,
     );
   }
 
@@ -51,6 +60,10 @@ class JoviaAppPreferences {
       'notifications_sky_alerts': skyAlertsEnabled,
       'notifications_social_alerts': socialAlertsEnabled,
       'premium_interest': premiumInterest,
+      // Only include the timestamp if it's been set, so we don't overwrite
+      // server-side state with null for users who've never seen the clause.
+      if (stackClauseLastShownAtMs != null)
+        'stack_clause_last_shown_at_ms': stackClauseLastShownAtMs,
     };
   }
 
@@ -66,6 +79,7 @@ class JoviaAppPreferences {
       skyAlertsEnabled: _readBool(raw['notifications_sky_alerts'], true),
       socialAlertsEnabled: _readBool(raw['notifications_social_alerts'], false),
       premiumInterest: _readBool(raw['premium_interest'], false),
+      stackClauseLastShownAtMs: _readInt(raw['stack_clause_last_shown_at_ms']),
     );
   }
 
@@ -81,6 +95,20 @@ class JoviaAppPreferences {
       return false;
     }
     return fallback;
+  }
+
+  static int? _readInt(dynamic value) {
+    if (value is int) {
+      return value;
+    }
+    if (value is num) {
+      return value.toInt();
+    }
+    final raw = value?.toString().trim();
+    if (raw == null || raw.isEmpty) {
+      return null;
+    }
+    return int.tryParse(raw);
   }
 }
 
@@ -114,6 +142,27 @@ class JoviaAppPreferencesController extends Notifier<JoviaAppPreferences> {
 
   Future<void> setPremiumInterest(bool value) async {
     await _persist(state.copyWith(premiumInterest: value));
+  }
+
+  /// Record that the stack synergy clause was just rendered to the user.
+  ///
+  /// Idempotency guard: if the existing timestamp is within
+  /// [dedupeWindowMs] (default 1 second) of [nowMs], the call is skipped.
+  /// This prevents duplicate Supabase writes when two widgets in the same
+  /// frame both observe the clause becoming visible (e.g. home_page and
+  /// calendar_hub_page both rendering the top-sig event of the day). The
+  /// state update itself is synchronous via _persist, so subsequent reads
+  /// in the same frame see the fresh lastShownAt and skip re-marking via
+  /// the cooldown check in StackClauseGate.
+  Future<void> markClauseShown(
+    int nowMs, {
+    int dedupeWindowMs = 1000,
+  }) async {
+    final last = state.stackClauseLastShownAtMs;
+    if (last != null && (nowMs - last).abs() < dedupeWindowMs) {
+      return;
+    }
+    await _persist(state.copyWith(stackClauseLastShownAtMs: nowMs));
   }
 
   Future<void> _persist(JoviaAppPreferences next) async {

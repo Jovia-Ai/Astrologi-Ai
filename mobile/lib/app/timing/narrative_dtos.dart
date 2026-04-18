@@ -669,6 +669,7 @@ class EventCardDto {
     required this.tone,
     required this.sectionLabels,
     required this.whyNow,
+    this.stackClauseTr = '',
     required this.conflict,
     required this.shadow,
     required this.upper,
@@ -728,6 +729,12 @@ class EventCardDto {
   final String tone;
   final Map<String, String> sectionLabels;
   final String whyNow;
+  // PR7b hand-off: stack synergy cue populated by the backend only on the
+  // top-sig event of a gate-passing same-day stack. Empty string on every
+  // other event. Display composition is handled by StackClauseGate, which
+  // combines this with whyNow (or whichever narrative slot the UI prefers)
+  // based on a rolling 7-day cooldown read from user preferences.
+  final String stackClauseTr;
   final String conflict;
   final String shadow;
   final String upper;
@@ -831,6 +838,7 @@ class EventCardDto {
     String? tone,
     Map<String, String>? sectionLabels,
     String? whyNow,
+    String? stackClauseTr,
     String? conflict,
     String? shadow,
     String? upper,
@@ -890,6 +898,7 @@ class EventCardDto {
       tone: tone ?? this.tone,
       sectionLabels: sectionLabels ?? this.sectionLabels,
       whyNow: whyNow ?? this.whyNow,
+      stackClauseTr: stackClauseTr ?? this.stackClauseTr,
       conflict: conflict ?? this.conflict,
       shadow: shadow ?? this.shadow,
       upper: upper ?? this.upper,
@@ -973,6 +982,10 @@ class EventCardDto {
       tone: _s(map, 'tone'),
       sectionLabels: _labels(map),
       whyNow: _tr(_s(map, 'why_now', 'whyNow')),
+      // Propagated from backend via PUBLIC_EVENT_V2_FIELDS whitelist
+      // (see public_builder._merge_event_v2). Empty string when the
+      // card's event is not a gate-passing stack top member.
+      stackClauseTr: _s(map, 'stack_clause_tr', 'stackClauseTr'),
       conflict: _tr(essence),
       shadow: _tr(watchout),
       upper: _tr(asks),

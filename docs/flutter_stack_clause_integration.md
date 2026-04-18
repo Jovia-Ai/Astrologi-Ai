@@ -45,6 +45,78 @@ final display = card.whyNow + (showStackClause ? ' ' + card.stackClauseTr : '');
 
 Where `showStackClause` is `stackClauseTr.isNotEmpty && cooldownOk`.
 
+## Infra already in place (ready to consume)
+
+The following pieces were shipped as part of the engine sprint:
+
+- `EventCardDto.stackClauseTr: String` (defaults to `''`). Deserialized
+  from `stack_clause_tr` on the card payload. See
+  `lib/app/timing/narrative_dtos.dart`.
+- `JoviaAppPreferences.stackClauseLastShownAtMs: int?` + metadata
+  round-trip + `JoviaAppPreferencesController.markClauseShown(nowMs)`
+  with a 1-second dedupe guard. See
+  `lib/app/preferences/jovia_app_preferences_provider.dart`.
+- `stackClauseShouldShow(...)` and `stackClauseComposeLine(...)` pure
+  helpers in `lib/app/timing/stack_clause_gate.dart`.
+- `stackClauseFeatureEnabledProvider` (defaults to `true`) for a
+  one-line kill switch.
+- 14 unit tests in `test/stack_clause_gate_test.dart` (cooldown
+  boundaries, compose behavior, DTO deserialize).
+
+## Ready-to-copy render snippet
+
+Drop this into any `ConsumerWidget` / `ConsumerStatefulWidget` where
+the card's narrative line is about to hit a `Text(...)`:
+
+```dart
+final prefs = ref.watch(joviaAppPreferencesProvider);
+final featureEnabled = ref.watch(stackClauseFeatureEnabledProvider);
+final nowMs = DateTime.now().millisecondsSinceEpoch;
+
+final showStackClause = stackClauseShouldShow(
+  stackClauseTr: card.stackClauseTr,
+  lastShownMs: prefs.stackClauseLastShownAtMs,
+  nowMs: nowMs,
+  featureEnabled: featureEnabled,
+);
+
+// `whyLine` is whichever narrative slot the widget was already using
+// (card.whyItFeelsThisWayTr, card.opening, card.whyNow, ...)
+final displayLine = stackClauseComposeLine(
+  baseText: whyLine,
+  stackClauseTr: card.stackClauseTr,
+  showStackClause: showStackClause,
+);
+
+if (showStackClause) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    ref
+        .read(joviaAppPreferencesProvider.notifier)
+        .markClauseShown(nowMs);
+  });
+}
+
+return Text(displayLine);
+```
+
+The `markClauseShown` call is safe to invoke from every widget that
+rendered the clause in the same frame — the controller's 1-second
+dedupe guard short-circuits duplicate Supabase writes, and the
+synchronous state update makes subsequent `stackClauseShouldShow`
+checks in the same frame return `false`. So no explicit per-widget
+coordination is required.
+
+## Scope status
+
+This engine hand-off commit ships the infrastructure (DTO, prefs,
+helpers, tests, backend propagation) but **does not yet wire the
+helpers into render widgets**. The narrative rendering path in
+`home_page.dart` / `calendar_hub_page.dart` runs through a ~2000-line
+fallback chain (`_firstHomeTextValue(...)` etc.) with no Riverpod
+access at the derivation layer, so wiring is a separate follow-up
+PR where each `ConsumerWidget` that renders card narrative picks up
+the snippet above. Everything it needs is already imported-able.
+
 ## Cooldown rule (rolling 7 days)
 
 ```dart
