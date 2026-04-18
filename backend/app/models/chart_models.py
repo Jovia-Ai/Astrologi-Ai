@@ -31,6 +31,7 @@ AspectName = Literal[
     "square",
     "sextile",
     "quincunx",
+    "semisextile",
 ]
 
 

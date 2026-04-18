@@ -143,6 +143,7 @@ ASPECT_DYNAMICS_TR = {
     "trine": "akış ve destek",
     "sextile": "fırsat ve açılan kapı",
     "quincunx": "uyum arayışı",
+    "semisextile": "ince fark ediş",
 }
 
 PLANET_TR = {
@@ -429,6 +430,7 @@ def _aspect_symbol(aspect: str) -> str:
         "sextile": "✶",
         "opposition": "☍",
         "quincunx": "⚻",
+        "semisextile": "⚺",
     }.get(aspect.strip().lower(), "•")
 
 

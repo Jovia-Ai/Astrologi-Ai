@@ -81,6 +81,7 @@ ASPECT_SYMBOL = {
     "sextile": "✶",
     "opposition": "☍",
     "quincunx": "⚻",
+    "semisextile": "⚺",
 }
 
 PHASE_MAP = {

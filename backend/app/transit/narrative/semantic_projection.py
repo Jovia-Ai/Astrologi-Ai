@@ -105,6 +105,7 @@ ASPECT_TO_MODE = {
     "conjunction": "concentration",
     "trine": "flow",
     "sextile": "opening",
+    "semisextile": "opening",
 }
 
 RELATIONSHIP_LENS_MULTIPLIERS = {

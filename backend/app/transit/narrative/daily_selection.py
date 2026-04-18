@@ -43,12 +43,13 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "pluto": 0.04,
     },
     "aspect_weights": {
-        "square": 0.16,
         "opposition": 0.16,
-        "conjunction": 0.14,
-        "quincunx": 0.10,
+        "square": 0.155,
+        "conjunction": 0.15,
         "trine": 0.11,
-        "sextile": 0.09,
+        "sextile": 0.095,
+        "quincunx": 0.075,
+        "semisextile": 0.045,
         "default": 0.07,
     },
     "phase_weights": {

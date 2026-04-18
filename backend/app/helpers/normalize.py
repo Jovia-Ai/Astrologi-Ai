@@ -48,4 +48,6 @@ def normalize_aspect_type(value: str | None) -> str:
         return "sextile"
     if normalized in {"quincunx", "inconjunct", "inconjunction"}:
         return "quincunx"
+    if normalized in {"semisextile", "semi_sextile", "semi-sextile", "semisextil"}:
+        return "semisextile"
     return normalized

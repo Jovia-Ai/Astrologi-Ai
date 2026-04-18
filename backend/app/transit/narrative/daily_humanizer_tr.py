@@ -136,6 +136,7 @@ ASPECT_MODE_TR = {
     "conjunction": "concentration",
     "trine": "flow",
     "sextile": "opening",
+    "semisextile": "opening",
 }
 
 FLOW_SIGNAL_BY_MODE = {
@@ -193,6 +194,7 @@ ASPECT_LABEL_TR = {
     "trine": "üçgeni",
     "sextile": "sekstili",
     "quincunx": "quincunxu",
+    "semisextile": "yarı altıgeni",
 }
 
 TR_LOWER_MAP = {

@@ -519,6 +519,7 @@ def build_event_feature_vector(
         "trine": 0.72,
         "sextile": 0.62,
         "quincunx": 0.56,
+        "semisextile": 0.42,
     }.get(aspect, 0.48)
     angle_activation = 1.0 if str((event.get("natal_point") or card_map.get("natal_point") or "")).strip().upper() in ANGLE_POINTS or any(house in {1, 4, 7, 10} for house in houses) else 0.0
     family = _event_family(event, card_map, event_v2_meta)
