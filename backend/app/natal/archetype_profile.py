@@ -278,18 +278,50 @@ def _public_private_bonus(
     return round(balance_score * 0.05, 4)
 
 
+def _extract_planet_signs(
+    chart_planets: Mapping[str, Any] | None,
+) -> Dict[str, str]:
+    """`chart_planets` → `{planet_name: sign}` — dignity lookup için.
+
+    Kabul edilen şekiller:
+      * `{"Saturn": {"sign": "Capricorn", ...}, ...}` — dispositor_engine çıktısı
+      * `{"Saturn": "Capricorn", ...}` — doğrudan string value
+      * None/boş → {} (zero-diff fallback: tüm dignity_bonus=0)
+    """
+    if not isinstance(chart_planets, Mapping):
+        return {}
+    out: Dict[str, str] = {}
+    for planet_name, payload in chart_planets.items():
+        name = _safe_text(planet_name)
+        if not name:
+            continue
+        if isinstance(payload, Mapping):
+            sign = _safe_text(payload.get("sign"))
+        else:
+            sign = _safe_text(payload)
+        if sign:
+            out[name] = sign
+    return out
+
+
 def build_chart_prior(
     *,
     primitive_scores: Mapping[str, Any],
     master_selector: Mapping[str, Any] | None = None,
     contradiction_signatures: Mapping[str, Any] | None = None,
     natal_feature_graph: Mapping[str, Any] | None = None,
+    chart_planets: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
     taxonomy = _taxonomy()
     primitives = _primitive_lookup(primitive_scores)
     spine = _identity_spine(master_selector)
     contradiction = _top_contradiction(contradiction_signatures)
     public_score, private_score, balance_score = _public_private(natal_feature_graph)
+
+    # PR 6: dignity_bonus için planet → sign map. Eksik/None → boş dict →
+    # tüm archetype'ler dignity_bonus=0 alır (zero-diff fallback).
+    from app.astro.dignity import archetype_dignity_bonus
+    planet_signs = _extract_planet_signs(chart_planets)
 
     scored: list[dict[str, Any]] = []
     for archetype in taxonomy.get("archetypes") or []:
@@ -327,7 +359,14 @@ def build_chart_prior(
             private_score=private_score,
             balance_score=balance_score,
         )
-        total = _clamp01(base + slot_bonus + contradiction_boost + split_bonus)
+        # PR 6: dignity bonus per archetype — additive, asla multiplicative.
+        # PR 7 sect geldiğinde aynı layer'da ek additive term olarak eklenecek.
+        dignity_bonus = archetype_dignity_bonus(
+            _safe_text(archetype.get("id")), planet_signs
+        )
+        total = _clamp01(
+            base + slot_bonus + contradiction_boost + split_bonus + dignity_bonus
+        )
         scored.append(
             {
                 "id": _safe_text(archetype.get("id")),
@@ -339,6 +378,7 @@ def build_chart_prior(
                     "slot_bonus": slot_bonus,
                     "contradiction_bonus": contradiction_boost,
                     "public_private_bonus": split_bonus,
+                    "dignity_bonus": round(dignity_bonus, 4),
                 },
                 "slot_alignment": slot_details,
                 "matched_contradiction": contradiction_id,
@@ -1417,6 +1457,7 @@ def build_archetype_profile(
     question_family_scores: Mapping[str, Any] | None = None,
     birth_time_confidence: str = "exact",
     answer_consistency: float | None = None,
+    chart_planets: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
     taxonomy = _taxonomy()
     fusion = _fusion()
@@ -1425,6 +1466,7 @@ def build_archetype_profile(
         master_selector=master_selector,
         contradiction_signatures=contradiction_signatures,
         natal_feature_graph=natal_feature_graph,
+        chart_planets=chart_planets,
     )
     chart_by_id = (
         chart_prior.get("by_id") if isinstance(chart_prior.get("by_id"), Mapping) else {}
