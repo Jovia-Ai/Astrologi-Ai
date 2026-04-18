@@ -1143,6 +1143,122 @@ def _copy_variant(
     return ":".join([archetype_id or "unknown", subprofile_id or "default", visibility, tempo, stress])
 
 
+def _tie_break_key(
+    *,
+    item: Mapping[str, Any],
+    subprofile_selections: Mapping[str, Mapping[str, Any]],
+    top_contradiction_id: str,
+) -> tuple[float, float, int, float, str]:
+    """Primary archetype sort key.
+
+    Faz 1 PR 3 tie-break chain (strict-tie deterministik re-rank):
+
+      1. -score          (fused score desc)
+      2. -chart_prior    (astro evidence desc)
+      3. -contradiction_support_match  (1 if supports top contradiction else 0)
+      4. -subprofile_gap (daha net subprofile ayrımı öne)
+      5. id_alpha        (son deterministic fallback)
+
+    Signal roles:
+      - All five are ranking signals (affect primary order).
+      - #1 dominates; #2-4 only break strict ties at rounded precision.
+      - #5 guarantees determinism across runs.
+    """
+    score = _safe_float(item.get("score"))
+    source_split = item.get("source_split") if isinstance(item.get("source_split"), Mapping) else {}
+    chart_prior = _safe_float(source_split.get("chart_prior"))
+
+    archetype = item.get("core_archetype") if isinstance(item.get("core_archetype"), Mapping) else {}
+    supports = {
+        _safe_text(x)
+        for x in (archetype.get("supports_contradictions") or [])
+        if _safe_text(x)
+    }
+    supports_top = 1 if top_contradiction_id and top_contradiction_id in supports else 0
+
+    archetype_id = _safe_text(item.get("id"))
+    selection = subprofile_selections.get(archetype_id) if isinstance(subprofile_selections.get(archetype_id), Mapping) else {}
+    candidates = selection.get("candidates") if isinstance(selection.get("candidates"), Sequence) else []
+    if len(candidates) >= 2:
+        gap = _safe_float(candidates[0].get("score")) - _safe_float(candidates[1].get("score"))
+    else:
+        gap = 1.0
+
+    return (-score, -chart_prior, -supports_top, -gap, archetype_id)
+
+
+def _build_contradiction_support_lookup(
+    taxonomy: Mapping[str, Any],
+) -> Dict[str, set[str]]:
+    """Taxonomy'den {archetype_id → supports_contradictions set} map kurar."""
+    lookup: Dict[str, set[str]] = {}
+    for archetype in taxonomy.get("archetypes") or []:
+        if not isinstance(archetype, Mapping):
+            continue
+        archetype_id = _safe_text(archetype.get("id"))
+        if not archetype_id:
+            continue
+        lookup[archetype_id] = {
+            _safe_text(x)
+            for x in (archetype.get("supports_contradictions") or [])
+            if _safe_text(x)
+        }
+    return lookup
+
+
+def _select_shadow_archetype(
+    *,
+    final_items: Sequence[Mapping[str, Any]],
+    primary_top_ids: set[str],
+    top_contradiction_id: str,
+    supports_lookup: Mapping[str, set[str]],
+    fallback_ids: Sequence[str] = ("guardian", "depthkeeper", "analyst"),
+) -> Dict[str, Any]:
+    """Shadow archetype seçimi — contradiction-driven, primary ranking'den ayrı.
+
+    Signal roles (Faz 1 PR 3 role taxonomy):
+      - Shadow selection is contradiction-driven and shadow-only.
+      - Uses: top_contradiction_id + taxonomy supports_contradictions mapping.
+      - Does NOT affect: primary ranking, confidence, subprofile.
+      - Fallback: hardcoded safety set (backward-compat).
+
+    Algorithm:
+      1. If top_contradiction_id is set:
+         a. Filter archetypes whose supports_contradictions includes it.
+         b. Prefer those NOT in primary_top_ids ("other side" semantic).
+         c. Return highest-score supporter (final_items already score-desc
+            sorted via tie-break chain).
+      2. If step 1 yields nothing → hardcoded fallback set.
+      3. If fallback also yields nothing → empty dict.
+
+    TODO(faz1-pr4): Fallback usage frequency should be audited in prod
+    telemetry. If rarely triggered, fallback can be removed entirely.
+    """
+    if top_contradiction_id:
+        supporting: list[Mapping[str, Any]] = []
+        for item in final_items:
+            archetype_id = _safe_text(item.get("id"))
+            if not archetype_id:
+                continue
+            if top_contradiction_id in supports_lookup.get(archetype_id, set()):
+                supporting.append(item)
+
+        not_in_primary = [
+            item for item in supporting
+            if _safe_text(item.get("id")) not in primary_top_ids
+        ]
+        pool = not_in_primary if not_in_primary else supporting
+        if pool:
+            return dict(pool[0])
+
+    fallback_set = {_safe_text(x) for x in fallback_ids if _safe_text(x)}
+    for item in final_items:
+        if _safe_text(item.get("id")) in fallback_set:
+            return dict(item)
+
+    return {}
+
+
 def _attach_why_this_not_that(
     *,
     final_items: list[dict[str, Any]],
@@ -1352,7 +1468,14 @@ def build_archetype_profile(
             }
         )
 
-    raw_items.sort(key=lambda item: (-_safe_float(item.get("score")), _safe_text(item.get("id"))))
+    top_contradiction_id = _safe_text(contradiction.get("id"))
+    raw_items.sort(
+        key=lambda item: _tie_break_key(
+            item=item,
+            subprofile_selections=subprofile_selections,
+            top_contradiction_id=top_contradiction_id,
+        )
+    )
     slots = _select_slots(final_score_map)
     context_mixins = _build_mixins(
         primitives=primitives,
@@ -1448,13 +1571,6 @@ def build_archetype_profile(
     top_count = max(int(result_rules.get("top_archetypes") or 3), 1)
     top_archetypes = final_items[:top_count]
 
-    shadow_candidates = [
-        item
-        for item in final_items
-        if _safe_text(item.get("id")) in {"guardian", "depthkeeper", "analyst"}
-    ]
-    shadow_archetype = shadow_candidates[0] if shadow_candidates else {}
-
     contradiction_score = _safe_float(contradiction.get("score"))
     contradiction_threshold = _safe_float(result_rules.get("minimum_contradiction_score") or 0.58)
     contradiction_labels = (
@@ -1470,6 +1586,13 @@ def build_archetype_profile(
         }
     else:
         primary_contradiction = {}
+
+    shadow_archetype = _select_shadow_archetype(
+        final_items=final_items,
+        primary_top_ids={_safe_text(item.get("id")) for item in top_archetypes},
+        top_contradiction_id=_safe_text(primary_contradiction.get("id")),
+        supports_lookup=_build_contradiction_support_lookup(taxonomy),
+    )
 
     chart_confidence = _chart_confidence(birth_time_confidence)
     test_confidence = _test_confidence(answer_consistency, bool(test_by_id))
