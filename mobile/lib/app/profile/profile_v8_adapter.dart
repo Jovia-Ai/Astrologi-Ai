@@ -91,6 +91,7 @@ class ProfileV8TextSection {
     this.callout,
     this.footer,
     this.cta,
+    this.growth,
   });
 
   final String eyebrow;
@@ -101,6 +102,7 @@ class ProfileV8TextSection {
   final String? callout;
   final String? footer;
   final String? cta;
+  final String? growth;
 
   bool get hasContent {
     return headline.trim().isNotEmpty ||
@@ -109,7 +111,8 @@ class ProfileV8TextSection {
         chips.isNotEmpty ||
         (callout ?? '').trim().isNotEmpty ||
         (footer ?? '').trim().isNotEmpty ||
-        (cta ?? '').trim().isNotEmpty;
+        (cta ?? '').trim().isNotEmpty ||
+        (growth ?? '').trim().isNotEmpty;
   }
 }
 
@@ -965,6 +968,11 @@ class ProfileV8Adapter {
       final fallbackBullets =
           fallback?.bullets.where((item) => item.trim().isNotEmpty).toList() ??
               const <String>[];
+      final primaryGrowth = (primary.growth ?? '').trim();
+      final fallbackGrowth = (fallback?.growth ?? '').trim();
+      final mergedGrowth = primaryGrowth.isNotEmpty
+          ? primary.growth
+          : (fallbackGrowth.isNotEmpty ? fallback!.growth : null);
       if (!hasBullets && fallbackBullets.isNotEmpty) {
         return ProfileV8TextSection(
           eyebrow: primary.eyebrow,
@@ -975,6 +983,20 @@ class ProfileV8Adapter {
           callout: primary.callout,
           footer: primary.footer,
           cta: primary.cta,
+          growth: mergedGrowth,
+        );
+      }
+      if (primaryGrowth.isEmpty && fallbackGrowth.isNotEmpty) {
+        return ProfileV8TextSection(
+          eyebrow: primary.eyebrow,
+          headline: primary.headline,
+          body: primary.body,
+          bullets: primary.bullets,
+          chips: primary.chips,
+          callout: primary.callout,
+          footer: primary.footer,
+          cta: primary.cta,
+          growth: fallback!.growth,
         );
       }
       return primary;
@@ -1206,6 +1228,7 @@ class ProfileV8Adapter {
         limit: 110,
       ),
       cta: _firstText(<dynamic>[section['footer_cta']]),
+      growth: _firstText(<dynamic>[section['growth']]),
     );
     return resolved.hasContent ? resolved : null;
   }
