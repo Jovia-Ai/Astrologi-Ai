@@ -14,6 +14,7 @@ import 'package:mobile/app/tabs/bond_result_page.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/design/widgets/shou_topbar.dart';
 import 'package:mobile/l10n/l10n.dart';
 
 class BondPage extends ConsumerStatefulWidget {
@@ -68,19 +69,9 @@ class _BondPageState extends ConsumerState<BondPage> {
                   padding: EdgeInsets.zero,
                   children: [
                     JoviaReveal(
-                      child: JoviaProfileTopBar(
-                        label: l10n.tabsBond,
-                        centerText: _selectionDisplayName(
-                          _secondarySelection,
-                          displayProfile,
-                          fallback: l10n.bondPageLensFallback,
-                        ),
-                        onActionTap: () => _openPersonPicker(
-                          _BondSlot.secondary,
-                          displayProfile,
-                        ),
-                        actionAsset: JoviaUiAsset.plusCrosshair,
-                        actionTooltip: l10n.bondPageSelectPerson,
+                      child: ShouTopBar(
+                        label: l10n.tabsBond.toUpperCase(),
+                        onMenu: () {},
                       ),
                     ),
                     SizedBox(height: spacing.s24),

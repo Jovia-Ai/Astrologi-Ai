@@ -9,6 +9,7 @@ import 'package:mobile/app/tabs/home_page.dart';
 import 'package:mobile/app/timing/transit_repositories.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
+import 'package:mobile/design/widgets/shou_topbar.dart';
 import 'package:mobile/l10n/current_localizations.dart';
 import 'package:mobile/l10n/l10n.dart';
 
@@ -102,10 +103,9 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          JoviaProfileTopBar(
-                            label: l10n.storyStudioTopLabel,
-                            centerText: l10n.storyStudioTopCenter,
-                            reserveTrailingSpace: true,
+                          ShouTopBar(
+                            label: l10n.storyStudioTopLabel.toUpperCase(),
+                            onMenu: () {},
                           ),
                           SizedBox(height: spacing.s20),
                           const _StoryStudioReferenceHero(title: '', body: ''),
