@@ -28,6 +28,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
     "identity_mechanics": [
         {
             "title": "Kimliğin nasıl çalışıyor?",
+            "share_headline": "Önce düşünüyorsun, sonra var oluyorsun.",
             "one_liner": "Kendini en çok düşünme biçimin ve ifade tarzın üzerinden kuruyorsun.",
             "paragraph": (
                 "Yükselenin {asc_sign}; dışarıya daha kontrollü ve hedef odaklı çıkıyorsun. "
@@ -38,6 +39,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Kimlik omurgan",
+            "share_headline": "Sessizliğin boşluk değil — dolu bir oda.",
             "one_liner": "Netlik senin için lüks değil, güven hissi.",
             "paragraph": (
                 "{asc_sign} yükselen seni sağlam durmaya çağırıyor. "
@@ -48,6 +50,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Duruş + Dil",
+            "share_headline": "Kim olduğun, nasıl konuştuğunda ortaya çıkıyor.",
             "one_liner": "Duruşun güçlü; dilin doğru ayarlandığında etkisi iki kat.",
             "paragraph": (
                 "Dışarıdan kararlı görünmen ({asc_sign}) doğal. "
@@ -57,6 +60,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Benlik sistemi",
+            "share_headline": "Sen bir performans değilsin. Bir ritim.",
             "one_liner": "Zihin-eylem-kontrol üçlüsü sende çok aktif.",
             "paragraph": (
                 "Sende bir iç sistem çalışıyor: önce netleştiriyor, sonra harekete geçiyor, sonra tekrar kontrol ediyorsun. "
@@ -66,6 +70,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "İfade kasın",
+            "share_headline": "Sessiz olduğunda değil, konuştuğunda kendine geliyorsun.",
             "one_liner": "Kendini anlatma şeklin, kendini hissetme şeklini de değiştiriyor.",
             "paragraph": (
                 "Kimliğin sadece nasıl göründüğün değil, nasıl anlattığınla da kuruluyor. "
@@ -75,6 +80,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Netlik ihtiyacı",
+            "share_headline": "Belirsizlik seni yoruyor — çünkü içinde çok şey çalışıyor.",
             "one_liner": "Belirsizlik uzayınca içeride baskı artıyor.",
             "paragraph": (
                 "Yükselen {asc_sign} belirsizliği sevmez. "
@@ -86,6 +92,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
     "relationships_depth": [
         {
             "title": "İlişkide eşik neresi?",
+            "share_headline": "Yüzeyde bağ kurmayı bilmiyorsun.",
             "one_liner": "Bağ kurarken asıl eşik güven ve derinlik.",
             "paragraph": (
                 "7. evin {dsc_sign}; yakınlık ve biz hissi önemli. "
@@ -95,6 +102,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Bağ kurma biçimin",
+            "share_headline": "Her yakınlık senin için bir test.",
             "one_liner": "Yakınlık artınca güven testi devreye giriyor.",
             "paragraph": (
                 "İlişkide sıcak ve koruyucu bir tarafın var ({dsc_sign}). "
@@ -104,6 +112,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Duygusal derinlik",
+            "share_headline": "Kolay sevmiyorsun. Ama sevdiğinde kalıyor.",
             "one_liner": "Sende sevgi yüzey değil, kök ister.",
             "paragraph": (
                 "7. evin {dsc_sign} olduğu için bağ kurmak istersin. "
@@ -113,6 +122,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Yakınlık ritmi",
+            "share_headline": "Güven gelmeden derinleşmiyorsun. Ve bu bir hata değil.",
             "one_liner": "Doğru ritimde ilerleyince ilişki çok güçlenir.",
             "paragraph": (
                 "Senin ilişki ritmin hızlı yakınlık değil, güven kurdukça yakınlık. "
@@ -122,6 +132,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Güven dili",
+            "share_headline": "Söylediğiyle yaptığı aynı olmayan insan seni hızlı soğutuyor.",
             "one_liner": "İlişkide en çok netlik ve duygusal güven birleşince rahatlıyorsun.",
             "paragraph": (
                 "Senin için güven sadece his değil, davranışta da görünmeli. "
@@ -131,6 +142,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Bağların derinleşmesi",
+            "share_headline": "Sığ bağ seni yormuyor — belirsiz bağ yoruyor.",
             "one_liner": "Sığ bağlar değil, belirsiz bağ yorar.",
             "paragraph": (
                 "İlişkide sevgi kadar tanım da istersin. "
@@ -142,6 +154,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
     "career_visibility": [
         {
             "title": "Kariyerin nerede güçleniyor?",
+            "share_headline": "En iyi işini kimse görmediği yerde yapıyorsun.",
             "one_liner": "Görünürlük kadar perde arkasında üretmek de seni besliyor.",
             "paragraph": (
                 "MC'nin {mc_sign}: işte denge ve ilişki yönetimi öne çıkar. "
@@ -151,6 +164,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Görünürlük ritmin",
+            "share_headline": "Sahnede iyisin. Perde arkasında daha iyisin.",
             "one_liner": "Sahneye çıkınca etkilisin; ama önce içeride olgunlaştırıyorsun.",
             "paragraph": (
                 "{mc_sign} MC sosyal zekayı ve doğru an hissini güçlendirir. "
@@ -160,6 +174,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "İş enerjin",
+            "share_headline": "Kimse istemeden sen kendine daha fazlasını yüklüyorsun.",
             "one_liner": "Kaliteyi yükseltmek imzan, ama bazen kendine fazla yük bindirebilirsin.",
             "paragraph": (
                 "Kariyerde uyum ve denge arıyorsun ({mc_sign}). "
@@ -169,6 +184,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Perde arkası güç",
+            "share_headline": "Görünmez emek, görünür sonuç.",
             "one_liner": "Başarının bir kısmı sessizce kurulur.",
             "paragraph": (
                 "{mc_ruler}'ün {mc_ruler_house}. ev yerleşimi görünür başarıdan önce görünmez emek ister. "
@@ -178,6 +194,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Kariyer sahnesi",
+            "share_headline": "Yanlış yerdeysen parlamıyorsun. Doğru yerdeysen durdurulamıyorsun.",
             "one_liner": "Doğru bağlamda parlıyorsun; yanlış bağlamda içe çekiliyorsun.",
             "paragraph": (
                 "{mc_sign} MC seni bağlam kuran bir role çağırır. "
@@ -187,6 +204,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Görünür olma eşiği",
+            "share_headline": "Görünür olmak istiyorsun. Aynı zamanda korkuyorsun. İkisi de doğru.",
             "one_liner": "Görünürlük geldiğinde içeriden hazır mıyım sesi yükselebilir.",
             "paragraph": (
                 "Bu sesin kaynağı çoğu zaman {mc_ruler_house}. ev vurgusudur: önce iç güven ister. "
@@ -197,6 +215,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
     "direction_learning": [
         {
             "title": "Yön ve öğrenme teması",
+            "share_headline": "Seni çağıran şey bağırmıyor. Fısıldıyor.",
             "one_liner": "Hareket enerjin ufuk genişletme ve öğrenme üzerinden çalışıyor.",
             "paragraph": (
                 "Mars'ın {mars_house}. evde olması hedef koyduğunda öğrenme ve yön duygusu üzerinden hızlandığını gösterir. "
@@ -206,6 +225,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Yön kasın",
+            "share_headline": "Nedenini bulunca kimse seni tutamıyor.",
             "one_liner": "Nedenini bulunca çok hızlı ilerliyorsun.",
             "paragraph": (
                 "{mars_house}. ev vurgusu seni anlam ve yönle besler. "
@@ -215,6 +235,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Öğrenerek büyüme",
+            "share_headline": "Her yeni şey öğrendiğinde bir parça daha sağlamlaşıyorsun.",
             "one_liner": "Yeni bilgi sende sadece bilgi değil, özgüven de üretir.",
             "paragraph": (
                 "Hareketin hevesle değil, yöntemle büyür. "
@@ -223,6 +244,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Tek hat stratejisi",
+            "share_headline": "Her kapıya bakmak seni yoruyor. Bir kapı seç.",
             "one_liner": "Aynı anda çok fazla yön açmak yorar; tek bir hat büyütür.",
             "paragraph": (
                 "{mars_house}. ev ufuk demektir ama seçenek de artar. "
@@ -231,6 +253,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Uzak hedef",
+            "share_headline": "Sen günlük değil, ömürlük bir şey arıyorsun.",
             "one_liner": "Motivasyonun uzun vadeli anlam bulunca açılıyor.",
             "paragraph": (
                 "{mars_house}. ev seni kısa vadeli telaştan çok uzun vadeli bir yöne çağırır. "
@@ -239,6 +262,7 @@ THREAD_SKELETONS_TR: Dict[str, List[Dict[str, str]]] = {
         },
         {
             "title": "Yol haritası ihtiyacı",
+            "share_headline": "Plan senin için kontrol değil — güven.",
             "one_liner": "Plan çıkınca rahatlıyor, plansızlıkta iç yük artıyor.",
             "paragraph": (
                 "Plan senin için kontrol değil, güven. "
@@ -737,13 +761,65 @@ def pick_micro(domain: str, seed: str) -> str:
     )
 
 
+# ---------------------------------------------------------------------------
+# Proof raw — thread-level astrological credit line (voice spec v2.1 §11.4–11.9)
+# ---------------------------------------------------------------------------
+# Tek tip format: "Yönetici · Ev · İşaret" (Title Case, middle-dot separator).
+# h-variants (e.g. "identity_mechanics:h11") base thread template'inden inherit eder.
+# Eksik context → boş string. Locale-gated UI render (TR-only ilk sürüm).
+
+_PROOF_RAW_TEMPLATES: Dict[str, str] = {
+    "identity_mechanics":  "{asc_ruler} · {asc_ruler_house}. ev · {asc_ruler_sign}",
+    "relationships_depth": "{r7} · {r7_house}. ev · {r7_sign}",
+    "career_visibility":   "{mc_ruler} · {mc_ruler_house}. ev · {mc_ruler_sign}",
+    "direction_learning":  "Mars · {mars_house}. ev · {mars_sign}",
+}
+
+_PROOF_RAW_REQUIRED_CTX: Dict[str, tuple] = {
+    "identity_mechanics":  ("asc_ruler", "asc_ruler_house", "asc_ruler_sign"),
+    "relationships_depth": ("r7", "r7_house", "r7_sign"),
+    "career_visibility":   ("mc_ruler", "mc_ruler_house", "mc_ruler_sign"),
+    "direction_learning":  ("mars_house", "mars_sign"),
+}
+
+
+def render_proof_raw(thread_id: str, ctx: Dict[str, Any]) -> str:
+    """Render thread-level raw proof chip — astrological credit line.
+
+    Voice spec v2.1 §11.4–11.9:
+      - Title Case preserved (no .lower() — Turkish locale safety).
+      - 3-part telegraph: ruler · house · sign, middle-dot separator.
+      - h-variants fall back to base thread template.
+      - Empty string on incomplete context or unmapped thread.
+    """
+    base = thread_id.split(":", 1)[0]
+    template = _PROOF_RAW_TEMPLATES.get(base, "")
+    if not template:
+        return ""
+    required = _PROOF_RAW_REQUIRED_CTX.get(base, ())
+    for key in required:
+        value = ctx.get(key)
+        if value is None or str(value).strip() == "":
+            return ""
+    try:
+        return render(template, ctx)
+    except Exception:
+        return ""
+
+
 def render_thread_tr(thread_id: str, ctx: Dict[str, Any], seed: str) -> Dict[str, str]:
     variants = THREAD_SKELETONS_TR.get(thread_id, [])
     if not variants and ":" in thread_id:
         base = thread_id.split(":", 1)[0]
         variants = THREAD_SKELETONS_TR.get(f"{base}:hX", [])
     if not variants:
-        return {"title": "", "one_liner": "", "paragraph": ""}
+        return {
+            "title": "",
+            "one_liner": "",
+            "paragraph": "",
+            "proof_raw": "",
+            "proof_line": "",
+        }
 
     i = pick_variant(seed + ":" + thread_id, len(variants))
     tpl = variants[i]
@@ -751,4 +827,6 @@ def render_thread_tr(thread_id: str, ctx: Dict[str, Any], seed: str) -> Dict[str
         "title": render(tpl["title"], ctx),
         "one_liner": render(tpl["one_liner"], ctx),
         "paragraph": render(tpl["paragraph"], ctx),
+        "proof_raw": render_proof_raw(thread_id, ctx),
+        "proof_line": "",
     }

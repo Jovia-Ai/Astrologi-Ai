@@ -5,6 +5,7 @@ import re
 from typing import Any, Dict, List, Mapping, Sequence
 
 from app.narrative.editorial_render_policy import editorialize_micro, select_rhythm_family
+from app.natal.narrative.phrase_lib_tr_natal import render_proof_raw
 from app.natal.natal_graph import TRADITIONAL_RULERS
 
 SIGN_VIBE_TR = {
@@ -1821,6 +1822,14 @@ def _mind_section(
             f"{ruler_label} {_house_phrase(asc_house)}",
             *( [ruler_sign_label] if ruler_sign_label else [] ),
         ],
+        "proof_raw": render_proof_raw(
+            "identity_mechanics",
+            {
+                "asc_ruler": ruler_label,
+                "asc_ruler_house": asc_house,
+                "asc_ruler_sign": ruler_sign_label,
+            },
+        ),
         "legacy_id": "identity_mechanics",
     }
 
@@ -1902,6 +1911,14 @@ def _relationship_section(
             f"{ruler_label} {_house_phrase(r7_house)}",
             *( [ruler_sign_label] if ruler_sign_label else [] ),
         ],
+        "proof_raw": render_proof_raw(
+            "relationships_depth",
+            {
+                "r7": ruler_label,
+                "r7_house": r7_house,
+                "r7_sign": ruler_sign_label,
+            },
+        ),
         "legacy_id": "relationships_depth",
     }
 
@@ -1980,6 +1997,14 @@ def _career_section(
             f"{mc_ruler_label} {_house_phrase(mc_house)}",
             *( [mc_ruler_sign_label] if mc_ruler_sign_label else [] ),
         ],
+        "proof_raw": render_proof_raw(
+            "career_visibility",
+            {
+                "mc_ruler": mc_ruler_label,
+                "mc_ruler_house": mc_house,
+                "mc_ruler_sign": mc_ruler_sign_label,
+            },
+        ),
         "legacy_id": "career_visibility",
     }
 
@@ -2122,6 +2147,7 @@ def build_supporting_threads(
                 "detail_blocks": list(section.get("detail_blocks") or []),
                 "micro": micro,
                 "chips": list(section.get("chips") or []),
+                "proof_raw": str(section.get("proof_raw") or ""),
                 "section_id": section.get("id"),
                 "evidence": [],
             }

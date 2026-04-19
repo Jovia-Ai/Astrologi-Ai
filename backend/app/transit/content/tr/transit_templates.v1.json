@@ -1,6 +1,10 @@
 {
   "neptune.square.asc": {
     "headline_variants": ["Kimlikte sis", "Netlikte dalgalanma"],
+    "share_headline_variants": [
+      "Bugün kim olduğun biraz buğulu. Bu geçecek.",
+      "Kendini tarif etmeye çalışma. Sise bırak."
+    ],
     "summary_variants": [
       "Bu dönemde kendini dış dünyaya nasıl koyduğunla ilgili belirsizlikler artabilir."
     ],
@@ -14,6 +18,10 @@
   },
   "saturn.opposition.mars": {
     "headline_variants": ["Enerji sınavı", "İlerle–dur ikilemi"],
+    "share_headline_variants": [
+      "İstediğin şey ve yapman gereken şey bugün aynı masada.",
+      "Bugün ikisini birden yapamazsın. Seç."
+    ],
     "summary_variants": [
       "İsteklerinle sorumluluklar arasında gerilim hissedebilirsin."
     ],
@@ -27,6 +35,10 @@
   },
   "pluto.conjunction.any": {
     "headline_variants": ["Derin dönüşüm", "Kontrolü bırakma zamanı"],
+    "share_headline_variants": [
+      "Direndiğin şey sana olmak istiyor.",
+      "Eski sen bugün yavaşça çıkıyor."
+    ],
     "summary_variants": [
       "Geri dönülmez bir farkındalık veya güçlü bir içsel değişim sürecindesin."
     ],
@@ -40,6 +52,10 @@
   },
   "saturn.square.any": {
     "headline_variants": ["Gerçeklik testi"],
+    "share_headline_variants": [
+      "Hayır demek, bağı kırmaz. Sahte bağı kırar.",
+      "Bu hafta omzundaki yük aslında senin değil."
+    ],
     "summary_variants": [
       "Sorumluluklar artarken sınırlarını yeniden tanımlaman gerekebilir."
     ],
@@ -53,6 +69,10 @@
   },
   "hard.identity.any": {
     "headline_variants": ["Kimlikte basınç"],
+    "share_headline_variants": [
+      "Bugün kim olduğunu kimseye açıklamak zorunda değilsin.",
+      "Ses yükseldiğinde, kendi sesin bir an kayboluyor. Geri gelecek."
+    ],
     "summary_variants": [
       "Duruşun ve yönün test edilebilir."
     ],
@@ -66,6 +86,10 @@
   },
   "soft.relationships.any": {
     "headline_variants": ["Bağ kurmak kolaylaşıyor"],
+    "share_headline_variants": [
+      "Bugün söyleyemediğin şeyi söylemek için iyi bir gün.",
+      "Kalbin bu hafta az konuşuyor ama daha net."
+    ],
     "summary_variants": [
       "İletişim ve yakınlık daha akıcı olabilir."
     ],
@@ -79,6 +103,10 @@
   },
   "soft.identity.any": {
     "headline_variants": ["Kimlikte akış"],
+    "share_headline_variants": [
+      "Bugün zorlanmadan kendin olabiliyorsun.",
+      "Kendini savunmak yerine sadece taşıyabilirsin."
+    ],
     "summary_variants": [
       "Duruşunu daha doğal ve net koymak kolaylaşabilir."
     ],
@@ -92,6 +120,10 @@
   },
   "soft.career.any": {
     "headline_variants": ["Kariyerde destek"],
+    "share_headline_variants": [
+      "Sessizce büyüttüğün şey bu hafta sesini buluyor.",
+      "Emeğin bugün seni buluyor."
+    ],
     "summary_variants": [
       "Görünürlük ve yön tarafında destekleyici bir zemin oluşabilir."
     ],
@@ -105,6 +137,10 @@
   },
   "soft.home.any": {
     "headline_variants": ["Ev ve iç düzen akıyor"],
+    "share_headline_variants": [
+      "Ev, bu hafta bir yer değil — bir nefes.",
+      "İçeri dönmek bugün kaçmak değil, toparlanmak."
+    ],
     "summary_variants": [
       "Ev ve iç güven alanında rahatlatıcı bir etki çalışabilir."
     ],
@@ -118,6 +154,10 @@
   },
   "soft.inner.any": {
     "headline_variants": ["İç dünyada yumuşama"],
+    "share_headline_variants": [
+      "Bu hafta kendine karşı biraz daha yumuşak olabilirsin.",
+      "Taşıdığın yük azalmadı — sen güçlendin."
+    ],
     "summary_variants": [
       "Duygusal yüklerin hafiflediğini hissedebilirsin."
     ],
@@ -131,6 +171,10 @@
   },
   "hard.career.any": {
     "headline_variants": ["Sorumluluk ve görünürlük"],
+    "share_headline_variants": [
+      "Yorgun değilsin. Yanlış yerde çok iyisin.",
+      "Bu hafta sessiz emek gürültülü bir teste giriyor."
+    ],
     "summary_variants": [
       "Beklentiler netleşebilir; yapı kurma ihtiyacı artar."
     ],
@@ -144,6 +188,10 @@
   },
   "hard.any": {
     "headline_variants": ["Zorlayıcı temas"],
+    "share_headline_variants": [
+      "Zorlanıyor olman, yanlış yolda olduğun anlamına gelmez.",
+      "Bu basınç seni kırmıyor — şeklini veriyor."
+    ],
     "summary_variants": [
       "Bu etki baskı hissi yaratabilir; yavaş ve bilinçli ilerlemek faydalı olur."
     ],
@@ -157,6 +205,10 @@
   },
   "soft.any": {
     "headline_variants": ["Destekleyici akış"],
+    "share_headline_variants": [
+      "Bugün zorlamadan ilerleyebilirsin.",
+      "Bu akışı kullan — her gün bu kadar açık değil."
+    ],
     "summary_variants": [
       "Bu etki ilerlemek için daha yumuşak bir zemin sunar."
     ],
@@ -170,6 +222,9 @@
   },
   "neutral.any": {
     "headline_variants": ["Nötr vurgu"],
+    "share_headline_variants": [
+      "Bugün bir şey dikkatini çekiyor. Nedenini sor."
+    ],
     "summary_variants": [
       "Bu etki dikkatini belirli bir temaya yöneltebilir."
     ],
@@ -183,6 +238,9 @@
   },
   "generic.any": {
     "headline_variants": ["Geçici etki"],
+    "share_headline_variants": [
+      "Bugün hissettiğin şey geçici. Veri olarak tut."
+    ],
     "summary_variants": [
       "Kısa süreli bir farkındalık veya duygu değişimi getirebilir."
     ],
