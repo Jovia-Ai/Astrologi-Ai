@@ -55,222 +55,242 @@ class _StoryStudioPageState extends ConsumerState<StoryStudioPage> {
     final isIdentityFamily = _family == _StudioFamily.identity;
     return Scaffold(
       backgroundColor: palette.canvas,
-      body: DecoratedBox(
-        decoration: BoxDecoration(
-          color: palette.canvas,
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [palette.canvas, palette.canvas, palette.lowerGlow],
-            stops: const [0, 0.34, 1],
+      body: Column(
+        children: [
+          SafeArea(
+            bottom: false,
+            child: ShouTopBar(
+              label: l10n.storyStudioTopLabel.toUpperCase(),
+              onMenu: () {},
+            ),
           ),
-        ),
-        child: Stack(
-          children: [
-            Positioned(
-              top: -32,
-              right: -24,
-              child: IgnorePointer(
-                child: SizedBox(
-                  width: 220,
-                  height: 220,
-                  child: JoviaColorWash(
-                    asset: JoviaColorAsset.wash11,
-                    opacity: Theme.of(context).brightness == Brightness.dark
-                        ? 0.14
-                        : 0.18,
-                    fit: BoxFit.cover,
-                  ),
+          Expanded(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: palette.canvas,
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [palette.canvas, palette.canvas, palette.lowerGlow],
+                  stops: const [0, 0.34, 1],
                 ),
               ),
-            ),
-            JoviaPageScaffold(
-              child: profile == null
-                  ? _StoryStudioStateBlock(
-                      title: l10n.tabsStoryStudio,
-                      body: l10n.storyStudioLoadingProfile,
-                      child: const Padding(
-                        padding: EdgeInsets.only(top: 18),
-                        child: Center(child: CircularProgressIndicator()),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: -32,
+                    right: -24,
+                    child: IgnorePointer(
+                      child: SizedBox(
+                        width: 220,
+                        height: 220,
+                        child: JoviaColorWash(
+                          asset: JoviaColorAsset.wash11,
+                          opacity:
+                              Theme.of(context).brightness == Brightness.dark
+                              ? 0.14
+                              : 0.18,
+                          fit: BoxFit.cover,
+                        ),
                       ),
-                    )
-                  : !_hasBirthData(profile)
-                  ? _StoryStudioStateBlock(
-                      title: l10n.tabsStoryStudio,
-                      body: l10n.storyStudioBirthDataRequired,
-                    )
-                  : SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          ShouTopBar(
-                            label: l10n.storyStudioTopLabel.toUpperCase(),
-                            onMenu: () {},
-                          ),
-                          SizedBox(height: spacing.s20),
-                          const _StoryStudioReferenceHero(title: '', body: ''),
-                          SizedBox(height: spacing.s20),
-                          _StoryStudioSectionLead(
-                            title: isIdentityFamily
-                                ? l10n.storyStudioIdentityTitle
-                                : l10n.storyStudioMomentTitle,
-                            body: isIdentityFamily
-                                ? l10n.storyStudioIdentityBody
-                                : l10n.storyStudioMomentBody,
-                          ),
-                          SizedBox(height: spacing.sectionToContent),
-                          JoviaSegmentedControl<_StudioFamily>(
-                            value: _family,
-                            options: _StudioFamily.values,
-                            labelBuilder: (value) => switch (value) {
-                              _StudioFamily.identity =>
-                                l10n.storyStudioIdentityTab,
-                              _StudioFamily.moment => l10n.storyStudioMomentTab,
-                            },
-                            onChanged: (value) {
-                              if (value == _family) {
-                                return;
-                              }
-                              setState(() => _family = value);
-                            },
-                          ),
-                          SizedBox(height: spacing.majorSectionGap),
-                          if (!isIdentityFamily)
-                            _StoryStudioMomentBlock(
-                              onOpenHome: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => const HomePage(),
-                                  ),
-                                );
-                              },
-                              onOpenBond: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute<void>(
-                                    builder: (_) => const BondPage(),
-                                  ),
-                                );
-                              },
-                            )
-                          else if (_error != null && cards.isEmpty)
-                            _StoryStudioStateBlock(
-                              title: l10n.storyStudioCardsLoadFailed,
-                              body: _error!,
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 18),
-                                child: JoviaPressable(
-                                  onTap: () => _loadImprint(profile),
-                                  borderRadius: BorderRadius.circular(999),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 18,
-                                      vertical: 12,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: theme.colors.warmAccent,
-                                      borderRadius: BorderRadius.circular(999),
-                                    ),
-                                    child: Text(
-                                      l10n.commonRetry,
-                                      style: theme.typography.buttonLabel
-                                          .copyWith(
-                                            color: theme.colors.heroText,
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                    ),
-                                  ),
+                    ),
+                  ),
+                  JoviaPageScaffold(
+                    child: profile == null
+                        ? _StoryStudioStateBlock(
+                            title: l10n.tabsStoryStudio,
+                            body: l10n.storyStudioLoadingProfile,
+                            child: const Padding(
+                              padding: EdgeInsets.only(top: 18),
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          )
+                        : !_hasBirthData(profile)
+                        ? _StoryStudioStateBlock(
+                            title: l10n.tabsStoryStudio,
+                            body: l10n.storyStudioBirthDataRequired,
+                          )
+                        : SingleChildScrollView(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: spacing.s20),
+                                const _StoryStudioReferenceHero(
+                                  title: '',
+                                  body: '',
                                 ),
-                              ),
-                            )
-                          else if (_isLoading && cards.isEmpty)
-                            _StoryStudioStateBlock(
-                              title: l10n.storyStudioCardsPreparing,
-                              body: l10n.storyStudioCardsPreparingBody,
-                              child: Padding(
-                                padding: EdgeInsets.only(top: 18),
-                                child: Center(
-                                  child: CircularProgressIndicator(),
+                                SizedBox(height: spacing.s20),
+                                _StoryStudioSectionLead(
+                                  title: isIdentityFamily
+                                      ? l10n.storyStudioIdentityTitle
+                                      : l10n.storyStudioMomentTitle,
+                                  body: isIdentityFamily
+                                      ? l10n.storyStudioIdentityBody
+                                      : l10n.storyStudioMomentBody,
                                 ),
-                              ),
-                            )
-                          else if (cards.isEmpty)
-                            _StoryStudioStateBlock(
-                              title: l10n.storyStudioCardsNotFound,
-                              body: l10n.storyStudioCardsNotFoundBody,
-                            )
-                          else ...[
-                            SizedBox(height: spacing.s8),
-                            SizedBox(
-                              height: 528,
-                              child: PageView.builder(
-                                controller: _pageController,
-                                itemCount: cards.length,
-                                clipBehavior: Clip.none,
-                                onPageChanged: (value) {
-                                  setState(() => _activeIndex = value);
-                                },
-                                itemBuilder: (context, index) {
-                                  return AnimatedBuilder(
-                                    animation: _pageController,
-                                    builder: (context, child) {
-                                      final page = _pageController.hasClients
-                                          ? (_pageController.page ??
-                                                _activeIndex.toDouble())
-                                          : _activeIndex.toDouble();
-                                      final delta = page - index;
-                                      return _StoryStudioSceneCard(
-                                        data: cards[index],
-                                        delta: delta,
-                                        isActive: index == _activeIndex,
-                                        indexLabel:
-                                            '${index + 1}/${cards.length}',
-                                        onTap: () {
-                                          setState(() {
-                                            _activeIndex = index;
-                                          });
-                                          _openCard(cards[index]);
-                                        },
+                                SizedBox(height: spacing.sectionToContent),
+                                JoviaSegmentedControl<_StudioFamily>(
+                                  value: _family,
+                                  options: _StudioFamily.values,
+                                  labelBuilder: (value) => switch (value) {
+                                    _StudioFamily.identity =>
+                                      l10n.storyStudioIdentityTab,
+                                    _StudioFamily.moment =>
+                                      l10n.storyStudioMomentTab,
+                                  },
+                                  onChanged: (value) {
+                                    if (value == _family) {
+                                      return;
+                                    }
+                                    setState(() => _family = value);
+                                  },
+                                ),
+                                SizedBox(height: spacing.majorSectionGap),
+                                if (!isIdentityFamily)
+                                  _StoryStudioMomentBlock(
+                                    onOpenHome: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute<void>(
+                                          builder: (_) => const HomePage(),
+                                        ),
                                       );
                                     },
-                                  );
-                                },
-                              ),
-                            ),
-                            const SizedBox(height: 18),
-                            Center(
-                              child: Wrap(
-                                spacing: 8,
-                                children: [
-                                  for (
-                                    var index = 0;
-                                    index < cards.length;
-                                    index++
+                                    onOpenBond: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute<void>(
+                                          builder: (_) => const BondPage(),
+                                        ),
+                                      );
+                                    },
                                   )
-                                    AnimatedContainer(
-                                      duration: theme.motion.normal,
-                                      curve: theme.motion.curve,
-                                      width: index == _activeIndex ? 20 : 7,
-                                      height: 7,
-                                      decoration: BoxDecoration(
-                                        color: index == _activeIndex
-                                            ? palette.edge
-                                            : palette.softFill,
+                                else if (_error != null && cards.isEmpty)
+                                  _StoryStudioStateBlock(
+                                    title: l10n.storyStudioCardsLoadFailed,
+                                    body: _error!,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(top: 18),
+                                      child: JoviaPressable(
+                                        onTap: () => _loadImprint(profile),
                                         borderRadius: BorderRadius.circular(
                                           999,
                                         ),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 18,
+                                            vertical: 12,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: theme.colors.warmAccent,
+                                            borderRadius: BorderRadius.circular(
+                                              999,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            l10n.commonRetry,
+                                            style: theme.typography.buttonLabel
+                                                .copyWith(
+                                                  color: theme.colors.heroText,
+                                                  fontWeight: FontWeight.w700,
+                                                ),
+                                          ),
+                                        ),
                                       ),
                                     ),
+                                  )
+                                else if (_isLoading && cards.isEmpty)
+                                  _StoryStudioStateBlock(
+                                    title: l10n.storyStudioCardsPreparing,
+                                    body: l10n.storyStudioCardsPreparingBody,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(top: 18),
+                                      child: Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    ),
+                                  )
+                                else if (cards.isEmpty)
+                                  _StoryStudioStateBlock(
+                                    title: l10n.storyStudioCardsNotFound,
+                                    body: l10n.storyStudioCardsNotFoundBody,
+                                  )
+                                else ...[
+                                  SizedBox(height: spacing.s8),
+                                  SizedBox(
+                                    height: 528,
+                                    child: PageView.builder(
+                                      controller: _pageController,
+                                      itemCount: cards.length,
+                                      clipBehavior: Clip.none,
+                                      onPageChanged: (value) {
+                                        setState(() => _activeIndex = value);
+                                      },
+                                      itemBuilder: (context, index) {
+                                        return AnimatedBuilder(
+                                          animation: _pageController,
+                                          builder: (context, child) {
+                                            final page =
+                                                _pageController.hasClients
+                                                ? (_pageController.page ??
+                                                      _activeIndex.toDouble())
+                                                : _activeIndex.toDouble();
+                                            final delta = page - index;
+                                            return _StoryStudioSceneCard(
+                                              data: cards[index],
+                                              delta: delta,
+                                              isActive: index == _activeIndex,
+                                              indexLabel:
+                                                  '${index + 1}/${cards.length}',
+                                              onTap: () {
+                                                setState(() {
+                                                  _activeIndex = index;
+                                                });
+                                                _openCard(cards[index]);
+                                              },
+                                            );
+                                          },
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  const SizedBox(height: 18),
+                                  Center(
+                                    child: Wrap(
+                                      spacing: 8,
+                                      children: [
+                                        for (
+                                          var index = 0;
+                                          index < cards.length;
+                                          index++
+                                        )
+                                          AnimatedContainer(
+                                            duration: theme.motion.normal,
+                                            curve: theme.motion.curve,
+                                            width: index == _activeIndex
+                                                ? 20
+                                                : 7,
+                                            height: 7,
+                                            decoration: BoxDecoration(
+                                              color: index == _activeIndex
+                                                  ? palette.edge
+                                                  : palette.softFill,
+                                              borderRadius:
+                                                  BorderRadius.circular(999),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
                                 ],
-                              ),
+                                const SizedBox(height: 24),
+                              ],
                             ),
-                          ],
-                          const SizedBox(height: 24),
-                        ],
-                      ),
-                    ),
+                          ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

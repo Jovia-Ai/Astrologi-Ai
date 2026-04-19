@@ -64,119 +64,131 @@ class _BondPageState extends ConsumerState<BondPage> {
                   stops: const [0, 0.64, 1],
                 ),
               ),
-              child: JoviaPageScaffold(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
-                    JoviaReveal(
-                      child: ShouTopBar(
-                        label: l10n.tabsBond.toUpperCase(),
-                        onMenu: () {},
-                      ),
+              child: Column(
+                children: [
+                  SafeArea(
+                    bottom: false,
+                    child: ShouTopBar(
+                      label: l10n.tabsBond.toUpperCase(),
+                      onMenu: () {},
                     ),
-                    SizedBox(height: spacing.s24),
-                    JoviaReveal(
-                      delay: const Duration(milliseconds: 20),
-                      child: _BondReferenceHero(
-                        title: l10n.bondPageHeroTitle,
-                        body: l10n.bondPageHeroBody,
-                      ),
-                    ),
-                    SizedBox(height: spacing.s20),
-                    JoviaReveal(
-                      delay: const Duration(milliseconds: 100),
-                      child: _BondPairSelectorCard(
-                        primaryName: _selectionDisplayName(
-                          _primarySelection,
-                          displayProfile,
-                        ),
-                        primaryLabel: _selectionDisplayName(
-                          _primarySelection,
-                          displayProfile,
-                        ),
-                        secondaryName: _selectionDisplayName(
-                          _secondarySelection,
-                          displayProfile,
-                        ),
-                        secondaryLabel: _selectionDisplayName(
-                          _secondarySelection,
-                          displayProfile,
-                        ),
-                        selfAvatarUrl:
-                            !_primarySelection.isSelf || authAvatarUrl.isEmpty
-                            ? null
-                            : authAvatarUrl,
-                        onPrimaryTap: () => _openPersonPicker(
-                          _BondSlot.primary,
-                          displayProfile,
-                        ),
-                        onSecondaryTap: () => _openPersonPicker(
-                          _BondSlot.secondary,
-                          displayProfile,
-                        ),
-                        footer: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              l10n.bondPageLensLabel,
-                              style: context.profileTheme.typography.eyebrow
-                                  .copyWith(color: palette.softText),
+                  ),
+                  Expanded(
+                    child: JoviaPageScaffold(
+                      child: ListView(
+                        padding: EdgeInsets.zero,
+                        children: [
+                          SizedBox(height: spacing.s24),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 20),
+                            child: _BondReferenceHero(
+                              title: l10n.bondPageHeroTitle,
+                              body: l10n.bondPageHeroBody,
                             ),
-                            const SizedBox(height: 8),
-                            _BondLensSelector(
-                              value: _bondType,
-                              options: BondType.values,
-                              labelBuilder: (value) => value.label,
-                              onChanged: (value) =>
-                                  setState(() => _bondType = value),
+                          ),
+                          SizedBox(height: spacing.s20),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 100),
+                            child: _BondPairSelectorCard(
+                              primaryName: _selectionDisplayName(
+                                _primarySelection,
+                                displayProfile,
+                              ),
+                              primaryLabel: _selectionDisplayName(
+                                _primarySelection,
+                                displayProfile,
+                              ),
+                              secondaryName: _selectionDisplayName(
+                                _secondarySelection,
+                                displayProfile,
+                              ),
+                              secondaryLabel: _selectionDisplayName(
+                                _secondarySelection,
+                                displayProfile,
+                              ),
+                              selfAvatarUrl:
+                                  !_primarySelection.isSelf ||
+                                      authAvatarUrl.isEmpty
+                                  ? null
+                                  : authAvatarUrl,
+                              onPrimaryTap: () => _openPersonPicker(
+                                _BondSlot.primary,
+                                displayProfile,
+                              ),
+                              onSecondaryTap: () => _openPersonPicker(
+                                _BondSlot.secondary,
+                                displayProfile,
+                              ),
+                              footer: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.bondPageLensLabel,
+                                    style: context
+                                        .profileTheme
+                                        .typography
+                                        .eyebrow
+                                        .copyWith(color: palette.softText),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  _BondLensSelector(
+                                    value: _bondType,
+                                    options: BondType.values,
+                                    labelBuilder: (value) => value.label,
+                                    onChanged: (value) =>
+                                        setState(() => _bondType = value),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          if (selfBirthDataMissing) ...[
+                            SizedBox(height: spacing.s24),
+                            JoviaReveal(
+                              delay: const Duration(milliseconds: 120),
+                              child: _BondReferenceDashedPanel(
+                                child: EmptyStateBlock(
+                                  title: l10n.bondPageBirthDataMissingTitle,
+                                  body: l10n.bondPageBirthDataMissingBody,
+                                  framed: false,
+                                ),
+                              ),
                             ),
                           ],
-                        ),
-                      ),
-                    ),
-                    if (selfBirthDataMissing) ...[
-                      SizedBox(height: spacing.s24),
-                      JoviaReveal(
-                        delay: const Duration(milliseconds: 120),
-                        child: _BondReferenceDashedPanel(
-                          child: EmptyStateBlock(
-                            title: l10n.bondPageBirthDataMissingTitle,
-                            body: l10n.bondPageBirthDataMissingBody,
-                            framed: false,
+                          SizedBox(height: spacing.s40),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 150),
+                            child: Column(
+                              children: [
+                                JoviaDividerAsset(
+                                  kind:
+                                      JoviaDividerVariant.bondSectionBreak.kind,
+                                  width: JoviaDividerVariant
+                                      .bondSectionBreak
+                                      .defaultWidth,
+                                  color: palette.rule,
+                                  opacity: 0.58,
+                                ),
+                                SizedBox(height: spacing.s24),
+                                _BondCtaDoorway(
+                                  label: _loading
+                                      ? l10n.bondPagePreparing
+                                      : l10n.bondPageOpenResult,
+                                  enabled: canViewBond,
+                                  isBusy: _loading,
+                                  onTap: canViewBond
+                                      ? () => _viewBond(profile!)
+                                      : null,
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ),
-                    ],
-                    SizedBox(height: spacing.s40),
-                    JoviaReveal(
-                      delay: const Duration(milliseconds: 150),
-                      child: Column(
-                        children: [
-                          JoviaDividerAsset(
-                            kind: JoviaDividerVariant.bondSectionBreak.kind,
-                            width: JoviaDividerVariant
-                                .bondSectionBreak
-                                .defaultWidth,
-                            color: palette.rule,
-                            opacity: 0.58,
-                          ),
-                          SizedBox(height: spacing.s24),
-                          _BondCtaDoorway(
-                            label: _loading
-                                ? l10n.bondPagePreparing
-                                : l10n.bondPageOpenResult,
-                            enabled: canViewBond,
-                            isBusy: _loading,
-                            onTap: canViewBond
-                                ? () => _viewBond(profile!)
-                                : null,
-                          ),
+                          SizedBox(height: spacing.s32),
                         ],
                       ),
                     ),
-                    SizedBox(height: spacing.s32),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           );

@@ -1224,6 +1224,22 @@ class _ProfilePageState extends State<ProfilePage> {
                                 ScrollViewKeyboardDismissBehavior.onDrag,
                             children: [
                               Container(
+                                color: const Color(0xFF0E0D11),
+                                child: SafeArea(
+                                  bottom: false,
+                                  child: ShouTopBar(
+                                    label: username,
+                                    onBack: widget.readOnly
+                                        ? () => Navigator.of(
+                                            context,
+                                            rootNavigator: true,
+                                          ).maybePop()
+                                        : null,
+                                    onMenu: profileMenuTap,
+                                  ),
+                                ),
+                              ),
+                              Container(
                                 color: const Color(0xFFE2E2E8),
                                 padding: const EdgeInsets.all(10),
                                 child: Container(
@@ -1236,22 +1252,6 @@ class _ProfilePageState extends State<ProfilePage> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
                                     children: [
-                                      Container(
-                                        color: const Color(0xFF0E0D11),
-                                        child: SafeArea(
-                                          bottom: false,
-                                          child: ShouTopBar(
-                                            label: username,
-                                            onBack: widget.readOnly
-                                                ? () => Navigator.of(
-                                                    context,
-                                                    rootNavigator: true,
-                                                  ).maybePop()
-                                                : null,
-                                            onMenu: profileMenuTap,
-                                          ),
-                                        ),
-                                      ),
                                       _ProfilePosterHeader(
                                         displayName: displayName,
                                         avatarUrl: avatarUrl.isEmpty
@@ -5211,10 +5211,7 @@ class _ProfilePosterHeader extends StatelessWidget {
               label: followLabel,
             ),
           ),
-          Container(
-            width: 0.45,
-            color: const Color.fromRGBO(0, 0, 0, 0.045),
-          ),
+          Container(width: 0.45, color: const Color.fromRGBO(0, 0, 0, 0.045)),
           Expanded(
             child: _ProfilePosterStatCell(
               value: '$friendCount',
