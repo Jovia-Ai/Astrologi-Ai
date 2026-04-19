@@ -35,6 +35,7 @@ import 'package:mobile/design/astro/element_scores.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 import 'package:mobile/design/widgets/jovia_premium_accents.dart';
+import 'package:mobile/design/widgets/shou_topbar.dart';
 import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mobile/l10n/l10n.dart';
 
@@ -1236,27 +1237,18 @@ class _ProfilePageState extends State<ProfilePage> {
                                         CrossAxisAlignment.stretch,
                                     children: [
                                       Container(
-                                        color: const Color(0xFF111111),
+                                        color: const Color(0xFF0E0D11),
                                         child: SafeArea(
                                           bottom: false,
-                                          child: Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                              20,
-                                              12,
-                                              20,
-                                              12,
-                                            ),
-                                            child: _ProfilePosterTopBar(
-                                              username: username,
-                                              readOnly: widget.readOnly,
-                                              onLeadingTap: widget.readOnly
-                                                  ? () => Navigator.of(
-                                                      context,
-                                                      rootNavigator: true,
-                                                    ).maybePop()
-                                                  : null,
-                                              onActionTap: profileMenuTap,
-                                            ),
+                                          child: ShouTopBar(
+                                            label: username,
+                                            onBack: widget.readOnly
+                                                ? () => Navigator.of(
+                                                    context,
+                                                    rootNavigator: true,
+                                                  ).maybePop()
+                                                : null,
+                                            onMenu: profileMenuTap,
                                           ),
                                         ),
                                       ),
@@ -4963,90 +4955,6 @@ class _ProfileInsightModule {
           ProfileV8Adapter.safeText(content['body']) ??
           ProfileV8Adapter.safeText(map['body']) ??
           '',
-    );
-  }
-}
-
-class _ProfilePosterTopBar extends StatelessWidget {
-  const _ProfilePosterTopBar({
-    required this.username,
-    required this.readOnly,
-    this.onLeadingTap,
-    this.onActionTap,
-  });
-
-  final String username;
-  final bool readOnly;
-  final VoidCallback? onLeadingTap;
-  final VoidCallback? onActionTap;
-
-  @override
-  Widget build(BuildContext context) {
-    const muted = Color(0xFF555555);
-    Widget rightAction = const SizedBox(width: 15, height: 11);
-    if (onActionTap != null) {
-      rightAction = GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: onActionTap,
-        child: const SizedBox(
-          width: 24,
-          height: 24,
-          child: Center(
-            child: JoviaUiIcon(
-              asset: JoviaUiAsset.menuStack,
-              size: 15,
-              color: muted,
-            ),
-          ),
-        ),
-      );
-    }
-    return SizedBox(
-      height: 18,
-      child: Row(
-        children: [
-          if (readOnly)
-            GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: onLeadingTap,
-              child: const SizedBox(
-                width: 24,
-                height: 24,
-                child: Center(
-                  child: JoviaUiIcon(
-                    asset: JoviaUiAsset.back,
-                    size: 14,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            )
-          else
-            Container(
-              width: 5,
-              height: 5,
-              decoration: BoxDecoration(
-                color: _kProfileFigmaLime,
-                borderRadius: BorderRadius.circular(2.5),
-              ),
-            ),
-          const SizedBox(width: 6),
-          Expanded(
-            child: Text(
-              username,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: context.profileTheme.typography.micro.copyWith(
-                color: muted,
-                fontSize: 9.5,
-                fontWeight: FontWeight.w400,
-                letterSpacing: 0.4,
-              ),
-            ),
-          ),
-          rightAction,
-        ],
-      ),
     );
   }
 }

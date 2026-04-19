@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'package:mobile/design/theme/profile_theme_extension.dart';
+import 'package:mobile/design/widgets/shou_topbar.dart';
 
 /// Second generation home page that implements the SHOU v2 Figma design.
 ///
@@ -28,7 +29,11 @@ class _HomePageV2State extends ConsumerState<HomePageV2> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const _ShouTopbar(),
+            ShouTopBar(
+              label: 'BUGÜN',
+              onSearch: () {},
+              onMenu: () {},
+            ),
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.only(bottom: 120),
@@ -43,202 +48,6 @@ class _HomePageV2State extends ConsumerState<HomePageV2> {
           ],
         ),
       ),
-    );
-  }
-}
-
-/// SHOU wordmark topbar — matches the Figma `TOPBAR` frame.
-///
-/// Dark Night ground with a mono `BUGÜN` eyebrow on the left, the SHOU
-/// orbit-lockup centered, and search + menu affordances on the right.
-/// Intentionally no scaffolding / elevation — the dark strip hugs the top
-/// safe-area edge and hands off to the cream page body below.
-class _ShouTopbar extends StatelessWidget {
-  const _ShouTopbar();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 56,
-      color: const Color(0xFF0E0D11),
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Row(
-        children: [
-          Expanded(
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'BUGÜN',
-                style: GoogleFonts.jetBrainsMono(
-                  textStyle: const TextStyle(
-                    fontSize: 10.5,
-                    fontWeight: FontWeight.w400,
-                    color: Color(0xFF8A8A8A),
-                    letterSpacing: 2.4,
-                  ),
-                ),
-              ),
-            ),
-          ),
-          const _ShouWordmark(),
-          const Expanded(
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: _TopbarActions(),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ShouWordmark extends StatelessWidget {
-  const _ShouWordmark();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const _ShouOrbitMark(size: 22),
-        const SizedBox(width: 9),
-        Text(
-          'SHOU',
-          style: GoogleFonts.fraunces(
-            textStyle: const TextStyle(
-              fontSize: 21,
-              fontWeight: FontWeight.w400,
-              color: Colors.white,
-              letterSpacing: 2.8,
-              height: 1,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-/// Miniature orbit-lockup: outer circle, faint inner circle, centre dot and
-/// signal-lime top dot with its connecting line. Pulled straight from the
-/// Figma logo anatomy so the topbar carries the full brand beat.
-class _ShouOrbitMark extends StatelessWidget {
-  const _ShouOrbitMark({this.size = 22});
-
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: CustomPaint(painter: _ShouOrbitPainter()),
-    );
-  }
-}
-
-class _ShouOrbitPainter extends CustomPainter {
-  static const Color _stroke = Colors.white;
-  static const Color _lime = Color(0xFFCAFF4D);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final centre = Offset(size.width / 2, size.height / 2);
-    final outerRadius = size.width * 0.42;
-    final innerRadius = size.width * 0.22;
-
-    final strokePaint = Paint()
-      ..color = _stroke
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.2
-      ..isAntiAlias = true;
-
-    // Outer orbit.
-    canvas.drawCircle(centre, outerRadius, strokePaint);
-
-    // Faint inner orbit.
-    final innerPaint = Paint()
-      ..color = _stroke.withValues(alpha: 0.45)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1
-      ..isAntiAlias = true;
-    canvas.drawCircle(centre, innerRadius, innerPaint);
-
-    // Connector from top dot to centre orbit edge.
-    final topDotCentre = Offset(size.width / 2, size.height * 0.08);
-    final lineStart = Offset(
-      topDotCentre.dx,
-      topDotCentre.dy + size.width * 0.045,
-    );
-    final lineEnd = Offset(centre.dx, centre.dy - outerRadius);
-    final linePaint = Paint()
-      ..color = _stroke
-      ..strokeWidth = 1
-      ..strokeCap = StrokeCap.round
-      ..isAntiAlias = true;
-    canvas.drawLine(lineStart, lineEnd, linePaint);
-
-    final dotPaint = Paint()
-      ..color = _lime
-      ..isAntiAlias = true;
-
-    // Centre observer dot.
-    canvas.drawCircle(centre, size.width * 0.08, dotPaint);
-
-    // Top signal dot.
-    canvas.drawCircle(topDotCentre, size.width * 0.095, dotPaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-class _TopbarActions extends StatelessWidget {
-  const _TopbarActions();
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _TopbarIconButton(
-          icon: Icons.search,
-          semanticsLabel: 'Ara',
-          onTap: () {},
-        ),
-        const SizedBox(width: 2),
-        _TopbarIconButton(
-          icon: Icons.menu,
-          semanticsLabel: 'Menü',
-          onTap: () {},
-        ),
-      ],
-    );
-  }
-}
-
-class _TopbarIconButton extends StatelessWidget {
-  const _TopbarIconButton({
-    required this.icon,
-    required this.onTap,
-    required this.semanticsLabel,
-  });
-
-  final IconData icon;
-  final VoidCallback onTap;
-  final String semanticsLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: onTap,
-      splashRadius: 22,
-      icon: Icon(icon, size: 20, color: const Color(0xFFE5E5E5)),
-      tooltip: semanticsLabel,
-      padding: const EdgeInsets.all(8),
-      constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
     );
   }
 }
