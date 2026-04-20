@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:mobile/app/profile/proof_chip.dart';
 import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
@@ -410,6 +411,7 @@ class ProfileDetailSceneData {
     required this.illustrationAsset,
     required this.variant,
     this.nextTitle = '',
+    this.proofRaw = '',
   });
 
   final String id;
@@ -423,6 +425,11 @@ class ProfileDetailSceneData {
   final JoviaIllustrationAsset illustrationAsset;
   final ProfileDetailSceneVariant variant;
   final String nextTitle;
+
+  /// Thread-level astrological credit line (voice spec v2.1 §11.4).
+  /// Flows from _SupportingThreadItem.proofRaw → _sceneFromThread.
+  /// Card / insight / identity scenes default empty.
+  final String proofRaw;
 
   ProfileDetailSceneData copyWith({
     String? nextTitle,
@@ -440,6 +447,7 @@ class ProfileDetailSceneData {
       illustrationAsset: illustrationAsset,
       variant: variant ?? this.variant,
       nextTitle: nextTitle ?? this.nextTitle,
+      proofRaw: proofRaw,
     );
   }
 }
@@ -1530,6 +1538,7 @@ class _ProfileDetailPlaybackPageData {
     required this.isContinuation,
     required this.allowAutoAdvance,
     required this.requiresOverflowScroll,
+    this.proofRaw = '',
   });
 
   final String sceneId;
@@ -1549,6 +1558,11 @@ class _ProfileDetailPlaybackPageData {
   final bool isContinuation;
   final bool allowAutoAdvance;
   final bool requiresOverflowScroll;
+
+  /// Thread-level proof chip content (voice spec v2.1 §11.4).
+  /// Only non-empty on primary scene page; continuation pages always '' —
+  /// "sessiz imza" appears once per thread, not on every chunk.
+  final String proofRaw;
 
   String get overlayTitle => isContinuation && pageCountInScene > 1
       ? currentL10n().profileDetailContinuationTitle(title)
@@ -1588,6 +1602,7 @@ class _ProfileDetailPlaybackPageData {
       allowAutoAdvance: allowAutoAdvance ?? this.allowAutoAdvance,
       requiresOverflowScroll:
           requiresOverflowScroll ?? this.requiresOverflowScroll,
+      proofRaw: proofRaw,
     );
   }
 }
@@ -1775,6 +1790,8 @@ List<_ProfileDetailPlaybackPageData> _splitSceneToPlaybackPages(
         bodyBlocks: leadingBlocks,
         whyText: '',
       ),
+      // Voice spec v2.1 §11.4 — proof chip appears on primary page only.
+      proofRaw: scene.proofRaw,
     ),
   );
 
@@ -3230,6 +3247,9 @@ class _DetailTextSection extends StatelessWidget {
             if (index != page.bodyBlocks.length - 1) const SizedBox(height: 14),
           ],
         ],
+        // Voice spec v2.1 §13.4 — sessiz astrolojik künye, paragraph altı,
+        // chip'lerden önce. Empty → SizedBox.shrink; non-TR locale → shrink.
+        ProfileProofChip(proofRaw: page.proofRaw),
         if (page.chips.isNotEmpty) ...[
           const SizedBox(height: 16),
           Wrap(

@@ -3076,6 +3076,9 @@ class _ProfilePageState extends State<ProfilePage> {
       detailBlocks: _sanitizeUserFacingParagraphs(detailBlocks, max: 10),
       chips: chips,
       astroSources: const <String>[],
+      // Voice spec v2.1 §11.4 — synthetic thread (tab-based fallback) has
+      // no backend proof_raw; default empty.
+      proofRaw: '',
     );
   }
 
@@ -4066,6 +4069,8 @@ class _ProfilePageState extends State<ProfilePage> {
       whyText: detailBlocks.length >= 4 ? '' : _whyTextForThread(item),
       illustrationAsset: JoviaIllustrationAsset.layers,
       variant: variant,
+      // Voice spec v2.1 §11.4 — thread-level proof_raw carries to scene.
+      proofRaw: item.proofRaw,
     );
   }
 
@@ -4473,6 +4478,11 @@ class _SupportingThreadItem {
   final List<String> chips;
   final List<String> astroSources;
 
+  /// Thread-level astrological credit line (voice spec v2.1 §11.4).
+  /// "Satürn · 3. ev · Oğlak" — Title Case, middle-dot separator.
+  /// Empty when backend omits (legacy caller or non-live thread).
+  final String proofRaw;
+
   const _SupportingThreadItem({
     required this.id,
     required this.title,
@@ -4481,6 +4491,7 @@ class _SupportingThreadItem {
     required this.detailBlocks,
     required this.chips,
     required this.astroSources,
+    this.proofRaw = '',
   });
 
   factory _SupportingThreadItem.fromMap(Map<String, dynamic> map) {
@@ -4523,6 +4534,7 @@ class _SupportingThreadItem {
       ),
       chips: readList('chips'),
       astroSources: readAstroSources('astro_sources'),
+      proofRaw: s('proof_raw'),
     );
   }
 }
