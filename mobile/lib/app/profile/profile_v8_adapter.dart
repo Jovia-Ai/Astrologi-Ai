@@ -92,6 +92,7 @@ class ProfileV8TextSection {
     this.footer,
     this.cta,
     this.growth,
+    this.proofRaw = '',
   });
 
   final String eyebrow;
@@ -103,6 +104,11 @@ class ProfileV8TextSection {
   final String? footer;
   final String? cta;
   final String? growth;
+
+  /// Thread-level astrological credit line (voice spec v2.1 §11.4).
+  /// Title Case, middle-dot separator: "Satürn · 3. ev · Oğlak".
+  /// Empty string when backend omits or thread is not live.
+  final String proofRaw;
 
   bool get hasContent {
     return headline.trim().isNotEmpty ||
@@ -482,6 +488,7 @@ class ProfileV8Adapter {
         originCard?['chips'],
         extraEntries.isNotEmpty ? extraEntries.first['tags'] : null,
       ],
+      proofRawCandidates: <dynamic>[originThread?['proof_raw']],
     );
 
     final firstImpressionCard = _pickCard(
@@ -553,6 +560,7 @@ class ProfileV8Adapter {
         conversationThread?['chips'],
         conversationCard?['chips'],
       ],
+      proofRawCandidates: <dynamic>[conversationThread?['proof_raw']],
     );
 
     final effectThread = _pickThread(
@@ -581,6 +589,7 @@ class ProfileV8Adapter {
       ],
       chipCandidates: <dynamic>[effectCard?['chips']],
       footerCandidates: <dynamic>[effectThread?['body']],
+      proofRawCandidates: <dynamic>[effectThread?['proof_raw']],
     );
 
     final defenseModule = _pickModule(
@@ -684,6 +693,7 @@ class ProfileV8Adapter {
         intimacyCard?['chips'],
         intimacyThread?['chips'],
       ],
+      proofRawCandidates: <dynamic>[intimacyThread?['proof_raw']],
     );
 
     final mindCard = _pickCard(
@@ -710,6 +720,7 @@ class ProfileV8Adapter {
         mindCard?['detail_blocks'],
       ],
       chipCandidates: <dynamic>[mindCard?['chips'], mindThread?['chips']],
+      proofRawCandidates: <dynamic>[mindThread?['proof_raw']],
     );
 
     final bundleLabels =
@@ -1685,6 +1696,10 @@ class ProfileV8Adapter {
       'body': _firstText(<dynamic>[raw['paragraph'], raw['body']]) ?? '',
       'chips': safeTextList(raw['chips'], max: 4),
       'detail_blocks': safeTextList(raw['detail_blocks'], max: 6),
+      // Voice spec v2.1 §11.4 passthrough. Empty string when backend omits
+      // (legacy caller) or thread is not among the live 3 (identity /
+      // relationships / career).
+      'proof_raw': safeText(raw['proof_raw']) ?? '',
     };
   }
 
@@ -1830,6 +1845,7 @@ class ProfileV8Adapter {
     List<dynamic> footerCandidates = const <dynamic>[],
     List<dynamic> ctaCandidates = const <dynamic>[],
     List<dynamic> calloutCandidates = const <dynamic>[],
+    List<dynamic> proofRawCandidates = const <dynamic>[],
   }) {
     final headline = _shortenForProfile(
       _firstText(headlineCandidates) ?? '',
@@ -1877,6 +1893,9 @@ class ProfileV8Adapter {
       callout: _firstText(calloutCandidates),
       footer: _firstText(footerCandidates),
       cta: _firstText(ctaCandidates),
+      // Voice spec v2.1 §11.4 — first non-empty proof_raw across candidates.
+      // safeText (via _firstText) normalizes null / whitespace / non-string.
+      proofRaw: _firstText(proofRawCandidates) ?? '',
     );
     return section.hasContent ? section : null;
   }
