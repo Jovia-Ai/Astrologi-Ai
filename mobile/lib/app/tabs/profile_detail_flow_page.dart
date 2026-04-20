@@ -1710,6 +1710,8 @@ List<ProfileDetailPlaybackDebugPage> debugBuildProfileDetailPlaybackPages(
           pageIndexInScene: item.pageIndexInScene,
           pageCountInScene: item.pageCountInScene,
           allowAutoAdvance: item.allowAutoAdvance,
+          isContinuation: item.isContinuation,
+          proofRaw: item.proofRaw,
         ),
       )
       .toList(growable: false);
@@ -1725,6 +1727,8 @@ class ProfileDetailPlaybackDebugPage {
     required this.pageIndexInScene,
     required this.pageCountInScene,
     required this.allowAutoAdvance,
+    this.isContinuation = false,
+    this.proofRaw = '',
   });
 
   final String playbackId;
@@ -1735,6 +1739,14 @@ class ProfileDetailPlaybackDebugPage {
   final int pageIndexInScene;
   final int pageCountInScene;
   final bool allowAutoAdvance;
+
+  /// Whether this debug page represents a continuation chunk (not the
+  /// primary scene page). Voice spec v2.1 §11.4 — proof_raw only on primary.
+  final bool isContinuation;
+
+  /// Thread-level astrological credit line (voice spec v2.1 §11.4).
+  /// Empty on continuation pages or when scene is non-thread sourced.
+  final String proofRaw;
 }
 
 List<_ProfileDetailPlaybackPageData> _splitSceneToPlaybackPages(
