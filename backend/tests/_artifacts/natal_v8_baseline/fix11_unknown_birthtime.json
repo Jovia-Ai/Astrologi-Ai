@@ -1,31 +1,31 @@
 {
   "public": {
-    "core_story": "Kimliğin ilişkiler yoluyla sınanır. Bağ kurarken sorumluluk ve ciddiyet ararsın. Dışarıdan mesafeli ama güvenilir biri olarak algılanırsın. Baskı arttığında yalnızlık veya geç başlayan ilişkiler olabilir ortaya çıkabilir.\n\nDenge arayışıyla düşünürsün. Bu seni adil ve gerçekçi yapar. Kimliğin ilişkiler yoluyla sınanır.\n\nDışarıdan mesafeli ama güvenilir biri olarak algılanırsın. Kimliğin ilişkiler yoluyla sınanır. Bağ kurarken sorumluluk ve ciddiyet ararsın.",
+    "core_story": "İçsel dürtün hızlı harekete geçme ihtiyacıyla çalışır. Kararlarını anlık enerji patlamalarıyla alırsın. Dışarıdan cesur, girişken ve meydan okuyan biri olarak algılanırsın. Baskı arttığında sabırsızlık aceleci davranışlara yol açabilir ortaya çıkabilir.\n\nSorunlara doğrudan yaklaşır, vakit kaybetmezsin. Netlik ve kararlılık zihinsel imzan olur. İçsel dürtün hızlı harekete geçme ihtiyacıyla çalışır.\n\nİlişkilerde yoğun enerji ve tutku beklersin. Yakınlığı hızlıca kurar, hislerini açıkça ifade edersin. İlişkilerine hareket ve canlılık katarsın.",
     "core_story_ui": {
       "drivers": [
         {
           "key": "ASC",
           "type": "angle",
-          "value": "Cancer"
+          "value": "Sagittarius"
         },
         {
           "key": "asc_ruler",
           "type": "ruler",
-          "value": "Moon"
+          "value": "Jupiter"
         },
         {
           "key": "asc_ruler_house",
           "type": "house",
-          "value": 4
+          "value": 7
         },
         {
           "key": "asc_ruler_sign",
           "type": "sign",
-          "value": "Libra"
+          "value": "Gemini"
         }
       ],
-      "headline": "Kimliğin netleştikçe yönün açılıyor.",
-      "text": "Netlik sende kontrol değil güven meselesi; Yükselen Yengeç belirsizliği uzatmayı sevmez ve yöneticin Ay'ün 4. ev vurgusu bunu en çok günlük kararların ve duruşun üzerinden görünür kılar, bu yüzden bir şeyi içinden tartıp sağlam bir cümleye dönüştürdüğünde hem ritmin hem yön duygun birlikte güçlenir. İyi çalıştığında bu ton sana denge ve ilişki zekası verir; gölgesinde kararı fazla tartıp geciktirme yaratabilir."
+      "headline": "Netlik kurduğunda gücün daha görünür oluyor.",
+      "text": "Netlik sende kontrol değil güven meselesi; Yükselen Yay belirsizliği uzatmayı sevmez ve yöneticin Jüpiter'ün 7. ev vurgusu bunu en çok günlük kararların ve duruşun üzerinden görünür kılar, bu yüzden bir şeyi içinden tartıp sağlam bir cümleye dönüştürdüğünde hem ritmin hem yön duygun birlikte güçlenir. İyi çalıştığında bu ton sana çeviklik ve ifade gücü verir; gölgesinde dağılma ya da kararı fazla çoğaltma yaratabilir."
     },
     "flags": {
       "dynamic_insights_enabled": false,
@@ -34,149 +34,145 @@
     "full_map_v8": {
       "golge": {
         "mechanism": {
-          "body": "Yükselen Yengeç sana dışarıda daha koruyucu ve duyarlı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yüksele…",
+          "body": "Yükselen Yay sana dışarıda daha açık ve vizyoner bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yükselen Yay…",
           "callout": null,
           "chips": [
-            "Yükselen Yengeç",
-            "Ay 4. ev",
-            "Terazi",
-            "Yaratım Akışı"
+            "Yükselen Yay",
+            "Jüpiter 7. ev",
+            "İkizler",
+            "Sistem Zihni"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
           "growth": null,
           "headline": "Zihin–eylem–kontrol",
-          "highlight": "Yükselen Yengeç"
+          "highlight": "Yükselen Yay"
         },
         "mission": {
-          "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
+          "body": "North Node ile Lilith arasındaki opposition hattı 0.53° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Görünür olma ritmin",
+          "headline": "Karşı kutupları dengede taşıyan çizgi: North Node ve Lilith",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; ac…"
+              "text": "North Node ile Lilith arasındaki opposition hattı 0.53° ile çok yakın çalışıyor."
+            },
+            {
+              "accent": "lavender",
+              "label": "Adım 2",
+              "text": "Sen işte yalnızca iyi yapmak istemiyorsun; doğru insanları ve doğru bağlamı birbirine bağlamak da senin gücün. Bu yüzden görünürlük burada tek başına parlamaktan çok doğru ağ için…"
             }
           ]
         },
         "opening_point": {
-          "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Oğlak olduğu ve yöneticisi Satürn 7. evde ve Oğlak'ta olduğu için, yakınlık…",
+          "body": "Moon ile Pluto arasındaki square hattı 0.74° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "7. ev Oğlak",
-            "Satürn 7. ev",
-            "Oğlak",
-            "İç Toparlanma"
+            "Moon",
+            "square",
+            "Pluto"
           ],
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "İlişkiler ve yakınlık",
-          "highlight": "7. ev Oğlak"
+          "headline": "Gerilimden güç üreten hat: Moon ve Pluto",
+          "highlight": null
         },
         "past_fragments": [
           {
-            "body": "Denge bozulduğunda fazla analiz, kararsızlık ya da ilişkiyi sürekli konuşarak çözmeye çalışma görülebilir.",
+            "body": "Erken yaşta güçlü durman gereken koşullar oluşmuş olabilir.",
             "callout": null,
-            "chips": [],
+            "chips": [
+              "ciddi",
+              "kontrollü",
+              "mesafeli"
+            ],
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Merkür 7. Ev",
-            "highlight": "Denge bozulduğunda fazla analiz, kararsızlık ya da ilişk"
+            "headline": "Satürn 1. Ev",
+            "highlight": "ciddi"
           },
           {
-            "body": "Erken dönemde ilişkide net sınırlar kurmak zor gelmiş olabilir.",
+            "body": "Denge bozulduğunda ani kopuşlar, ters köşe çıkışlar ya da sabırsız ayrışmalar görülebilir.",
             "callout": null,
-            "chips": [],
+            "chips": [
+              "özgün",
+              "bağımsız",
+              "elektrikli"
+            ],
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Neptün 7. Ev",
-            "highlight": "Erken dönemde ilişkide net sınırlar kurmak zor gelmiş ol"
+            "headline": "Uranüs 1. Ev",
+            "highlight": "özgün"
           }
         ],
         "potentials": [
           {
-            "body": "Lilith ile Descendant arasındaki sextile hattı 0.52° ile çok yakın çalışıyor.",
+            "body": "9. evde 3 gezegen birikimi, profile güçlü bir omurga veriyor.",
             "callout": null,
             "chips": [
-              "Lilith",
-              "sextile",
-              "Descendant"
+              "9. ev",
+              "3 gezegen",
+              "yoğunluk"
             ],
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Akışkan iş birliği hattı: Lilith ve Descendant",
+            "headline": "Merkezde toplanan güçlü enerji",
             "highlight": null
           },
           {
-            "body": "Mars ile Lilith arasındaki sextile hattı 0.08° ile çok yakın çalışıyor.",
+            "body": "disariya yansiyan guc, gorunurluk hassasiyeti. etki, yon duygusu. fazla savunma, fazla ayar yapma.",
             "callout": null,
             "chips": [
-              "Mars",
-              "sextile",
-              "Lilith"
+              "identity",
+              "career visibility"
             ],
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Akışkan iş birliği hattı: Mars ve Lilith",
-            "highlight": null
-          },
-          {
-            "body": "Mars ile Descendant arasındaki conjunction hattı 0.44° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Mars",
-              "conjunction",
-              "Descendant"
-            ],
-            "eyebrow": "POTANSİYEL",
-            "footer": null,
-            "footer_cta": null,
-            "growth": null,
-            "headline": "Aynı merkezde toplanan vurgu: Mars ve Descendant",
-            "highlight": null
+            "headline": "Dışarı verdiğin kimlik tonu güçlü.",
+            "highlight": "disariya yansiyan guc"
           }
         ],
         "pull_quote": {
-          "body": "Mars ile Ascendant arasındaki opposition hattı 0.44° ile çok yakın çalışıyor.",
+          "body": "Mars ile Neptune arasındaki square hattı 0.50° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
             "Mars",
-            "opposition",
-            "Ascendant"
+            "square",
+            "Neptune"
           ],
           "eyebrow": "GÖLGE",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "Karşı kutupları dengede taşıyan çizgi: Mars ve Ascendant",
+          "headline": "Gerilimden güç üreten hat: Mars ve Neptune",
           "highlight": null
         },
         "shadow_fragments": [
           {
-            "body": "Mars ile Ascendant arasındaki opposition hattı 0.44° ile çok yakın çalışıyor.",
+            "body": "Mars ile Neptune arasındaki square hattı 0.50° ile çok yakın çalışıyor.",
             "callout": null,
             "chips": [
               "Mars",
-              "opposition",
-              "Ascendant"
+              "square",
+              "Neptune"
             ],
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Karşı kutupları dengede taşıyan çizgi: Mars ve Ascendant",
+            "headline": "Gerilimden güç üreten hat: Mars ve Neptune",
             "highlight": null
           },
           {
@@ -197,90 +193,99 @@
       },
       "iliski": {
         "mechanism": {
-          "body": "Yükselen Yengeç sana dışarıda daha koruyucu ve duyarlı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yüksele…",
+          "body": "Mars ile Jupiter arasındaki sextile hattı 0.80° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Yükselen Yengeç",
-            "Ay 4. ev",
-            "Terazi",
-            "Yaratım Akışı"
+            "Mars",
+            "sextile",
+            "Jupiter"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "Zihin–eylem–kontrol",
-          "highlight": "Yükselen Yengeç"
+          "headline": "Akışkan iş birliği hattı: Mars ve Jupiter",
+          "highlight": null
         },
         "mission": {
-          "body": "yakinda hassasiyet, denge arayisi. uyum kurma, gercek temas. fazla uyumlanma, beklentiyi icte tutma.",
+          "body": "North Node ile Lilith arasındaki opposition hattı 0.53° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "İlişki hattında tekrar eden bir desen var.",
+          "headline": "Karşı kutupları dengede taşıyan çizgi: North Node ve Lilith",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "yakinda hassasiyet, denge arayisi. uyum kurma, gercek temas. fazla uyumlanma, beklentiyi icte tutma."
+              "text": "North Node ile Lilith arasındaki opposition hattı 0.53° ile çok yakın çalışıyor."
+            },
+            {
+              "accent": "lavender",
+              "label": "Adım 2",
+              "text": "Sen işte yalnızca iyi yapmak istemiyorsun; doğru insanları ve doğru bağlamı birbirine bağlamak da senin gücün. Bu yüzden görünürlük burada tek başına parlamaktan çok doğru ağ için…"
             }
           ]
         },
         "opening_point": {
-          "body": "İnsanlar önce kalite çıtasını, sonra etkini görür. Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman…",
+          "body": "Sen ilişkide yalnızca sıcaklık değil, aynı tarafta olma hissi arıyorsun. Bu yüzden bağın hangi çevrede ve hangi ritimde büyüdüğü, duygunun kendisi kadar belirleyici oluyor. 7. evin İkizler olduğu ve yöneticisi Merkür 11. evde ve Terazi'de olduğu için, güven e…",
           "callout": null,
           "chips": [
-            "MC Koç",
-            "Mars 6. ev",
-            "Oğlak",
-            "Yaratım Akışı"
+            "7. ev İkizler",
+            "Merkür 11. ev",
+            "Terazi",
+            "Dönüştürücü Bağ"
           ],
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "Görünür olma ritmin",
-          "highlight": "MC Koç"
+          "headline": "İlişkiler ve yakınlık",
+          "highlight": "7. ev İkizler"
         },
         "past_fragments": [
           {
-            "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Oğlak olduğu ve yöneticisi Satürn 7. evde ve Oğlak'ta olduğu için, yakınlık…",
+            "body": "Moon ile Pluto arasındaki square hattı 0.74° ile çok yakın çalışıyor.",
             "callout": null,
             "chips": [
-              "7. ev Oğlak",
-              "Satürn 7. ev",
-              "Oğlak",
-              "İç Toparlanma"
+              "Moon",
+              "square",
+              "Pluto"
+            ],
+            "eyebrow": "GEÇMİŞ KATMAN",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Gerilimden güç üreten hat: Moon ve Pluto",
+            "highlight": null
+          },
+          {
+            "body": "Sen ilişkide yalnızca sıcaklık değil, aynı tarafta olma hissi arıyorsun. Bu yüzden bağın hangi çevrede ve hangi ritimde büyüdüğü, duygunun kendisi kadar belirleyici oluyor. 7. evin İkizler olduğu ve yöneticisi Merkür 11. evde ve Terazi'de olduğu için, güven e…",
+            "callout": null,
+            "chips": [
+              "7. ev İkizler",
+              "Merkür 11. ev",
+              "Terazi",
+              "Dönüştürücü Bağ"
             ],
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
             "growth": null,
             "headline": "İlişkiler ve yakınlık",
-            "highlight": "7. ev Oğlak"
+            "highlight": "7. ev İkizler"
           },
           {
-            "body": "Erken dönemde ilişkide net sınırlar kurmak zor gelmiş olabilir.",
-            "callout": null,
-            "chips": [],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "growth": null,
-            "headline": "Neptün 7. Ev",
-            "highlight": "Erken dönemde ilişkide net sınırlar kurmak zor gelmiş ol"
-          },
-          {
-            "body": "yakinda hassasiyet, denge arayisi. uyum kurma, gercek temas. fazla uyumlanma, beklentiyi icte tutma.",
+            "body": "Denge bozulduğunda ani kopuşlar, ters köşe çıkışlar ya da sabırsız ayrışmalar görülebilir.",
             "callout": null,
             "chips": [
-              "relationships",
-              "intimacy depth"
+              "özgün",
+              "bağımsız",
+              "elektrikli"
             ],
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "İlişki hattında tekrar eden bir desen var.",
-            "highlight": "yakinda hassasiyet"
+            "headline": "Uranüs 1. Ev",
+            "highlight": "özgün"
           }
         ],
         "potentials": [
@@ -298,108 +303,131 @@
             "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
+          },
+          {
+            "body": "yakinda hassasiyet, denge arayisi. uyum kurma, gercek temas. fazla uyumlanma, beklentiyi icte tutma.",
+            "callout": null,
+            "chips": [
+              "relationships",
+              "intimacy depth"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "İlişki hattında tekrar eden bir desen var.",
+            "highlight": "yakinda hassasiyet"
           }
         ],
         "pull_quote": {
-          "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Oğlak olduğu ve yöneticisi Satürn 7. evde ve Oğlak'ta olduğu için, yakınlık…",
+          "body": "Moon ile Pluto arasındaki square hattı 0.74° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "7. ev Oğlak",
-            "Satürn 7. ev",
-            "Oğlak",
-            "İç Toparlanma"
+            "Moon",
+            "square",
+            "Pluto"
           ],
           "eyebrow": "İLİŞKİ",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "İlişkiler ve yakınlık",
-          "highlight": "7. ev Oğlak"
+          "headline": "Gerilimden güç üreten hat: Moon ve Pluto",
+          "highlight": null
         },
         "shadow_fragments": [
           {
-            "body": "Denge bozulduğunda fazla analiz, kararsızlık ya da ilişkiyi sürekli konuşarak çözmeye çalışma görülebilir.",
+            "body": "Erken yaşta güçlü durman gereken koşullar oluşmuş olabilir.",
             "callout": null,
-            "chips": [],
+            "chips": [
+              "ciddi",
+              "kontrollü",
+              "mesafeli"
+            ],
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Merkür 7. Ev",
-            "highlight": "Denge bozulduğunda fazla analiz, kararsızlık ya da ilişk"
+            "headline": "Satürn 1. Ev",
+            "highlight": "ciddi"
           },
           {
-            "body": "Erken dönemde ilişkide net sınırlar kurmak zor gelmiş olabilir.",
+            "body": "Denge bozulduğunda ani kopuşlar, ters köşe çıkışlar ya da sabırsız ayrışmalar görülebilir.",
             "callout": null,
-            "chips": [],
+            "chips": [
+              "özgün",
+              "bağımsız",
+              "elektrikli"
+            ],
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Neptün 7. Ev",
-            "highlight": "Erken dönemde ilişkide net sınırlar kurmak zor gelmiş ol"
+            "headline": "Uranüs 1. Ev",
+            "highlight": "özgün"
           }
         ]
       },
       "kariyer": {
         "mechanism": {
-          "body": "Yükselen Yengeç sana dışarıda daha koruyucu ve duyarlı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yüksele…",
+          "body": "Saturn ile Uranus arasındaki conjunction hattı 0.81° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Yükselen Yengeç",
-            "Ay 4. ev",
-            "Terazi",
-            "Yaratım Akışı"
+            "Saturn",
+            "conjunction",
+            "Uranus"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "Zihin–eylem–kontrol",
-          "highlight": "Yükselen Yengeç"
+          "headline": "Aynı merkezde toplanan vurgu: Saturn ve Uranus",
+          "highlight": null
         },
         "mission": {
-          "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
+          "body": "North Node ile Lilith arasındaki opposition hattı 0.53° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Görünür olma ritmin",
+          "headline": "Karşı kutupları dengede taşıyan çizgi: North Node ve Lilith",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; ac…"
+              "text": "North Node ile Lilith arasındaki opposition hattı 0.53° ile çok yakın çalışıyor."
+            },
+            {
+              "accent": "lavender",
+              "label": "Adım 2",
+              "text": "Sen işte yalnızca iyi yapmak istemiyorsun; doğru insanları ve doğru bağlamı birbirine bağlamak da senin gücün. Bu yüzden görünürlük burada tek başına parlamaktan çok doğru ağ için…"
             }
           ]
         },
         "opening_point": {
-          "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre değil. MC'nin Koç olması sana denge, iliş…",
+          "body": "yakinda hassasiyet, denge arayisi. uyum kurma, gercek temas. fazla uyumlanma, beklentiyi icte tutma.",
           "callout": null,
           "chips": [
-            "MC Koç",
-            "Mars 6. ev",
-            "Oğlak",
-            "Yaratım Akışı"
+            "relationships",
+            "intimacy depth"
           ],
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "Görünür olma ritmin",
-          "highlight": "MC Koç"
+          "headline": "İlişki hattında tekrar eden bir desen var.",
+          "highlight": "yakinda hassasiyet"
         },
         "past_fragments": [
           {
-            "body": "Mars ile Ascendant arasındaki opposition hattı 0.44° ile çok yakın çalışıyor.",
+            "body": "Mars ile Neptune arasındaki square hattı 0.50° ile çok yakın çalışıyor.",
             "callout": null,
             "chips": [
               "Mars",
-              "opposition",
-              "Ascendant"
+              "square",
+              "Neptune"
             ],
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Karşı kutupları dengede taşıyan çizgi: Mars ve Ascendant",
+            "headline": "Gerilimden güç üreten hat: Mars ve Neptune",
             "highlight": null
           },
           {
@@ -417,15 +445,19 @@
             "highlight": "duyguyu filtreleme"
           },
           {
-            "body": "Denge bozulduğunda fazla analiz, kararsızlık ya da ilişkiyi sürekli konuşarak çözmeye çalışma görülebilir.",
+            "body": "Erken yaşta güçlü durman gereken koşullar oluşmuş olabilir.",
             "callout": null,
-            "chips": [],
+            "chips": [
+              "ciddi",
+              "kontrollü",
+              "mesafeli"
+            ],
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Merkür 7. Ev",
-            "highlight": "Denge bozulduğunda fazla analiz, kararsızlık ya da ilişk"
+            "headline": "Satürn 1. Ev",
+            "highlight": "ciddi"
           }
         ],
         "potentials": [
@@ -446,34 +478,34 @@
           }
         ],
         "pull_quote": {
-          "body": "Lilith ile Ascendant arasındaki trine hattı 0.52° ile çok yakın çalışıyor.",
+          "body": "9. evde 3 gezegen birikimi, profile güçlü bir omurga veriyor.",
           "callout": null,
           "chips": [
-            "Lilith",
-            "trine",
-            "Ascendant"
+            "9. ev",
+            "3 gezegen",
+            "yoğunluk"
           ],
           "eyebrow": "KARİYER",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "Doğal uyum hattı: Lilith ve Ascendant",
+          "headline": "Merkezde toplanan güçlü enerji",
           "highlight": null
         },
         "shadow_fragments": [
           {
-            "body": "Mars ile Ascendant arasındaki opposition hattı 0.44° ile çok yakın çalışıyor.",
+            "body": "Mars ile Neptune arasındaki square hattı 0.50° ile çok yakın çalışıyor.",
             "callout": null,
             "chips": [
               "Mars",
-              "opposition",
-              "Ascendant"
+              "square",
+              "Neptune"
             ],
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Karşı kutupları dengede taşıyan çizgi: Mars ve Ascendant",
+            "headline": "Gerilimden güç üreten hat: Mars ve Neptune",
             "highlight": null
           },
           {
@@ -494,62 +526,66 @@
       },
       "kimlik": {
         "mechanism": {
-          "body": "Yükselen Yengeç sana dışarıda daha koruyucu ve duyarlı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yüksele…",
+          "body": "Saturn ile Uranus arasındaki conjunction hattı 0.81° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Yükselen Yengeç",
-            "Ay 4. ev",
-            "Terazi",
-            "Yaratım Akışı"
+            "Saturn",
+            "conjunction",
+            "Uranus"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "Zihin–eylem–kontrol",
-          "highlight": "Yükselen Yengeç"
+          "headline": "Aynı merkezde toplanan vurgu: Saturn ve Uranus",
+          "highlight": null
         },
         "mission": {
-          "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
+          "body": "North Node ile Lilith arasındaki opposition hattı 0.53° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Görünür olma ritmin",
+          "headline": "Karşı kutupları dengede taşıyan çizgi: North Node ve Lilith",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; ac…"
+              "text": "North Node ile Lilith arasındaki opposition hattı 0.53° ile çok yakın çalışıyor."
+            },
+            {
+              "accent": "lavender",
+              "label": "Adım 2",
+              "text": "Sen işte yalnızca iyi yapmak istemiyorsun; doğru insanları ve doğru bağlamı birbirine bağlamak da senin gücün. Bu yüzden görünürlük burada tek başına parlamaktan çok doğru ağ için…"
             }
           ]
         },
         "opening_point": {
-          "body": "Mars ile Descendant arasındaki conjunction hattı 0.44° ile çok yakın çalışıyor.",
+          "body": "Moon ile Pluto arasındaki square hattı 0.74° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Mars",
-            "conjunction",
-            "Descendant"
+            "Moon",
+            "square",
+            "Pluto"
           ],
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "Aynı merkezde toplanan vurgu: Mars ve Descendant",
+          "headline": "Gerilimden güç üreten hat: Moon ve Pluto",
           "highlight": null
         },
         "past_fragments": [
           {
-            "body": "Mars ile Ascendant arasındaki opposition hattı 0.44° ile çok yakın çalışıyor.",
+            "body": "Mars ile Neptune arasındaki square hattı 0.50° ile çok yakın çalışıyor.",
             "callout": null,
             "chips": [
               "Mars",
-              "opposition",
-              "Ascendant"
+              "square",
+              "Neptune"
             ],
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Karşı kutupları dengede taşıyan çizgi: Mars ve Ascendant",
+            "headline": "Gerilimden güç üreten hat: Mars ve Neptune",
             "highlight": null
           },
           {
@@ -567,15 +603,19 @@
             "highlight": "duyguyu filtreleme"
           },
           {
-            "body": "Denge bozulduğunda fazla analiz, kararsızlık ya da ilişkiyi sürekli konuşarak çözmeye çalışma görülebilir.",
+            "body": "Erken yaşta güçlü durman gereken koşullar oluşmuş olabilir.",
             "callout": null,
-            "chips": [],
+            "chips": [
+              "ciddi",
+              "kontrollü",
+              "mesafeli"
+            ],
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Merkür 7. Ev",
-            "highlight": "Denge bozulduğunda fazla analiz, kararsızlık ya da ilişk"
+            "headline": "Satürn 1. Ev",
+            "highlight": "ciddi"
           }
         ],
         "potentials": [
@@ -596,34 +636,34 @@
           }
         ],
         "pull_quote": {
-          "body": "Mars ile Lilith arasındaki sextile hattı 0.08° ile çok yakın çalışıyor.",
+          "body": "Mars ile Jupiter arasındaki sextile hattı 0.80° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
             "Mars",
             "sextile",
-            "Lilith"
+            "Jupiter"
           ],
           "eyebrow": "KİMLİK",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "Akışkan iş birliği hattı: Mars ve Lilith",
+          "headline": "Akışkan iş birliği hattı: Mars ve Jupiter",
           "highlight": null
         },
         "shadow_fragments": [
           {
-            "body": "Mars ile Ascendant arasındaki opposition hattı 0.44° ile çok yakın çalışıyor.",
+            "body": "Mars ile Neptune arasındaki square hattı 0.50° ile çok yakın çalışıyor.",
             "callout": null,
             "chips": [
               "Mars",
-              "opposition",
-              "Ascendant"
+              "square",
+              "Neptune"
             ],
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
             "growth": null,
-            "headline": "Karşı kutupları dengede taşıyan çizgi: Mars ve Ascendant",
+            "headline": "Gerilimden güç üreten hat: Mars ve Neptune",
             "highlight": null
           },
           {
@@ -646,16 +686,15 @@
     "locale": "tr",
     "narrative_v2": {
       "aspect_bundle_selector": {
-        "candidate_count": 44,
+        "candidate_count": 36,
         "max_primary_bundles": 3,
         "selected_bundles": [
           {
             "astro_sources": [
-              "Mars-Yükselen karşıtlığı",
-              "Mars 6. ev",
+              "Yükselen-Alçalan karşıtlığı",
               "Yükselen 1. ev"
             ],
-            "bundle_id": "mars_ascendant_opposition",
+            "bundle_id": "ascendant_descendant_opposition",
             "bundle_type": "angle_identity_bundle",
             "domains": [
               "identity",
@@ -666,7 +705,7 @@
               "yon duygusu"
             ],
             "lead_aspects": [
-              "Mars opposition Ascendant"
+              "Ascendant opposition Descendant"
             ],
             "recognition_tags": [
               "disariya yansiyan guc",
@@ -676,20 +715,20 @@
               "fazla savunma",
               "fazla ayar yapma"
             ],
-            "score": 0.7515,
+            "score": 0.745,
             "source_planets": [
-              "Mars",
-              "Ascendant"
+              "Ascendant",
+              "Descendant"
             ],
             "support_aspects": []
           },
           {
             "astro_sources": [
-              "Ay-Satürn karesi",
-              "Ay 4. ev",
-              "Satürn 7. ev"
+              "Ay-Plüton karesi",
+              "Ay 2. ev",
+              "Plüton 11. ev"
             ],
-            "bundle_id": "moon_saturn_square",
+            "bundle_id": "moon_pluto_square",
             "bundle_type": "emotional_regulation_bundle",
             "domains": [
               "relationships",
@@ -700,7 +739,7 @@
               "derin bag kurma"
             ],
             "lead_aspects": [
-              "Moon square Saturn"
+              "Moon square Pluto"
             ],
             "recognition_tags": [
               "duyguyu filtreleme",
@@ -710,20 +749,20 @@
               "geri cekilme",
               "erken sertlesme"
             ],
-            "score": 0.7167,
+            "score": 0.7439,
             "source_planets": [
               "Moon",
-              "Saturn"
+              "Pluto"
             ],
             "support_aspects": []
           },
           {
             "astro_sources": [
-              "Ay-Venüs karesi",
-              "Ay 4. ev",
-              "Venüs 7. ev"
+              "Mars-Neptün karesi",
+              "Mars 4. ev",
+              "Neptün 2. ev"
             ],
-            "bundle_id": "moon_venus_square",
+            "bundle_id": "mars_neptune_square",
             "bundle_type": "relational_pattern_bundle",
             "domains": [
               "relationships",
@@ -734,7 +773,7 @@
               "gercek temas"
             ],
             "lead_aspects": [
-              "Moon square Venus"
+              "Mars square Neptune"
             ],
             "recognition_tags": [
               "yakinda hassasiyet",
@@ -744,10 +783,10 @@
               "fazla uyumlanma",
               "beklentiyi icte tutma"
             ],
-            "score": 0.6996,
+            "score": 0.6957,
             "source_planets": [
-              "Moon",
-              "Venus"
+              "Mars",
+              "Neptune"
             ],
             "support_aspects": []
           }
@@ -758,25 +797,24 @@
     },
     "personality_imprint": {
       "__hashed__": true,
-      "content_hash": "08503c989613f0c0",
+      "content_hash": "b485a3c1c28f4c19",
       "shape": "dict[10]",
-      "size_bytes": 13327
+      "size_bytes": 13011
     },
     "profile_narrative": {
       "__hashed__": true,
-      "content_hash": "b8e6462e5cb80281",
+      "content_hash": "91476dd4a32ffaa7",
       "shape": "dict[1]",
-      "size_bytes": 56146
+      "size_bytes": 61534
     },
     "profile_v8": {
       "affects_you": {
         "body": "Kalbin, güven olmadan yarım açılmaz.",
         "eyebrow": "SENİ NASIL ETKİLER",
         "footer": null,
-        "headline": "Doğal uyum hattı: Lilith ve Ascendant",
+        "headline": "Gerilimden güç üreten hat: Moon ve Pluto",
         "rows": [
-          "Lilith ile Ascendant arasındaki trine hattı 0.52° ile çok yakın çalışıyor.",
-          "Lilith ile Descendant arasındaki sextile hattı 0.52° ile çok yakın çalışıyor."
+          "Moon ile Pluto arasındaki square hattı 0.74° ile çok yakın çalışıyor."
         ]
       },
       "archetype_portal": {
@@ -795,22 +833,22 @@
         ]
       },
       "conversation_hooks": {
-        "body": "İnsanlar sende önce şu çizgiyi okur: bir şey sana çarptığında zihnin boşta kalmıyor, içeride hemen pozisyon alan bir tarafın çalışıyor. Gündelik hayatta bunun karşılığı şu: bu hat…",
+        "body": "Bir şey sana çarptığında zihnin boşta kalmıyor; içeride hemen pozisyon alan bir tarafın çalışıyor. İç hattında bu hat en çok yakın ilişkiler tarafında belirginleşiyor, bazen söyle…",
         "callout": "“Projeler, fikirler, ne inşa ediyorsun?”",
         "chips": [
-          "Ciddi Sevgi",
-          "Sınır",
-          "Güven İnşası"
+          "Yüksek Standart",
+          "Sorumluluk",
+          "İnşa Et"
         ],
         "eyebrow": "BU KİŞİYLE NE KONUŞULUR",
         "footer": null,
         "footer_cta": null,
         "growth": null,
         "headline": "Karar verirken içinde ne oluyor",
-        "highlight": "Ciddi Sevgi"
+        "highlight": "Yüksek Standart"
       },
       "defense": {
-        "body": "Ortama dağılıp sarsıldığında kendi alanına dönme ihtiyacın artıyor. Kendi alanına dönmek sende sadece dinlenmek değil, ritmi geri kurmak anlamına geliyor. Sarsıldığında bazen yükü tek başına üstlenmeye meyledebilirsin.…",
+        "body": "Ortama dağılıp sarsıldığında kendi alanına dönme ihtiyacın artıyor. İç hattında kendi alanına dönmek sende sadece dinlenmek değil, ritmi geri kurmak anlamına geliyor. Kırılgan yerde bazen yükü tek başına üstlenmeye meyl…",
         "callout": null,
         "chips": [
           "Bağımsızlık",
@@ -820,38 +858,38 @@
         "eyebrow": "SAVUNMA MEKANİZMAN",
         "footer": null,
         "footer_cta": null,
-        "growth": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç hattında asıl motor en çok günlük ritim ve düzen tarafında çalışıyor, bu yüzden gö…",
-        "headline": "İç güvenin en çok nerede",
+        "growth": "North Node ile Lilith arasındaki opposition hattı 0.53° ile çok yakın çalışıyor.",
+        "headline": "Köklerinde çalışan şey",
         "highlight": "Bağımsızlık"
       },
       "differentiators": [
         {
           "accent": "lime",
           "body": "Varlığın taşıdığı yoğunluk nadir.",
-          "eyebrow": "7. ev",
-          "headline": "5 gezegen, tek ev.",
-          "stat": "5×",
-          "stat_label": "7. ev"
+          "eyebrow": "9. ev",
+          "headline": "3 gezegen, tek ev.",
+          "stat": "3×",
+          "stat_label": "9. ev"
         },
         {
           "accent": "lavender",
-          "body": "0.08° — exact açı hattı belirgin.",
-          "eyebrow": "Mars ✶ Lilith",
-          "headline": "Akışkan iş birliği hattı: Mars ve Lilith",
-          "stat": "0.08°",
+          "body": "0.50° — exact açı hattı belirgin.",
+          "eyebrow": "Mars □ Neptune",
+          "headline": "Gerilimden güç üreten hat: Mars ve Neptune",
+          "stat": "0.50°",
           "stat_label": "orb"
         },
         {
           "accent": "stone",
-          "body": "0.44° — exact açı hattı belirgin.",
-          "eyebrow": "Mars ☍ Ascendant",
-          "headline": "Karşı kutupları dengede taşıyan çizgi: Mars ve Ascendant",
-          "stat": "0.44°",
+          "body": "0.53° — exact açı hattı belirgin.",
+          "eyebrow": "North Node ☍ Lilith",
+          "headline": "Karşı kutupları dengede taşıyan çizgi: North Node ve Lilith",
+          "stat": "0.53°",
           "stat_label": "orb"
         }
       ],
       "first_felt": {
-        "body": "İlk hissedilen şey çoğu zaman daha koruyucu ve duyarlı bir duruşun olması; ama bunun altında kendi yönünü koruyan bir taraf da var. Kimliğin en çok ev ve iç güven tarafında sınanı…",
+        "body": "İlk hissedilen şey çoğu zaman daha açık ve vizyoner bir duruşun olması; ama bunun altında kendi yönünü koruyan bir taraf da var. Kimliğin en çok yakın ilişkiler tarafında sınanıyo…",
         "callout": null,
         "chips": [
           "Duruş",
@@ -862,42 +900,42 @@
         "footer": null,
         "footer_cta": null,
         "growth": null,
-        "headline": "Kendi çizgin",
+        "headline": "Varlığının omurgası",
         "highlight": "Duruş"
       },
       "first_impression": {
-        "body": "Mars ile Lilith arasındaki sextile hattı 0.08° ile çok yakın çalışıyor.",
+        "body": "Moon ile Pluto arasındaki square hattı 0.74° ile çok yakın çalışıyor.",
         "callout": null,
         "chips": [
-          "Mars",
-          "sextile",
-          "Lilith"
+          "Moon",
+          "square",
+          "Pluto"
         ],
         "eyebrow": "İLK İZLENİM",
         "footer": null,
         "footer_cta": null,
         "growth": null,
-        "headline": "Akışkan iş birliği hattı: Mars ve Lilith",
+        "headline": "Gerilimden güç üreten hat: Moon ve Pluto",
         "highlight": null
       },
       "hero": {
         "display_name": "",
         "followers_text": "0 takip · 0 arkadaş",
         "forum_status_text": "Forum pasif",
-        "location_age": "Mumbai, IN · 36 yaş",
-        "moon_sign": "Libra",
-        "rising_sign": "Cancer",
-        "sun_sign": "Aquarius"
+        "location_age": "Ankara, TR · 37 yaş",
+        "moon_sign": "Aquarius",
+        "rising_sign": "Sagittarius",
+        "sun_sign": "Virgo"
       },
       "identity_axis": {
-        "body": "Netlik sende kontrol değil güven meselesi; Yükselen Yengeç belirsizliği uzatmayı sevmez ve yöneticin Ay'ün 4. ev vurgusu bunu en çok günlük kararların ve duruşun üzerinden görünür kılar, bu yüzden bir şeyi içinden tartıp sağlam bir cümleye dönüştürdüğünde hem ritmin hem yön duygun birlikte güçlenir. İyi çalıştığında bu ton sana denge ve ilişki zekası verir; gölgesinde kararı fazla tartıp geciktirme yaratabilir.",
+        "body": "Netlik sende kontrol değil güven meselesi; Yükselen Yay belirsizliği uzatmayı sevmez ve yöneticin Jüpiter'ün 7. ev vurgusu bunu en çok günlük kararların ve duruşun üzerinden görünür kılar, bu yüzden bir şeyi içinden tartıp sağlam bir cümleye dönüştürdüğünde hem ritmin hem yön duygun birlikte güçlenir. İyi çalıştığında bu ton sana çeviklik ve ifade gücü verir; gölgesinde dağılma ya da kararı fazla çoğaltma yaratabilir.",
         "callout": null,
         "chips": [],
         "eyebrow": "KİMLİK EKSENİ",
         "footer": null,
         "footer_cta": null,
         "growth": null,
-        "headline": "Kimliğin netleştikçe yönün açılıyor",
+        "headline": "Netlik kurduğunda gücün daha görünür oluyor",
         "highlight": null
       },
       "insight_strip": [
@@ -905,15 +943,15 @@
           "accent": "lime",
           "eyebrow": "Aura",
           "icon_type": "dot",
-          "subtitle": "Ay 4. Ev",
-          "title": "Ay 4. Ev"
+          "subtitle": "Güneş 10. Ev",
+          "title": "Güneş 10. Ev"
         },
         {
           "accent": "stone",
           "eyebrow": "Yönetici",
           "icon_type": "ring",
           "subtitle": "1. ev yöneticisi",
-          "title": "Moon"
+          "title": "Jupiter"
         },
         {
           "accent": "lavender",
@@ -924,112 +962,112 @@
         }
       ],
       "intimacy": {
-        "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç hattında bağ sende en çok yakın ilişkiler tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi ciddi, güvenilir ve omurgalı bir şekilde taşıyabilme tarafın da belirginleşiyor. Kırılgan yerde duyguyu fazla tutmak ya da kırılganlığı göstermekte zorlanmak daha kolay tetiklenebiliyor.",
+        "body": "Bir ortama girdiğinde kalbin yakınlığı hafif yaşamıyor, güven gördüğünde hızla derinleşiyor. Perde arkasında ise bağ sende en çok bağlantı, ekip ve sosyal bağlam tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi zarif, dengeli ve karşılıklı bir tonda yaşatabilme tarafın da belirginleşiyor. Kırıldığında ritim düştüğünde dağılmak ya da duygudan çok zihinde kalmak daha kolay tetiklenebiliyor.",
         "callout": null,
         "chips": [
-          "Eşitlik",
-          "Ayna",
-          "Ortaklık"
+          "Derin Duygu",
+          "Dönüşüm",
+          "Gerçek Temas"
         ],
         "eyebrow": "YAKINLIK",
         "footer": null,
         "footer_cta": null,
         "growth": null,
         "headline": "Sevginin derinleşme biçimi",
-        "highlight": "Eşitlik"
+        "highlight": "Derin Duygu"
       },
       "mind": {
-        "body": "Yükselen Yengeç sana dışarıda daha koruyucu ve duyarlı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor;…",
+        "body": "Yükselen Yay sana dışarıda daha açık ve vizyoner bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içerid…",
         "callout": null,
         "chips": [
-          "Yükselen Yengeç",
-          "Ay 4. ev",
-          "Terazi",
-          "Yaratım Akışı"
+          "Yükselen Yay",
+          "Jüpiter 7. ev",
+          "İkizler",
+          "Sistem Zihni"
         ],
         "eyebrow": "ZİHİNSEL İŞLEYİŞ",
         "footer": null,
         "footer_cta": null,
         "growth": null,
         "headline": "Zihin–eylem–kontrol",
-        "highlight": "Yükselen Yengeç"
+        "highlight": "Yükselen Yay"
       },
       "mission_preview": {
-        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç hattında asıl motor en çok günlük ritim ve düzen tarafında çalışıyor, bu yüzden görünmeden önce işi sa…",
+        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. Asıl motor en çok bağlantı, ekip ve sosyal bağlam tarafında çalışıyor; bu yüzden görünmeden önce işi sağl…",
         "callout": null,
         "chips": [
-          "Ustalık",
-          "Rutin",
-          "Zanaat"
+          "Bağlantı Gücü",
+          "Ekip",
+          "Topluluk"
         ],
         "eyebrow": "MİSYON",
         "footer": null,
         "footer_cta": null,
         "growth": null,
         "headline": "Görünür olmadan önce sende olan",
-        "highlight": "Ustalık"
+        "highlight": "Bağlantı Gücü"
       },
       "past_teaser": {
-        "body": "Mars ile Ascendant arasındaki opposition hattı 0.44° ile çok yakın çalışıyor.",
+        "body": "Mars ile Neptune arasındaki square hattı 0.50° ile çok yakın çalışıyor.",
         "callout": null,
         "chips": [
           "Mars",
-          "opposition",
-          "Ascendant"
+          "square",
+          "Neptune"
         ],
         "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
         "footer": null,
         "footer_cta": null,
         "growth": null,
-        "headline": "Karşı kutupları dengede taşıyan çizgi: Mars ve Ascendant",
+        "headline": "Gerilimden güç üreten hat: Mars ve Neptune",
         "highlight": null
       },
       "past_teasers": [
         {
-          "body": "Mars ile Ascendant arasındaki opposition hattı 0.44° ile çok yakın çalışıyor.",
+          "body": "Mars ile Neptune arasındaki square hattı 0.50° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
             "Mars",
-            "opposition",
-            "Ascendant"
+            "square",
+            "Neptune"
           ],
           "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
           "footer": null,
           "footer_cta": null,
           "growth": null,
-          "headline": "Karşı kutupları dengede taşıyan çizgi: Mars ve Ascendant",
+          "headline": "Gerilimden güç üreten hat: Mars ve Neptune",
           "highlight": null
         }
       ],
       "talents": [
         {
           "accent": "lime",
-          "eyebrow": "Büyük fikir, kalıcı yapı.",
-          "text": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla…"
+          "eyebrow": "Akışkan iş birliği hattı: Mars ve Jupiter",
+          "text": "Mars ile Jupiter arasındaki sextile hattı 0.80° ile çok yakın çalışıyor."
         },
         {
           "accent": "lavender",
-          "eyebrow": "Yetenek çizgin",
-          "text": "Bir ortama girdiğinde dağınık olanı toparlayıp sezgisel olanı anlaşılır hale ge…"
+          "eyebrow": "Aynı merkezde toplanan vurgu: Saturn ve Uranus",
+          "text": "Saturn ile Uranus arasındaki conjunction hattı 0.81° ile çok yakın çalışıyor."
         },
         {
           "accent": "stone",
-          "eyebrow": "Aynı merkezde toplanan vurgu: Mars ve Descendant",
-          "text": "Mars ile Descendant arasındaki conjunction hattı 0.44° ile çok yakın çalışıyor."
+          "eyebrow": "Karşı kutupları dengede taşıyan çizgi: North Node ve Lilith",
+          "text": "North Node ile Lilith arasındaki opposition hattı 0.53° ile çok yakın çalışıyor."
         }
       ]
     },
     "sections_v2": {
       "__hashed__": true,
-      "content_hash": "0bc37db9a6aad26a",
+      "content_hash": "732faa574fc3bb68",
       "shape": "list[3]",
-      "size_bytes": 17479
+      "size_bytes": 19883
     },
     "supporting_threads": {
       "__hashed__": true,
-      "content_hash": "fa51a4d6e8f98e0b",
+      "content_hash": "069975b093c2ba5b",
       "shape": "list[3]",
-      "size_bytes": 19504
+      "size_bytes": 21300
     },
     "upper_meaning": {
       "content": null,

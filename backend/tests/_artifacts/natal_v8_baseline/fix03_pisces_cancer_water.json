@@ -34,19 +34,19 @@
     "full_map_v8": {
       "golge": {
         "mechanism": {
-          "body": "Yükselen Oğlak sana dışarıda daha ciddi ve hedef odaklı bir duruş veriyor; ama içeride olan şey çoğu zaman bundan daha hareketli. Senin zihnin önce içeride toparlıyor, sonra dışarı açılıyor; bu yüzden hemen cevap vermemek sende kaçınma değil, cümleyi ve duygu…",
+          "body": "Saturn ile Neptune arasındaki conjunction hattı 0.09° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Yükselen Oğlak",
-            "Satürn 12. ev",
-            "Oğlak",
-            "Rafine Etki"
+            "Saturn",
+            "conjunction",
+            "Neptune"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Zihin–eylem–kontrol",
-          "highlight": "Yükselen Oğlak"
+          "growth": null,
+          "headline": "Aynı merkezde toplanan vurgu: Saturn ve Neptune",
+          "highlight": null
         },
         "mission": {
           "body": "Uranus ile North Node arasındaki sextile hattı 0.09° ile çok yakın çalışıyor.",
@@ -77,6 +77,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişkiler ve yakınlık",
           "highlight": "7. ev Yengeç"
         },
@@ -92,6 +93,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Venüs 1. Ev",
             "highlight": "çekici"
           },
@@ -106,11 +108,27 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Merkür 1. Ev",
             "highlight": "zeki"
           }
         ],
         "potentials": [
+          {
+            "body": "1. evde 6 gezegen birikimi, profile güçlü bir omurga veriyor.",
+            "callout": null,
+            "chips": [
+              "1. ev",
+              "6 gezegen",
+              "yoğunluk"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Merkezde toplanan güçlü enerji",
+            "highlight": null
+          },
           {
             "body": "disariya yansiyan guc, gorunurluk hassasiyeti. etki, yon duygusu. fazla savunma, fazla ayar yapma.",
             "callout": null,
@@ -121,6 +139,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Dışarı verdiğin kimlik tonu güçlü.",
             "highlight": "disariya yansiyan guc"
           }
@@ -136,6 +155,7 @@
           "eyebrow": "GÖLGE",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Fortune ve Midheaven",
           "highlight": null
         },
@@ -151,6 +171,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Fortune ve Midheaven",
             "highlight": null
           },
@@ -165,6 +186,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Fortune ve Imum Coeli",
             "highlight": null
           }
@@ -172,18 +194,20 @@
       },
       "iliski": {
         "mechanism": {
-          "body": "Saturn ile Neptune arasındaki conjunction hattı 0.09° ile çok yakın çalışıyor.",
+          "body": "Yükselen Oğlak sana dışarıda daha ciddi ve hedef odaklı bir duruş veriyor; ama içeride olan şey çoğu zaman bundan daha hareketli. Senin zihnin önce içeride toparlıyor, sonra dışarı açılıyor; bu yüzden hemen cevap vermemek sende kaçınma değil, cümleyi ve duygu…",
           "callout": null,
           "chips": [
-            "Saturn",
-            "conjunction",
-            "Neptune"
+            "Yükselen Oğlak",
+            "Satürn 12. ev",
+            "Oğlak",
+            "Rafine Etki"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Aynı merkezde toplanan vurgu: Saturn ve Neptune",
-          "highlight": null
+          "growth": null,
+          "headline": "Zihin–eylem–kontrol",
+          "highlight": "Yükselen Oğlak"
         },
         "mission": {
           "body": "Uranus ile North Node arasındaki sextile hattı 0.09° ile çok yakın çalışıyor.",
@@ -212,6 +236,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişki hattında tekrar eden bir desen var.",
           "highlight": "yakinda hassasiyet"
         },
@@ -228,6 +253,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İlişkiler ve yakınlık",
             "highlight": "7. ev Yengeç"
           },
@@ -242,13 +268,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Merkür 1. Ev",
             "highlight": "zeki"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -258,6 +285,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
@@ -272,6 +300,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
             "highlight": "dogal akis"
           },
@@ -285,6 +314,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İlişki hattında tekrar eden bir desen var.",
             "highlight": "yakinda hassasiyet"
           }
@@ -301,6 +331,7 @@
           "eyebrow": "İLİŞKİ",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişkiler ve yakınlık",
           "highlight": "7. ev Yengeç"
         },
@@ -316,6 +347,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Venüs 1. Ev",
             "highlight": "çekici"
           },
@@ -330,6 +362,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Merkür 1. Ev",
             "highlight": "zeki"
           }
@@ -337,18 +370,20 @@
       },
       "kariyer": {
         "mechanism": {
-          "body": "Jupiter ile Juno arasındaki square hattı 0.30° ile çok yakın çalışıyor.",
+          "body": "Yükselen Oğlak sana dışarıda daha ciddi ve hedef odaklı bir duruş veriyor; ama içeride olan şey çoğu zaman bundan daha hareketli. Senin zihnin önce içeride toparlıyor, sonra dışarı açılıyor; bu yüzden hemen cevap vermemek sende kaçınma değil, cümleyi ve duygu…",
           "callout": null,
           "chips": [
-            "Jupiter",
-            "square",
-            "Juno"
+            "Yükselen Oğlak",
+            "Satürn 12. ev",
+            "Oğlak",
+            "Rafine Etki"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Gerilimden güç üreten hat: Jupiter ve Juno",
-          "highlight": null
+          "growth": null,
+          "headline": "Zihin–eylem–kontrol",
+          "highlight": "Yükselen Oğlak"
         },
         "mission": {
           "body": "Uranus ile North Node arasındaki sextile hattı 0.09° ile çok yakın çalışıyor.",
@@ -378,6 +413,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Akışkan iş birliği hattı: Uranus ve North Node",
           "highlight": null
         },
@@ -393,6 +429,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Fortune ve Midheaven",
             "highlight": null
           },
@@ -407,6 +444,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Fortune ve Imum Coeli",
             "highlight": null
           },
@@ -421,13 +459,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Venüs 1. Ev",
             "highlight": "çekici"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -437,6 +476,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
@@ -451,22 +491,24 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
             "highlight": "dogal akis"
           }
         ],
         "pull_quote": {
-          "body": "1. evde 6 gezegen birikimi, profile güçlü bir omurga veriyor.",
+          "body": "Sun ile Pluto arasındaki trine hattı 0.54° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "1. ev",
-            "6 gezegen",
-            "yoğunluk"
+            "Sun",
+            "trine",
+            "Pluto"
           ],
           "eyebrow": "KARİYER",
           "footer": null,
           "footer_cta": null,
-          "headline": "Merkezde toplanan güçlü enerji",
+          "growth": null,
+          "headline": "Doğal uyum hattı: Sun ve Pluto",
           "highlight": null
         },
         "shadow_fragments": [
@@ -481,6 +523,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Fortune ve Midheaven",
             "highlight": null
           },
@@ -495,6 +538,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Fortune ve Imum Coeli",
             "highlight": null
           }
@@ -502,17 +546,18 @@
       },
       "kimlik": {
         "mechanism": {
-          "body": "Jupiter ile Juno arasındaki square hattı 0.30° ile çok yakın çalışıyor.",
+          "body": "Saturn ile Neptune arasındaki conjunction hattı 0.09° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Jupiter",
-            "square",
-            "Juno"
+            "Saturn",
+            "conjunction",
+            "Neptune"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Gerilimden güç üreten hat: Jupiter ve Juno",
+          "growth": null,
+          "headline": "Aynı merkezde toplanan vurgu: Saturn ve Neptune",
           "highlight": null
         },
         "mission": {
@@ -533,17 +578,18 @@
           ]
         },
         "opening_point": {
-          "body": "1. evde 6 gezegen birikimi, profile güçlü bir omurga veriyor.",
+          "body": "Sun ile Pluto arasındaki trine hattı 0.54° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "1. ev",
-            "6 gezegen",
-            "yoğunluk"
+            "Sun",
+            "trine",
+            "Pluto"
           ],
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
-          "headline": "Merkezde toplanan güçlü enerji",
+          "growth": null,
+          "headline": "Doğal uyum hattı: Sun ve Pluto",
           "highlight": null
         },
         "past_fragments": [
@@ -558,6 +604,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Fortune ve Midheaven",
             "highlight": null
           },
@@ -572,6 +619,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Fortune ve Imum Coeli",
             "highlight": null
           },
@@ -586,13 +634,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Venüs 1. Ev",
             "highlight": "çekici"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -602,6 +651,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
@@ -616,6 +666,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
             "highlight": "dogal akis"
           }
@@ -631,6 +682,7 @@
           "eyebrow": "KİMLİK",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Aynı merkezde toplanan vurgu: Saturn ve Neptune",
           "highlight": null
         },
@@ -646,6 +698,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Fortune ve Midheaven",
             "highlight": null
           },
@@ -660,6 +713,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Fortune ve Imum Coeli",
             "highlight": null
           }
@@ -669,7 +723,7 @@
     "locale": "tr",
     "narrative_v2": {
       "aspect_bundle_selector": {
-        "candidate_count": 64,
+        "candidate_count": 51,
         "max_primary_bundles": 3,
         "selected_bundles": [
           {
@@ -781,15 +835,15 @@
     },
     "personality_imprint": {
       "__hashed__": true,
-      "content_hash": "242fd848ff4486f4",
+      "content_hash": "6b808e912254f502",
       "shape": "dict[10]",
       "size_bytes": 13372
     },
     "profile_narrative": {
       "__hashed__": true,
-      "content_hash": "dfaddbe9f13cd28e",
+      "content_hash": "80b8e7d24766f46b",
       "shape": "dict[1]",
-      "size_bytes": 58960
+      "size_bytes": 59804
     },
     "profile_v8": {
       "affects_you": {
@@ -831,6 +885,7 @@
         "eyebrow": "BU KİŞİYLE NE KONUŞULUR",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Cümlelerinin arkası",
         "highlight": "İç Ritim"
       },
@@ -845,6 +900,7 @@
         "eyebrow": "SAVUNMA MEKANİZMAN",
         "footer": null,
         "footer_cta": null,
+        "growth": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç hattında asıl motor en çok ev ve iç güven tarafında çalışıyor, bu yüzden görünmede…",
         "headline": "İç güvenin en çok nerede",
         "highlight": "Bağımsızlık"
       },
@@ -875,7 +931,7 @@
         }
       ],
       "first_felt": {
-        "body": "İlk hissedilen şey çoğu zaman daha ciddi ve hedef odaklı bir duruşun olması; ama bunun altında kendi yönünü koruyan bir taraf da var. İç tarafta işleyiş şöyle: kimliğin en çok per…",
+        "body": "İlk hissedilen şey çoğu zaman daha ciddi ve hedef odaklı bir duruşun olması; ama bunun altında kendi yönünü koruyan bir taraf da var. İç hattında kimliğin en çok perde arkası ve i…",
         "callout": null,
         "chips": [
           "Güçlü Benlik",
@@ -885,21 +941,23 @@
         "eyebrow": "İLK HİSSEDİLEN ŞEY",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Varlığının omurgası",
         "highlight": "Güçlü Benlik"
       },
       "first_impression": {
-        "body": "Saturn ile Neptune arasındaki conjunction hattı 0.09° ile çok yakın çalışıyor.",
+        "body": "Sun ile Pluto arasındaki trine hattı 0.54° ile çok yakın çalışıyor.",
         "callout": null,
         "chips": [
-          "Saturn",
-          "conjunction",
-          "Neptune"
+          "Sun",
+          "trine",
+          "Pluto"
         ],
         "eyebrow": "İLK İZLENİM",
         "footer": null,
         "footer_cta": null,
-        "headline": "Aynı merkezde toplanan vurgu: Saturn ve Neptune",
+        "growth": null,
+        "headline": "Doğal uyum hattı: Sun ve Pluto",
         "highlight": null
       },
       "hero": {
@@ -918,6 +976,7 @@
         "eyebrow": "KİMLİK EKSENİ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Ritmini koruduğunda yön duygun güçleniyor",
         "highlight": null
       },
@@ -945,7 +1004,7 @@
         }
       ],
       "intimacy": {
-        "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç tarafta işleyiş şöyle: bağ sende en çok benlik ve duruş tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi özgürlük bırakarak ama yine de gerçek kalarak yaşayabilme tarafın da belirginleşiyor. Kırılgan yerde güvensizlikte fazla alınmak ya da kabuğa çekilmek daha kolay tetiklenebiliyor.",
+        "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç hattında bağ sende en çok benlik ve duruş tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi özgürlük bırakarak ama yine de gerçek kalarak yaşayabilme tarafın da belirginleşiyor. Kırılgan yerde güvensizlikte fazla alınmak ya da kabuğa çekilmek daha kolay tetiklenebiliyor.",
         "callout": null,
         "chips": [
           "Ayna Etkisi",
@@ -955,6 +1014,7 @@
         "eyebrow": "YAKINLIK",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Kalbinin eşiği",
         "highlight": "Ayna Etkisi"
       },
@@ -970,11 +1030,12 @@
         "eyebrow": "ZİHİNSEL İŞLEYİŞ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Zihin–eylem–kontrol",
         "highlight": "Yükselen Oğlak"
       },
       "mission_preview": {
-        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç tarafta işleyiş şöyle: asıl motor en çok ev ve iç güven tarafında çalışıyor, bu yüzden görünmeden önce…",
+        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç hattında asıl motor en çok ev ve iç güven tarafında çalışıyor, bu yüzden görünmeden önce işi sağlamlaş…",
         "callout": null,
         "chips": [
           "Kök",
@@ -984,6 +1045,7 @@
         "eyebrow": "MİSYON",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Toplumda nasıl iz bırakıyorsun",
         "highlight": "Kök"
       },
@@ -996,35 +1058,58 @@
           "Midheaven"
         ],
         "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
-        "footer": "3 geçmiş katman daha",
-        "footer_cta": "Tam haritada gör →",
+        "footer": null,
+        "footer_cta": null,
+        "growth": null,
         "headline": "Gerilimden güç üreten hat: Fortune ve Midheaven",
         "highlight": null
       },
+      "past_teasers": [
+        {
+          "body": "Fortune ile Midheaven arasındaki square hattı 0.39° ile çok yakın çalışıyor.",
+          "callout": null,
+          "chips": [
+            "Fortune",
+            "square",
+            "Midheaven"
+          ],
+          "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Gerilimden güç üreten hat: Fortune ve Midheaven",
+          "highlight": null
+        }
+      ],
       "talents": [
         {
           "accent": "lime",
-          "eyebrow": "Gerilimden güç üreten hat: Jupiter ve Juno",
-          "text": "Jupiter ile Juno arasındaki square hattı 0.30° ile çok yakın çalışıyor."
+          "eyebrow": "Aynı merkezde toplanan vurgu: Saturn ve Neptune",
+          "text": "Saturn ile Neptune arasındaki conjunction hattı 0.09° ile çok yakın çalışıyor."
         },
         {
           "accent": "lavender",
           "eyebrow": "Akışkan iş birliği hattı: Uranus ve North Node",
           "text": "Uranus ile North Node arasındaki sextile hattı 0.09° ile çok yakın çalışıyor."
+        },
+        {
+          "accent": "stone",
+          "eyebrow": "Büyük fikir, kalıcı yapı.",
+          "text": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla…"
         }
       ]
     },
     "sections_v2": {
       "__hashed__": true,
-      "content_hash": "3d02ad0b7080c6bd",
+      "content_hash": "30421530650c10f6",
       "shape": "list[3]",
-      "size_bytes": 18323
+      "size_bytes": 18766
     },
     "supporting_threads": {
       "__hashed__": true,
-      "content_hash": "d8db5350950c13a6",
+      "content_hash": "cc49dbffe8bf7e6c",
       "shape": "list[3]",
-      "size_bytes": 20056
+      "size_bytes": 20523
     },
     "upper_meaning": {
       "content": null,

@@ -45,18 +45,19 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Zihin–eylem–kontrol",
           "highlight": "Yükselen Akrep"
         },
         "mission": {
-          "body": "Sun ile North Node arasındaki trine hattı 0.57° ile çok yakın çalışıyor.",
+          "body": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
           "headline": "Doğal uyum hattı: Sun ve North Node",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Sun ile North Node arasındaki trine hattı 0.57° ile çok yakın çalışıyor."
+              "text": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor."
             },
             {
               "accent": "lavender",
@@ -76,6 +77,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Venus ve Neptune",
           "highlight": null
         },
@@ -91,6 +93,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Mars 5. Ev",
             "highlight": "tutkulu"
           },
@@ -101,23 +104,56 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Jüpiter 11. Ev",
             "highlight": "Denge bozulduğunda fazla dağılma, her yere yetişmeye çal"
           }
         ],
         "potentials": [
           {
-            "body": "disariya yansiyan guc, gorunurluk hassasiyeti. etki, yon duygusu. fazla savunma, fazla ayar yapma.",
+            "body": "Uranus ile Neptune arasındaki conjunction hattı 0.94° ile çok yakın çalışıyor.",
             "callout": null,
             "chips": [
-              "identity",
-              "career visibility"
+              "Uranus",
+              "conjunction",
+              "Neptune"
             ],
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
-            "headline": "Dışarı verdiğin kimlik tonu güçlü.",
-            "highlight": "disariya yansiyan guc"
+            "growth": null,
+            "headline": "Aynı merkezde toplanan vurgu: Uranus ve Neptune",
+            "highlight": null
+          },
+          {
+            "body": "Mars ile Neptune arasındaki sextile hattı 1.03° ile çok yakın çalışıyor.",
+            "callout": null,
+            "chips": [
+              "Mars",
+              "sextile",
+              "Neptune"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Akışkan iş birliği hattı: Mars ve Neptune",
+            "highlight": null
+          },
+          {
+            "body": "3. evde 4 gezegen birikimi, profile güçlü bir omurga veriyor.",
+            "callout": null,
+            "chips": [
+              "3. ev",
+              "4 gezegen",
+              "yoğunluk"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Merkezde toplanan güçlü enerji",
+            "highlight": null
           }
         ],
         "pull_quote": {
@@ -131,6 +167,7 @@
           "eyebrow": "GÖLGE",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Neptune ve Vertex",
           "highlight": null
         },
@@ -146,35 +183,9 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Neptune ve Vertex",
             "highlight": null
-          },
-          {
-            "body": "Sun ile Chiron arasındaki square hattı 0.61° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Sun",
-              "square",
-              "Chiron"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Gerilimden güç üreten hat: Sun ve Chiron",
-            "highlight": null
-          },
-          {
-            "body": "icte iki yone cekilme, karisik tepki. esneklik, katmanli bakis. bolunme hissi, ani gidip gelme.",
-            "callout": null,
-            "chips": [
-              "identity",
-              "mind communication"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "İçeride iki yönü aynı anda taşıyorsun.",
-            "highlight": "icte iki yone cekilme"
           }
         ]
       },
@@ -191,195 +202,19 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Zihin–eylem–kontrol",
           "highlight": "Yükselen Akrep"
         },
         "mission": {
-          "body": "Sun ile North Node arasındaki trine hattı 0.57° ile çok yakın çalışıyor.",
+          "body": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
           "headline": "Doğal uyum hattı: Sun ve North Node",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Sun ile North Node arasındaki trine hattı 0.57° ile çok yakın çalışıyor."
-            },
-            {
-              "accent": "lavender",
-              "label": "Adım 2",
-              "text": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; ac…"
-            }
-          ]
-        },
-        "opening_point": {
-          "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Boğa olduğu ve yöneticisi Venüs 6. evde ve Koç'ta olduğu için, yakınlık sen…",
-          "callout": null,
-          "chips": [
-            "7. ev Boğa",
-            "Venüs 6. ev",
-            "Koç",
-            "İç Toparlanma"
-          ],
-          "eyebrow": "AÇILMA NOKTASI",
-          "footer": null,
-          "footer_cta": null,
-          "headline": "İlişkiler ve yakınlık",
-          "highlight": "7. ev Boğa"
-        },
-        "past_fragments": [
-          {
-            "body": "Venus ile Neptune arasındaki square hattı 0.26° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Venus",
-              "square",
-              "Neptune"
-            ],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Gerilimden güç üreten hat: Venus ve Neptune",
-            "highlight": null
-          },
-          {
-            "body": "Moon ile Juno arasındaki square hattı 0.70° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Moon",
-              "square",
-              "Juno"
-            ],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Gerilimden güç üreten hat: Moon ve Juno",
-            "highlight": null
-          },
-          {
-            "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Boğa olduğu ve yöneticisi Venüs 6. evde ve Koç'ta olduğu için, yakınlık sen…",
-            "callout": null,
-            "chips": [
-              "7. ev Boğa",
-              "Venüs 6. ev",
-              "Koç",
-              "İç Toparlanma"
-            ],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "İlişkiler ve yakınlık",
-            "highlight": "7. ev Boğa"
-          }
-        ],
-        "potentials": [
-          {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
-            "callout": null,
-            "chips": [
-              "Merkür",
-              "Jüpiter",
-              "vizyon"
-            ],
-            "eyebrow": "POTANSİYEL",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Büyük fikir, kalıcı yapı.",
-            "highlight": null
-          },
-          {
-            "body": "yakinda hassasiyet, denge arayisi. uyum kurma, gercek temas. fazla uyumlanma, beklentiyi icte tutma.",
-            "callout": null,
-            "chips": [
-              "relationships",
-              "intimacy depth",
-              "mind communication"
-            ],
-            "eyebrow": "POTANSİYEL",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "İlişki hattında tekrar eden bir desen var.",
-            "highlight": "yakinda hassasiyet"
-          }
-        ],
-        "pull_quote": {
-          "body": "Moon ile Juno arasındaki square hattı 0.70° ile çok yakın çalışıyor.",
-          "callout": null,
-          "chips": [
-            "Moon",
-            "square",
-            "Juno"
-          ],
-          "eyebrow": "İLİŞKİ",
-          "footer": null,
-          "footer_cta": null,
-          "headline": "Gerilimden güç üreten hat: Moon ve Juno",
-          "highlight": null
-        },
-        "shadow_fragments": [
-          {
-            "body": "Denge bozulduğunda fazla dağılma, her yere yetişmeye çalışma ya da sosyal alanı abartma görülebilir.",
-            "callout": null,
-            "chips": [],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Jüpiter 11. Ev",
-            "highlight": "Denge bozulduğunda fazla dağılma, her yere yetişmeye çal"
-          },
-          {
-            "body": "Bazen sabırsız flörtler, dramatik çıkışlar ya da gereksiz rekabet görülebilir.",
-            "callout": null,
-            "chips": [
-              "tutkulu",
-              "iddialı",
-              "yaratıcı atak"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Mars 5. Ev",
-            "highlight": "tutkulu"
-          },
-          {
-            "body": "icte iki yone cekilme, karisik tepki. esneklik, katmanli bakis. bolunme hissi, ani gidip gelme.",
-            "callout": null,
-            "chips": [
-              "identity",
-              "mind communication"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "İçeride iki yönü aynı anda taşıyorsun.",
-            "highlight": "icte iki yone cekilme"
-          }
-        ]
-      },
-      "kariyer": {
-        "mechanism": {
-          "body": "Yükselen Akrep sana dışarıda daha derin ve kontrollü bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yükselen…",
-          "callout": null,
-          "chips": [
-            "Yükselen Akrep",
-            "Mars 5. ev",
-            "Balık",
-            "Görünürlük"
-          ],
-          "eyebrow": "MEKANİZMA",
-          "footer": null,
-          "footer_cta": null,
-          "headline": "Zihin–eylem–kontrol",
-          "highlight": "Yükselen Akrep"
-        },
-        "mission": {
-          "body": "Sun ile North Node arasındaki trine hattı 0.57° ile çok yakın çalışıyor.",
-          "eyebrow": "MİSYON AKIŞI",
-          "headline": "Doğal uyum hattı: Sun ve North Node",
-          "steps": [
-            {
-              "accent": "lime",
-              "label": "Adım 1",
-              "text": "Sun ile North Node arasındaki trine hattı 0.57° ile çok yakın çalışıyor."
+              "text": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor."
             },
             {
               "accent": "lavender",
@@ -399,8 +234,182 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişki hattında tekrar eden bir desen var.",
           "highlight": "yakinda hassasiyet"
+        },
+        "past_fragments": [
+          {
+            "body": "Venus ile Neptune arasındaki square hattı 0.26° ile çok yakın çalışıyor.",
+            "callout": null,
+            "chips": [
+              "Venus",
+              "square",
+              "Neptune"
+            ],
+            "eyebrow": "GEÇMİŞ KATMAN",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Gerilimden güç üreten hat: Venus ve Neptune",
+            "highlight": null
+          },
+          {
+            "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Boğa olduğu ve yöneticisi Venüs 6. evde ve Koç'ta olduğu için, yakınlık sen…",
+            "callout": null,
+            "chips": [
+              "7. ev Boğa",
+              "Venüs 6. ev",
+              "Koç",
+              "İç Toparlanma"
+            ],
+            "eyebrow": "GEÇMİŞ KATMAN",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "İlişkiler ve yakınlık",
+            "highlight": "7. ev Boğa"
+          }
+        ],
+        "potentials": [
+          {
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
+            "callout": null,
+            "chips": [
+              "Merkür",
+              "Jüpiter",
+              "vizyon"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Büyük fikir, kalıcı yapı.",
+            "highlight": null
+          },
+          {
+            "body": "yakinda hassasiyet, denge arayisi. uyum kurma, gercek temas. fazla uyumlanma, beklentiyi icte tutma.",
+            "callout": null,
+            "chips": [
+              "relationships",
+              "intimacy depth",
+              "mind communication"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "İlişki hattında tekrar eden bir desen var.",
+            "highlight": "yakinda hassasiyet"
+          },
+          {
+            "body": "dogal akis, kolay baglanti. yaratici akis, akiskan beceri. kolaya fazla yaslanma, daginlasma.",
+            "callout": null,
+            "chips": [
+              "creativity talent",
+              "relationships",
+              "mind communication"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
+            "highlight": "dogal akis"
+          }
+        ],
+        "pull_quote": {
+          "body": "Venus ile Neptune arasındaki square hattı 0.26° ile çok yakın çalışıyor.",
+          "callout": null,
+          "chips": [
+            "Venus",
+            "square",
+            "Neptune"
+          ],
+          "eyebrow": "İLİŞKİ",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Gerilimden güç üreten hat: Venus ve Neptune",
+          "highlight": null
+        },
+        "shadow_fragments": [
+          {
+            "body": "Bazen sabırsız flörtler, dramatik çıkışlar ya da gereksiz rekabet görülebilir.",
+            "callout": null,
+            "chips": [
+              "tutkulu",
+              "iddialı",
+              "yaratıcı atak"
+            ],
+            "eyebrow": "GÖLGE DESENİ",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Mars 5. Ev",
+            "highlight": "tutkulu"
+          },
+          {
+            "body": "Denge bozulduğunda fazla dağılma, her yere yetişmeye çalışma ya da sosyal alanı abartma görülebilir.",
+            "callout": null,
+            "chips": [],
+            "eyebrow": "GÖLGE DESENİ",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Jüpiter 11. Ev",
+            "highlight": "Denge bozulduğunda fazla dağılma, her yere yetişmeye çal"
+          }
+        ]
+      },
+      "kariyer": {
+        "mechanism": {
+          "body": "Yükselen Akrep sana dışarıda daha derin ve kontrollü bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yükselen…",
+          "callout": null,
+          "chips": [
+            "Yükselen Akrep",
+            "Mars 5. ev",
+            "Balık",
+            "Görünürlük"
+          ],
+          "eyebrow": "MEKANİZMA",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Zihin–eylem–kontrol",
+          "highlight": "Yükselen Akrep"
+        },
+        "mission": {
+          "body": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor.",
+          "eyebrow": "MİSYON AKIŞI",
+          "headline": "Doğal uyum hattı: Sun ve North Node",
+          "steps": [
+            {
+              "accent": "lime",
+              "label": "Adım 1",
+              "text": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor."
+            },
+            {
+              "accent": "lavender",
+              "label": "Adım 2",
+              "text": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; ac…"
+            }
+          ]
+        },
+        "opening_point": {
+          "body": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor.",
+          "callout": null,
+          "chips": [
+            "Sun",
+            "trine",
+            "North Node"
+          ],
+          "eyebrow": "AÇILMA NOKTASI",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Doğal uyum hattı: Sun ve North Node",
+          "highlight": null
         },
         "past_fragments": [
           {
@@ -414,22 +423,24 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Neptune ve Vertex",
             "highlight": null
           },
           {
-            "body": "Sun ile Chiron arasındaki square hattı 0.61° ile çok yakın çalışıyor.",
+            "body": "Bazen sabırsız flörtler, dramatik çıkışlar ya da gereksiz rekabet görülebilir.",
             "callout": null,
             "chips": [
-              "Sun",
-              "square",
-              "Chiron"
+              "tutkulu",
+              "iddialı",
+              "yaratıcı atak"
             ],
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
-            "headline": "Gerilimden güç üreten hat: Sun ve Chiron",
-            "highlight": null
+            "growth": null,
+            "headline": "Mars 5. Ev",
+            "highlight": "tutkulu"
           },
           {
             "body": "Denge bozulduğunda fazla dağılma, her yere yetişmeye çalışma ya da sosyal alanı abartma görülebilir.",
@@ -438,13 +449,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Jüpiter 11. Ev",
             "highlight": "Denge bozulduğunda fazla dağılma, her yere yetişmeye çal"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -454,22 +466,39 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
+          },
+          {
+            "body": "dogal akis, kolay baglanti. yaratici akis, akiskan beceri. kolaya fazla yaslanma, daginlasma.",
+            "callout": null,
+            "chips": [
+              "creativity talent",
+              "relationships",
+              "mind communication"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
+            "highlight": "dogal akis"
           }
         ],
         "pull_quote": {
-          "body": "6. evde 5 gezegen birikimi, profile güçlü bir omurga veriyor.",
+          "body": "Mars ile Neptune arasındaki sextile hattı 1.03° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "6. ev",
-            "5 gezegen",
-            "yoğunluk"
+            "Mars",
+            "sextile",
+            "Neptune"
           ],
           "eyebrow": "KARİYER",
           "footer": null,
           "footer_cta": null,
-          "headline": "Merkezde toplanan güçlü enerji",
+          "growth": null,
+          "headline": "Akışkan iş birliği hattı: Mars ve Neptune",
           "highlight": null
         },
         "shadow_fragments": [
@@ -484,35 +513,9 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Neptune ve Vertex",
             "highlight": null
-          },
-          {
-            "body": "Sun ile Chiron arasındaki square hattı 0.61° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Sun",
-              "square",
-              "Chiron"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Gerilimden güç üreten hat: Sun ve Chiron",
-            "highlight": null
-          },
-          {
-            "body": "icte iki yone cekilme, karisik tepki. esneklik, katmanli bakis. bolunme hissi, ani gidip gelme.",
-            "callout": null,
-            "chips": [
-              "identity",
-              "mind communication"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "İçeride iki yönü aynı anda taşıyorsun.",
-            "highlight": "icte iki yone cekilme"
           }
         ]
       },
@@ -529,18 +532,19 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Zihin–eylem–kontrol",
           "highlight": "Yükselen Akrep"
         },
         "mission": {
-          "body": "Sun ile North Node arasındaki trine hattı 0.57° ile çok yakın çalışıyor.",
+          "body": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
           "headline": "Doğal uyum hattı: Sun ve North Node",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Sun ile North Node arasındaki trine hattı 0.57° ile çok yakın çalışıyor."
+              "text": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor."
             },
             {
               "accent": "lavender",
@@ -560,6 +564,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Venus ve Neptune",
           "highlight": null
         },
@@ -575,21 +580,8 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Neptune ve Vertex",
-            "highlight": null
-          },
-          {
-            "body": "Sun ile Chiron arasındaki square hattı 0.61° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Sun",
-              "square",
-              "Chiron"
-            ],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Gerilimden güç üreten hat: Sun ve Chiron",
             "highlight": null
           },
           {
@@ -603,13 +595,25 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Mars 5. Ev",
             "highlight": "tutkulu"
+          },
+          {
+            "body": "Denge bozulduğunda fazla dağılma, her yere yetişmeye çalışma ya da sosyal alanı abartma görülebilir.",
+            "callout": null,
+            "chips": [],
+            "eyebrow": "GEÇMİŞ KATMAN",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Jüpiter 11. Ev",
+            "highlight": "Denge bozulduğunda fazla dağılma, her yere yetişmeye çal"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -619,22 +623,39 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
+          },
+          {
+            "body": "dogal akis, kolay baglanti. yaratici akis, akiskan beceri. kolaya fazla yaslanma, daginlasma.",
+            "callout": null,
+            "chips": [
+              "creativity talent",
+              "relationships",
+              "mind communication"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
+            "highlight": "dogal akis"
           }
         ],
         "pull_quote": {
-          "body": "6. evde 5 gezegen birikimi, profile güçlü bir omurga veriyor.",
+          "body": "Uranus ile Neptune arasındaki conjunction hattı 0.94° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "6. ev",
-            "5 gezegen",
-            "yoğunluk"
+            "Uranus",
+            "conjunction",
+            "Neptune"
           ],
           "eyebrow": "KİMLİK",
           "footer": null,
           "footer_cta": null,
-          "headline": "Merkezde toplanan güçlü enerji",
+          "growth": null,
+          "headline": "Aynı merkezde toplanan vurgu: Uranus ve Neptune",
           "highlight": null
         },
         "shadow_fragments": [
@@ -649,35 +670,9 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Neptune ve Vertex",
             "highlight": null
-          },
-          {
-            "body": "Sun ile Chiron arasındaki square hattı 0.61° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Sun",
-              "square",
-              "Chiron"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Gerilimden güç üreten hat: Sun ve Chiron",
-            "highlight": null
-          },
-          {
-            "body": "icte iki yone cekilme, karisik tepki. esneklik, katmanli bakis. bolunme hissi, ani gidip gelme.",
-            "callout": null,
-            "chips": [
-              "identity",
-              "mind communication"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "İçeride iki yönü aynı anda taşıyorsun.",
-            "highlight": "icte iki yone cekilme"
           }
         ]
       }
@@ -685,7 +680,7 @@
     "locale": "tr",
     "narrative_v2": {
       "aspect_bundle_selector": {
-        "candidate_count": 61,
+        "candidate_count": 50,
         "max_primary_bundles": 3,
         "selected_bundles": [
           {
@@ -758,35 +753,36 @@
           },
           {
             "astro_sources": [
-              "Ay-Juno karesi",
-              "Ay 3. ev",
-              "Juno 6. ev"
+              "Güneş-Node üçgeni",
+              "Güneş 6. ev",
+              "Node 3. ev"
             ],
-            "bundle_id": "moon_juno_square",
-            "bundle_type": "contradiction_bundle",
+            "bundle_id": "sun_node_trine",
+            "bundle_type": "soft_capacity_bundle",
             "domains": [
-              "identity",
+              "creativity_talent",
+              "relationships",
               "mind_communication"
             ],
             "gift_tags": [
-              "esneklik",
-              "katmanli bakis"
+              "yaratici akis",
+              "akiskan beceri"
             ],
             "lead_aspects": [
-              "Moon square Juno"
+              "Sun trine Node"
             ],
             "recognition_tags": [
-              "icte iki yone cekilme",
-              "karisik tepki"
+              "dogal akis",
+              "kolay baglanti"
             ],
             "reflex_tags": [
-              "bolunme hissi",
-              "ani gidip gelme"
+              "kolaya fazla yaslanma",
+              "daginlasma"
             ],
-            "score": 0.6925,
+            "score": 0.6659,
             "source_planets": [
-              "Moon",
-              "Juno"
+              "Sun",
+              "Node"
             ],
             "support_aspects": []
           }
@@ -803,18 +799,18 @@
     },
     "profile_narrative": {
       "__hashed__": true,
-      "content_hash": "3609f9fdac7d81a4",
+      "content_hash": "8130ddc18076b7cf",
       "shape": "dict[1]",
-      "size_bytes": 59294
+      "size_bytes": 59167
     },
     "profile_v8": {
       "affects_you": {
         "body": "Kalbin, güven olmadan yarım açılmaz.",
         "eyebrow": "SENİ NASIL ETKİLER",
         "footer": null,
-        "headline": "Gerilimden güç üreten hat: Neptune ve Vertex",
+        "headline": "Akışkan iş birliği hattı: Mars ve Neptune",
         "rows": [
-          "Neptune ile Vertex arasındaki square hattı 0.26° ile çok yakın çalışıyor."
+          "Mars ile Neptune arasındaki sextile hattı 1.03° ile çok yakın çalışıyor."
         ]
       },
       "archetype_portal": {
@@ -829,21 +825,26 @@
           {
             "display_label": "İlişki akışı",
             "key": "relationship_flow"
+          },
+          {
+            "display_label": "Yumuşak kapasite",
+            "key": "soft_capacity"
           }
         ]
       },
       "conversation_hooks": {
-        "body": "Moon ile Juno arasındaki square hattı 0.70° ile çok yakın çalışıyor.",
+        "body": "Venus ile Neptune arasındaki square hattı 0.26° ile çok yakın çalışıyor.",
         "callout": "“Projeler, fikirler, ne inşa ediyorsun?”",
         "chips": [
-          "Moon",
+          "Venus",
           "square",
-          "Juno"
+          "Neptune"
         ],
         "eyebrow": "BU KİŞİYLE NE KONUŞULUR",
         "footer": null,
         "footer_cta": null,
-        "headline": "Gerilimden güç üreten hat: Moon ve Juno",
+        "growth": null,
+        "headline": "Gerilimden güç üreten hat: Venus ve Neptune",
         "highlight": null
       },
       "defense": {
@@ -857,6 +858,7 @@
         "eyebrow": "SAVUNMA MEKANİZMAN",
         "footer": null,
         "footer_cta": null,
+        "growth": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor.",
         "headline": "Köklerinde çalışan şey",
         "highlight": "Bağımsızlık"
       },
@@ -864,10 +866,10 @@
         {
           "accent": "lime",
           "body": "Varlığın taşıdığı yoğunluk nadir.",
-          "eyebrow": "6. ev",
-          "headline": "5 gezegen, tek ev.",
-          "stat": "5×",
-          "stat_label": "6. ev"
+          "eyebrow": "3. ev",
+          "headline": "4 gezegen, tek ev.",
+          "stat": "4×",
+          "stat_label": "3. ev"
         },
         {
           "accent": "lavender",
@@ -897,28 +899,30 @@
         "eyebrow": "İLK HİSSEDİLEN ŞEY",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Varlığının omurgası",
         "highlight": "İdeal"
       },
       "first_impression": {
-        "body": "Venus ile Neptune arasındaki square hattı 0.26° ile çok yakın çalışıyor.",
+        "body": "Uranus ile Neptune arasındaki conjunction hattı 0.94° ile çok yakın çalışıyor.",
         "callout": null,
         "chips": [
-          "Venus",
-          "square",
+          "Uranus",
+          "conjunction",
           "Neptune"
         ],
         "eyebrow": "İLK İZLENİM",
         "footer": null,
         "footer_cta": null,
-        "headline": "Gerilimden güç üreten hat: Venus ve Neptune",
+        "growth": null,
+        "headline": "Aynı merkezde toplanan vurgu: Uranus ve Neptune",
         "highlight": null
       },
       "hero": {
         "display_name": "",
         "followers_text": "0 takip · 0 arkadaş",
         "forum_status_text": "Forum pasif",
-        "location_age": "Buenos Aires, AR · 33 yaş",
+        "location_age": "Buenos Aires, AR · 34 yaş",
         "moon_sign": "Capricorn",
         "rising_sign": "Scorpio",
         "sun_sign": "Taurus"
@@ -930,6 +934,7 @@
         "eyebrow": "KİMLİK EKSENİ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Netlik kurduğunda gücün daha görünür oluyor",
         "highlight": null
       },
@@ -957,7 +962,7 @@
         }
       ],
       "intimacy": {
-        "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç tarafta işleyiş şöyle: bağ sende en çok günlük ritim ve düzen tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi direkt, cesur ve bekletmeden gösterebilme tarafın da belirginleşiyor. Kırılgan yerde zemin sarsıldığında inatla kapanmak ya da değişime direnmek daha kolay tetiklenebiliyor.",
+        "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç hattında bağ sende en çok günlük ritim ve düzen tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi direkt, cesur ve bekletmeden gösterebilme tarafın da belirginleşiyor. Kırılgan yerde zemin sarsıldığında inatla kapanmak ya da değişime direnmek daha kolay tetiklenebiliyor.",
         "callout": null,
         "chips": [
           "Günlük Destek",
@@ -967,6 +972,7 @@
         "eyebrow": "YAKINLIK",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Kalbinin eşiği",
         "highlight": "Günlük Destek"
       },
@@ -981,42 +987,62 @@
         "eyebrow": "ZİHİNSEL İŞLEYİŞ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Karar verirken içinde ne oluyor",
         "highlight": "İletişim"
       },
       "mission_preview": {
-        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç tarafta işleyiş şöyle: asıl motor en çok söz, ton ve karar dili tarafında çalışıyor, bu yüzden görünme…",
+        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç hattında asıl motor en çok söz, ton ve karar dili tarafında çalışıyor, bu yüzden görünmeden önce işi s…",
         "callout": null,
         "chips": [
-          "Ustalık",
-          "Şifa",
-          "Kendi Sesin"
+          "Kalite",
+          "Etki",
+          "Görünürlük"
         ],
         "eyebrow": "MİSYON",
         "footer": null,
         "footer_cta": null,
-        "headline": "Dışarıya verdiğin iz",
-        "highlight": "Ustalık"
+        "growth": null,
+        "headline": "Toplumda nasıl iz bırakıyorsun",
+        "highlight": "Kalite"
       },
       "past_teaser": {
-        "body": "Sun ile Chiron arasındaki square hattı 0.61° ile çok yakın çalışıyor.",
+        "body": "Neptune ile Vertex arasındaki square hattı 0.26° ile çok yakın çalışıyor.",
         "callout": null,
         "chips": [
-          "Sun",
+          "Neptune",
           "square",
-          "Chiron"
+          "Vertex"
         ],
         "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
-        "footer": "3 geçmiş katman daha",
-        "footer_cta": "Tam haritada gör →",
-        "headline": "Gerilimden güç üreten hat: Sun ve Chiron",
+        "footer": null,
+        "footer_cta": null,
+        "growth": null,
+        "headline": "Gerilimden güç üreten hat: Neptune ve Vertex",
         "highlight": null
       },
+      "past_teasers": [
+        {
+          "body": "Neptune ile Vertex arasındaki square hattı 0.26° ile çok yakın çalışıyor.",
+          "callout": null,
+          "chips": [
+            "Neptune",
+            "square",
+            "Vertex"
+          ],
+          "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Gerilimden güç üreten hat: Neptune ve Vertex",
+          "highlight": null
+        }
+      ],
       "talents": [
         {
           "accent": "lime",
           "eyebrow": "Doğal uyum hattı: Sun ve North Node",
-          "text": "Sun ile North Node arasındaki trine hattı 0.57° ile çok yakın çalışıyor."
+          "text": "Sun ile North Node arasındaki trine hattı 0.58° ile çok yakın çalışıyor."
         },
         {
           "accent": "lavender",
@@ -1032,24 +1058,24 @@
     },
     "sections_v2": {
       "__hashed__": true,
-      "content_hash": "8090c4b136b2279d",
+      "content_hash": "daf82254b52af302",
       "shape": "list[3]",
-      "size_bytes": 19768
+      "size_bytes": 19564
     },
     "supporting_threads": {
       "__hashed__": true,
-      "content_hash": "45b39430de9b8f95",
+      "content_hash": "6077af173fa3988c",
       "shape": "list[3]",
-      "size_bytes": 21389
+      "size_bytes": 21195
     },
     "upper_meaning": {
       "content": null,
       "debug_scores": {
         "capacity": 0.468,
-        "integration": 0.237,
+        "integration": 0.193,
         "integration_components": {
           "bridge": 0.0,
-          "directionality": 0.15,
+          "directionality": 0.0,
           "recurrence": 0.55
         },
         "pressure": 0.914,

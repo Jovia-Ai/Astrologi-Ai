@@ -34,17 +34,20 @@
     "full_map_v8": {
       "golge": {
         "mechanism": {
-          "body": "fazla dusunme, cumleyi icte kurma. dikkatli zihin, dogru ifade. fazla ayiklama, kararsiz kalma.",
+          "body": "Yükselen Yengeç sana dışarıda daha koruyucu ve duyarlı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yüksele…",
           "callout": null,
           "chips": [
-            "mind communication",
-            "meaning learning"
+            "Yükselen Yengeç",
+            "Ay 8. ev",
+            "Balık",
+            "Görünürlük"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Zihinsel ritminde ayırt edici bir hat var.",
-          "highlight": "fazla dusunme"
+          "growth": null,
+          "headline": "Zihin–eylem–kontrol",
+          "highlight": "Yükselen Yengeç"
         },
         "mission": {
           "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
@@ -69,6 +72,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Doğal uyum hattı: Venus ve Ascendant",
           "highlight": null
         },
@@ -84,6 +88,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
             "highlight": "derinlik ve risk"
           },
@@ -98,6 +103,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Ay 8. Ev",
             "highlight": "derin"
           },
@@ -108,25 +114,12 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Jüpiter 1. Ev",
             "highlight": "Denge bozulduğunda fazla rahat davranabilir ya da sınırl"
           }
         ],
         "potentials": [
-          {
-            "body": "Chiron ile Fortune arasındaki sextile hattı 0.54° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Chiron",
-              "sextile",
-              "Fortune"
-            ],
-            "eyebrow": "POTANSİYEL",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Akışkan iş birliği hattı: Chiron ve Fortune",
-            "highlight": null
-          },
           {
             "body": "Vertex ile Ascendant arasındaki trine hattı 0.74° ile çok yakın çalışıyor.",
             "callout": null,
@@ -138,7 +131,23 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Doğal uyum hattı: Vertex ve Ascendant",
+            "highlight": null
+          },
+          {
+            "body": "Vertex ile Descendant arasındaki sextile hattı 0.74° ile çok yakın çalışıyor.",
+            "callout": null,
+            "chips": [
+              "Vertex",
+              "sextile",
+              "Descendant"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Akışkan iş birliği hattı: Vertex ve Descendant",
             "highlight": null
           },
           {
@@ -152,56 +161,43 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Merkezde toplanan güçlü enerji",
             "highlight": null
           }
         ],
         "pull_quote": {
-          "body": "Lilith ile Juno arasındaki opposition hattı 0.51° ile çok yakın çalışıyor.",
+          "body": "Güven eşiğin yükselince kalbin bir anda derinleşiyor; bu hız, yakınlığın sende ne kadar gerçek çalıştığını gösteriyor.",
           "callout": null,
           "chips": [
-            "Lilith",
-            "opposition",
-            "Juno"
+            "Ay",
+            "8. ev",
+            "yakınlık"
           ],
           "eyebrow": "GÖLGE",
           "footer": null,
           "footer_cta": null,
-          "headline": "Karşı kutupları dengede taşıyan çizgi: Lilith ve Juno",
-          "highlight": null
+          "growth": null,
+          "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
+          "highlight": "derinlik ve risk"
         },
-        "shadow_fragments": [
-          {
-            "body": "Lilith ile Juno arasındaki opposition hattı 0.51° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Lilith",
-              "opposition",
-              "Juno"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Karşı kutupları dengede taşıyan çizgi: Lilith ve Juno",
-            "highlight": null
-          }
-        ]
+        "shadow_fragments": []
       },
       "iliski": {
         "mechanism": {
-          "body": "Yükselen Yengeç sana dışarıda daha koruyucu ve duyarlı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yüksele…",
+          "body": "Mercury ile Jupiter arasındaki trine hattı 0.80° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Yükselen Yengeç",
-            "Ay 8. ev",
-            "Balık",
-            "Görünürlük"
+            "Mercury",
+            "trine",
+            "Jupiter"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Zihin–eylem–kontrol",
-          "highlight": "Yükselen Yengeç"
+          "growth": null,
+          "headline": "Doğal uyum hattı: Mercury ve Jupiter",
+          "highlight": null
         },
         "mission": {
           "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
@@ -232,6 +228,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişkiler ve yakınlık",
           "highlight": "7. ev Oğlak"
         },
@@ -247,6 +244,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Doğal uyum hattı: Venus ve Ascendant",
             "highlight": null
           },
@@ -261,6 +259,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Akışkan iş birliği hattı: Venus ve Descendant",
             "highlight": null
           },
@@ -275,13 +274,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
             "highlight": "derinlik ve risk"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -291,6 +291,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
@@ -304,6 +305,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İlişki hattında tekrar eden bir desen var.",
             "highlight": "yakinda hassasiyet"
           }
@@ -319,20 +321,11 @@
           "eyebrow": "İLİŞKİ",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Akışkan iş birliği hattı: Venus ve Descendant",
           "highlight": null
         },
         "shadow_fragments": [
-          {
-            "body": "Denge bozulduğunda fazla rahat davranabilir ya da sınırları yeterince ciddiye almayabilirsin.",
-            "callout": null,
-            "chips": [],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Jüpiter 1. Ev",
-            "highlight": "Denge bozulduğunda fazla rahat davranabilir ya da sınırl"
-          },
           {
             "body": "Aile içinde duyguların güvenle akmadığı bir ortam yaşanmış olabilir; bu yüzden yakınlık arttığında içeride eski bir alarm yeniden açılabilir.",
             "callout": null,
@@ -344,24 +337,39 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Ay 8. Ev",
             "highlight": "derin"
+          },
+          {
+            "body": "Denge bozulduğunda fazla rahat davranabilir ya da sınırları yeterince ciddiye almayabilirsin.",
+            "callout": null,
+            "chips": [],
+            "eyebrow": "GÖLGE DESENİ",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Jüpiter 1. Ev",
+            "highlight": "Denge bozulduğunda fazla rahat davranabilir ya da sınırl"
           }
         ]
       },
       "kariyer": {
         "mechanism": {
-          "body": "fazla dusunme, cumleyi icte kurma. dikkatli zihin, dogru ifade. fazla ayiklama, kararsiz kalma.",
+          "body": "Yükselen Yengeç sana dışarıda daha koruyucu ve duyarlı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yüksele…",
           "callout": null,
           "chips": [
-            "mind communication",
-            "meaning learning"
+            "Yükselen Yengeç",
+            "Ay 8. ev",
+            "Balık",
+            "Görünürlük"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Zihinsel ritminde ayırt edici bir hat var.",
-          "highlight": "fazla dusunme"
+          "growth": null,
+          "headline": "Zihin–eylem–kontrol",
+          "highlight": "Yükselen Yengeç"
         },
         "mission": {
           "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
@@ -385,24 +393,11 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişki hattında tekrar eden bir desen var.",
           "highlight": "yakinda hassasiyet"
         },
         "past_fragments": [
-          {
-            "body": "Lilith ile Juno arasındaki opposition hattı 0.51° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Lilith",
-              "opposition",
-              "Juno"
-            ],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Karşı kutupları dengede taşıyan çizgi: Lilith ve Juno",
-            "highlight": null
-          },
           {
             "body": "Güven eşiğin yükselince kalbin bir anda derinleşiyor; bu hız, yakınlığın sende ne kadar gerçek çalıştığını gösteriyor.",
             "callout": null,
@@ -414,8 +409,24 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
             "highlight": "derinlik ve risk"
+          },
+          {
+            "body": "Aile içinde duyguların güvenle akmadığı bir ortam yaşanmış olabilir; bu yüzden yakınlık arttığında içeride eski bir alarm yeniden açılabilir.",
+            "callout": null,
+            "chips": [
+              "derin",
+              "gizemli",
+              "yoğun"
+            ],
+            "eyebrow": "GEÇMİŞ KATMAN",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Ay 8. Ev",
+            "highlight": "derin"
           },
           {
             "body": "Denge bozulduğunda fazla rahat davranabilir ya da sınırları yeterince ciddiye almayabilirsin.",
@@ -424,13 +435,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Jüpiter 1. Ev",
             "highlight": "Denge bozulduğunda fazla rahat davranabilir ya da sınırl"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -440,56 +452,43 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           }
         ],
         "pull_quote": {
-          "body": "Vertex ile Ascendant arasındaki trine hattı 0.74° ile çok yakın çalışıyor.",
+          "body": "Vertex ile Descendant arasındaki sextile hattı 0.74° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
             "Vertex",
-            "trine",
-            "Ascendant"
+            "sextile",
+            "Descendant"
           ],
           "eyebrow": "KARİYER",
           "footer": null,
           "footer_cta": null,
-          "headline": "Doğal uyum hattı: Vertex ve Ascendant",
+          "growth": null,
+          "headline": "Akışkan iş birliği hattı: Vertex ve Descendant",
           "highlight": null
         },
-        "shadow_fragments": [
-          {
-            "body": "Lilith ile Juno arasındaki opposition hattı 0.51° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Lilith",
-              "opposition",
-              "Juno"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Karşı kutupları dengede taşıyan çizgi: Lilith ve Juno",
-            "highlight": null
-          }
-        ]
+        "shadow_fragments": []
       },
       "kimlik": {
         "mechanism": {
-          "body": "Yükselen Yengeç sana dışarıda daha koruyucu ve duyarlı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yüksele…",
+          "body": "Mercury ile Jupiter arasındaki trine hattı 0.80° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Yükselen Yengeç",
-            "Ay 8. ev",
-            "Balık",
-            "Görünürlük"
+            "Mercury",
+            "trine",
+            "Jupiter"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Zihin–eylem–kontrol",
-          "highlight": "Yükselen Yengeç"
+          "growth": null,
+          "headline": "Doğal uyum hattı: Mercury ve Jupiter",
+          "highlight": null
         },
         "mission": {
           "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
@@ -514,24 +513,11 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Doğal uyum hattı: Venus ve Ascendant",
           "highlight": null
         },
         "past_fragments": [
-          {
-            "body": "Lilith ile Juno arasındaki opposition hattı 0.51° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Lilith",
-              "opposition",
-              "Juno"
-            ],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Karşı kutupları dengede taşıyan çizgi: Lilith ve Juno",
-            "highlight": null
-          },
           {
             "body": "Güven eşiğin yükselince kalbin bir anda derinleşiyor; bu hız, yakınlığın sende ne kadar gerçek çalıştığını gösteriyor.",
             "callout": null,
@@ -543,6 +529,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
             "highlight": "derinlik ve risk"
           },
@@ -557,13 +544,25 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Ay 8. Ev",
             "highlight": "derin"
+          },
+          {
+            "body": "Denge bozulduğunda fazla rahat davranabilir ya da sınırları yeterince ciddiye almayabilirsin.",
+            "callout": null,
+            "chips": [],
+            "eyebrow": "GEÇMİŞ KATMAN",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Jüpiter 1. Ev",
+            "highlight": "Denge bozulduğunda fazla rahat davranabilir ya da sınırl"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -573,46 +572,33 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           }
         ],
         "pull_quote": {
-          "body": "Chiron ile Fortune arasındaki sextile hattı 0.54° ile çok yakın çalışıyor.",
+          "body": "Vertex ile Ascendant arasındaki trine hattı 0.74° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Chiron",
-            "sextile",
-            "Fortune"
+            "Vertex",
+            "trine",
+            "Ascendant"
           ],
           "eyebrow": "KİMLİK",
           "footer": null,
           "footer_cta": null,
-          "headline": "Akışkan iş birliği hattı: Chiron ve Fortune",
+          "growth": null,
+          "headline": "Doğal uyum hattı: Vertex ve Ascendant",
           "highlight": null
         },
-        "shadow_fragments": [
-          {
-            "body": "Lilith ile Juno arasındaki opposition hattı 0.51° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Lilith",
-              "opposition",
-              "Juno"
-            ],
-            "eyebrow": "GÖLGE DESENİ",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Karşı kutupları dengede taşıyan çizgi: Lilith ve Juno",
-            "highlight": null
-          }
-        ]
+        "shadow_fragments": []
       }
     },
     "locale": "tr",
     "narrative_v2": {
       "aspect_bundle_selector": {
-        "candidate_count": 59,
+        "candidate_count": 45,
         "max_primary_bundles": 3,
         "selected_bundles": [
           {
@@ -729,18 +715,18 @@
     },
     "profile_narrative": {
       "__hashed__": true,
-      "content_hash": "cf7844cf888090ea",
+      "content_hash": "a3f16c7a22373c16",
       "shape": "dict[1]",
-      "size_bytes": 61527
+      "size_bytes": 61333
     },
     "profile_v8": {
       "affects_you": {
         "body": "Kalbin, güven olmadan yarım açılmaz.",
         "eyebrow": "SENİ NASIL ETKİLER",
         "footer": null,
-        "headline": "Akışkan iş birliği hattı: Venus ve Descendant",
+        "headline": "Akışkan iş birliği hattı: Vertex ve Descendant",
         "rows": [
-          "Venus ile Descendant arasındaki sextile hattı 0.74° ile çok yakın çalışıyor."
+          "Vertex ile Descendant arasındaki sextile hattı 0.74° ile çok yakın çalışıyor."
         ]
       },
       "archetype_portal": {
@@ -759,32 +745,34 @@
         ]
       },
       "conversation_hooks": {
-        "body": "Venus ile Ascendant arasındaki trine hattı 0.74° ile çok yakın çalışıyor.",
+        "body": "Venus ile Descendant arasındaki sextile hattı 0.74° ile çok yakın çalışıyor.",
         "callout": "“Projeler, fikirler, ne inşa ediyorsun?”",
         "chips": [
           "Venus",
-          "trine",
-          "Ascendant"
+          "sextile",
+          "Descendant"
         ],
         "eyebrow": "BU KİŞİYLE NE KONUŞULUR",
         "footer": null,
         "footer_cta": null,
-        "headline": "Doğal uyum hattı: Venus ve Ascendant",
+        "growth": null,
+        "headline": "Akışkan iş birliği hattı: Venus ve Descendant",
         "highlight": null
       },
       "defense": {
-        "body": "Vertex ile Ascendant arasındaki trine hattı 0.74° ile çok yakın çalışıyor.",
+        "body": "Güven eşiğin yükselince kalbin bir anda derinleşiyor; bu hız, yakınlığın sende ne kadar gerçek çalıştığını gösteriyor.",
         "callout": null,
         "chips": [
-          "Vertex",
-          "trine",
-          "Ascendant"
+          "Ay",
+          "8. ev",
+          "yakınlık"
         ],
         "eyebrow": "SAVUNMA MEKANİZMAN",
         "footer": null,
         "footer_cta": null,
-        "headline": "Doğal uyum hattı: Vertex ve Ascendant",
-        "highlight": null
+        "growth": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. Asıl motor en çok ev ve iç güven tarafında çalışıyor; bu yüzden görünmeden önce işi s…",
+        "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
+        "highlight": "derinlik ve risk"
       },
       "differentiators": [
         {
@@ -797,18 +785,18 @@
         },
         {
           "accent": "lavender",
-          "body": "0.51° — exact açı hattı belirgin.",
-          "eyebrow": "Lilith ☍ Juno",
-          "headline": "Karşı kutupları dengede taşıyan çizgi: Lilith ve Juno",
-          "stat": "0.51°",
+          "body": "0.74° — exact açı hattı belirgin.",
+          "eyebrow": "Venus △ Ascendant",
+          "headline": "Doğal uyum hattı: Venus ve Ascendant",
+          "stat": "0.74°",
           "stat_label": "orb"
         },
         {
           "accent": "stone",
-          "body": "0.54° — exact açı hattı belirgin.",
-          "eyebrow": "Chiron ✶ Fortune",
-          "headline": "Akışkan iş birliği hattı: Chiron ve Fortune",
-          "stat": "0.54°",
+          "body": "0.74° — exact açı hattı belirgin.",
+          "eyebrow": "Venus ✶ Descendant",
+          "headline": "Akışkan iş birliği hattı: Venus ve Descendant",
+          "stat": "0.74°",
           "stat_label": "orb"
         }
       ],
@@ -823,21 +811,23 @@
         "eyebrow": "İLK HİSSEDİLEN ŞEY",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Kendi çizgin",
         "highlight": "Duruş"
       },
       "first_impression": {
-        "body": "Chiron ile Fortune arasındaki sextile hattı 0.54° ile çok yakın çalışıyor.",
+        "body": "Vertex ile Ascendant arasındaki trine hattı 0.74° ile çok yakın çalışıyor.",
         "callout": null,
         "chips": [
-          "Chiron",
-          "sextile",
-          "Fortune"
+          "Vertex",
+          "trine",
+          "Ascendant"
         ],
         "eyebrow": "İLK İZLENİM",
         "footer": null,
         "footer_cta": null,
-        "headline": "Akışkan iş birliği hattı: Chiron ve Fortune",
+        "growth": null,
+        "headline": "Doğal uyum hattı: Vertex ve Ascendant",
         "highlight": null
       },
       "hero": {
@@ -856,6 +846,7 @@
         "eyebrow": "KİMLİK EKSENİ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Ritmini koruduğunda yön duygun güçleniyor",
         "highlight": null
       },
@@ -883,7 +874,7 @@
         }
       ],
       "intimacy": {
-        "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç tarafta işleyiş şöyle: bağ sende en çok özdeğer ve kaynaklar tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi özen, emek ve küçük ayrıntılarla somutlaştırabilme tarafın da belirginleşiyor. Kırılgan yerde duyguyu fazla tutmak ya da kırılganlığı göstermekte zorlanmak daha kolay tetiklenebiliyor.",
+        "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç hattında bağ sende en çok özdeğer ve kaynaklar tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi özen, emek ve küçük ayrıntılarla somutlaştırabilme tarafın da belirginleşiyor. Kırılgan yerde duyguyu fazla tutmak ya da kırılganlığı göstermekte zorlanmak daha kolay tetiklenebiliyor.",
         "callout": null,
         "chips": [
           "Değer",
@@ -893,90 +884,110 @@
         "eyebrow": "YAKINLIK",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Yakınlık sende nasıl açılıyor",
         "highlight": "Değer"
       },
       "mind": {
-        "body": "Yükselen Yengeç sana dışarıda daha koruyucu ve duyarlı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor;…",
+        "body": "Bir şey sana çarptığında zihnin boşta kalmıyor; içeride hemen pozisyon alan bir tarafın çalışıyor. İç hattında bu hat en çok güven, mahremiyet ve derinlik tarafında belirginleşiyo…",
         "callout": null,
         "chips": [
-          "Yükselen Yengeç",
-          "Ay 8. ev",
-          "Balık",
-          "Görünürlük"
+          "İç Ritim",
+          "İnce Ayar",
+          "Dayanıklılık"
         ],
         "eyebrow": "ZİHİNSEL İŞLEYİŞ",
         "footer": null,
         "footer_cta": null,
-        "headline": "Zihin–eylem–kontrol",
-        "highlight": "Yükselen Yengeç"
+        "growth": null,
+        "headline": "Zihnin nasıl çalışıyor",
+        "highlight": "İç Ritim"
       },
       "mission_preview": {
-        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç tarafta işleyiş şöyle: asıl motor en çok ev ve iç güven tarafında çalışıyor, bu yüzden görünmeden önce…",
+        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. Asıl motor en çok ev ve iç güven tarafında çalışıyor; bu yüzden görünmeden önce işi sağlamlaştırmak istiy…",
         "callout": null,
         "chips": [
-          "Ustalık",
-          "Şifa",
-          "Kendi Sesin"
+          "Kök",
+          "Zemin",
+          "İç Güven"
         ],
         "eyebrow": "MİSYON",
         "footer": null,
         "footer_cta": null,
-        "headline": "Toplumda nasıl iz bırakıyorsun",
-        "highlight": "Ustalık"
+        "growth": null,
+        "headline": "Görünür olmadan önce sende olan",
+        "highlight": "Kök"
       },
       "past_teaser": {
-        "body": "Lilith ile Juno arasındaki opposition hattı 0.51° ile çok yakın çalışıyor.",
+        "body": "Venus ile Ascendant arasındaki trine hattı 0.74° ile çok yakın çalışıyor.",
         "callout": null,
         "chips": [
-          "Lilith",
-          "opposition",
-          "Juno"
+          "Venus",
+          "trine",
+          "Ascendant"
         ],
         "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
-        "footer": "3 geçmiş katman daha",
-        "footer_cta": "Tam haritada gör →",
-        "headline": "Karşı kutupları dengede taşıyan çizgi: Lilith ve Juno",
+        "footer": null,
+        "footer_cta": null,
+        "growth": null,
+        "headline": "Doğal uyum hattı: Venus ve Ascendant",
         "highlight": null
       },
+      "past_teasers": [
+        {
+          "body": "Venus ile Ascendant arasındaki trine hattı 0.74° ile çok yakın çalışıyor.",
+          "callout": null,
+          "chips": [
+            "Venus",
+            "trine",
+            "Ascendant"
+          ],
+          "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Doğal uyum hattı: Venus ve Ascendant",
+          "highlight": null
+        }
+      ],
       "talents": [
         {
           "accent": "lime",
+          "eyebrow": "Doğal uyum hattı: Mercury ve Jupiter",
+          "text": "Mercury ile Jupiter arasındaki trine hattı 0.80° ile çok yakın çalışıyor."
+        },
+        {
+          "accent": "lavender",
           "eyebrow": "Büyük fikir, kalıcı yapı.",
           "text": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla…"
         },
         {
-          "accent": "lavender",
+          "accent": "stone",
           "eyebrow": "Kurucu tarafın",
           "text": "Dağınık olanı toparlayıp sezgisel olanı anlaşılır hale getirebilen bir tarafın…"
-        },
-        {
-          "accent": "stone",
-          "eyebrow": "Zihnin nasıl çalışıyor",
-          "text": "Bir şey sana çarptığında zihnin boşta kalmıyor; içeride hemen pozisyon alan bir…"
         }
       ]
     },
     "sections_v2": {
       "__hashed__": true,
-      "content_hash": "d3d115d3bb60e401",
+      "content_hash": "ab9828b15b8efde5",
       "shape": "list[3]",
-      "size_bytes": 19837
+      "size_bytes": 19599
     },
     "supporting_threads": {
       "__hashed__": true,
-      "content_hash": "5487344f115fdd7d",
+      "content_hash": "328eb3f2171ca484",
       "shape": "list[3]",
-      "size_bytes": 21315
+      "size_bytes": 21077
     },
     "upper_meaning": {
       "content": null,
       "debug_scores": {
         "capacity": 0.468,
-        "integration": 0.203,
+        "integration": 0.158,
         "integration_components": {
           "bridge": 0.0,
-          "directionality": 0.15,
+          "directionality": 0.0,
           "recurrence": 0.45
         },
         "pressure": 0.914,
