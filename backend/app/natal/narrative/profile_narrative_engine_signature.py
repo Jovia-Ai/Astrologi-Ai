@@ -205,7 +205,7 @@ PRIMITIVE_SENTENCE_HINTS = {
     "family_self_reliance": "Güveni çoğu zaman önce kendi içinde kurup sonra paylaşıyorsun.",
     "recharge_through_home": "Ev ve iç alan senin için gerçek bir toparlanma hattı gibi çalışıyor.",
     "creation_luck": "Şansın çoğu zaman üretim ve görünür deneme üzerinden açılıyor.",
-    "meaningful_expansion": "Ufuk büyüdükçe enerjin de daha anlamlı bir akış buluyor.",
+    "meaningful_expansion": "Ufuk büyüdükçe yapıp ettiklerin de daha bağlamlı bir yön kazanıyor.",
 }
 
 _COPY_STOPWORDS = {
@@ -239,12 +239,12 @@ _BLOCK_COPY_FALLBACKS = {
     "identity_aura": {
         "mechanism": "içeride hem sağlam kalmak hem kendi yolunu korumak istiyorsun",
         "shadow": "yük arttığında yönünü içerde yeniden toplamak isteyebilirsin",
-        "gift": "bu yapı sana net, özgün ve güven veren bir duruş kazandırır",
+        "gift": "bu yapı sende net, özgün ve güven veren bir duruş çiziyor",
     },
     "mind_voice": {
         "mechanism": "zihninde tartıp ayıklayarak en doğru formu bulmak istersin",
-        "shadow": "iç standart yükselince akış gecikebilir",
-        "gift": "bu yapı sana dayanıklılık ve berrak bir ifade kazandırır",
+        "shadow": "iç ölçün yükselince akış gecikebilir",
+        "gift": "bu yapı sende dayanıklılık ve berrak bir ifade taşıyor",
     },
     "drive_rhythm": {
         "mechanism": "bir şeyi sadece hissetmez, ona biçim de vermek istersin",
@@ -293,7 +293,7 @@ FALLBACK_SIGNATURES_BY_BLOCK = {
             "headline": "Dışarıdan ve içeriden",
             "teaser": "Dışarıda sağlam, içeride kendi yönünü korumak isteyen bir tarafın var.",
             "spark": "Kendini ortaya koyma biçimin, kararlarını ve duruşunu doğrudan etkiliyor.",
-            "gift": "Bu yapı olgunlaştığında sana netlik ve istikrar kazandırır.",
+            "gift": "Bu yapı olgunlaştığında içeride netlik ve istikrar belirginleşir.",
             "watch": "Zorlandığında yönünü içerde yeniden toplamak isteyebilirsin.",
         },
     },
@@ -303,10 +303,10 @@ FALLBACK_SIGNATURES_BY_BLOCK = {
         "chips": ["İç Ritim", "İnce Ayar", "Dayanıklılık"],
         "copy_tr": {
             "headline": "Karar verirken içinde ne oluyor",
-            "teaser": "Başlatınca hızlanırsın; ama iç standardın bazen frene de basar.",
+            "teaser": "Başlatınca hızlanırsın; ama iç ölçün bazen frene de basar.",
             "spark": "Sen karar verirken sadece seçmezsin; içinden tartar ve en doğru formu bulmak istersin.",
-            "gift": "Bu yapı olgunlaştığında sana dayanıklılık ve güven veren bir netlik kazandırır.",
-            "watch": "Denge bozulduğunda iç standart yükselir ve akış gecikebilir.",
+            "gift": "Bu yapı olgunlaştığında içeride dayanıklılık ve güven veren bir netlik belirginleşir.",
+            "watch": "Denge bozulduğunda iç ölçü yükselir ve akış gecikebilir.",
         },
     },
     "drive_rhythm": {
@@ -318,7 +318,7 @@ FALLBACK_SIGNATURES_BY_BLOCK = {
             "teaser": "Sende yetenek, anlamı bir yapıya dönüştürebildiğin yerde parlıyor.",
             "spark": "Dağınık olanı toparlama ve sezgisel olanı anlaşılır hale getirme becerin güçlü.",
             "gift": "Bu yapı olgunlaştığında seni hem derin düşünen hem de kurabilen biri yapar.",
-            "watch": "Yük arttığında ayrıntıda fazla oyalanabilir ya da iç standardın yüzünden akışı geciktirebilirsin.",
+            "watch": "Yük arttığında ayrıntıda fazla oyalanabilir ya da iç ölçün yüzünden akışı geciktirebilirsin.",
         },
     },
     "love_depth": {
@@ -1208,12 +1208,12 @@ def _identity_priority_copy(
     if structure and originality and not vision:
         teaser = "Dışarıda toplu, içeride kendi yolunu açan bir çizgin var."
         mechanism = "önce omurga kurup sonra o omurganın içinde farklı olanı ayırmak istersin"
-        gift = "bu yapı sonunda sana hem güven veren hem de taklit edilemeyen bir duruş kazandırır"
+        gift = "bu yapı sonunda sende hem güven veren hem de taklit edilemeyen bir duruş çiziliyor"
     elif structure and vision and not originality:
         teaser = "Sağlam dururken aynı anda büyük resmi duyan bir tarafın var."
         core = "duruşunda omurga var ama o omurga sadece kontrol için değil, yön duygusu için de çalışıyor"
         mechanism = "ayrıntıyı tutarken içeride anlamı ve uzun resmi de kaybetmek istemezsin"
-        gift = "bu yapı sonunda sana yön veren, toparlayıcı ve ufku geniş bir etki kazandırır"
+        gift = "bu yapı sonunda sende yön veren, toparlayıcı ve ufku geniş bir etki açılıyor"
 
     raw_teaser = str(primary_copy.get("teaser") or "").strip()
     if raw_teaser and "büyük resmi" in raw_teaser.lower() and "özgün" in raw_teaser.lower():
@@ -1264,7 +1264,7 @@ def _talent_priority_copy(
     teaser = "Sende yetenek, anlamı bir yapıya dönüştürebildiğin yerde parlıyor."
     core = "dağınık olanı toparlayıp sezgisel olanı anlaşılır hale getirebilen bir tarafın var"
     mechanism = "bir şeyi sadece hissetmekle kalmaz, ona biçim verip başkalarının da tutabileceği bir düzene oturtmak istersin"
-    shadow = "yük arttığında ayrıntıda fazla oyalanabilir ya da iç standardın yüzünden akışı geciktirebilirsin"
+    shadow = "yük arttığında ayrıntıda fazla oyalanabilir ya da iç ölçün yüzünden akışı geciktirebilirsin"
     gift = "bu yapı olgunlaştığında seni hem derin düşünen hem de kurabilen biri yapar"
 
     raw_teaser = str(primary_copy.get("teaser") or "").strip().lower()

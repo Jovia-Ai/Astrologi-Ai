@@ -270,7 +270,7 @@ def _nominal_observation(fragment: str, family: str, *, role: str) -> str:
             "intimate": "İçeride bu, {fragment} olarak yaşanır.",
         },
         "potential": {
-            "direct": "Yerine oturduğunda {fragment}.",
+            "direct": "Yerini bulduğunda {fragment}.",
             "observational": "Olgunlaştığında dışarıya {fragment} diye yansır.",
             "cinematic": "Denge geldiğinde tablo {fragment} tarafına döner.",
             "intimate": "Güven bulduğunda {fragment} daha rahat görünür.",

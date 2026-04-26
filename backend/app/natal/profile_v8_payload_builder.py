@@ -229,7 +229,7 @@ PAST_LAYER_TRIGGERS = {
         "headline": "Bir dönem her şeyi tek başına çözmek zorunda hissetmiş olabilirsin.",
         "highlight": "tek başına çözmek",
         "chips": ["GAD", "Koç", "yalnız yük"],
-        "text": "İçinde her şeyi tek elde tutan bir çizgi varsa, bugün iş birliğine alan açmak büyüme tarafını hızlandırır.",
+        "text": "İçinde her şeyi tek elde tutan bir çizgi varsa, iş birliğine alan açıldığında bu hat daha esnek çalışıyor.",
     },
 }
 
@@ -239,7 +239,7 @@ TALENT_RULES = {
         "section_hint": "talents",
         "headline": "Büyük fikir, kalıcı yapı.",
         "chips": ["Merkür", "Jüpiter", "vizyon"],
-        "text": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+        "text": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
     },
     "moon_venus_harmony": {
         "domain": "talent",
@@ -253,7 +253,7 @@ TALENT_RULES = {
         "section_hint": "talents",
         "headline": "Sezgi çok yüksek.",
         "chips": ["Neptün", "1. ev", "sezgi"],
-        "text": "İnsanların görmediği tonu erken alman, hem ilişkide hem üretimde sana güçlü bir önsezi avantajı veriyor.",
+        "text": "İnsanların görmediği tonu erken alman, hem ilişkide hem üretimde önseziyi merkeze çıkarıyor.",
     },
 }
 
@@ -263,12 +263,12 @@ MISSION_RULES = {
         "section_hint": "mission",
         "headline": "Yalnız çözümden iş birliği ve anlama doğru gidiyorsun.",
         "chips": ["KAD Terazi", "denge", "birlikte üretim"],
-        "text": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor.",
+        "text": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor.",
     },
     "saturn_third_house_teacher": {
         "domain": "mission",
         "section_hint": "mission",
-        "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+        "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
         "chips": ["Satürn", "3. ev", "öğretme"],
         "text": "Kelimelerini yapılandırıp paylaştığında, çevrendeki insanlar için netleştirici ve öğretici bir kanal açılıyor.",
     },
@@ -406,7 +406,7 @@ _BUNDLE_HEADLINES: dict[str, str] = {
     "angle_identity_bundle": "Dışarı verdiğin kimlik tonu güçlü.",
     "soft_capacity_bundle": "Yumuşak kapasitelerin hızlı açılıyor.",
     "mental_style_bundle": "Zihinsel ritminde ayırt edici bir hat var.",
-    "emotional_regulation_bundle": "Duyguyu yönetme biçimin savunma gücünü etkiliyor.",
+    "emotional_regulation_bundle": "Duyguyu yönetme biçimin, savunma hattının da rengini veriyor.",
     "pressure_growth_bundle": "Baskı altında büyüme refleksin belirgin.",
     "contradiction_bundle": "İçeride iki yönü aynı anda taşıyorsun.",
     "personal_core_bundle": "Merkezinde net bir kişisel omurga var.",
@@ -1249,7 +1249,7 @@ def build_mission_preview(
         top = source[0]
         return EditorialSectionPayload(
             eyebrow="MİSYON",
-            headline=top.headline or "Öğrendiklerini paylaştığında dönüm noktası olabilirsin.",
+            headline=top.headline or "Öğrendiklerini paylaştığın yerde başkalarının düşüncesi net kayıyor.",
             body=_shorten(top.text, 180),
             chips=top.chips[:3],
             highlight=top.highlight,
