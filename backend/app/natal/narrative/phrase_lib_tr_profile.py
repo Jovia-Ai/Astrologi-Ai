@@ -74,7 +74,7 @@ _BODY_TEMPLATE_BY_MODE: Dict[str, str] = {
         "{copy.core} "
         "{copy.mechanism} "
         "Baskı yükseldiğinde {copy.shadow_lower}. "
-        "Yerine oturduğunda {copy.gift_lower}."
+        "Yerini bulduğunda {copy.gift_lower}."
     ),
     "B": (
         "İnsanlar sende önce şu çizgiyi okur: {copy.core_lower}. "
@@ -90,7 +90,7 @@ _BODY_TEMPLATE_BY_MODE: Dict[str, str] = {
     ),
     "D": (
         "{copy.core} "
-        "İç tarafta işleyiş şöyle: {copy.mechanism_lower}. "
+        "İç hattında {copy.mechanism_lower}. "
         "Kırılgan yerde {copy.shadow_lower}. "
         "Güven oluştuğunda {copy.gift_lower}."
     ),
@@ -141,13 +141,13 @@ SOFT_ASTRO_HINTS_TR: Dict[str, List[str]] = {
 
 
 DEFAULT_PUBLIC_CHIPS_TR: Dict[str, List[str]] = {
-    "identity_aura": ["Kendi Çizgin", "Özgün Yol", "Büyük Resim"],
+    "identity_aura": ["Kendi Çizgin", "Özgün Yol", "Geniş Görüş"],
     "mind_voice": ["İç Ritim", "Net İfade", "İç Denge"],
-    "drive_rhythm": ["Anlam", "Yapı", "Kurucu Zihin"],
+    "drive_rhythm": ["Anlam Çizgisi", "Kurma Gücü", "Kurucu Zihin"],
     "love_depth": ["Derin Temas", "Güven Zemini", "Açılma Ritmi"],
     "career_visibility": ["Zarif Etki", "İz Bırak", "Ustalık"],
     "home_roots": ["İç Alan", "Toparlanma", "Güven Zemini"],
-    "luck_creation": ["Yaratım", "Akış", "Genişleme"],
+    "luck_creation": ["Yaratım", "Akış Hattı", "Açılma Eşiği"],
 }
 
 
@@ -233,7 +233,7 @@ def _render_text(template: str, slots: Mapping[str, Any], *, max_sentences: int)
     copy_payload = {k: str(v or "") for k, v in dict(local.get("copy") or {}).items()}
     defaults = {
         "core": "Sende belirgin bir iç hat var.",
-        "mechanism": "İçeride birden fazla damar aynı anda çalışıyor.",
+        "mechanism": "İçeride birden fazla hat aynı anda çalışıyor.",
         "shadow": "Yük arttığında ritmin zorlanabiliyor.",
         "gift": "Olgun tarafında daha net ve güven veren bir akış kuruluyor.",
     }

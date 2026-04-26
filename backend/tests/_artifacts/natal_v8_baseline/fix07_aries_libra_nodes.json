@@ -1,6 +1,6 @@
 {
   "public": {
-    "core_story": "Kimliğin yaratıcılık ve ifade alanında idealleşir. Bu ideal seni ilhamla üretmeye iter. Dışarıdan romantik ve hayal gücü yüksek biri olarak algılanırsın. Baskı arttığında i̇fade bulanıklaşabilir ortaya çıkabilir.\n\nİlham sezgiyle birleşir. Bu seni yaratıcı düşünür yapar. Kimliğin yaratıcılık ve ifade alanında idealleşir.\n\nAşk ve romantizm idealleştirilir. Sevgiyi fedakârlıkla ifade edersin. Bu seni büyüleyici ama kırılgan bir partner yapar.",
+    "core_story": "Kimliğin yaratıcılık ve ifade alanında idealleşir. Bu ideal seni ilhamla üretmeye iter. Dışarıdan romantik ve hayal gücü yüksek biri olarak algılanırsın. Baskı arttığında i̇fade bulanıklaşabilir ortaya çıkabilir.\n\nPsikolojin zihinsel hareket, öğrenme ve fikir üretme ihtiyacıyla beslenir. Gerilim anında fikir üretir, konuşur veya yön değiştirirsin. Fikirler hızla davranışa dönüşür; konuşma enerjin yüksektir. Denge olduğunda psikolojin aktif, canlı ve merak doludur.\n\nDışarıdan romantik ve hayal gücü yüksek biri olarak algılanırsın. Kimliğin yaratıcılık ve ifade alanında idealleşir. Bu ideal seni ilhamla üretmeye iter.",
     "core_story_ui": {
       "drivers": [
         {
@@ -34,23 +34,25 @@
     "full_map_v8": {
       "golge": {
         "mechanism": {
-          "body": "Jupiter ile Juno arasındaki sextile hattı 0.41° ile çok yakın çalışıyor.",
+          "body": "Yükselen Aslan sana dışarıda daha sıcak ve görünür bir duruş veriyor; ama içeride olan şey çoğu zaman bundan daha hareketli. Senin zihnin önce içeride toparlıyor, sonra dışarı açılıyor; bu yüzden hemen cevap vermemek sende kaçınma değil, cümleyi ve duyguyu ye…",
           "callout": null,
           "chips": [
-            "Jupiter",
-            "sextile",
-            "Juno"
+            "Yükselen Aslan",
+            "Güneş 12. ev",
+            "Yengeç",
+            "İtme-Çekme"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Akışkan iş birliği hattı: Jupiter ve Juno",
-          "highlight": null
+          "growth": null,
+          "headline": "Zihin–eylem–kontrol",
+          "highlight": "Yükselen Aslan"
         },
         "mission": {
           "body": "Kelimelerini yapılandırıp paylaştığında, çevrendeki insanlar için netleştirici ve öğretici bir kanal açılıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+          "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
           "steps": [
             {
               "accent": "lime",
@@ -76,6 +78,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişkiler ve yakınlık",
           "highlight": "7. ev Kova"
         },
@@ -91,18 +94,9 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Küçükken konuşmanın bir bedeli olduğunu öğrenmiş olabilirsin.",
             "highlight": "konuşmanın bir bedeli"
-          },
-          {
-            "body": "Denge bozulduğunda rahatına fazla yayılma ya da duygusal büyümeyi yalnızca konforla karıştırma görülebilir.",
-            "callout": null,
-            "chips": [],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Jüpiter 4. Ev",
-            "highlight": "Denge bozulduğunda rahatına fazla yayılma ya da duygusal"
           },
           {
             "body": "Erken dönemde kendini açıkça ortaya koymak yerine geri planda kalmayı öğrenmiş olabilirsin.",
@@ -111,8 +105,20 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Güneş 12. Ev",
             "highlight": "Erken dönemde kendini açıkça ortaya koymak yerine geri p"
+          },
+          {
+            "body": "Aile düzeni erken dönemde istikrarsız ya da sıra dışı çalışmış olabilir.",
+            "callout": null,
+            "chips": [],
+            "eyebrow": "GEÇMİŞ KATMAN",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Uranüs 4. Ev",
+            "highlight": "Aile düzeni erken dönemde istikrarsız ya da sıra dışı ça"
           }
         ],
         "potentials": [
@@ -127,20 +133,22 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Akışkan iş birliği hattı: Neptune ve Imum Coeli",
             "highlight": null
           },
           {
-            "body": "5. evde 4 gezegen birikimi, profile güçlü bir omurga veriyor.",
+            "body": "3. evde 3 gezegen birikimi, profile güçlü bir omurga veriyor.",
             "callout": null,
             "chips": [
-              "5. ev",
-              "4 gezegen",
+              "3. ev",
+              "3 gezegen",
               "yoğunluk"
             ],
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Merkezde toplanan güçlü enerji",
             "highlight": null
           },
@@ -154,23 +162,21 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Dışarı verdiğin kimlik tonu güçlü.",
             "highlight": "disariya yansiyan guc"
           }
         ],
         "pull_quote": {
-          "body": "Mars ile Fortune arasındaki square hattı 0.98° ile çok yakın çalışıyor.",
+          "body": "Aile düzeni erken dönemde istikrarsız ya da sıra dışı çalışmış olabilir.",
           "callout": null,
-          "chips": [
-            "Mars",
-            "square",
-            "Fortune"
-          ],
+          "chips": [],
           "eyebrow": "GÖLGE",
           "footer": null,
           "footer_cta": null,
-          "headline": "Gerilimden güç üreten hat: Mars ve Fortune",
-          "highlight": null
+          "growth": null,
+          "headline": "Uranüs 4. Ev",
+          "highlight": "Aile düzeni erken dönemde istikrarsız ya da sıra dışı ça"
         },
         "shadow_fragments": [
           {
@@ -184,30 +190,47 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Mars ve Fortune",
+            "highlight": null
+          },
+          {
+            "body": "Pluto ile Midheaven arasındaki opposition hattı 0.98° ile çok yakın çalışıyor.",
+            "callout": null,
+            "chips": [
+              "Pluto",
+              "opposition",
+              "Midheaven"
+            ],
+            "eyebrow": "GÖLGE DESENİ",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Karşı kutupları dengede taşıyan çizgi: Pluto ve Midheaven",
             "highlight": null
           }
         ]
       },
       "iliski": {
         "mechanism": {
-          "body": "Jupiter ile Juno arasındaki sextile hattı 0.41° ile çok yakın çalışıyor.",
+          "body": "Saturn ile Fortune arasındaki square hattı 0.30° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Jupiter",
-            "sextile",
-            "Juno"
+            "Saturn",
+            "square",
+            "Fortune"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Akışkan iş birliği hattı: Jupiter ve Juno",
+          "growth": null,
+          "headline": "Gerilimden güç üreten hat: Saturn ve Fortune",
           "highlight": null
         },
         "mission": {
           "body": "Kelimelerini yapılandırıp paylaştığında, çevrendeki insanlar için netleştirici ve öğretici bir kanal açılıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+          "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
           "steps": [
             {
               "accent": "lime",
@@ -232,6 +255,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişki hattında tekrar eden bir desen var.",
           "highlight": "yakinda hassasiyet"
         },
@@ -247,6 +271,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Küçükken konuşmanın bir bedeli olduğunu öğrenmiş olabilirsin.",
             "highlight": "konuşmanın bir bedeli"
           },
@@ -262,6 +287,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İlişkiler ve yakınlık",
             "highlight": "7. ev Kova"
           },
@@ -272,13 +298,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Güneş 12. Ev",
             "highlight": "Erken dönemde kendini açıkça ortaya koymak yerine geri p"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -288,6 +315,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
@@ -302,6 +330,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İlişki hattında tekrar eden bir desen var.",
             "highlight": "yakinda hassasiyet"
           }
@@ -318,19 +347,21 @@
           "eyebrow": "İLİŞKİ",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişkiler ve yakınlık",
           "highlight": "7. ev Kova"
         },
         "shadow_fragments": [
           {
-            "body": "Denge bozulduğunda rahatına fazla yayılma ya da duygusal büyümeyi yalnızca konforla karıştırma görülebilir.",
+            "body": "Aile düzeni erken dönemde istikrarsız ya da sıra dışı çalışmış olabilir.",
             "callout": null,
             "chips": [],
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
-            "headline": "Jüpiter 4. Ev",
-            "highlight": "Denge bozulduğunda rahatına fazla yayılma ya da duygusal"
+            "growth": null,
+            "headline": "Uranüs 4. Ev",
+            "highlight": "Aile düzeni erken dönemde istikrarsız ya da sıra dışı ça"
           },
           {
             "body": "Erken dönemde kendini açıkça ortaya koymak yerine geri planda kalmayı öğrenmiş olabilirsin.",
@@ -339,6 +370,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Güneş 12. Ev",
             "highlight": "Erken dönemde kendini açıkça ortaya koymak yerine geri p"
           }
@@ -346,23 +378,25 @@
       },
       "kariyer": {
         "mechanism": {
-          "body": "Saturn ile Fortune arasındaki square hattı 0.30° ile çok yakın çalışıyor.",
+          "body": "Yükselen Aslan sana dışarıda daha sıcak ve görünür bir duruş veriyor; ama içeride olan şey çoğu zaman bundan daha hareketli. Senin zihnin önce içeride toparlıyor, sonra dışarı açılıyor; bu yüzden hemen cevap vermemek sende kaçınma değil, cümleyi ve duyguyu ye…",
           "callout": null,
           "chips": [
-            "Saturn",
-            "square",
-            "Fortune"
+            "Yükselen Aslan",
+            "Güneş 12. ev",
+            "Yengeç",
+            "İtme-Çekme"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Gerilimden güç üreten hat: Saturn ve Fortune",
-          "highlight": null
+          "growth": null,
+          "headline": "Zihin–eylem–kontrol",
+          "highlight": "Yükselen Aslan"
         },
         "mission": {
           "body": "Kelimelerini yapılandırıp paylaştığında, çevrendeki insanlar için netleştirici ve öğretici bir kanal açılıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+          "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
           "steps": [
             {
               "accent": "lime",
@@ -387,7 +421,8 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
-          "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+          "growth": null,
+          "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
           "highlight": null
         },
         "past_fragments": [
@@ -402,7 +437,23 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Mars ve Fortune",
+            "highlight": null
+          },
+          {
+            "body": "Pluto ile Midheaven arasındaki opposition hattı 0.98° ile çok yakın çalışıyor.",
+            "callout": null,
+            "chips": [
+              "Pluto",
+              "opposition",
+              "Midheaven"
+            ],
+            "eyebrow": "GEÇMİŞ KATMAN",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Karşı kutupları dengede taşıyan çizgi: Pluto ve Midheaven",
             "highlight": null
           },
           {
@@ -416,23 +467,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Küçükken konuşmanın bir bedeli olduğunu öğrenmiş olabilirsin.",
             "highlight": "konuşmanın bir bedeli"
-          },
-          {
-            "body": "Denge bozulduğunda rahatına fazla yayılma ya da duygusal büyümeyi yalnızca konforla karıştırma görülebilir.",
-            "callout": null,
-            "chips": [],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Jüpiter 4. Ev",
-            "highlight": "Denge bozulduğunda rahatına fazla yayılma ya da duygusal"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -442,6 +484,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           }
@@ -457,6 +500,7 @@
           "eyebrow": "KARİYER",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Doğal uyum hattı: Neptune ve Midheaven",
           "highlight": null
         },
@@ -472,7 +516,23 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Mars ve Fortune",
+            "highlight": null
+          },
+          {
+            "body": "Pluto ile Midheaven arasındaki opposition hattı 0.98° ile çok yakın çalışıyor.",
+            "callout": null,
+            "chips": [
+              "Pluto",
+              "opposition",
+              "Midheaven"
+            ],
+            "eyebrow": "GÖLGE DESENİ",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Karşı kutupları dengede taşıyan çizgi: Pluto ve Midheaven",
             "highlight": null
           }
         ]
@@ -489,13 +549,14 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Saturn ve Fortune",
           "highlight": null
         },
         "mission": {
           "body": "Kelimelerini yapılandırıp paylaştığında, çevrendeki insanlar için netleştirici ve öğretici bir kanal açılıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+          "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
           "steps": [
             {
               "accent": "lime",
@@ -520,6 +581,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Akışkan iş birliği hattı: Neptune ve Imum Coeli",
           "highlight": null
         },
@@ -535,7 +597,23 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Mars ve Fortune",
+            "highlight": null
+          },
+          {
+            "body": "Pluto ile Midheaven arasındaki opposition hattı 0.98° ile çok yakın çalışıyor.",
+            "callout": null,
+            "chips": [
+              "Pluto",
+              "opposition",
+              "Midheaven"
+            ],
+            "eyebrow": "GEÇMİŞ KATMAN",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Karşı kutupları dengede taşıyan çizgi: Pluto ve Midheaven",
             "highlight": null
           },
           {
@@ -549,23 +627,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Küçükken konuşmanın bir bedeli olduğunu öğrenmiş olabilirsin.",
             "highlight": "konuşmanın bir bedeli"
-          },
-          {
-            "body": "Denge bozulduğunda rahatına fazla yayılma ya da duygusal büyümeyi yalnızca konforla karıştırma görülebilir.",
-            "callout": null,
-            "chips": [],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Jüpiter 4. Ev",
-            "highlight": "Denge bozulduğunda rahatına fazla yayılma ya da duygusal"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -575,6 +644,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           }
@@ -590,6 +660,7 @@
           "eyebrow": "KİMLİK",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Doğal uyum hattı: Neptune ve Midheaven",
           "highlight": null
         },
@@ -605,7 +676,23 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Mars ve Fortune",
+            "highlight": null
+          },
+          {
+            "body": "Pluto ile Midheaven arasındaki opposition hattı 0.98° ile çok yakın çalışıyor.",
+            "callout": null,
+            "chips": [
+              "Pluto",
+              "opposition",
+              "Midheaven"
+            ],
+            "eyebrow": "GÖLGE DESENİ",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Karşı kutupları dengede taşıyan çizgi: Pluto ve Midheaven",
             "highlight": null
           }
         ]
@@ -614,7 +701,7 @@
     "locale": "tr",
     "narrative_v2": {
       "aspect_bundle_selector": {
-        "candidate_count": 50,
+        "candidate_count": 43,
         "max_primary_bundles": 3,
         "selected_bundles": [
           {
@@ -726,23 +813,24 @@
     },
     "personality_imprint": {
       "__hashed__": true,
-      "content_hash": "88358e766084c60e",
+      "content_hash": "bbe08fb401cb7887",
       "shape": "dict[10]",
       "size_bytes": 11863
     },
     "profile_narrative": {
       "__hashed__": true,
-      "content_hash": "a216fc8e1a3b114f",
+      "content_hash": "898cbf09f5aa1930",
       "shape": "dict[1]",
-      "size_bytes": 58537
+      "size_bytes": 55377
     },
     "profile_v8": {
       "affects_you": {
         "body": "Kalbin, güven olmadan yarım açılmaz.",
         "eyebrow": "SENİ NASIL ETKİLER",
         "footer": null,
-        "headline": "Akışkan iş birliği hattı: Neptune ve Imum Coeli",
+        "headline": "Karşı kutupları dengede taşıyan çizgi: Pluto ve Midheaven",
         "rows": [
+          "Pluto ile Midheaven arasındaki opposition hattı 0.98° ile çok yakın çalışıyor.",
           "Neptune ile Imum Coeli arasındaki sextile hattı 0.12° ile çok yakın çalışıyor."
         ]
       },
@@ -772,6 +860,7 @@
         "eyebrow": "BU KİŞİYLE NE KONUŞULUR",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Cümlelerinin arkası",
         "highlight": "Kısa Net"
       },
@@ -786,6 +875,7 @@
         "eyebrow": "SAVUNMA MEKANİZMAN",
         "footer": null,
         "footer_cta": null,
+        "growth": "Kelimelerini yapılandırıp paylaştığında, çevrendeki insanlar için netleştirici ve öğretici bir kanal açılıyor.",
         "headline": "Küçükken konuşmanın bir bedeli olduğunu öğrenmiş olabilirsin.",
         "highlight": "konuşmanın bir bedeli"
       },
@@ -793,10 +883,10 @@
         {
           "accent": "lime",
           "body": "Varlığın taşıdığı yoğunluk nadir.",
-          "eyebrow": "5. ev",
-          "headline": "4 gezegen, tek ev.",
-          "stat": "4×",
-          "stat_label": "5. ev"
+          "eyebrow": "3. ev",
+          "headline": "3 gezegen, tek ev.",
+          "stat": "3×",
+          "stat_label": "3. ev"
         },
         {
           "accent": "lavender",
@@ -816,7 +906,7 @@
         }
       ],
       "first_felt": {
-        "body": "İlk hissedilen şey çoğu zaman daha sıcak ve görünür bir duruşun olması; ama bunun altında kendi yönünü koruyan bir taraf da var. İç tarafta işleyiş şöyle: kimliğin en çok perde ar…",
+        "body": "İlk hissedilen şey çoğu zaman daha sıcak ve görünür bir duruşun olması; ama bunun altında kendi yönünü koruyan bir taraf da var. İç hattında kimliğin en çok perde arkası ve iç dün…",
         "callout": null,
         "chips": [
           "Perde Arkası",
@@ -826,6 +916,7 @@
         "eyebrow": "İLK HİSSEDİLEN ŞEY",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Kendi çizgin",
         "highlight": "Perde Arkası"
       },
@@ -840,6 +931,7 @@
         "eyebrow": "İLK İZLENİM",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Doğal uyum hattı: Neptune ve Midheaven",
         "highlight": null
       },
@@ -859,6 +951,7 @@
         "eyebrow": "KİMLİK EKSENİ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Kimliğin netleştikçe yönün açılıyor",
         "highlight": null
       },
@@ -867,8 +960,8 @@
           "accent": "lime",
           "eyebrow": "Aura",
           "icon_type": "dot",
-          "subtitle": "Uranüs 4. Ev",
-          "title": "Uranüs 4. Ev"
+          "subtitle": "Güneş Kare Satürn",
+          "title": "Güneş Kare Satürn"
         },
         {
           "accent": "stone",
@@ -896,6 +989,7 @@
         "eyebrow": "YAKINLIK",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Sevginin derinleşme biçimi",
         "highlight": "Konuşma Dili"
       },
@@ -911,6 +1005,7 @@
         "eyebrow": "ZİHİNSEL İŞLEYİŞ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Zihin–eylem–kontrol",
         "highlight": "Yükselen Aslan"
       },
@@ -925,7 +1020,8 @@
         "eyebrow": "MİSYON",
         "footer": null,
         "footer_cta": null,
-        "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+        "growth": null,
+        "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
         "highlight": null
       },
       "past_teaser": {
@@ -937,11 +1033,29 @@
           "Fortune"
         ],
         "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
-        "footer": "3 geçmiş katman daha",
-        "footer_cta": "Tam haritada gör →",
+        "footer": null,
+        "footer_cta": null,
+        "growth": null,
         "headline": "Gerilimden güç üreten hat: Mars ve Fortune",
         "highlight": null
       },
+      "past_teasers": [
+        {
+          "body": "Mars ile Fortune arasındaki square hattı 0.98° ile çok yakın çalışıyor.",
+          "callout": null,
+          "chips": [
+            "Mars",
+            "square",
+            "Fortune"
+          ],
+          "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Gerilimden güç üreten hat: Mars ve Fortune",
+          "highlight": null
+        }
+      ],
       "talents": [
         {
           "accent": "lime",
@@ -950,36 +1064,36 @@
         },
         {
           "accent": "lavender",
-          "eyebrow": "Akışkan iş birliği hattı: Jupiter ve Juno",
-          "text": "Jupiter ile Juno arasındaki sextile hattı 0.41° ile çok yakın çalışıyor."
+          "eyebrow": "Büyük fikir, kalıcı yapı.",
+          "text": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla…"
         },
         {
           "accent": "stone",
-          "eyebrow": "Büyük fikir, kalıcı yapı.",
-          "text": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla…"
+          "eyebrow": "Yetenek çizgin",
+          "text": "Dağınık olanı toparlama ve sezgisel olanı anlaşılır hale getirme becerin güçlü.…"
         }
       ]
     },
     "sections_v2": {
       "__hashed__": true,
-      "content_hash": "25fc6d53ffbeac68",
+      "content_hash": "56705f8ee519ddeb",
       "shape": "list[3]",
-      "size_bytes": 19226
+      "size_bytes": 17130
     },
     "supporting_threads": {
       "__hashed__": true,
-      "content_hash": "ee15fd20f1bef1bf",
+      "content_hash": "2c87a42b7de83485",
       "shape": "list[3]",
-      "size_bytes": 20704
+      "size_bytes": 18630
     },
     "upper_meaning": {
       "content": null,
       "debug_scores": {
         "capacity": 0.468,
-        "integration": 0.515,
+        "integration": 0.47,
         "integration_components": {
           "bridge": 0.0,
-          "directionality": 0.55,
+          "directionality": 0.4,
           "recurrence": 1.0
         },
         "pressure": 0.914,

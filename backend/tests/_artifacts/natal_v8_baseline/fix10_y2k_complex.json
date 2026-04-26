@@ -45,34 +45,42 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Zihin–eylem–kontrol",
           "highlight": "Yükselen Terazi"
         },
         "mission": {
-          "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
+          "body": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Görünür olma ritmin",
+          "headline": "Karşı kutupları dengede taşıyan çizgi: Neptune ve North Node",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
+              "text": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyor."
+            },
+            {
+              "accent": "lavender",
+              "label": "Adım 2",
               "text": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; ac…"
             }
           ]
         },
         "opening_point": {
-          "body": "Moon ile Juno arasındaki sextile hattı 0.52° ile çok yakın çalışıyor.",
+          "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Koç olduğu ve yöneticisi Mars 5. evde ve Kova'da olduğu için, yakınlık send…",
           "callout": null,
           "chips": [
-            "Moon",
-            "sextile",
-            "Juno"
+            "7. ev Koç",
+            "Mars 5. ev",
+            "Kova",
+            "İç Toparlanma"
           ],
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
-          "headline": "Akışkan iş birliği hattı: Moon ve Juno",
-          "highlight": null
+          "growth": null,
+          "headline": "İlişkiler ve yakınlık",
+          "highlight": "7. ev Koç"
         },
         "past_fragments": [
           {
@@ -82,6 +90,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Neptün 4. Ev",
             "highlight": "Ev ortamında duygusal sınırlar erken dönemde net kurulma"
           },
@@ -92,52 +101,40 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Ay 2. Ev",
             "highlight": "Güven duygun erken dönemde istikrar üzerinden şekillenmi"
           }
         ],
         "potentials": [
           {
-            "body": "Pluto ile Chiron arasındaki conjunction hattı 0.12° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Pluto",
-              "conjunction",
-              "Chiron"
-            ],
-            "eyebrow": "POTANSİYEL",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Aynı merkezde toplanan vurgu: Pluto ve Chiron",
-            "highlight": null
-          },
-          {
-            "body": "Sun ile Imum Coeli arasındaki conjunction hattı 0.70° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Sun",
-              "conjunction",
-              "Imum Coeli"
-            ],
-            "eyebrow": "POTANSİYEL",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Aynı merkezde toplanan vurgu: Sun ve Imum Coeli",
-            "highlight": null
-          },
-          {
-            "body": "3. evde 6 gezegen birikimi, profile güçlü bir omurga veriyor.",
+            "body": "3. evde 4 gezegen birikimi, profile güçlü bir omurga veriyor.",
             "callout": null,
             "chips": [
               "3. ev",
-              "6 gezegen",
+              "4 gezegen",
               "yoğunluk"
             ],
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Merkezde toplanan güçlü enerji",
             "highlight": null
+          },
+          {
+            "body": "disariya yansiyan guc, gorunurluk hassasiyeti. etki, yon duygusu. fazla savunma, fazla ayar yapma.",
+            "callout": null,
+            "chips": [
+              "identity",
+              "career visibility"
+            ],
+            "eyebrow": "POTANSİYEL",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Dışarı verdiğin kimlik tonu güçlü.",
+            "highlight": "disariya yansiyan guc"
           }
         ],
         "pull_quote": {
@@ -151,6 +148,7 @@
           "eyebrow": "GÖLGE",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Midheaven",
           "highlight": null
         },
@@ -166,6 +164,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Midheaven",
             "highlight": null
           },
@@ -179,68 +178,57 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
-            "headline": "Duyguyu yönetme biçimin savunma gücünü etkiliyor.",
+            "growth": null,
+            "headline": "Duyguyu yönetme biçimin, savunma hattının da rengini veriyor.",
             "highlight": "duyguyu filtreleme"
           }
         ]
       },
       "iliski": {
         "mechanism": {
-          "body": "Sun ile Saturn arasındaki trine hattı 0.55° ile çok yakın çalışıyor.",
+          "body": "Saturn ile Midheaven arasındaki sextile hattı 1.25° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Sun",
-            "trine",
-            "Saturn"
+            "Saturn",
+            "sextile",
+            "Midheaven"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Doğal uyum hattı: Sun ve Saturn",
+          "growth": null,
+          "headline": "Akışkan iş birliği hattı: Saturn ve Midheaven",
           "highlight": null
         },
         "mission": {
-          "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
+          "body": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Görünür olma ritmin",
+          "headline": "Karşı kutupları dengede taşıyan çizgi: Neptune ve North Node",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; ac…"
+              "text": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyor."
             }
           ]
         },
         "opening_point": {
-          "body": "İçinde yerine oturmayan şeyi dışarı taşımak istemezsin. Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu z…",
+          "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Koç olduğu ve yöneticisi Mars 5. evde ve Kova'da olduğu için, yakınlık send…",
           "callout": null,
           "chips": [
-            "MC Yengeç",
-            "Ay 2. ev",
-            "Akrep",
-            "Görünürlük"
+            "7. ev Koç",
+            "Mars 5. ev",
+            "Kova",
+            "İç Toparlanma"
           ],
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
-          "headline": "Görünür olma ritmin",
-          "highlight": "MC Yengeç"
+          "growth": null,
+          "headline": "İlişkiler ve yakınlık",
+          "highlight": "7. ev Koç"
         },
         "past_fragments": [
-          {
-            "body": "Moon ile Juno arasındaki sextile hattı 0.52° ile çok yakın çalışıyor.",
-            "callout": null,
-            "chips": [
-              "Moon",
-              "sextile",
-              "Juno"
-            ],
-            "eyebrow": "GEÇMİŞ KATMAN",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Akışkan iş birliği hattı: Moon ve Juno",
-            "highlight": null
-          },
           {
             "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Koç olduğu ve yöneticisi Mars 5. evde ve Kova'da olduğu için, yakınlık send…",
             "callout": null,
@@ -253,13 +241,30 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İlişkiler ve yakınlık",
             "highlight": "7. ev Koç"
+          },
+          {
+            "body": "İçinde yerine oturmayan şeyi dışarı taşımak istemezsin. Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu z…",
+            "callout": null,
+            "chips": [
+              "MC Yengeç",
+              "Ay 2. ev",
+              "Akrep",
+              "Görünürlük"
+            ],
+            "eyebrow": "GEÇMİŞ KATMAN",
+            "footer": null,
+            "footer_cta": null,
+            "growth": null,
+            "headline": "Görünür olma ritmin",
+            "highlight": "MC Yengeç"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -269,6 +274,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
@@ -283,23 +289,26 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
             "highlight": "dogal akis"
           }
         ],
         "pull_quote": {
-          "body": "Moon ile Juno arasındaki sextile hattı 0.52° ile çok yakın çalışıyor.",
+          "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Koç olduğu ve yöneticisi Mars 5. evde ve Kova'da olduğu için, yakınlık send…",
           "callout": null,
           "chips": [
-            "Moon",
-            "sextile",
-            "Juno"
+            "7. ev Koç",
+            "Mars 5. ev",
+            "Kova",
+            "İç Toparlanma"
           ],
           "eyebrow": "İLİŞKİ",
           "footer": null,
           "footer_cta": null,
-          "headline": "Akışkan iş birliği hattı: Moon ve Juno",
-          "highlight": null
+          "growth": null,
+          "headline": "İlişkiler ve yakınlık",
+          "highlight": "7. ev Koç"
         },
         "shadow_fragments": [
           {
@@ -309,6 +318,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Neptün 4. Ev",
             "highlight": "Ev ortamında duygusal sınırlar erken dönemde net kurulma"
           },
@@ -319,6 +329,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Ay 2. Ev",
             "highlight": "Güven duygun erken dönemde istikrar üzerinden şekillenmi"
           },
@@ -332,53 +343,59 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
-            "headline": "Duyguyu yönetme biçimin savunma gücünü etkiliyor.",
+            "growth": null,
+            "headline": "Duyguyu yönetme biçimin, savunma hattının da rengini veriyor.",
             "highlight": "duyguyu filtreleme"
           }
         ]
       },
       "kariyer": {
         "mechanism": {
-          "body": "Yükselen Terazi sana dışarıda daha uyumlu ve dengeli bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yükselen…",
+          "body": "Saturn ile Midheaven arasındaki sextile hattı 1.25° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Yükselen Terazi",
-            "Venüs 2. ev",
-            "Yay",
-            "Zihinsel Düzen"
+            "Saturn",
+            "sextile",
+            "Midheaven"
           ],
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Zihin–eylem–kontrol",
-          "highlight": "Yükselen Terazi"
+          "growth": null,
+          "headline": "Akışkan iş birliği hattı: Saturn ve Midheaven",
+          "highlight": null
         },
         "mission": {
-          "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
+          "body": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Görünür olma ritmin",
+          "headline": "Karşı kutupları dengede taşıyan çizgi: Neptune ve North Node",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
+              "text": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyor."
+            },
+            {
+              "accent": "lavender",
+              "label": "Adım 2",
               "text": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; ac…"
             }
           ]
         },
         "opening_point": {
-          "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre değil. MC'nin Yengeç olması sana denge, i…",
+          "body": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "MC Yengeç",
-            "Ay 2. ev",
-            "Akrep",
-            "Görünürlük"
+            "Neptune",
+            "opposition",
+            "North Node"
           ],
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
-          "headline": "Görünür olma ritmin",
-          "highlight": "MC Yengeç"
+          "growth": null,
+          "headline": "Karşı kutupları dengede taşıyan çizgi: Neptune ve North Node",
+          "highlight": null
         },
         "past_fragments": [
           {
@@ -392,6 +409,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Midheaven",
             "highlight": null
           },
@@ -402,6 +420,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Neptün 4. Ev",
             "highlight": "Ev ortamında duygusal sınırlar erken dönemde net kurulma"
           },
@@ -412,13 +431,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Ay 2. Ev",
             "highlight": "Güven duygun erken dönemde istikrar üzerinden şekillenmi"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -428,6 +448,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
@@ -442,6 +463,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
             "highlight": "dogal akis"
           }
@@ -457,6 +479,7 @@
           "eyebrow": "KARİYER",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Aynı merkezde toplanan vurgu: Sun ve Imum Coeli",
           "highlight": null
         },
@@ -472,6 +495,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Midheaven",
             "highlight": null
           },
@@ -485,7 +509,8 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
-            "headline": "Duyguyu yönetme biçimin savunma gücünü etkiliyor.",
+            "growth": null,
+            "headline": "Duyguyu yönetme biçimin, savunma hattının da rengini veriyor.",
             "highlight": "duyguyu filtreleme"
           }
         ]
@@ -502,33 +527,40 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Doğal uyum hattı: Sun ve Saturn",
           "highlight": null
         },
         "mission": {
-          "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre d…",
+          "body": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Görünür olma ritmin",
+          "headline": "Karşı kutupları dengede taşıyan çizgi: Neptune ve North Node",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
+              "text": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyor."
+            },
+            {
+              "accent": "lavender",
+              "label": "Adım 2",
               "text": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; ac…"
             }
           ]
         },
         "opening_point": {
-          "body": "Moon ile Juno arasındaki sextile hattı 0.52° ile çok yakın çalışıyor.",
+          "body": "Sun ile Imum Coeli arasındaki conjunction hattı 0.70° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Moon",
-            "sextile",
-            "Juno"
+            "Sun",
+            "conjunction",
+            "Imum Coeli"
           ],
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
-          "headline": "Akışkan iş birliği hattı: Moon ve Juno",
+          "growth": null,
+          "headline": "Aynı merkezde toplanan vurgu: Sun ve Imum Coeli",
           "highlight": null
         },
         "past_fragments": [
@@ -543,6 +575,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Midheaven",
             "highlight": null
           },
@@ -553,6 +586,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Neptün 4. Ev",
             "highlight": "Ev ortamında duygusal sınırlar erken dönemde net kurulma"
           },
@@ -563,13 +597,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Ay 2. Ev",
             "highlight": "Güven duygun erken dönemde istikrar üzerinden şekillenmi"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -579,6 +614,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
@@ -593,22 +629,24 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
             "highlight": "dogal akis"
           }
         ],
         "pull_quote": {
-          "body": "Pluto ile Chiron arasındaki conjunction hattı 0.12° ile çok yakın çalışıyor.",
+          "body": "Sun ile Saturn arasındaki trine hattı 0.55° ile çok yakın çalışıyor.",
           "callout": null,
           "chips": [
-            "Pluto",
-            "conjunction",
-            "Chiron"
+            "Sun",
+            "trine",
+            "Saturn"
           ],
           "eyebrow": "KİMLİK",
           "footer": null,
           "footer_cta": null,
-          "headline": "Aynı merkezde toplanan vurgu: Pluto ve Chiron",
+          "growth": null,
+          "headline": "Doğal uyum hattı: Sun ve Saturn",
           "highlight": null
         },
         "shadow_fragments": [
@@ -623,6 +661,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Midheaven",
             "highlight": null
           },
@@ -636,7 +675,8 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
-            "headline": "Duyguyu yönetme biçimin savunma gücünü etkiliyor.",
+            "growth": null,
+            "headline": "Duyguyu yönetme biçimin, savunma hattının da rengini veriyor.",
             "highlight": "duyguyu filtreleme"
           }
         ]
@@ -645,7 +685,7 @@
     "locale": "tr",
     "narrative_v2": {
       "aspect_bundle_selector": {
-        "candidate_count": 61,
+        "candidate_count": 48,
         "max_primary_bundles": 3,
         "selected_bundles": [
           {
@@ -763,18 +803,18 @@
     },
     "profile_narrative": {
       "__hashed__": true,
-      "content_hash": "fe6a1eb4f78b5db0",
+      "content_hash": "ba1f7356262ef9ab",
       "shape": "dict[1]",
-      "size_bytes": 57222
+      "size_bytes": 57131
     },
     "profile_v8": {
       "affects_you": {
         "body": "Kalbin, güven olmadan yarım açılmaz.",
         "eyebrow": "SENİ NASIL ETKİLER",
         "footer": null,
-        "headline": "Aynı merkezde toplanan vurgu: Sun ve Imum Coeli",
+        "headline": "Yakınlık sende nasıl açılıyor",
         "rows": [
-          "Sun ile Imum Coeli arasındaki conjunction hattı 0.70° ile çok yakın çalışıyor."
+          "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç hattında bağ sende en çok yaratıcıl…"
         ]
       },
       "archetype_portal": {
@@ -793,21 +833,22 @@
         ]
       },
       "conversation_hooks": {
-        "body": "Moon ile Juno arasındaki sextile hattı 0.52° ile çok yakın çalışıyor.",
+        "body": "Bir şey sana çarptığında zihnin boşta kalmıyor; içeride hemen pozisyon alan bir tarafın çalışıyor. Bu hat en çok özdeğer ve kaynaklar tarafında belirginleşiyor; bazen söylemeden ö…",
         "callout": "“Projeler, fikirler, ne inşa ediyorsun?”",
         "chips": [
-          "Moon",
-          "sextile",
-          "Juno"
+          "İç Ritim",
+          "İnce Ayar",
+          "Dayanıklılık"
         ],
         "eyebrow": "BU KİŞİYLE NE KONUŞULUR",
         "footer": null,
         "footer_cta": null,
-        "headline": "Akışkan iş birliği hattı: Moon ve Juno",
-        "highlight": null
+        "growth": null,
+        "headline": "Zihnin nasıl çalışıyor",
+        "highlight": "İç Ritim"
       },
       "defense": {
-        "body": "Ortama dağılıp sarsıldığında kendi alanına dönme ihtiyacın artıyor. İç tarafta işleyiş şöyle: kendi alanına dönmek sende sadece dinlenmek değil, ritmi geri kurmak anlamına geliyor. Kırılgan yerde bazen yükü tek başına ü…",
+        "body": "Ortama dağılıp sarsıldığında kendi alanına dönme ihtiyacın artıyor. İç hattında kendi alanına dönmek sende sadece dinlenmek değil, ritmi geri kurmak anlamına geliyor. Kırılgan yerde bazen yükü tek başına üstlenmeye meyl…",
         "callout": null,
         "chips": [
           "Bağımsızlık",
@@ -817,6 +858,7 @@
         "eyebrow": "SAVUNMA MEKANİZMAN",
         "footer": null,
         "footer_cta": null,
+        "growth": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyor.",
         "headline": "İç alanının dili",
         "highlight": "Bağımsızlık"
       },
@@ -825,29 +867,29 @@
           "accent": "lime",
           "body": "Varlığın taşıdığı yoğunluk nadir.",
           "eyebrow": "3. ev",
-          "headline": "6 gezegen, tek ev.",
-          "stat": "6×",
+          "headline": "4 gezegen, tek ev.",
+          "stat": "4×",
           "stat_label": "3. ev"
         },
         {
           "accent": "lavender",
-          "body": "0.12° — exact açı hattı belirgin.",
-          "eyebrow": "Pluto ☌ Chiron",
-          "headline": "Aynı merkezde toplanan vurgu: Pluto ve Chiron",
-          "stat": "0.12°",
+          "body": "0.55° — exact açı hattı belirgin.",
+          "eyebrow": "Sun △ Saturn",
+          "headline": "Doğal uyum hattı: Sun ve Saturn",
+          "stat": "0.55°",
           "stat_label": "orb"
         },
         {
           "accent": "stone",
-          "body": "0.52° — exact açı hattı belirgin.",
-          "eyebrow": "Moon ✶ Juno",
-          "headline": "Akışkan iş birliği hattı: Moon ve Juno",
-          "stat": "0.52°",
+          "body": "0.70° — exact açı hattı belirgin.",
+          "eyebrow": "Sun ☍ Midheaven",
+          "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Midheaven",
+          "stat": "0.70°",
           "stat_label": "orb"
         }
       ],
       "first_felt": {
-        "body": "İlk hissedilen şey çoğu zaman daha uyumlu ve dengeli bir duruşun olması; ama bunun altında kendi yönünü koruyan bir taraf da var. İç tarafta işleyiş şöyle: kimliğin en çok özdeğer…",
+        "body": "İlk hissedilen şey çoğu zaman daha uyumlu ve dengeli bir duruşun olması; ama bunun altında kendi yönünü koruyan bir taraf da var. İç hattında kimliğin en çok özdeğer ve kaynaklar…",
         "callout": null,
         "chips": [
           "Duruş",
@@ -857,21 +899,23 @@
         "eyebrow": "İLK HİSSEDİLEN ŞEY",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "İlk hissedilen şey",
         "highlight": "Duruş"
       },
       "first_impression": {
-        "body": "Pluto ile Chiron arasındaki conjunction hattı 0.12° ile çok yakın çalışıyor.",
+        "body": "Sun ile Imum Coeli arasındaki conjunction hattı 0.70° ile çok yakın çalışıyor.",
         "callout": null,
         "chips": [
-          "Pluto",
+          "Sun",
           "conjunction",
-          "Chiron"
+          "Imum Coeli"
         ],
         "eyebrow": "İLK İZLENİM",
         "footer": null,
         "footer_cta": null,
-        "headline": "Aynı merkezde toplanan vurgu: Pluto ve Chiron",
+        "growth": null,
+        "headline": "Aynı merkezde toplanan vurgu: Sun ve Imum Coeli",
         "highlight": null
       },
       "hero": {
@@ -890,6 +934,7 @@
         "eyebrow": "KİMLİK EKSENİ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Ritmini koruduğunda yön duygun güçleniyor",
         "highlight": null
       },
@@ -917,35 +962,39 @@
         }
       ],
       "intimacy": {
-        "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç tarafta işleyiş şöyle: bağ sende en çok yaratıcılık ve ifade tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi özgürlük bırakarak ama yine de gerçek kalarak yaşayabilme tarafın da belirginleşiyor. Kırılgan yerde sabrın düştüğünde acele karar ya da ani tepki daha kolay tetiklenebiliyor.",
+        "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Koç olduğu ve yöneticisi Mars 5. evde ve Kova'da olduğu için, yakınlık sende kolayca daha derin ve daha belirleyici bir yere oturabiliyor; Mars'ın Kova'da olması da bu hattı daha bağımsız, mesafeli ve sıra dışı bir tona çekiyor. İyi gününde bu sana çok güçlü bir bağ sezgisi veriyor; zor gününde ise ya içine çekiliyor ya da duyguyu bir anda hep ya hiç çizgisine taşıyabiliyorsun. Bu nedenle ilişkide karşılıklı sıcaklık hissettiğinde çok daha rahat ve içten açılabiliyorsun.",
         "callout": null,
         "chips": [
-          "Romantizm",
-          "Oyun",
-          "Neşe"
+          "7. ev Koç",
+          "Mars 5. ev",
+          "Kova",
+          "İç Toparlanma"
         ],
         "eyebrow": "YAKINLIK",
         "footer": null,
         "footer_cta": null,
-        "headline": "Yakınlık sende nasıl açılıyor",
-        "highlight": "Romantizm"
+        "growth": null,
+        "headline": "İlişkiler ve yakınlık",
+        "highlight": "7. ev Koç"
       },
       "mind": {
-        "body": "Bir şey sana çarptığında zihnin boşta kalmıyor; içeride hemen pozisyon alan bir tarafın çalışıyor. Bu hat en çok özdeğer ve kaynaklar tarafında belirginleşiyor; bazen söylemeden ö…",
+        "body": "Yükselen Terazi sana dışarıda daha uyumlu ve dengeli bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; iç…",
         "callout": null,
         "chips": [
-          "İç Ritim",
-          "İnce Ayar",
-          "Dayanıklılık"
+          "Yükselen Terazi",
+          "Venüs 2. ev",
+          "Yay",
+          "Zihinsel Düzen"
         ],
         "eyebrow": "ZİHİNSEL İŞLEYİŞ",
         "footer": null,
         "footer_cta": null,
-        "headline": "Zihnin nasıl çalışıyor",
-        "highlight": "İç Ritim"
+        "growth": null,
+        "headline": "Zihin–eylem–kontrol",
+        "highlight": "Yükselen Terazi"
       },
       "mission_preview": {
-        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç tarafta işleyiş şöyle: asıl motor en çok özdeğer ve kaynaklar tarafında çalışıyor, bu yüzden görünmede…",
+        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç hattında asıl motor en çok özdeğer ve kaynaklar tarafında çalışıyor, bu yüzden görünmeden önce işi sağ…",
         "callout": null,
         "chips": [
           "Gelir",
@@ -955,6 +1004,7 @@
         "eyebrow": "MİSYON",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "İşinin parlayan tarafı",
         "highlight": "Gelir"
       },
@@ -967,11 +1017,29 @@
           "Midheaven"
         ],
         "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
-        "footer": "3 geçmiş katman daha",
-        "footer_cta": "Tam haritada gör →",
+        "footer": null,
+        "footer_cta": null,
+        "growth": null,
         "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Midheaven",
         "highlight": null
       },
+      "past_teasers": [
+        {
+          "body": "Sun ile Midheaven arasındaki opposition hattı 0.70° ile çok yakın çalışıyor.",
+          "callout": null,
+          "chips": [
+            "Sun",
+            "opposition",
+            "Midheaven"
+          ],
+          "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Midheaven",
+          "highlight": null
+        }
+      ],
       "talents": [
         {
           "accent": "lime",
@@ -980,27 +1048,27 @@
         },
         {
           "accent": "lavender",
-          "eyebrow": "Büyük fikir, kalıcı yapı.",
-          "text": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla…"
+          "eyebrow": "Akışkan iş birliği hattı: Saturn ve Midheaven",
+          "text": "Saturn ile Midheaven arasındaki sextile hattı 1.25° ile çok yakın çalışıyor."
         },
         {
           "accent": "stone",
-          "eyebrow": "Gücün en çok nerede",
-          "text": "Bir ortama girdiğinde dağınık olanı toparlayıp sezgisel olanı anlaşılır hale ge…"
+          "eyebrow": "Karşı kutupları dengede taşıyan çizgi: Neptune ve North Node",
+          "text": "Neptune ile North Node arasındaki opposition hattı 0.80° ile çok yakın çalışıyo…"
         }
       ]
     },
     "sections_v2": {
       "__hashed__": true,
-      "content_hash": "6f9b1554b039b4a4",
+      "content_hash": "09e604f6aa4ddcd9",
       "shape": "list[3]",
-      "size_bytes": 19049
+      "size_bytes": 19207
     },
     "supporting_threads": {
       "__hashed__": true,
-      "content_hash": "2690ec237dcda90b",
+      "content_hash": "304078843b153cc2",
       "shape": "list[3]",
-      "size_bytes": 20606
+      "size_bytes": 20758
     },
     "upper_meaning": {
       "content": null,

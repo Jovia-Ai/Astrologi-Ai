@@ -270,7 +270,7 @@ _PROFILE_MICRO_SCENE_REWRITES = {
 
 _PROFILE_TEASER_FALLBACKS = {
     "identity_aura": "Dışarıda sağlam, içeride kendi yönünü kurmak isteyen bir tarafın var.",
-    "mind_voice": "Başlatınca hızlanırsın; ama iç standardın bazen frene de basar.",
+    "mind_voice": "Başlatınca hızlanırsın; ama iç ölçün bazen frene de basar.",
     "drive_rhythm": "Sende yetenek, anlamı bir yapıya dönüştürebildiğin yerde parlıyor.",
     "love_depth": "Sende yakınlık yüzeyde kalmaz; güven kurdukça derinleşir.",
     "career_visibility": "İşin güçlü; ama görünürlüğü önce içerde kurup sonra taşırsın.",
@@ -280,7 +280,7 @@ _PROFILE_TEASER_FALLBACKS = {
 
 _PROFILE_MATURE_OPENERS = {
     "identity_aura": "Olgun tarafında",
-    "mind_voice": "Yerine oturduğunda",
+    "mind_voice": "Yerini bulduğunda",
     "drive_rhythm": "Bu yapı olgunlaştığında",
     "love_depth": "Güvende hissettiğinde",
     "career_visibility": "En güçlü halinde",
@@ -528,7 +528,8 @@ def _rewrite_profile_sentence(sentence: str, *, field: str, block_id: str, sente
     value = re.sub(r"\bGüvende hissettiğinde iyi çalıştığında\b", "Güvende hissettiğinde", value, flags=re.IGNORECASE)
     value = re.sub(r"\bToparlandığında iyi çalıştığında\b", "Toparlandığında", value, flags=re.IGNORECASE)
     value = re.sub(r"\bAçıldığında iyi çalıştığında\b", "Açıldığında", value, flags=re.IGNORECASE)
-    value = re.sub(r"\bYerine oturduğunda iyi çalıştığında\b", "Yerine oturduğunda", value, flags=re.IGNORECASE)
+    value = re.sub(r"\bYerine oturduğunda iyi çalıştığında\b", "Yerini bulduğunda", value, flags=re.IGNORECASE)
+    value = re.sub(r"\bYerine oturduğunda\b", "Yerini bulduğunda", value, flags=re.IGNORECASE)
     value = re.sub(r"\bEn güçlü halinde iyi çalıştığında\b", "En güçlü halinde", value, flags=re.IGNORECASE)
     value = re.sub(r"\bBazı anlarda da\b", "Bazen", value, flags=re.IGNORECASE)
     value = re.sub(r"\biyi gelir\b", "dengeyi kurar", value, flags=re.IGNORECASE)
@@ -547,7 +548,7 @@ def _rewrite_profile_sentence(sentence: str, *, field: str, block_id: str, sente
     )
     value = re.sub(
         r"dayanıklılık,\s*ustalık ve gerçek bir profesyonellik verir",
-        "sana dayanıklılık, ustalık ve güven veren bir netlik kazandırır",
+        "sende dayanıklılık, ustalık ve güven veren bir netlik belirginleşir",
         value,
         flags=re.IGNORECASE,
     )

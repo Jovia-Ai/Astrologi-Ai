@@ -1,6 +1,6 @@
 {
   "public": {
-    "core_story": "Kimliğinin çekirdeğinde güç, kriz ve dönüşüm teması vardır. Her dönüşüm döngüsü seni daha da derinleştirir ve güçlendirir. Dışarıdan yoğun, sezgisel ve etkileyici biri olarak algılanırsın. Yük arttığında kontrol, kıskançlık ve intikam eğilimleri ortaya çıkabilir daha kolay tetiklenebilir.\n\nHer düşünceyi derinlemesine analiz eder, görünmeyeni ortaya çıkarırsın. Psikoloji, araştırma, kriz yönetimi ve strateji alanlarında büyük kapasite geliştirirsin. Kimliğinin çekirdeğinde güç, kriz ve dönüşüm teması vardır.\n\nDışarıdan yoğun, sezgisel ve etkileyici biri olarak algılanırsın. Kimliğinin çekirdeğinde güç, kriz ve dönüşüm teması vardır. Her dönüşüm döngüsü seni daha da derinleştirir ve güçlendirir.",
+    "core_story": "Kimliğinin çekirdeğinde güç, kriz ve dönüşüm teması vardır. Her dönüşüm döngüsü seni daha da derinleştirir ve güçlendirir. Dışarıdan yoğun, sezgisel ve etkileyici biri olarak algılanırsın. Yük arttığında kontrol, kıskançlık ve intikam eğilimleri ortaya çıkabilir daha kolay tetiklenebilir.\n\nHer düşünceyi derinlemesine analiz eder, görünmeyeni ortaya çıkarırsın. Psikoloji, araştırma, kriz yönetimi ve strateji alanlarında büyük kapasite geliştirirsin. Kimliğinin çekirdeğinde güç, kriz ve dönüşüm teması vardır.\n\nYakın ilişkilerde tam bağlılık ve derinlik beklersin. Bağlarında güç, sadakat ve birleşme temaları yoğunlaşır. Tutkulu, derin ve dönüştürücü ilişkiler yaşarsın.",
     "core_story_ui": {
       "drivers": [
         {
@@ -45,18 +45,19 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Zihin–eylem–kontrol",
           "highlight": "Yükselen Akrep"
         },
         "mission": {
-          "body": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor.",
+          "body": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor.",
           "eyebrow": "MİSYON AKIŞI",
           "headline": "Yalnız çözümden iş birliği ve anlama doğru gidiyorsun.",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor."
+              "text": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor."
             },
             {
               "accent": "lavender",
@@ -76,12 +77,13 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Moon",
           "highlight": null
         },
         "past_fragments": [
           {
-            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, bugün iş birliğine alan açmak büyüme tarafını hızlandırır.",
+            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, iş birliğine alan açıldığında bu hat daha esnek çalışıyor.",
             "callout": null,
             "chips": [
               "GAD",
@@ -91,6 +93,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Bir dönem her şeyi tek başına çözmek zorunda hissetmiş olabilirsin.",
             "highlight": "tek başına çözmek"
           },
@@ -101,6 +104,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Jüpiter 1. Ev",
             "highlight": "Denge bozulduğunda fazla rahat davranabilir ya da sınırl"
           },
@@ -111,6 +115,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Mars 11. Ev",
             "highlight": "Gerilim yükseldiğinde arkadaş çevresinde sürtüşme, rekab"
           }
@@ -127,6 +132,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Akışkan iş birliği hattı: Uranus ve Pluto",
             "highlight": null
           },
@@ -141,6 +147,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Aynı merkezde toplanan vurgu: Fortune ve Descendant",
             "highlight": null
           },
@@ -155,6 +162,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Merkezde toplanan güçlü enerji",
             "highlight": null
           }
@@ -166,6 +174,7 @@
           "eyebrow": "GÖLGE",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Mars 11. Ev",
           "highlight": "Gerilim yükseldiğinde arkadaş çevresinde sürtüşme, rekab"
         },
@@ -181,6 +190,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Fortune ve Ascendant",
             "highlight": null
           },
@@ -195,6 +205,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İçeride iki yönü aynı anda taşıyorsun.",
             "highlight": "icte iki yone cekilme"
           }
@@ -212,18 +223,19 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Akışkan iş birliği hattı: Saturn ve Neptune",
           "highlight": null
         },
         "mission": {
-          "body": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor.",
+          "body": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor.",
           "eyebrow": "MİSYON AKIŞI",
           "headline": "Yalnız çözümden iş birliği ve anlama doğru gidiyorsun.",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor."
+              "text": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor."
             },
             {
               "accent": "lavender",
@@ -244,6 +256,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişkiler ve yakınlık",
           "highlight": "7. ev Boğa"
         },
@@ -259,11 +272,12 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Moon",
             "highlight": null
           },
           {
-            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, bugün iş birliğine alan açmak büyüme tarafını hızlandırır.",
+            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, iş birliğine alan açıldığında bu hat daha esnek çalışıyor.",
             "callout": null,
             "chips": [
               "GAD",
@@ -273,6 +287,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Bir dönem her şeyi tek başına çözmek zorunda hissetmiş olabilirsin.",
             "highlight": "tek başına çözmek"
           },
@@ -288,13 +303,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İlişkiler ve yakınlık",
             "highlight": "7. ev Boğa"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -304,6 +320,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
@@ -318,6 +335,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İlişki hattında tekrar eden bir desen var.",
             "highlight": "yakinda hassasiyet"
           }
@@ -333,6 +351,7 @@
           "eyebrow": "İLİŞKİ",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Moon",
           "highlight": null
         },
@@ -344,6 +363,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Jüpiter 1. Ev",
             "highlight": "Denge bozulduğunda fazla rahat davranabilir ya da sınırl"
           },
@@ -354,6 +374,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Mars 11. Ev",
             "highlight": "Gerilim yükseldiğinde arkadaş çevresinde sürtüşme, rekab"
           }
@@ -372,18 +393,19 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Zihin–eylem–kontrol",
           "highlight": "Yükselen Akrep"
         },
         "mission": {
-          "body": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor.",
+          "body": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor.",
           "eyebrow": "MİSYON AKIŞI",
           "headline": "Yalnız çözümden iş birliği ve anlama doğru gidiyorsun.",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor."
+              "text": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor."
             },
             {
               "accent": "lavender",
@@ -403,6 +425,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişki hattında tekrar eden bir desen var.",
           "highlight": "yakinda hassasiyet"
         },
@@ -418,11 +441,12 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Fortune ve Ascendant",
             "highlight": null
           },
           {
-            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, bugün iş birliğine alan açmak büyüme tarafını hızlandırır.",
+            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, iş birliğine alan açıldığında bu hat daha esnek çalışıyor.",
             "callout": null,
             "chips": [
               "GAD",
@@ -432,6 +456,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Bir dönem her şeyi tek başına çözmek zorunda hissetmiş olabilirsin.",
             "highlight": "tek başına çözmek"
           },
@@ -442,13 +467,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Jüpiter 1. Ev",
             "highlight": "Denge bozulduğunda fazla rahat davranabilir ya da sınırl"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -458,6 +484,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           }
@@ -473,6 +500,7 @@
           "eyebrow": "KARİYER",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Aynı merkezde toplanan vurgu: Fortune ve Descendant",
           "highlight": null
         },
@@ -488,6 +516,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Fortune ve Ascendant",
             "highlight": null
           },
@@ -502,6 +531,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İçeride iki yönü aynı anda taşıyorsun.",
             "highlight": "icte iki yone cekilme"
           }
@@ -519,18 +549,19 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Akışkan iş birliği hattı: Saturn ve Neptune",
           "highlight": null
         },
         "mission": {
-          "body": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor.",
+          "body": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor.",
           "eyebrow": "MİSYON AKIŞI",
           "headline": "Yalnız çözümden iş birliği ve anlama doğru gidiyorsun.",
           "steps": [
             {
               "accent": "lime",
               "label": "Adım 1",
-              "text": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor."
+              "text": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor."
             },
             {
               "accent": "lavender",
@@ -550,6 +581,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Moon",
           "highlight": null
         },
@@ -565,11 +597,12 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Fortune ve Ascendant",
             "highlight": null
           },
           {
-            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, bugün iş birliğine alan açmak büyüme tarafını hızlandırır.",
+            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, iş birliğine alan açıldığında bu hat daha esnek çalışıyor.",
             "callout": null,
             "chips": [
               "GAD",
@@ -579,6 +612,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Bir dönem her şeyi tek başına çözmek zorunda hissetmiş olabilirsin.",
             "highlight": "tek başına çözmek"
           },
@@ -593,13 +627,14 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İçeride iki yönü aynı anda taşıyorsun.",
             "highlight": "icte iki yone cekilme"
           }
         ],
         "potentials": [
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -609,6 +644,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           }
@@ -624,6 +660,7 @@
           "eyebrow": "KİMLİK",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Akışkan iş birliği hattı: Uranus ve Pluto",
           "highlight": null
         },
@@ -639,6 +676,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Karşı kutupları dengede taşıyan çizgi: Fortune ve Ascendant",
             "highlight": null
           },
@@ -653,6 +691,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "İçeride iki yönü aynı anda taşıyorsun.",
             "highlight": "icte iki yone cekilme"
           }
@@ -662,7 +701,7 @@
     "locale": "tr",
     "narrative_v2": {
       "aspect_bundle_selector": {
-        "candidate_count": 59,
+        "candidate_count": 45,
         "max_primary_bundles": 3,
         "selected_bundles": [
           {
@@ -782,9 +821,9 @@
     },
     "profile_narrative": {
       "__hashed__": true,
-      "content_hash": "4e18158bed4eefd1",
+      "content_hash": "40701d7a6efe73b2",
       "shape": "dict[1]",
-      "size_bytes": 59876
+      "size_bytes": 59694
     },
     "profile_v8": {
       "affects_you": {
@@ -822,11 +861,12 @@
         "eyebrow": "BU KİŞİYLE NE KONUŞULUR",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Karşı kutupları dengede taşıyan çizgi: Sun ve Moon",
         "highlight": null
       },
       "defense": {
-        "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, bugün iş birliğine alan açmak büyüme tarafını hızlandırır.",
+        "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, iş birliğine alan açıldığında bu hat daha esnek çalışıyor.",
         "callout": null,
         "chips": [
           "GAD",
@@ -836,6 +876,7 @@
         "eyebrow": "SAVUNMA MEKANİZMAN",
         "footer": null,
         "footer_cta": null,
+        "growth": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor.",
         "headline": "Bir dönem her şeyi tek başına çözmek zorunda hissetmiş olabilirsin.",
         "highlight": "tek başına çözmek"
       },
@@ -869,15 +910,16 @@
         "body": "Bir ortama girdiğinde ilk hissedilen şey çoğu zaman daha derin ve kontrollü bir duruşun olması, ama bunun altında kendi yönünü koruyan bir taraf da var. Perde arkasında ise kimliğ…",
         "callout": null,
         "chips": [
-          "Güçlü Benlik",
-          "Net Duruş",
-          "Kendi Çizgin"
+          "Ağırlık",
+          "Güç",
+          "Dönüşüm"
         ],
         "eyebrow": "İLK HİSSEDİLEN ŞEY",
         "footer": null,
         "footer_cta": null,
-        "headline": "Dışarıdan ve içeriden",
-        "highlight": "Güçlü Benlik"
+        "growth": null,
+        "headline": "İlk hissedilen şey",
+        "highlight": "Ağırlık"
       },
       "first_impression": {
         "body": "Uranus ile Pluto arasındaki sextile hattı 0.11° ile çok yakın çalışıyor.",
@@ -890,6 +932,7 @@
         "eyebrow": "İLK İZLENİM",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Akışkan iş birliği hattı: Uranus ve Pluto",
         "highlight": null
       },
@@ -909,6 +952,7 @@
         "eyebrow": "KİMLİK EKSENİ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Netlik kurduğunda gücün daha görünür oluyor",
         "highlight": null
       },
@@ -946,6 +990,7 @@
         "eyebrow": "YAKINLIK",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Sevginin derinleşme biçimi",
         "highlight": "Ufuk"
       },
@@ -960,6 +1005,7 @@
         "eyebrow": "ZİHİNSEL İŞLEYİŞ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Cümlelerinin arkası",
         "highlight": "İç Ritim"
       },
@@ -974,6 +1020,7 @@
         "eyebrow": "MİSYON",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "İşinin parlayan tarafı",
         "highlight": "Öğret"
       },
@@ -986,11 +1033,29 @@
           "Ascendant"
         ],
         "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
-        "footer": "3 geçmiş katman daha",
-        "footer_cta": "Tam haritada gör →",
+        "footer": null,
+        "footer_cta": null,
+        "growth": null,
         "headline": "Karşı kutupları dengede taşıyan çizgi: Fortune ve Ascendant",
         "highlight": null
       },
+      "past_teasers": [
+        {
+          "body": "Fortune ile Ascendant arasındaki opposition hattı 0.14° ile çok yakın çalışıyor.",
+          "callout": null,
+          "chips": [
+            "Fortune",
+            "opposition",
+            "Ascendant"
+          ],
+          "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Karşı kutupları dengede taşıyan çizgi: Fortune ve Ascendant",
+          "highlight": null
+        }
+      ],
       "talents": [
         {
           "accent": "lime",
@@ -1011,24 +1076,24 @@
     },
     "sections_v2": {
       "__hashed__": true,
-      "content_hash": "fc14afd19b05a6f9",
+      "content_hash": "021dc09043d1852f",
       "shape": "list[3]",
-      "size_bytes": 18293
+      "size_bytes": 18088
     },
     "supporting_threads": {
       "__hashed__": true,
-      "content_hash": "3a7812409480f406",
+      "content_hash": "e9c31a1e25bf355c",
       "shape": "list[3]",
-      "size_bytes": 20194
+      "size_bytes": 19989
     },
     "upper_meaning": {
       "content": null,
       "debug_scores": {
         "capacity": 0.468,
-        "integration": 0.133,
+        "integration": 0.087,
         "integration_components": {
           "bridge": 0.0,
-          "directionality": 0.15,
+          "directionality": 0.0,
           "recurrence": 0.25
         },
         "pressure": 0.914,

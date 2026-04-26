@@ -1,6 +1,6 @@
 {
   "public": {
-    "core_story": "Kimliğin krizlerden güçlenme, dönüşüm yoluyla büyüme ve bilinmeyeni araştırma ihtiyacıyla beslenir. Benlik duygun çoğunlukla yoğun duygusal süreçlerde derinleşerek, gölgeyle yüzleşerek şekillenir. Dışarıya güçlü sezgileri olan, derinlikli, karizmatik ve kolay sarsılmayan bir enerji yansıtırsın. Baskı arttığında güç arayışı, kontrol etme eğilimi veya krizleri büyütme kimlik dengesini zorlayabilir ortaya çıkabilir.\n\nPsikolojik enerjin bilinçaltı, gölge, korkular ve dönüşüm alanlarına doğal bir genişleme taşır. Duygusal süreçlerin yoğun temalarla yüzleşme, çözümleme ve derin sezgiyle ilerleme eğilimindedir. Zorluklardan öğrenme ve duygusal krizleri büyüme fırsatına dönüştürme becerin yüksektir. Bazen içeride çok şey varken dışarıya daha azı çıkıyor gibi hissediyor olabilirsin.\n\nYakınlık alanında derin bağlar, güven, tutku ve ruhsal birleşme ihtiyacı belirleyicidir. Bağ kurarken karşı tarafın gizli motivasyonlarını, duygusal derinliklerini ve zayıf noktalarını sezersin. İlişkilerde yoğun, tutkuyla bağlı, sezgisel ve dönüştürücü bir partner olursun.",
+    "core_story": "İçsel enerjin zihinsel hareketlilikle çalışır. Fikirden fikre hızla geçersin. Dışarıdan hareketli, konuşkan ve esnek görünürsün. Baskı arttığında dağılma ve kararsızlık oluşabilir ortaya çıkabilir.\n\nBilgileri çok yönlü işlersin. Yaratıcı ve pratik çözümler üretirsin. İçsel enerjin zihinsel hareketlilikle çalışır.\n\nİlişkilerde zihinsel uyum beklersin. Yakınlığı iletişimle kurarsın. İlişkilerine neşe ve esneklik katarsın.",
     "core_story_ui": {
       "drivers": [
         {
@@ -43,7 +43,8 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
-          "headline": "Duyguyu yönetme biçimin savunma gücünü etkiliyor.",
+          "growth": null,
+          "headline": "Duyguyu yönetme biçimin, savunma hattının da rengini veriyor.",
           "highlight": "duyguyu filtreleme"
         },
         "mission": {
@@ -70,6 +71,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Duygusal derinlik",
           "highlight": "7. ev Balık"
         },
@@ -85,6 +87,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Sevdiğini tam göstermenin zor geldiği bir dönem olmuş olabilir.",
             "highlight": "tam göstermenin zor geldiği"
           },
@@ -99,6 +102,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
             "highlight": "derinlik ve risk"
           },
@@ -109,25 +113,12 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Mars 10. Ev",
             "highlight": "Gerilim arttığında sertleşme, rekabeti büyütme ya da her"
           }
         ],
         "potentials": [
-          {
-            "body": "8. evde 3 gezegen birikimi, profile güçlü bir omurga veriyor.",
-            "callout": null,
-            "chips": [
-              "8. ev",
-              "3 gezegen",
-              "yoğunluk"
-            ],
-            "eyebrow": "POTANSİYEL",
-            "footer": null,
-            "footer_cta": null,
-            "headline": "Merkezde toplanan güçlü enerji",
-            "highlight": null
-          },
           {
             "body": "disariya yansiyan guc, gorunurluk hassasiyeti. etki, yon duygusu. fazla savunma, fazla ayar yapma.",
             "callout": null,
@@ -138,6 +129,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Dışarı verdiğin kimlik tonu güçlü.",
             "highlight": "disariya yansiyan guc"
           }
@@ -153,6 +145,7 @@
           "eyebrow": "GÖLGE",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Plüto 1. Ev",
           "highlight": "yoğun"
         },
@@ -168,6 +161,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Ascendant ve Midheaven",
             "highlight": null
           },
@@ -182,6 +176,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Ascendant ve Imum Coeli",
             "highlight": null
           },
@@ -196,6 +191,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Descendant ve Midheaven",
             "highlight": null
           }
@@ -214,6 +210,7 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Zihin–eylem–kontrol",
           "highlight": "Yükselen Başak"
         },
@@ -244,6 +241,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişki hattında tekrar eden bir desen var.",
           "highlight": "yakinda hassasiyet"
         },
@@ -259,6 +257,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Sevdiğini tam göstermenin zor geldiği bir dönem olmuş olabilir.",
             "highlight": "tam göstermenin zor geldiği"
           },
@@ -273,6 +272,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
             "highlight": "derinlik ve risk"
           },
@@ -288,6 +288,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Duygusal derinlik",
             "highlight": "7. ev Balık"
           }
@@ -304,11 +305,12 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Estetik zeka doğuştan.",
             "highlight": null
           },
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -318,6 +320,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           }
@@ -334,6 +337,7 @@
           "eyebrow": "İLİŞKİ",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Duygusal derinlik",
           "highlight": "7. ev Balık"
         },
@@ -349,6 +353,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Sevdiğini tam göstermenin zor geldiği bir dönem olmuş olabilir.",
             "highlight": "tam göstermenin zor geldiği"
           },
@@ -363,6 +368,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
             "highlight": "derinlik ve risk"
           },
@@ -373,6 +379,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Mars 10. Ev",
             "highlight": "Gerilim arttığında sertleşme, rekabeti büyütme ya da her"
           }
@@ -391,6 +398,7 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Zihin–eylem–kontrol",
           "highlight": "Yükselen Başak"
         },
@@ -413,11 +421,12 @@
             "MC İkizler",
             "Merkür 2. ev",
             "Terazi",
-            "Çevre Akışı"
+            "Yaratım Akışı"
           ],
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Görünür olma ritmin",
           "highlight": "MC İkizler"
         },
@@ -433,6 +442,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Ascendant ve Midheaven",
             "highlight": null
           },
@@ -447,6 +457,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Ascendant ve Imum Coeli",
             "highlight": null
           },
@@ -461,6 +472,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Descendant ve Midheaven",
             "highlight": null
           }
@@ -477,11 +489,12 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Estetik zeka doğuştan.",
             "highlight": null
           },
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -491,6 +504,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           }
@@ -506,6 +520,7 @@
           "eyebrow": "KARİYER",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Akışkan iş birliği hattı: Neptune ve Pluto",
           "highlight": null
         },
@@ -520,7 +535,8 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
-            "headline": "Duyguyu yönetme biçimin savunma gücünü etkiliyor.",
+            "growth": null,
+            "headline": "Duyguyu yönetme biçimin, savunma hattının da rengini veriyor.",
             "highlight": "duyguyu filtreleme"
           }
         ]
@@ -537,6 +553,7 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Saturn ve Uranus",
           "highlight": null
         },
@@ -563,6 +580,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Akışkan iş birliği hattı: Neptune ve Pluto",
           "highlight": null
         },
@@ -578,6 +596,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Ascendant ve Midheaven",
             "highlight": null
           },
@@ -592,6 +611,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Ascendant ve Imum Coeli",
             "highlight": null
           },
@@ -606,6 +626,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Descendant ve Midheaven",
             "highlight": null
           }
@@ -622,11 +643,12 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Estetik zeka doğuştan.",
             "highlight": null
           },
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -636,6 +658,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           }
@@ -651,6 +674,7 @@
           "eyebrow": "KİMLİK",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Saturn ve Uranus",
           "highlight": null
         },
@@ -666,6 +690,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Ascendant ve Midheaven",
             "highlight": null
           },
@@ -680,6 +705,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Ascendant ve Imum Coeli",
             "highlight": null
           },
@@ -694,6 +720,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Gerilimden güç üreten hat: Descendant ve Midheaven",
             "highlight": null
           }
@@ -703,7 +730,7 @@
     "locale": "tr",
     "narrative_v2": {
       "aspect_bundle_selector": {
-        "candidate_count": 68,
+        "candidate_count": 54,
         "max_primary_bundles": 3,
         "selected_bundles": [
           {
@@ -814,15 +841,15 @@
     },
     "personality_imprint": {
       "__hashed__": true,
-      "content_hash": "436bf9c567ba5182",
+      "content_hash": "5ca32578abdd763c",
       "shape": "dict[10]",
       "size_bytes": 13485
     },
     "profile_narrative": {
       "__hashed__": true,
-      "content_hash": "a7ca3aecfa8be6b2",
+      "content_hash": "c3d1d08cf1d8ef81",
       "shape": "dict[1]",
-      "size_bytes": 60049
+      "size_bytes": 59857
     },
     "profile_v8": {
       "affects_you": {
@@ -851,7 +878,7 @@
         ]
       },
       "conversation_hooks": {
-        "body": "Bir şey sana çarptığında zihnin boşta kalmıyor; içeride hemen pozisyon alan bir tarafın çalışıyor. İç tarafta işleyiş şöyle: bu hat en çok özdeğer ve kaynaklar tarafında belirginl…",
+        "body": "Bir şey sana çarptığında zihnin boşta kalmıyor; içeride hemen pozisyon alan bir tarafın çalışıyor. İç hattında bu hat en çok özdeğer ve kaynaklar tarafında belirginleşiyor, bazen…",
         "callout": "“Projeler, fikirler, ne inşa ediyorsun?”",
         "chips": [
           "İç Ritim",
@@ -861,6 +888,7 @@
         "eyebrow": "BU KİŞİYLE NE KONUŞULUR",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Zihnin nasıl çalışıyor",
         "highlight": "İç Ritim"
       },
@@ -875,20 +903,13 @@
         "eyebrow": "SAVUNMA MEKANİZMAN",
         "footer": null,
         "footer_cta": null,
+        "growth": "Ton, uyum ve duygusal incelik bir araya geldiğinde etkini yükselten doğal bir estetik sezgi devreye giriyor.",
         "headline": "Sevdiğini tam göstermenin zor geldiği bir dönem olmuş olabilir.",
         "highlight": "tam göstermenin zor geldiği"
       },
       "differentiators": [
         {
           "accent": "lime",
-          "body": "Varlığın taşıdığı yoğunluk nadir.",
-          "eyebrow": "8. ev",
-          "headline": "3 gezegen, tek ev.",
-          "stat": "3×",
-          "stat_label": "8. ev"
-        },
-        {
-          "accent": "lavender",
           "body": "0.25° — exact açı hattı belirgin.",
           "eyebrow": "Saturn □ Uranus",
           "headline": "Gerilimden güç üreten hat: Saturn ve Uranus",
@@ -896,11 +917,19 @@
           "stat_label": "orb"
         },
         {
-          "accent": "stone",
+          "accent": "lavender",
           "body": "0.56° — exact açı hattı belirgin.",
           "eyebrow": "Neptune ✶ Pluto",
           "headline": "Akışkan iş birliği hattı: Neptune ve Pluto",
           "stat": "0.56°",
+          "stat_label": "orb"
+        },
+        {
+          "accent": "stone",
+          "body": "0.61° — exact açı hattı belirgin.",
+          "eyebrow": "Ascendant □ Midheaven",
+          "headline": "Gerilimden güç üreten hat: Ascendant ve Midheaven",
+          "stat": "0.61°",
           "stat_label": "orb"
         }
       ],
@@ -915,6 +944,7 @@
         "eyebrow": "İLK HİSSEDİLEN ŞEY",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Kendi çizgin",
         "highlight": "Görünürlük"
       },
@@ -929,6 +959,7 @@
         "eyebrow": "İLK İZLENİM",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Akışkan iş birliği hattı: Neptune ve Pluto",
         "highlight": null
       },
@@ -948,6 +979,7 @@
         "eyebrow": "KİMLİK EKSENİ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Ritmini koruduğunda yön duygun güçleniyor",
         "highlight": null
       },
@@ -975,7 +1007,7 @@
         }
       ],
       "intimacy": {
-        "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç tarafta işleyiş şöyle: bağ sende en çok güven, mahremiyet ve derinlik tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi direkt, cesur ve bekletmeden gösterebilme tarafın da belirginleşiyor. Kırılgan yerde sınırların bulanıklaşması ya da hayal kırıklığında dağılmak daha kolay tetiklenebiliyor.",
+        "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç hattında bağ sende en çok güven, mahremiyet ve derinlik tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi direkt, cesur ve bekletmeden gösterebilme tarafın da belirginleşiyor. Kırılgan yerde sınırların bulanıklaşması ya da hayal kırıklığında dağılmak daha kolay tetiklenebiliyor.",
         "callout": null,
         "chips": [
           "Güven",
@@ -985,6 +1017,7 @@
         "eyebrow": "YAKINLIK",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Bağ kurma tarzın",
         "highlight": "Güven"
       },
@@ -1000,11 +1033,12 @@
         "eyebrow": "ZİHİNSEL İŞLEYİŞ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Zihin–eylem–kontrol",
         "highlight": "Yükselen Başak"
       },
       "mission_preview": {
-        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç tarafta işleyiş şöyle: asıl motor en çok özdeğer ve kaynaklar tarafında çalışıyor, bu yüzden görünmede…",
+        "body": "Görünür olmak sende yalnız çıkmak değil; işin içerden oturması da önemli. İç hattında asıl motor en çok özdeğer ve kaynaklar tarafında çalışıyor, bu yüzden görünmeden önce işi sağ…",
         "callout": null,
         "chips": [
           "Gelir",
@@ -1014,6 +1048,7 @@
         "eyebrow": "MİSYON",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "İşinin parlayan tarafı",
         "highlight": "Gelir"
       },
@@ -1026,11 +1061,29 @@
           "Midheaven"
         ],
         "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
-        "footer": "3 geçmiş katman daha",
-        "footer_cta": "Tam haritada gör →",
+        "footer": null,
+        "footer_cta": null,
+        "growth": null,
         "headline": "Gerilimden güç üreten hat: Ascendant ve Midheaven",
         "highlight": null
       },
+      "past_teasers": [
+        {
+          "body": "Ascendant ile Midheaven arasındaki square hattı 0.61° ile çok yakın çalışıyor.",
+          "callout": null,
+          "chips": [
+            "Ascendant",
+            "square",
+            "Midheaven"
+          ],
+          "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Gerilimden güç üreten hat: Ascendant ve Midheaven",
+          "highlight": null
+        }
+      ],
       "talents": [
         {
           "accent": "lime",
@@ -1051,15 +1104,15 @@
     },
     "sections_v2": {
       "__hashed__": true,
-      "content_hash": "d4e734f313ab2e1b",
+      "content_hash": "eae97430c5131587",
       "shape": "list[3]",
-      "size_bytes": 20053
+      "size_bytes": 19831
     },
     "supporting_threads": {
       "__hashed__": true,
-      "content_hash": "16d59efe0ebfe855",
+      "content_hash": "f729a267c131533a",
       "shape": "list[3]",
-      "size_bytes": 21775
+      "size_bytes": 21554
     },
     "upper_meaning": {
       "content": null,

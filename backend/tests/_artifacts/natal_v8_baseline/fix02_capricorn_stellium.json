@@ -44,13 +44,14 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Saturn ve Descendant",
           "highlight": null
         },
         "mission": {
           "body": "Kelimelerini yapılandırıp paylaştığında, çevrendeki insanlar için netleştirici ve öğretici bir kanal açılıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+          "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
           "steps": [
             {
               "accent": "lime",
@@ -60,7 +61,7 @@
             {
               "accent": "lavender",
               "label": "Adım 2",
-              "text": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor."
+              "text": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor."
             },
             {
               "accent": "stone",
@@ -79,6 +80,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "İlişki hattında tekrar eden bir desen var.",
           "highlight": "yakinda hassasiyet"
         },
@@ -94,6 +96,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Küçükken konuşmanın bir bedeli olduğunu öğrenmiş olabilirsin.",
             "highlight": "konuşmanın bir bedeli"
           },
@@ -108,6 +111,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Sevdiğini tam göstermenin zor geldiği bir dönem olmuş olabilir.",
             "highlight": "tam göstermenin zor geldiği"
           },
@@ -122,6 +126,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
             "highlight": "derinlik ve risk"
           }
@@ -138,6 +143,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Merkezde toplanan güçlü enerji",
             "highlight": null
           },
@@ -151,6 +157,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Dışarı verdiğin kimlik tonu güçlü.",
             "highlight": "disariya yansiyan guc"
           },
@@ -165,23 +172,25 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
             "highlight": "dogal akis"
           }
         ],
         "pull_quote": {
-          "body": "Denge bozulduğunda ani kopuşlar, ters köşe çıkışlar ya da sabırsız ayrışmalar görülebilir.",
+          "body": "Aile içinde duyguların güvenle akmadığı bir ortam yaşanmış olabilir; bu yüzden yakınlık arttığında içeride eski bir alarm yeniden açılabilir.",
           "callout": null,
           "chips": [
-            "özgün",
-            "bağımsız",
-            "elektrikli"
+            "derin",
+            "gizemli",
+            "yoğun"
           ],
           "eyebrow": "GÖLGE",
           "footer": null,
           "footer_cta": null,
-          "headline": "Uranüs 1. Ev",
-          "highlight": "özgün"
+          "growth": null,
+          "headline": "Ay 8. Ev",
+          "highlight": "derin"
         },
         "shadow_fragments": []
       },
@@ -197,13 +206,14 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Doğal uyum hattı: Jupiter ve Fortune",
           "highlight": null
         },
         "mission": {
           "body": "Kelimelerini yapılandırıp paylaştığında, çevrendeki insanlar için netleştirici ve öğretici bir kanal açılıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+          "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
           "steps": [
             {
               "accent": "lime",
@@ -213,7 +223,7 @@
             {
               "accent": "lavender",
               "label": "Adım 2",
-              "text": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor."
+              "text": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor."
             }
           ]
         },
@@ -229,6 +239,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Duygusal derinlik",
           "highlight": "7. ev Yengeç"
         },
@@ -244,6 +255,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Doğal uyum hattı: Moon ve Venus",
             "highlight": null
           },
@@ -258,11 +270,12 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Doğal uyum hattı: Moon ve Vertex",
             "highlight": null
           },
           {
-            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, bugün iş birliğine alan açmak büyüme tarafını hızlandırır.",
+            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, iş birliğine alan açıldığında bu hat daha esnek çalışıyor.",
             "callout": null,
             "chips": [
               "GAD",
@@ -272,6 +285,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Bir dönem her şeyi tek başına çözmek zorunda hissetmiş olabilirsin.",
             "highlight": "tek başına çözmek"
           }
@@ -288,11 +302,12 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Estetik zeka doğuştan.",
             "highlight": null
           },
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -302,11 +317,12 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
           {
-            "body": "İnsanların görmediği tonu erken alman, hem ilişkide hem üretimde sana güçlü bir önsezi avantajı veriyor.",
+            "body": "İnsanların görmediği tonu erken alman, hem ilişkide hem üretimde önseziyi merkeze çıkarıyor.",
             "callout": null,
             "chips": [
               "Neptün",
@@ -316,6 +332,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Sezgi çok yüksek.",
             "highlight": null
           }
@@ -331,6 +348,7 @@
           "eyebrow": "İLİŞKİ",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Doğal uyum hattı: Moon ve Vertex",
           "highlight": null
         },
@@ -346,6 +364,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Küçükken konuşmanın bir bedeli olduğunu öğrenmiş olabilirsin.",
             "highlight": "konuşmanın bir bedeli"
           },
@@ -360,6 +379,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Sevdiğini tam göstermenin zor geldiği bir dönem olmuş olabilir.",
             "highlight": "tam göstermenin zor geldiği"
           },
@@ -374,6 +394,7 @@
             "eyebrow": "GÖLGE DESENİ",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
             "highlight": "derinlik ve risk"
           }
@@ -391,6 +412,7 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Saturn ve Ascendant",
           "highlight": null
         },
@@ -418,12 +440,13 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Görünür olma ritmin",
           "highlight": "MC Terazi"
         },
         "past_fragments": [
           {
-            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, bugün iş birliğine alan açmak büyüme tarafını hızlandırır.",
+            "body": "İçinde her şeyi tek elde tutan bir çizgi varsa, iş birliğine alan açıldığında bu hat daha esnek çalışıyor.",
             "callout": null,
             "chips": [
               "GAD",
@@ -433,6 +456,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Bir dönem her şeyi tek başına çözmek zorunda hissetmiş olabilirsin.",
             "highlight": "tek başına çözmek"
           },
@@ -447,6 +471,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Küçükken konuşmanın bir bedeli olduğunu öğrenmiş olabilirsin.",
             "highlight": "konuşmanın bir bedeli"
           },
@@ -461,6 +486,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Sevdiğini tam göstermenin zor geldiği bir dönem olmuş olabilir.",
             "highlight": "tam göstermenin zor geldiği"
           }
@@ -477,6 +503,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Yumuşak kapasitelerin hızlı açılıyor.",
             "highlight": "dogal akis"
           }
@@ -492,6 +519,7 @@
           "eyebrow": "KARİYER",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Merkezde toplanan güçlü enerji",
           "highlight": null
         },
@@ -509,13 +537,14 @@
           "eyebrow": "MEKANİZMA",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Saturn ve Descendant",
           "highlight": null
         },
         "mission": {
           "body": "Kelimelerini yapılandırıp paylaştığında, çevrendeki insanlar için netleştirici ve öğretici bir kanal açılıyor.",
           "eyebrow": "MİSYON AKIŞI",
-          "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+          "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
           "steps": [
             {
               "accent": "lime",
@@ -525,7 +554,7 @@
             {
               "accent": "lavender",
               "label": "Adım 2",
-              "text": "Hayat seni tek başına yüklenmekten çok, ortak ritim ve karşılıklılık kurduğun yerde büyütüyor."
+              "text": "Sende ilerleme, tek başına yüklenmekten çok ortak ritim ve karşılıklılık kurduğun yerde kolaylaşıyor."
             }
           ]
         },
@@ -540,6 +569,7 @@
           "eyebrow": "AÇILMA NOKTASI",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Doğal uyum hattı: Moon ve Venus",
           "highlight": null
         },
@@ -555,6 +585,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Küçükken konuşmanın bir bedeli olduğunu öğrenmiş olabilirsin.",
             "highlight": "konuşmanın bir bedeli"
           },
@@ -569,6 +600,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Sevdiğini tam göstermenin zor geldiği bir dönem olmuş olabilir.",
             "highlight": "tam göstermenin zor geldiği"
           },
@@ -583,6 +615,7 @@
             "eyebrow": "GEÇMİŞ KATMAN",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Açıldığın bir an sana derinlik ve riskin birlikte geldiğini öğretmiş olabilir.",
             "highlight": "derinlik ve risk"
           }
@@ -599,11 +632,12 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Estetik zeka doğuştan.",
             "highlight": null
           },
           {
-            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla ölçeklenebilen bir zihin var.",
+            "body": "Sende fikir üretimi ile sistemi kurma aynı hatta çalışıyor; doğru zeminde hızla genişleyen bir zihin hattı görünüyor.",
             "callout": null,
             "chips": [
               "Merkür",
@@ -613,11 +647,12 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Büyük fikir, kalıcı yapı.",
             "highlight": null
           },
           {
-            "body": "İnsanların görmediği tonu erken alman, hem ilişkide hem üretimde sana güçlü bir önsezi avantajı veriyor.",
+            "body": "İnsanların görmediği tonu erken alman, hem ilişkide hem üretimde önseziyi merkeze çıkarıyor.",
             "callout": null,
             "chips": [
               "Neptün",
@@ -627,6 +662,7 @@
             "eyebrow": "POTANSİYEL",
             "footer": null,
             "footer_cta": null,
+            "growth": null,
             "headline": "Sezgi çok yüksek.",
             "highlight": null
           }
@@ -642,6 +678,7 @@
           "eyebrow": "KİMLİK",
           "footer": null,
           "footer_cta": null,
+          "growth": null,
           "headline": "Gerilimden güç üreten hat: Saturn ve Ascendant",
           "highlight": null
         },
@@ -651,7 +688,7 @@
     "locale": "tr",
     "narrative_v2": {
       "aspect_bundle_selector": {
-        "candidate_count": 57,
+        "candidate_count": 46,
         "max_primary_bundles": 3,
         "selected_bundles": [
           {
@@ -763,15 +800,15 @@
     },
     "personality_imprint": {
       "__hashed__": true,
-      "content_hash": "283458090dd667fd",
+      "content_hash": "e5aedbded0fc4ba0",
       "shape": "dict[10]",
       "size_bytes": 12853
     },
     "profile_narrative": {
       "__hashed__": true,
-      "content_hash": "81d19e014bbd1104",
+      "content_hash": "96bb6f5d54c35979",
       "shape": "dict[1]",
-      "size_bytes": 61818
+      "size_bytes": 61592
     },
     "profile_v8": {
       "affects_you": {
@@ -813,6 +850,7 @@
         "eyebrow": "BU KİŞİYLE NE KONUŞULUR",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Doğal uyum hattı: Jupiter ve Fortune",
         "highlight": null
       },
@@ -827,6 +865,7 @@
         "eyebrow": "SAVUNMA MEKANİZMAN",
         "footer": null,
         "footer_cta": null,
+        "growth": "Ton, uyum ve duygusal incelik bir araya geldiğinde etkini yükselten doğal bir estetik sezgi devreye giriyor.",
         "headline": "Sevdiğini tam göstermenin zor geldiği bir dönem olmuş olabilir.",
         "highlight": "tam göstermenin zor geldiği"
       },
@@ -867,6 +906,7 @@
         "eyebrow": "İLK HİSSEDİLEN ŞEY",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Dışarıdan ve içeriden",
         "highlight": "Güçlü Benlik"
       },
@@ -881,6 +921,7 @@
         "eyebrow": "İLK İZLENİM",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Doğal uyum hattı: Moon ve Vertex",
         "highlight": null
       },
@@ -900,6 +941,7 @@
         "eyebrow": "KİMLİK EKSENİ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Ritmini koruduğunda yön duygun güçleniyor",
         "highlight": null
       },
@@ -937,6 +979,7 @@
         "eyebrow": "YAKINLIK",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Sevginin derinleşme biçimi",
         "highlight": "Güven"
       },
@@ -951,6 +994,7 @@
         "eyebrow": "ZİHİNSEL İŞLEYİŞ",
         "footer": null,
         "footer_cta": null,
+        "growth": null,
         "headline": "Karar verirken içinde ne oluyor",
         "highlight": "İç Ritim"
       },
@@ -965,7 +1009,8 @@
         "eyebrow": "MİSYON",
         "footer": null,
         "footer_cta": null,
-        "headline": "Öğrendiklerini paylaştığında başkaları için dönüm noktası olabilirsin.",
+        "growth": null,
+        "headline": "Öğrendiklerini paylaştığın yerde, başkalarının düşüncesi net bir kayma yaşıyor.",
         "highlight": null
       },
       "past_teaser": {
@@ -977,11 +1022,29 @@
           "Venus"
         ],
         "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
-        "footer": "3 geçmiş katman daha",
-        "footer_cta": "Tam haritada gör →",
+        "footer": null,
+        "footer_cta": null,
+        "growth": null,
         "headline": "Doğal uyum hattı: Moon ve Venus",
         "highlight": null
       },
+      "past_teasers": [
+        {
+          "body": "Moon ile Venus arasındaki trine hattı 0.24° ile çok yakın çalışıyor.",
+          "callout": null,
+          "chips": [
+            "Moon",
+            "trine",
+            "Venus"
+          ],
+          "eyebrow": "BU NEREDEN GELİYOR OLABİLİR",
+          "footer": null,
+          "footer_cta": null,
+          "growth": null,
+          "headline": "Doğal uyum hattı: Moon ve Venus",
+          "highlight": null
+        }
+      ],
       "talents": [
         {
           "accent": "lime",
@@ -1002,25 +1065,25 @@
     },
     "sections_v2": {
       "__hashed__": true,
-      "content_hash": "e692ad2df1bfac2b",
+      "content_hash": "aa8f887513d20719",
       "shape": "list[3]",
-      "size_bytes": 20927
+      "size_bytes": 20659
     },
     "supporting_threads": {
       "__hashed__": true,
-      "content_hash": "8bfb8b4837f81d7b",
+      "content_hash": "70adeb336a9af64d",
       "shape": "list[3]",
-      "size_bytes": 22821
+      "size_bytes": 22365
     },
     "upper_meaning": {
       "content": null,
       "debug_scores": {
         "capacity": 0.468,
-        "integration": 0.708,
+        "integration": 0.593,
         "integration_components": {
           "bridge": 0.55,
-          "directionality": 0.55,
-          "recurrence": 1.0
+          "directionality": 0.4,
+          "recurrence": 0.8
         },
         "pressure": 0.914,
         "support": 0.422
