@@ -68,7 +68,12 @@ class RuleEngine:
         self.meta_rules = self._normalize_rule_list(all_meta_rules)
         self._init_rule_load_ms = round((perf_counter() - init_started) * 1000.0, 3)
         self._init_timing_emitted = False
-        print("RuleEngine initialized with", len(self.planet_sign_rules), "planet sign rules")
+        # Use logger (stderr-bound by default) instead of print() — bare print
+        # to stdout pollutes artifact generation pipelines that capture stdout
+        # to a JSON file (caused
+        # backend/tests/_artifacts/natal_full_1995-12-24_13-44_lucerne_switzerland.json
+        # to fail json.loads with leading "RuleEngine initialized..." text).
+        logger.info("RuleEngine initialized with %d planet sign rules", len(self.planet_sign_rules))
         self.interpretation: Dict[str, List[Dict[str, Any]]] = {category: [] for category in CATEGORIES}
 
     def interpret(
