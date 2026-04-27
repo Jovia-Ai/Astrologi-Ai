@@ -30,3 +30,8 @@ joviaenv311/
 joviaenv311/
 joviaenv311/
 backend/jovia_model/
+
+# Swiss Ephemeris data files — never tracked.
+# See docs/setup_ephemeris.md and backend/scripts/setup_ephemeris.sh.
+backend/ephemeris/
+

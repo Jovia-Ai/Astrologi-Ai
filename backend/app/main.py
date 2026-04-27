@@ -12,6 +12,7 @@ from app.api.routes.home import router as home_router
 from app.api.routes.sky import router as sky_router
 from app.api.routes.transits import router as transits_router
 from app.core.config import settings
+from app.core.ephemeris_guard import assert_ephemeris_ready
 from app.forum.forum_router import router as forum_router
 from app.core.logging import configure_logging
 from app.routers import charts, chat, health, profile, revenuecat, story, synastry, user
@@ -31,11 +32,13 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    try:
-        swe.set_ephe_path(settings.swisseph_path)
-        logger.info("Swiss Ephemeris path set to %s", settings.swisseph_path)
-    except Exception as exc:  # pragma: no cover - environment specific
-        logger.error("Failed to set Swiss Ephemeris path: %s", exc)
+    # Hard guard: refuse to start when ephemeris files are missing.
+    # `assert_ephemeris_ready` raises EphemerisMissingError with an actionable
+    # message pointing at `backend/scripts/setup_ephemeris.sh`. We deliberately
+    # let it propagate — silent fallback corrupts natal/transit math.
+    assert_ephemeris_ready(settings.swisseph_path)
+    swe.set_ephe_path(settings.swisseph_path)
+    logger.info("Swiss Ephemeris path set to %s", settings.swisseph_path)
 
     app.include_router(health.router)
     app.include_router(user.router)

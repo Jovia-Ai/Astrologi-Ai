@@ -3,5 +3,9 @@ services:
     name: astrologi-backend
     env: python
     rootDir: backend
-    buildCommand: pip install -r backend/requirements.txt
+    # Ephemeris setup must run before app start: ephemeris files are not
+    # tracked in git (see .gitignore), so each build has to fetch the
+    # required minimum set. The hard guard in app.main will refuse to start
+    # if any required file is missing.
+    buildCommand: pip install -r backend/requirements.txt && bash backend/scripts/setup_ephemeris.sh
     startCommand: PYTHONPATH=backend python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT

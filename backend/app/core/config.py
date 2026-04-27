@@ -4,7 +4,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import List
 
-from pydantic import Field, field_validator
+from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.env import BASE_DIR, load_environment
@@ -27,7 +27,14 @@ class Settings(BaseSettings):
         default_factory=lambda: ["http://localhost:5173"],
         validation_alias="ALLOWED_ORIGINS",
     )
-    swisseph_path: str = Field(default="./ephe", validation_alias="SWISSEPH_PATH")
+    # Swiss Ephemeris data directory. Primary env var: SE_EPHE_PATH (production
+    # standard). SWISSEPH_PATH retained for backward compatibility with older
+    # deployments. Default resolves to `backend/ephemeris/` — populated by
+    # `backend/scripts/setup_ephemeris.sh`. See docs/setup_ephemeris.md.
+    swisseph_path: str = Field(
+        default="./ephemeris",
+        validation_alias=AliasChoices("SE_EPHE_PATH", "SWISSEPH_PATH"),
+    )
     opencage_api_key: str | None = Field(default=None, validation_alias="OPENCAGE_API_KEY")
     groq_api_key: str | None = Field(default=None, validation_alias="GROQ_API_KEY")
     groq_model: str = Field(default="llama-3.1-8b-instant", validation_alias="GROQ_MODEL")
@@ -120,7 +127,7 @@ class Settings(BaseSettings):
     @field_validator("swisseph_path", mode="before")
     @classmethod
     def _resolve_swisseph_path(cls, value: str | None) -> str:
-        raw = (value or "./ephe").strip()
+        raw = (value or "./ephemeris").strip()
         path = Path(raw)
         if path.is_absolute():
             return str(path)
