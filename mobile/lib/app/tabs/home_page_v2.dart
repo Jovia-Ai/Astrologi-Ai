@@ -20,6 +20,16 @@ import 'package:mobile/design/widgets/shou_topbar.dart';
 ///
 /// Canlı data bağlı legacy [HomePage] duruyor; bu sayfa mock veriyle
 /// bölüm-bölüm kuruluyor, son aşamada provider'lara bağlanacak.
+
+/// Bond / Friends Lattice feature flag.
+///
+/// `_NearSection` (friend avatar rail) and `_FeedSection` (friends'
+/// transit posts) are gated behind this flag because the underlying
+/// Bond/Synastry partner-data infrastructure is not in production yet.
+/// While `false`, both sections render nothing — see P0-A cleanup plan
+/// (docs/system/home_profile_surface_cleanup_plan.md). Flipping this to
+/// `true` will require a live `bondPartnersProvider` data source.
+const bool kHomeBondFeatureEnabled = false;
 class HomePageV2 extends ConsumerStatefulWidget {
   const HomePageV2({super.key});
 
@@ -228,9 +238,35 @@ class _HomeV2Palette {
 class _ManifestoSection extends ConsumerWidget {
   const _ManifestoSection();
 
+  /// Backend-driven manifesto hook. Maps to the existing live narrative
+  /// payload — no new schema field. Tries `periodCore.upperMeaning`
+  /// first (typically a single editorial sentence), falls back to the
+  /// first sentence of `periodCore.coreStory`. Returns `null` when
+  /// neither is available so the UI hides the title area instead of
+  /// falling back to a hardcoded mock. Inlined here (rather than as a
+  /// provider getter) to keep `home_v2_providers.dart` untouched.
+  static String? _coreStoryHeadline(HomeV2Snapshot? snapshot) {
+    final core = snapshot?.narrative.periodCore;
+    if (core == null) return null;
+
+    final upper = core.upperMeaning.trim();
+    if (upper.isNotEmpty) return upper;
+
+    final story = core.coreStory.trim();
+    if (story.isEmpty) return null;
+    final firstSentenceEnd = story.indexOf(RegExp(r'[.!?](\s|$)'));
+    if (firstSentenceEnd < 0) return story;
+    return story.substring(0, firstSentenceEnd + 1).trim();
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final snapshot = ref.watch(homeV2SnapshotProvider).value;
+    // Backend-driven manifesto hook. When live data is missing the title
+    // area (and its surrounding spacing) collapses entirely instead of
+    // falling back to a hardcoded mock — see P0-A cleanup plan.
+    final headline = _coreStoryHeadline(snapshot)?.trim();
+    final hasHeadline = headline != null && headline.isNotEmpty;
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 42, 28, 48),
       child: Column(
@@ -241,8 +277,8 @@ class _ManifestoSection extends ConsumerWidget {
             moonSign: snapshot?.moonSignLabel ?? 'Aslan burcunda',
             salutation: snapshot?.salutation ?? greetingForHour(DateTime.now().hour),
           ),
-          const SizedBox(height: 32),
-          const _ManifestoTitle(),
+          if (hasHeadline) const SizedBox(height: 32),
+          if (hasHeadline) _ManifestoTitle(headline: headline),
           const SizedBox(height: 36),
           const _OrbitEmblem(),
           const SizedBox(height: 26),
@@ -314,72 +350,37 @@ class _ManifestoGreeting extends StatelessWidget {
   }
 }
 
-/// "Sahnede olmak istemediğin anlar, en çok bakıldığın anlar olabilir."
-/// `istemediğin` Fraunces italic; `en çok bakıldığın` lime highlight -1°.
+/// Manifesto title — backend-driven. Receives a live editorial hook from
+/// `HomeV2Snapshot.coreStoryHeadline` (period upper meaning / first
+/// sentence of core story). Caller is responsible for hiding this widget
+/// when the headline is empty; here we always assume non-empty input.
+///
+/// Styling kept editorial (Inter base + Fraunces italic accent) but the
+/// dynamic copy means we no longer hand-place the lime highlight on
+/// specific words — that was a static-copy affordance.
 class _ManifestoTitle extends StatelessWidget {
-  const _ManifestoTitle();
+  const _ManifestoTitle({required this.headline});
+
+  final String headline;
 
   @override
   Widget build(BuildContext context) {
-    final base = GoogleFonts.inter(
+    final base = GoogleFonts.fraunces(
       textStyle: const TextStyle(
-        fontSize: 26,
-        height: 1.22,
-        letterSpacing: -0.45,
-        color: _HomeV2Palette.ink,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-    final italic = GoogleFonts.fraunces(
-      textStyle: const TextStyle(
-        fontSize: 26,
-        height: 1.22,
-        letterSpacing: -0.45,
+        fontSize: 24,
+        height: 1.28,
+        letterSpacing: -0.4,
         color: _HomeV2Palette.ink,
         fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-    final highlight = GoogleFonts.inter(
-      textStyle: const TextStyle(
-        fontSize: 26,
-        height: 1.22,
-        letterSpacing: -0.45,
-        color: _HomeV2Palette.limeText,
         fontWeight: FontWeight.w400,
       ),
     );
 
     return ConstrainedBox(
       constraints: const BoxConstraints(maxWidth: 320),
-      child: Text.rich(
-        TextSpan(
-          style: base,
-          children: [
-            const TextSpan(text: 'Sahnede olmak '),
-            TextSpan(text: 'istemediğin', style: italic),
-            const TextSpan(text: ' anlar, '),
-            WidgetSpan(
-              alignment: PlaceholderAlignment.baseline,
-              baseline: TextBaseline.alphabetic,
-              child: Transform.rotate(
-                angle: -0.0175, // ~ -1°
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
-                    vertical: 0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: _HomeV2Palette.lime,
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                  child: Text('en çok bakıldığın', style: highlight),
-                ),
-              ),
-            ),
-            const TextSpan(text: ' anlar olabilir.'),
-          ],
-        ),
+      child: Text(
+        headline,
+        style: base,
         textAlign: TextAlign.center,
       ),
     );
@@ -798,63 +799,26 @@ class _SkyHead extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 22),
-          const _SkyQuote(),
+          // Central editorial sky-quote dropped in P0-A cleanup: previous
+          // copy was hardcoded editorial text and no backend field exists
+          // for a sky-now hook today. Section keeps the eyebrow + the
+          // horizontal sky rail; the quote returns once a dedicated
+          // `narrative.sky_now_quote` field ships (Sprint 3).
         ],
       ),
     );
   }
 }
 
-/// "Ay Aslan'da — görünmek değil, görülmek istiyor."
-/// `görünmek` Fraunces italic, alttan % 26 yüksekliğinde lime şerit.
-class _SkyQuote extends StatelessWidget {
-  const _SkyQuote();
-
-  @override
-  Widget build(BuildContext context) {
-    final base = GoogleFonts.inter(
-      textStyle: const TextStyle(
-        fontSize: 18,
-        height: 1.4,
-        letterSpacing: -0.2,
-        color: _HomeV2Palette.ink,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-    final italic = GoogleFonts.fraunces(
-      textStyle: const TextStyle(
-        fontSize: 18,
-        height: 1.4,
-        letterSpacing: -0.2,
-        color: _HomeV2Palette.ink,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-
-    // `görünmek` için alt-çizgi benzeri lime şerit — gradient yerine arka
-    // plan container ile simüle ediyoruz (metnin alt ~%26'sini örtüyor).
-    return ConstrainedBox(
-      constraints: const BoxConstraints(maxWidth: 300),
-      child: Text.rich(
-        TextSpan(
-          style: base,
-          children: [
-            const TextSpan(text: '"Ay Aslan\'da — '),
-            WidgetSpan(
-              alignment: PlaceholderAlignment.baseline,
-              baseline: TextBaseline.alphabetic,
-              child: _LimeUnderlay(child: Text('görünmek', style: italic)),
-            ),
-            const TextSpan(text: ' değil, görülmek istiyor."'),
-          ],
-        ),
-        textAlign: TextAlign.center,
-      ),
-    );
-  }
-}
+// `_SkyQuote` widget removed in P0-A cleanup. Previous central sky-quote
+// was hardcoded editorial copy with no backend hook; live data only
+// covers the horizontal sky rail (HomeV2SkyCard list). When a dedicated
+// `narrative.sky_now_quote` field ships (deferred to Sprint 3), the
+// central quote can return as a backend-driven widget.
+//
+// `_LimeUnderlay` (defined below) was used by `_SkyQuote` for the gradient
+// underline effect — kept for now in case other future widgets need it,
+// but currently has no callers in this file.
 
 /// Metnin altında ~%26 yüksekliğinde lime band — HTML'deki linear-gradient
 /// underline efektinin basitleştirilmiş versiyonu.
@@ -1413,6 +1377,12 @@ class _NearSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Bond feature gate (P0-A cleanup): until partner-data infra ships,
+    // this section would only render hardcoded mock friends, which is
+    // unacceptable for production. Returning empty collapses the section
+    // (parent Column tolerates SizedBox.shrink without spacing artifacts
+    // because the surrounding sections have their own vertical padding).
+    if (!kHomeBondFeatureEnabled) return const SizedBox.shrink();
     return Padding(
       padding: const EdgeInsets.fromLTRB(0, 8, 0, 44),
       child: Column(
@@ -1501,14 +1471,11 @@ class _FriendAviData {
 class _NearRail extends StatelessWidget {
   const _NearRail();
 
-  static const _friends = <_FriendAviData>[
-    _FriendAviData(name: 'Sen', meta: 'PAYLAŞ', initial: '+', tone: _FriendTone.me),
-    _FriendAviData(name: 'Mira', meta: 'OĞLAK', initial: 'M', tone: _FriendTone.lime),
-    _FriendAviData(name: 'Ela', meta: 'BALIK', initial: 'E', tone: _FriendTone.lavender),
-    _FriendAviData(name: 'Burak', meta: 'İKİZLER', initial: 'B', tone: _FriendTone.blush),
-    _FriendAviData(name: 'Deniz', meta: 'AKREP', initial: 'D', tone: _FriendTone.plain),
-    _FriendAviData(name: 'Kayra', meta: 'ASLAN', initial: 'K', tone: _FriendTone.plain),
-  ];
+  // Mock friend data removed in P0-A cleanup. Once the Bond feature ships
+  // a `bondPartnersProvider`, the rail will be populated from that live
+  // source. Until then `_NearSection` is gated behind
+  // `kHomeBondFeatureEnabled = false` and never renders.
+  static const _friends = <_FriendAviData>[];
 
   @override
   Widget build(BuildContext context) {
@@ -1696,6 +1663,10 @@ class _FeedSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Bond feature gate (P0-A cleanup): the four `_FeedPost*` posts
+    // below are hardcoded "friend transit" editorial mocks. They must
+    // never reach production. Until live data exists, render nothing.
+    if (!kHomeBondFeatureEnabled) return const SizedBox.shrink();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: const [
@@ -2049,309 +2020,37 @@ class _PostDeeper extends StatelessWidget {
 }
 
 // ── Individual posts ─────────────────────────────────────
+//
+// All four `_FeedPost*` widgets previously contained hardcoded "friend
+// transit" editorial copy (Mira / Ela / Burak / Deniz with fictional
+// chart data). Removed in P0-A cleanup so no mock copy lives in source.
+// `_FeedSection` is gated behind `kHomeBondFeatureEnabled` and never
+// renders these placeholders, but they remain as named widgets so call
+// sites in `_FeedSection` continue to compile until the section is
+// rewritten with a live `bondFeedProvider`.
 
 class _FeedPostMira extends StatelessWidget {
   const _FeedPostMira();
-
   @override
-  Widget build(BuildContext context) {
-    final ink = _HomeV2Palette.ink;
-    final base = TextStyle(color: ink);
-    final italic = GoogleFonts.fraunces(
-      textStyle: const TextStyle(
-        fontSize: 17,
-        height: 1.45,
-        letterSpacing: -0.3,
-        color: _HomeV2Palette.ink,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-    final limeUnder = TextStyle(
-      color: ink,
-      decoration: TextDecoration.underline,
-      decorationColor: _HomeV2Palette.lime,
-      decorationThickness: 2,
-    );
-
-    return _FeedPost(
-      meta: [
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: const _FeedMetaChip(label: 'Mira', tone: _MetaTone.author),
-        ),
-        const WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaDot(),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: const _FeedMetaChip(
-            label: 'Oğlak · Y. Başak',
-            tone: _MetaTone.neutral,
-          ),
-        ),
-        const WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaDot(),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: const _FeedMetaChip(
-            label: 'Aynı transitteki',
-            tone: _MetaTone.lime,
-          ),
-        ),
-      ],
-      body: TextSpan(
-        style: base,
-        children: [
-          const TextSpan(text: 'Mira da bugün Ay Aslan '),
-          TextSpan(text: '3. evinde', style: italic),
-          const TextSpan(text: ' — seninle aynı pencerede, '),
-          TextSpan(text: 'ifadeyi öğreniyor', style: limeUnder),
-          const TextSpan(text: '.'),
-        ],
-      ),
-      actionLeft: _FeedAction(
-        icon: Icons.compare_arrows,
-        label: 'Karşılaştır',
-        color: _HomeV2Palette.lavenderDeep,
-      ),
-      actionRight: const _FeedAction(
-        icon: Icons.chat_bubble_outline,
-        label: 'Mesaj gönder',
-        color: _HomeV2Palette.mist,
-      ),
-      deeperText: 'Daha derin',
-      deeperCount: '6 slayt',
-    );
-  }
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 class _FeedPostEla extends StatelessWidget {
   const _FeedPostEla();
-
   @override
-  Widget build(BuildContext context) {
-    final italic = GoogleFonts.fraunces(
-      textStyle: const TextStyle(
-        fontSize: 17,
-        height: 1.45,
-        letterSpacing: -0.3,
-        color: _HomeV2Palette.ink,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-    final blushUnder = TextStyle(
-      color: _HomeV2Palette.ink,
-      decoration: TextDecoration.underline,
-      decorationColor: _HomeV2Palette.blush,
-      decorationThickness: 2,
-    );
-
-    return _FeedPost(
-      meta: const [
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaChip(label: 'Ela', tone: _MetaTone.author),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaDot(),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaChip(
-            label: 'Balık · Ay Yengeç',
-            tone: _MetaTone.neutral,
-          ),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaDot(),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaChip(
-            label: 'İlişki penceresi',
-            tone: _MetaTone.blush,
-          ),
-        ),
-      ],
-      body: TextSpan(
-        children: [
-          const TextSpan(text: 'Ela\'nın Venüs\'ü senin '),
-          TextSpan(text: '5. evine', style: blushUnder),
-          const TextSpan(text: ' değiyor — '),
-          TextSpan(text: 'yumuşak bir an', style: italic),
-          const TextSpan(text: ' için uygun bir hafta.'),
-        ],
-      ),
-      actionLeft: _FeedAction(
-        icon: Icons.favorite_outline,
-        label: 'Uyuma bak',
-        color: _HomeV2Palette.blushDeep,
-      ),
-      actionRight: const _FeedAction(
-        icon: Icons.chat_bubble_outline,
-        label: 'Konuş',
-        color: _HomeV2Palette.mist,
-      ),
-      deeperText: 'Sinastri detayı',
-      deeperCount: '5 slayt',
-    );
-  }
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 class _FeedPostBurak extends StatelessWidget {
   const _FeedPostBurak();
-
   @override
-  Widget build(BuildContext context) {
-    final italic = GoogleFonts.fraunces(
-      textStyle: const TextStyle(
-        fontSize: 17,
-        height: 1.45,
-        letterSpacing: -0.3,
-        color: _HomeV2Palette.ink,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-    final lavUnder = TextStyle(
-      color: _HomeV2Palette.ink,
-      decoration: TextDecoration.underline,
-      decorationColor: _HomeV2Palette.lavender,
-      decorationThickness: 2,
-    );
-
-    return _FeedPost(
-      meta: const [
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaChip(label: 'Burak', tone: _MetaTone.author),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaDot(),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaChip(
-            label: 'İkizler · Y. Terazi',
-            tone: _MetaTone.neutral,
-          ),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaDot(),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaChip(label: 'Zor gün', tone: _MetaTone.lavender),
-        ),
-      ],
-      body: TextSpan(
-        children: [
-          const TextSpan(text: 'Burak için bugün '),
-          TextSpan(text: 'yoğun', style: italic),
-          const TextSpan(text: ' — Satürn '),
-          TextSpan(text: "Merkür'üne kare", style: lavUnder),
-          const TextSpan(text: '. Sabır iyi gelir, kısa bir mesaj yeter.'),
-        ],
-      ),
-      actionLeft: _FeedAction(
-        icon: Icons.auto_awesome,
-        label: 'Mesaj öner',
-        color: _HomeV2Palette.lavenderDeep,
-      ),
-      actionRight: const _FeedAction(
-        icon: Icons.edit_outlined,
-        label: 'Yaz',
-        color: _HomeV2Palette.mist,
-      ),
-      deeperText: 'Transit etkisi',
-      deeperCount: '4 slayt',
-    );
-  }
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 class _FeedPostDeniz extends StatelessWidget {
   const _FeedPostDeniz();
-
   @override
-  Widget build(BuildContext context) {
-    final italic = GoogleFonts.fraunces(
-      textStyle: const TextStyle(
-        fontSize: 17,
-        height: 1.45,
-        letterSpacing: -0.3,
-        color: _HomeV2Palette.ink,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
-      ),
-    );
-    final limeUnder = TextStyle(
-      color: _HomeV2Palette.ink,
-      decoration: TextDecoration.underline,
-      decorationColor: _HomeV2Palette.lime,
-      decorationThickness: 2,
-    );
-
-    return _FeedPost(
-      meta: const [
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaChip(label: 'Deniz', tone: _MetaTone.author),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaDot(),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaChip(
-            label: 'Akrep · Ay Boğa',
-            tone: _MetaTone.neutral,
-          ),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaDot(),
-        ),
-        WidgetSpan(
-          alignment: PlaceholderAlignment.middle,
-          child: _FeedMetaChip(
-            label: '12 gün sonra',
-            tone: _MetaTone.stone,
-          ),
-        ),
-      ],
-      body: TextSpan(
-        children: [
-          const TextSpan(text: 'Deniz\'in '),
-          TextSpan(text: 'güneş dönüşü', style: italic),
-          const TextSpan(text: ' yaklaşıyor — bu yıl onun için bir '),
-          TextSpan(text: 'eşik yılı', style: limeUnder),
-          const TextSpan(text: ' olacak.'),
-        ],
-      ),
-      actionLeft: const _FeedAction(
-        icon: Icons.access_time,
-        label: 'Hatırlat',
-        color: _HomeV2Palette.mist,
-      ),
-      actionRight: const _FeedAction(
-        icon: Icons.card_giftcard,
-        label: 'Hediye öner',
-        color: _HomeV2Palette.mist,
-      ),
-      deeperText: 'Solar return haritası',
-      deeperCount: '6 slayt',
-    );
-  }
+  Widget build(BuildContext context) => const SizedBox.shrink();
 }
 
 // ─────────────────────────────────────────────────────────────
