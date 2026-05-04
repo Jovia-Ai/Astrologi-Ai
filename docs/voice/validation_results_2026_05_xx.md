@@ -8,7 +8,7 @@ Bu cycle'da insan blind validation çalıştırılmadı.
 - Decision authority: `Sahra`
 - Reason: `v4 prose target reference directly approved; validation cycle skipped`
 - Active reference: [handcrafted_period_validation_v4_final.md](/Users/sahradenizozdogan/Astrologi-Ai/docs/voice/handcrafted_period_validation_v4_final.md)
-- Active handoff: [codex_prompt_pr4_renderer_migration.md](/Users/sahradenizozdogan/Astrologi-Ai/docs/voice/codex_prompt_pr4_renderer_migration.md)
+- Active handoff: [codex_prompt_path3_pr4_pra_parallel.md](/Users/sahradenizozdogan/Astrologi-Ai/docs/voice/codex_prompt_path3_pr4_pra_parallel.md)
 
 Bu dosya artık sonuç girişi bekleyen aktif bir template değil. Arşiv olarak tutulur; ileride başka bir blind validation cycle açılırsa yeniden kullanılabilir.
 
