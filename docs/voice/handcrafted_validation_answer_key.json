@@ -1,0 +1,333 @@
+{
+  "pack_type": "handcrafted_shou_voice_validation",
+  "status": "archived_validation_artifact",
+  "facilitator_only": true,
+  "source_metadata_file": "docs/voice/sample_validation_samples.json",
+  "validation_scope": "period_only",
+  "archive_note": "Kept because guardrail tests still assert valence/intensity coverage from this file. Blind reviewer cycle was skipped after v4 approval.",
+  "editorial_qa_passes": [
+    "translation_smell"
+  ],
+  "reviewer_pack_file": null,
+  "results_template_file": "docs/voice/validation_results_2026_05_xx.md",
+  "cases": [
+    {
+      "fixture_id": "fix02_capricorn_stellium",
+      "blind_label_map": {
+        "A": "C",
+        "B": "B",
+        "C": "A"
+      },
+      "runtime_source_metadata": {
+        "headline": "Zihinsel Otoriteni İnşa Ediyorsun",
+        "spine_line": "growth_integration_line",
+        "event_nature": "dissolution",
+        "meaning_intent": "integration_invitation",
+        "rhetorical_frame": "naked",
+        "manifestation_context": {
+          "life_scene": "yakın çevrendeki ses"
+        },
+        "natal_backing": true,
+        "chapter_role": "builder",
+        "target_node_id": "promise_integrate_vision_with_structure",
+        "canonical_backing_node_ids": [
+          "promise_integrate_vision_with_structure"
+        ]
+      },
+      "spine_line": "growth_integration_line",
+      "event_nature": "dissolution",
+      "meaning_intent": "integration_invitation",
+      "rhetorical_frame": "naked",
+      "manifestation_context": {
+        "life_scene": "yakın çevrendeki ses"
+      },
+      "valence_mode": "maturation",
+      "intensity_mode": "medium",
+      "semantic_focus_note": "Bu fixture'da seçilen okuma düşünce fazlalığı değil; sözün omurga kazanması, öz-tanımın olgunlaşması ve ifadenin daha doğal otorite taşıması.",
+      "life_chapter_note": "Explicit cycle-detector backing yok. Chapter awareness yalnız builder role, natal backing ve authority/speech tonundan türetildi; return veya kader iddiası yapılmadı.",
+      "anti_patterns_avoided": [
+        "Bu dönem doğum haritandaki...",
+        "asıl omurga",
+        "hayatının bir alanı",
+        "technical_astro_leak",
+        "overthinking_only_read"
+      ],
+      "source_variant_contract": {
+        "A": "legacy_ish_baseline",
+        "B": "canonical_shou_without_scene",
+        "C": "canonical_shou_with_scene"
+      },
+      "variants": {
+        "A": {
+          "source_variant": "legacy_ish_baseline",
+          "title": "legacy_ish_baseline",
+          "body": "Son zamanlarda söylediklerinin ağırlığı daha görünür oluyor. Yakın çevrende geçen konuşmalar, küçük kararlar ve gündelik temaslar seni eskisine göre daha fazla durduruyor. Ne dediğini bilmekle onu gerçekten taşımak arasındaki fark açılıyor. Burada mesele hız değil; hangi sözün sana ait olduğunu seçmek."
+        },
+        "B": {
+          "source_variant": "canonical_shou_without_scene",
+          "title": "canonical_shou_without_scene",
+          "body": "Söylediklerinin ağırlığı bu ara daha kalıcı bir yere oturuyor. Eskiden kendini kanıtlamak için kurduğun bazı cümleler, şimdi daha sade çıkabiliyor. Hemen cevap vermek başka, gerçekten nerede durduğunu söylemek başka. Sözünü seçtikçe, durduğun yer de daha netleşiyor."
+        },
+        "C": {
+          "source_variant": "canonical_shou_with_scene",
+          "title": "canonical_shou_with_scene",
+          "body": "Bu sıradan bir geçiş gibi durmuyor; sözünün taşıdığı ağırlık sende daha kalıcı bir yere yerleşmek istiyor. Yakın çevrende geçen kısa konuşmalar, yarım mesajlar ve gündelik kararlar bile “bunu gerçekten ben mi söylüyorum?” sorusunu büyütüyor. Bunu ilk kez yaşamıyorsun. Önceki yıllarda kanıt gibi taşıdığın şey, şimdi daha doğal bir otoriteye dönüşüyor."
+        }
+      }
+    },
+    {
+      "fixture_id": "fix03_pisces_cancer_water",
+      "blind_label_map": {
+        "A": "B",
+        "B": "A",
+        "C": "C"
+      },
+      "runtime_source_metadata": {
+        "headline": "Denge ve Yapı Teması Derinleşiyor",
+        "spine_line": "relational_line",
+        "event_nature": "boundary",
+        "meaning_intent": "trust_calibration",
+        "rhetorical_frame": "calibration",
+        "manifestation_context": {
+          "life_scene": "kendini başlatma biçimin"
+        },
+        "natal_backing": true,
+        "chapter_role": "builder",
+        "target_node_id": "promise_build_safe_intimacy",
+        "canonical_backing_node_ids": [
+          "promise_build_safe_intimacy"
+        ]
+      },
+      "spine_line": "relational_line",
+      "event_nature": "boundary",
+      "meaning_intent": "trust_calibration",
+      "rhetorical_frame": "calibration",
+      "manifestation_context": {
+        "life_scene": "kendini başlatma biçimin"
+      },
+      "valence_mode": "release",
+      "intensity_mode": "light",
+      "semantic_focus_note": "Seçilen anlam sınır çekme değil; daha az yük taşıyarak daha güvenli kalma, duygusal sıkılığı boşaltma ve yakınlığın hafiflemesi.",
+      "life_chapter_note": "",
+      "anti_patterns_avoided": [
+        "system_explanation_scaffold",
+        "technical_astro_leak",
+        "judgmental_attachment_language",
+        "boundary_only_voice"
+      ],
+      "source_variant_contract": {
+        "A": "legacy_ish_baseline",
+        "B": "canonical_shou_without_scene",
+        "C": "canonical_shou_with_scene"
+      },
+      "variants": {
+        "A": {
+          "source_variant": "legacy_ish_baseline",
+          "title": "legacy_ish_baseline",
+          "body": "İlişkilerde ne kadarını taşıdığını ve ne kadarını artık taşımak istemediğini daha fazla fark ettiğin bir dönemdesin. Karşındakine alan açmakla kendi ritmini korumak arasındaki ayar daha görünür oluyor. Burada önemli olan her şeyi çözmek değil; seni yoran yükün hangisi olduğunu ayırt etmek."
+        },
+        "B": {
+          "source_variant": "canonical_shou_without_scene",
+          "title": "canonical_shou_without_scene",
+          "body": "Duygusal olarak her şeyi sonuna kadar üzerinde tutmak zorunda olmadığını fark etmeye başlıyorsun. Bu uzaklaşmak değil; seni gereksiz yere sıkan şeyi hafifletmek. Güven burada daha çok tutmakla değil, biraz daha az yüklenebilmekle kuruluyor."
+        },
+        "C": {
+          "source_variant": "canonical_shou_with_scene",
+          "title": "canonical_shou_with_scene",
+          "body": "Birine doğru nasıl ısındığın bu ara daha hafif bir ritme geçiyor. İlk adımın hemen derinleşmesi gerekmiyor; omuzların biraz gevşediğinde hangi yakınlığın seni gerçekten tuttuğu daha kolay seçiliyor. Bu his sana yabancı değil. Daha az taşıdığında daha güvensiz değil, tam tersine daha sahici hissediyorsun."
+        }
+      }
+    },
+    {
+      "fixture_id": "fix04_h10_career_stellium",
+      "blind_label_map": {
+        "A": "A",
+        "B": "B",
+        "C": "C"
+      },
+      "runtime_source_metadata": {
+        "headline": "İlişki Dengesini Yeniden Kuruyorsun",
+        "spine_line": "relational_line",
+        "event_nature": "dissolution",
+        "meaning_intent": "softening",
+        "rhetorical_frame": "naked",
+        "manifestation_context": {
+          "life_scene": "anlaşma yapma biçimin"
+        },
+        "natal_backing": true,
+        "chapter_role": "peak",
+        "target_node_id": "promise_build_safe_intimacy",
+        "canonical_backing_node_ids": [
+          "promise_build_safe_intimacy"
+        ]
+      },
+      "spine_line": "relational_line",
+      "event_nature": "dissolution",
+      "meaning_intent": "softening",
+      "rhetorical_frame": "naked",
+      "manifestation_context": {
+        "life_scene": "anlaşma yapma biçimin"
+      },
+      "valence_mode": "recognition",
+      "intensity_mode": "light",
+      "semantic_focus_note": "Bu fixture'da seçilen okuma burden değil; görünürlük açılması, becerinin dışarı çıkması ve rolün daha doğal taşınması.",
+      "life_chapter_note": "",
+      "anti_patterns_avoided": [
+        "threshold_scaffold",
+        "coaching_tone",
+        "technical_astro_leak",
+        "burden_only_voice",
+        "relational_softening_misread"
+      ],
+      "source_variant_contract": {
+        "A": "legacy_ish_baseline",
+        "B": "canonical_shou_without_scene",
+        "C": "canonical_shou_with_scene"
+      },
+      "variants": {
+        "A": {
+          "source_variant": "legacy_ish_baseline",
+          "title": "legacy_ish_baseline",
+          "body": "İş tarafında ve dışarıda nasıl göründüğünde daha rahat bir açılma başlıyor. Uzun süredir içeride tuttuğun emek artık sadece hazırlık gibi kalmak istemiyor. Burada önemli olan kendini ispat etmeye çalışmak değil; yaptığın şeyin görünür olmasına izin vermek."
+        },
+        "B": {
+          "source_variant": "canonical_shou_without_scene",
+          "title": "canonical_shou_without_scene",
+          "body": "Dışarıda görünür olmak senin için yeni değil; bu kez bunun içinde daha az kasılma var. Emeğini göstermek başka, kendini kanıtlamaya çalışmak başka. Aradaki fark açıldıkça yaptığın iş daha doğal görünüyor; rolün de sende daha rahat oturuyor."
+        },
+        "C": {
+          "source_variant": "canonical_shou_with_scene",
+          "title": "canonical_shou_with_scene",
+          "body": "Dışarıda adının geçtiği yerlerde bu ara daha rahat görünüyorsun. Bir süredir içeride tuttuğun beceri, artık sadece hazırlıkta kalmak istemiyor. Bu yer sende ilk kez açılmıyor; emek verdiğin şeyi göstermek başka, kendini kanıtlamaya çalışmak başka. Bu sefer görünürlük daha sakin: yaptığın işin arkasında duruyorsun."
+        }
+      }
+    },
+    {
+      "fixture_id": "fix05_t_square_tense",
+      "blind_label_map": {
+        "A": "C",
+        "B": "B",
+        "C": "A"
+      },
+      "runtime_source_metadata": {
+        "headline": "Denge ve Yapı Teması Derinleşiyor",
+        "spine_line": "relational_line",
+        "event_nature": "control",
+        "meaning_intent": "attention_redirect",
+        "rhetorical_frame": "reframe",
+        "manifestation_context": {
+          "life_scene": "sana ait hissettiren alan"
+        },
+        "natal_backing": true,
+        "chapter_role": "builder",
+        "target_node_id": "promise_build_safe_intimacy",
+        "canonical_backing_node_ids": [
+          "promise_build_safe_intimacy"
+        ]
+      },
+      "spine_line": "relational_line",
+      "event_nature": "control",
+      "meaning_intent": "attention_redirect",
+      "rhetorical_frame": "reframe",
+      "manifestation_context": {
+        "life_scene": "sana ait hissettiren alan"
+      },
+      "valence_mode": "integration",
+      "intensity_mode": "dense",
+      "semantic_focus_note": "Seçilen okuma problem/alarm değil; iki ayrı ihtiyacın yoğun sürtünme içinden aynı kası kurduğu çapraz-entegrasyon.",
+      "life_chapter_note": "",
+      "anti_patterns_avoided": [
+        "direct_astro_label",
+        "generic_risk_line",
+        "formulaic_reframe",
+        "pure_conflict_alarm"
+      ],
+      "source_variant_contract": {
+        "A": "legacy_ish_baseline",
+        "B": "canonical_shou_without_scene",
+        "C": "canonical_shou_with_scene"
+      },
+      "variants": {
+        "A": {
+          "source_variant": "legacy_ish_baseline",
+          "title": "legacy_ish_baseline",
+          "body": "Aynı anda birden fazla ihtiyacı taşımaya çalıştığın için yoğunluk artıyor. Bir tarafın düzeni korumak isterken başka bir tarafın hareket etmek istiyor; bu yüzden içerde sürtünme büyüyebiliyor. Buradaki asıl iş bunu sadece problem gibi görmek değil; hangi iki tarafın birlikte çalışmayı öğrenmeye uğraştığını fark etmek."
+        },
+        "B": {
+          "source_variant": "canonical_shou_without_scene",
+          "title": "canonical_shou_without_scene",
+          "body": "Bu rahat bir akış gibi işlemiyor; içinde sürtünme var. Ama o sürtünme iki ayrı ihtiyacın birbirini öğrenmeye başladığı yer. Biri düzen istiyor, biri canlılık. İkisi de aynı anda gerçek. Pürüzsüz akış bu kası kuramazdı."
+        },
+        "C": {
+          "source_variant": "canonical_shou_with_scene",
+          "title": "canonical_shou_with_scene",
+          "body": "Sana ait hissettiren yerde bu ara her şey kolayca yerli yerine oturmuyor. Kendi düzeninde kalmak isteyen yanınla daha canlı bir akış arayan yanın aynı anda söz istiyor. Rahat akmıyor; bunu hissediyorsun. Ama tam da burada, birbirine ters görünen iki ihtiyaç aynı ritmi kurmayı öğreniyor. Pürüzsüz akış bu kası kuramazdı."
+        }
+      }
+    },
+    {
+      "fixture_id": "fix07_aries_libra_nodes",
+      "blind_label_map": {
+        "A": "A",
+        "B": "C",
+        "C": "B"
+      },
+      "runtime_source_metadata": {
+        "headline": "Denge ve Yapı Teması Derinleşiyor",
+        "spine_line": "work_visibility_line",
+        "event_nature": "control",
+        "meaning_intent": "visibility_alignment",
+        "rhetorical_frame": "threshold",
+        "manifestation_context": {
+          "life_scene": "uzak hedeflerin ve inançların"
+        },
+        "natal_backing": true,
+        "chapter_role": "builder",
+        "target_node_id": "promise_mature_visibility",
+        "canonical_backing_node_ids": [
+          "promise_mature_visibility"
+        ]
+      },
+      "spine_line": "work_visibility_line",
+      "event_nature": "control",
+      "meaning_intent": "visibility_alignment",
+      "rhetorical_frame": "threshold",
+      "manifestation_context": {
+        "life_scene": "uzak hedeflerin ve inançların"
+      },
+      "valence_mode": "momentum",
+      "intensity_mode": "medium",
+      "semantic_focus_note": "Seçilen okuma yalnız kontrol ya da korunma değil; yön, görünürlük ve işbirliği içinde yer alma ekseni.",
+      "life_chapter_note": "Explicit nodal-return backing yok. Ama eksensel yön ve self/other kalıbı, küçük tetik değil daha uzun bir yön başlığı gibi hafifçe duyuruldu.",
+      "anti_patterns_avoided": [
+        "buradaki_esik",
+        "career_coaching_tone",
+        "debug_taxonomy_leak",
+        "technical_astro_leak",
+        "control_protection_only"
+      ],
+      "source_variant_contract": {
+        "A": "legacy_ish_baseline",
+        "B": "canonical_shou_without_scene",
+        "C": "canonical_shou_with_scene"
+      },
+      "variants": {
+        "A": {
+          "source_variant": "legacy_ish_baseline",
+          "title": "legacy_ish_baseline",
+          "body": "Dışarıda nasıl göründüğün ve hangi yöne gittiğin konusunda daha net bir ivme başlıyor. Kendi başına ilerlemekle birine göre konum almak arasındaki fark daha görünür hale geliyor. Burada önemli olan herkesi memnun eden çizgi değil; seni gerçekten ileri götüren yönü seçmek."
+        },
+        "B": {
+          "source_variant": "canonical_shou_without_scene",
+          "title": "canonical_shou_without_scene",
+          "body": "Kendi yönünü daha belirgin almak istiyorsun; ama bunu birini silerek değil, birlikte durmanın biçimini değiştirerek yapmak istiyorsun. Buradaki hareket sert değil, daha seçilmiş. Ben dediğin yer netleştikçe biz dediğin yer de daha dürüst kuruluyor."
+        },
+        "C": {
+          "source_variant": "canonical_shou_with_scene",
+          "title": "canonical_shou_with_scene",
+          "body": "Bir hedefi tek başına taşımakla, onu doğru insanlarla birlikte görünür kılmak arasında yeni bir fark açılıyor. Kimi temsil ettiğin ve kiminle yan yana durduğun bu ara daha belirgin. Bir topluluğun içinde kaybolmadan kalmak başka, her şeyi tek başına üstlenmek başka. Bu başlık sende tek bir günün meselesinden büyük duruyor. Yönün netleştikçe işbirliği de daha seçilmiş bir hale geliyor."
+        }
+      }
+    }
+  ]
+}
