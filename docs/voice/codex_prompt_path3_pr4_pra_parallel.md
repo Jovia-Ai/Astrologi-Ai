@@ -272,7 +272,7 @@ Reserve for later:
 
 ## Assumptions and Defaults
 
-- `shou_voice_vnext_spec_v0.md` remains the canonical voice spec in this repo.
+- `SHOU_VOICE_VNEXT.md` remains the canonical voice spec in this repo.
 - PR-4 renderer work continues against the **current** canonical chain.
 - LifeChapter is an **upstream reasoning layer**, not a renderer concern.
 - `PeriodSemanticFocusResolver` is intentionally deferred until after PR-A / PR-B.
