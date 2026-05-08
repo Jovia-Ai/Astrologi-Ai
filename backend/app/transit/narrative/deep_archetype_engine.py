@@ -5,6 +5,7 @@ import re
 from collections import Counter
 from typing import Any, Dict, List, Mapping
 
+from app.core.config import settings
 from app.transit.narrative.archetype_engine import build_insight_pack
 from app.transit.narrative.astrolog_narrative_engine import (
     PeriodStoryContext,
@@ -15,6 +16,8 @@ from app.transit.narrative.astrolog_narrative_engine import (
 from app.transit.narrative.chain_explainer_tr import build_chain_explainer_tr
 from app.transit.narrative.hybrid_context import build_hybrid_event_context
 from app.transit.narrative.natal_promise import build_natal_promise, build_section_injections
+from app.transit.narrative.period_semantic_focus import resolve_period_semantic_focus
+from app.transit.narrative.period_voice_policy import build_period_voice_policy
 from app.transit.narrative.phrase_lib_tr import render_signature_tr
 from app.transit.narrative.point_policy import is_public_event
 from app.transit.narrative.selection import select_event_ids
@@ -299,6 +302,15 @@ FALLBACK_GUIDANCE_TR: List[str] = [
     "Çıkar taslak, sonra gönder.",
     "Açma aynı anda iki kanal.",
 ]
+
+_PR_D_V1_ALLOWED_CHAPTER_TYPES = {"saturn_return", "nodal_return", "nodal_activation"}
+_PR_D_V1_EXCLUDED_CHAPTER_TYPES = {
+    "structural_natal_chapter",
+    "profection_year",
+    "progressed_lunation",
+    "solar_return_theme",
+    "outer_planet_angle_hit",
+}
 
 
 def _seed(event: Mapping[str, Any], key: str) -> int:
@@ -615,6 +627,518 @@ def _dedupe_text_list(items: List[str], *, limit: int) -> List[str]:
     return out
 
 
+def _enum_token(value: Any) -> str:
+    raw = getattr(value, "value", value)
+    return str(raw or "").strip().lower()
+
+
+def _chapter_confidence_rank(value: Any) -> int:
+    return {"low": 1, "medium": 2, "high": 3}.get(_enum_token(value), 0)
+
+
+def _semantic_focus_confidence(value: Any) -> float:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return 0.0
+
+
+def is_life_chapter_priority_eligible(
+    active_life_chapter: Mapping[str, Any] | None,
+    semantic_focus_result: Any,
+    flag_enabled: bool,
+) -> bool:
+    if not flag_enabled:
+        return False
+    if not isinstance(active_life_chapter, Mapping) or not active_life_chapter:
+        return False
+    chapter_type = _enum_token(active_life_chapter.get("chapter_type"))
+    if chapter_type in _PR_D_V1_EXCLUDED_CHAPTER_TYPES or chapter_type not in _PR_D_V1_ALLOWED_CHAPTER_TYPES:
+        return False
+    if _chapter_confidence_rank(active_life_chapter.get("confidence")) < 2:
+        return False
+    if str(getattr(semantic_focus_result, "source", "") or "").strip() != "life_chapter":
+        return False
+    return _semantic_focus_confidence(getattr(semantic_focus_result, "confidence", 0.0)) >= 0.55
+
+
+def _build_chapter_priority_debug(
+    *,
+    active_life_chapter: Mapping[str, Any] | None,
+    semantic_focus_result: Any,
+    flag_enabled: bool,
+) -> Dict[str, Any]:
+    chapter = active_life_chapter if isinstance(active_life_chapter, Mapping) else {}
+    chapter_type = _enum_token(chapter.get("chapter_type"))
+    semantic_source = str(getattr(semantic_focus_result, "source", "") or "").strip() or "unknown"
+    semantic_confidence = _semantic_focus_confidence(getattr(semantic_focus_result, "confidence", 0.0))
+
+    payload: Dict[str, Any] = {
+        "enabled": bool(flag_enabled),
+        "applied": False,
+        "owner": "life_chapter",
+        "chapter_type": chapter_type,
+        "chapter_id": str(chapter.get("chapter_id") or "").strip(),
+        "semantic_focus_source": semantic_source,
+        "scope": "pr_d_v1_tier_1",
+        "event_cards_role": "selected_owner",
+    }
+    if not flag_enabled:
+        payload["reason"] = "flag_disabled"
+        return payload
+    if not chapter:
+        payload["reason"] = "no_active_life_chapter"
+        return payload
+    if chapter_type in _PR_D_V1_EXCLUDED_CHAPTER_TYPES:
+        payload["reason"] = "excluded_chapter_type"
+        return payload
+    if chapter_type not in _PR_D_V1_ALLOWED_CHAPTER_TYPES:
+        payload["reason"] = "unsupported_chapter_type"
+        return payload
+    if _chapter_confidence_rank(chapter.get("confidence")) < 2:
+        payload["reason"] = "insufficient_chapter_confidence"
+        return payload
+    if semantic_source != "life_chapter":
+        payload["reason"] = "semantic_focus_not_life_chapter"
+        return payload
+    if semantic_confidence < 0.55:
+        payload["reason"] = "semantic_focus_confidence_too_low"
+        return payload
+
+    payload["applied"] = is_life_chapter_priority_eligible(
+        chapter,
+        semantic_focus_result,
+        flag_enabled,
+    )
+    payload["event_cards_role"] = "evidence_support"
+    payload["reason"] = "eligible_tier1_life_chapter"
+    return payload
+
+
+def _safe_float_or_none(value: Any) -> float | None:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _safe_text(value: Any) -> str | None:
+    text = str(value or "").strip()
+    return text or None
+
+
+def _mapping_or_none(value: Any) -> Dict[str, Any] | None:
+    return dict(value) if isinstance(value, Mapping) else None
+
+
+def _mapping_list(value: Any) -> List[Dict[str, Any]]:
+    if not isinstance(value, list):
+        return []
+    return [dict(item) for item in value if isinstance(item, Mapping)]
+
+
+def _list_str(value: Any) -> List[str]:
+    if not isinstance(value, list):
+        return []
+    out: List[str] = []
+    for item in value:
+        text = str(item or "").strip()
+        if text:
+            out.append(text)
+    return out
+
+
+def _event_ids_from_spine(canonical_period_spine: Mapping[str, Any] | None) -> List[str]:
+    spine = canonical_period_spine if isinstance(canonical_period_spine, Mapping) else {}
+    return _list_str(spine.get("matched_event_ids"))
+
+
+def _summarize_natal_target(target: Any) -> Dict[str, Any]:
+    if not isinstance(target, Mapping):
+        return {}
+    summary: Dict[str, Any] = {}
+    for key in ("name", "house", "sign", "dispositor", "rulership_houses", "node_id"):
+        if key in target:
+            value = target.get(key)
+            if isinstance(value, list):
+                summary[key] = [item for item in value if item is not None]
+            else:
+                summary[key] = value
+    return summary
+
+
+def _summarize_derived_context(derived_context: Any) -> Dict[str, Any]:
+    if not isinstance(derived_context, Mapping):
+        return {}
+    return {
+        "derived_domains": _list_str(derived_context.get("derived_domains")),
+        "motifs": _list_str(derived_context.get("motifs")),
+        "connected_points": _mapping_list(derived_context.get("connected_points")),
+        "links": _mapping_list(derived_context.get("links")),
+        "natal_target": _summarize_natal_target(derived_context.get("natal_target")),
+    }
+
+
+def _house_scene_ref(item: Mapping[str, Any], derived_context: Mapping[str, Any] | None) -> str | None:
+    natal_target = (
+        derived_context.get("natal_target")
+        if isinstance(derived_context.get("natal_target"), Mapping)
+        else {}
+    ) if isinstance(derived_context, Mapping) else {}
+    target_house = natal_target.get("house")
+    if target_house is not None:
+        return f"house_{target_house}"
+    houses = item.get("houses") if isinstance(item.get("houses"), Mapping) else {}
+    transit_house = houses.get("transit_in_natal_house")
+    if transit_house is not None:
+        return f"house_{transit_house}"
+    return None
+
+
+def _event_domain_ref(item: Mapping[str, Any], derived_context: Mapping[str, Any] | None) -> str | None:
+    if isinstance(derived_context, Mapping):
+        derived_domains = _list_str(derived_context.get("derived_domains"))
+        if derived_domains:
+            return derived_domains[0]
+    domains = item.get("domains") if isinstance(item.get("domains"), list) else []
+    for domain in domains:
+        text = str(domain or "").strip()
+        if text:
+            return text
+    return None
+
+
+def _build_period_evidence_items(
+    featured_events: List[Dict[str, Any]],
+    *,
+    semantic_focus_source: str | None,
+) -> List[Dict[str, Any]]:
+    evidence_items: List[Dict[str, Any]] = []
+    for index, item in enumerate(featured_events):
+        if not isinstance(item, Mapping):
+            continue
+        event_id = str(item.get("event_id") or "").strip()
+        if not event_id:
+            continue
+        derived_context = item.get("derived_context") if isinstance(item.get("derived_context"), Mapping) else {}
+        chapter_role = item.get("chapter_role") if isinstance(item.get("chapter_role"), Mapping) else {}
+        evidence_items.append(
+            {
+                "event_id": event_id,
+                "evidence_role": str(chapter_role.get("role") or item.get("semantic_role") or "support").strip() or "support",
+                "rank": int(item.get("selection_index") if item.get("selection_index") is not None else index),
+                "transit_body": _safe_text(item.get("transit_body")),
+                "natal_point": _safe_text(item.get("natal_point")),
+                "aspect": _safe_text(item.get("aspect")),
+                "public_event_type": _safe_text(item.get("event_kind") or item.get("event_subtype") or item.get("event_family")),
+                "domain": _event_domain_ref(item, derived_context),
+                "house_scene": _house_scene_ref(item, derived_context),
+                "derived_context_summary": _summarize_derived_context(derived_context),
+                "natal_target_summary": _summarize_natal_target(derived_context.get("natal_target")),
+                "timing_phase": _safe_text(item.get("phase")),
+                "timing_bucket": _safe_text(item.get("bucket")),
+                "chapter_role": dict(chapter_role) if chapter_role else None,
+                "story_score": _safe_float_or_none(item.get("story_score")),
+                "semantic_owner": _safe_text(item.get("semantic_owner")) or _safe_text(semantic_focus_source),
+                "debug_refs": {
+                    "selection_index": item.get("selection_index"),
+                    "selection_mode": item.get("selection_mode"),
+                    "raw_ref": _mapping_or_none(item.get("raw_ref")),
+                },
+            }
+        )
+    return evidence_items
+
+
+def _build_period_card_context(
+    *,
+    semantic_focus_result: Any,
+    chapter_priority: Mapping[str, Any] | None,
+    canonical_period_spine: Mapping[str, Any] | None,
+    featured_events: List[Dict[str, Any]],
+    period_reading_v1: Mapping[str, Any] | None,
+    composer_plan: Mapping[str, Any] | None,
+    manifestation_context: Mapping[str, Any] | None,
+) -> Dict[str, Any]:
+    semantic_source = _safe_text(getattr(semantic_focus_result, "source", None))
+    selected_meaning = _safe_text(getattr(semantic_focus_result, "selected_meaning", None))
+    meaning_family = _safe_text(getattr(semantic_focus_result, "meaning_family", None))
+    confidence = _safe_float_or_none(getattr(semantic_focus_result, "confidence", None))
+    primary_domain = _safe_text(getattr(semantic_focus_result, "primary_domain", None))
+    secondary_domains = _list_str(getattr(semantic_focus_result, "secondary_domains", []))
+    suppressed_meanings = _list_str(getattr(semantic_focus_result, "suppressed_meanings", []))
+    chapter_priority_map = dict(chapter_priority or {})
+    reading = period_reading_v1 if isinstance(period_reading_v1, Mapping) else {}
+    blocks = reading.get("blocks") if isinstance(reading.get("blocks"), list) else []
+    composer = composer_plan if isinstance(composer_plan, Mapping) else {}
+    matched_event_ids = _event_ids_from_spine(canonical_period_spine)
+    return {
+        "version": "period_card_context_v1",
+        "owner_ref": {
+            "semantic_focus_source": semantic_source,
+            "selected_meaning": selected_meaning,
+            "meaning_family": meaning_family,
+            "confidence": confidence,
+        },
+        "primary_meaning": {
+            "label": selected_meaning,
+            "primary_domain": primary_domain,
+            "secondary_domains": secondary_domains,
+            "suppressed_meanings": suppressed_meanings,
+        },
+        "source_owner": {
+            "chapter_priority_applied": bool(chapter_priority_map.get("applied")),
+            "chapter_type": _safe_text(chapter_priority_map.get("chapter_type")),
+            "event_cards_role": _safe_text(chapter_priority_map.get("event_cards_role")),
+        },
+        "chapter_priority": chapter_priority_map,
+        "main_domains": [domain for domain in [primary_domain, *secondary_domains] if domain],
+        "suppressed_meanings": suppressed_meanings,
+        "period_reading_ref": {
+            "version": _safe_text(reading.get("version")),
+            "full_text": _safe_text(reading.get("full_text")),
+            "block_roles": [
+                str(block.get("role") or "").strip()
+                for block in blocks
+                if isinstance(block, Mapping) and str(block.get("role") or "").strip()
+            ],
+        },
+        "composer_frame": {
+            "semantic_mode": _safe_text(composer.get("semantic_mode")),
+            "hook": _safe_text(composer.get("hook")),
+            "scene_anchor": _safe_text(composer.get("scene_anchor")),
+            "core_contrast": _safe_text(composer.get("core_contrast")),
+            "mechanism": _safe_text(composer.get("mechanism")),
+            "growth_edge": _safe_text(composer.get("growth_edge")),
+            "what_it_builds": _safe_text(composer.get("what_it_builds")),
+            "closer": _safe_text(composer.get("closer")),
+        },
+        "manifestation_context": dict(manifestation_context) if isinstance(manifestation_context, Mapping) else None,
+        "natal_activation_ref": {
+            "matched_event_ids": matched_event_ids,
+            "top_hook_ids": [],
+        } if matched_event_ids else None,
+        "evidence_items": _build_period_evidence_items(
+            featured_events,
+            semantic_focus_source=semantic_source,
+        ),
+        "debug": {
+            "authority_inputs": [
+                "semantic_focus",
+                "chapter_priority",
+                "canonical_period_spine",
+                "featured_events",
+                "manifestation_context",
+            ],
+            "framing_only_inputs": [
+                "period_reading_v1",
+                "composer_plan",
+            ],
+            "blocked_authority_inputs": [
+                "blocks[]",
+                "daily_synthesis.body",
+                "best_times.score_by_intent",
+                "heat",
+                "rating",
+                "story_tracks",
+                "_event_story_map",
+                "profile_v8",
+                "full_map_v8",
+                "personality_imprint",
+                "meaning_graph_v1_1",
+            ],
+            "period_reading_reparsed_for_evidence": False,
+            "composer_plan_reparsed_for_evidence": False,
+        },
+    }
+
+
+def _find_ids_in_canonical_nodes(nodes: Any, node_id: str | None) -> List[str]:
+    if not node_id:
+        return []
+    out: List[str] = []
+    for node in nodes if isinstance(nodes, list) else []:
+        if not isinstance(node, Mapping):
+            continue
+        candidate = str(node.get("id") or "").strip()
+        if candidate == node_id and candidate not in out:
+            out.append(candidate)
+    return out
+
+
+def _spine_line_refs(chart_spine: Any, spine_lines: List[str], target_node_id: str | None) -> List[Dict[str, Any]]:
+    if not isinstance(chart_spine, Mapping):
+        return []
+    refs: List[Dict[str, Any]] = []
+    for line_key in spine_lines:
+        line = chart_spine.get(line_key)
+        if not isinstance(line, Mapping):
+            continue
+        refs.append(
+            {
+                "line_key": line_key,
+                "node_id": _safe_text(line.get("node_id")),
+                "label": _safe_text(line.get("label") or line.get("summary")),
+                "matches_target_node": bool(target_node_id and str(line.get("node_id") or "").strip() == target_node_id),
+            }
+        )
+    return refs
+
+
+def _filter_activation_hooks(meaning_graph: Any, *, target_node_id: str | None, spine_lines: List[str]) -> List[Dict[str, Any]]:
+    graph = meaning_graph if isinstance(meaning_graph, Mapping) else {}
+    hooks = graph.get("activation_hooks") if isinstance(graph.get("activation_hooks"), list) else []
+    refs: List[Dict[str, Any]] = []
+    for hook in hooks:
+        if not isinstance(hook, Mapping):
+            continue
+        hook_target = str(hook.get("target_node_id") or "").strip()
+        hook_spine_lines = _list_str(hook.get("spine_lines"))
+        if target_node_id and hook_target == target_node_id:
+            pass
+        elif spine_lines and any(line in hook_spine_lines for line in spine_lines):
+            pass
+        else:
+            continue
+        refs.append(
+            {
+                "hook_id": _safe_text(hook.get("hook_id")),
+                "type": _safe_text(hook.get("type")),
+                "target_node_id": hook_target or None,
+                "spine_lines": hook_spine_lines,
+                "domains": _list_str(hook.get("domains")),
+            }
+        )
+    return refs
+
+
+def _filter_structural_refs(routes: Any, *, target_node_id: str | None, spine_lines: List[str]) -> List[Dict[str, Any]]:
+    refs: List[Dict[str, Any]] = []
+    for route in routes if isinstance(routes, list) else []:
+        if not isinstance(route, Mapping):
+            continue
+        linked_ids = _list_str(route.get("linked_node_ids"))
+        source_candidates = _list_str(route.get("source_candidates"))
+        candidate_id = str(route.get("id") or "").strip()
+        if target_node_id and (candidate_id == target_node_id or target_node_id in linked_ids):
+            pass
+        elif spine_lines and any(line in source_candidates for line in spine_lines):
+            pass
+        else:
+            continue
+        refs.append(
+            {
+                "id": candidate_id or None,
+                "label": _safe_text(route.get("label")),
+                "domain": _safe_text(route.get("domain")),
+                "linked_node_ids": linked_ids,
+                "source_candidates": source_candidates,
+            }
+        )
+    return refs
+
+
+def _build_event_natal_links(featured_events: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    links: List[Dict[str, Any]] = []
+    for item in featured_events:
+        if not isinstance(item, Mapping):
+            continue
+        event_id = str(item.get("event_id") or "").strip()
+        if not event_id:
+            continue
+        derived_context = item.get("derived_context") if isinstance(item.get("derived_context"), Mapping) else {}
+        natal_promise = item.get("natal_promise") if isinstance(item.get("natal_promise"), Mapping) else {}
+        link = {
+            "event_id": event_id,
+            "natal_target": _summarize_natal_target(derived_context.get("natal_target")),
+            "derived_domains": _list_str(derived_context.get("derived_domains")),
+            "motifs": _list_str(derived_context.get("motifs")),
+        }
+        if natal_promise:
+            link["natal_promise"] = {
+                "summary": _safe_text(natal_promise.get("summary")),
+                "drivers": _mapping_list(natal_promise.get("drivers")),
+            }
+        links.append(link)
+    return links
+
+
+def _build_natal_context_for_period_cards(
+    *,
+    canonical_natal_state: Mapping[str, Any] | None,
+    semantic_focus_result: Any,
+    canonical_period_spine: Mapping[str, Any] | None,
+    featured_events: List[Dict[str, Any]],
+    active_life_chapter: Mapping[str, Any] | None,
+) -> Dict[str, Any]:
+    state = canonical_natal_state if isinstance(canonical_natal_state, Mapping) else {}
+    target_node_id = _safe_text((canonical_period_spine or {}).get("target_node_id"))
+    spine_lines = _list_str((canonical_period_spine or {}).get("spine_lines"))
+    core_promises = state.get("core_promises") if isinstance(state.get("core_promises"), list) else []
+    contradictions = state.get("contradictions") if isinstance(state.get("contradictions"), list) else []
+    chart_spine = state.get("chart_spine") if isinstance(state.get("chart_spine"), Mapping) else {}
+    meaning_graph = state.get("meaning_graph") if isinstance(state.get("meaning_graph"), Mapping) else {}
+    structural_state = state.get("structural_state") if isinstance(state.get("structural_state"), Mapping) else {}
+    active_chapter = active_life_chapter if isinstance(active_life_chapter, Mapping) else {}
+    return {
+        "version": "natal_context_for_period_cards_v1",
+        "chart_id": _safe_text(state.get("chart_id")),
+        "semantic_owner_ref": {
+            "source": _safe_text(getattr(semantic_focus_result, "source", None)),
+            "selected_meaning": _safe_text(getattr(semantic_focus_result, "selected_meaning", None)),
+        },
+        "activated_core_promise_ids": _find_ids_in_canonical_nodes(core_promises, target_node_id),
+        "activated_contradiction_ids": _find_ids_in_canonical_nodes(contradictions, target_node_id),
+        "chart_spine_refs": _spine_line_refs(chart_spine, spine_lines, target_node_id),
+        "activation_hook_refs": _filter_activation_hooks(
+            meaning_graph,
+            target_node_id=target_node_id,
+            spine_lines=spine_lines,
+        ),
+        "dispositor_route_refs": _filter_structural_refs(
+            structural_state.get("dispositor_routes"),
+            target_node_id=target_node_id,
+            spine_lines=spine_lines,
+        ),
+        "house_ruler_route_refs": _filter_structural_refs(
+            structural_state.get("house_ruler_routes"),
+            target_node_id=target_node_id,
+            spine_lines=spine_lines,
+        ),
+        "event_natal_links": _build_event_natal_links(featured_events),
+        "life_chapter_bridge": {
+            "renderer_handoff": dict(active_chapter.get("renderer_handoff") or {})
+            if isinstance(active_chapter.get("renderer_handoff"), Mapping)
+            else None,
+            "natal_architecture_anchor": dict(active_chapter.get("natal_architecture_anchor") or {})
+            if isinstance(active_chapter.get("natal_architecture_anchor"), Mapping)
+            else None,
+        },
+        "suppressed_identity_claims": _list_str(active_chapter.get("suppressed_readings")),
+        "debug": {
+            "authority_inputs": [
+                "canonical_natal_state",
+                "core_promises",
+                "contradictions",
+                "chart_spine",
+                "meaning_graph.activation_hooks",
+                "structural_state.dispositor_routes",
+                "structural_state.house_ruler_routes",
+                "featured_events.derived_context",
+                "featured_events.natal_promise",
+                "active_life_chapter.renderer_handoff",
+            ],
+            "blocked_authority_inputs": [
+                "profile_v8",
+                "full_map_v8",
+                "personality_imprint",
+                "meaning_graph_v1_1",
+                "projection_outputs",
+            ],
+        },
+    }
+
+
 def build_combined_meaning(event: Mapping[str, Any]) -> Dict[str, Any]:
     seed = _seed(event, "combined")
     planet = str(event.get("transit_body") or "Saturn")
@@ -785,6 +1309,10 @@ def build_period_core(
     report: Mapping[str, Any],
     event_cards: List[Mapping[str, Any]] | None = None,
     locale: str = "tr",
+    canonical_period_spine: Mapping[str, Any] | None = None,
+    active_life_chapter: Mapping[str, Any] | None = None,
+    canonical_natal_state: Mapping[str, Any] | None = None,
+    include_adaptive_card_contexts: bool = False,
 ) -> Dict[str, Any]:
     items = report.get("display", {}).get("items", []) if isinstance(report.get("display"), Mapping) else []
     typed_items = [item for item in items if isinstance(item, Mapping)]
@@ -910,7 +1438,54 @@ def build_period_core(
         "upper_meaning": upper,
         "tags": tags,
         "featured_events": selected_enriched,
+        "canonical_period_spine": dict(canonical_period_spine or {}),
     }
+    policy_seed = build_period_voice_policy(
+        canonical_period_spine=dict(canonical_period_spine or {}),
+        matched_events=selected_enriched,
+        chapter_role=(
+            str(
+                (
+                    (selected_enriched[0].get("chapter_role") or {})
+                    if isinstance(selected_enriched[0].get("chapter_role"), Mapping)
+                    else {}
+                ).get("role")
+                or ""
+            ).strip().lower()
+            if selected_enriched
+            else None
+        ),
+        canonical_backing_node_ids=[],
+        semantic_focus_result=None,
+    )
+    manifestation_context = (
+        dict(policy_seed.get("manifestation_context") or {})
+        if isinstance(policy_seed.get("manifestation_context"), Mapping)
+        else None
+    )
+    semantic_focus_result = resolve_period_semantic_focus(
+        canonical_period_spine=dict(canonical_period_spine or {}),
+        active_life_chapter=active_life_chapter,
+        period_voice_policy=policy_seed,
+        manifestation_context=manifestation_context,
+        selected_events=selected_enriched,
+        period_core_seed=result,
+        canonical_natal_state=canonical_natal_state,
+        debug=True,
+    )
+    result["semantic_focus"] = semantic_focus_result.to_debug_dict(include_evidence=False)
+    chapter_priority = _build_chapter_priority_debug(
+        active_life_chapter=active_life_chapter,
+        semantic_focus_result=semantic_focus_result,
+        flag_enabled=bool(settings.life_chapter_priority_enabled),
+    )
+    result["chapter_priority"] = chapter_priority
+    if chapter_priority.get("applied"):
+        for item in selected_enriched:
+            if not isinstance(item, dict):
+                continue
+            item["semantic_role"] = "evidence_support"
+            item["semantic_owner"] = "life_chapter"
 
     try:
         narr = build_period_story(
@@ -918,12 +1493,17 @@ def build_period_core(
                 period_core=result,
                 chart_snapshot=report.get("natal") if isinstance(report.get("natal"), Mapping) else {},
                 natal_promise={"themes": promise_themes},
+                canonical_period_spine=dict(canonical_period_spine or {}),
+                active_life_chapter=active_life_chapter,
+                semantic_focus_result=semantic_focus_result,
                 locale=locale,
                 enable_fun=True,
             )
         )
         if narr.big_picture:
             result["big_picture"] = narr.big_picture
+        if isinstance(narr.period_reading_v1, Mapping) and narr.period_reading_v1:
+            result["period_reading_v1"] = dict(narr.period_reading_v1)
         if narr.period_opening:
             result["period_opening"] = narr.period_opening
         if narr.mechanism:
@@ -936,15 +1516,19 @@ def build_period_core(
             result["what_it_builds"] = narr.what_it_builds
         if narr.upper_meaning:
             result["upper_meaning"] = narr.upper_meaning
-        result["core_story"] = "\n\n".join(
-            part
-            for part in (
-                narr.period_opening,
-                narr.big_picture,
-                narr.relational_or_life_expression,
+        result["core_story"] = (
+            str((narr.period_reading_v1 or {}).get("full_text") or "").strip()
+            or "\n\n".join(
+                part
+                for part in (
+                    narr.period_opening,
+                    narr.big_picture,
+                    narr.relational_or_life_expression,
+                )
+                if str(part).strip()
             )
-            if str(part).strip()
-        ) or result["core_story"]
+            or result["core_story"]
+        )
         result["narrative_version"] = "period_story_v2"
         result["_period_story_debug"] = narr.debug
     except Exception:
@@ -957,6 +1541,34 @@ def build_period_core(
         result["story_tracks"] = story_tracks
     if event_story_map:
         result["_event_story_map"] = event_story_map
+    if include_adaptive_card_contexts:
+        story_debug = result.get("_period_story_debug") if isinstance(result.get("_period_story_debug"), Mapping) else {}
+        composer_plan = story_debug.get("composer_plan") if isinstance(story_debug.get("composer_plan"), Mapping) else {}
+        adaptive_cards_context = {
+            "period_card_context": _build_period_card_context(
+                semantic_focus_result=semantic_focus_result,
+                chapter_priority=chapter_priority,
+                canonical_period_spine=dict(canonical_period_spine or {}),
+                featured_events=selected_enriched,
+                period_reading_v1=result.get("period_reading_v1") if isinstance(result.get("period_reading_v1"), Mapping) else {},
+                composer_plan=composer_plan,
+                manifestation_context=manifestation_context,
+            ),
+            "natal_context_for_period_cards": _build_natal_context_for_period_cards(
+                canonical_natal_state=dict(canonical_natal_state or {}) if isinstance(canonical_natal_state, Mapping) else None,
+                semantic_focus_result=semantic_focus_result,
+                canonical_period_spine=dict(canonical_period_spine or {}),
+                featured_events=selected_enriched,
+                active_life_chapter=active_life_chapter,
+            ),
+        }
+        adaptive_cards_context["debug"] = {
+            "visibility": "artifact_test_only",
+            "public_exposed": False,
+            "single_emission_point": "build_period_core",
+            "natal_activation_context_present_at_build_time": False,
+        }
+        result["_adaptive_cards_context"] = adaptive_cards_context
     return result
 
 
