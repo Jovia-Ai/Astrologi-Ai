@@ -5,6 +5,8 @@ import 'auth/auth_gate.dart';
 import 'auth/login_page.dart';
 import 'auth/register_page.dart';
 import 'onboarding/onboarding_profile_page.dart';
+import 'tabs/home_page_v2.dart';
+import 'tabs/profile_page_v9.dart';
 import 'tabs/tabs_shell.dart';
 
 GoRouter buildRouter() {
@@ -22,6 +24,17 @@ GoRouter buildRouter() {
         builder: (context, state) => const OnboardingProfilePage(),
       ),
       GoRoute(path: '/tabs', builder: (context, state) => const TabsShell()),
+      // Dev-only: yeni Home v12 tasarımı. Prod Bugün tab'ı legacy'de kalır.
+      GoRoute(
+        path: '/dev/home-v2',
+        builder: (context, state) => const HomePageV2(),
+      ),
+      // Dev-only: paralel "iceberg" Profile (v9). Prod Profile tab'ı legacy'de
+      // kalır; v9 olgunlaştığında eski [profile_page.dart] silinir.
+      GoRoute(
+        path: '/dev/profile-v9',
+        builder: (context, state) => const ProfilePageV9(),
+      ),
     ],
     redirect: (context, state) {
       final session = Supabase.instance.client.auth.currentSession;

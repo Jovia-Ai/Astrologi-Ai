@@ -56,6 +56,21 @@ void main() {
         'en çok bakıldığın anlar olabilir',
         reason: 'Trailing half of the same hardcoded manifesto title.',
       );
+      _expectAbsent(
+        source,
+        'Günün tek cümlesi',
+        reason:
+            'Manifesto hero now reads snapshot.narrative.dailySynthesis '
+            'headline/body/guidance. This legacy hardcoded bridge copy '
+            'must not return.',
+      );
+      _expectAbsent(
+        source,
+        '_DailySynthesisSection',
+        reason:
+            'Daily synthesis should be folded into _ManifestoSection, not '
+            'inserted as a separate block after the hero.',
+      );
     });
 
     test('Sky central quote hardcoded copy removed', () {

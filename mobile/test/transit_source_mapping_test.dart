@@ -135,6 +135,43 @@ void main() {
       expect(periodCards.first.title, tr('Donem karti'));
     });
 
+    test('Daily synthesis parses additive narrative contract fields', () {
+      final narrative = NarrativeResponse.fromMap({
+        'public': {
+          'daily_synthesis': {
+            'theme': 'communication_clarity_tension',
+            'theme_description':
+                'Bugunun agirligi ifade, netlik ve zihinsel akis tarafina dusuyor.',
+            'headline': 'Bugun mesele zihnin ve konusma halin.',
+            'body':
+                'Bugun soylediklerinin tonu daha cabuk buyuyebilir.\n\nSenin yapinda bu tema en hizli zihnin ve konusma halin uzerinden calisiyor.\n\nBu, daha buyuk bir donemin bugune inen yuzu.',
+            'guidance': 'Bugun en saglikli yaklasim su: ilk cumleyi netlestir.',
+            'sources': {
+              'daily': ['evt_1'],
+              'period': ['period_core'],
+              'natal': ['house_3', 'natal_point_sun'],
+            },
+          },
+        },
+      });
+
+      expect(narrative.dailySynthesis, isNotNull);
+      expect(
+        narrative.dailySynthesis?.theme,
+        'communication_clarity_tension',
+      );
+      expect(
+        narrative.dailySynthesis?.headline,
+        tr('Bugun mesele zihnin ve konusma halin.'),
+      );
+      expect(narrative.dailySynthesis?.sources.daily, ['evt_1']);
+      expect(narrative.dailySynthesis?.sources.period, ['period_core']);
+      expect(
+        narrative.dailySynthesis?.sources.natal,
+        ['house_3', 'natal_point_sun'],
+      );
+    });
+
     test('Period calendar keeps markers as support source', () {
       final period = PeriodCalendarDto.fromMap({
         'period_core': {

@@ -70,6 +70,7 @@ class _BondPageState extends ConsumerState<BondPage> {
                     bottom: false,
                     child: ShouTopBar(
                       label: l10n.tabsBond.toUpperCase(),
+                      variant: ShouTopBarVariant.light,
                       onMenu: () {},
                     ),
                   ),

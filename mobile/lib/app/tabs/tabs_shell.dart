@@ -18,10 +18,9 @@ import 'package:mobile/design/widgets/jovia_editorial.dart';
 import 'package:mobile/app/widgets/jovia_app_menu_drawer.dart';
 import 'package:mobile/l10n/l10n.dart';
 
-/// While the SHOU v2 home is being built from the Figma design, keep the
-/// legacy [HomePage] wired up by default. Flip this to `true` during
-/// development to preview [HomePageV2] in the first tab. Once the v2 page
-/// reaches feature parity we'll drop the flag and delete the legacy file.
+/// Bugün tab'ı SHOU v2 Figma tasarımı ile render ediliyor. Legacy
+/// [HomePage] hâlâ dosyada — geri dönüş gerekirse flag `false` yapıp
+/// sonra silinir.
 const bool kUseHomeV2 = true;
 
 class TabsShell extends StatefulWidget {

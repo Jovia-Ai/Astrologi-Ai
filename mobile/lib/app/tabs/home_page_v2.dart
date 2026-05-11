@@ -61,6 +61,7 @@ class _HomePageV2State extends ConsumerState<HomePageV2> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
+                    _WeekStrip(),
                     _ManifestoSection(),
                     _DividerGlyph(style: _DividerStyle.spark),
                     _SkySection(),
@@ -71,8 +72,6 @@ class _HomePageV2State extends ConsumerState<HomePageV2> {
                     _ChartWheelSection(),
                     _PullQuoteSection(),
                     _StickerGridSection(),
-                    _ForumSection(),
-                    _WeekSection(),
                     _Endpiece(),
                   ],
                 ),
@@ -238,14 +237,20 @@ class _HomeV2Palette {
 class _ManifestoSection extends ConsumerWidget {
   const _ManifestoSection();
 
-  /// Backend-driven manifesto hook. Maps to the existing live narrative
-  /// payload — no new schema field. Tries `periodCore.upperMeaning`
-  /// first (typically a single editorial sentence), falls back to the
-  /// first sentence of `periodCore.coreStory`. Returns `null` when
-  /// neither is available so the UI hides the title area instead of
-  /// falling back to a hardcoded mock. Inlined here (rather than as a
-  /// provider getter) to keep `home_v2_providers.dart` untouched.
-  static String? _coreStoryHeadline(HomeV2Snapshot? snapshot) {
+  /// Home hero headline precedence:
+  /// 1. `daily_synthesis.headline`
+  /// 2. `periodCore.upperMeaning`
+  /// 3. first sentence of `periodCore.coreStory`
+  ///
+  /// Returns `null` when none are available so the title area collapses
+  /// instead of showing a hardcoded mock.
+  static String? _headline(HomeV2Snapshot? snapshot) {
+    final synthesis = snapshot?.narrative.dailySynthesis;
+    if (synthesis != null && !synthesis.isEmpty) {
+      final synthesisHeadline = synthesis.headline.trim();
+      if (synthesisHeadline.isNotEmpty) return synthesisHeadline;
+    }
+
     final core = snapshot?.narrative.periodCore;
     if (core == null) return null;
 
@@ -259,14 +264,42 @@ class _ManifestoSection extends ConsumerWidget {
     return story.substring(0, firstSentenceEnd + 1).trim();
   }
 
+  static String? _detailBody(HomeV2Snapshot? snapshot) {
+    final synthesis = snapshot?.narrative.dailySynthesis;
+    if (synthesis != null && !synthesis.isEmpty) {
+      final body = synthesis.body.trim();
+      if (body.isNotEmpty) return body;
+    }
+
+    final core = snapshot?.narrative.periodCore;
+    if (core == null) return null;
+    final story = core.coreStory.trim();
+    if (story.isNotEmpty) return story;
+    final upper = core.upperMeaning.trim();
+    if (upper.isNotEmpty) return upper;
+    return null;
+  }
+
+  static String? _detailGuidance(HomeV2Snapshot? snapshot) {
+    final synthesis = snapshot?.narrative.dailySynthesis;
+    if (synthesis == null || synthesis.isEmpty) return null;
+    final guidance = synthesis.guidance.trim();
+    if (guidance.isNotEmpty) return guidance;
+    return null;
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final snapshot = ref.watch(homeV2SnapshotProvider).value;
-    // Backend-driven manifesto hook. When live data is missing the title
-    // area (and its surrounding spacing) collapses entirely instead of
-    // falling back to a hardcoded mock — see P0-A cleanup plan.
-    final headline = _coreStoryHeadline(snapshot)?.trim();
+    final synthesis = snapshot?.narrative.dailySynthesis;
+    final hasLiveSynthesis = synthesis != null && !synthesis.isEmpty;
+    final headline = _headline(snapshot)?.trim();
     final hasHeadline = headline != null && headline.isNotEmpty;
+    final synthesisBody = hasLiveSynthesis ? synthesis.body.trim() : '';
+    final hasSynthesisBody = synthesisBody.isNotEmpty;
+    final synthesisGuidance = hasLiveSynthesis ? synthesis.guidance.trim() : '';
+    final hasSynthesisGuidance = synthesisGuidance.isNotEmpty;
+
     return Padding(
       padding: const EdgeInsets.fromLTRB(28, 42, 28, 48),
       child: Column(
@@ -279,6 +312,12 @@ class _ManifestoSection extends ConsumerWidget {
           ),
           if (hasHeadline) const SizedBox(height: 32),
           if (hasHeadline) _ManifestoTitle(headline: headline),
+          if (hasSynthesisBody) const SizedBox(height: 14),
+          if (hasSynthesisBody)
+            _ManifestoBody(body: synthesisBody),
+          if (hasSynthesisGuidance) const SizedBox(height: 16),
+          if (hasSynthesisGuidance)
+            _ManifestoGuidanceLine(guidance: synthesisGuidance),
           const SizedBox(height: 36),
           const _OrbitEmblem(),
           const SizedBox(height: 26),
@@ -341,7 +380,7 @@ class _ManifestoGreeting extends StatelessWidget {
             TextSpan(text: dateLabel, style: inkUnderlined),
             const TextSpan(text: ' ve gökyüzünde Ay '),
             TextSpan(text: moonSign, style: limeUnderlined),
-            const TextSpan(text: '. Günün tek cümlesi:'),
+            const TextSpan(text: '.'),
           ],
         ),
         textAlign: TextAlign.center,
@@ -382,6 +421,61 @@ class _ManifestoTitle extends StatelessWidget {
         headline,
         style: base,
         textAlign: TextAlign.center,
+      ),
+    );
+  }
+}
+
+class _ManifestoBody extends StatelessWidget {
+  const _ManifestoBody({required this.body});
+
+  final String body;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 314),
+      child: Text(
+        body,
+        textAlign: TextAlign.center,
+        maxLines: 4,
+        overflow: TextOverflow.ellipsis,
+        style: GoogleFonts.inter(
+          textStyle: const TextStyle(
+            fontSize: 13.5,
+            height: 1.55,
+            letterSpacing: -0.1,
+            color: _HomeV2Palette.fog,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ManifestoGuidanceLine extends StatelessWidget {
+  const _ManifestoGuidanceLine({required this.guidance});
+
+  final String guidance;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 286),
+      child: Text(
+        guidance.toUpperCase(),
+        textAlign: TextAlign.center,
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: GoogleFonts.inter(
+          textStyle: const TextStyle(
+            fontSize: 9.5,
+            letterSpacing: 1.8,
+            color: _HomeV2Palette.limeText,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
       ),
     );
   }
@@ -577,15 +671,13 @@ class _OrbitEmblemPainter extends CustomPainter {
 }
 
 /// "GÜNÜ AÇ →" — letterspaced uppercase link, ince underline.
-class _ManifestoOpenLink extends StatelessWidget {
+class _ManifestoOpenLink extends ConsumerWidget {
   const _ManifestoOpenLink();
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-      onTap: () {
-        // TODO: Profil Detay (profile_detail_flow) açılacak.
-      },
+      onTap: () => _openManifestoDetailSheet(context, ref),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
         child: Text(
@@ -600,6 +692,144 @@ class _ManifestoOpenLink extends StatelessWidget {
               decorationThickness: 0.5,
               decorationColor: _HomeV2Palette.ink,
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openManifestoDetailSheet(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final snapshot = ref.read(homeV2SnapshotProvider).value;
+    final headline = _ManifestoSection._headline(snapshot)?.trim() ?? '';
+    final body = _ManifestoSection._detailBody(snapshot)?.trim() ?? '';
+    final guidance = _ManifestoSection._detailGuidance(snapshot)?.trim() ?? '';
+
+    if (headline.isEmpty && body.isEmpty && guidance.isEmpty) {
+      return;
+    }
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return _ManifestoDetailSheet(
+          headline: headline,
+          body: body,
+          guidance: guidance,
+        );
+      },
+    );
+  }
+}
+
+class _ManifestoDetailSheet extends StatelessWidget {
+  const _ManifestoDetailSheet({
+    required this.headline,
+    required this.body,
+    required this.guidance,
+  });
+
+  final String headline;
+  final String body;
+  final String guidance;
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    return SafeArea(
+      top: false,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: _HomeV2Palette.paper,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+        ),
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(
+            28,
+            18,
+            28,
+            28 + mediaQuery.viewPadding.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                width: 42,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: _HomeV2Palette.hairline,
+                  borderRadius: BorderRadius.circular(999),
+                ),
+              ),
+              const SizedBox(height: 22),
+              Flexible(
+                child: SingleChildScrollView(
+                  physics: const BouncingScrollPhysics(),
+                  child: Column(
+                    children: [
+                      if (headline.isNotEmpty)
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 320),
+                          child: Text(
+                            headline,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.fraunces(
+                              textStyle: const TextStyle(
+                                fontSize: 28,
+                                height: 1.3,
+                                letterSpacing: -0.45,
+                                color: _HomeV2Palette.ink,
+                                fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (headline.isNotEmpty && body.isNotEmpty)
+                        const SizedBox(height: 18),
+                      if (body.isNotEmpty)
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 332),
+                          child: Text(
+                            body,
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              textStyle: const TextStyle(
+                                fontSize: 14.5,
+                                height: 1.7,
+                                letterSpacing: -0.1,
+                                color: _HomeV2Palette.fog,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      if (guidance.isNotEmpty) const SizedBox(height: 22),
+                      if (guidance.isNotEmpty)
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 300),
+                          child: Text(
+                            guidance.toUpperCase(),
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.inter(
+                              textStyle: const TextStyle(
+                                fontSize: 10,
+                                letterSpacing: 2,
+                                color: _HomeV2Palette.limeText,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -1228,40 +1458,38 @@ class _AskewBanner extends ConsumerWidget {
           Positioned.fill(
             child: CustomPaint(painter: _AskewBackgroundPainter()),
           ),
-          Positioned(
-            top: 0,
-            bottom: 0,
-            left: -40,
-            right: -40,
-            child: Align(
-              alignment: Alignment.center,
-              child: Transform.rotate(
-                angle: -0.0436,
-                child: Container(
-                  height: 38,
-                  color: _HomeV2Palette.lime.withValues(alpha: 0.95),
-                ),
-              ),
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.fromLTRB(28, 36, 28, 38),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  eyebrow,
-                  style: GoogleFonts.inter(
-                    textStyle: const TextStyle(
-                      fontSize: 8,
-                      letterSpacing: 2.4,
-                      color: Color(0x80FFFFFF),
-                      fontWeight: FontWeight.w500,
+                // Lime micro-marker — "şimdi/yakında" cue, sole lime accent.
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: _HomeV2Palette.lime,
+                      width: 0.8,
+                    ),
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                  child: Text(
+                    eyebrow,
+                    style: GoogleFonts.inter(
+                      textStyle: const TextStyle(
+                        fontSize: 8,
+                        letterSpacing: 2,
+                        color: _HomeV2Palette.lime,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 14),
                 Text(
                   date,
                   style: GoogleFonts.fraunces(
@@ -1275,25 +1503,15 @@ class _AskewBanner extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 2),
-                Transform.rotate(
-                  angle: -0.0262,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
-                    color: _HomeV2Palette.lime,
-                    child: Text(
-                      name,
-                      style: GoogleFonts.inter(
-                        textStyle: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.w500,
-                          letterSpacing: -0.3,
-                          color: _HomeV2Palette.limeText,
-                        ),
-                      ),
+                const SizedBox(height: 6),
+                Text(
+                  name,
+                  style: GoogleFonts.inter(
+                    textStyle: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: -0.3,
+                      color: Colors.white,
                     ),
                   ),
                 ),
@@ -1325,9 +1543,6 @@ class _AskewBanner extends ConsumerWidget {
                         letterSpacing: 2.5,
                         color: Colors.white,
                         fontWeight: FontWeight.w400,
-                        decoration: TextDecoration.underline,
-                        decorationColor: _HomeV2Palette.lime,
-                        decorationThickness: 0.5,
                       ),
                     ),
                   ),
@@ -3163,6 +3378,132 @@ class _PullQuoteSection extends ConsumerWidget {
 // ─────────────────────────────────────────────────────────────
 // WEEK STRIP — 7 günlük grid + "yoğun gün" highlight kutusu
 // ─────────────────────────────────────────────────────────────
+
+/// Thin top week strip — name / dot / num per day, today highlighted.
+/// Replaces the heavy "Akışın haftalık görüntüsü" block at the bottom.
+class _WeekStrip extends ConsumerWidget {
+  const _WeekStrip();
+
+  static const _mockDays = <_WeekDayData>[
+    _WeekDayData(num: '17', name: 'CUM', tone: _WeekDayTone.active),
+    _WeekDayData(num: '18', name: 'CMT', tone: _WeekDayTone.idle),
+    _WeekDayData(num: '19', name: 'PAZ', tone: _WeekDayTone.blushDay),
+    _WeekDayData(num: '20', name: 'PZT', tone: _WeekDayTone.idle),
+    _WeekDayData(num: '21', name: 'SAL', tone: _WeekDayTone.idle),
+    _WeekDayData(num: '22', name: 'ÇAR', tone: _WeekDayTone.lavDay),
+    _WeekDayData(num: '23', name: 'PER', tone: _WeekDayTone.idle),
+  ];
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final snapshot = ref.watch(homeV2SnapshotProvider).value;
+    final live = snapshot?.weekDays ?? const <HomeV2WeekDay>[];
+    final days = live.isNotEmpty
+        ? live
+              .map(
+                (d) => _WeekDayData(
+                  num: d.numLabel,
+                  name: d.nameLabel,
+                  tone: switch (d.tone) {
+                    HomeV2WeekDayTone.idle => _WeekDayTone.idle,
+                    HomeV2WeekDayTone.active => _WeekDayTone.active,
+                    HomeV2WeekDayTone.blushDay => _WeekDayTone.blushDay,
+                    HomeV2WeekDayTone.lavDay => _WeekDayTone.lavDay,
+                  },
+                ),
+              )
+              .toList(growable: false)
+        : _mockDays;
+
+    final nameStyle = GoogleFonts.inter(
+      textStyle: const TextStyle(
+        fontSize: 8,
+        letterSpacing: 1.4,
+        color: _HomeV2Palette.silver,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: _HomeV2Palette.paper,
+        border: Border(
+          bottom: BorderSide(color: _HomeV2Palette.hairline, width: 0.5),
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 10, 20, 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          for (final d in days)
+            Expanded(child: _WeekStripCell(data: d, nameStyle: nameStyle)),
+        ],
+      ),
+    );
+  }
+}
+
+class _WeekStripCell extends StatelessWidget {
+  const _WeekStripCell({required this.data, required this.nameStyle});
+
+  final _WeekDayData data;
+  final TextStyle nameStyle;
+
+  @override
+  Widget build(BuildContext context) {
+    final isActive = data.tone == _WeekDayTone.active;
+    final numStyle = GoogleFonts.fraunces(
+      textStyle: TextStyle(
+        fontSize: 13,
+        fontWeight: FontWeight.w300,
+        height: 1,
+        letterSpacing: -0.2,
+        color: isActive ? _HomeV2Palette.ink : _HomeV2Palette.mist,
+      ),
+    );
+
+    Color dotColor;
+    switch (data.tone) {
+      case _WeekDayTone.active:
+        dotColor = _HomeV2Palette.lime;
+        break;
+      case _WeekDayTone.blushDay:
+        dotColor = _HomeV2Palette.blush;
+        break;
+      case _WeekDayTone.lavDay:
+        dotColor = _HomeV2Palette.lavender;
+        break;
+      case _WeekDayTone.idle:
+        dotColor = _HomeV2Palette.cloud;
+        break;
+    }
+
+    final dotSize = isActive ? 5.5 : 3.0;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(data.name, style: nameStyle),
+        const SizedBox(height: 5),
+        SizedBox(
+          height: 6,
+          child: Center(
+            child: Container(
+              width: dotSize,
+              height: dotSize,
+              decoration: BoxDecoration(
+                color: dotColor,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 5),
+        Text(data.num, style: numStyle),
+      ],
+    );
+  }
+}
 
 class _WeekSection extends StatelessWidget {
   const _WeekSection();

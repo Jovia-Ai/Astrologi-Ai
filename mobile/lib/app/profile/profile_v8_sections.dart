@@ -6,6 +6,57 @@ import 'package:mobile/app/timing/turkish_text.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
 
+/// Profil tab kartlarında body göstergesini ilk anlamlı cümleye sınırlar.
+/// Tam içerik tap'lendiğinde açılan slide modal'da görünür — kart sadece
+/// teaser. Tam Okuma kart pattern'iyle (etiket+çekirdek) tutarlı.
+String _firstSentence(String body) {
+  final trimmed = body.trim();
+  if (trimmed.isEmpty) return '';
+  final match = RegExp(r'^[^.!?…]+[.!?…]').firstMatch(trimmed);
+  if (match == null) return trimmed;
+  return match.group(0)?.trim() ?? trimmed;
+}
+
+/// Eyebrow text → hero slide üstündeki pastel band illüstrasyonu.
+/// 12 mevcut JoviaIllustrationAsset arasından semantik eşleştirme.
+JoviaIllustrationAsset _illustrationForEyebrow(String eyebrow) {
+  final lower = eyebrow.toLowerCase();
+  if (lower.contains('zihin') || lower.contains('düşün')) {
+    return JoviaIllustrationAsset.dots;
+  }
+  if (lower.contains('yakın') || lower.contains('aşk') || lower.contains('sevgi')) {
+    return JoviaIllustrationAsset.heart;
+  }
+  if (lower.contains('savunma') || lower.contains('koruma')) {
+    return JoviaIllustrationAsset.layers;
+  }
+  if (lower.contains('ilk hisse') || lower.contains('ilk anda')) {
+    return JoviaIllustrationAsset.sunGrowth;
+  }
+  if (lower.contains('ilk izlenim')) {
+    return JoviaIllustrationAsset.shape;
+  }
+  if (lower.contains('misyon') || lower.contains('kolektif') || lower.contains('amaç')) {
+    return JoviaIllustrationAsset.sunMountain;
+  }
+  if (lower.contains('yetenek')) {
+    return JoviaIllustrationAsset.flower;
+  }
+  if (lower.contains('geçmiş') || lower.contains('nereden')) {
+    return JoviaIllustrationAsset.rocks;
+  }
+  if (lower.contains('konuş')) {
+    return JoviaIllustrationAsset.bird;
+  }
+  if (lower.contains('etki') || lower.contains('seni nasıl')) {
+    return JoviaIllustrationAsset.planet;
+  }
+  if (lower.contains('farklı kılan')) {
+    return JoviaIllustrationAsset.blocks;
+  }
+  return JoviaIllustrationAsset.shape;
+}
+
 class ProfileV8SectionsView extends StatelessWidget {
   const ProfileV8SectionsView({
     super.key,
@@ -77,10 +128,11 @@ class ProfileV8SectionsView extends StatelessWidget {
         for (final item in data.differentiators)
           if (item.eyebrow.trim().isNotEmpty) item.eyebrow.trim(),
       ];
+      final differentiatorEyebrow = section.eyebrow.trim().isEmpty
+          ? 'SENİ FARKLI KILAN'
+          : section.eyebrow;
       final sheetData = ProfileDetailSheetData(
-        eyebrow: section.eyebrow.trim().isEmpty
-            ? 'SENİ FARKLI KILAN'
-            : section.eyebrow,
+        eyebrow: differentiatorEyebrow,
         headline: section.headline.trim().isEmpty
             ? (data.differentiators.isNotEmpty
                   ? data.differentiators.first.headline
@@ -93,6 +145,7 @@ class ProfileV8SectionsView extends StatelessWidget {
         details: section.bullets
             .where((item) => item.trim().isNotEmpty)
             .toList(growable: false),
+        illustration: _illustrationForEyebrow(differentiatorEyebrow),
       );
       children.add(const SizedBox(height: 14));
       children.add(
@@ -149,6 +202,7 @@ class ProfileV8SectionsView extends StatelessWidget {
                     .where((item) => item.trim().isNotEmpty)
                     .toList(growable: false),
                 extraLayers: extraLayers,
+                illustration: JoviaIllustrationAsset.rocks,
               ),
               child: _V8PastTeaserCard(section: section),
             ),
@@ -216,6 +270,11 @@ class ProfileV8SectionsView extends StatelessWidget {
               accent: accent,
               accentInk: accentTextColor,
               chips: section.chips,
+              illustration: _illustrationForEyebrow(
+                section.eyebrow.trim().isEmpty
+                    ? fallbackEyebrow
+                    : section.eyebrow,
+              ),
             ),
             child: _V8SectionCard(
               section: section,
@@ -268,6 +327,7 @@ class ProfileV8SectionsView extends StatelessWidget {
               accent: const Color(0xFF7F77DD),
               accentInk: const Color(0xFF26215C),
               chips: effectChips,
+              illustration: JoviaIllustrationAsset.planet,
             ),
             child: _V8AffectsCard(section: section),
           ),
@@ -328,6 +388,7 @@ class ProfileV8SectionsView extends StatelessWidget {
                 accent: const Color(0xFFCAFF4D),
                 accentInk: const Color(0xFF1A3300),
                 chips: section.chips,
+                illustration: JoviaIllustrationAsset.sunMountain,
               ),
               child: _V8SectionCard(
                 section: section,
@@ -957,8 +1018,8 @@ class _V8PastTeaserCard extends StatelessWidget {
         ? 'Geçmişten gelen bir iz var.'
         : section.headline.trim();
     final body = section.body.trim().isEmpty
-        ? 'Zamanında öğrendiğin bir savunma bugün hâlâ görünür olabilir.'
-        : section.body.trim();
+        ? 'Zamanında öğrendiğin bir koruma bugün hâlâ görünür.'
+        : _firstSentence(section.body);
     final innerEyebrow = section.chips
         .where((item) => item.trim().isNotEmpty)
         .take(2)
@@ -1040,7 +1101,7 @@ class _V8PastTeaserCard extends StatelessWidget {
                   const SizedBox(height: 8),
                   Text(
                     body,
-                    maxLines: 3,
+                    maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: profile.typography.bodyCompact.copyWith(
                       color: const Color(0xFF8A8A8A),
@@ -1145,8 +1206,8 @@ class _V8FirstImpressionCard extends StatelessWidget {
         ? 'İlk anda sakin, yakında derin hissedilirsin.'
         : section.headline.trim();
     final body = section.body.trim().isEmpty
-        ? 'İnsanlar sende önce duruşu, sonra gerçek derinliği fark eder.'
-        : section.body.trim();
+        ? 'İnsanlar sende önce duruşu fark eder.'
+        : _firstSentence(section.body);
     final split = _splitLead(title);
     return Container(
       decoration: BoxDecoration(
@@ -1222,7 +1283,7 @@ class _V8FirstImpressionCard extends StatelessWidget {
           const SizedBox(height: 9),
           Text(
             body,
-            maxLines: 3,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: profile.typography.micro.copyWith(
               color: const Color(0xFF9A9A9A),
@@ -1531,8 +1592,8 @@ class _V8ConversationCard extends StatelessWidget {
         ? 'Fikir alışverişi, derin konular, uzun vadeli planlar.'
         : section.headline.trim();
     final body = section.body.trim().isEmpty
-        ? 'Yüzeysel sohbet kısa sürer; birlikte düşünmek bağı açar.'
-        : section.body.trim();
+        ? 'Birlikte düşünmek bağı açar.'
+        : _firstSentence(section.body);
     final callout = (section.callout ?? '').trim().isEmpty
         ? '“Projeler, fikirler, ne inşa ediyorsun?”'
         : (section.callout ?? '').trim();
@@ -1615,7 +1676,7 @@ class _V8ConversationCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             body,
-            maxLines: 3,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: profile.typography.micro.copyWith(
               color: const Color(0xFF8F8F8F),
@@ -1672,16 +1733,12 @@ class _V8AffectsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final profile = context.profileTheme;
-    final rows = section.bullets
-        .where((item) => item.trim().isNotEmpty)
-        .take(3)
-        .toList(growable: false);
     final headline = section.headline.trim().isEmpty
         ? 'Başta mesafeli, yakında çok daha derin.'
         : section.headline.trim();
     final body = section.body.trim().isEmpty
         ? 'Güven kurulduğunda etki hızla yoğunlaşır.'
-        : section.body.trim();
+        : _firstSentence(section.body);
 
     return Container(
       decoration: BoxDecoration(
@@ -1743,59 +1800,8 @@ class _V8AffectsCard extends StatelessWidget {
               height: 1.48,
             ),
           ),
-          if (rows.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            Container(
-              decoration: BoxDecoration(
-                color: const Color(0xFFFAFAFC),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: const Color.fromRGBO(0, 0, 0, 0.055),
-                ),
-              ),
-              child: Column(
-                children: [
-                  for (var i = 0; i < rows.length; i++) ...[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 9, 10, 9),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 7,
-                            height: 7,
-                            margin: const EdgeInsets.only(top: 4),
-                            decoration: BoxDecoration(
-                              color: _v8AffectsDotColor(i),
-                              borderRadius: BorderRadius.circular(3.5),
-                            ),
-                          ),
-                          const SizedBox(width: 9),
-                          Expanded(
-                            child: Text(
-                              rows[i],
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: profile.typography.bodyCompact.copyWith(
-                                color: _v8AffectsTextColor(i),
-                                fontSize: 10.3,
-                                height: 1.4,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (i != rows.length - 1)
-                      Container(
-                        height: 1,
-                        color: const Color.fromRGBO(0, 0, 0, 0.05),
-                      ),
-                  ],
-                ],
-              ),
-            ),
-          ],
+          // NOT: Bullet/row listesi kart yüzeyinde GÖSTERİLMİYOR.
+          // Tap → showProfileDetailSheet → slide modal her bullet için ayrı slide.
           if ((section.footer ?? '').trim().isNotEmpty) ...[
             const SizedBox(height: 8),
             Text(
@@ -1812,24 +1818,6 @@ class _V8AffectsCard extends StatelessWidget {
       ),
     );
   }
-}
-
-Color _v8AffectsDotColor(int index) {
-  switch (index) {
-    case 0:
-      return const Color(0xFF7F77DD);
-    case 1:
-      return const Color(0xFFCAFF4D);
-    default:
-      return const Color(0xFFDDDDDD);
-  }
-}
-
-Color _v8AffectsTextColor(int index) {
-  if (index >= 2) {
-    return const Color(0xFFAAAAAA);
-  }
-  return const Color(0xFF444444);
 }
 
 class _V8DefenseCard extends StatelessWidget {
@@ -1849,9 +1837,10 @@ class _V8DefenseCard extends StatelessWidget {
               : section.headline.trim())
         : split.$2.trim();
     final normalizedBody = section.body.trim();
+    // Kart yüzeyi: ilk cümle yeterli — tam içerik slide modal'da.
     final body = normalizedBody.isEmpty
-        ? 'Bu bir zırh değil, temkinli bir ritim. Güvenle birlikte yumuşar.'
-        : _dedupeBody(normalizedBody, headlineMain);
+        ? 'Güvenle yumuşar.'
+        : _firstSentence(_dedupeBody(normalizedBody, headlineMain));
 
     return Container(
       decoration: BoxDecoration(
@@ -1938,7 +1927,7 @@ class _V8DefenseCard extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       body,
-                      maxLines: 3,
+                      maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: profile.typography.micro.copyWith(
                         color: const Color(0xFF888888),
@@ -2003,8 +1992,8 @@ class _V8FirstFeltCard extends StatelessWidget {
         ? 'İlk anda sakin, kısa sürede güçlü bir iz bırakırsın.'
         : rawHeadline;
     final body = section.body.trim().isEmpty
-        ? 'İnsanlar sende önce duruşu, sonra ritmi ve derinliği algılar.'
-        : section.body.trim();
+        ? 'İnsanlar sende önce duruşu, sonra ritmi algılar.'
+        : _firstSentence(section.body);
 
     return Container(
       decoration: BoxDecoration(
@@ -2081,7 +2070,7 @@ class _V8FirstFeltCard extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             body,
-            maxLines: 3,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: profile.typography.micro.copyWith(
               color: const Color(0xFF8D8D8D),
@@ -2226,48 +2215,20 @@ class _V8SectionCard extends StatelessWidget {
           ],
           if (section.body.trim().isNotEmpty) ...[
             const SizedBox(height: 10),
+            // Kart yüzeyi sadece teaser — ilk cümle, max 2 satır.
+            // Tam içerik tap → showProfileDetailSheet slide modal'da.
             Text(
-              section.body.trim(),
+              _firstSentence(section.body),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
               style: profile.typography.bodyReading.copyWith(
                 color: softText,
                 height: 1.55,
               ),
             ),
           ],
-          if (section.bullets.isNotEmpty) ...[
-            const SizedBox(height: 12),
-            for (final bullet in section.bullets.take(5)) ...[
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: 5,
-                    height: 5,
-                    margin: const EdgeInsets.only(top: 8),
-                    decoration: BoxDecoration(
-                      color: dark
-                          ? const Color(0xFFCAFF4D)
-                          : (isDarkTheme
-                                ? Colors.white.withValues(alpha: 0.64)
-                                : const Color(0xFF111111)),
-                      shape: BoxShape.circle,
-                    ),
-                  ),
-                  const SizedBox(width: 9),
-                  Expanded(
-                    child: Text(
-                      bullet,
-                      style: profile.typography.bodyCompact.copyWith(
-                        color: softText,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-            ],
-          ],
+          // NOT: bullets kart yüzeyinde GÖSTERİLMİYOR — slide modal'a alındı.
+          // Body 5 paragraflık metin duvarını "metin duvarı" hissinden çıkardı.
           if (section.chips.isNotEmpty) ...[
             const SizedBox(height: 6),
             Wrap(
@@ -2536,8 +2497,10 @@ ProfileDetailSheetData _sheetFromSection(
   final highlight = (section.callout ?? '').trim();
   final resolvedDetails = details ?? section.bullets;
   final resolvedGrowth = growthNote ?? (section.growth ?? '');
+  final resolvedEyebrow =
+      section.eyebrow.trim().isEmpty ? fallbackEyebrow : section.eyebrow;
   return ProfileDetailSheetData(
-    eyebrow: section.eyebrow.trim().isEmpty ? fallbackEyebrow : section.eyebrow,
+    eyebrow: resolvedEyebrow,
     headline: section.headline.trim(),
     body: section.body.trim(),
     placement: placement,
@@ -2551,6 +2514,7 @@ ProfileDetailSheetData _sheetFromSection(
     growthNote: resolvedGrowth,
     ctaLabel: ctaLabel,
     onCta: onCta,
+    illustration: _illustrationForEyebrow(resolvedEyebrow),
   );
 }
 
@@ -2565,7 +2529,36 @@ Widget _v8Tappable({
       child: InkWell(
         borderRadius: BorderRadius.circular(borderRadius),
         onTap: () => showProfileDetailSheet(ctx, data),
-        child: child,
+        // Stack: kart + sağ üstte küçük "tap → açılır" oku.
+        // Kullanıcıya kartın açılabilir olduğunu sinyalize eder.
+        child: Stack(
+          children: [
+            child,
+            Positioned(
+              top: 12,
+              right: 12,
+              child: IgnorePointer(
+                child: Container(
+                  width: 22,
+                  height: 22,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.85),
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: const Color.fromRGBO(0, 0, 0, 0.08),
+                    ),
+                  ),
+                  child: const Icon(
+                    Icons.arrow_outward_rounded,
+                    size: 12,
+                    color: Color(0xFF888888),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );

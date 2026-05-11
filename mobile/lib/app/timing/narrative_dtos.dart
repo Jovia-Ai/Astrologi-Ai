@@ -398,6 +398,7 @@ class NarrativeResponse {
     required this.periodCore,
     required this.eventCards,
     required this.dailyEventCards,
+    required this.dailySynthesis,
     required this.periodEventCards,
     required this.dailySelection,
     required this.periodPeakTimeline,
@@ -413,6 +414,7 @@ class NarrativeResponse {
   final PeriodCoreDto? periodCore;
   final List<EventCardDto> eventCards;
   final List<EventCardDto> dailyEventCards;
+  final DailySynthesisDto? dailySynthesis;
   final List<EventCardDto> periodEventCards;
   final DailySelectionDto? dailySelection;
   final List<PeriodPeakTimelineItemDto> periodPeakTimeline;
@@ -484,6 +486,11 @@ class NarrativeResponse {
           : null,
       eventCards: _parseEventCards(publicRaw),
       dailyEventCards: _parseEventCardsByKey(publicRaw, 'daily_event_cards'),
+      dailySynthesis: publicRaw['daily_synthesis'] is Map
+          ? DailySynthesisDto.fromMap(
+              Map<String, dynamic>.from(publicRaw['daily_synthesis'] as Map),
+            )
+          : null,
       periodEventCards: _parseEventCardsByKey(publicRaw, 'period_event_cards'),
       dailySelection: publicRaw['daily_selection'] is Map
           ? DailySelectionDto.fromMap(
@@ -496,6 +503,84 @@ class NarrativeResponse {
               Map<String, dynamic>.from(publicRaw['timeline'] as Map),
             )
           : null,
+    );
+  }
+}
+
+class DailySynthesisSourcesDto {
+  const DailySynthesisSourcesDto({
+    required this.daily,
+    required this.period,
+    required this.natal,
+  });
+
+  final List<String> daily;
+  final List<String> period;
+  final List<String> natal;
+
+  factory DailySynthesisSourcesDto.fromMap(Map<String, dynamic> map) {
+    List<String> readList(String key) {
+      final raw = map[key];
+      if (raw is! List) {
+        return const <String>[];
+      }
+      return raw
+          .map((item) => _tr(item))
+          .where((item) => item.trim().isNotEmpty)
+          .toList();
+    }
+
+    return DailySynthesisSourcesDto(
+      daily: readList('daily'),
+      period: readList('period'),
+      natal: readList('natal'),
+    );
+  }
+}
+
+class DailySynthesisDto {
+  const DailySynthesisDto({
+    required this.theme,
+    required this.themeDescription,
+    required this.headline,
+    required this.body,
+    required this.guidance,
+    required this.sources,
+  });
+
+  final String theme;
+  final String themeDescription;
+  final String headline;
+  final String body;
+  final String guidance;
+  final DailySynthesisSourcesDto sources;
+
+  bool get isEmpty =>
+      theme.trim().isEmpty &&
+      themeDescription.trim().isEmpty &&
+      headline.trim().isEmpty &&
+      body.trim().isEmpty &&
+      guidance.trim().isEmpty &&
+      sources.daily.isEmpty &&
+      sources.period.isEmpty &&
+      sources.natal.isEmpty;
+
+  factory DailySynthesisDto.fromMap(Map<String, dynamic> map) {
+    return DailySynthesisDto(
+      theme: _tr(map['theme']),
+      themeDescription: _tr(map['theme_description']),
+      headline: _tr(map['headline']),
+      body: _tr(map['body']),
+      guidance: _tr(map['guidance']),
+      sources: map['sources'] is Map
+          ? DailySynthesisSourcesDto.fromMap(
+              Map<String, dynamic>.from(map['sources'] as Map),
+            )
+          : const DailySynthesisSourcesDto(
+              daily: <String>[],
+              period: <String>[],
+              natal: <String>[],
+            ),
     );
   }
 }
@@ -693,6 +778,7 @@ class EventCardDto {
     required this.toneLabelTr,
     required this.houseTouchpointTr,
     required this.houseTouchpointHintTr,
+    this.oneLiner = '',
     required this.eventFamily,
     required this.eventKind,
     required this.importanceTier,
@@ -752,6 +838,10 @@ class EventCardDto {
   final String toneLabelTr;
   final String houseTouchpointTr;
   final String houseTouchpointHintTr;
+  /// `interpretation.one_liner` — tek cümlelik kısa etki özeti (TR).
+  /// Backend `_EVENT_CARD_DISPLAY_TEXT_KEYS` whitelist'inde var, v2 manifesto
+  /// alt cümlesi / sky sub fallback için kullanılır.
+  final String oneLiner;
   final String eventFamily;
   final String eventKind;
   final String importanceTier;
@@ -855,6 +945,7 @@ class EventCardDto {
     String? toneLabelTr,
     String? houseTouchpointTr,
     String? houseTouchpointHintTr,
+    String? oneLiner,
     String? eventFamily,
     String? eventKind,
     String? importanceTier,
@@ -915,6 +1006,7 @@ class EventCardDto {
       houseTouchpointTr: houseTouchpointTr ?? this.houseTouchpointTr,
       houseTouchpointHintTr:
           houseTouchpointHintTr ?? this.houseTouchpointHintTr,
+      oneLiner: oneLiner ?? this.oneLiner,
       eventFamily: eventFamily ?? this.eventFamily,
       eventKind: eventKind ?? this.eventKind,
       importanceTier: importanceTier ?? this.importanceTier,
@@ -1014,6 +1106,7 @@ class EventCardDto {
       houseTouchpointHintTr: _tr(
         _s(map, 'house_touchpoint_hint_tr', 'houseTouchpointHintTr'),
       ),
+      oneLiner: _tr(_s(map, 'one_liner', 'oneLiner')),
       eventFamily: _s(map, 'event_family', 'eventFamily'),
       eventKind: _s(map, 'event_kind', 'eventKind'),
       importanceTier: _s(map, 'importance_tier', 'importanceTier'),

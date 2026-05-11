@@ -17,6 +17,10 @@ import 'package:mobile/app/people/people_list_page.dart';
 import 'package:mobile/app/people/person_profile.dart';
 import 'package:mobile/app/people/people_providers.dart';
 import 'package:mobile/app/profile/profile_providers.dart';
+import 'package:mobile/app/profile/haritam_view.dart';
+import 'package:mobile/app/profile/layered_kart_detail_page.dart';
+import 'package:mobile/app/profile/profile_v9_provider.dart';
+import 'package:mobile/app/profile/tam_okuma_view.dart';
 import 'package:mobile/app/profile/profile_repository.dart';
 import 'package:mobile/app/profile/profile_v8_adapter.dart';
 import 'package:mobile/app/profile/profile_v8_sections.dart';
@@ -282,6 +286,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Map<String, dynamic>? _archetypeSummary;
   String? _lastArchetypeSummaryKey;
   int _segmentIndex = 0;
+  int _outerTabIndex = 0;
   bool _didLogProfileFirstBuild = false;
   bool _didLogMeaningfulProfileContent = false;
 
@@ -440,37 +445,33 @@ class _ProfilePageState extends State<ProfilePage> {
               }
 
               try {
-                if (profile != null) {
-                  if (!_didSeed) {
-                    _nameController.text = _nameController.text.isEmpty
-                        ? (profile['full_name'] ?? profile['name'] ?? '')
-                              .toString()
-                        : _nameController.text;
-                    _birthDateController.text =
-                        _birthDateController.text.isEmpty
-                        ? (profile['birth_date'] ?? '').toString()
-                        : _birthDateController.text;
-                    _birthTimeController.text =
-                        _birthTimeController.text.isEmpty
-                        ? (profile['birth_time'] ?? '').toString()
-                        : _birthTimeController.text;
-                    _cityController.text = _cityController.text.isEmpty
-                        ? (profile['city'] ?? '').toString()
-                        : _cityController.text;
-                    _countryController.text = _countryController.text.isEmpty
-                        ? (profile['country'] ?? '').toString()
-                        : _countryController.text;
-                    _avatarUrl = (profile['avatar_url'] ?? authAvatarUrl ?? '')
-                        .toString();
-                    _didSeed = true;
-                  }
-                  _maybeLoadNatalInterpretation(profile);
-                  _maybeLoadArchetypeSummary(
-                    profile,
-                    repo: repo,
-                    currentUserId: uid,
-                  );
+                if (!_didSeed) {
+                  _nameController.text = _nameController.text.isEmpty
+                      ? (profile['full_name'] ?? profile['name'] ?? '')
+                            .toString()
+                      : _nameController.text;
+                  _birthDateController.text = _birthDateController.text.isEmpty
+                      ? (profile['birth_date'] ?? '').toString()
+                      : _birthDateController.text;
+                  _birthTimeController.text = _birthTimeController.text.isEmpty
+                      ? (profile['birth_time'] ?? '').toString()
+                      : _birthTimeController.text;
+                  _cityController.text = _cityController.text.isEmpty
+                      ? (profile['city'] ?? '').toString()
+                      : _cityController.text;
+                  _countryController.text = _countryController.text.isEmpty
+                      ? (profile['country'] ?? '').toString()
+                      : _countryController.text;
+                  _avatarUrl = (profile['avatar_url'] ?? authAvatarUrl ?? '')
+                      .toString();
+                  _didSeed = true;
                 }
+                _maybeLoadNatalInterpretation(profile);
+                _maybeLoadArchetypeSummary(
+                  profile,
+                  repo: repo,
+                  currentUserId: uid,
+                );
 
                 final displayName = _displayName(profile);
                 final username = _displayUsername(
@@ -587,7 +588,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 int readProfileCount(List<String> keys) {
                   for (final key in keys) {
                     final parsed = int.tryParse(
-                      (profile?[key] ?? '').toString(),
+                      (profile[key] ?? '').toString(),
                     );
                     if (parsed != null) {
                       return parsed;
@@ -1223,20 +1224,18 @@ class _ProfilePageState extends State<ProfilePage> {
                             keyboardDismissBehavior:
                                 ScrollViewKeyboardDismissBehavior.onDrag,
                             children: [
-                              Container(
-                                color: const Color(0xFF0E0D11),
-                                child: SafeArea(
-                                  bottom: false,
-                                  child: ShouTopBar(
-                                    label: username,
-                                    onBack: widget.readOnly
-                                        ? () => Navigator.of(
-                                            context,
-                                            rootNavigator: true,
-                                          ).maybePop()
-                                        : null,
-                                    onMenu: profileMenuTap,
-                                  ),
+                              SafeArea(
+                                bottom: false,
+                                child: ShouTopBar(
+                                  label: username,
+                                  variant: ShouTopBarVariant.light,
+                                  onBack: widget.readOnly
+                                      ? () => Navigator.of(
+                                          context,
+                                          rootNavigator: true,
+                                        ).maybePop()
+                                      : null,
+                                  onMenu: profileMenuTap,
                                 ),
                               ),
                               Container(
@@ -1294,35 +1293,89 @@ class _ProfilePageState extends State<ProfilePage> {
                                   ),
                                 ),
                               ),
-                              profileContentView,
-                              if (_isArchetypeSummaryLoading ||
-                                  _archetypeSummary != null ||
-                                  (_archetypeSummaryError ?? '')
-                                      .trim()
-                                      .isNotEmpty) ...[
-                                const SizedBox(height: 24),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16,
-                                  ),
-                                  child: _ProfilePosterArchetypeSnapshotCard(
-                                    isLoading: _isArchetypeSummaryLoading,
-                                    error: _archetypeSummaryError,
-                                    payload: _archetypeSummary,
-                                    onTap: () => _openArchetypeExperience(
-                                      profile: profile,
-                                      displayName: displayName,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                              const SizedBox(height: 20),
+                              const SizedBox(height: 12),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 16,
                                 ),
-                                child: footer,
+                                child: _ProfileOuterTabStrip(
+                                  currentIndex: _outerTabIndex,
+                                  onChanged: (value) {
+                                    if (value == _outerTabIndex) return;
+                                    setState(() => _outerTabIndex = value);
+                                  },
+                                ),
                               ),
+                              const SizedBox(height: 16),
+                              if (_outerTabIndex == 0) ...[
+                                profileContentView,
+                                if (_isArchetypeSummaryLoading ||
+                                    _archetypeSummary != null ||
+                                    (_archetypeSummaryError ?? '')
+                                        .trim()
+                                        .isNotEmpty) ...[
+                                  const SizedBox(height: 24),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    child: _ProfilePosterArchetypeSnapshotCard(
+                                      isLoading: _isArchetypeSummaryLoading,
+                                      error: _archetypeSummaryError,
+                                      payload: _archetypeSummary,
+                                      onTap: () => _openArchetypeExperience(
+                                        profile: profile,
+                                        displayName: displayName,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                                const SizedBox(height: 20),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 16,
+                                  ),
+                                  child: footer,
+                                ),
+                              ] else if (_outerTabIndex == 1) ...[
+                                HaritamView(
+                                  profile: profile,
+                                  payload: _activeProfilePayload,
+                                ),
+                                const SizedBox(height: 20),
+                              ] else ...[
+                                // Tam Okuma tab — v9'un kart galerisi (gerçek
+                                // backend datası + axis tabs + tappable kart →
+                                // editöryal detay sayfası).
+                                Builder(
+                                  builder: (innerContext) {
+                                    final v9Async = ref.watch(
+                                      profileV9DataProvider,
+                                    );
+                                    final tamOkumaData =
+                                        v9Async.asData?.value?.tamOkuma;
+                                    return TamOkumaView(
+                                      profile: profile,
+                                      payload: _activeProfilePayload,
+                                      displayName: displayName,
+                                      data: tamOkumaData,
+                                      embedded: true,
+                                      onCardTap: (card) {
+                                        Navigator.of(innerContext).push(
+                                          MaterialPageRoute<void>(
+                                            builder: (_) =>
+                                                LayeredKartDetailPage(
+                                              card: card,
+                                              username: username,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 20),
+                              ],
                             ],
                           ),
                         ),
@@ -5438,10 +5491,6 @@ class _ProfilePosterHeader extends StatelessWidget {
             child: identityRow,
           ),
           socialStats,
-          const SizedBox(height: 8),
-          forumRow,
-          const SizedBox(height: 8),
-          mapCta,
         ],
       ),
     );
@@ -11353,3 +11402,60 @@ class _GlassCard extends StatelessWidget {
     return _CardShell(child: child);
   }
 }
+
+class _ProfileOuterTabStrip extends StatelessWidget {
+  const _ProfileOuterTabStrip({
+    required this.currentIndex,
+    required this.onChanged,
+  });
+
+  final int currentIndex;
+  final ValueChanged<int> onChanged;
+
+  static const List<String> _labels = <String>['Profil', 'Haritam', 'Tam Okuma'];
+  static const Color _ink = Color(0xFF0E0E10);
+  static const Color _mist = Color(0xFF888888);
+  static const Color _hairline = Color(0x1A000000);
+  static const Color _paper = Color(0xFFFFFFFF);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: _paper,
+        border: Border.all(color: _hairline, width: 1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Row(
+        children: [
+          for (var i = 0; i < _labels.length; i++) ...[
+            Expanded(
+              child: InkWell(
+                onTap: () => onChanged(i),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 180),
+                  padding: const EdgeInsets.symmetric(vertical: 11),
+                  color: currentIndex == i ? _ink : _paper,
+                  alignment: Alignment.center,
+                  child: Text(
+                    _labels[i],
+                    style: TextStyle(
+                      fontSize: 11.5,
+                      fontWeight: FontWeight.w400,
+                      letterSpacing: 0.2,
+                      color: currentIndex == i ? Colors.white : _mist,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            if (i != _labels.length - 1)
+              Container(width: 1, height: 38, color: _hairline),
+          ],
+        ],
+      ),
+    );
+  }
+}
+

@@ -1,18 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+enum ShouTopBarVariant { dark, light }
+
 /// SHOU wordmark topbar — ortak marka şeridi.
-///
-/// Figma `TOPBAR` frame'i ile birebir: Night zemin, sol'da mono eyebrow
-/// (ya da profil sayfasında `@username`), ortada SHOU orbit lockup,
-/// sağda opsiyonel arama + menü ikonları.
-///
-/// Tab'lar bu widget'ı paylaşır; `label` parametresi bağlamı belirler:
-///   - Home: 'BUGÜN' (mono uppercase, brand eyebrow)
-///   - Profil: `@username`
-///
-/// `onBack` verilirse (ör. profil readOnly modu) sol'da geri oku açılır;
-/// label geri oku'nun hemen sağında ellipsis'li text olarak gösterilir.
 class ShouTopBar extends StatelessWidget {
   const ShouTopBar({
     super.key,
@@ -20,36 +11,60 @@ class ShouTopBar extends StatelessWidget {
     this.onBack,
     this.onSearch,
     this.onMenu,
+    this.variant = ShouTopBarVariant.dark,
   });
 
-  /// Sol kolon etiketi. Home'da `BUGÜN`, profilde `@username`.
   final String label;
-
-  /// Geri oku callback'i. Null ise ikon görünmez (home modu).
   final VoidCallback? onBack;
-
-  /// Sağ kolon arama ikonu. Null ise ikon görünmez (ör. profil).
   final VoidCallback? onSearch;
-
-  /// Sağ kolon menü ikonu. Null ise ikon görünmez.
   final VoidCallback? onMenu;
+  final ShouTopBarVariant variant;
 
   @override
   Widget build(BuildContext context) {
+    final isLight = variant == ShouTopBarVariant.light;
+    final bg = isLight ? const Color(0xFFFAFAF7) : const Color(0xFF0E0D11);
+    final eyebrowColor = isLight
+        ? const Color(0xFF777777)
+        : const Color(0xFF8A8A8A);
+    final wordmarkColor = isLight ? const Color(0xFF111111) : Colors.white;
+    final iconColor = isLight
+        ? const Color(0xFF111111)
+        : const Color(0xFFE5E5E5);
+    final orbitStroke = isLight ? const Color(0xFF111111) : Colors.white;
+    final border = isLight
+        ? const Border(
+            bottom: BorderSide(color: Color(0x14000000), width: 0.5),
+          )
+        : null;
+
     return Container(
       height: 56,
-      color: const Color(0xFF0E0D11),
+      decoration: BoxDecoration(color: bg, border: border),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: Row(
         children: [
           Expanded(
-            child: _ShouTopBarLeading(label: label, onBack: onBack),
+            child: _ShouTopBarLeading(
+              label: label,
+              onBack: onBack,
+              textColor: eyebrowColor,
+              iconColor: iconColor,
+            ),
           ),
-          const _ShouWordmarkBeat(),
+          _ShouWordmarkBeat(
+            wordmarkColor: wordmarkColor,
+            orbitStroke: orbitStroke,
+            isLight: isLight,
+          ),
           Expanded(
             child: Align(
               alignment: Alignment.centerRight,
-              child: _ShouTopBarActions(onSearch: onSearch, onMenu: onMenu),
+              child: _ShouTopBarActions(
+                onSearch: onSearch,
+                onMenu: onMenu,
+                iconColor: iconColor,
+              ),
             ),
           ),
         ],
@@ -59,23 +74,33 @@ class ShouTopBar extends StatelessWidget {
 }
 
 class _ShouTopBarLeading extends StatelessWidget {
-  const _ShouTopBarLeading({required this.label, this.onBack});
+  const _ShouTopBarLeading({
+    required this.label,
+    required this.textColor,
+    required this.iconColor,
+    this.onBack,
+  });
 
   final String label;
+  final Color textColor;
+  final Color iconColor;
   final VoidCallback? onBack;
 
   @override
   Widget build(BuildContext context) {
+    // Eyebrow ('BUGÜN' gibi kısa uppercase) → geniş letter-spacing.
+    // Username ('@sahra' gibi lowercase/handle) → daraltılmış spacing.
+    final isEyebrow = label == label.toUpperCase() && label.length <= 10;
     final text = Text(
       label,
       maxLines: 1,
       overflow: TextOverflow.ellipsis,
       style: GoogleFonts.jetBrainsMono(
-        textStyle: const TextStyle(
-          fontSize: 10.5,
+        textStyle: TextStyle(
+          fontSize: isEyebrow ? 10.5 : 11,
           fontWeight: FontWeight.w400,
-          color: Color(0xFF8A8A8A),
-          letterSpacing: 2.4,
+          color: textColor,
+          letterSpacing: isEyebrow ? 2.4 : 0.2,
         ),
       ),
     );
@@ -91,6 +116,7 @@ class _ShouTopBarLeading extends StatelessWidget {
           icon: Icons.arrow_back_ios_new_rounded,
           semanticsLabel: 'Geri',
           onTap: onBack!,
+          color: iconColor,
         ),
         const SizedBox(width: 4),
         Flexible(child: text),
@@ -100,7 +126,15 @@ class _ShouTopBarLeading extends StatelessWidget {
 }
 
 class _ShouWordmarkBeat extends StatelessWidget {
-  const _ShouWordmarkBeat();
+  const _ShouWordmarkBeat({
+    required this.wordmarkColor,
+    required this.orbitStroke,
+    required this.isLight,
+  });
+
+  final Color wordmarkColor;
+  final Color orbitStroke;
+  final bool isLight;
 
   @override
   Widget build(BuildContext context) {
@@ -108,16 +142,16 @@ class _ShouWordmarkBeat extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        const _ShouOrbitMark(size: 22),
-        const SizedBox(width: 9),
+        _ShouOrbitMark(size: isLight ? 20 : 22, stroke: orbitStroke),
+        SizedBox(width: isLight ? 7 : 9),
         Text(
           'SHOU',
           style: GoogleFonts.fraunces(
-            textStyle: const TextStyle(
-              fontSize: 21,
-              fontWeight: FontWeight.w400,
-              color: Colors.white,
-              letterSpacing: 2.8,
+            textStyle: TextStyle(
+              fontSize: isLight ? 18 : 21,
+              fontWeight: isLight ? FontWeight.w300 : FontWeight.w400,
+              color: wordmarkColor,
+              letterSpacing: isLight ? 1.0 : 2.8,
               height: 1,
             ),
           ),
@@ -127,25 +161,26 @@ class _ShouWordmarkBeat extends StatelessWidget {
   }
 }
 
-/// Minik orbit lockup: dış halka, soluk iç halka, merkez gözlemci noktası
-/// ve lime sinyal noktası + bağlantı çizgisi. Figma logo anatomisinden.
 class _ShouOrbitMark extends StatelessWidget {
-  const _ShouOrbitMark({this.size = 22});
+  const _ShouOrbitMark({this.size = 22, required this.stroke});
 
   final double size;
+  final Color stroke;
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: size,
       height: size,
-      child: CustomPaint(painter: _ShouOrbitPainter()),
+      child: CustomPaint(painter: _ShouOrbitPainter(stroke: stroke)),
     );
   }
 }
 
 class _ShouOrbitPainter extends CustomPainter {
-  static const Color _stroke = Colors.white;
+  _ShouOrbitPainter({required this.stroke});
+
+  final Color stroke;
   static const Color _lime = Color(0xFFCAFF4D);
 
   @override
@@ -155,14 +190,14 @@ class _ShouOrbitPainter extends CustomPainter {
     final innerRadius = size.width * 0.22;
 
     final strokePaint = Paint()
-      ..color = _stroke
+      ..color = stroke
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.2
       ..isAntiAlias = true;
     canvas.drawCircle(centre, outerRadius, strokePaint);
 
     final innerPaint = Paint()
-      ..color = _stroke.withValues(alpha: 0.45)
+      ..color = stroke.withValues(alpha: 0.45)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1
       ..isAntiAlias = true;
@@ -175,7 +210,7 @@ class _ShouOrbitPainter extends CustomPainter {
     );
     final lineEnd = Offset(centre.dx, centre.dy - outerRadius);
     final linePaint = Paint()
-      ..color = _stroke
+      ..color = stroke
       ..strokeWidth = 1
       ..strokeCap = StrokeCap.round
       ..isAntiAlias = true;
@@ -189,14 +224,20 @@ class _ShouOrbitPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant _ShouOrbitPainter oldDelegate) =>
+      oldDelegate.stroke != stroke;
 }
 
 class _ShouTopBarActions extends StatelessWidget {
-  const _ShouTopBarActions({this.onSearch, this.onMenu});
+  const _ShouTopBarActions({
+    required this.iconColor,
+    this.onSearch,
+    this.onMenu,
+  });
 
   final VoidCallback? onSearch;
   final VoidCallback? onMenu;
+  final Color iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +248,7 @@ class _ShouTopBarActions extends StatelessWidget {
           icon: Icons.search,
           semanticsLabel: 'Ara',
           onTap: onSearch!,
+          color: iconColor,
         ),
       );
     }
@@ -219,6 +261,7 @@ class _ShouTopBarActions extends StatelessWidget {
           icon: Icons.menu,
           semanticsLabel: 'Menü',
           onTap: onMenu!,
+          color: iconColor,
         ),
       );
     }
@@ -234,18 +277,20 @@ class _ShouTopBarIcon extends StatelessWidget {
     required this.icon,
     required this.onTap,
     required this.semanticsLabel,
+    required this.color,
   });
 
   final IconData icon;
   final VoidCallback onTap;
   final String semanticsLabel;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       onPressed: onTap,
       splashRadius: 22,
-      icon: Icon(icon, size: 20, color: const Color(0xFFE5E5E5)),
+      icon: Icon(icon, size: 20, color: color),
       tooltip: semanticsLabel,
       padding: const EdgeInsets.all(8),
       constraints: const BoxConstraints(minWidth: 36, minHeight: 36),

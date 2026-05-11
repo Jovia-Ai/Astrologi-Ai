@@ -1,6 +1,9 @@
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'package:mobile/app/tabs/profile_page_v9.dart';
 
 import 'package:mobile/app/ai/revenuecat_service.dart';
 import 'package:mobile/app/auth/account_service.dart';
@@ -11,11 +14,37 @@ import 'package:mobile/app/profile/profile_providers.dart';
 import 'package:mobile/app/theme/app_theme_mode_provider.dart';
 import 'package:mobile/design/theme/profile_theme_extension.dart';
 import 'package:mobile/design/widgets/jovia_editorial.dart';
-import 'package:mobile/design/widgets/jovia_premium_accents.dart';
+import 'package:mobile/l10n/app_localizations.dart';
 import 'package:mobile/l10n/l10n.dart';
 
 typedef JoviaAppMenuAction =
     Future<void> Function(BuildContext context, Map<String, dynamic>? profile);
+
+/// Drawer'da kullanılan home v12 palet değerleri — home_page_v2.dart'taki
+/// `_HomeV2Palette` ile birebir aynı. Ortak paleti lib/design'e taşıma
+/// ihtiyacı doğarsa ikisini de tek kaynaktan besleyeceğiz.
+class _HomeV2Ink {
+  const _HomeV2Ink._();
+  static const Color ink = Color(0xFF111111);
+  static const Color fog = Color(0xFF444444);
+  static const Color mist = Color(0xFF777777);
+  static const Color silver = Color(0xFFAAAAAA);
+  static const Color hairline = Color(0x14000000);
+  static const Color paper = Color(0xFFFAFAF7);
+  static const Color lime = Color(0xFFCAFF4D);
+  static const Color limeText = Color(0xFF1A3300);
+  static const Color blushDeep = Color(0xFFC76FA0);
+}
+
+String _notificationsSubtitle(AppLocalizations l10n, JoviaAppPreferences prefs) {
+  final on = <String>[
+    if (prefs.dailyBriefEnabled) l10n.menuDailySummary,
+    if (prefs.skyAlertsEnabled) l10n.menuSkyEvents,
+    if (prefs.socialAlertsEnabled) l10n.menuSocialActivity,
+  ];
+  if (on.isEmpty) return 'Tümü kapalı';
+  return on.join(' · ');
+}
 
 class JoviaAppMenuDrawer extends ConsumerWidget {
   JoviaAppMenuDrawer({
@@ -221,6 +250,188 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
     await Supabase.instance.client.auth.signOut();
   }
 
+  Future<void> _showThemeSheet(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    await _showEditSheet(
+      context: context,
+      title: l10n.menuThemeMode,
+      builder: (sheetContext) {
+        return Consumer(
+          builder: (context, ref, _) {
+            final mode = ref.watch(joviaThemeModeProvider);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _DrawerRadioRow(
+                  label: l10n.themeModeLight,
+                  selected: mode == JoviaThemeMode.light,
+                  onTap: () => ref
+                      .read(joviaThemeModeProvider.notifier)
+                      .setMode(JoviaThemeMode.light),
+                ),
+                _DrawerRadioRow(
+                  label: l10n.themeModeDark,
+                  selected: mode == JoviaThemeMode.dark,
+                  onTap: () => ref
+                      .read(joviaThemeModeProvider.notifier)
+                      .setMode(JoviaThemeMode.dark),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _showLanguageSheet(BuildContext context, WidgetRef ref) async {
+    final l10n = context.l10n;
+    await _showEditSheet(
+      context: context,
+      title: l10n.menuLanguage,
+      builder: (sheetContext) {
+        return Consumer(
+          builder: (context, ref, _) {
+            final locale = ref.watch(joviaAppPreferencesProvider).locale;
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _DrawerRadioRow(
+                  label: JoviaAppLocale.tr.label,
+                  selected: locale == JoviaAppLocale.tr,
+                  onTap: () => ref
+                      .read(joviaAppPreferencesProvider.notifier)
+                      .setLocale(JoviaAppLocale.tr),
+                ),
+                _DrawerRadioRow(
+                  label: JoviaAppLocale.en.label,
+                  selected: locale == JoviaAppLocale.en,
+                  onTap: () => ref
+                      .read(joviaAppPreferencesProvider.notifier)
+                      .setLocale(JoviaAppLocale.en),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _showNotificationsSheet(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    final l10n = context.l10n;
+    await _showEditSheet(
+      context: context,
+      title: l10n.menuNotificationPreferences,
+      builder: (sheetContext) {
+        return Consumer(
+          builder: (context, ref, _) {
+            final prefs = ref.watch(joviaAppPreferencesProvider);
+            final notifier = ref.read(joviaAppPreferencesProvider.notifier);
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _DrawerToggleRow(
+                  title: l10n.menuDailySummary,
+                  subtitle: l10n.menuDailySummarySubtitle,
+                  value: prefs.dailyBriefEnabled,
+                  onChanged: notifier.setDailyBriefEnabled,
+                ),
+                _DrawerToggleRow(
+                  title: l10n.menuSkyEvents,
+                  subtitle: l10n.menuSkyEventsSubtitle,
+                  value: prefs.skyAlertsEnabled,
+                  onChanged: notifier.setSkyAlertsEnabled,
+                ),
+                _DrawerToggleRow(
+                  title: l10n.menuSocialActivity,
+                  subtitle: l10n.menuSocialActivitySubtitle,
+                  value: prefs.socialAlertsEnabled,
+                  onChanged: notifier.setSocialAlertsEnabled,
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _showEditSheet({
+    required BuildContext context,
+    required String title,
+    required WidgetBuilder builder,
+  }) async {
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (sheetContext) {
+        return SafeArea(
+          top: false,
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 12,
+              right: 12,
+              bottom: MediaQuery.of(sheetContext).viewInsets.bottom + 12,
+              top: 12,
+            ),
+            child: Container(
+              decoration: const BoxDecoration(
+                color: _HomeV2Ink.paper,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+              ),
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500,
+                            color: _HomeV2Ink.ink,
+                            letterSpacing: -0.3,
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: () => Navigator.of(sheetContext).pop(),
+                        customBorder: const CircleBorder(),
+                        child: const Padding(
+                          padding: EdgeInsets.all(4),
+                          child: Icon(
+                            Icons.close,
+                            size: 20,
+                            color: _HomeV2Ink.mist,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Container(height: 0.5, color: _HomeV2Ink.hairline),
+                  const SizedBox(height: 4),
+                  builder(sheetContext),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profile = context.profileTheme;
@@ -297,8 +508,6 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                     child: _JoviaAppMenuIdentityCard(
                       displayName: displayName,
                       username: username,
-                      peopleCount: peopleCount,
-                      hasBirthData: hasBirthData,
                     ),
                   ),
                   const SizedBox(height: 18),
@@ -329,6 +538,39 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                               ),
                             ),
                           if (onEditProfile != null) const SizedBox(height: 10),
+                          if (kDebugMode) ...[
+                            JoviaReveal(
+                              delay: const Duration(milliseconds: 130),
+                              child: _JoviaAppMenuActionTile(
+                                title: 'Profil v9 (yeni)',
+                                subtitle:
+                                    'Paralel "iceberg" tasarımı — yüzey + Haritam + Tam Okuma',
+                                iconAsset: JoviaUiAsset.orbitPlanet,
+                                trailingLabel: 'DEV',
+                                onTap: () async {
+                                  // Drawer dışındaki rootNavigator'ı pop'tan
+                                  // ÖNCE yakala (drawer kapanınca bu context
+                                  // dispose olur). GoRouter'ı by-pass edip
+                                  // doğrudan MaterialPageRoute push ediyoruz —
+                                  // dev sayfası için route reload gerekmez.
+                                  final navigator = Navigator.of(
+                                    context,
+                                    rootNavigator: true,
+                                  );
+                                  Navigator.of(context).pop();
+                                  await Future<void>.delayed(
+                                    const Duration(milliseconds: 180),
+                                  );
+                                  navigator.push(
+                                    MaterialPageRoute<void>(
+                                      builder: (_) => const ProfilePageV9(),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                          ],
                           if (onOpenPeople != null)
                             JoviaReveal(
                               delay: const Duration(milliseconds: 150),
@@ -392,116 +634,32 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
                           const SizedBox(height: 8),
                           JoviaReveal(
                             delay: const Duration(milliseconds: 310),
-                            child: JoviaSurfaceCard(
-                              radius: 24,
-                              padding: const EdgeInsets.fromLTRB(
-                                14,
-                                14,
-                                14,
-                                14,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n.menuThemeMode,
-                                    style: profile.typography.cardTitle
-                                        .copyWith(
-                                          color: profile.colors.text,
-                                          fontSize: 13.5,
-                                        ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  JoviaModeSwitch<JoviaThemeMode>(
-                                    value: themeMode,
-                                    leadingValue: JoviaThemeMode.dark,
-                                    leadingLabel: l10n.themeModeDark,
-                                    trailingValue: JoviaThemeMode.light,
-                                    trailingLabel: l10n.themeModeLight,
-                                    onChanged: (mode) {
-                                      ref
-                                          .read(joviaThemeModeProvider.notifier)
-                                          .setMode(mode);
-                                    },
-                                  ),
-                                  const SizedBox(height: 14),
-                                  Text(
-                                    l10n.menuLanguage,
-                                    style: profile.typography.cardTitle
-                                        .copyWith(
-                                          color: profile.colors.text,
-                                          fontSize: 13.5,
-                                        ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  JoviaModeSwitch<JoviaAppLocale>(
-                                    value: prefs.locale,
-                                    leadingValue: JoviaAppLocale.tr,
-                                    leadingLabel: JoviaAppLocale.tr.label,
-                                    trailingValue: JoviaAppLocale.en,
-                                    trailingLabel: JoviaAppLocale.en.label,
-                                    onChanged: (value) {
-                                      ref
-                                          .read(
-                                            joviaAppPreferencesProvider
-                                                .notifier,
-                                          )
-                                          .setLocale(value);
-                                    },
-                                  ),
-                                  const SizedBox(height: 14),
-                                  Text(
-                                    l10n.menuNotificationPreferences,
-                                    style: profile.typography.cardTitle
-                                        .copyWith(
-                                          color: profile.colors.text,
-                                          fontSize: 13.5,
-                                        ),
-                                  ),
-                                  const SizedBox(height: 10),
-                                  _JoviaAppMenuToggleTile(
-                                    title: l10n.menuDailySummary,
-                                    subtitle: l10n.menuDailySummarySubtitle,
-                                    value: prefs.dailyBriefEnabled,
-                                    onChanged: (value) {
-                                      ref
-                                          .read(
-                                            joviaAppPreferencesProvider
-                                                .notifier,
-                                          )
-                                          .setDailyBriefEnabled(value);
-                                    },
-                                  ),
-                                  const SizedBox(height: 8),
-                                  _JoviaAppMenuToggleTile(
-                                    title: l10n.menuSkyEvents,
-                                    subtitle: l10n.menuSkyEventsSubtitle,
-                                    value: prefs.skyAlertsEnabled,
-                                    onChanged: (value) {
-                                      ref
-                                          .read(
-                                            joviaAppPreferencesProvider
-                                                .notifier,
-                                          )
-                                          .setSkyAlertsEnabled(value);
-                                    },
-                                  ),
-                                  const SizedBox(height: 8),
-                                  _JoviaAppMenuToggleTile(
-                                    title: l10n.menuSocialActivity,
-                                    subtitle: l10n.menuSocialActivitySubtitle,
-                                    value: prefs.socialAlertsEnabled,
-                                    onChanged: (value) {
-                                      ref
-                                          .read(
-                                            joviaAppPreferencesProvider
-                                                .notifier,
-                                          )
-                                          .setSocialAlertsEnabled(value);
-                                    },
-                                  ),
-                                ],
-                              ),
+                            child: _JoviaAppMenuActionTile(
+                              title: l10n.menuThemeMode,
+                              subtitle: themeMode == JoviaThemeMode.dark
+                                  ? l10n.themeModeDark
+                                  : l10n.themeModeLight,
+                              iconAsset: JoviaUiAsset.settingsRings,
+                              onTap: () => _showThemeSheet(context, ref),
+                            ),
+                          ),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 330),
+                            child: _JoviaAppMenuActionTile(
+                              title: l10n.menuLanguage,
+                              subtitle: prefs.locale.label,
+                              iconAsset: JoviaUiAsset.editPen,
+                              onTap: () => _showLanguageSheet(context, ref),
+                            ),
+                          ),
+                          JoviaReveal(
+                            delay: const Duration(milliseconds: 350),
+                            child: _JoviaAppMenuActionTile(
+                              title: l10n.menuNotificationPreferences,
+                              subtitle: _notificationsSubtitle(l10n, prefs),
+                              iconAsset: JoviaUiAsset.settingsRings,
+                              onTap: () =>
+                                  _showNotificationsSheet(context, ref),
                             ),
                           ),
                           const SizedBox(height: 18),
@@ -704,97 +862,44 @@ class JoviaAppMenuDrawer extends ConsumerWidget {
   }
 }
 
+/// Home v12 tonunda sade kimlik başlığı — sadece isim + handle.
+/// Önceki versiyondaki "Arketip hazır / 10 kişi" çip yığını kaldırıldı;
+/// o bilgiler artık ilgili liste satırlarının alt metninde.
 class _JoviaAppMenuIdentityCard extends StatelessWidget {
   const _JoviaAppMenuIdentityCard({
     required this.displayName,
     required this.username,
-    required this.peopleCount,
-    required this.hasBirthData,
   });
 
   final String displayName;
   final String username;
-  final int peopleCount;
-  final bool hasBirthData;
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.profileTheme;
-    final l10n = context.l10n;
-    final highlightLines = <String>[
-      hasBirthData ? l10n.menuArchetypeReady : l10n.menuCompleteBirthData,
-      peopleCount > 0 ? l10n.menuManagePeople : l10n.menuPeopleSubtitle,
-    ];
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: profile.colors.strokeSoft),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white.withValues(
-              alpha: Theme.of(context).brightness == Brightness.dark
-                  ? 0.06
-                  : 0.92,
-            ),
-            profile.colors.panelSoft,
-          ],
-        ),
-      ),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(4, 4, 4, 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      displayName,
-                      style: profile.typography.cardTitle.copyWith(
-                        color: profile.colors.text,
-                        fontSize: 15.2,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      username,
-                      style: profile.typography.meta.copyWith(
-                        color: profile.colors.textLight,
-                        fontSize: 11.4,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 12),
-              const JoviaMoodStickerCluster(size: 20),
-            ],
+          Text(
+            displayName,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w500,
+              color: _HomeV2Ink.ink,
+              letterSpacing: -0.4,
+              height: 1.2,
+            ),
           ),
-          const SizedBox(height: 12),
-          JoviaSentenceBubbleStack(
-            lines: highlightLines,
-            compact: true,
-            accents: <Color>[profile.colors.primary, profile.colors.warmAccent],
-          ),
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              if (peopleCount > 0)
-                JoviaMetaPill(label: l10n.menuPeopleCount(peopleCount)),
-              JoviaMetaPill(
-                label: hasBirthData
-                    ? l10n.menuArchetypeReady
-                    : l10n.menuBirthDataMissing,
-              ),
-            ],
+          const SizedBox(height: 6),
+          Text(
+            username,
+            style: const TextStyle(
+              fontSize: 12,
+              color: _HomeV2Ink.mist,
+              letterSpacing: 0.1,
+              height: 1.2,
+            ),
           ),
         ],
       ),
@@ -802,6 +907,7 @@ class _JoviaAppMenuIdentityCard extends StatelessWidget {
   }
 }
 
+/// Home v12 mono uppercase eyebrow — altında hairline ayırıcı.
 class _JoviaAppMenuSectionLabel extends StatelessWidget {
   const _JoviaAppMenuSectionLabel({required this.label});
 
@@ -809,15 +915,21 @@ class _JoviaAppMenuSectionLabel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.profileTheme;
-    return Text(
-      label,
-      style: profile.typography.eyebrow.copyWith(
-        color: profile.colors.textLight,
-        fontSize: 10.5,
-        fontWeight: FontWeight.w700,
-        letterSpacing: 1.3,
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          label.toUpperCase(),
+          style: const TextStyle(
+            fontSize: 8.5,
+            letterSpacing: 2.4,
+            color: _HomeV2Ink.silver,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        const SizedBox(height: 6),
+        Container(height: 0.5, color: _HomeV2Ink.hairline),
+      ],
     );
   }
 }
@@ -841,156 +953,78 @@ class _JoviaAppMenuActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final profile = context.profileTheme;
-    final surface = danger
-        ? Color.alphaBlend(
-            profile.colors.warmAccent.withValues(alpha: 0.08),
-            profile.colors.panelSoft,
-          )
-        : profile.colors.panelSoft;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: Ink(
-          padding: const EdgeInsets.fromLTRB(11, 11, 11, 11),
-          decoration: BoxDecoration(
-            color: surface,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: profile.colors.strokeSoft),
+    final titleColor = danger ? _HomeV2Ink.blushDeep : _HomeV2Ink.ink;
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: _HomeV2Ink.hairline, width: 0.5),
           ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 34,
-                height: 34,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.white.withValues(alpha: 0.72),
-                  border: Border.all(color: profile.colors.strokeSoft),
-                ),
-                child: Center(
-                  child: JoviaUiIcon(
-                    asset: iconAsset,
-                    size: 15,
-                    color: profile.colors.text,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 11),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          title,
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: titleColor,
+                            letterSpacing: -0.2,
+                            height: 1.2,
+                          ),
+                        ),
+                      ),
+                      if ((trailingLabel ?? '').trim().isNotEmpty)
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8),
                           child: Text(
-                            title,
-                            style: profile.typography.cardTitle.copyWith(
-                              color: profile.colors.text,
-                              fontSize: 13.6,
-                              height: 1.18,
+                            (trailingLabel ?? '').trim().toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 9,
+                              letterSpacing: 1.4,
+                              color: _HomeV2Ink.silver,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                        if ((trailingLabel ?? '').trim().isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(left: 8),
-                            child: JoviaMetaPill(
-                              label: (trailingLabel ?? '').trim(),
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 3),
-                    Text(
-                      subtitle,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: profile.typography.bodyCompact.copyWith(
-                        color: profile.colors.textLight,
-                        fontSize: 11.0,
-                        height: 1.28,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 10),
-              Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: JoviaUiIcon(
-                  asset: JoviaUiAsset.chevronRight,
-                  size: 14,
-                  color: profile.colors.textLight,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _JoviaAppMenuToggleTile extends StatelessWidget {
-  const _JoviaAppMenuToggleTile({
-    required this.title,
-    required this.subtitle,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final String title;
-  final String subtitle;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final profile = context.profileTheme;
-    return Container(
-      padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: profile.colors.strokeSoft),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: profile.typography.body.copyWith(
-                    color: profile.colors.text,
-                    fontSize: 13.2,
-                    fontWeight: FontWeight.w600,
+                    ],
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  subtitle,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: profile.typography.meta.copyWith(
-                    color: profile.colors.textLight,
-                    fontSize: 10.8,
-                    height: 1.28,
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 11.5,
+                      color: _HomeV2Ink.mist,
+                      height: 1.35,
+                      letterSpacing: -0.05,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Transform.scale(
-            scale: 0.92,
-            child: Switch.adaptive(value: value, onChanged: onChanged),
-          ),
-        ],
+            const SizedBox(width: 12),
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Icon(
+                Icons.arrow_forward,
+                size: 14,
+                color: _HomeV2Ink.silver,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -1066,4 +1100,162 @@ String _displayUsername(Map<String, dynamic>? profile, User? user) {
           .map((item) => (item ?? '').toString().trim())
           .firstWhere((item) => item.isNotEmpty, orElse: () => 'profil');
   return candidate.startsWith('@') ? candidate : '@$candidate';
+}
+
+/// Bottom-sheet tek seçimli satır (tema, dil gibi).
+class _DrawerRadioRow extends StatelessWidget {
+  const _DrawerRadioRow({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        onTap();
+        Navigator.of(context).maybePop();
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        decoration: const BoxDecoration(
+          border: Border(
+            bottom: BorderSide(color: _HomeV2Ink.hairline, width: 0.5),
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: selected ? FontWeight.w500 : FontWeight.w400,
+                  color: selected ? _HomeV2Ink.ink : _HomeV2Ink.fog,
+                  letterSpacing: -0.2,
+                ),
+              ),
+            ),
+            if (selected)
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 8,
+                  vertical: 3,
+                ),
+                decoration: BoxDecoration(
+                  color: _HomeV2Ink.lime,
+                  borderRadius: BorderRadius.circular(3),
+                ),
+                child: const Text(
+                  'SEÇİLİ',
+                  style: TextStyle(
+                    fontSize: 8.5,
+                    letterSpacing: 1.8,
+                    color: _HomeV2Ink.limeText,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// Bottom-sheet içinde bireysel bildirim toggle satırı.
+class _DrawerToggleRow extends StatelessWidget {
+  const _DrawerToggleRow({
+    required this.title,
+    required this.subtitle,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String title;
+  final String subtitle;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 14),
+      decoration: const BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: _HomeV2Ink.hairline, width: 0.5),
+        ),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w500,
+                    color: _HomeV2Ink.ink,
+                    letterSpacing: -0.2,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  subtitle,
+                  style: const TextStyle(
+                    fontSize: 11.5,
+                    color: _HomeV2Ink.mist,
+                    height: 1.35,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          Transform.scale(
+            scale: 0.8,
+            child: CupertinoSwitchFallback(
+              value: value,
+              onChanged: onChanged,
+              activeColor: _HomeV2Ink.lime,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Switch için `Switch.adaptive` kullanılır; CupertinoSwitch gerekmesin.
+class CupertinoSwitchFallback extends StatelessWidget {
+  const CupertinoSwitchFallback({
+    super.key,
+    required this.value,
+    required this.onChanged,
+    required this.activeColor,
+  });
+
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final Color activeColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Switch.adaptive(
+      value: value,
+      onChanged: onChanged,
+      activeThumbColor: Colors.white,
+      activeTrackColor: activeColor,
+      inactiveTrackColor: _HomeV2Ink.hairline,
+      inactiveThumbColor: Colors.white,
+    );
+  }
 }
