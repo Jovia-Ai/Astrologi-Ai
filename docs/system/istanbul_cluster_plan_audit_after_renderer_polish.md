@@ -416,3 +416,35 @@ Tests run: `backend/tests/test_natal_promise_cluster_plan.py`, `backend/tests/te
 
 - Before the copy-polish pass: 55 passed.
 - After the copy-polish pass: **60 passed** (five new tests, all Adana-scoped; Istanbul tests in this set continue to pass unchanged).
+
+## 8. After copy-style naturalization pass
+
+Scope: the §8 Adana pass added bespoke per-packet body overrides for five Adana cards (mc_cancer, libra_asc, saturn_taurus_8h, venus_square_pluto, mars_leo_11h × 2 variants) plus a defensive `_naturalize_chip_prose` helper that strips chip-format `·` and translates the English label `Public maturity` from body / teaser / micro. See `docs/system/adana_cluster_plan_audit_after_v0_3_final.md` §8 for the bespoke bodies.
+
+### Istanbul status: byte-identical at cluster level
+
+Compared block-by-block against the §7 snapshot:
+
+- `profile_public.core_blocks` — 4/4 blocks identical: same `node_id`, headline, teaser, body, micro, and chip list.
+- `profile_public.extra_blocks` — 6/6 blocks identical on every field.
+
+Confirmed by direct tuple-fingerprint comparison `[(node_id, headline, body, teaser, micro, chips) for b in blocks]` before vs after §8.
+
+### Why Istanbul is unaffected
+
+- The five bespoke overrides are keyed on `match_id` × `role_domain` (or `match_id` × `packet.id`) pairs that do not appear in Istanbul's selected packet set. Istanbul's selected packets share no `match_id` with `libra_asc_venus_chart_ruler`, `saturn_taurus_8h_steady_public_maturity`, `mc_cancer_moon_gemini_9h_teaching_voice`, `venus_square_pluto_intense_love`, or `mars_leo_11h_warm_visible_drive`.
+- `_naturalize_chip_prose` only mutates a string when `·` or `Public maturity` is present. Scanning every Istanbul body / teaser / micro returns 0 hits for both patterns, so the helper is a no-op for every Istanbul block.
+
+### Banned-phrase scan (Istanbul)
+
+| Pattern | Hits |
+|---|---|
+| `·` inside body / teaser / micro | 0 |
+| `Public maturity` (any casing) | 0 |
+
+`·` continues to appear inside Istanbul chip arrays (e.g. `Satürn · 3. ev · Koç`) — that is the intended chip-display format and not a regression.
+
+### Tests
+
+- Before §8: 60 passed.
+- After §8: **63 passed**. The three new Adana-scoped assertions (`test_adana_bodies_have_no_chip_format_separator`, `test_adana_bodies_have_no_public_maturity_english_label`, `test_adana_mars_leo_11h_community_vs_relationship_bodies_diverge`) do not exercise Istanbul; Istanbul tests in this set continue to pass unchanged.

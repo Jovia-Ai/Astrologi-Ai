@@ -415,3 +415,79 @@ Tests run: `backend/tests/test_natal_promise_cluster_plan.py`, `backend/tests/te
 
 - Before the copy-polish pass: 55 passed.
 - After the copy-polish pass: **60 passed** (added five new assertions in `test_projection_shadow_v1_builder.py` covering each fix: `test_adana_mc_cancer_body_opener_and_chip_dedup`, `test_adana_venus_square_pluto_body_opener_is_bespoke`, `test_adana_mars_leo_11h_community_chip_label`, `test_smart_clip_protects_numbered_house_abbreviation`, `test_adana_extras_no_dangling_numbered_house_fragments`).
+
+## 8. After copy-style naturalization pass
+
+Scope: targeted bespoke-override pass against five Adana cards that still read as renderer-template / chip-prose / engine-internal labels after §7. Additive helper plus five bespoke entries; no change to packet selection, cluster plan, focus_map, or registry.
+
+Renderer changes (all in `backend/app/meaning/projection_shadow_v1_builder.py`):
+
+- New helper `_naturalize_chip_prose(text)` — defensive backstop that runs after `_localize_public_copy_tr` on `body` / `teaser` / `micro`. Strips chip-format `·` separators that leak into body sentences and translates the English label `Public maturity` → `olgun bir kariyer çizgisi`. Idempotent / no-op on clean strings.
+- Five new / refined entries in `_packet_copy_override` keyed on `match_id` (with per-variant disambiguation via `packet.id` or `role_domain` where the same `match_id` carries two cluster contexts).
+
+### Bespoke override bodies (verbatim)
+
+**A. `mc_cancer_moon_gemini_9h_teaching_voice` (career, core_blocks[2])** — replaces the previous `çalıştırıyor`-closing opener with a `istediğini gösteriyor` closing.
+
+> Kariyer hattının Yengeç'te, yöneticisi Ay'ın da 9. evde İkizler'de olması; Dışarıda daha duyarlı, anlatan ve karşı tarafın anlayabileceği bir dil kurmak istediğini gösteriyor. Görünür olduğunda insanlara sadece bilgi değil, güven hissi de vermek isteyebilirsin. Senin public sesin sert bir otoriteden çok, anlayan ve perspektif açan bir yerden güçlenir.
+
+**B. `libra_asc_venus_chart_ruler` (identity, extra_blocks)** — replaces the `Yükseleninin · Terazi · Venüs yönetici olması ile Sosyal sezgi birlikte...` chip-format opener.
+
+> Dışarıdan uyumlu ve dengeli görünebilirsin; Ama bu uyumun altında kiminle ne kadar yakınlaşacağını dikkatle seçen bir taraf var. Bir ortama girdiğinde önce tonu okuyup içeride seçici davranmak senin doğal işleyişine yakın. İnsan ilişkilerinde denge, zarafet ve üslup kurma becerisi buradaki güçlü tarafını netleştiriyor. Denge kaçtığında fazla uyum sağlamak, kendi tercihini geciktirmek ya da dışarıdaki dengeyi korumak için içeride gerilmek belirginleşebilir.
+
+**C. `saturn_taurus_8h_steady_public_maturity` (career, extra_blocks)** — replaces the `Satürn'ünün 8. evde Boğa'da olması kadar Public maturity de bu hattın karakterini belirliyor` template + English-label opener.
+
+> Satürn'ünün 8. evde Boğa'da olması, görünür olmadan önce sağlam bir temel arayan tarafını güçlendiriyor. Derin güven, kaynak, kriz ve kontrol temaları zamanla daha olgun bir kariyer çizgisine dönüşebilir. Görünür olmadan önce temelin sağlam olduğundan emin olmak isteyebilirsin. Üretiminde sana özgün bir imza veren yer de burada: Sabır, olgunluk, krizden yapı çıkarma, güven veren profesyonel duruş.
+
+**D. `venus_square_pluto_intense_love` (relationship, core_blocks[3])** — keeps the §7 opener; replaces the report-prose continuation (`Derin bağ kurma, sevginin dönüştürücü tarafını görme, ilişki dinamiklerini sezme...`) with the user-supplied lived continuation.
+
+> Venüs'ün Plüton'la kare çalışması, ilişkilerde çekimi daha yoğun ve kolay geçmeyen bir yere taşıyabilir. Birine çekildiğinde bu sende kolay kolay hafif bir hoşlanma gibi kalmayabilir. O kişinin sende neyi uyandırdığını, ilişkide gücün kimin elinde olduğunu ya da neden bu kadar etkilendiğini hızlı fark edebilirsin. Bu yoğunluk kontrol etmeye çalıştığında yorabilir; Ama dürüst kaldığında seni daha gerçek bir yakınlığa götürür.
+
+**E. `mars_leo_11h_warm_visible_drive` — community variant (extra_blocks)**
+
+> Bir grubun içinde sadece uyum sağlamak değil, kendi rengini göstermek isteyebilirsin. Mars'ın 11. evde Aslan'da olması, sosyal alanda sıcak, görünür ve harekete geçiren bir enerji verir. Bu iyi çalıştığında insanları canlandırırsın; Zorlandığında ise onay görme ihtiyacı fazla büyüyebilir.
+
+**E. `mars_leo_11h_warm_visible_drive` — relationship variant (extra_blocks)**
+
+> Yakınlıkta sıcaklık ve heyecan hızlı yükselebilir; Ama kendi alanını ve kişisel ritmini kaybetmek istemezsin. Birine yaklaşırken bile kendin gibi kalabilmek, bu ilişkilerde en önemli ihtiyaçlarından biri olabilir.
+
+Routing note: the two Mars-Leo-11H variants share `match_id` but differ in `packet.id` suffix (`_community_chart_exact` vs `_chart_exact`) and cluster role. The override checks `packet.id` + forced `domain` first (community), then falls through to relationship handling. The cluster plan places the community variant in an `action_pressure_resilience_under_pressure` cluster (not a literal `community` `role_domain`), so routing on packet id is the reliable key.
+
+### Mars-Leo-11H differentiation evidence
+
+Longest common substring between the community body and the relationship body is now **8 characters** (`'mek iste'`, a fragment of `göstermek isteyebilirsin` shared with `kaybetmek istemezsin`). Well under the 40-char target — the two cards no longer share any sentence-level template prose.
+
+### Banned-phrase scan results
+
+Final-pass scan over all Adana `core_blocks` + `extra_blocks` (body, teaser, micro):
+
+| Pattern | Hits |
+|---|---|
+| `·` inside body / teaser / micro | 0 |
+| `Public maturity` (any casing) | 0 |
+| `public maturity` (any casing) | 0 |
+
+For reference, `·` is still used inside the **chip arrays** (e.g. `Mars · 11. ev · Aslan`) — that is the intended chip display format and is not a regression.
+
+### Net Adana verdict counts
+
+| Verdict | Before §8 | After §8 |
+|---|---|---|
+| ready | 17 | 18 |
+| needs minor polish | 1 | 0 |
+| semantically wrong | 0 | 0 |
+
+The single `needs minor polish` from §7 (extras[5] mars_leo_11h relationship variant sharing template prose with the community variant) is resolved by override E.
+
+### Istanbul regression (after §8)
+
+Byte-identical at the cluster level: same 4 core_blocks / 6 extra_blocks, same `node_id`s, same headlines, same teasers, same bodies, same micros, same chips. Verified by full-block fingerprint comparison against the §7 snapshot.
+
+The new bespoke entries are all keyed on Adana-specific `match_id` × `role_domain` (or `match_id` × `packet.id`) pairs that do not exist in Istanbul's selected packet set. The `_naturalize_chip_prose` helper is idempotent and only fires when `·` or `Public maturity` is present in a body — neither survives the existing Istanbul template path, so the helper is a no-op for every Istanbul block.
+
+### Tests
+
+Tests run: `backend/tests/test_natal_promise_cluster_plan.py`, `backend/tests/test_natal_promise_packets.py`, `backend/tests/test_natal_public_builder.py`, `backend/tests/test_projection_shadow_v1_builder.py`.
+
+- Before §8: 60 passed.
+- After §8: **63 passed** (added three new assertions in `test_projection_shadow_v1_builder.py`: `test_adana_bodies_have_no_chip_format_separator`, `test_adana_bodies_have_no_public_maturity_english_label`, `test_adana_mars_leo_11h_community_vs_relationship_bodies_diverge`).

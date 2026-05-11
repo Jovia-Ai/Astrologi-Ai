@@ -2044,3 +2044,74 @@ def test_adana_extras_no_dangling_numbered_house_fragments() -> None:
                 f"dangling numbered-house fragment in {block.get('node_id')} {field}: "
                 f"...{value[-80:]!r}"
             )
+
+
+# ---------------------------------------------------------------------------
+# Adana §8 copy-style naturalization pass regressions.
+# See docs/system/adana_cluster_plan_audit_after_v0_3_final.md §8 for the
+# bespoke per-packet overrides plus the chip-format / English-label
+# backstop helper.
+# ---------------------------------------------------------------------------
+
+
+def test_adana_bodies_have_no_chip_format_separator() -> None:
+    """§8 polish: the chip-format ``·`` separator must never appear inside
+    a body / teaser / micro string. It belongs in chip arrays only."""
+
+    core, extras = _adana_blocks()
+    for block in [*core, *extras]:
+        for field in ("body", "teaser", "micro"):
+            value = str(block.get(field) or "")
+            assert "·" not in value, (
+                f"chip-format `·` leaked into {block.get('node_id')} {field}: {value[:160]!r}"
+            )
+
+
+def test_adana_bodies_have_no_public_maturity_english_label() -> None:
+    """§8 polish: the English internal label ``Public maturity`` from the
+    saturn_taurus_8h packet must never survive into a rendered body."""
+
+    core, extras = _adana_blocks()
+    for block in [*core, *extras]:
+        for field in ("body", "teaser", "micro", "headline"):
+            value = str(block.get(field) or "")
+            assert "Public maturity" not in value, (
+                f"English label `Public maturity` leaked into {block.get('node_id')} {field}: {value[:160]!r}"
+            )
+            assert "public maturity" not in value, (
+                f"English label `public maturity` leaked into {block.get('node_id')} {field}: {value[:160]!r}"
+            )
+
+
+def test_adana_mars_leo_11h_community_vs_relationship_bodies_diverge() -> None:
+    """§8 polish (E): the community-variant and the relationship-variant
+    bodies must not share any substring longer than 40 chars. They share a
+    match_id and previously ran through the same template, producing a
+    near-duplicate mid-body sentence about ``topluluklar veya ortak
+    idealler içinde görünür olma...``. The bespoke overrides separate
+    them."""
+
+    _, extras = _adana_blocks()
+    comm = _find_block(extras, "mars_leo_11h_warm_visible_drive_community_chart_exact")
+    rel = _find_block(extras, "mars_leo_11h_warm_visible_drive_chart_exact")
+    assert comm is not None, "mars_leo_11h community variant missing from Adana extras"
+    assert rel is not None, "mars_leo_11h relationship variant missing from Adana extras"
+
+    a = str(comm.get("body") or "")
+    b = str(rel.get("body") or "")
+
+    # Longest common substring via DP. Bound is 40 chars (any phrase longer
+    # than that signals the two variants are still sharing template prose).
+    la, lb = len(a), len(b)
+    dp = [[0] * (lb + 1) for _ in range(la + 1)]
+    longest = 0
+    for i in range(la):
+        for j in range(lb):
+            if a[i] == b[j]:
+                dp[i + 1][j + 1] = dp[i][j] + 1
+                if dp[i + 1][j + 1] > longest:
+                    longest = dp[i + 1][j + 1]
+    assert longest < 40, (
+        f"mars_leo_11h community vs relationship bodies still share a "
+        f"{longest}-char substring; they must diverge after §8."
+    )

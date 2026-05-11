@@ -2466,6 +2466,12 @@ def _profile_block_from_node(
     teaser = _localize_public_copy_tr(teaser)
     body = _localize_public_copy_tr(body)
     micro = _localize_public_copy_tr(micro)
+    # Adana §8 polish backstop: strip chip-format `·` and translate English
+    # internal labels that survived the bespoke-override + localization
+    # layers. Idempotent / no-op on already-natural strings.
+    teaser = _naturalize_chip_prose(teaser)
+    body = _naturalize_chip_prose(body)
+    micro = _naturalize_chip_prose(micro)
     return {
         "id": block_id,
         "headline": title,
@@ -3853,37 +3859,99 @@ def _packet_copy_override(packet: Mapping[str, Any]) -> dict[str, str]:
             "headline": "Kalbin güven olmadan tam açılmıyor olabilir.",
             "teaser": "Yakınlık sende yüzeyde değil; güven oluşunca derinleşiyor.",
         }
-    # Adana audit polish (#1): the auto-built anchor sentence for the
-    # mc_cancer_moon_gemini_9h_teaching_voice career packet collided with the
-    # chip-fragment form of proof_raw ("MC Yengeç · Ay 9. ev İkizler") AND
-    # substituted "Kariyer hattının Yengeç" twice on the same line. The
-    # bespoke body below uses the user-supplied verbatim opener that names
-    # MC Yengeç + Ay 9. ev İkizler once each.
+    # Adana audit polish (#1, refined in §8): the auto-built anchor sentence
+    # for the mc_cancer_moon_gemini_9h_teaching_voice career packet collided
+    # with the chip-fragment form of proof_raw and substituted "Kariyer
+    # hattının Yengeç" twice on the same line. The bespoke body below uses
+    # the §8 user-supplied opener that drops the engine-mechanical
+    # "çalıştırıyor" closing in favour of "istediğini gösteriyor".
     if match_id == "mc_cancer_moon_gemini_9h_teaching_voice" and role_domain == "career":
         return {
             "body": (
-                "Kariyer hattının Yengeç'te, yöneticisi Ay'ın da 9. evde İkizler'de olması, "
-                "dışarıda bıraktığın izi anlatma ve koruma üzerinden çalıştırıyor. "
+                "Kariyer hattının Yengeç'te, yöneticisi Ay'ın da 9. evde İkizler'de olması; "
+                "dışarıda daha duyarlı, anlatan ve karşı tarafın anlayabileceği bir dil kurmak "
+                "istediğini gösteriyor. "
                 "Görünür olduğunda insanlara sadece bilgi değil, güven hissi de vermek isteyebilirsin. "
                 "Senin public sesin sert bir otoriteden çok, anlayan ve perspektif açan bir yerden güçlenir."
             ),
         }
-    # Adana audit polish (#2): the auto-built anchor sentence for
-    # venus_square_pluto_intense_love joined the literal aspect chip
-    # ("Venüs kare Plüton") with the motif label ("Yoğun çekim") via the
-    # generic "X ve Y aynı çizgiyi güçlendiriyor" tail, which reads
-    # clinical. The bespoke opener below is user-supplied verbatim and
-    # describes the Venus–Pluto square in a more lived voice. Scoped to
-    # the relationship role for this packet only.
+    # Adana audit polish (#2, refined in §8): the auto-built anchor sentence
+    # joined "Venüs kare Plüton" with "Yoğun çekim" through the generic tail.
+    # The §7 override fixed the opener; §8 replaces the rest of the body with
+    # the user-supplied lived continuation so the card reads less like report
+    # prose and more like recognised experience.
     if match_id == "venus_square_pluto_intense_love" and role_domain == "relationship":
         return {
             "body": (
                 "Venüs'ün Plüton'la kare çalışması, ilişkilerde çekimi daha yoğun ve kolay geçmeyen bir yere taşıyabilir. "
-                "Birine çekildiğinde bunu kolayca sıradan bir hoşlanma gibi yaşamayabilirsin; "
-                "bağın altındaki güç dengesini ve değer görme ihtiyacını da hızlı hissedebilirsin. "
-                "Yoğunluğu kontrol etmeye çalışmadığında, ilişki seni daha dürüst ve dönüştürücü bir yakınlığa taşıyabilir."
+                "Birine çekildiğinde bu sende kolay kolay hafif bir hoşlanma gibi kalmayabilir. "
+                "O kişinin sende neyi uyandırdığını, ilişkide gücün kimin elinde olduğunu ya da neden bu kadar etkilendiğini hızlı fark edebilirsin. "
+                "Bu yoğunluk kontrol etmeye çalıştığında yorabilir; ama dürüst kaldığında seni daha gerçek bir yakınlığa götürür."
             ),
         }
+    # Adana audit polish §8 (B): libra_asc_venus_chart_ruler identity body
+    # opened with the chip-format string
+    # "Yükseleninin · Terazi · Venüs yönetici olması ile Sosyal sezgi
+    # birlikte..." — the `·` separator belongs in chip arrays, not body
+    # prose, and "Sosyal sezgi" is a motif label rather than a sentence
+    # subject. Replace with the user-supplied lived opener that names the
+    # Libra-rising + Venus-ruler dynamic in natural Turkish.
+    if match_id == "libra_asc_venus_chart_ruler" and role_domain == "identity":
+        return {
+            "body": (
+                "Dışarıdan uyumlu ve dengeli görünebilirsin; ama bu uyumun altında "
+                "kiminle ne kadar yakınlaşacağını dikkatle seçen bir taraf var. "
+                "Bir ortama girdiğinde önce tonu okuyup içeride seçici davranmak senin doğal işleyişine yakın. "
+                "İnsan ilişkilerinde denge, zarafet ve üslup kurma becerisi buradaki güçlü tarafını netleştiriyor. "
+                "Denge kaçtığında fazla uyum sağlamak, kendi tercihini geciktirmek ya da dışarıdaki dengeyi korumak için içeride gerilmek belirginleşebilir."
+            ),
+        }
+    # Adana audit polish §8 (C): saturn_taurus_8h_steady_public_maturity
+    # career body opened with the English internal label "Public maturity"
+    # joined via the auto-built "X kadar Y de bu hattın karakterini
+    # belirliyor" template. Replace with the user-supplied lived opener and
+    # drop the English label entirely.
+    if match_id == "saturn_taurus_8h_steady_public_maturity" and role_domain == "career":
+        return {
+            "body": (
+                "Satürn'ünün 8. evde Boğa'da olması, görünür olmadan önce sağlam bir temel arayan tarafını güçlendiriyor. "
+                "Derin güven, kaynak, kriz ve kontrol temaları zamanla daha olgun bir kariyer çizgisine dönüşebilir. "
+                "Görünür olmadan önce temelin sağlam olduğundan emin olmak isteyebilirsin. "
+                "Üretiminde sana özgün bir imza veren yer de burada: Sabır, olgunluk, krizden yapı çıkarma, güven veren profesyonel duruş."
+            ),
+        }
+    # Adana audit polish §8 (E, community): mars_leo_11h_warm_visible_drive
+    # community variant previously shared its mid-body sentence
+    # ("topluluklar veya ortak idealler içinde görünür olma...")
+    # byte-for-byte with the relationship variant, because both ran through
+    # the same template path. Separate the two with bespoke bodies so the
+    # community card actually speaks to grup/topluluk dynamics. The two
+    # variants share the same match_id but differ in packet.id suffix
+    # (`_community_chart_exact` vs `_chart_exact`), so we route on packet
+    # id rather than role_domain — the cluster plan assigns the community
+    # variant to an `action_pressure` cluster, not a literal `community`
+    # role_domain.
+    if match_id == "mars_leo_11h_warm_visible_drive":
+        packet_id = str(packet.get("id") or "").strip()
+        forced_domain = str(packet.get("domain") or "").strip().lower()
+        if packet_id.endswith("_community_chart_exact") or forced_domain == "community":
+            return {
+                "body": (
+                    "Bir grubun içinde sadece uyum sağlamak değil, kendi rengini göstermek isteyebilirsin. "
+                    "Mars'ın 11. evde Aslan'da olması, sosyal alanda sıcak, görünür ve harekete geçiren bir enerji verir. "
+                    "Bu iyi çalıştığında insanları canlandırırsın; zorlandığında ise onay görme ihtiyacı fazla büyüyebilir."
+                ),
+            }
+        if role_domain == "relationship" or forced_domain == "relationship":
+            # Adana audit polish §8 (E, relationship): relationship variant —
+            # bespoke body so the relationship card talks about
+            # yakınlık/heyecan rather than topluluk/grup dynamics.
+            return {
+                "body": (
+                    "Yakınlıkta sıcaklık ve heyecan hızlı yükselebilir; ama kendi alanını ve kişisel ritmini kaybetmek istemezsin. "
+                    "Birine yaklaşırken bile kendin gibi kalabilmek, bu ilişkilerde en önemli ihtiyaçlarından biri olabilir."
+                ),
+            }
     return {}
 
 
@@ -4109,6 +4177,50 @@ _PUBLIC_COPY_TR_REPLACEMENTS: tuple[tuple[str, str], ...] = (
     ("Jupiter square Midheaven", "Jüpiter–Tepe Noktası karesi"),
     ("Neptune square Midheaven", "Neptün–Tepe Noktası karesi"),
 )
+
+
+def _naturalize_chip_prose(text: str) -> str:
+    """Final-pass defensive cleanup for body / teaser strings.
+
+    Two failure modes from upstream template composition that survive the
+    bespoke-override layer:
+
+    1. Chip-format `·` separators leaking into body sentences. Anchor
+       fragments like ``"Yükselen · Terazi · Venüs yönetici"`` belong in
+       chip arrays only; when they end up inside a prose sentence, they
+       read as engine-internal label syntax rather than natural Turkish.
+    2. Untranslated English internal labels (most commonly
+       ``"Public maturity"``) that an upstream packet builder dropped into
+       a Turkish body. These should never reach the user — translate the
+       known ones to lived Turkish and let the rest flow through
+       ``_localize_public_copy_tr``.
+
+    Idempotent and safe to call on already-natural strings. Only fires when
+    the suspicious tokens are present, so byte-identical output for any
+    string that does not match.
+    """
+
+    clean = str(text or "")
+    if not clean:
+        return clean
+    # English internal label that an upstream builder dropped into a body.
+    # Translate to a descriptive Turkish phrase. Both casings.
+    if "Public maturity" in clean:
+        clean = clean.replace("Public maturity", "olgun bir kariyer çizgisi")
+    if "public maturity" in clean:
+        clean = clean.replace("public maturity", "olgun bir kariyer çizgisi")
+    # Strip chip-format `·` separators that leaked into body / teaser prose.
+    # The `·` belongs in chip arrays only; when it appears in a body the
+    # surrounding tokens are anchor fragments that should be joined with a
+    # natural Turkish space. Replacing with a single space and then
+    # collapsing duplicate spaces gives ``"Yükselen Terazi Venüs yönetici"``
+    # from ``"Yükselen · Terazi · Venüs yönetici"`` — still imperfect, but
+    # no longer a chip-format leak. The bespoke override layer above should
+    # always run first; this is a defensive backstop.
+    if "·" in clean:
+        clean = clean.replace(" · ", " ").replace("·", " ")
+        clean = re.sub(r"\s{2,}", " ", clean).strip()
+    return clean
 
 
 def _localize_public_copy_tr(text: str) -> str:
