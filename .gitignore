@@ -41,3 +41,10 @@ swisseph/
 
 # Git worktree directories — managed by git, never tracked as files.
 .claude/worktrees/
+
+# Working/scratch docs under docs/system/ (underscore-prefix convention).
+docs/system/_generated_outputs/
+docs/system/_working_inventory.md
+
+# Ad-hoc natal artifacts not referenced by any test or script.
+backend/tests/_artifacts/natal_interpret_full_2020-04-10_08-26_istanbul_user_compact_debug.json
