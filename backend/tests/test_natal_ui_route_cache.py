@@ -22,12 +22,14 @@ def test_interpret_ui_cache_key_changes_with_locale() -> None:
         request_tr,
         debug=False,
         include_debug=False,
+        include_full_profile=False,
         profile_engine=None,
     )
     key_en = natal_interpretation._interpret_ui_cache_key(
         request_en,
         debug=False,
         include_debug=False,
+        include_full_profile=False,
         profile_engine=None,
     )
 
@@ -42,16 +44,37 @@ def test_interpret_ui_cache_key_changes_with_birth_data() -> None:
         request_a,
         debug=False,
         include_debug=False,
+        include_full_profile=False,
         profile_engine=None,
     )
     key_b = natal_interpretation._interpret_ui_cache_key(
         request_b,
         debug=False,
         include_debug=False,
+        include_full_profile=False,
         profile_engine=None,
     )
 
     assert key_a != key_b
+
+
+def test_interpret_ui_cache_key_changes_with_full_profile_toggle() -> None:
+    request = _request()
+    key_lazy = natal_interpretation._interpret_ui_cache_key(
+        request,
+        debug=False,
+        include_debug=False,
+        include_full_profile=False,
+        profile_engine=None,
+    )
+    key_full = natal_interpretation._interpret_ui_cache_key(
+        request,
+        debug=False,
+        include_debug=False,
+        include_full_profile=True,
+        profile_engine=None,
+    )
+    assert key_lazy != key_full
 
 
 def test_interpret_ui_repeat_summary_only_request_hits_cache(monkeypatch) -> None:

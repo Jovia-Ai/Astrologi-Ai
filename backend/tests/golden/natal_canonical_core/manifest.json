@@ -1,0 +1,103 @@
+{
+  "version": "natal_canonical_core_manifest_v1",
+  "minimum_chart_count_for_ontology_acceptance": 15,
+  "cases": [
+    {
+      "case_id": "fix01_leo_leo_classic",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix01_leo_leo_classic.json",
+      "status": "pending_annotation",
+      "notes": ["identity-heavy baseline candidate"]
+    },
+    {
+      "case_id": "fix02_capricorn_stellium",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix02_capricorn_stellium.json",
+      "status": "pending_annotation",
+      "notes": ["structure and visibility weighting candidate"]
+    },
+    {
+      "case_id": "fix03_pisces_cancer_water",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix03_pisces_cancer_water.json",
+      "status": "pending_annotation",
+      "notes": ["emotional security and sensitivity candidate"]
+    },
+    {
+      "case_id": "fix04_h10_career_stellium",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix04_h10_career_stellium.json",
+      "status": "pending_annotation",
+      "notes": ["career visibility candidate"]
+    },
+    {
+      "case_id": "fix05_t_square_tense",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix05_t_square_tense.json",
+      "status": "pending_annotation",
+      "notes": ["contradiction-heavy pattern candidate"]
+    },
+    {
+      "case_id": "fix06_grand_trine_flow",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix06_grand_trine_flow.json",
+      "status": "pending_annotation",
+      "notes": ["flow and compensation candidate"]
+    },
+    {
+      "case_id": "fix07_aries_libra_nodes",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix07_aries_libra_nodes.json",
+      "status": "pending_annotation",
+      "notes": ["relationship polarity candidate"]
+    },
+    {
+      "case_id": "fix08_cancer_capricorn_nodes",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix08_cancer_capricorn_nodes.json",
+      "status": "pending_annotation",
+      "notes": ["care-duty polarity candidate"]
+    },
+    {
+      "case_id": "fix09_edge_cusp_planet",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix09_edge_cusp_planet.json",
+      "status": "pending_annotation",
+      "notes": ["edge placement stability candidate"]
+    },
+    {
+      "case_id": "fix10_y2k_complex",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix10_y2k_complex.json",
+      "status": "pending_annotation",
+      "notes": ["complex multi-domain candidate"]
+    },
+    {
+      "case_id": "fix11_unknown_birthtime",
+      "artifact_path": "backend/tests/_artifacts/natal_v8_baseline/fix11_unknown_birthtime.json",
+      "status": "pending_annotation",
+      "notes": ["reduced-confidence candidate"]
+    },
+    {
+      "case_id": "audit_simple",
+      "artifact_path": "backend/tests/_artifacts/natal_audit/simple.json",
+      "status": "pending_annotation",
+      "notes": ["simple baseline candidate"]
+    },
+    {
+      "case_id": "audit_stellium",
+      "artifact_path": "backend/tests/_artifacts/natal_audit/stellium.json",
+      "status": "pending_annotation",
+      "notes": ["stellium validation candidate"]
+    },
+    {
+      "case_id": "audit_contradiction_heavy",
+      "artifact_path": "backend/tests/_artifacts/natal_audit/contradiction_heavy.json",
+      "status": "pending_annotation",
+      "notes": ["contradiction acceptance candidate"]
+    },
+    {
+      "case_id": "audit_angular_heavy",
+      "artifact_path": "backend/tests/_artifacts/natal_audit/angular_heavy.json",
+      "status": "pending_annotation",
+      "notes": ["angular dominance candidate"]
+    },
+    {
+      "case_id": "audit_saturn_heavy",
+      "artifact_path": "backend/tests/_artifacts/natal_audit/saturn_heavy.json",
+      "status": "pending_annotation",
+      "notes": ["saturn/governing filter candidate"]
+    }
+  ]
+}
+

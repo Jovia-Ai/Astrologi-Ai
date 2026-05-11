@@ -1,0 +1,119 @@
+version: natal_semantic_registry_v1
+scope: natal_canonical_core_migration
+notes:
+  - "This registry classifies current natal modules by semantic role and migration target."
+  - "Semantic correctness takes priority over backward compatibility in this migration."
+
+entries:
+  - path: backend/app/api/routes/natal_interpretation.py
+    current_role:
+      - canonical natal runtime entry
+      - multi-stage payload builder
+      - old/new reasoning coordinator
+    semantic_authority_level: high
+    new_role: legacy_runtime_entrypoint
+    action: refactor
+    reason: "Still owns canonical natal runtime today, but should gradually delegate meaning authority to astro_os natal state builder."
+
+  - path: backend/app/natal/dispositor_engine.py
+    current_role:
+      - raw astro extractor
+      - ruler/dispositor calculator
+    semantic_authority_level: low
+    new_role: source_calculator
+    action: keep
+    reason: "Core astro structure source for routes, rulership, and evidence."
+
+  - path: backend/app/natal/natal_graph_v2.py
+    current_role:
+      - natal structural abstraction
+      - motif/vector producer
+    semantic_authority_level: high
+    new_role: structural_feature_extractor
+    action: keep_and_promote
+    reason: "Closest existing module to canonical natal reasoning substrate."
+
+  - path: backend/app/natal/promise_vector_engine.py
+    current_role:
+      - promise/domain/familiarity/sensitivity vector builder
+    semantic_authority_level: high
+    new_role: structural_feature_extractor
+    action: keep_and_promote
+    reason: "Feeds canonical promise hierarchy and developmental task reasoning."
+
+  - path: backend/app/natal/narrative/natal_feature_graph.py
+    current_role:
+      - salience/polarity/compensation graph
+    semantic_authority_level: high
+    new_role: structural_feature_extractor
+    action: keep_and_promote
+    reason: "Best current source for centrality and contradiction-support signals."
+
+  - path: backend/app/natal/narrative/contradiction_engine.py
+    current_role:
+      - contradiction signature builder
+    semantic_authority_level: high
+    new_role: structural_feature_extractor
+    action: keep_and_promote
+    reason: "Feeds canonical contradiction hierarchy."
+
+  - path: backend/app/natal/narrative/master_selector.py
+    current_role:
+      - chart spine candidate selector
+    semantic_authority_level: high
+    new_role: canonical_reasoner_candidate_reducer
+    action: keep_and_refactor
+    reason: "Direction is correct, but it must be demoted from authority to spine candidate reducer."
+
+  - path: backend/app/natal/public_builder.py
+    current_role:
+      - public payload assembler
+      - branch coordinator across many natal meaning surfaces
+    semantic_authority_level: high
+    new_role: legacy_surface_adapter
+    action: demote
+    reason: "Should stop coordinating multiple meaning authorities and become compatibility/render bridging only."
+
+  - path: backend/app/natal/supporting_threads_builder.py
+    current_role:
+      - sections_v2 builder
+      - supporting_threads builder
+    semantic_authority_level: medium
+    new_role: legacy_surface
+    action: demote
+    reason: "Useful for phrase rescue and renderer inspiration, but not canonical meaning authority."
+
+  - path: backend/app/natal/personality_imprint/builder.py
+    current_role:
+      - personality branch selector
+      - signature bundle renderer
+    semantic_authority_level: medium
+    new_role: legacy_surface
+    action: demote
+    reason: "Strong local branch, but should no longer define canonical character truth."
+
+  - path: backend/app/natal/narrative/profile_narrative_engine.py
+    current_role:
+      - profile narrative engine selector
+      - surface migration gate
+    semantic_authority_level: medium
+    new_role: legacy_surface
+    action: demote
+    reason: "Should become renderer inspiration or compare-only path after canonical state arrives."
+
+  - path: backend/app/natal/profile_v8_payload_builder.py
+    current_role:
+      - profile_v8 and full_map_v8 payload shaper
+    semantic_authority_level: medium
+    new_role: legacy_surface
+    action: demote
+    reason: "Should consume canonical state in the future, not own natal meaning."
+
+  - path: backend/app/meaning/meaning_graph_v1_1_builder.py
+    current_role:
+      - downstream graph extraction from narrative branches
+    semantic_authority_level: medium
+    new_role: legacy_graph_projection
+    action: demote
+    reason: "Graph should move upstream and be rebuilt from canonical natal state instead of copy-like branches."
+

@@ -61,6 +61,15 @@ from app.helpers.narrative_context import derive_core_aspects, derive_placements
 from app.helpers.domain_normalizer import canon_domain
 from app.helpers.normalize import normalize_node_alias, normalize_planet_key, normalize_aspect_type
 from app.engine.astro_normalize import aspect_strength, clamp01
+from app.astro_os.natal import (
+    build_canonical_natal_state_v1,
+    build_canonical_natal_state_from_chart_data,
+    build_legacy_natal_bundle_from_chart,
+    build_legacy_natal_bundle_from_base_payload,
+    compare_legacy_branches_to_canonical_state,
+    render_compact_profile,
+    render_section_profile,
+)
 from app.natal.public_builder import build_public_natal_view
 from app.natal.category_support_engine import (
     apply_category_support_to_personality_imprint,
@@ -209,6 +218,7 @@ class NatalInterpretationRequest(BaseModel):
     birth_timezone: str | None = None
     locale: str | None = None
     summary_only: bool = False
+    include_full_profile: bool = False
 
 
 class ArchetypeAnswer(BaseModel):
@@ -258,6 +268,69 @@ def _get_optional_supabase_user_id(authorization: str | None = Header(default=No
     if not user_res or not user_res.user:
         return None
     return user_res.user.id
+
+
+@router.post("/internal/astro-os/natal-state")
+def build_internal_natal_state(
+    request: NatalInterpretationRequest,
+) -> Dict[str, Any]:
+    state = _build_internal_canonical_natal_state(request)
+    return state.model_dump()
+
+
+@router.post("/internal/astro-os/natal-render")
+def render_internal_natal_state(
+    request: NatalInterpretationRequest,
+) -> Dict[str, Any]:
+    state = _build_internal_canonical_natal_state(request)
+    compact_render = render_compact_profile(state)
+    section_render = render_section_profile(state)
+    return {
+        "canonical_state": state.model_dump(),
+        "compact_profile": compact_render.model_dump(),
+        "section_profile": section_render.model_dump(),
+    }
+
+
+def _build_internal_canonical_natal_state(
+    request: NatalInterpretationRequest,
+):
+    chart_data = compute_natal_chart(
+        request.birth_date,
+        request.birth_time,
+        request.birth_place,
+        birth_latitude=request.birth_latitude,
+        birth_longitude=request.birth_longitude,
+        birth_timezone=request.birth_timezone,
+    )
+    return build_canonical_natal_state_from_chart_data(
+        chart_data,
+        metadata=_build_metadata(request, chart_data),
+        include_debug=True,
+    )
+
+
+@router.post("/internal/astro-os/natal-compare")
+def compare_internal_natal_state(
+    request: NatalInterpretationRequest,
+) -> Dict[str, Any]:
+    base_payload = _prepare_payload(
+        request,
+        premium_mode=False,
+        debug_mode=False,
+        tone_enabled=True,
+        route="internal_natal_compare",
+    )
+    legacy_bundle = build_legacy_natal_bundle_from_base_payload(base_payload)
+    state = build_canonical_natal_state_v1(legacy_bundle, include_debug=True)
+    comparison = compare_legacy_branches_to_canonical_state(
+        base_payload=base_payload,
+        canonical_state=state,
+    )
+    return {
+        "canonical_state": state.model_dump(),
+        "comparison": comparison,
+    }
 
 
 def _log_natal_timing(
@@ -313,6 +386,7 @@ def _natal_request_summary(request: NatalInterpretationRequest) -> Dict[str, Any
                 (request.birth_timezone or "").strip().lower(),
                 (request.locale or "tr").strip().lower(),
                 "summary_only" if request.summary_only else "full",
+                "include_full_profile" if request.include_full_profile else "no_full_profile",
             ]
         ).encode("utf-8")
     ).hexdigest()[:12]
@@ -328,6 +402,7 @@ def _natal_request_summary(request: NatalInterpretationRequest) -> Dict[str, Any
         "has_timezone": bool((request.birth_timezone or "").strip()),
         "locale": request.locale or "tr",
         "summary_only": bool(request.summary_only),
+        "include_full_profile": bool(request.include_full_profile),
     }
 
 
@@ -371,6 +446,7 @@ def _interpret_ui_cache_key(
     *,
     debug: bool,
     include_debug: bool,
+    include_full_profile: bool,
     profile_engine: str | None,
 ) -> str:
     digest = hashlib.sha1(
@@ -386,6 +462,7 @@ def _interpret_ui_cache_key(
                 "summary_only" if request.summary_only else "full",
                 "debug" if debug else "nodebug",
                 "include_debug" if include_debug else "noinclude_debug",
+                "include_full_profile" if include_full_profile else "no_full_profile",
                 (profile_engine or "").strip().lower(),
                 _INTERPRET_UI_CACHE_VERSION,
             ]
@@ -1195,6 +1272,7 @@ def interpret_natal_chart_ui(
         request,
         debug=debug,
         include_debug=include_debug,
+        include_full_profile=bool(request.include_full_profile),
         profile_engine=profile_engine,
     )
     cache_status = "miss"
@@ -1285,6 +1363,7 @@ def interpret_natal_chart_ui(
                     response,
                     locale=locale,
                     include_debug=include_debug,
+                    include_full_profile=bool(request.include_full_profile),
                 )
             with timer.stage("response_finalize"):
                 payload = {"public": public}
@@ -1393,7 +1472,12 @@ def interpret_natal_chart_debug(
         debug_mode=True,
         output_profile="user_compact",
     )
-    public = build_public_natal_view(response, locale=request.locale or "tr", include_debug=True)
+    public = build_public_natal_view(
+        response,
+        locale=request.locale or "tr",
+        include_debug=True,
+        include_full_profile=bool(request.include_full_profile),
+    )
     return {"public": public, "debug": response}
 
 
@@ -1439,7 +1523,12 @@ def interpret_natal_chart_premium_ui(
         debug_mode=debug,
         output_profile="user_compact",
     )
-    public = build_public_natal_view(response, locale=request.locale or "tr", include_debug=include_debug)
+    public = build_public_natal_view(
+        response,
+        locale=request.locale or "tr",
+        include_debug=include_debug,
+        include_full_profile=bool(request.include_full_profile),
+    )
     return {"public": public}
 
 
@@ -1468,7 +1557,12 @@ def interpret_natal_chart_premium_debug(
         debug_mode=True,
         output_profile="user_compact",
     )
-    public = build_public_natal_view(response, locale=request.locale or "tr", include_debug=True)
+    public = build_public_natal_view(
+        response,
+        locale=request.locale or "tr",
+        include_debug=True,
+        include_full_profile=bool(request.include_full_profile),
+    )
     return {"public": public, "debug": response}
 
 
@@ -1511,6 +1605,7 @@ def _prepare_payload(
         debug_mode=debug_mode,
         tone_enabled=tone_enabled,
         request=request,
+        include_full_profile=bool(request.include_full_profile),
         profile_engine=profile_engine,
         route=route,
         request_id=request_id,
@@ -1524,6 +1619,7 @@ def _prepare_payload_from_chart(
     debug_mode: bool = False,
     tone_enabled: bool = True,
     request: NatalInterpretationRequest | None = None,
+    include_full_profile: bool = True,
     profile_engine: str | None = None,
     route: str | None = None,
     request_id: str | None = None,
@@ -2041,13 +2137,16 @@ def _prepare_payload_from_chart(
     stage_started = _stage_start(stage_timings_enabled)
     surface_stage_breakdown_ms: Dict[str, float] = {}
     substage_started = _stage_start(stage_timings_enabled)
-    sections_v2 = build_sections_v2(
-        chart_data=chart_data,
-        planets=planets,
-        natal_graph=natal_graph,
-        master_selector=master_selector_v1 if surface_migration_enabled else None,
-        migration_mode=surface_migration_public_mode,
-    )
+    if include_full_profile:
+        sections_v2 = build_sections_v2(
+            chart_data=chart_data,
+            planets=planets,
+            natal_graph=natal_graph,
+            master_selector=master_selector_v1 if surface_migration_enabled else None,
+            migration_mode=surface_migration_public_mode,
+        )
+    else:
+        sections_v2 = []
     threads_use_prebuilt_sections = (
         os.getenv("NATAL_THREADS_USE_PREBUILT_SECTIONS", "true").strip().lower()
         in _ENABLED_ENV_VALUES
@@ -2059,7 +2158,7 @@ def _prepare_payload_from_chart(
         max_threads=4,
         master_selector=master_selector_v1 if surface_migration_enabled else None,
         migration_mode=surface_migration_public_mode,
-        sections=sections_v2 if threads_use_prebuilt_sections else None,
+        sections=sections_v2 if (include_full_profile and threads_use_prebuilt_sections) else None,
     )
     _stage_end(
         surface_stage_breakdown_ms,
@@ -2067,15 +2166,18 @@ def _prepare_payload_from_chart(
         substage_started,
     )
     substage_started = _stage_start(stage_timings_enabled)
-    profile_narrative = build_profile_narrative(
-        chart_data,
-        natal_graph,
-        locale=(request.locale if request else "tr") or "tr",
-        include_debug=debug_mode,
-        engine_override=(profile_engine or "").strip().lower() or None,
-        master_selector=master_selector_v1,
-        migration_mode="active" if surface_migration_enabled else ("shadow" if surface_migration_shadow else "legacy"),
-    )
+    if include_full_profile:
+        profile_narrative = build_profile_narrative(
+            chart_data,
+            natal_graph,
+            locale=(request.locale if request else "tr") or "tr",
+            include_debug=debug_mode,
+            engine_override=(profile_engine or "").strip().lower() or None,
+            master_selector=master_selector_v1,
+            migration_mode="active" if surface_migration_enabled else ("shadow" if surface_migration_shadow else "legacy"),
+        )
+    else:
+        profile_narrative = {}
     personality_imprint = build_personality_imprint(
         planets=planets,
         aspects=aspects,
@@ -2106,9 +2208,11 @@ def _prepare_payload_from_chart(
         substage_started,
     )
     substage_started = _stage_start(stage_timings_enabled)
-    sections_v2 = apply_category_support_to_sections(sections_v2, category_support_bundle)
+    if include_full_profile:
+        sections_v2 = apply_category_support_to_sections(sections_v2, category_support_bundle)
     supporting_threads = apply_category_support_to_threads(supporting_threads, category_support_bundle)
-    profile_narrative = apply_category_support_to_profile_narrative(profile_narrative, category_support_bundle)
+    if include_full_profile:
+        profile_narrative = apply_category_support_to_profile_narrative(profile_narrative, category_support_bundle)
     personality_imprint = apply_category_support_to_personality_imprint(personality_imprint, category_support_bundle)
     _stage_end(
         surface_stage_breakdown_ms,
@@ -2133,7 +2237,7 @@ def _prepare_payload_from_chart(
             "families": sorted((category_support_bundle.get("by_family") or {}).keys()),
             "supported_ids": sorted((category_support_bundle.get("by_id") or {}).keys()),
         }
-        if surface_migration_shadow:
+        if surface_migration_shadow and include_full_profile:
             surface_migration_debug["sections_v2_shadow"] = build_sections_v2(
                 chart_data=chart_data,
                 planets=planets,
@@ -2261,12 +2365,14 @@ def build_natal_interpretation_response_from_chart(
     debug_mode: bool = False,
     tone_enabled: bool = True,
     premium_mode: bool = False,
+    include_full_profile: bool = True,
 ) -> Dict[str, Any]:
     base_payload = _prepare_payload_from_chart(
         chart_data,
         premium_mode=premium_mode,
         debug_mode=debug_mode,
         tone_enabled=tone_enabled,
+        include_full_profile=include_full_profile,
     )
     return _finalize_response(
         base_payload,
