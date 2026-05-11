@@ -445,6 +445,55 @@ def test_daily_selection_uses_personalization_tie_break() -> None:
     assert result["daily_event_cards"][0]["event_id"] == "evt_career_pref"
 
 
+def test_daily_selection_uses_canonical_natal_activation_tie_break() -> None:
+    relationship = _raw_event(
+        "evt_rel_activation",
+        transit_body="Venus",
+        natal_point="Moon",
+        aspect="trine",
+        bucket="short",
+        phase="exactish",
+        orb_deg=0.24,
+        house=7,
+    )
+    career = _raw_event(
+        "evt_career_plain",
+        transit_body="Venus",
+        natal_point="Moon",
+        aspect="trine",
+        bucket="short",
+        phase="exactish",
+        orb_deg=0.24,
+        house=7,
+    )
+
+    result = daily_selection.select_daily_and_period_event_cards(
+        raw_events=[relationship, career],
+        event_cards=[_materialized_card(relationship), _materialized_card(career)],
+        selected_date="2026-03-10",
+        selected_day_context={},
+        natal={},
+        event_v2_by_id={},
+        canonical_natal_activation_by_event={
+            "evt_rel_activation": {
+                "matched_hook_ids": ["hook:relationship"],
+                "target_node_ids": ["promise_build_safe_intimacy"],
+                "activation_score": 0.92,
+            },
+            "evt_career_plain": {
+                "matched_hook_ids": [],
+                "target_node_ids": [],
+                "activation_score": 0.0,
+            },
+        },
+    )
+
+    score_breakdown = result["daily_selection"]["score_breakdown"]
+    assert score_breakdown["evt_rel_activation"]["canonical_natal_activation_score"] == 0.92
+    assert score_breakdown["evt_career_plain"]["canonical_natal_activation_score"] == 0.0
+    assert result["daily_event_cards"][0]["event_id"] == "evt_rel_activation"
+
+
 def test_selector_uses_raw_pool_not_only_period_cards(monkeypatch) -> None:
     raw_daily = _raw_event(
         "evt_daily",

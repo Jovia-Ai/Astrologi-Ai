@@ -1,0 +1,331 @@
+{
+  "period_core": {
+    "title": "Zihinsel Otoriteni Insa Ediyorsun",
+    "core_story": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor.\n\nBu dönem dikkatini tek bir hatta topluyor. Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor. Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+    "upper_meaning": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+    "period_reading_v1": {
+      "version": "period_reading_v1",
+      "blocks": [
+        {
+          "role": "hook",
+          "text": "Bu dönem dikkatini tek bir hatta topluyor."
+        },
+        {
+          "role": "unfolding",
+          "text": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor."
+        },
+        {
+          "role": "growth",
+          "text": "Bunu daha sahipli bir çizgiye yerleştiriyorsun."
+        }
+      ],
+      "full_text": "Bu dönem dikkatini tek bir hatta topluyor.\n\nKüçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.\n\nBunu daha sahipli bir çizgiye yerleştiriyorsun."
+    },
+    "period_opening": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor. Bu dönem dikkatini tek bir hatta topluyor.",
+    "big_picture": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+    "mechanism": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+    "growth_edge": "Otomatik tepkiyle seçilmiş cevap arasındaki farkı daha net görmek.",
+    "relational_or_life_expression": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+    "what_it_builds": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+    "semantic_focus": {
+      "version": "period_semantic_focus_v1",
+      "selected_meaning": "reorientation",
+      "meaning_family": "reorientation",
+      "primary_domain": "gündelik konuşmalar",
+      "secondary_domains": [
+        "gündelik konuşmalar",
+        "house_3",
+        "house_1",
+        "house_5"
+      ],
+      "why_this_meaning": [
+        "period_voice_policy provided meaning intent fallback",
+        "canonical_period_spine matched natal activation hook",
+        "manifestation_context mapped dominant house to lived scene",
+        "selected events support same domain"
+      ],
+      "suppressed_meanings": [
+        "generic_hat_copy",
+        "coaching_command",
+        "unbacked_natal_reason",
+        "astro_first_opening"
+      ],
+      "confidence": 0.7,
+      "source": "period_voice_policy",
+      "evidence_count": 4,
+      "scene_translation_request": {
+        "version": "manifestation_context_v1",
+        "primary_house": 3,
+        "house_axis": "3-1",
+        "target_planet": "Jupiter",
+        "target_planet_house": 1,
+        "ruled_houses": [],
+        "angle": "DSC",
+        "life_scene": "gündelik konuşmalar",
+        "life_scene_variants": [
+          "gündelik konuşmalar",
+          "küçük cümlelerin ağırlığı",
+          "yakın çevrendeki ses"
+        ],
+        "context_seed": "Bu tema daha çok gündelik konuşmalar içinden görünür oluyor.",
+        "variant_index": 0,
+        "source": "event_house",
+        "release_strengthened": false,
+        "debug": {
+          "event_ids": [
+            "b5a7004a12be4474d70579de2dbe14deef2dc3e6",
+            "f5e5e90860c7fb95136cc668eb62e45340bca24c",
+            "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+            "0a40de18772071d6e2ca06709fe0e4437c0a0071",
+            "4f022aff91a1e6ad15cdb8962a6fd660338d94bc"
+          ]
+        }
+      },
+      "voice_register_hints": {
+        "valence_mode": "integration",
+        "intensity_mode": "dense",
+        "rhetorical_frame": "reframe"
+      },
+      "debug": {
+        "raw_selected_meaning_source": "reorientation",
+        "used_fields": [
+          "period_voice_policy"
+        ],
+        "missing_fields": [
+          "active_life_chapter",
+          "canonical_period_spine.meaning_seed"
+        ],
+        "canonical_natal_state_present": true,
+        "period_core_seed_keys": [
+          "canonical_period_spine",
+          "core_story",
+          "featured_events",
+          "tags",
+          "title",
+          "upper_meaning"
+        ]
+      }
+    },
+    "chapter_priority": {
+      "enabled": false,
+      "applied": false,
+      "owner": "life_chapter",
+      "chapter_type": "",
+      "chapter_id": "",
+      "semantic_focus_source": "period_voice_policy",
+      "scope": "pr_d_v1_tier_1",
+      "event_cards_role": "selected_owner",
+      "reason": "flag_disabled"
+    },
+    "_period_story_debug": {
+      "composer_mode": "semantic_focus_guided",
+      "composer_plan": {
+        "hook": "Bu dönem dikkatini tek bir hatta topluyor.",
+        "scene_anchor": "",
+        "core_contrast": "",
+        "mechanism": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+        "growth_edge": "Otomatik tepkiyle seçilmiş cevap arasındaki farkı daha net görmek.",
+        "what_it_builds": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+        "closer": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+        "legacy_prefix": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor.",
+        "semantic_mode": "guided"
+      },
+      "semantic_focus": {
+        "version": "period_semantic_focus_v1",
+        "selected_meaning": "reorientation",
+        "meaning_family": "reorientation",
+        "primary_domain": "gündelik konuşmalar",
+        "secondary_domains": [
+          "gündelik konuşmalar",
+          "house_3",
+          "house_1",
+          "house_5"
+        ],
+        "why_this_meaning": [
+          "period_voice_policy provided meaning intent fallback",
+          "canonical_period_spine matched natal activation hook",
+          "manifestation_context mapped dominant house to lived scene",
+          "selected events support same domain"
+        ],
+        "suppressed_meanings": [
+          "generic_hat_copy",
+          "coaching_command",
+          "unbacked_natal_reason",
+          "astro_first_opening"
+        ],
+        "confidence": 0.7,
+        "source": "period_voice_policy",
+        "evidence_count": 4,
+        "scene_translation_request": {
+          "version": "manifestation_context_v1",
+          "primary_house": 3,
+          "house_axis": "3-1",
+          "target_planet": "Jupiter",
+          "target_planet_house": 1,
+          "ruled_houses": [],
+          "angle": "DSC",
+          "life_scene": "gündelik konuşmalar",
+          "life_scene_variants": [
+            "gündelik konuşmalar",
+            "küçük cümlelerin ağırlığı",
+            "yakın çevrendeki ses"
+          ],
+          "context_seed": "Bu tema daha çok gündelik konuşmalar içinden görünür oluyor.",
+          "variant_index": 0,
+          "source": "event_house",
+          "release_strengthened": false,
+          "debug": {
+            "event_ids": [
+              "b5a7004a12be4474d70579de2dbe14deef2dc3e6",
+              "f5e5e90860c7fb95136cc668eb62e45340bca24c",
+              "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+              "0a40de18772071d6e2ca06709fe0e4437c0a0071",
+              "4f022aff91a1e6ad15cdb8962a6fd660338d94bc"
+            ]
+          }
+        },
+        "voice_register_hints": {
+          "valence_mode": "integration",
+          "intensity_mode": "dense",
+          "rhetorical_frame": "reframe"
+        },
+        "debug": {
+          "raw_selected_meaning_source": "reorientation",
+          "used_fields": [
+            "period_voice_policy"
+          ],
+          "missing_fields": [
+            "active_life_chapter",
+            "canonical_period_spine.meaning_seed"
+          ],
+          "canonical_natal_state_present": true,
+          "period_core_seed_keys": [
+            "canonical_period_spine",
+            "core_story",
+            "featured_events",
+            "tags",
+            "title",
+            "upper_meaning"
+          ]
+        }
+      },
+      "period_reading_v1_guardrails": {
+        "blocks": [],
+        "adjacent_blocks": [],
+        "full_text": []
+      }
+    },
+    "featured_events": [
+      {
+        "event_id": "b5a7004a12be4474d70579de2dbe14deef2dc3e6",
+        "title": "Chiron square Jupiter (orb 0.09°)",
+        "label": "Chiron square Jupiter (orb 0.09°)",
+        "transit_body": "Chiron",
+        "natal_point": "Jupiter",
+        "semantic_role": null,
+        "semantic_owner": null,
+        "house_overlay": 3,
+        "natal_point_house": 1,
+        "aspect": "square",
+        "domain": null,
+        "tags": [
+          "self",
+          "pressure",
+          "friction"
+        ]
+      },
+      {
+        "event_id": "f5e5e90860c7fb95136cc668eb62e45340bca24c",
+        "title": "Saturn square DSC (orb 0.94°)",
+        "label": "Saturn square DSC (orb 0.94°)",
+        "transit_body": "Saturn",
+        "natal_point": "DSC",
+        "semantic_role": null,
+        "semantic_owner": null,
+        "house_overlay": 3,
+        "natal_point_house": null,
+        "aspect": "square",
+        "domain": null,
+        "tags": [
+          "relationships",
+          "pressure",
+          "friction",
+          "limits",
+          "responsibility",
+          "discipline"
+        ]
+      },
+      {
+        "event_id": "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+        "title": "Pluto sextile South Node (orb 1.93°)",
+        "label": "Pluto sextile South Node (orb 1.93°)",
+        "transit_body": "Pluto",
+        "natal_point": "South Node",
+        "semantic_role": null,
+        "semantic_owner": null,
+        "house_overlay": 1,
+        "natal_point_house": 3,
+        "aspect": "sextile",
+        "domain": null,
+        "tags": [
+          "self",
+          "support",
+          "opportunity",
+          "intensity",
+          "power",
+          "transform"
+        ]
+      },
+      {
+        "event_id": "0a40de18772071d6e2ca06709fe0e4437c0a0071",
+        "title": "Uranus trine Mars (orb 0.12°)",
+        "label": "Uranus trine Mars (orb 0.12°)",
+        "transit_body": "Uranus",
+        "natal_point": "Mars",
+        "semantic_role": null,
+        "semantic_owner": null,
+        "house_overlay": 5,
+        "natal_point_house": 9,
+        "aspect": "trine",
+        "domain": null,
+        "tags": [
+          "career",
+          "support",
+          "flow",
+          "shock",
+          "freedom",
+          "change"
+        ]
+      },
+      {
+        "event_id": "4f022aff91a1e6ad15cdb8962a6fd660338d94bc",
+        "title": "Neptune square DSC (orb 0.02°)",
+        "label": "Neptune square DSC (orb 0.02°)",
+        "transit_body": "Neptune",
+        "natal_point": "DSC",
+        "semantic_role": null,
+        "semantic_owner": null,
+        "house_overlay": 3,
+        "natal_point_house": null,
+        "aspect": "square",
+        "domain": null,
+        "tags": [
+          "relationships",
+          "pressure",
+          "friction",
+          "fog",
+          "idealization",
+          "boundaries",
+          "dissolve"
+        ]
+      }
+    ]
+  },
+  "public.period": {
+    "core_story": null,
+    "summary": {},
+    "period_space": null,
+    "one_liner": null,
+    "main_theme": null
+  }
+}

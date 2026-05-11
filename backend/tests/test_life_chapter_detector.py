@@ -320,6 +320,7 @@ def test_saturn_return_evidence_includes_node_overlap_when_present() -> None:
     chapter = _emit_from_fixture("saturn_return", "aries_3rd_with_south_node_overlap")
     roles = {entry.role for entry in chapter.evidence}
     assert "axis_overlap" in roles
+    assert {"return", "natal_context", "semantic_focus_support", "suppression_guard"} <= roles
 
 
 def test_saturn_return_suppressed_readings_includes_generic_difficulty() -> None:
@@ -341,6 +342,9 @@ def test_saturn_return_renderer_handoff_carries_chapter_weight_and_contrast() ->
     assert chapter.renderer_handoff.chapter_weight == "not ordinary transit; long-cycle maturation"
     assert "hızlı cevap vermek" in chapter.renderer_handoff.core_contrast
     assert "kısa mesajlar" in chapter.renderer_handoff.human_scene
+    assert chapter.natal_architecture_anchor.label == "identity_as_construction_project"
+    assert chapter.chapter_claim_strength == "foundational long-cycle chapter"
+    assert chapter.scene_priority[0].priority == "primary"
 
 
 def test_saturn_return_suppressed_surface_readings_include_shallow_fallbacks() -> None:
@@ -538,6 +542,8 @@ def test_structural_candidate_debug_carries_three_part_pressure_handoff() -> Non
     assert debug["semantic_focus"]["primary"] == "three_part_pressure_system"
     assert "apex_release_point" in debug["semantic_focus"]["secondary"]
     assert "üç parçalı basınç sistemi" in debug["renderer_handoff"]["chart_specific_anchor"]
+    assert debug["structural_pressure_model"] == "three_part_pressure_system"
+    assert debug["readiness_status"] == "not_ready"
 
 
 def test_core_question_is_open_ended() -> None:
@@ -599,6 +605,38 @@ def test_saturn_return_cancer_8th_handoff_does_not_default_to_generic_emotional_
     assert chapter.domain_ownership.primary_domain == "trust_transformation"
     assert "generic emotional regulation" in chapter.semantic_focus.not_this
     assert "mahrem konuşmalar" in chapter.renderer_handoff.human_scene
+    assert "shared_burden" in chapter.shared_domain_priority
+    assert "emotional_exchange" in chapter.shared_domain_priority
+    assert chapter.trust_axis_anchor
+    assert chapter.shared_vs_private_contrast
+    readings = {entry.reading for entry in chapter.suppressed_surface_readings}
+    assert "oversensitivity cliché" in readings
+    assert "self-care simplification" in readings
+    assert "generic vulnerability language" in readings
+
+
+def test_saturn_return_cancer_8th_evidence_roles_include_house_context() -> None:
+    chapter = _emit_from_fixture("saturn_return", "cancer_8th_water_emotional")
+    roles = {entry.role for entry in chapter.evidence}
+    assert {"return", "natal_context", "house_context", "semantic_focus_support", "suppression_guard"} <= roles
+
+
+def test_structural_candidate_is_explicitly_excluded_from_pr_d_v1_scope() -> None:
+    result = detect_active_life_chapter(
+        canonical_natal_state=None,
+        transit_events=[],
+        structural_chapter_rail={
+            "id": "structural:t_square",
+            "shape": "t_square",
+            "apex_house": 4,
+            "release_point": "home_space",
+        },
+        debug=True,
+    )
+    candidate = result["candidates"][0]
+    assert candidate["chapter_type"] == "structural_natal_chapter"
+    assert candidate["debug"]["excluded_from_pr_d_v1"] is True
+    assert candidate["debug"]["future_candidate_pr"] == "PR-C.4"
 
 
 def test_saturn_return_leo_10th_fixture() -> None:

@@ -26,6 +26,7 @@ from app.transit.narrative.text_quality_tr import (
     build_period_copy,
     rewrite_event_card_tr,
     rewrite_period_card_tr,
+    tr_normalize,
 )
 from app.transit.narrative.voice_engine_tr import build_card_copy
 
@@ -771,7 +772,7 @@ def _summarize_derived_context(derived_context: Any) -> Dict[str, Any]:
     if not isinstance(derived_context, Mapping):
         return {}
     return {
-        "derived_domains": _list_str(derived_context.get("derived_domains")),
+        "derived_domains": _clean_domain_list(derived_context.get("derived_domains")),
         "motifs": _list_str(derived_context.get("motifs")),
         "connected_points": _mapping_list(derived_context.get("connected_points")),
         "links": _mapping_list(derived_context.get("links")),
@@ -797,7 +798,7 @@ def _house_scene_ref(item: Mapping[str, Any], derived_context: Mapping[str, Any]
 
 def _event_domain_ref(item: Mapping[str, Any], derived_context: Mapping[str, Any] | None) -> str | None:
     if isinstance(derived_context, Mapping):
-        derived_domains = _list_str(derived_context.get("derived_domains"))
+        derived_domains = _clean_domain_list(derived_context.get("derived_domains"))
         if derived_domains:
             return derived_domains[0]
     domains = item.get("domains") if isinstance(item.get("domains"), list) else []
@@ -1051,7 +1052,7 @@ def _build_event_natal_links(featured_events: List[Dict[str, Any]]) -> List[Dict
         link = {
             "event_id": event_id,
             "natal_target": _summarize_natal_target(derived_context.get("natal_target")),
-            "derived_domains": _list_str(derived_context.get("derived_domains")),
+            "derived_domains": _clean_domain_list(derived_context.get("derived_domains")),
             "motifs": _list_str(derived_context.get("motifs")),
         }
         if natal_promise:
@@ -1135,6 +1136,864 @@ def _build_natal_context_for_period_cards(
                 "meaning_graph_v1_1",
                 "projection_outputs",
             ],
+        },
+    }
+
+
+def _clean_domain_token(value: Any) -> str | None:
+    text = str(value or "").strip()
+    if not text:
+        return None
+    match = re.search(r"'domain'\s*:\s*'([^']+)'", text)
+    if match:
+        return match.group(1).strip() or None
+    return text
+
+
+def _clean_domain_list(values: Any) -> List[str]:
+    out: List[str] = []
+    for item in values if isinstance(values, list) else []:
+        token = _clean_domain_token(item)
+        if token and token not in out:
+            out.append(token)
+    return out
+
+
+def _safe_voice_hints(semantic_focus_result: Any) -> Dict[str, Any]:
+    payload = getattr(semantic_focus_result, "voice_register_hints", None)
+    return dict(payload) if isinstance(payload, Mapping) else {}
+
+
+def _first_nonempty(*values: Any) -> str:
+    for value in values:
+        text = str(value or "").strip()
+        if text:
+            return text
+    return ""
+
+
+def _theme_palette_for_cluster(
+    *,
+    cluster_kind: str,
+    semantic_source: str,
+    chapter_type: str | None,
+    source_event_ids: List[str],
+    featured_events_by_id: Mapping[str, Mapping[str, Any]],
+) -> str:
+    chapter_token = str(chapter_type or "").strip().lower()
+    if cluster_kind in {"speech_authority", "shared_boundary", "direction_line"}:
+        if chapter_token == "saturn_return":
+            return "saturn_maturation"
+        if chapter_token.startswith("nodal"):
+            return "node_direction"
+    for event_id in source_event_ids:
+        event = featured_events_by_id.get(event_id) if isinstance(featured_events_by_id, Mapping) else None
+        if not isinstance(event, Mapping):
+            continue
+        transit_body = str(event.get("transit_body") or "").strip().lower()
+        if transit_body == "chiron":
+            return "chiron_old_sensitivity"
+        if transit_body == "neptune":
+            return "neptune_blur_or_sensitivity"
+        if transit_body == "pluto":
+            return "pluto_depth"
+        if transit_body == "mars":
+            return "mars_action"
+        if transit_body == "venus":
+            return "venus_value_closeness"
+        if transit_body == "mercury":
+            return "mercury_message_mind"
+        if transit_body == "jupiter":
+            return "jupiter_growth"
+        if transit_body == "uranus":
+            return "uranus_change"
+        if transit_body == "moon":
+            return "moon_emotional_rhythm"
+        if transit_body == "sun":
+            return "sun_visibility"
+        if transit_body == "saturn":
+            return "saturn_maturation"
+        if transit_body == "north node":
+            return "node_direction"
+    if semantic_source == "life_chapter":
+        return "saturn_maturation" if chapter_token == "saturn_return" else "node_direction"
+    if cluster_kind in {"inner_safety_identity", "relationship_boundary"}:
+        return "neptune_blur_or_sensitivity"
+    if cluster_kind == "supportive_opening":
+        return "mercury_message_mind"
+    return "sun_visibility"
+
+
+def _domain_palette_for_cluster(
+    *,
+    cluster_kind: str,
+    main_domains: List[str],
+    manifestation_context: Mapping[str, Any] | None,
+) -> str:
+    if cluster_kind == "speech_authority" or cluster_kind == "communication_reflex":
+        return "mind_communication_learning"
+    if cluster_kind == "shared_boundary":
+        return "relationship_intimacy_agreements"
+    if cluster_kind == "direction_line":
+        return "relationship_intimacy_agreements"
+    if cluster_kind == "inner_safety_identity":
+        return "home_family_inner_security"
+    if cluster_kind == "relationship_boundary":
+        return "relationship_intimacy_agreements"
+    if cluster_kind == "supportive_opening":
+        return "mind_communication_learning"
+    context = manifestation_context if isinstance(manifestation_context, Mapping) else {}
+    life_scene = str(context.get("life_scene") or "").strip().lower()
+    domains = [str(item or "").strip().lower() for item in main_domains]
+    if "house_4" in domains or "trust_transformation" in domains or "iç güven" in life_scene or "sana ait" in life_scene:
+        return "home_family_inner_security"
+    if "communication_learning" in domains or "mental_patterning" in domains or "küçük cümlelerin ağırlığı" in domains or "house_3" in domains:
+        return "mind_communication_learning"
+    if "relationships" in domains or "relationship" in domains or "self_definition" in domains:
+        return "relationship_intimacy_agreements"
+    if "identity_presence" in domains or "identity" in domains:
+        return "work_career_visibility"
+    if "social" in domains:
+        return "social_friends_community"
+    return "inner_work_solitude_spirituality"
+
+
+def _narrative_move_for_cluster(cluster_kind: str, theme_palette: str) -> str:
+    if cluster_kind == "speech_authority":
+        return "communication_reflex"
+    if cluster_kind == "shared_boundary":
+        return "boundary"
+    if cluster_kind == "direction_line":
+        return "choice"
+    if cluster_kind == "inner_safety_identity":
+        return "home_inner_safety"
+    if cluster_kind == "relationship_boundary":
+        return "relationship_mirror"
+    if cluster_kind == "supportive_opening":
+        return "support"
+    if theme_palette == "neptune_blur_or_sensitivity":
+        return "clarification"
+    return "integration"
+
+
+def _cluster_fingerprint(title: str, preview: str, body: str) -> str:
+    raw = "|".join([title.strip().lower(), preview.strip().lower(), body.strip().lower()])
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()[:16]
+
+
+def _normalize_public_card_text(text: str) -> str:
+    normalized = tr_normalize(str(text or "").strip())
+    normalized = re.sub(r"\b[Ss]emantik\b", "", normalized)
+    normalized = re.sub(r"\b[Mm]ekanizma\b", "", normalized)
+    normalized = re.sub(r"\b[Pp]roses\b", "", normalized)
+    normalized = re.sub(r"\b[Aa]ktivasyon\b", "", normalized)
+    normalized = re.sub(r"\b[Gg]eçirgen\b", "hassas", normalized)
+    normalized = re.sub(r"\büst anlam\b", "ana çizgi", normalized, flags=re.IGNORECASE)
+    normalized = re.sub(r"\bbütünlüklü yön\b", "daha net bir çizgi", normalized, flags=re.IGNORECASE)
+    normalized = re.sub(r"\byön duygusu\b", "yön", normalized, flags=re.IGNORECASE)
+    normalized = re.sub(r"\s+", " ", normalized).strip()
+    return normalized
+
+
+def _preview_body_distinct(preview: str, body: str) -> tuple[str, str]:
+    preview_clean = _normalize_public_card_text(preview)
+    body_clean = _normalize_public_card_text(body)
+    if preview_clean and body_clean.startswith(preview_clean):
+        body_clean = body_clean[len(preview_clean) :].lstrip(" .")
+    if body_clean == preview_clean:
+        body_clean = f"{body_clean} Burada mesele sadece bunu görmek değil; onun sende nasıl yer değiştirdiğini fark etmek."
+    return preview_clean, body_clean
+
+
+def _timing_hint_for_cluster(source_event_ids: List[str], featured_events_by_id: Mapping[str, Mapping[str, Any]]) -> str | None:
+    phases: List[str] = []
+    for event_id in source_event_ids:
+        event = featured_events_by_id.get(event_id) if isinstance(featured_events_by_id, Mapping) else None
+        phase = str((event or {}).get("phase") or "").strip().lower() if isinstance(event, Mapping) else ""
+        if phase and phase not in phases:
+            phases.append(phase)
+    if "exact" in phases or "exactish" in phases:
+        return "Şu sıralar daha görünür."
+    if "applying" in phases:
+        return "Yavaş yavaş güç kazanıyor."
+    if "separating" in phases:
+        return "İlk yoğunluğu geçti ama izi duruyor."
+    return None
+
+
+def _context_used_summary(
+    *,
+    period_card_context: Mapping[str, Any],
+    natal_context: Mapping[str, Any],
+    source_event_ids: List[str],
+    theme_palette: str,
+    domain_palette: str,
+    manifestation_scene: str | None,
+) -> Dict[str, Any]:
+    evidence_by_id = {
+        str(item.get("event_id") or "").strip(): dict(item)
+        for item in (period_card_context.get("evidence_items") or [])
+        if isinstance(item, Mapping) and str(item.get("event_id") or "").strip()
+    }
+    event_natal_links = {
+        str(item.get("event_id") or "").strip(): dict(item)
+        for item in (natal_context.get("event_natal_links") or [])
+        if isinstance(item, Mapping) and str(item.get("event_id") or "").strip()
+    }
+    first_spine = next(
+        (
+            item
+            for item in (natal_context.get("chart_spine_refs") or [])
+            if isinstance(item, Mapping)
+        ),
+        None,
+    )
+    first_route = next(
+        (
+            item
+            for item in [
+                *(natal_context.get("dispositor_route_refs") or []),
+                *(natal_context.get("house_ruler_route_refs") or []),
+            ]
+            if isinstance(item, Mapping)
+        ),
+        None,
+    )
+    first_promise = next(
+        (
+            item
+            for item in [
+                *(natal_context.get("activated_core_promise_ids") or []),
+                *(natal_context.get("activated_contradiction_ids") or []),
+            ]
+            if item
+        ),
+        None,
+    )
+    return {
+        "semantic_focus": {
+            "source": ((period_card_context.get("owner_ref") or {}).get("semantic_focus_source")),
+            "selected_meaning": ((period_card_context.get("owner_ref") or {}).get("selected_meaning")),
+            "primary_domain": ((period_card_context.get("primary_meaning") or {}).get("primary_domain")),
+        },
+        "period_owner": {
+            "chapter_priority_applied": ((period_card_context.get("source_owner") or {}).get("chapter_priority_applied")),
+            "chapter_type": ((period_card_context.get("source_owner") or {}).get("chapter_type")),
+            "event_cards_role": ((period_card_context.get("source_owner") or {}).get("event_cards_role")),
+        },
+        "period_evidence": [
+            {
+                "event_id": event_id,
+                "role": ((evidence_by_id.get(event_id) or {}).get("evidence_role")),
+                "domain": ((evidence_by_id.get(event_id) or {}).get("domain")),
+                "house_scene": ((evidence_by_id.get(event_id) or {}).get("house_scene")),
+            }
+            for event_id in source_event_ids
+            if event_id in evidence_by_id
+        ],
+        "natal_context": {
+            "event_natal_links": [event_natal_links[event_id] for event_id in source_event_ids if event_id in event_natal_links],
+            "activated_core_promise_ids": list(natal_context.get("activated_core_promise_ids") or []),
+            "activated_contradiction_ids": list(natal_context.get("activated_contradiction_ids") or []),
+        },
+        "manifestation_context": manifestation_scene,
+        "dispositor_or_ruler_route": dict(first_route) if isinstance(first_route, Mapping) else None,
+        "chart_spine": dict(first_spine) if isinstance(first_spine, Mapping) else None,
+        "promise_or_contradiction": first_promise,
+        "theme_palette": theme_palette,
+        "domain_palette": domain_palette,
+    }
+
+
+def _feature_lookup(period_card_context: Mapping[str, Any]) -> Dict[str, Mapping[str, Any]]:
+    return {
+        str(item.get("event_id") or "").strip(): dict(item)
+        for item in (period_card_context.get("evidence_items") or [])
+        if isinstance(item, Mapping) and str(item.get("event_id") or "").strip()
+    }
+
+
+def _cluster_source_event_ids(
+    featured_events_by_id: Mapping[str, Mapping[str, Any]],
+    *,
+    predicate,
+    fallback_ids: List[str],
+    limit: int = 3,
+) -> List[str]:
+    selected: List[str] = []
+    for event_id, event in featured_events_by_id.items():
+        if not isinstance(event, Mapping):
+            continue
+        if predicate(event):
+            selected.append(event_id)
+            if len(selected) >= limit:
+                break
+    if not selected:
+        return fallback_ids[:limit]
+    return selected
+
+
+def _contains_home_signal(period_card_context: Mapping[str, Any], manifestation_context: Mapping[str, Any] | None) -> bool:
+    main_domains = [str(item or "").strip().lower() for item in (period_card_context.get("main_domains") or [])]
+    if "house_4" in main_domains:
+        return True
+    scene = str((manifestation_context or {}).get("life_scene") or "").lower()
+    variants = [str(item or "").lower() for item in ((manifestation_context or {}).get("life_scene_variants") or [])]
+    return any(token in scene for token in ("sana ait", "ev", "iç güven")) or any(
+        any(token in variant for token in ("sana ait", "ev", "iç güven"))
+        for variant in variants
+    )
+
+
+def _contains_mind_signal(period_card_context: Mapping[str, Any]) -> bool:
+    main_domains = [str(item or "").strip().lower() for item in (period_card_context.get("main_domains") or [])]
+    return any(
+        token in main_domains
+        for token in ("communication_learning", "mental_patterning", "küçük cümlelerin ağırlığı", "house_3")
+    )
+
+
+def _contains_relationship_signal(period_card_context: Mapping[str, Any]) -> bool:
+    main_domains = [str(item or "").strip().lower() for item in (period_card_context.get("main_domains") or [])]
+    return any(token in main_domains for token in ("relationships", "relationship", "house_7", "self_definition"))
+
+
+def _theme_cluster_contexts(
+    *,
+    period_card_context: Mapping[str, Any],
+    natal_context: Mapping[str, Any],
+    semantic_focus_result: Any,
+    active_life_chapter: Mapping[str, Any] | None,
+) -> List[Dict[str, Any]]:
+    owner_ref = period_card_context.get("owner_ref") if isinstance(period_card_context.get("owner_ref"), Mapping) else {}
+    source_owner = period_card_context.get("source_owner") if isinstance(period_card_context.get("source_owner"), Mapping) else {}
+    semantic_source = str(owner_ref.get("semantic_focus_source") or "").strip()
+    selected_meaning = str(owner_ref.get("selected_meaning") or "").strip()
+    manifestation_context = (
+        period_card_context.get("manifestation_context")
+        if isinstance(period_card_context.get("manifestation_context"), Mapping)
+        else {}
+    )
+    featured_events_by_id = _feature_lookup(period_card_context)
+    fallback_ids = list(featured_events_by_id.keys())
+    handoff = (
+        ((natal_context.get("life_chapter_bridge") or {}).get("renderer_handoff"))
+        if isinstance(natal_context.get("life_chapter_bridge"), Mapping)
+        else {}
+    )
+    if not isinstance(handoff, Mapping):
+        handoff = {}
+    manifestation_scene = _first_nonempty(
+        handoff.get("human_scene"),
+        manifestation_context.get("human_scene"),
+        manifestation_context.get("life_scene"),
+    )
+    chapter_type = _first_nonempty(source_owner.get("chapter_type"), (active_life_chapter or {}).get("chapter_type"))
+    voice_hints = _safe_voice_hints(semantic_focus_result)
+
+    clusters: List[Dict[str, Any]] = []
+    if semantic_source == "life_chapter" and selected_meaning == "speech_authority":
+        clusters.extend(
+            [
+                {
+                    "kind": "speech_authority",
+                    "source_event_ids": fallback_ids[:3],
+                    "manifestation_scene": manifestation_scene or "kısa mesajlar ve hızlı cevap verme anları",
+                },
+                {
+                    "kind": "communication_reflex",
+                    "source_event_ids": _cluster_source_event_ids(
+                        featured_events_by_id,
+                        predicate=lambda event: str(event.get("house_scene") or "") == "house_3"
+                        or "mind" in _clean_domain_list([(event.get("domain"))]),
+                        fallback_ids=fallback_ids,
+                    ),
+                    "manifestation_scene": manifestation_scene or "yarım kalmış konuşmalar",
+                },
+                {
+                    "kind": "relationship_boundary",
+                    "source_event_ids": _cluster_source_event_ids(
+                        featured_events_by_id,
+                        predicate=lambda event: str(event.get("house_scene") or "") == "house_7"
+                        or "relationships" in _clean_domain_list([event.get("domain")]),
+                        fallback_ids=fallback_ids[1:] or fallback_ids,
+                    ),
+                    "manifestation_scene": "yan yana dururken nerede durduğunu söylemek",
+                },
+            ]
+        )
+    elif semantic_source == "life_chapter" and selected_meaning == "shared_emotional_territory":
+        clusters.extend(
+            [
+                {
+                    "kind": "shared_boundary",
+                    "source_event_ids": fallback_ids[:2],
+                    "manifestation_scene": manifestation_scene or "mahrem konuşmalar ve paylaşılan yükler",
+                },
+                {
+                    "kind": "relationship_boundary",
+                    "source_event_ids": fallback_ids[:2],
+                    "manifestation_scene": "ne kadarını taşıyacağını ayırdığın anlar",
+                },
+                {
+                    "kind": "supportive_opening",
+                    "source_event_ids": fallback_ids[:1],
+                    "manifestation_scene": "güvenin daha açık ama dağılmadan kurulduğu anlar",
+                },
+            ]
+        )
+    elif semantic_source == "life_chapter" and selected_meaning == "directional_self_definition":
+        clusters.extend(
+            [
+                {
+                    "kind": "direction_line",
+                    "source_event_ids": fallback_ids[:2],
+                    "manifestation_scene": manifestation_scene or "yan yana dururken yönünü seçtiğin anlar",
+                },
+                {
+                    "kind": "relationship_boundary",
+                    "source_event_ids": fallback_ids[:1],
+                    "manifestation_scene": "uyumu korurken kendini kısmadığın anlar",
+                },
+                {
+                    "kind": "supportive_opening",
+                    "source_event_ids": fallback_ids[:1],
+                    "manifestation_scene": "kendi çizginle masada kaldığın anlar",
+                },
+            ]
+        )
+    else:
+        if _contains_home_signal(period_card_context, manifestation_context):
+            clusters.append(
+                {
+                    "kind": "inner_safety_identity",
+                    "source_event_ids": _cluster_source_event_ids(
+                        featured_events_by_id,
+                        predicate=lambda event: str(event.get("house_scene") or "") in {"house_1", "house_4"},
+                        fallback_ids=fallback_ids,
+                    ),
+                    "manifestation_scene": _first_nonempty(
+                        manifestation_context.get("life_scene"),
+                        "ev, iç güvenlik ya da yalnız kaldığında kurduğun düzen",
+                    ),
+                }
+            )
+        if any(str((featured_events_by_id[event_id] or {}).get("transit_body") or "").lower() == "neptune" for event_id in fallback_ids):
+            clusters.append(
+                {
+                    "kind": "clarity_blur",
+                    "source_event_ids": _cluster_source_event_ids(
+                        featured_events_by_id,
+                        predicate=lambda event: str(event.get("transit_body") or "").strip().lower() == "neptune",
+                        fallback_ids=fallback_ids,
+                    ),
+                    "manifestation_scene": manifestation_scene or "neye net cevap vereceğini seçtiğin anlar",
+                }
+            )
+        if _contains_mind_signal(period_card_context):
+            clusters.append(
+                {
+                    "kind": "communication_reflex",
+                    "source_event_ids": _cluster_source_event_ids(
+                        featured_events_by_id,
+                        predicate=lambda event: str(event.get("house_scene") or "") == "house_3"
+                        or "mind" in _clean_domain_list([event.get("domain")]),
+                        fallback_ids=fallback_ids,
+                    ),
+                    "manifestation_scene": _first_nonempty(
+                        manifestation_context.get("life_scene"),
+                        "küçük cümlelerin ağırlığı",
+                    ),
+                }
+            )
+        if _contains_relationship_signal(period_card_context):
+            clusters.append(
+                {
+                    "kind": "relationship_boundary",
+                    "source_event_ids": _cluster_source_event_ids(
+                        featured_events_by_id,
+                        predicate=lambda event: str(event.get("house_scene") or "") == "house_7"
+                        or "relationships" in _clean_domain_list([event.get("domain")]),
+                        fallback_ids=fallback_ids[1:] or fallback_ids,
+                    ),
+                    "manifestation_scene": "yakınlıkta kendi cümleni seçtiğin anlar",
+                }
+            )
+        supportive_ids = _cluster_source_event_ids(
+            featured_events_by_id,
+            predicate=lambda event: str(event.get("aspect") or "").strip().lower() in {"trine", "sextile"}
+            and str(event.get("transit_body") or "").strip().lower() in {"north node", "jupiter", "venus", "mercury", "sun", "uranus"},
+            fallback_ids=[],
+        )
+        if supportive_ids:
+            clusters.append(
+                {
+                    "kind": "supportive_opening",
+                    "source_event_ids": supportive_ids,
+                    "manifestation_scene": _first_nonempty(
+                        manifestation_context.get("life_scene"),
+                        str(((period_card_context.get("primary_meaning") or {}).get("primary_domain")) or "").strip(),
+                        "bir şeyin daha az zorlayarak yerine oturduğu anlar",
+                    ),
+                }
+            )
+
+    out: List[Dict[str, Any]] = []
+    seen: set[str] = set()
+    for cluster in clusters:
+        kind = str(cluster.get("kind") or "").strip()
+        source_event_ids = [event_id for event_id in cluster.get("source_event_ids") or [] if event_id]
+        if not kind or not source_event_ids:
+            continue
+        cluster_key = f"{kind}|{'-'.join(source_event_ids)}"
+        if cluster_key in seen:
+            continue
+        seen.add(cluster_key)
+        theme_palette = _theme_palette_for_cluster(
+            cluster_kind=kind,
+            semantic_source=semantic_source,
+            chapter_type=chapter_type,
+            source_event_ids=source_event_ids,
+            featured_events_by_id=featured_events_by_id,
+        )
+        domain_palette = _domain_palette_for_cluster(
+            cluster_kind=kind,
+            main_domains=[str(item or "") for item in (period_card_context.get("main_domains") or [])],
+            manifestation_context=manifestation_context,
+        )
+        out.append(
+            {
+                "kind": kind,
+                "source_event_ids": source_event_ids,
+                "manifestation_scene": str(cluster.get("manifestation_scene") or "").strip(),
+                "theme_palette": theme_palette,
+                "domain_palette": domain_palette,
+                "narrative_move": _narrative_move_for_cluster(kind, theme_palette),
+                "tone": _first_nonempty(str(voice_hints.get("valence_mode") or ""), "maturation" if semantic_source == "life_chapter" else "recognition"),
+                "intensity_mode": _first_nonempty(str(voice_hints.get("intensity_mode") or ""), "medium"),
+                "core_contrast": _first_nonempty(handoff.get("core_contrast"), manifestation_context.get("shared_vs_private_contrast")),
+                "chart_anchor": _first_nonempty(
+                    handoff.get("chart_specific_anchor"),
+                    (((natal_context.get("life_chapter_bridge") or {}).get("natal_architecture_anchor")) or {}).get("human") if isinstance((natal_context.get("life_chapter_bridge") or {}).get("natal_architecture_anchor"), Mapping) else "",
+                ),
+            }
+        )
+    return out[:6]
+
+
+def _render_cluster_copy(
+    *,
+    cluster: Mapping[str, Any],
+    period_card_context: Mapping[str, Any],
+) -> Dict[str, str]:
+    kind = str(cluster.get("kind") or "").strip()
+    scene = str(cluster.get("manifestation_scene") or "").strip()
+    core_contrast = str(cluster.get("core_contrast") or "").strip()
+    chart_anchor = str(cluster.get("chart_anchor") or "").strip()
+    primary_domain = str(((period_card_context.get("primary_meaning") or {}).get("primary_domain")) or "").strip()
+    theme_palette = str(cluster.get("theme_palette") or "").strip()
+    domain_palette = str(cluster.get("domain_palette") or "").strip()
+    source_event_ids = [str(event_id or "").strip() for event_id in (cluster.get("source_event_ids") or []) if str(event_id or "").strip()]
+    selected_meaning = str(((period_card_context.get("owner_ref") or {}).get("selected_meaning")) or "").strip()
+    chapter_type = str(((period_card_context.get("source_owner") or {}).get("chapter_type")) or "").strip()
+
+    if kind == "speech_authority":
+        return {
+            "title": "Sözün yerini buluyor",
+            "preview": "Kelimelerin artık daha seçilmiş bir yere oturuyor. Hızlıca verilen cevaplar eskisi kadar rahat taşınmıyor.",
+            "body": (
+                "Bir mesajı göndermeden önce kelimeleri tarttığın o küçük duraksama var ya; tam orada bir şey değişiyor. "
+                "Eskiden hızlı cevap vermek seni koruyor gibi görünmüş olabilir. "
+                "Şimdi cümle hızlı çıktığında değil, gerçekten sana ait olduğunda ağırlık kazanıyor. "
+                "Sadece konuşmuyor, sözünle oraya bir imza bırakıyorsun."
+            ),
+        }
+    if kind == "communication_reflex":
+        return {
+            "title": "İlk cümle yetmiyor",
+            "preview": "Boşluğu hemen dolduran cevap, içerideki gerçek yerini tam taşımıyor. Biraz durduğunda ne söylemek istediğin daha net çıkıyor.",
+            "body": (
+                "Yarım kalmış konuşmalar ya da kısa mesajlar bu ara sandığından fazla iz bırakıyor. "
+                "İlk tepkinle son sözünün aynı olmadığını daha çabuk fark ediyorsun. "
+                "Özellikle küçük cümlelerin ağırlığı artarken, aceleyle kurduğun ton bütün hikâyenin yerine geçebiliyor. "
+                "Bir nefeslik duraksama burada zayıflık değil; cümleni gerçekten seçtiğin yer."
+            ),
+        }
+    if kind == "relationship_boundary":
+        return {
+            "title": "Yakınlıkta çizgin beliriyor",
+            "preview": "Yan yana dururken kendi cümleni fazla kısmadan da kalabildiğin anlar çoğalıyor. İlişki burada sadece uyumla yürümüyor.",
+            "body": (
+                "Karşı tarafı kollarken kendi yerini sessizce geri çektiğin anlar daha görünür. "
+                "Burada mesele sertleşmek değil; ne hissettiğini fazla dolandırmadan söyleyebilmek. "
+                "Sıcak kalırken çizgini de koruduğunda, yakınlık savunmaya değil açıklığa yaslanıyor. "
+                "Bu da ilişkide seni silmeden kalmanın başka bir yolunu açıyor."
+            ),
+        }
+    if kind == "shared_boundary":
+        return {
+            "title": "Neyin sana ait olduğu",
+            "preview": "Paylaşılan yük ile tek başına taşıdığın şey aynı yerde durmuyor. Bunu ayırdıkça yakınlık daha sağlam bir zemine oturuyor.",
+            "body": (
+                "Mahrem konuşmaların ya da birlikte taşınan yüklerin içinde, sessizce üstlendiğin şey daha görünür. "
+                "Güveni sadece susarak değil, neyi taşıyacağını ve neyi geri vereceğini söyleyerek de kurabiliyorsun. "
+                "Burada fazlalığı atmak değil, paylaşılanı daha doğru ölçüyle taşımak var. "
+                "Sınırın netleştikçe yakınlık da daha dayanıklı bir forma yerleşiyor."
+            ),
+        }
+    if kind == "direction_line":
+        return {
+            "title": "Yönünü daha açık söylüyorsun",
+            "preview": "İlişkiyi korumak için kendi yönünü kısmak eskisi kadar kolay gelmiyor. Sözün biraz daha doğrudanlaşıyor.",
+            "body": (
+                "Yan yana dururken kendini ne kadar çabuk ayarladığını daha net görüyorsun. "
+                "Burada kopmak ya da sertleşmek değil, kendi çizgini saklamadan söylemek öne çıkıyor. "
+                "Onayın içinde erimeden de masada kalabildiğinde, yönün sadece içeride değil dışarıda da belirginleşiyor. "
+                "Bu da seni ilişkiyi korurken kendini silmeyen bir çizgiye taşıyor."
+            ),
+        }
+    if kind == "inner_safety_identity":
+        return {
+            "title": "İçeride olan dışarıya taşıyor",
+            "preview": "Sana ait hissettiren alan, dışarıda nasıl durduğunu daha doğrudan etkiliyor. Evde ya da yalnız kaldığında tuttuğun ritim gizli kalmıyor.",
+            "body": (
+                "İç güvenlik ya da yalnız kaldığında kurduğun düzen şu ara arka plan gibi durmuyor. "
+                "İçeride taşıdığın duygu, dışarıdaki yüzüne ve sınırına daha çabuk yansıyor. "
+                "Bu yüzden meseleyi sadece dışarıdaki duruşta çözmeye çalışmak yetmiyor. "
+                "Ne kadarını gerçekten kendin için tuttuğunu ayırdığında, kimliğin de daha sakin bir yerden yerleşiyor."
+            ),
+        }
+    if kind == "clarity_blur":
+        return {
+            "title": "Netlik aceleye gelmiyor",
+            "preview": "Her boşluğu hemen cevapla kapatma isteği artıyor. Ama bu kez hızlı netlik değil, doğru ayıklama daha çok şey söylüyor.",
+            "body": (
+                "Bazı anlarda neye net cevap vereceğini seçmek zorlaşıyor. "
+                "Zihin boşluğu hızla doldurmak istese de, ilk cümle bazen sadece tedirginliği taşıyor. "
+                "Burada bulanıklığı düşman gibi görmek yerine, hangi parçanın gerçekten sana ait olduğunu ayırmak önemli. "
+                "Netliğin geç gelmesi, yanlış bir cevaba erkenden tutunmaktan daha dürüst olabiliyor."
+            ),
+        }
+    if kind == "supportive_opening":
+        if chapter_type == "saturn_return" and selected_meaning == "shared_emotional_territory":
+            return {
+                "title": "Güven daha açık kuruluyor",
+                "preview": "Mahrem olanı korurken her şeyi sessizce taşımak gerekmiyor. Paylaşılan yük adını buldukça yakınlık daha sakin akıyor.",
+                "body": (
+                    "Bazı şeyleri tek başına sırtlanmak seni güvende tutmuş olabilir. "
+                    "Şimdi paylaşılan yükü, mahrem olanı dağıtmadan da konuşabildiğin bir yer açılıyor. "
+                    "Kısa bir açıklık, neyin sana ait neyin ortak olduğunu daha rahat ayırıyor. "
+                    "Yakınlık burada büyük bir itirafla değil, güveni daha açık kurabildiğin küçük anlarla güçleniyor."
+                ),
+            }
+        if selected_meaning == "directional_self_definition":
+            return {
+                "title": "Kendini kısmadan kalıyorsun",
+                "preview": "Onay aramadan da sıcak kalabildiğin anlar çoğalıyor. Aynı masada dururken yönün daha az geri çekiliyor.",
+                "body": (
+                    "Bazen ilişkiyi korumak için cümleni hemen yumuşatmak kolay geliyor. "
+                    "Şimdi aynı masada kalırken kendi çizgini de bırakmıyorsun. "
+                    "Küçük bir netlik, onay beklemeden de sıcaklığın bozulmadığını gösteriyor. "
+                    "Yönünü saklamadığında ilişki sertleşmiyor; sadece seni daha doğru yerden görüyor."
+                ),
+            }
+        if domain_palette == "home_family_inner_security":
+            return {
+                "title": "Küçük bir netlik yetiyor",
+                "preview": "İç güvenlik ile dışarıdaki duruş aynı anda gevşiyor. Bazen tek bir cümle ya da kısa bir mesaj, gereğinden fazla yükü indiriyor.",
+                "body": (
+                    "Her şeyi bir anda çözmek gerekmiyor. "
+                    "Bazen evde taşıdığın duyguyu adını koyacak kadar netleştirmek, dışarıdaki duruşunu da rahatlatıyor. "
+                    "Kısa bir mesaj ya da sade bir cümle, içeride büyüyen şeyi fazla zorlamadan yerine oturtabiliyor. "
+                    "Bu küçük netlik, hem sözünü hem sınırını daha az kasılarak taşımanı sağlıyor."
+                ),
+            }
+        if "yakın çevrendeki ses" in scene or "yakın çevrendeki ses" in primary_domain.lower():
+            return {
+                "title": "Bir cümle daha sade çıkıyor",
+                "preview": "Söylemek istediğin şey bazen fazla uzamadan yerini buluyor. Mesajı taşımak için artık o kadar çok cümle gerekmiyor.",
+                "body": (
+                    "Bazı konuşmalarda doğru kelime beklediğinden daha çabuk beliriyor. "
+                    "Boşluğu uzun açıklamalarla kapatmak yerine, tek bir cümle daha sade çıkıyor. "
+                    "Bu sadeleşme seni eksiltmiyor; ne demek istediğini daha net duyuruyor. "
+                    "Yakın çevrende ya da mesajlarda, az zorlanan söz bazen en güçlü duruşu taşıyor."
+                ),
+            }
+        if "küçük cümlelerin ağırlığı" in scene or "küçük cümlelerin ağırlığı" in primary_domain.lower():
+            return {
+                "title": "Sözün daha az zorlanıyor",
+                "preview": "Küçük cümlelerin yükü biraz hafifliyor. Aynı şeyi söylemek için artık o kadar sert bir ton gerekmiyor.",
+                "body": (
+                    "Bazen kısa bir mesaj ya da tek bir cevap, düşündüğünden daha temiz bir yere oturuyor. "
+                    "Kelimeleri fazla sıkıştırmadığında, ne demek istediğin daha rahat anlaşılıyor. "
+                    "Bu yumuşama seni belirsiz bırakmıyor; tam tersine sözünü daha net taşıyor. "
+                    "Yakın çevrende, az zorlanan cümle bu kez daha uzun bir yankı bırakıyor."
+                ),
+            }
+        if domain_palette == "mind_communication_learning" or "mind" in primary_domain.lower() or source_event_ids:
+            return {
+                "title": "Küçük bir netlik yetiyor",
+                "preview": "Söylemek istediğin şey bazen fazla büyümeden yerini buluyor. Az cümleyle gelen netlik daha çok şey taşıyor.",
+                "body": (
+                    "Her şeyi uzun uzun anlatmak gerekmiyor. "
+                    "Bazen küçük bir netlik, içinde tuttuğun şeyi daha düzgün taşıyor. "
+                    "Cümle kısaldığında ne demek istediğin kaybolmuyor; tam tersine daha seçilmiş bir duruş kazanıyor. "
+                    "Bu da sözünü zorlama olmadan yerleştiren sakin bir destek veriyor."
+                ),
+            }
+        return {
+            "title": "Sıcaklık daha rahat akıyor",
+            "preview": "Kendini fazla zorlamadan da açık kalabildiğin anlar çoğalıyor. Küçük bir yumuşama, bütün tonu değiştiriyor.",
+            "body": (
+                "Her şey büyük bir konuşma istemiyor. "
+                "Bazen sade bir bakış ya da kısa bir cümle yeterince şey taşıyor. "
+                "Kendini fazla zorlamadığında, açık olan tarafın daha doğal görünüyor. "
+                "Bu da desteğin gösterişli değil, gerçek bir yerden gelmesini sağlıyor."
+            ),
+        }
+    return {
+        "title": "Bir çizgi belirginleşiyor",
+        "preview": f"{scene or primary_domain or 'Bu hat'} artık daha görünür. Burada küçük görünen şey, alttaki ana hareketi açıyor.",
+        "body": (
+            f"{scene or 'Bu alan'} artık sadece arka planda kalmıyor. "
+            f"{core_contrast or 'İçeride olanla dışarıda taşıdığın şey aynı yerde toplanmak istiyor.'} "
+            f"{chart_anchor or 'Daha seçilmiş bir çizgi kurdukça bu tema sende daha sağlam yerleşiyor.'}"
+        ),
+    }
+
+
+def _blocked_source_check() -> Dict[str, bool]:
+    return {
+        "used_old_blocks": False,
+        "used_daily_body": False,
+        "used_best_times_score": False,
+        "used_story_tracks_as_owner": False,
+        "used_event_story_map_as_owner": False,
+        "used_profile_v8_as_authority": False,
+        "used_personality_imprint_as_authority": False,
+        "used_meaning_graph_v1_1_as_authority": False,
+    }
+
+
+def _public_copy_has_technical_leakage(*parts: str) -> bool:
+    joined = " ".join(str(part or "") for part in parts)
+    patterns = (
+        r"\b(satürn|saturn|neptün|neptune|plüton|pluto|uranüs|uranus|kiron|chiron|güneş|sun|merkür|mercury|venüs|venus|mars|jüpiter|jupiter)\b",
+        r"\b(kare|square|sextile|sextil|üçgen|trine|conjunction|kavuşum|opposition|karşıt)\b",
+        r"\b\d+\.\s*ev\b",
+        r"\borb\b",
+    )
+    return any(re.search(pattern, joined, flags=re.IGNORECASE) for pattern in patterns)
+
+
+def _build_period_signal_lines_v1(
+    *,
+    period_card_context: Mapping[str, Any],
+    natal_context: Mapping[str, Any],
+    semantic_focus_result: Any,
+    active_life_chapter: Mapping[str, Any] | None,
+) -> Dict[str, Any]:
+    owner_ref = period_card_context.get("owner_ref") if isinstance(period_card_context.get("owner_ref"), Mapping) else {}
+    source_owner = period_card_context.get("source_owner") if isinstance(period_card_context.get("source_owner"), Mapping) else {}
+    clusters = _theme_cluster_contexts(
+        period_card_context=period_card_context,
+        natal_context=natal_context,
+        semantic_focus_result=semantic_focus_result,
+        active_life_chapter=active_life_chapter,
+    )
+    cards: List[Dict[str, Any]] = []
+    dropped_candidates: List[Dict[str, Any]] = []
+    dedupe_fingerprints: List[str] = []
+    seen_fingerprints: set[str] = set()
+    featured_events_by_id = _feature_lookup(period_card_context)
+    suppressed = [str(item or "").strip().lower() for item in (period_card_context.get("suppressed_meanings") or [])]
+
+    for cluster in clusters:
+        copy = _render_cluster_copy(cluster=cluster, period_card_context=period_card_context)
+        title = _normalize_public_card_text(copy.get("title", ""))
+        preview = _normalize_public_card_text(copy.get("preview", ""))
+        body = _normalize_public_card_text(copy.get("body", ""))
+        preview, body = _preview_body_distinct(preview, body)
+        fingerprint = _cluster_fingerprint(title, preview, body)
+        reasons: List[str] = []
+        if fingerprint in seen_fingerprints:
+            reasons.append("duplicate_fingerprint")
+        if _public_copy_has_technical_leakage(title, preview, body):
+            reasons.append("technical_leakage")
+        lowered = f"{title} {preview} {body}".lower()
+        if any(token and token in lowered for token in suppressed):
+            reasons.append("suppressed_meaning_conflict")
+        if preview and body and preview == body:
+            reasons.append("body_repeats_preview")
+        if reasons:
+            dropped_candidates.append({"kind": cluster.get("kind"), "reasons": reasons})
+            continue
+        seen_fingerprints.add(fingerprint)
+        dedupe_fingerprints.append(fingerprint)
+        source_event_ids = [event_id for event_id in cluster.get("source_event_ids") or [] if event_id]
+        theme_palette = str(cluster.get("theme_palette") or "").strip()
+        domain_palette = str(cluster.get("domain_palette") or "").strip()
+        narrative_move = str(cluster.get("narrative_move") or "").strip()
+        manifestation_scene = str(cluster.get("manifestation_scene") or "").strip() or None
+        card_id_seed = "|".join([str(cluster.get("kind") or ""), *source_event_ids, fingerprint])
+        card_id = f"psl_{hashlib.sha1(card_id_seed.encode('utf-8')).hexdigest()[:10]}"
+        cards.append(
+            {
+                "id": card_id,
+                "rank": len(cards) + 1,
+                "title": title,
+                "preview": preview,
+                "body": body,
+                "tone": str(cluster.get("tone") or "").strip() or "recognition",
+                "theme_palette": theme_palette,
+                "domain_palette": domain_palette,
+                "narrative_move": narrative_move,
+                "timing_hint": _timing_hint_for_cluster(source_event_ids, featured_events_by_id),
+                "evidence_refs": [
+                    {
+                        "event_id": event_id,
+                        "role": ((featured_events_by_id.get(event_id) or {}).get("evidence_role")),
+                        "domain": ((featured_events_by_id.get(event_id) or {}).get("domain")),
+                        "house_scene": ((featured_events_by_id.get(event_id) or {}).get("house_scene")),
+                    }
+                    for event_id in source_event_ids
+                    if event_id in featured_events_by_id
+                ],
+                "source_event_ids": source_event_ids,
+                "linked_to_period_reading": True,
+                "context_used": _context_used_summary(
+                    period_card_context=period_card_context,
+                    natal_context=natal_context,
+                    source_event_ids=source_event_ids,
+                    theme_palette=theme_palette,
+                    domain_palette=domain_palette,
+                    manifestation_scene=manifestation_scene,
+                ),
+                "debug": {
+                    "cluster_kind": str(cluster.get("kind") or ""),
+                    "semantic_owner": owner_ref.get("semantic_focus_source"),
+                    "chapter_type": source_owner.get("chapter_type"),
+                    "fingerprint": fingerprint,
+                    "intensity_mode": str(cluster.get("intensity_mode") or ""),
+                },
+            }
+        )
+
+    return {
+        "version": "period_signal_lines_v1",
+        "source_owner": _first_nonempty(owner_ref.get("semantic_focus_source"), source_owner.get("chapter_type")),
+        "primary_meaning": _first_nonempty(owner_ref.get("selected_meaning"), ((period_card_context.get("primary_meaning") or {}).get("label"))),
+        "cards": cards[:8],
+        "debug": {
+            "selection_reason": [
+                "semantic_focus_owner_first",
+                "theme_cluster_contexts",
+                "natal_context_projection",
+                "no_second_meaning_engine",
+            ],
+            "dropped_candidates": dropped_candidates,
+            "dedupe_fingerprints": dedupe_fingerprints,
+            "blocked_source_check": _blocked_source_check(),
         },
     }
 
@@ -1541,26 +2400,36 @@ def build_period_core(
         result["story_tracks"] = story_tracks
     if event_story_map:
         result["_event_story_map"] = event_story_map
+
+    story_debug = result.get("_period_story_debug") if isinstance(result.get("_period_story_debug"), Mapping) else {}
+    composer_plan = story_debug.get("composer_plan") if isinstance(story_debug.get("composer_plan"), Mapping) else {}
+    period_card_context = _build_period_card_context(
+        semantic_focus_result=semantic_focus_result,
+        chapter_priority=chapter_priority,
+        canonical_period_spine=dict(canonical_period_spine or {}),
+        featured_events=selected_enriched,
+        period_reading_v1=result.get("period_reading_v1") if isinstance(result.get("period_reading_v1"), Mapping) else {},
+        composer_plan=composer_plan,
+        manifestation_context=manifestation_context,
+    )
+    natal_context_for_period_cards = _build_natal_context_for_period_cards(
+        canonical_natal_state=dict(canonical_natal_state or {}) if isinstance(canonical_natal_state, Mapping) else None,
+        semantic_focus_result=semantic_focus_result,
+        canonical_period_spine=dict(canonical_period_spine or {}),
+        featured_events=selected_enriched,
+        active_life_chapter=active_life_chapter,
+    )
+    result["period_signal_lines_v1"] = _build_period_signal_lines_v1(
+        period_card_context=period_card_context,
+        natal_context=natal_context_for_period_cards,
+        semantic_focus_result=semantic_focus_result,
+        active_life_chapter=active_life_chapter,
+    )
+
     if include_adaptive_card_contexts:
-        story_debug = result.get("_period_story_debug") if isinstance(result.get("_period_story_debug"), Mapping) else {}
-        composer_plan = story_debug.get("composer_plan") if isinstance(story_debug.get("composer_plan"), Mapping) else {}
         adaptive_cards_context = {
-            "period_card_context": _build_period_card_context(
-                semantic_focus_result=semantic_focus_result,
-                chapter_priority=chapter_priority,
-                canonical_period_spine=dict(canonical_period_spine or {}),
-                featured_events=selected_enriched,
-                period_reading_v1=result.get("period_reading_v1") if isinstance(result.get("period_reading_v1"), Mapping) else {},
-                composer_plan=composer_plan,
-                manifestation_context=manifestation_context,
-            ),
-            "natal_context_for_period_cards": _build_natal_context_for_period_cards(
-                canonical_natal_state=dict(canonical_natal_state or {}) if isinstance(canonical_natal_state, Mapping) else None,
-                semantic_focus_result=semantic_focus_result,
-                canonical_period_spine=dict(canonical_period_spine or {}),
-                featured_events=selected_enriched,
-                active_life_chapter=active_life_chapter,
-            ),
+            "period_card_context": period_card_context,
+            "natal_context_for_period_cards": natal_context_for_period_cards,
         }
         adaptive_cards_context["debug"] = {
             "visibility": "artifact_test_only",

@@ -11,7 +11,9 @@ from app.transit.narrative.life_chapter_contract import (
     LifeChapter,
     LifeChapterDomainOwnership,
     LifeChapterEvidence,
+    LifeChapterNatalArchitectureAnchor,
     LifeChapterRendererHandoff,
+    LifeChapterScenePriorityItem,
     LifeChapterSemanticFocus,
     LifeChapterTimeWindow,
     LifeChapterVoiceHints,
@@ -226,6 +228,12 @@ def _extract_structural_candidate(structural_chapter_rail: Mapping[str, Any] | N
         "confidence": ChapterConfidence.LOW.value,
         "debug": {
             "source_keys": sorted(str(key) for key in structural_chapter_rail.keys()),
+            "readiness_status": "not_ready",
+            "chapter_claim_strength": "structural candidate only",
+            "excluded_from_pr_d_v1": True,
+            "future_candidate_pr": "PR-C.4",
+            "structural_pressure_model": "three_part_pressure_system",
+            "apex_release_point": _safe_str(structural_chapter_rail.get("release_point") or structural_chapter_rail.get("apex_house") or structural_chapter_rail.get("apex")),
             "semantic_focus": {
                 "primary": "three_part_pressure_system",
                 "secondary": ["apex_release_point", "dense_integration"],
@@ -441,6 +449,19 @@ def _build_active_life_chapter(
             secondary_domains=[],
             rationale="initial detector ownership placeholder",
         ),
+        natal_architecture_anchor=_default_natal_architecture_anchor(
+            natal_context=natal_context,
+            chapter_type=chapter_type,
+            sign=sign,
+            house=house,
+        ),
+        scene_priority=_default_scene_priority(house),
+        chapter_claim_strength=_default_chapter_claim_strength(chapter_type=chapter_type),
+        shared_domain_priority=[],
+        trust_axis_anchor=None,
+        shared_vs_private_contrast=None,
+        structural_pressure_model=None,
+        apex_release_point=None,
         renderer_handoff=LifeChapterRendererHandoff(
             human_scene=_default_human_scene(house),
             core_contrast="generic chapter contrast placeholder",
@@ -667,6 +688,14 @@ def _enrich_saturn_return_meaning(chapter: LifeChapter, ctx: Mapping[str, Any]) 
             explanation=_saturn_placement_explanation(sign=sign, house=house, ruled_houses=ruled_houses),
         ),
     ]
+    if house is not None:
+        evidence.append(
+            LifeChapterEvidence(
+                factor=f"House {house} domain ownership",
+                role="house_context",
+                explanation=_saturn_house_context_explanation(sign=sign, house=house),
+            )
+        )
     if overlap.get("has_overlap"):
         matched = ", ".join(str(node) for node in overlap.get("matched_nodes") or [])
         evidence.append(
@@ -687,25 +716,36 @@ def _enrich_saturn_return_meaning(chapter: LifeChapter, ctx: Mapping[str, Any]) 
             reason="Bu chapter olgunlaşma; yük cliché'sine indirgenmemeli.",
         ),
     ]
-    semantic_focus, meaning_family, domain_ownership, renderer_handoff, suppressed_surface_readings, voice_hints = _saturn_handoff_bundle(
+    evidence.append(
+        LifeChapterEvidence(
+            factor="selected chapter focus",
+            role="semantic_focus_support",
+            explanation=_saturn_semantic_support_explanation(sign=sign, house=house, overlap=overlap),
+        )
+    )
+    evidence.append(
+        LifeChapterEvidence(
+            factor="shallow reading suppression",
+            role="suppression_guard",
+            explanation=_saturn_suppression_guard_explanation(house=house, overlap=overlap),
+        )
+    )
+
+    handoff = _saturn_handoff_bundle(
         sign=sign,
         house=house,
         overlap=overlap,
         chapter=chapter,
+        natal_context=natal_context,
     )
     return _validated_chapter_update(
         chapter,
         {
             "core_question": core_question,
             "selected_meaning": selected_meaning,
-            "selected_meaning_family": meaning_family,
-            "semantic_focus": semantic_focus,
-            "domain_ownership": domain_ownership,
-            "renderer_handoff": renderer_handoff,
             "evidence": evidence,
             "suppressed_readings": suppressed,
-            "suppressed_surface_readings": suppressed_surface_readings,
-            "voice_hints": voice_hints,
+            **handoff,
         },
     )
 
@@ -798,7 +838,22 @@ def _enrich_directional_node_chapter(chapter: LifeChapter, ctx: Mapping[str, Any
             )
         )
 
-    semantic_focus, meaning_family, domain_ownership, renderer_handoff, suppressed_surface_readings, voice_hints = _nodal_handoff_bundle(
+    evidence.append(
+        LifeChapterEvidence(
+            factor="selected node focus",
+            role="semantic_focus_support",
+            explanation=_node_semantic_support_explanation(direction=direction, activation=activation, house=house),
+        )
+    )
+    evidence.append(
+        LifeChapterEvidence(
+            factor="shallow node reading suppression",
+            role="suppression_guard",
+            explanation="Node chapter burada generic denge ya da kader söylemine değil, yön kalıbının seçilmiş biçimine bağlanıyor.",
+        )
+    )
+
+    handoff = _nodal_handoff_bundle(
         sign=sign,
         house=house,
         direction=direction,
@@ -812,15 +867,10 @@ def _enrich_directional_node_chapter(chapter: LifeChapter, ctx: Mapping[str, Any
         {
             "core_question": directional_question,
             "selected_meaning": directional_selected,
-            "selected_meaning_family": meaning_family,
-            "semantic_focus": semantic_focus,
-            "domain_ownership": domain_ownership,
-            "renderer_handoff": renderer_handoff,
             "evidence": evidence,
             "suppressed_readings": suppressed,
-            "suppressed_surface_readings": suppressed_surface_readings,
             "confidence": confidence,
-            "voice_hints": voice_hints,
+            **handoff,
         },
     )
 
@@ -860,20 +910,149 @@ def _directional_node_language(
     )
 
 
+def _default_natal_architecture_anchor(
+    *,
+    natal_context: Mapping[str, Any],
+    chapter_type: str,
+    sign: str,
+    house: int | None,
+) -> LifeChapterNatalArchitectureAnchor:
+    house_cusps_map = natal_context.get("house_cusps_map") if isinstance(natal_context.get("house_cusps_map"), Mapping) else {}
+    first_sign = _safe_str((house_cusps_map.get(1) or {}).get("sign"))
+    if chapter_type == ChapterType.SATURN_RETURN.value and house == 3 and first_sign == "Capricorn":
+        return LifeChapterNatalArchitectureAnchor(
+            label="identity_as_construction_project",
+            human="kimlik uzun süreli bir yapı kurma biçimiyle çalışıyor",
+            evidence=["Capricorn rising", "Saturn return"],
+        )
+    if chapter_type == ChapterType.SATURN_RETURN.value and house == 8:
+        return LifeChapterNatalArchitectureAnchor(
+            label="shared_depth_requires_structure",
+            human="derin paylaşım ve güven alanı yapı, sınır ve ölçü istiyor",
+            evidence=[f"{_sign_label_tr(sign)} {house}. ev Satürn", "Saturn return"],
+        )
+    if chapter_type == ChapterType.SATURN_RETURN.value and house == 10:
+        return LifeChapterNatalArchitectureAnchor(
+            label="identity_on_public_stage",
+            human="kimlik kamusal rolde ve görünür sorumlulukta sınanıyor",
+            evidence=[f"{_sign_label_tr(sign)} {house}. ev Satürn", "Saturn return"],
+        )
+    if chapter_type == ChapterType.NODAL_RETURN.value:
+        return LifeChapterNatalArchitectureAnchor(
+            label="direction_axis_repatterning",
+            human="yön seçimi ve ilişki kurma biçimi tekrar eden eksensel bir hat üzerinden çalışıyor",
+            evidence=["Node axis", "Nodal return"],
+        )
+    if chapter_type == ChapterType.NODAL_ACTIVATION.value:
+        return LifeChapterNatalArchitectureAnchor(
+            label="direction_axis_activation",
+            human="eski yön kalıbı aynı eksende yeniden görünür oluyor",
+            evidence=["Node axis", "Nodal activation"],
+        )
+    return LifeChapterNatalArchitectureAnchor(
+        label="chapter_architecture_anchor",
+        human=f"{_zone_text(sign=sign, house=house)} chapter düzeyinde uzun bir yapı kuruyor",
+        evidence=[_zone_text(sign=sign, house=house), chapter_type],
+    )
+
+
+def _aries_3rd_natal_anchor(anchor: LifeChapterNatalArchitectureAnchor) -> LifeChapterNatalArchitectureAnchor:
+    if anchor.label == "identity_as_construction_project":
+        return anchor
+    return LifeChapterNatalArchitectureAnchor(
+        label="identity_as_construction_project",
+        human="kimlik uzun süreli bir yapı kurma biçimiyle çalışıyor",
+        evidence=list(anchor.evidence or []) + ["speech authority chapter"],
+    )
+
+
+def _default_scene_priority(house: int | None) -> list[LifeChapterScenePriorityItem]:
+    scenes = {
+        3: [
+            LifeChapterScenePriorityItem(scene="kısa mesajlar", priority="primary"),
+            LifeChapterScenePriorityItem(scene="gündelik konuşmalar", priority="secondary"),
+        ],
+        4: [
+            LifeChapterScenePriorityItem(scene="ev düzeni", priority="primary"),
+            LifeChapterScenePriorityItem(scene="kişisel alan", priority="secondary"),
+        ],
+        8: [
+            LifeChapterScenePriorityItem(scene="mahrem konuşmalar", priority="primary"),
+            LifeChapterScenePriorityItem(scene="birlikte taşınan yükler", priority="secondary"),
+        ],
+        10: [
+            LifeChapterScenePriorityItem(scene="görünür rol anları", priority="primary"),
+            LifeChapterScenePriorityItem(scene="beklenti konuşmaları", priority="secondary"),
+        ],
+    }
+    return scenes.get(house, [LifeChapterScenePriorityItem(scene="gündelik küçük karar anları", priority="primary")])
+
+
+def _directional_scene_priority(house: int | None, *, activation: bool) -> list[LifeChapterScenePriorityItem]:
+    primary_scene = "yan yana yön seçimi" if not activation else "eski yön refleksinin geri çağrıldığı anlar"
+    return [
+        LifeChapterScenePriorityItem(scene=primary_scene, priority="primary"),
+        LifeChapterScenePriorityItem(scene=_default_human_scene(house), priority="secondary"),
+    ]
+
+
+def _default_chapter_claim_strength(*, chapter_type: str) -> str:
+    if chapter_type == ChapterType.SATURN_RETURN.value:
+        return "foundational long-cycle chapter"
+    if chapter_type in {ChapterType.NODAL_RETURN.value, ChapterType.NODAL_ACTIVATION.value}:
+        return "major axis chapter"
+    if chapter_type == ChapterType.STRUCTURAL_NATAL_CHAPTER.value:
+        return "structural candidate only"
+    return "major chapter"
+
+
+def _saturn_semantic_support_explanation(*, sign: str, house: int | None, overlap: Mapping[str, Any]) -> str:
+    zone = _zone_text(sign=sign, house=house)
+    if house == 3:
+        if overlap.get("has_overlap"):
+            return f"{zone} hızlı söz çıkışı ile eski yön refleksi aynı hatta çalıştığı için chosen stance chapter'ın ana kontrastı oluyor."
+        return f"{zone} sözün ağırlığı ile zihinsel refleksin hızı aynı chapter içinde olgunlaşıyor."
+    if house == 8:
+        return f"{zone} güven, duygusal alışveriş, birlikte taşınan ağırlık ve içeride yalnız tutulan yük aynı semantic odağa toplanıyor."
+    if house == 10:
+        return f"{zone} görünür rol ile kimliğin kamusal taşıyıcılığı aynı semantic odağı destekliyor."
+    return f"{zone} chapter generic yük söylemine değil, yapı ve otorite olgunlaşmasına dayanıyor."
+
+
+def _saturn_suppression_guard_explanation(*, house: int | None, overlap: Mapping[str, Any]) -> str:
+    if house == 3 and overlap.get("has_overlap"):
+        return "South Node overlap varken chapter kardeş çatışması ya da iletişim stresi diye daraltılmıyor; eski refleksif söz kalıbı bastırılıyor."
+    if house == 3:
+        return "3. ev vurgusu chapter'ı salt iletişim problemi diye okumayı güvenli kılmıyor."
+    if house == 8:
+        return "8. ev vurgusu generic hassasiyet, self-care ya da kırılganlık diline indirgenmiyor; ortak güven ve paylaşılmış yük alanı korunuyor."
+    return "Shallow readings suppressed so the chapter keeps its natal-specific weight."
+
+
+def _node_semantic_support_explanation(*, direction: Mapping[str, Any], activation: bool, house: int | None) -> str:
+    if activation:
+        return f"{_default_human_scene(house)} içinde eski yön refleksinin yeniden görünmesi activation chapter'ı destekliyor."
+    north_sign = _safe_str(direction.get("north_sign"))
+    south_sign = _safe_str(direction.get("south_sign"))
+    if north_sign and south_sign:
+        return f"North Node {north_sign} / South Node {south_sign} yön bilgisi chapter'ın balance klişesine düşmeden spesifik anlam seçmesini sağlıyor."
+    return "Direction eksik olduğu için chapter more cautious kalıyor ve generic balance dili bastırılıyor."
+
+
 def _saturn_handoff_bundle(
     *,
     sign: str,
     house: int | None,
     overlap: Mapping[str, Any],
     chapter: LifeChapter,
-) -> tuple[
-    LifeChapterSemanticFocus,
-    str,
-    LifeChapterDomainOwnership,
-    LifeChapterRendererHandoff,
-    list[SuppressedReading],
-    LifeChapterVoiceHints,
-]:
+    natal_context: Mapping[str, Any],
+) -> dict[str, Any]:
+    natal_anchor = _default_natal_architecture_anchor(
+        natal_context=natal_context,
+        chapter_type=chapter.chapter_type.value,
+        sign=sign,
+        house=house,
+    )
     if house == 3:
         primary = "speech_authority"
         secondary = ["self_definition", "mental_reflex_maturation"]
@@ -891,15 +1070,26 @@ def _saturn_handoff_bundle(
         if overlap.get("has_overlap"):
             rationale += " South Node overlap eski refleksif söz kalıbını chapter'ın merkezine taşıyor."
             anchor = "eski refleksif konuşma kalıbının daha seçilmiş bir söz formuna yerleşmesi"
-        return (
-            LifeChapterSemanticFocus(primary=primary, secondary=secondary, not_this=not_this),
-            family,
-            LifeChapterDomainOwnership(
+        return {
+            "selected_meaning_family": family,
+            "semantic_focus": LifeChapterSemanticFocus(primary=primary, secondary=secondary, not_this=not_this),
+            "domain_ownership": LifeChapterDomainOwnership(
                 primary_domain="communication_learning",
                 secondary_domains=["identity_presence", "mental_patterning"],
                 rationale=rationale,
             ),
-            LifeChapterRendererHandoff(
+            "natal_architecture_anchor": _aries_3rd_natal_anchor(natal_anchor),
+            "scene_priority": [
+                LifeChapterScenePriorityItem(scene="kısa mesajlar", priority="primary"),
+                LifeChapterScenePriorityItem(scene="yarım kalmış konuşmalar", priority="secondary"),
+                LifeChapterScenePriorityItem(scene="hızlı cevap verme anları", priority="supporting"),
+            ],
+            "chapter_claim_strength": "foundational long-cycle chapter",
+            "trust_axis_anchor": None,
+            "shared_vs_private_contrast": "hızlı çıkan söz ile seçilmiş duruş arasında belirginleşen fark",
+            "structural_pressure_model": None,
+            "apex_release_point": None,
+            "renderer_handoff": LifeChapterRendererHandoff(
                 human_scene=human_scene,
                 core_contrast=core_contrast,
                 chapter_weight="not ordinary transit; long-cycle maturation",
@@ -907,50 +1097,89 @@ def _saturn_handoff_bundle(
                 voice_register="maturation / medium",
                 avoid_readings=avoid,
             ),
-            surface,
-            LifeChapterVoiceHints(valence_mode="maturation", intensity_mode="medium", rhetorical_frame="construction", tone="friend-warm"),
-        )
+            "suppressed_surface_readings": surface,
+            "voice_hints": LifeChapterVoiceHints(valence_mode="maturation", intensity_mode="medium", rhetorical_frame="construction", tone="friend-warm"),
+        }
     if house == 8:
-        return (
-            LifeChapterSemanticFocus(
+        return {
+            "selected_meaning_family": "shared_trust_maturation",
+            "semantic_focus": LifeChapterSemanticFocus(
                 primary="shared_emotional_territory",
                 secondary=["trust_under_pressure", "intimacy_boundary_maturation", "shared_resource_weight"],
-                not_this=["generic emotional regulation", "body-rhythm reading without body backing"],
+                not_this=["generic emotional regulation", "body-rhythm reading without body backing", "oversensitivity cliché"],
             ),
-            "shared_trust_maturation",
-            LifeChapterDomainOwnership(
+            "domain_ownership": LifeChapterDomainOwnership(
                 primary_domain="trust_transformation",
                 secondary_domains=["shared_resources", "intimacy_psychology"],
                 rationale="Cancer 8. ev Saturn return derin bağ, ortak yük, güven ve paylaşılan duygusal alanın nasıl taşındığını olgunlaştırır.",
             ),
-            LifeChapterRendererHandoff(
-                human_scene="mahrem konuşmalar, birlikte taşınan yükler, güven verirken ve alırken sıkışan anlar",
-                core_contrast="duygusal güvenlik aramak ile her şeyi tek başına içte taşımak",
-                chapter_weight="not ordinary transit; deep shared-space maturation",
-                chart_specific_anchor="ortak duygusal alanın ve güvenin daha dayanıklı bir forma yerleşmesi",
-                voice_register="maturation / dense",
-                avoid_readings=["generic emotional regulation", "body-rhythm reading", "surface mood language"],
+            "natal_architecture_anchor": LifeChapterNatalArchitectureAnchor(
+                label="shared_depth_requires_structure",
+                human="derin paylaşım ve güven alanı yapı, sınır ve ölçü istiyor",
+                evidence=["Cancer 8th house Saturn", "Saturn return"],
             ),
-            [
+            "scene_priority": [
+                LifeChapterScenePriorityItem(scene="mahrem konuşmalar", priority="primary"),
+                LifeChapterScenePriorityItem(scene="birlikte taşınan yükler", priority="secondary"),
+                LifeChapterScenePriorityItem(scene="duygusal borç ve sorumluluğun sessizce paylaşıldığı anlar", priority="supporting"),
+            ],
+            "chapter_claim_strength": "deep long-cycle chapter",
+            "shared_domain_priority": [
+                "shared_burden",
+                "emotional_exchange",
+                "dependency_tension",
+                "trust_under_pressure",
+                "private_emotional_weight",
+            ],
+            "trust_axis_anchor": "güven vermek, almak, duygusal yükü ve sessiz yükümlülüğü nasıl paylaştığın bu chapter'ın ana ekseni",
+            "shared_vs_private_contrast": "birlikte taşınan duygusal yük ile içeride tek başına tutulmuş özel ağırlık arasındaki fark",
+            "structural_pressure_model": None,
+            "apex_release_point": None,
+            "renderer_handoff": LifeChapterRendererHandoff(
+                human_scene="mahrem konuşmalar, birlikte taşınan yükler, duygusal borç ve sorumluluğun sessizce paylaşıldığı anlar",
+                core_contrast="birlikte taşımak ile her şeyi tek başına içeride tutmak",
+                chapter_weight="not ordinary transit; deep shared-space maturation",
+                chart_specific_anchor="ortak duygusal alanın, güvenin ve paylaşılmış ağırlığın daha dayanıklı bir forma yerleşmesi",
+                voice_register="maturation / dense",
+                avoid_readings=["generic emotional regulation", "body-rhythm reading", "surface mood language", "self-care simplification", "generic vulnerability language"],
+            ),
+            "suppressed_surface_readings": [
                 SuppressedReading(reading="generic emotional regulation", reason="8. ev sahibi duygu düzenleme değil; ortak yük, güven, mahremiyet ve paylaşılmış alan."),
                 SuppressedReading(reading="body-rhythm reading", reason="1./6. ev ya da belirgin beden bağlamı yoksa bu chapter beden rutini diye okunmamalı."),
+                SuppressedReading(reading="oversensitivity cliché", reason="Su ve Yengeç vurgusu tek başına fazla hassasiyet klişesine indirgenmemeli; burada güven ve paylaşım yapısı okunuyor."),
+                SuppressedReading(reading="self-care simplification", reason="Bu chapter bakım önerisine indirgenmiyor; ortak yük ve duygusal alışverişin yapısı okunuyor."),
+                SuppressedReading(reading="generic vulnerability language", reason="Kırılganlık burada tek başına tema değil; neyin birlikte, neyin yalnız taşındığı daha belirleyici."),
             ],
-            LifeChapterVoiceHints(valence_mode="maturation", intensity_mode="dense", rhetorical_frame="deepening", tone="friend-warm"),
-        )
+            "voice_hints": LifeChapterVoiceHints(valence_mode="maturation", intensity_mode="dense", rhetorical_frame="deepening", tone="friend-warm"),
+        }
     if house == 10:
-        return (
-            LifeChapterSemanticFocus(
+        return {
+            "selected_meaning_family": "public_authority_maturation",
+            "semantic_focus": LifeChapterSemanticFocus(
                 primary="public_authority_settling",
                 secondary=["role_maturity", "visible_responsibility", "identity_stage"],
                 not_this=["generic career success", "simple recognition"],
             ),
-            "public_authority_maturation",
-            LifeChapterDomainOwnership(
+            "domain_ownership": LifeChapterDomainOwnership(
                 primary_domain="public_role",
                 secondary_domains=["career_visibility", "identity_presence"],
                 rationale="Saturn return 10. evde kamusal rolü sadece görünürlük olarak değil, kimliğin dış dünyada nasıl taşındığı olarak olgunlaştırır.",
             ),
-            LifeChapterRendererHandoff(
+            "natal_architecture_anchor": LifeChapterNatalArchitectureAnchor(
+                label="identity_on_public_stage",
+                human="kimlik kamusal rolde ve görünür sorumlulukta sınanıyor",
+                evidence=["10th house Saturn", "Saturn return"],
+            ),
+            "scene_priority": [
+                LifeChapterScenePriorityItem(scene="beklentinin netleştiği iş konuşmaları", priority="primary"),
+                LifeChapterScenePriorityItem(scene="kamusal sorumluluk anları", priority="secondary"),
+            ],
+            "chapter_claim_strength": "visible long-cycle chapter",
+            "trust_axis_anchor": None,
+            "shared_vs_private_contrast": "kendini kanıtlama ihtiyacı ile zaten taşıdığın rolün içine yerleşmek arasındaki fark",
+            "structural_pressure_model": None,
+            "apex_release_point": None,
+            "renderer_handoff": LifeChapterRendererHandoff(
                 human_scene="beklentinin netleştiği iş konuşmaları, kamusal sorumluluk, görünür rol anları",
                 core_contrast="kendini kanıtlamak ile zaten taşıdığın rolün içine yerleşmek",
                 chapter_weight="not ordinary transit; public-role maturation",
@@ -958,26 +1187,33 @@ def _saturn_handoff_bundle(
                 voice_register="maturation / medium",
                 avoid_readings=["generic career success", "cheerleading recognition"],
             ),
-            [
+            "suppressed_surface_readings": [
                 SuppressedReading(reading="generic career success", reason="10. ev burada başarı vaadi değil; rol ve otorite taşıma biçiminin olgunlaşması."),
                 SuppressedReading(reading="simple recognition", reason="Saturn return tanınmaktan çok, görünür rolün içine yerleşme ağırlığı taşır."),
             ],
-            LifeChapterVoiceHints(valence_mode="maturation", intensity_mode="medium", rhetorical_frame="settling", tone="friend-warm"),
-        )
+            "voice_hints": LifeChapterVoiceHints(valence_mode="maturation", intensity_mode="medium", rhetorical_frame="settling", tone="friend-warm"),
+        }
 
-    return (
-        LifeChapterSemanticFocus(
+    return {
+        "selected_meaning_family": _default_meaning_family(chapter_type=chapter.chapter_type.value, house=house),
+        "semantic_focus": LifeChapterSemanticFocus(
             primary=_default_semantic_focus_primary(chapter_type=chapter.chapter_type.value, house=house),
             secondary=["structure_maturation"],
             not_this=["generic burden"],
         ),
-        _default_meaning_family(chapter_type=chapter.chapter_type.value, house=house),
-        LifeChapterDomainOwnership(
+        "domain_ownership": LifeChapterDomainOwnership(
             primary_domain=chapter.domain,
             secondary_domains=[],
             rationale=f"{_zone_text(sign=sign, house=house)} Satürn dönüşü bu yaşam alanındaki yapıyı olgunlaştırıyor.",
         ),
-        LifeChapterRendererHandoff(
+        "natal_architecture_anchor": natal_anchor,
+        "scene_priority": _default_scene_priority(house),
+        "chapter_claim_strength": _default_chapter_claim_strength(chapter_type=chapter.chapter_type.value),
+        "trust_axis_anchor": None,
+        "shared_vs_private_contrast": None,
+        "structural_pressure_model": None,
+        "apex_release_point": None,
+        "renderer_handoff": LifeChapterRendererHandoff(
             human_scene=_default_human_scene(house),
             core_contrast="eski refleks ile daha seçilmiş biçim",
             chapter_weight="major life chapter",
@@ -985,9 +1221,9 @@ def _saturn_handoff_bundle(
             voice_register="maturation / medium",
             avoid_readings=["generic burden"],
         ),
-        [SuppressedReading(reading="generic burden", reason="Saturn return yük cümlesine indirgenmeden, yapı ve otorite olgunlaşması olarak tutulmalı.")],
-        LifeChapterVoiceHints(valence_mode="maturation", intensity_mode="medium", rhetorical_frame="settling", tone="friend-warm"),
-    )
+        "suppressed_surface_readings": [SuppressedReading(reading="generic burden", reason="Saturn return yük cümlesine indirgenmeden, yapı ve otorite olgunlaşması olarak tutulmalı.")],
+        "voice_hints": LifeChapterVoiceHints(valence_mode="maturation", intensity_mode="medium", rhetorical_frame="settling", tone="friend-warm"),
+    }
 
 
 def _nodal_handoff_bundle(
@@ -998,30 +1234,34 @@ def _nodal_handoff_bundle(
     activation: bool,
     overlap: Mapping[str, Any],
     chapter: LifeChapter,
-) -> tuple[
-    LifeChapterSemanticFocus,
-    str,
-    LifeChapterDomainOwnership,
-    LifeChapterRendererHandoff,
-    list[SuppressedReading],
-    LifeChapterVoiceHints,
-]:
+) -> dict[str, Any]:
     north_sign = _safe_str(direction.get("north_sign"))
     south_sign = _safe_str(direction.get("south_sign"))
     if north_sign == "Aries" and south_sign == "Libra":
-        return (
-            LifeChapterSemanticFocus(
+        return {
+            "selected_meaning_family": "nodal_direction_self_definition",
+            "semantic_focus": LifeChapterSemanticFocus(
                 primary="directional_self_definition",
                 secondary=["self_assertion_without_self_erasure", "relational_deconditioning"],
                 not_this=["generic self/other balance"],
             ),
-            "nodal_direction_self_definition",
-            LifeChapterDomainOwnership(
+            "domain_ownership": LifeChapterDomainOwnership(
                 primary_domain="identity_presence" if house in {1, 3} else chapter.domain,
                 secondary_domains=["relationships_agreements", "belief_direction"],
                 rationale="NN Koç / SN Terazi aksı başkalarına göre ayar verme kalıbından çıkıp daha doğrudan yön seçmeyi büyüme hattı yapar.",
             ),
-            LifeChapterRendererHandoff(
+            "natal_architecture_anchor": LifeChapterNatalArchitectureAnchor(
+                label="directional_self_definition_axis",
+                human="ilişkiye göre ayar verme kalıbından çıkıp daha doğrudan yön seçme ekseni çalışıyor",
+                evidence=["North Node Aries", "South Node Libra"],
+            ),
+            "scene_priority": _directional_scene_priority(house, activation=activation),
+            "chapter_claim_strength": "major axis chapter",
+            "trust_axis_anchor": None,
+            "shared_vs_private_contrast": "ilişkiyi korumak ile kendi yönünü silmeden söylemek arasındaki fark",
+            "structural_pressure_model": None,
+            "apex_release_point": None,
+            "renderer_handoff": LifeChapterRendererHandoff(
                 human_scene="yan yana dururken kendi sözünü ayarladığın anlar, yön seçimi, görünür pozisyon alma",
                 core_contrast="ilişkiyi korumak ile kendi yönünü silmeden söylemek",
                 chapter_weight="major axis chapter",
@@ -1029,26 +1269,37 @@ def _nodal_handoff_bundle(
                 voice_register="momentum / medium",
                 avoid_readings=["generic self/other balance", "fated relationship drama"],
             ),
-            [
+            "suppressed_surface_readings": [
                 SuppressedReading(reading="generic self/other balance", reason="Node direction biliniyorsa bu chapter denge klişesine düşmeden yön taşır."),
                 SuppressedReading(reading="fated relationship drama", reason="Node chapter ilişki kaderi değil, yön ve seçim alışkanlığının eksensel tekrarıdır."),
             ],
-            LifeChapterVoiceHints(valence_mode="momentum", intensity_mode="medium", rhetorical_frame="directional", tone="friend-warm"),
-        )
+            "voice_hints": LifeChapterVoiceHints(valence_mode="momentum", intensity_mode="medium", rhetorical_frame="directional", tone="friend-warm"),
+        }
     if north_sign == "Libra" and south_sign == "Aries":
-        return (
-            LifeChapterSemanticFocus(
+        return {
+            "selected_meaning_family": "nodal_direction_cooperation",
+            "semantic_focus": LifeChapterSemanticFocus(
                 primary="cooperative_direction",
                 secondary=["decelerating_self_reliance", "relational_coordination"],
                 not_this=["generic self/other balance"],
             ),
-            "nodal_direction_cooperation",
-            LifeChapterDomainOwnership(
+            "domain_ownership": LifeChapterDomainOwnership(
                 primary_domain="relationships_agreements",
                 secondary_domains=["identity_presence", "belief_direction"],
                 rationale="NN Terazi / SN Koç aksı tek başına hız alma refleksinden çıkıp eşgüdüm ve ortak ritim kurmayı büyüme hattı yapar.",
             ),
-            LifeChapterRendererHandoff(
+            "natal_architecture_anchor": LifeChapterNatalArchitectureAnchor(
+                label="directional_cooperation_axis",
+                human="tek başına hız alma kalıbının yanına ilişki ve eşgüdüm kurma ekseni geliyor",
+                evidence=["North Node Libra", "South Node Aries"],
+            ),
+            "scene_priority": _directional_scene_priority(house, activation=activation),
+            "chapter_claim_strength": "major axis chapter",
+            "trust_axis_anchor": None,
+            "shared_vs_private_contrast": "tek başına hız almak ile ilişkiyi de ritme katmak arasındaki fark",
+            "structural_pressure_model": None,
+            "apex_release_point": None,
+            "renderer_handoff": LifeChapterRendererHandoff(
                 human_scene="tek başına yüklenmek yerine yan yana adım kurduğun anlar, ortak karar, tempo ayarı",
                 core_contrast="hızı tek başına almak ile ilişkiyi de denkleme katmak",
                 chapter_weight="major axis chapter",
@@ -1056,26 +1307,37 @@ def _nodal_handoff_bundle(
                 voice_register="integration / medium",
                 avoid_readings=["generic self/other balance", "fated relationship drama"],
             ),
-            [
+            "suppressed_surface_readings": [
                 SuppressedReading(reading="generic self/other balance", reason="Direction known iken bu chapter yalnız denge diliyle anlatılamaz."),
                 SuppressedReading(reading="fated relationship drama", reason="Node ekseni yön ve işbirliği kalıbını açar; olay tahmini yapmaz."),
             ],
-            LifeChapterVoiceHints(valence_mode="integration", intensity_mode="medium", rhetorical_frame="directional", tone="friend-warm"),
-        )
+            "voice_hints": LifeChapterVoiceHints(valence_mode="integration", intensity_mode="medium", rhetorical_frame="directional", tone="friend-warm"),
+        }
     if activation and overlap.get("has_overlap"):
-        return (
-            LifeChapterSemanticFocus(
+        return {
+            "selected_meaning_family": "nodal_axis_activation",
+            "semantic_focus": LifeChapterSemanticFocus(
                 primary="axis_activation_of_old_pattern",
                 secondary=["old_pattern_relevance", "directional_reselection"],
                 not_this=["generic self/other balance"],
             ),
-            "nodal_axis_activation",
-            LifeChapterDomainOwnership(
+            "domain_ownership": LifeChapterDomainOwnership(
                 primary_domain=chapter.domain,
                 secondary_domains=["identity_presence"],
                 rationale="Node activation aynı sign/house overlap ile eski yön kalıbını chapter merkezine taşıyor.",
             ),
-            LifeChapterRendererHandoff(
+            "natal_architecture_anchor": LifeChapterNatalArchitectureAnchor(
+                label="axis_activation_overlap",
+                human="aynı sign/house overlap eski yön kalıbını tekrar merkezileştiriyor",
+                evidence=["node overlap", "activation chapter"],
+            ),
+            "scene_priority": _directional_scene_priority(house, activation=activation),
+            "chapter_claim_strength": "embedded axis activation",
+            "trust_axis_anchor": None,
+            "shared_vs_private_contrast": "eski yön refleksine geri düşmek ile daha seçilmiş yeni yönü almak arasındaki fark",
+            "structural_pressure_model": None,
+            "apex_release_point": None,
+            "renderer_handoff": LifeChapterRendererHandoff(
                 human_scene=_default_human_scene(house),
                 core_contrast="eski yön refleksine geri düşmek ile daha seçilmiş yeni yönü almak",
                 chapter_weight="major axis activation inside larger chapter",
@@ -1083,26 +1345,37 @@ def _nodal_handoff_bundle(
                 voice_register="integration / medium",
                 avoid_readings=["generic self/other balance", "surface transit drama"],
             ),
-            [
+            "suppressed_surface_readings": [
                 SuppressedReading(reading="generic self/other balance", reason="Overlap varsa bu chapter daha eksensel ve kalıp-odaklıdır."),
                 SuppressedReading(reading="surface transit drama", reason="Node activation burada olay değil, eski yön refleksinin geri çağrılmasıdır."),
             ],
-            LifeChapterVoiceHints(valence_mode="integration", intensity_mode="medium", rhetorical_frame="axis_activation", tone="friend-warm"),
-        )
+            "voice_hints": LifeChapterVoiceHints(valence_mode="integration", intensity_mode="medium", rhetorical_frame="axis_activation", tone="friend-warm"),
+        }
 
-    return (
-        LifeChapterSemanticFocus(
+    return {
+        "selected_meaning_family": _default_meaning_family(chapter_type=chapter.chapter_type.value, house=house),
+        "semantic_focus": LifeChapterSemanticFocus(
             primary=_default_semantic_focus_primary(chapter_type=chapter.chapter_type.value, house=house),
             secondary=["direction_repatterning"],
             not_this=["generic self/other balance"],
         ),
-        _default_meaning_family(chapter_type=chapter.chapter_type.value, house=house),
-        LifeChapterDomainOwnership(
+        "domain_ownership": LifeChapterDomainOwnership(
             primary_domain=chapter.domain,
             secondary_domains=[],
             rationale="Node chapter tekrar eden yön kalıbını generic denge söyleminden daha spesifik bir seçime taşımalıdır.",
         ),
-        LifeChapterRendererHandoff(
+        "natal_architecture_anchor": LifeChapterNatalArchitectureAnchor(
+            label="direction_axis_present_but_underspecified",
+            human="node yönü eksik olduğu için chapter daha temkinli tutuluyor",
+            evidence=["node chapter", "direction incomplete"],
+        ),
+        "scene_priority": _directional_scene_priority(house, activation=activation),
+        "chapter_claim_strength": "conditional axis chapter",
+        "trust_axis_anchor": None,
+        "shared_vs_private_contrast": None,
+        "structural_pressure_model": None,
+        "apex_release_point": None,
+        "renderer_handoff": LifeChapterRendererHandoff(
             human_scene=_default_human_scene(house),
             core_contrast="eski yön alışkanlığı ile daha bilinçli seçim",
             chapter_weight="major axis chapter",
@@ -1110,9 +1383,9 @@ def _nodal_handoff_bundle(
             voice_register="integration / medium",
             avoid_readings=["generic self/other balance"],
         ),
-        [SuppressedReading(reading="generic self/other balance", reason="Direction ekseni bilinmeden balance klişesi güvenli değildir.")],
-        LifeChapterVoiceHints(valence_mode="integration", intensity_mode="medium", rhetorical_frame="directional", tone="friend-warm"),
-    )
+        "suppressed_surface_readings": [SuppressedReading(reading="generic self/other balance", reason="Direction ekseni bilinmeden balance klişesi güvenli değildir.")],
+        "voice_hints": LifeChapterVoiceHints(valence_mode="integration", intensity_mode="medium", rhetorical_frame="directional", tone="friend-warm"),
+    }
 
 
 def _maybe_merge_overlapping_tier1_chapters(
@@ -1319,10 +1592,11 @@ def _selected_meaning(*, chapter_type: str, sign: str, house: int | None, overla
 def _evidence(*, chapter_type: str, event: Mapping[str, Any], overlap: Mapping[str, Any]) -> list[LifeChapterEvidence]:
     subtype = _safe_str(event.get("event_subtype"))
     title = _safe_str(event.get("title_tr"))
+    role = "activation" if chapter_type == ChapterType.NODAL_ACTIVATION.value else "return"
     evidence = [
         LifeChapterEvidence(
             factor=title or subtype or _safe_str(event.get("event_id")) or "chapter_signal",
-            role="chapter_trigger",
+            role=role,
             explanation=_chapter_trigger_explanation(chapter_type, subtype),
         )
     ]
@@ -1331,7 +1605,7 @@ def _evidence(*, chapter_type: str, event: Mapping[str, Any], overlap: Mapping[s
         evidence.append(
             LifeChapterEvidence(
                 factor="node_overlap",
-                role="supporting_signal",
+                role="axis_overlap",
                 explanation=f"Satürn hattı natal {matched_nodes} ile aynı sign/house alanında çalışıyor; bu chapter daha eksensel bir ağırlık kazanıyor.",
             )
         )
@@ -1526,14 +1800,14 @@ def _saturn_selected_meaning(*, sign: str, house: int | None, overlap: Mapping[s
     zone = _zone_text(sign=sign, house=house)
     house_meanings = {
         3: "söz ve zihinsel reflekslerin",
-        8: "duygusal güvenlik ve derin bağ kurma biçiminin",
+        8: "duygusal güvenlik, ortak yük ve derin bağ kurma biçiminin",
         10: "görünürlük ve kamusal rol taşıma biçiminin",
     }
     subject = house_meanings.get(house, "eski reflekslerinin ve yapı kurma biçiminin")
     if overlap.get("has_overlap"):
         return f"{zone} {subject}, düğüm ekseniyle birlikte, daha seçilmiş ve daha sorumlu bir forma yerleşmesi"
     if house == 8:
-        return f"{zone} {subject} daha dayanıklı, daha ölçülü ve daha seçilmiş bir forma yerleşmesi"
+        return f"{zone} {subject}; birlikte taşınanla içeride tek başına taşınanı daha bilinçli ayıran dayanıklı bir forma yerleşmesi"
     if house == 10:
         return f"{zone} {subject} daha sakin ama daha kalıcı bir otoriteye yerleşmesi"
     return f"{zone} {subject} daha seçilmiş, daha sorumlu bir forma yerleşmesi"
@@ -1543,7 +1817,7 @@ def _saturn_core_question(*, sign: str, house: int | None, overlap: Mapping[str,
     zone = _zone_text(sign=sign, house=house)
     house_questions = {
         3: "sözünü ve zihinsel reflekslerini",
-        8: "duygusal güvenlik ve derin bağ kurma biçimini",
+        8: "duygusal güvenlik, ortak yük ve derin bağ kurma biçimini",
         10: "görünürlük ve kamusal rol taşıma biçimini",
     }
     subject = house_questions.get(house, "yapı kurma biçimini")
@@ -1569,6 +1843,17 @@ def _saturn_placement_explanation(*, sign: str, house: int | None, ruled_houses:
         ruled = ", ".join(str(house_id) for house_id in ruled_houses[:3])
         return f"{zone} Satürn bu chapter'da yalnız yerleşimini değil, yönettiği {ruled}. ev başlıklarını da olgunlaştırıyor."
     return f"{zone} Satürn'ün natal yerleşimi bu chapter'ın hangi yaşam sahnesinde olgunlaşacağını belirliyor."
+
+
+def _saturn_house_context_explanation(*, sign: str, house: int | None) -> str:
+    zone = _zone_text(sign=sign, house=house)
+    if house == 8:
+        return f"{zone} burada mesele yalnız duygusal yoğunluk değil; neyin birlikte, neyin yalnız taşındığını ayıran ortak güven ve alışveriş yapısı."
+    if house == 3:
+        return f"{zone} söz, düşünce ve yakın çevre içindeki refleksler chapter'ın ana sahnesi oluyor."
+    if house == 10:
+        return f"{zone} görünür rol, beklenti ve kamusal sorumluluk chapter'ın ana sahnesi oluyor."
+    return f"{zone} chapter'ın hangi yaşam alanını sahiplendiğini house bağlamı belirliyor."
 
 
 def _zone_text(*, sign: str, house: int | None) -> str:

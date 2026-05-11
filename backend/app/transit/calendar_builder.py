@@ -1216,6 +1216,8 @@ def build_calendar_payload(
                     top_n=top_n,
                 )
             day["top_event_ids"] = top_ids
+        day["top_raw_event_ids"] = [str(eid) for eid in top_ids if isinstance(eid, str) and eid]
+        day["raw_event_ids"] = raw_day_ids[:]
 
         foreground, background = _split_foreground_background(raw_day_ids, top_ids)
         derived_items_map_layers[day_str] = {

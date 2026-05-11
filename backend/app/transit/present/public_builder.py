@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import inspect
 import json
 import re
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
@@ -24,12 +25,14 @@ from app.transit.narrative.public_voice_en import (
     rewrite_period_summary_en,
 )
 from app.transit.narrative.deep_archetype_engine import (
+    HOUSE_THEME,
     build_active_event_cards,
     build_daily_line,
     build_event_card,
     build_period_core,
     pick_top_event,
 )
+from app.transit.narrative.canonical_natal_activation import build_canonical_period_spine
 from app.transit.narrative.text_quality_tr import tr_normalize
 
 from .public_models import Block, PublicEvent, PublicPeriod, PublicPeriodSpace, PublicPeriodSummary, PublicTransitResponse
@@ -119,6 +122,8 @@ PUBLIC_EVENT_V2_FIELDS = (
     "copy_mode",
 )
 DEFAULT_PERIOD_PEAK_TIMELINE_ITEMS = 4
+HOME_FAST_MAX_EVENT_CARDS = 2
+HOME_FAST_MAX_SUPPORT_CANDIDATES = 2
 
 _EVENT_CARD_DISPLAY_TEXT_KEYS = frozenset(
     {
@@ -253,6 +258,46 @@ def _normalize_period_core_copy(period_core: Mapping[str, Any], *, locale: str =
     for key in _PERIOD_STORY_TEXT_KEYS | {"core_story"}:
         if key in out:
             out[key] = _normalize_display_text(out.get(key), locale=locale)
+    period_reading_v1 = out.get("period_reading_v1")
+    if isinstance(period_reading_v1, Mapping):
+        reading_out = dict(period_reading_v1)
+        blocks = reading_out.get("blocks")
+        if isinstance(blocks, list):
+            normalized_blocks: List[Any] = []
+            for block in blocks:
+                if not isinstance(block, Mapping):
+                    normalized_blocks.append(block)
+                    continue
+                block_out = dict(block)
+                if "text" in block_out:
+                    block_out["text"] = _normalize_display_text(block_out.get("text"), locale=locale)
+                normalized_blocks.append(block_out)
+            reading_out["blocks"] = normalized_blocks
+            reading_out["full_text"] = "\n\n".join(
+                str(block.get("text") or "").strip()
+                for block in normalized_blocks
+                if isinstance(block, Mapping) and str(block.get("text") or "").strip()
+            )
+        elif "full_text" in reading_out:
+            reading_out["full_text"] = _normalize_display_text(reading_out.get("full_text"), locale=locale)
+        out["period_reading_v1"] = reading_out
+    period_signal_lines_v1 = out.get("period_signal_lines_v1")
+    if isinstance(period_signal_lines_v1, Mapping):
+        signal_out = dict(period_signal_lines_v1)
+        cards = signal_out.get("cards")
+        if isinstance(cards, list):
+            normalized_cards: List[Any] = []
+            for card in cards:
+                if not isinstance(card, Mapping):
+                    normalized_cards.append(card)
+                    continue
+                card_out = dict(card)
+                for key in ("title", "preview", "body", "tone", "theme_palette", "domain_palette", "narrative_move", "timing_hint"):
+                    if key in card_out:
+                        card_out[key] = _normalize_display_text(card_out.get(key), locale=locale)
+                normalized_cards.append(card_out)
+            signal_out["cards"] = normalized_cards
+        out["period_signal_lines_v1"] = signal_out
     tags = out.get("tags")
     if isinstance(tags, list):
         normalized_tags: List[Any] = []
@@ -276,6 +321,30 @@ def _normalize_period_core_copy(period_core: Mapping[str, Any], *, locale: str =
             for track_id, track_story in story_tracks.items()
         }
     return out
+
+
+def _derive_period_reading_v1_from_legacy(period_core: Mapping[str, Any]) -> Dict[str, Any] | None:
+    hook = str(period_core.get("period_opening") or "").strip()
+    unfolding = str(period_core.get("big_picture") or period_core.get("mechanism") or "").strip()
+    growth = str(period_core.get("what_it_builds") or period_core.get("growth_edge") or "").strip()
+    closer = str(period_core.get("relational_or_life_expression") or "").strip()
+    blocks: List[Dict[str, str]] = []
+    if hook:
+        blocks.append({"role": "hook", "text": hook})
+    if unfolding:
+        blocks.append({"role": "unfolding", "text": unfolding})
+    if growth:
+        blocks.append({"role": "growth", "text": growth})
+    if closer and closer != growth:
+        blocks.append({"role": "closer", "text": closer})
+    blocks = blocks[:4]
+    if len(blocks) < 3:
+        return None
+    return {
+        "version": "period_reading_v1",
+        "blocks": blocks,
+        "full_text": "\n\n".join(block["text"] for block in blocks),
+    }
 
 
 def _normalize_timeline_copy(timeline: Mapping[str, Any], *, locale: str = "tr") -> Dict[str, Any]:
@@ -426,6 +495,13 @@ def _safe_int(value: Any) -> int | None:
         return None
 
 
+def _safe_float(value: Any) -> float | None:
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
 def _sign_tr_from_any(value: Any) -> str:
     text = _safe_text(value)
     if not text:
@@ -489,6 +565,388 @@ def _extract_target_degree(item: Dict[str, Any]) -> float | None:
     target_pos = item.get("target_pos") if isinstance(item.get("target_pos"), dict) else {}
     natal_pos = item.get("natal_pos") if isinstance(item.get("natal_pos"), dict) else {}
     return _extract_degree_from_pos(target_pos) or _extract_degree_from_pos(natal_pos)
+
+
+def _home_domain_by_house(house: int | None) -> str:
+    return {
+        1: "identity",
+        2: "money",
+        3: "mind",
+        4: "home",
+        5: "identity",
+        6: "body",
+        7: "relationships",
+        8: "inner",
+        9: "mind",
+        10: "career",
+        11: "career",
+        12: "inner",
+    }.get(house or 0, "")
+
+
+def _raw_aspect_mode(item: Mapping[str, Any]) -> str:
+    direct = _safe_text(item.get("aspect_mode")).lower()
+    if direct:
+        return direct
+    aspect = _safe_text(item.get("aspect")).lower()
+    if aspect in {"square", "quincunx"}:
+        return "friction"
+    if aspect == "opposition":
+        return "polarity"
+    if aspect == "conjunction":
+        return "concentration"
+    if aspect == "trine":
+        return "flow"
+    if aspect == "sextile":
+        return "opening"
+    subtype = _safe_text(item.get("event_subtype")).lower()
+    if subtype:
+        return _raw_aspect_mode({"aspect": subtype})
+    return ""
+
+
+def _raw_target_house(item: Mapping[str, Any]) -> int | None:
+    houses = item.get("houses") if isinstance(item.get("houses"), Mapping) else {}
+    derived = item.get("derived_context") if isinstance(item.get("derived_context"), Mapping) else {}
+    natal_target = derived.get("natal_target") if isinstance(derived.get("natal_target"), Mapping) else {}
+    return _safe_int(houses.get("natal_point_house")) or _safe_int(natal_target.get("house"))
+
+
+def _raw_primary_domain(item: Mapping[str, Any]) -> str:
+    lens_projection = item.get("lens_projection") if isinstance(item.get("lens_projection"), Mapping) else {}
+    semantic_core = item.get("semantic_core") if isinstance(item.get("semantic_core"), Mapping) else {}
+    domains = item.get("domains") if isinstance(item.get("domains"), Sequence) else []
+    for candidate in (
+        lens_projection.get("primary_domain"),
+        semantic_core.get("target_house_domain"),
+        semantic_core.get("source_house_domain"),
+        domains[0] if domains else "",
+        _home_domain_by_house(_raw_target_house(item)),
+        _home_domain_by_house(_safe_int(((item.get("houses") or {}) if isinstance(item.get("houses"), Mapping) else {}).get("transit_in_natal_house"))),
+    ):
+        token = _safe_text(candidate).lower()
+        if token:
+            return token
+    return ""
+
+
+def _home_support_candidate_score(
+    spine_item: Mapping[str, Any],
+    candidate: Mapping[str, Any],
+) -> float:
+    score = 0.0
+    spine_mode = _raw_aspect_mode(spine_item)
+    candidate_mode = _raw_aspect_mode(candidate)
+
+    if candidate_mode in {"opening", "flow"} and spine_mode in {"friction", "polarity"}:
+        score += 0.42
+    elif candidate_mode and candidate_mode != spine_mode:
+        score += 0.18
+
+    if _safe_text(candidate.get("natal_point")).lower() and _safe_text(candidate.get("natal_point")).lower() == _safe_text(spine_item.get("natal_point")).lower():
+        score += 0.32
+
+    if _raw_primary_domain(candidate) and _raw_primary_domain(candidate) == _raw_primary_domain(spine_item):
+        score += 0.22
+
+    if _raw_target_house(candidate) is not None and _raw_target_house(candidate) == _raw_target_house(spine_item):
+        score += 0.14
+
+    orb_deg = _safe_float(candidate.get("orb_deg"))
+    if orb_deg is not None:
+        if orb_deg <= 1.0:
+            score += 0.22
+        elif orb_deg <= 2.0:
+            score += 0.16
+        elif orb_deg <= 3.5:
+            score += 0.1
+        elif orb_deg <= 6.0:
+            score += 0.04
+
+    ranking = candidate.get("ranking") if isinstance(candidate.get("ranking"), Mapping) else {}
+    weight = _safe_float(ranking.get("weight"))
+    if weight is not None:
+        score += min(0.15, max(0.0, weight) * 0.08)
+
+    if candidate_mode == spine_mode and _safe_text(candidate.get("natal_point")).lower() != _safe_text(spine_item.get("natal_point")).lower() and _raw_primary_domain(candidate) != _raw_primary_domain(spine_item):
+        score -= 0.15
+
+    return score
+
+
+def _pick_home_support_items(
+    selected_input: Sequence[Mapping[str, Any]],
+    filtered_items: Sequence[Mapping[str, Any]],
+) -> List[Mapping[str, Any]]:
+    if not selected_input:
+        return []
+
+    spine_item = selected_input[0]
+    spine_id = _safe_text(spine_item.get("event_id"))
+    seen_ids = {spine_id} if spine_id else set()
+
+    candidate_pool: List[Mapping[str, Any]] = []
+    for source in (selected_input[1:], filtered_items):
+        for item in source:
+            if not isinstance(item, Mapping):
+                continue
+            event_id = _safe_text(item.get("event_id"))
+            if not event_id or event_id in seen_ids:
+                continue
+            seen_ids.add(event_id)
+            candidate_pool.append(item)
+
+    ranked_candidates = sorted(
+        (
+            (
+                _home_support_candidate_score(spine_item, item),
+                _safe_float(item.get("orb_deg")) if _safe_float(item.get("orb_deg")) is not None else 99.0,
+                item,
+            )
+            for item in candidate_pool
+        ),
+        key=lambda row: (-row[0], row[1]),
+    )
+
+    support_items: List[Mapping[str, Any]] = []
+    for score, _orb, item in ranked_candidates:
+        if len(support_items) >= HOME_FAST_MAX_SUPPORT_CANDIDATES:
+            break
+        if score < 0.28:
+            continue
+        support_items.append(item)
+    return support_items
+
+
+def _home_support_role(item: Mapping[str, Any]) -> str:
+    mode = _raw_aspect_mode(item)
+    phase = _safe_text(item.get("phase")).lower()
+    if mode in {"opening", "flow"}:
+        return "integrator"
+    if phase in {"exact", "exactish"}:
+        return "peak"
+    if phase == "separating":
+        return "release"
+    return "builder"
+
+
+def _inject_home_support_featured_events(
+    period_core: Mapping[str, Any],
+    *,
+    spine_item: Mapping[str, Any] | None,
+    support_items: Sequence[Mapping[str, Any]],
+) -> Dict[str, Any]:
+    out = dict(period_core)
+    featured_raw = out.get("featured_events") if isinstance(out.get("featured_events"), Sequence) else []
+    featured: List[Dict[str, Any]] = [dict(item) for item in featured_raw if isinstance(item, Mapping)]
+    seen_ids = {
+        _safe_text(item.get("event_id"))
+        for item in featured
+        if _safe_text(item.get("event_id"))
+    }
+
+    spine_id = _safe_text((spine_item or {}).get("event_id"))
+    if spine_id and spine_id not in seen_ids and isinstance(spine_item, Mapping):
+        featured.insert(0, dict(spine_item))
+        seen_ids.add(spine_id)
+
+    appended_support_ids: List[str] = []
+    for item in support_items[:HOME_FAST_MAX_SUPPORT_CANDIDATES]:
+        event_id = _safe_text(item.get("event_id"))
+        if not event_id or event_id in seen_ids:
+            continue
+        featured.append(dict(item))
+        appended_support_ids.append(event_id)
+        seen_ids.add(event_id)
+
+    if featured:
+        out["featured_events"] = featured
+
+    debug = dict(out.get("_period_story_debug") or {})
+    if spine_id and not _safe_text(debug.get("spine_event_id")):
+        debug["spine_event_id"] = spine_id
+
+    support_ids = [
+        _safe_text(event_id)
+        for event_id in (debug.get("support_event_ids") or [])
+        if _safe_text(event_id)
+    ]
+    support_roles = [
+        _safe_text(role)
+        for role in (debug.get("support_roles") or [])
+        if _safe_text(role)
+    ]
+    existing_support_ids = set(support_ids)
+    for item in support_items[:HOME_FAST_MAX_SUPPORT_CANDIDATES]:
+        event_id = _safe_text(item.get("event_id"))
+        if not event_id or event_id in existing_support_ids or event_id == spine_id:
+            continue
+        support_ids.append(event_id)
+        support_roles.append(_home_support_role(item))
+        existing_support_ids.add(event_id)
+
+    if support_ids:
+        debug["support_event_ids"] = support_ids
+    if support_roles:
+        debug["support_roles"] = support_roles
+    if debug:
+        out["_period_story_debug"] = debug
+    return out
+
+
+def _build_home_period_core(
+    response: Mapping[str, Any],
+    *,
+    event_cards: Sequence[Mapping[str, Any]],
+    locale: str = "tr",
+    canonical_period_spine: Mapping[str, Any] | None = None,
+) -> Dict[str, Any]:
+    items = response.get("display", {}).get("items", []) if isinstance(response.get("display"), Mapping) else []
+    typed_items = [item for item in items if isinstance(item, Mapping)]
+    item_by_id = {str(item.get("event_id") or "").strip(): dict(item) for item in typed_items if str(item.get("event_id") or "").strip()}
+
+    cards = [dict(card) for card in event_cards if isinstance(card, Mapping)]
+    if not cards:
+        return {
+            "title": "",
+            "core_story": "",
+            "upper_meaning": "",
+            "big_picture": "",
+            "mechanism": "",
+            "tags": [],
+            "featured_events": [],
+            "canonical_period_spine": dict(canonical_period_spine or {}),
+            "_period_story_debug": {
+                "spine_event_id": "",
+                "support_event_ids": [],
+                "spine_role": "",
+                "support_roles": [],
+            },
+            "narrative_version": "home_period_core_lite_v1",
+        }
+
+    selected_ids = [str(card.get("event_id") or "").strip() for card in cards if str(card.get("event_id") or "").strip()]
+    selected_enriched: List[Dict[str, Any]] = []
+    for event_id in selected_ids:
+        source = item_by_id.get(event_id)
+        card_ctx = next((card for card in cards if str(card.get("event_id") or "").strip() == event_id), {})
+        merged = dict(source or {})
+        if isinstance(card_ctx, Mapping):
+            merged.update(dict(card_ctx))
+            derived_context = card_ctx.get("derived_context")
+            if isinstance(derived_context, Mapping):
+                merged["derived_context"] = dict(derived_context)
+        selected_enriched.append(merged)
+
+    house_values = [
+        _safe_int((((item.get("houses") or {}) if isinstance(item.get("houses"), Mapping) else {}).get("natal_point_house")))
+        or _safe_int((((item.get("houses") or {}) if isinstance(item.get("houses"), Mapping) else {}).get("transit_in_natal_house")))
+        for item in selected_enriched
+    ]
+    house_counter: Dict[int, int] = {}
+    for house in house_values:
+        if house is None:
+            continue
+        house_counter[house] = house_counter.get(house, 0) + 1
+    dominant_house = sorted(house_counter.items(), key=lambda item: (-item[1], item[0]))[0][0] if house_counter else None
+
+    top_card = cards[0]
+    top_event = selected_enriched[0] if selected_enriched else top_card
+    top_interp = top_event.get("interpretation") if isinstance(top_event.get("interpretation"), Mapping) else {}
+    watch_items = top_interp.get("watch") if isinstance(top_interp.get("watch"), list) else []
+
+    title = (
+        _safe_text(HOUSE_THEME.get(dominant_house or -1))
+        or _safe_text(top_card.get("title"))
+        or _safe_text(top_interp.get("headline_short"))
+        or _safe_text(top_interp.get("headline"))
+        or _safe_text(top_card.get("headline"))
+        or "Denge ve Yapi Temasi Derinlesiyor"
+    )
+    period_opening = (
+        _safe_text(top_card.get("opening"))
+        or _safe_text(top_interp.get("summary"))
+        or _safe_text(top_interp.get("context_sentence"))
+    )
+    big_picture = (
+        _safe_text(top_card.get("essence"))
+        or _safe_text(top_card.get("big_picture"))
+        or _safe_text(top_interp.get("upper_meaning"))
+        or _safe_text(top_interp.get("one_liner"))
+        or period_opening
+    )
+    mechanism = (
+        _safe_text(top_card.get("mechanism"))
+        or _safe_text(top_interp.get("context_sentence"))
+        or _safe_text(top_interp.get("where"))
+        or period_opening
+    )
+    growth_edge = (
+        _safe_text(top_card.get("watchout"))
+        or _safe_text(top_card.get("growth_edge"))
+        or _safe_text(watch_items[0] if watch_items else "")
+    )
+    relational = (
+        _safe_text(top_card.get("relational_or_life_expression"))
+        or _safe_text(top_interp.get("where"))
+        or period_opening
+    )
+    what_it_builds = (
+        _safe_text(top_card.get("what_it_builds"))
+        or _safe_text(top_card.get("upper_meaning"))
+        or _safe_text(top_interp.get("upper_meaning"))
+        or _safe_text(top_interp.get("one_liner"))
+        or _safe_text(top_card.get("asks"))
+        or _safe_text(top_interp.get("headline"))
+        or _safe_text(top_card.get("headline"))
+    )
+    core_story_parts = [part for part in (period_opening, big_picture, relational) if part]
+    core_story = "\n\n".join(core_story_parts[:3]) or big_picture or period_opening or what_it_builds
+    upper_meaning = (
+        what_it_builds
+        or _safe_text(top_interp.get("upper_meaning"))
+        or _safe_text(top_interp.get("headline"))
+        or _safe_text(top_card.get("headline"))
+    )
+
+    dominant_planet = _safe_text(top_event.get("transit_body")) or _safe_text(top_card.get("transit_body")) or "Saturn"
+    spine_role = ""
+    chapter_role = top_event.get("chapter_role") if isinstance(top_event.get("chapter_role"), Mapping) else {}
+    if isinstance(chapter_role, Mapping):
+        spine_role = _safe_text(chapter_role.get("role")).lower()
+
+    return {
+        "title": title,
+        "core_story": core_story,
+        "upper_meaning": upper_meaning,
+        "period_opening": period_opening,
+        "big_picture": big_picture,
+        "mechanism": mechanism,
+        "growth_edge": growth_edge,
+        "relational_or_life_expression": relational,
+        "what_it_builds": what_it_builds or upper_meaning,
+        "tags": [
+            {"type": "dominant_house", "value": str(dominant_house or "3")},
+            {"type": "dominant_planet", "value": dominant_planet},
+        ],
+        "featured_events": selected_enriched,
+        "canonical_period_spine": dict(canonical_period_spine or {}),
+        "_period_story_debug": {
+            "spine_event_id": _safe_text(top_event.get("event_id")) or _safe_text(top_card.get("event_id")),
+            "support_event_ids": [
+                _safe_text(item.get("event_id"))
+                for item in selected_enriched[1:HOME_FAST_MAX_EVENT_CARDS]
+                if _safe_text(item.get("event_id"))
+            ],
+            "spine_role": spine_role,
+            "support_roles": [
+                _safe_text(((item.get("chapter_role") or {}) if isinstance(item.get("chapter_role"), Mapping) else {}).get("role")).lower()
+                for item in selected_enriched[1:HOME_FAST_MAX_EVENT_CARDS]
+                if _safe_text(((item.get("chapter_role") or {}) if isinstance(item.get("chapter_role"), Mapping) else {}).get("role"))
+            ],
+        },
+        "narrative_version": "home_period_core_lite_v1",
+    }
 
 
 def _normalize_phase(value: str | None) -> str | None:
@@ -1120,14 +1578,38 @@ def build_public_response(
         _normalize_event_card_copy(card, locale=locale)
         for card in build_active_event_cards(response, max_cards=5)
     ]
+    canonical_natal_state = response.get("_canonical_natal_state")
+    active_life_chapter = response.get("_active_life_chapter") or response.get("active_life_chapter")
+    canonical_period_spine = (
+        build_canonical_period_spine(
+            canonical_state=canonical_natal_state,
+            period_event_cards=event_cards,
+        )
+        if canonical_natal_state is not None
+        else {}
+    )
+    period_core_builder_signature = inspect.signature(build_period_core)
+    period_core_kwargs: Dict[str, Any] = {
+        "event_cards": event_cards,
+        "locale": locale,
+    }
+    if "canonical_period_spine" in period_core_builder_signature.parameters:
+        period_core_kwargs["canonical_period_spine"] = canonical_period_spine
+    if "active_life_chapter" in period_core_builder_signature.parameters:
+        period_core_kwargs["active_life_chapter"] = active_life_chapter
+    if "canonical_natal_state" in period_core_builder_signature.parameters:
+        period_core_kwargs["canonical_natal_state"] = canonical_natal_state
     period_core = _normalize_period_core_copy(
         build_period_core(
             response,
-            event_cards=event_cards,
-            locale=locale,
+            **period_core_kwargs,
         ),
         locale=locale,
     )
+    if not isinstance(period_core.get("period_reading_v1"), Mapping):
+        derived_reading = _derive_period_reading_v1_from_legacy(period_core)
+        if derived_reading is not None:
+            period_core["period_reading_v1"] = derived_reading
     top_item = filtered_items[0] if filtered_items else None
     if use_en:
         period_core = _normalize_period_core_copy(
@@ -1249,4 +1731,84 @@ def build_public_response(
     out = public.model_dump(exclude_none=True)
     if debug_events:
         out["_events_debug"] = debug_events
+    return out
+
+
+def build_home_response(
+    response: Dict[str, Any],
+    *,
+    selected_events: Sequence[Mapping[str, Any]] | None = None,
+    include_debug_artifacts: bool = True,
+) -> Dict[str, Any]:
+    max_cards = HOME_FAST_MAX_EVENT_CARDS
+    locale = str(response.get("locale") or "tr")
+    use_en = locale.lower().startswith("en")
+    display = response.get("display") or {}
+    items = display.get("items") or []
+    filtered_items = [item for item in items if isinstance(item, dict) and _is_public_allowed(item)]
+    natal = response.get("natal") if isinstance(response.get("natal"), Mapping) else None
+    selected_input = [
+        item
+        for item in (selected_events or filtered_items[:max_cards])
+        if isinstance(item, Mapping) and _is_public_allowed(item)
+    ]
+    support_items = _pick_home_support_items(selected_input, filtered_items)
+    event_cards = [dict(item) for item in selected_input[:max_cards]]
+    canonical_natal_state = response.get("_canonical_natal_state")
+    active_life_chapter = response.get("_active_life_chapter") or response.get("active_life_chapter")
+    canonical_period_spine = (
+        build_canonical_period_spine(
+            canonical_state=canonical_natal_state,
+            period_event_cards=event_cards,
+        )
+        if canonical_natal_state is not None
+        else {}
+    )
+    home_period_core_signature = inspect.signature(_build_home_period_core)
+    home_period_core_kwargs: Dict[str, Any] = {
+        "event_cards": event_cards,
+        "locale": locale,
+    }
+    if "canonical_period_spine" in home_period_core_signature.parameters:
+        home_period_core_kwargs["canonical_period_spine"] = canonical_period_spine
+    if "active_life_chapter" in home_period_core_signature.parameters:
+        home_period_core_kwargs["active_life_chapter"] = active_life_chapter
+    if "canonical_natal_state" in home_period_core_signature.parameters:
+        home_period_core_kwargs["canonical_natal_state"] = canonical_natal_state
+    period_core = _normalize_period_core_copy(
+        _build_home_period_core(
+            response,
+            **home_period_core_kwargs,
+        ),
+        locale=locale,
+    )
+    if not isinstance(period_core.get("period_reading_v1"), Mapping):
+        derived_reading = _derive_period_reading_v1_from_legacy(period_core)
+        if derived_reading is not None:
+            period_core["period_reading_v1"] = derived_reading
+    top_item = filtered_items[0] if filtered_items else None
+    if use_en:
+        period_core = _normalize_period_core_copy(
+            rewrite_period_core_en(period_core, item=top_item if isinstance(top_item, Mapping) else None),
+            locale=locale,
+        )
+    period_core = _inject_home_support_featured_events(
+        period_core,
+        spine_item=selected_input[0] if selected_input else None,
+        support_items=support_items,
+    )
+
+    teaser = _build_period_teaser(period_core)
+    if teaser is not None:
+        period_core["period_teaser"] = teaser
+    period_core["period_locked"] = False
+    period_core["period_version"] = _build_period_version(natal, period_core)
+
+    out: Dict[str, Any] = {
+        "locale": locale,
+        "period_core": period_core,
+        "event_cards": event_cards,
+    }
+    if include_debug_artifacts:
+        out["_events_debug"] = []
     return out

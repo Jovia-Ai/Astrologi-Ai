@@ -1,0 +1,13 @@
+{
+  "sample_id": "saturn_opposition_venus_relational_daily",
+  "surface": "daily_body",
+  "layer": "mechanism",
+  "headline": "Bugün özellikle iki tarafın ihtiyacını aynı anda taşımak seni arada bırakabilir.",
+  "body": "Bugün karşı tarafın tonu seni daha hızlı gerebilir. Bu en çok karşı tarafla arandaki çizgi tarafında; beklenti, sınır ve konuşulmamış başlıklarda görünür olur. Çünkü bu doğrudan yakınlık ve beğeni ölçün çizgine değiyor. O yüzden 7. ev, 8. ev başlığı da bu etkiye kolayca eşlik edebilir. Buradaki karşıt bir yandan seni, bir yandan karşı tarafı aynı anda konuşturabilir Bugün etkisi daha güçlü. Bu yeni bir başlık değil; içinde olduğun \"Yakınlıkta Yeni Denge\" dönemi bugün en çok karşı tarafla arandaki çizgi tarafına vuruyor.",
+  "guidance": "Yanıt vermeden önce neyi koruduğunu ayırt et.",
+  "expected_regressions": [
+    "house_number",
+    "hedge_forbidden_in_layer",
+    "run_on_sentence_transition"
+  ]
+}

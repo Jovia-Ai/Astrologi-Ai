@@ -1,3 +1,7 @@
+import json
+from pathlib import Path
+import re
+
 from app.narrative.voice_guardrails_tr import (
     find_forbidden_public_copy_issues,
     find_technical_leakage,
@@ -6,6 +10,14 @@ from app.transit.narrative.astrolog_narrative_engine import (
     PeriodStoryContext,
     build_period_story,
 )
+from app.transit.narrative.life_chapter_detector import detect_active_life_chapter
+from app.transit.narrative.period_semantic_focus import (
+    PeriodSemanticFocusResult,
+    resolve_period_semantic_focus,
+)
+
+
+_FIXTURE_ROOT = Path(__file__).resolve().parent / "fixtures" / "life_chapter"
 
 
 def _event(**kwargs):
@@ -23,6 +35,58 @@ def _event(**kwargs):
     }
     base.update(kwargs)
     return base
+
+
+def _load_life_chapter_fixture(group: str, name: str) -> dict:
+    path = _FIXTURE_ROOT / group / f"{name}.json"
+    return json.loads(path.read_text(encoding="utf-8"))
+
+
+def _life_chapter_story_context(
+    *,
+    group: str,
+    name: str,
+    featured_event: dict,
+    spine_lines: list[str],
+    primary_domain: str,
+) -> PeriodStoryContext:
+    fixture = _load_life_chapter_fixture(group, name)
+    detector = detect_active_life_chapter(
+        canonical_natal_state=fixture["canonical_natal_state"],
+        transit_events=fixture["transit_events"],
+    )
+    active = dict(detector["active_life_chapter"] or {})
+    assert active
+    semantic_focus_result = resolve_period_semantic_focus(
+        canonical_period_spine={
+            "source": "canonical_natal_activation_v1",
+            "target_node_id": "promise_focus",
+            "spine_lines": spine_lines,
+            "matched_event_ids": [featured_event["event_id"]],
+            "primary_domain": primary_domain,
+        },
+        active_life_chapter=active,
+        period_voice_policy={},
+        manifestation_context=None,
+        selected_events=[featured_event],
+        period_core_seed={"featured_events": [featured_event]},
+        canonical_natal_state=fixture["canonical_natal_state"],
+        debug=True,
+    )
+    return PeriodStoryContext(
+        period_core={"featured_events": [featured_event]},
+        chart_snapshot=fixture["canonical_natal_state"],
+        natal_promise={},
+        canonical_period_spine={
+            "source": "canonical_natal_activation_v1",
+            "target_node_id": "promise_focus",
+            "spine_lines": spine_lines,
+            "matched_event_ids": [featured_event["event_id"]],
+            "primary_domain": primary_domain,
+        },
+        active_life_chapter=active,
+        semantic_focus_result=semantic_focus_result,
+    )
 
 
 def test_period_story_deterministic_for_same_seed() -> None:
@@ -941,3 +1005,360 @@ def test_period_story_active_life_chapter_debug_passthrough_is_noop() -> None:
     assert out.debug["active_life_chapter_type"] == "saturn_return"
     assert out.debug["active_life_chapter_phase"] == "first_pass"
     assert out.debug["active_life_chapter_selected_meaning"] == "sözün daha seçilmiş bir ağırlık taşıması"
+
+
+def test_period_story_consumes_semantic_focus_for_aries_3rd_saturn_return() -> None:
+    ctx = _life_chapter_story_context(
+        group="saturn_return",
+        name="aries_3rd_with_south_node_overlap",
+        featured_event=_event(
+            event_id="evt-saturn-return-aries-3",
+            transit_body="Saturn",
+            aspect="conjunction",
+            natal_point="Saturn",
+            chapter_role={"role": "builder"},
+            story_score=0.95,
+            selection_index=0,
+            houses={"transit_in_natal_house": 3, "natal_point_house": 3},
+        ),
+        spine_lines=["growth_integration_line"],
+        primary_domain="communication_learning",
+    )
+
+    out = build_period_story(ctx)
+    merged = f"{out.period_opening} {out.mechanism}".lower()
+
+    assert "asıl omurga" not in out.period_opening.lower()
+    assert any(token in merged for token in ("söz", "konuşma", "cevap", "cümle"))
+    assert out.debug["semantic_focus_consumed"] is True
+    assert out.debug["composer_mode"] == "semantic_focus_guided"
+    assert "generic communication difficulty" in out.debug["suppressed_meanings_applied"]
+
+
+def test_period_story_consumes_semantic_focus_for_cancer_8th_saturn_return() -> None:
+    ctx = _life_chapter_story_context(
+        group="saturn_return",
+        name="cancer_8th_water_emotional",
+        featured_event=_event(
+            event_id="evt-saturn-return-cancer-8",
+            transit_body="Saturn",
+            aspect="conjunction",
+            natal_point="Saturn",
+            chapter_role={"role": "builder"},
+            story_score=0.95,
+            selection_index=0,
+            houses={"transit_in_natal_house": 8, "natal_point_house": 8},
+        ),
+        spine_lines=["relational_line"],
+        primary_domain="emotional_security",
+    )
+
+    out = build_period_story(ctx)
+    merged = f"{out.period_opening} {out.mechanism} {out.growth_edge} {out.what_it_builds}".lower()
+
+    assert any(token in merged for token in ("mahrem", "ortak", "güven", "yük", "paylaşı"))
+    assert "sahiplendiğin" not in out.period_opening.lower()
+    assert out.debug["semantic_focus_consumed"] is True
+    assert out.debug["composer_mode"] == "semantic_focus_guided"
+
+
+def test_period_story_consumes_semantic_focus_for_nodal_direction() -> None:
+    ctx = _life_chapter_story_context(
+        group="nodal",
+        name="nn_aries_sn_libra",
+        featured_event=_event(
+            event_id="evt-nodal-return-aries",
+            transit_body="North Node",
+            aspect="conjunction",
+            natal_point="North Node",
+            chapter_role={"role": "builder"},
+            story_score=0.95,
+            selection_index=0,
+            houses={"transit_in_natal_house": 3, "natal_point_house": 3},
+        ),
+        spine_lines=["primary_identity_line"],
+        primary_domain="identity",
+    )
+
+    out = build_period_story(ctx)
+    merged = f"{out.period_opening} {out.mechanism} {out.growth_edge}".lower()
+
+    assert any(token in merged for token in ("yön", "doğrudan", "ayar", "kendi söz"))
+    assert "ben/biz dengesi" not in merged
+    assert out.debug["semantic_focus_consumed"] is True
+    assert out.debug["composer_mode"] == "semantic_focus_guided"
+    assert "generic self/other balance" in out.debug["suppressed_meanings_applied"]
+
+
+def test_period_story_semantic_focus_fallback_stays_legacy_when_missing() -> None:
+    ctx = PeriodStoryContext(
+        period_core={"featured_events": [_event(event_id="evt_no_semantic_focus")]},
+        chart_snapshot={},
+        natal_promise={},
+    )
+
+    out = build_period_story(ctx)
+
+    assert isinstance(out.period_opening, str) and out.period_opening
+    assert out.debug["semantic_focus_consumed"] is False
+    assert out.debug["composer_mode"] == "legacy_fallback"
+
+
+def test_period_story_generic_guided_semantic_focus_keeps_fallback_density() -> None:
+    ctx = PeriodStoryContext(
+        period_core={
+            "featured_events": [
+                _event(
+                    event_id="evt_chiron_jupiter",
+                    transit_body="Chiron",
+                    aspect="square",
+                    natal_point="Jupiter",
+                    chapter_role={"role": "builder"},
+                    story_score=0.94,
+                    selection_index=0,
+                    houses={"transit_in_natal_house": 3, "natal_point_house": 1},
+                    derived_context={"natal_target": {"name": "Jupiter", "sign": "Capricorn", "house": 1, "dispositor": "Saturn"}},
+                ),
+                _event(
+                    event_id="evt_saturn_dsc",
+                    transit_body="Saturn",
+                    aspect="square",
+                    natal_point="DSC",
+                    chapter_role={"role": "support"},
+                    story_score=0.88,
+                    selection_index=1,
+                    houses={"transit_in_natal_house": 7, "natal_point_house": 7},
+                    derived_context={"angle": {"name": "DSC", "sign": "Cancer", "ruler": "Moon", "ruler_house": 8, "ruler_sign": "Leo"}},
+                ),
+                _event(
+                    event_id="evt_pluto_sn",
+                    transit_body="Pluto",
+                    aspect="sextile",
+                    natal_point="South Node",
+                    chapter_role={"role": "integrator"},
+                    story_score=0.82,
+                    selection_index=2,
+                    houses={"transit_in_natal_house": 11, "natal_point_house": 3},
+                ),
+            ]
+        },
+        chart_snapshot={
+            "bodies": [
+                {"body": "Jupiter", "house": 1, "sign": "Capricorn"},
+                {"body": "Moon", "house": 8, "sign": "Leo"},
+                {"body": "Saturn", "house": 3, "sign": "Aries"},
+            ],
+            "angles": {"DSC": {"point": "DSC", "sign": "Cancer"}},
+            "house_cusps": [{"house": idx, "sign": sign} for idx, sign in enumerate(
+                [
+                    "",
+                    "Capricorn",
+                    "Aquarius",
+                    "Pisces",
+                    "Aries",
+                    "Taurus",
+                    "Gemini",
+                    "Cancer",
+                    "Leo",
+                    "Virgo",
+                    "Libra",
+                    "Scorpio",
+                    "Sagittarius",
+                ]
+            ) if idx],
+        },
+        natal_promise={},
+        canonical_period_spine={
+            "source": "canonical_natal_activation_v1",
+            "target_node_id": "promise_identity_direction",
+            "prefix": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor.",
+            "spine_lines": ["primary_identity_line"],
+            "matched_event_ids": ["evt_chiron_jupiter", "evt_saturn_dsc", "evt_pluto_sn"],
+            "primary_domain": "identity",
+        },
+        semantic_focus_result=PeriodSemanticFocusResult(
+            selected_meaning="reorientation",
+            meaning_family="reorientation",
+            primary_domain="gündelik konuşmalar",
+            secondary_domains=["gündelik konuşmalar", "house_3", "house_1", "house_7"],
+            why_this_meaning=["period_voice_policy provided meaning intent fallback"],
+            suppressed_meanings=["generic_hat_copy"],
+            confidence=0.7,
+            source="period_voice_policy",
+            scene_translation_request={
+                "version": "manifestation_context_v1",
+                "primary_house": 3,
+                "house_axis": "3-1",
+                "target_planet": "Jupiter",
+                "target_planet_house": 1,
+                "angle": "DSC",
+                "life_scene": "gündelik konuşmalar",
+                "context_seed": "Bu tema daha çok gündelik konuşmalar içinden görünür oluyor.",
+                "source": "event_house",
+            },
+            voice_register_hints={"valence_mode": "integration", "intensity_mode": "dense"},
+            debug={"selected_meaning_family": "reorientation"},
+        ),
+    )
+
+    out = build_period_story(ctx)
+    reading = out.period_reading_v1["full_text"].lower()
+
+    assert out.debug["composer_mode"] == "semantic_focus_guided"
+    assert out.debug["composer_plan"]["semantic_mode"] == "guided_fallback"
+    assert len(out.period_reading_v1["full_text"]) >= 350
+    assert "bu dönem dikkatini tek bir hatta topluyor" not in reading
+    assert "bu tema daha çok" not in reading
+    assert "asıl ayrım" not in reading
+    assert "söz istiyor" not in reading
+    assert "gündelik konuşmalar" in reading
+    assert any(token in reading for token in ("kimlik", "sınır", "jüpiter", "ilişki", "ses", "cümle"))
+    assert not re.search(r"\bsende\b.+\bkuruyor\b", out.period_reading_v1["full_text"], flags=re.IGNORECASE)
+    sentences = [item.strip() for item in re.split(r"(?<=[.!?])\s+", out.period_reading_v1["full_text"]) if item.strip()]
+    assert len(sentences) == len({item.lower() for item in sentences})
+    assert all(sentence[:1].upper() == sentence[:1] for sentence in sentences if sentence[:1].isalpha())
+
+
+def test_period_story_generic_guided_semantic_focus_varies_by_context() -> None:
+    first = build_period_story(
+        PeriodStoryContext(
+            period_core={
+                "featured_events": [
+                    _event(
+                        event_id="evt_chiron_jupiter",
+                        transit_body="Chiron",
+                        aspect="square",
+                        natal_point="Jupiter",
+                        chapter_role={"role": "builder"},
+                        story_score=0.94,
+                        selection_index=0,
+                        houses={"transit_in_natal_house": 3, "natal_point_house": 1},
+                        derived_context={"natal_target": {"name": "Jupiter", "sign": "Capricorn", "house": 1}},
+                    ),
+                    _event(
+                        event_id="evt_saturn_dsc",
+                        transit_body="Saturn",
+                        aspect="square",
+                        natal_point="DSC",
+                        chapter_role={"role": "support"},
+                        story_score=0.88,
+                        selection_index=1,
+                        houses={"transit_in_natal_house": 7, "natal_point_house": 7},
+                    ),
+                ]
+            },
+            chart_snapshot={
+                "bodies": [
+                    {"body": "Jupiter", "house": 1, "sign": "Capricorn"},
+                    {"body": "Saturn", "house": 3, "sign": "Aries"},
+                ],
+                "angles": {"DSC": {"point": "DSC", "sign": "Cancer"}},
+            },
+            natal_promise={},
+            canonical_period_spine={
+                "source": "canonical_natal_activation_v1",
+                "target_node_id": "promise_identity_direction",
+                "prefix": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor.",
+                "spine_lines": ["primary_identity_line"],
+                "matched_event_ids": ["evt_chiron_jupiter", "evt_saturn_dsc"],
+                "primary_domain": "identity",
+            },
+            semantic_focus_result=PeriodSemanticFocusResult(
+                selected_meaning="reorientation",
+                meaning_family="reorientation",
+                primary_domain="gündelik konuşmalar",
+                secondary_domains=["gündelik konuşmalar", "house_3", "house_1"],
+                why_this_meaning=["period_voice_policy provided meaning intent fallback"],
+                suppressed_meanings=["generic_hat_copy"],
+                confidence=0.7,
+                source="period_voice_policy",
+                scene_translation_request={
+                    "version": "manifestation_context_v1",
+                    "primary_house": 3,
+                    "life_scene": "gündelik konuşmalar",
+                    "context_seed": "Bu tema daha çok gündelik konuşmalar içinden görünür oluyor.",
+                    "source": "event_house",
+                },
+                voice_register_hints={"valence_mode": "integration", "intensity_mode": "dense"},
+                debug={"selected_meaning_family": "reorientation"},
+            ),
+        )
+    )
+    second = build_period_story(
+        PeriodStoryContext(
+            period_core={
+                "featured_events": [
+                    _event(
+                        event_id="evt_chiron_neptune",
+                        transit_body="Chiron",
+                        aspect="square",
+                        natal_point="Neptune",
+                        chapter_role={"role": "release"},
+                        story_score=0.93,
+                        selection_index=0,
+                        houses={"transit_in_natal_house": 4, "natal_point_house": 1},
+                    ),
+                    _event(
+                        event_id="evt_sun_asc",
+                        transit_body="Sun",
+                        aspect="trine",
+                        natal_point="ASC",
+                        chapter_role={"role": "support"},
+                        story_score=0.82,
+                        selection_index=1,
+                        houses={"transit_in_natal_house": 4, "natal_point_house": 1},
+                    ),
+                ]
+            },
+            chart_snapshot={
+                "bodies": [
+                    {"body": "Neptune", "house": 1, "sign": "Capricorn"},
+                    {"body": "Saturn", "house": 3, "sign": "Aries"},
+                ],
+                "angles": {"ASC": {"point": "ASC", "sign": "Capricorn"}},
+            },
+            natal_promise={},
+            canonical_period_spine={
+                "source": "canonical_natal_activation_v1",
+                "target_node_id": "promise_identity_direction",
+                "prefix": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor.",
+                "spine_lines": ["primary_identity_line"],
+                "matched_event_ids": ["evt_chiron_neptune", "evt_sun_asc"],
+                "primary_domain": "identity",
+            },
+            semantic_focus_result=PeriodSemanticFocusResult(
+                selected_meaning="integration_invitation",
+                meaning_family="integration_invitation",
+                primary_domain="sana ait hissettiren alan",
+                secondary_domains=["sana ait hissettiren alan", "house_4", "house_1"],
+                why_this_meaning=["period_voice_policy provided meaning intent fallback"],
+                suppressed_meanings=["generic_hat_copy"],
+                confidence=0.7,
+                source="period_voice_policy",
+                scene_translation_request={
+                    "version": "manifestation_context_v1",
+                    "primary_house": 4,
+                    "life_scene": "sana ait hissettiren alan",
+                    "context_seed": "Bu tema daha çok sana ait hissettiren alan içinden görünür oluyor.",
+                    "source": "event_house",
+                },
+                voice_register_hints={"valence_mode": "release", "intensity_mode": "dense"},
+                debug={"selected_meaning_family": "integration_invitation"},
+            ),
+        )
+    )
+
+    first_text = first.period_reading_v1["full_text"].lower()
+    second_text = second.period_reading_v1["full_text"].lower()
+
+    assert first_text != second_text
+    assert "bu dönem dikkatini tek bir hatta topluyor" not in first_text
+    assert "bu dönem dikkatini tek bir hatta topluyor" not in second_text
+    assert "bu tema daha çok" not in first_text
+    assert "bu tema daha çok" not in second_text
+    assert "asıl ayrım" not in first_text
+    assert "asıl ayrım" not in second_text
+    assert "gündelik konuşmalar" in first_text
+    assert "sana ait hissettiren alan" in second_text
+    assert len(first.period_reading_v1["full_text"]) >= 350
+    assert len(second.period_reading_v1["full_text"]) >= 350

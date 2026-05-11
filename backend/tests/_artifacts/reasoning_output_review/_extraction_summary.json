@@ -1,0 +1,26 @@
+{
+  "natal_public_istanbul_1996_12_28.json": {
+    "status": "ok",
+    "path": "backend/tests/_artifacts/reasoning_output_review/natal_public_istanbul_1996_12_28.json"
+  },
+  "period_aries_3rd_saturn_return.json": {
+    "status": "ok",
+    "path": "backend/tests/_artifacts/reasoning_output_review/period_aries_3rd_saturn_return.json"
+  },
+  "period_cancer_8th_saturn_return.json": {
+    "status": "ok",
+    "path": "backend/tests/_artifacts/reasoning_output_review/period_cancer_8th_saturn_return.json"
+  },
+  "period_structural_t_square.json": {
+    "status": "ok",
+    "path": "backend/tests/_artifacts/reasoning_output_review/period_structural_t_square.json"
+  },
+  "period_nodal_activation.json": {
+    "status": "ok",
+    "path": "backend/tests/_artifacts/reasoning_output_review/period_nodal_activation.json"
+  },
+  "daily_synthesis_sample.json": {
+    "status": "ok",
+    "path": "backend/tests/_artifacts/reasoning_output_review/daily_synthesis_sample.json"
+  }
+}

@@ -3,15 +3,21 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 import hashlib
+import re
 
 from app.narrative.voice_guardrails_tr import (
     find_forbidden_public_copy_issues,
+    find_organic_period_copy_issues,
     find_technical_leakage,
 )
 from app.transit.narrative import phrase_lib_tr
 from app.transit.narrative.canonical_natal_activation import (
     build_period_prefix_from_period_spine,
     select_period_theme_from_spine,
+)
+from app.transit.narrative.period_semantic_focus import (
+    PeriodSemanticFocusResult,
+    resolve_period_semantic_focus,
 )
 from app.transit.narrative.period_voice_policy import build_period_voice_policy
 from app.transit.narrative import text_quality_tr
@@ -352,6 +358,7 @@ class PeriodStoryContext:
     natal_promise: Dict[str, Any]
     canonical_period_spine: Dict[str, Any] | None = None
     active_life_chapter: Mapping[str, Any] | None = None
+    semantic_focus_result: PeriodSemanticFocusResult | None = None
     locale: str = "tr"
     enable_fun: bool = True
     recent_rhetorical_frames: Sequence[str] = ()
@@ -360,6 +367,7 @@ class PeriodStoryContext:
 
 @dataclass(frozen=True)
 class PeriodNarrative:
+    period_reading_v1: Dict[str, Any]
     period_opening: str
     big_picture: str
     mechanism: str
@@ -469,66 +477,108 @@ def build_period_story(ctx: PeriodStoryContext) -> PeriodNarrative:
     root_causes = ctx.period_core.get("_debug_root_causes") if isinstance(ctx.period_core.get("_debug_root_causes"), list) else []
     track_id = infer_story_track_id(spine, root_causes)
     track_story = build_story_track_copy(track_id, spine)
+    policy_events = _period_voice_policy_events(ctx.canonical_period_spine, spine, supports)
+    semantic_focus_result = _ensure_semantic_focus_result(
+        ctx,
+        matched_events=policy_events,
+        chapter_role=_chapter_role_name(spine),
+    )
+    semantic_focus_debug = (
+        semantic_focus_result.to_debug_dict(include_evidence=False)
+        if isinstance(semantic_focus_result, PeriodSemanticFocusResult)
+        else {}
+    )
     period_voice_policy = build_period_voice_policy(
         canonical_period_spine=ctx.canonical_period_spine,
-        matched_events=_period_voice_policy_events(ctx.canonical_period_spine, spine, supports),
+        matched_events=policy_events,
         chapter_role=_chapter_role_name(spine),
         canonical_backing_node_ids=_canonical_backing_node_ids(ctx.canonical_period_spine),
         recent_rhetorical_frames=ctx.recent_rhetorical_frames,
         recent_valence_modes=ctx.recent_valence_modes,
+        semantic_focus_result=semantic_focus_result,
     )
-    period_voice_copy = _render_period_voice_policy_slots(period_voice_policy)
+    period_voice_copy = _apply_semantic_focus_preference(
+        _render_period_voice_policy_slots(period_voice_policy),
+        semantic_focus_result,
+    )
+    semantic_focus_guidance = _compose_semantic_focus_guidance(
+        ctx,
+        semantic_focus_result=semantic_focus_result,
+    )
 
     opening_raw = track_story.get("period_opening") or _build_period_opening(ctx, spine, supports)
     policy_opening = _render_policy_opening(period_voice_policy)
-    if policy_opening:
-        opening_raw = policy_opening
-    wrapped_opening = _with_chapter_role_opening(opening_raw, spine)
+    if semantic_focus_guidance.get("period_opening"):
+        opening_raw = str(semantic_focus_guidance.get("period_opening") or "").strip()
+        wrapped_opening = opening_raw
+    else:
+        if policy_opening:
+            opening_raw = policy_opening
+        wrapped_opening = _with_chapter_role_opening(opening_raw, spine)
     wrapped_opening = _remove_period_opening_tic(wrapped_opening)
     canonical_prefix = _build_canonical_promise_prefix(ctx.canonical_period_spine)
     promise_prefix = canonical_prefix or _build_promise_prefix(ctx.natal_promise, spine)
-    opening = f"{promise_prefix} {wrapped_opening}".strip() if promise_prefix else wrapped_opening
     big_picture = (
-        str(period_voice_copy.get("higher_meaning") or "").strip()
+        str(semantic_focus_guidance.get("big_picture") or "").strip()
+        or str(period_voice_copy.get("higher_meaning") or "").strip()
         or track_story.get("big_picture")
         or _build_big_picture(ctx, spine, supports)
     )
     mechanism = (
-        str(period_voice_copy.get("psychological_process") or "").strip()
+        str(semantic_focus_guidance.get("mechanism") or "").strip()
+        or str(period_voice_copy.get("psychological_process") or "").strip()
         or _build_chain_paragraph(ctx, spine, supports)
     )
     growth_edge = (
-        str(period_voice_copy.get("growth_edge") or "").strip()
+        str(semantic_focus_guidance.get("growth_edge") or "").strip()
+        or str(period_voice_copy.get("growth_edge") or "").strip()
         or track_story.get("growth_edge")
         or _build_growth_edge(ctx, spine, supports)
     )
     life_expression = (
+        str(semantic_focus_guidance.get("relational_or_life_expression") or "").strip()
+        or
         str(period_voice_copy.get("reason_line") or "").strip()
         or track_story.get("relational_or_life_expression")
         or _build_life_expression(ctx, spine, supports)
     )
     what_it_builds = (
+        str(semantic_focus_guidance.get("what_it_builds") or "").strip()
+        or
         str(period_voice_copy.get("what_it_builds") or "").strip()
         or track_story.get("what_it_builds")
         or _build_what_it_builds(ctx, spine, supports)
     )
-    upper = what_it_builds
+    composer_plan = _compose_period_plan(
+        ctx,
+        semantic_focus_result=semantic_focus_result,
+        semantic_focus_guidance=semantic_focus_guidance,
+        promise_prefix=promise_prefix or "",
+        opening_seed=wrapped_opening,
+        big_picture_seed=big_picture,
+        mechanism_seed=mechanism,
+        growth_edge_seed=growth_edge,
+        life_expression_seed=life_expression,
+        what_it_builds_seed=what_it_builds,
+    )
+    period_reading_v1 = _build_period_reading_v1(composer_plan)
+    legacy_fields = _legacy_fields_from_composer_plan(composer_plan)
+    upper = legacy_fields["upper_meaning"]
 
     polished_fields = {
-        "period_opening": _final_polish_tr(opening),
-        "big_picture": _final_polish_tr(big_picture),
-        "mechanism": _final_polish_tr(mechanism),
-        "growth_edge": _final_polish_tr(growth_edge),
-        "relational_or_life_expression": _final_polish_tr(life_expression),
-        "what_it_builds": _final_polish_tr(what_it_builds),
-        "upper_meaning": _final_polish_tr(upper),
+        key: _final_polish_tr(value)
+        for key, value in legacy_fields.items()
+        if key != "core_story"
     }
+    polished_core_story = _final_polish_tr(str(period_reading_v1.get("full_text") or legacy_fields.get("core_story") or ""))
     render_guardrails = {
         name: _render_guardrail_issues(text)
         for name, text in polished_fields.items()
     }
+    organic_guardrails = _render_period_reading_guardrails(period_reading_v1)
 
     return PeriodNarrative(
+        period_reading_v1=period_reading_v1,
         period_opening=polished_fields["period_opening"],
         big_picture=polished_fields["big_picture"],
         mechanism=polished_fields["mechanism"],
@@ -555,6 +605,18 @@ def build_period_story(ctx: PeriodStoryContext) -> PeriodNarrative:
             "period_voice_policy_match_level": str(((period_voice_policy.get("debug") or {}) if isinstance(period_voice_policy.get("debug"), Mapping) else {}).get("match_level") or ""),
             "period_voice_policy_manifestation_context": dict(period_voice_policy.get("manifestation_context") or {}) if isinstance(period_voice_policy.get("manifestation_context"), Mapping) else {},
             "period_voice_policy": dict(period_voice_policy.get("debug") or {}) if isinstance(period_voice_policy.get("debug"), Mapping) else {},
+            "semantic_focus": semantic_focus_debug,
+            "semantic_focus_consumed": bool(semantic_focus_guidance.get("semantic_focus_consumed")),
+            "semantic_focus_used_fields": list(semantic_focus_guidance.get("semantic_focus_used_fields") or []),
+            "chapter_handoff_used_fields": list(semantic_focus_guidance.get("chapter_handoff_used_fields") or []),
+            "suppressed_meanings_applied": list(semantic_focus_guidance.get("suppressed_meanings_applied") or []),
+            "composer_mode": str(semantic_focus_guidance.get("composer_mode") or "legacy_fallback"),
+            "chapter_priority": dict((ctx.period_core or {}).get("chapter_priority") or {})
+            if isinstance((ctx.period_core or {}).get("chapter_priority"), Mapping)
+            else {},
+            "composer_plan": dict(composer_plan),
+            "period_reading_v1_guardrails": organic_guardrails,
+            "period_reading_v1_full_text": polished_core_story,
             "active_life_chapter_present": isinstance(ctx.active_life_chapter, Mapping) and bool(ctx.active_life_chapter),
             "active_life_chapter_type": str((ctx.active_life_chapter or {}).get("chapter_type") or "") if isinstance(ctx.active_life_chapter, Mapping) else "",
             "active_life_chapter_phase": str((ctx.active_life_chapter or {}).get("phase") or "") if isinstance(ctx.active_life_chapter, Mapping) else "",
@@ -599,6 +661,1100 @@ def _render_period_voice_policy_slots(period_voice_policy: Mapping[str, Any] | N
             else ""
         ),
     }
+
+
+def _apply_semantic_focus_preference(
+    period_voice_copy: Mapping[str, Any] | None,
+    semantic_focus_result: PeriodSemanticFocusResult | None,
+) -> Dict[str, str]:
+    out = dict(period_voice_copy or {})
+    if not isinstance(semantic_focus_result, PeriodSemanticFocusResult):
+        return out
+    if semantic_focus_result.source == "unknown" or semantic_focus_result.confidence < 0.55:
+        return out
+
+    scene = semantic_focus_result.scene_translation_request or {}
+    raw_meaning = str(semantic_focus_result.debug.get("raw_selected_meaning_text") or "").strip()
+    if not str(out.get("higher_meaning") or "").strip() and raw_meaning:
+        out["higher_meaning"] = raw_meaning
+
+    if not str(out.get("psychological_process") or "").strip():
+        human_scene = str(scene.get("human_scene") or "").strip()
+        core_contrast = str(scene.get("core_contrast") or "").strip()
+        if human_scene and core_contrast:
+            out["psychological_process"] = f"{human_scene} içinde {core_contrast} daha görünür hale geliyor."
+        elif human_scene:
+            out["psychological_process"] = human_scene
+
+    if not str(out.get("growth_edge") or "").strip():
+        contrast = str(scene.get("shared_vs_private_contrast") or scene.get("core_contrast") or "").strip()
+        if contrast:
+            out["growth_edge"] = contrast
+
+    if not str(out.get("reason_line") or "").strip():
+        anchor = str(scene.get("chart_specific_anchor") or "").strip()
+        if anchor:
+            out["reason_line"] = anchor
+    return out
+
+
+def _ensure_semantic_focus_result(
+    ctx: PeriodStoryContext,
+    *,
+    matched_events: Sequence[Mapping[str, Any]],
+    chapter_role: str,
+) -> PeriodSemanticFocusResult | None:
+    if isinstance(ctx.semantic_focus_result, PeriodSemanticFocusResult):
+        return ctx.semantic_focus_result
+    if not (isinstance(ctx.active_life_chapter, Mapping) and bool(ctx.active_life_chapter)):
+        return None
+
+    policy_seed = build_period_voice_policy(
+        canonical_period_spine=ctx.canonical_period_spine,
+        matched_events=matched_events,
+        chapter_role=chapter_role,
+        canonical_backing_node_ids=_canonical_backing_node_ids(ctx.canonical_period_spine),
+        recent_rhetorical_frames=ctx.recent_rhetorical_frames,
+        recent_valence_modes=ctx.recent_valence_modes,
+        semantic_focus_result=None,
+    )
+    return resolve_period_semantic_focus(
+        canonical_period_spine=ctx.canonical_period_spine,
+        active_life_chapter=ctx.active_life_chapter,
+        period_voice_policy=policy_seed,
+        manifestation_context=policy_seed.get("manifestation_context")
+        if isinstance(policy_seed.get("manifestation_context"), Mapping)
+        else None,
+        selected_events=matched_events,
+        period_core_seed=ctx.period_core,
+        canonical_natal_state=ctx.chart_snapshot,
+        debug=True,
+    )
+
+
+def _compose_semantic_focus_guidance(
+    ctx: PeriodStoryContext,
+    *,
+    semantic_focus_result: PeriodSemanticFocusResult | None,
+) -> Dict[str, Any]:
+    payload: Dict[str, Any] = {
+        "semantic_focus_consumed": False,
+        "semantic_focus_used_fields": [],
+        "chapter_handoff_used_fields": [],
+        "suppressed_meanings_applied": [],
+        "composer_mode": "legacy_fallback",
+    }
+    if not isinstance(semantic_focus_result, PeriodSemanticFocusResult):
+        return payload
+    if semantic_focus_result.source == "unknown" or semantic_focus_result.confidence < 0.55:
+        return payload
+
+    chapter = dict(ctx.active_life_chapter or {}) if isinstance(ctx.active_life_chapter, Mapping) else {}
+    semantic_focus = dict(chapter.get("semantic_focus") or {}) if isinstance(chapter.get("semantic_focus"), Mapping) else {}
+    handoff = dict(chapter.get("renderer_handoff") or {}) if isinstance(chapter.get("renderer_handoff"), Mapping) else {}
+    scene = dict(semantic_focus_result.scene_translation_request or {})
+    source = str(semantic_focus_result.source or "").strip()
+    raw_meaning_text = str(
+        semantic_focus_result.debug.get("raw_selected_meaning_text")
+        or chapter.get("selected_meaning")
+        or ""
+    ).strip()
+    meaning_key = str(semantic_focus_result.selected_meaning or "").strip()
+    meaning_family = str(semantic_focus_result.meaning_family or semantic_focus_result.debug.get("selected_meaning_family") or "").strip()
+    human_scene = str(handoff.get("human_scene") or scene.get("human_scene") or "").strip()
+    core_contrast = str(handoff.get("core_contrast") or scene.get("core_contrast") or "").strip()
+    chart_anchor = str(handoff.get("chart_specific_anchor") or scene.get("chart_specific_anchor") or "").strip()
+    suppressed = _dedupe_tokens(
+        list(semantic_focus_result.suppressed_meanings)
+        + list(semantic_focus.get("not_this") or [])
+        + [str(item.get("reading") or "").strip() for item in (chapter.get("suppressed_surface_readings") or []) if isinstance(item, Mapping)]
+        + [str(item.get("reading") or "").strip() for item in (chapter.get("suppressed_readings") or []) if isinstance(item, Mapping)]
+    )
+
+    fields = _compose_guided_fields(
+        source=source,
+        meaning_key=meaning_key,
+        meaning_family=meaning_family,
+        raw_meaning_text=raw_meaning_text,
+        human_scene=human_scene,
+        core_contrast=core_contrast,
+        chart_anchor=chart_anchor,
+    )
+    payload["semantic_focus_consumed"] = True
+    payload["composer_mode"] = "semantic_focus_guided"
+    payload["suppressed_meanings_applied"] = suppressed
+    payload["semantic_focus_used_fields"] = _dedupe_tokens(
+        [
+            "selected_meaning" if meaning_key else "",
+            "meaning_family" if meaning_family else "",
+            "scene_translation_request" if scene else "",
+            "suppressed_meanings" if suppressed else "",
+            "raw_selected_meaning_text" if raw_meaning_text else "",
+        ]
+    )
+    payload["chapter_handoff_used_fields"] = _dedupe_tokens(
+        [
+            "renderer_handoff.human_scene" if human_scene else "",
+            "renderer_handoff.core_contrast" if core_contrast else "",
+            "renderer_handoff.chart_specific_anchor" if chart_anchor else "",
+            "selected_meaning" if raw_meaning_text else "",
+        ]
+    )
+    if any(str(fields.get(key) or "").strip() for key in ("period_opening", "mechanism", "growth_edge", "what_it_builds", "relational_or_life_expression", "big_picture")):
+        payload.update(fields)
+    return payload
+
+
+def _compose_guided_fields(
+    *,
+    source: str,
+    meaning_key: str,
+    meaning_family: str,
+    raw_meaning_text: str,
+    human_scene: str,
+    core_contrast: str,
+    chart_anchor: str,
+) -> Dict[str, str]:
+    if source != "life_chapter":
+        return {}
+    if meaning_key == "speech_authority" or "speech_authority" in meaning_family:
+        return {
+            "period_opening": (
+                "Kısa mesajlarda, yarım kalmış konuşmalarda ve hızlı cevap verme anlarında "
+                "sözünün ağırlığı değişiyor. Hızlı tepkiyle gerçekten nerede durduğunu söylemek artık aynı şey değil."
+            ),
+            "big_picture": raw_meaning_text,
+            "mechanism": (
+                "Bu en çok kısa mesajlarda, yarım kalmış konuşmalarda ve hızlı cevap verme anlarında görünür. "
+                "Eskiden refleksle çıkan söz, şimdi daha seçilmiş bir ağırlık ve daha sahipli bir duruş istiyor."
+            ),
+            "growth_edge": (
+                "İlk cevabı son söz gibi kullanmak yerine, ne söyleyeceğini ve hangi cümlenin gerçekten sana ait olduğunu seçebilmek."
+            ),
+            "what_it_builds": "Daha seçilmiş, daha sahipli ve daha sorumlu bir konuşma biçimi.",
+            "relational_or_life_expression": (
+                "Günlük konuşmalarda ve küçük cevaplarda bile hızın yerini daha bilinçli bir ifade almaya başlar."
+            ),
+        }
+    if meaning_key == "shared_emotional_territory" or "shared_trust" in meaning_family:
+        return {
+            "period_opening": (
+                "Mahrem konuşmalarda, birlikte taşınan yüklerde ve sessiz duygusal borçlarda "
+                "neyin ortak, neyin tek başına taşındığı daha belirgin oluyor."
+            ),
+            "big_picture": raw_meaning_text,
+            "mechanism": (
+                "Bu en çok mahrem konuşmalar, birlikte taşınan yükler ve sessiz sorumluluk anlarında görünür. "
+                "İçeride tek başına tutulan ağırlık, şimdi güvenin ve paylaşılmış yükün adını istemeye başlıyor."
+            ),
+            "growth_edge": (
+                "Her şeyi içeride tek başına taşımak yerine, hangi yükün paylaşılacağını ve hangi sınırın sana ait olduğunu söyleyebilmek."
+            ),
+            "what_it_builds": "Paylaşılan güveni ve özel ağırlığı aynı cümlede tutabilen daha dayanıklı bir yakınlık.",
+            "relational_or_life_expression": (
+                "Yakınlık burada sadece açılmak değil; neyin birlikte taşındığını, neyin sana ait kaldığını söyleyebilmek."
+            ),
+        }
+    if meaning_key == "directional_self_definition" or "nodal_direction" in meaning_family:
+        return {
+            "period_opening": (
+                "Yan yana dururken kendi sözünü nasıl ayarladığın değişiyor. "
+                "İlişkiyi korumak için kendini kısmakla yönünü daha doğrudan söylemek artık aynı yerde durmuyor."
+            ),
+            "big_picture": raw_meaning_text,
+            "mechanism": (
+                "Bu en çok yan yana durduğun anlarda, kısa konuşmalarda ve yön seçimi gereken yerlerde görünür. "
+                "Eskiden başkasına göre ayar veren refleks, şimdi daha doğrudan bir yön duygusu istiyor."
+            ),
+            "growth_edge": (
+                "Onayı korumak için yönünü yumuşatmak yerine, ilişkiyi silmeden daha doğrudan konuşabilmek."
+            ),
+            "what_it_builds": "Onay arayışına çökmeyen daha doğrudan bir yön duygusu.",
+            "relational_or_life_expression": (
+                "Küçük konuşmalarda bile kendi yönünü cümlenin içinde tutmak daha mümkün hale gelir."
+            ),
+        }
+
+    opening_parts = []
+    if human_scene:
+        opening_parts.append(f"{_capitalize_first(human_scene)} daha görünür hale geliyor.")
+    if core_contrast:
+        opening_parts.append(f"{_capitalize_first(core_contrast)} artık aynı cümlede durmuyor.")
+    opening = " ".join(opening_parts).strip()
+    mechanism = ""
+    if human_scene and core_contrast:
+        mechanism = f"Bu en çok {human_scene} içinde görünür. Eskiden sessiz kalan fark, şimdi {core_contrast} diye adını istemeye başlıyor."
+    elif chart_anchor:
+        mechanism = f"Bu en çok gündelik hayatın küçük anlarında görünür. Dışarıdan küçük duran şey, içeride {chart_anchor} meselesine bağlanır."
+    growth = core_contrast or "Neyi otomatik yaptığını fark edip daha sahipli bir seçim yapabilmek."
+    builds = chart_anchor or raw_meaning_text or "Daha sahipli bir yön duygusu."
+    life = human_scene or ""
+    return {
+        "period_opening": opening,
+        "big_picture": raw_meaning_text,
+        "mechanism": mechanism,
+        "growth_edge": growth,
+        "what_it_builds": builds,
+        "relational_or_life_expression": life,
+    }
+
+
+def _compose_period_plan(
+    ctx: PeriodStoryContext,
+    *,
+    semantic_focus_result: PeriodSemanticFocusResult | None,
+    semantic_focus_guidance: Mapping[str, Any],
+    promise_prefix: str,
+    opening_seed: str,
+    big_picture_seed: str,
+    mechanism_seed: str,
+    growth_edge_seed: str,
+    life_expression_seed: str,
+    what_it_builds_seed: str,
+) -> Dict[str, str]:
+    if isinstance(semantic_focus_result, PeriodSemanticFocusResult) and semantic_focus_guidance.get("semantic_focus_consumed"):
+        guided_plan = _guided_composer_plan(
+            ctx=ctx,
+            semantic_focus_result=semantic_focus_result,
+            promise_prefix=promise_prefix,
+            opening_seed=opening_seed,
+            big_picture_seed=big_picture_seed,
+            mechanism_seed=mechanism_seed,
+            growth_edge_seed=growth_edge_seed,
+            life_expression_seed=life_expression_seed,
+            what_it_builds_seed=what_it_builds_seed,
+        )
+        if guided_plan:
+            return guided_plan
+
+    return _fallback_composer_plan(
+        promise_prefix=promise_prefix,
+        opening_seed=opening_seed,
+        big_picture_seed=big_picture_seed,
+        mechanism_seed=mechanism_seed,
+        growth_edge_seed=growth_edge_seed,
+        life_expression_seed=life_expression_seed,
+        what_it_builds_seed=what_it_builds_seed,
+    )
+
+
+def _guided_composer_plan(
+    *,
+    ctx: PeriodStoryContext,
+    semantic_focus_result: PeriodSemanticFocusResult,
+    promise_prefix: str,
+    opening_seed: str,
+    big_picture_seed: str,
+    mechanism_seed: str,
+    growth_edge_seed: str,
+    life_expression_seed: str,
+    what_it_builds_seed: str,
+) -> Dict[str, str]:
+    chapter = dict(ctx.active_life_chapter or {}) if isinstance(ctx.active_life_chapter, Mapping) else {}
+    handoff = dict(chapter.get("renderer_handoff") or {}) if isinstance(chapter.get("renderer_handoff"), Mapping) else {}
+    scene = dict(semantic_focus_result.scene_translation_request or {})
+    meaning_key = str(semantic_focus_result.selected_meaning or "").strip()
+    meaning_family = str(
+        semantic_focus_result.meaning_family
+        or semantic_focus_result.debug.get("selected_meaning_family")
+        or ""
+    ).strip()
+    raw_meaning_text = str(
+        semantic_focus_result.debug.get("raw_selected_meaning_text")
+        or chapter.get("selected_meaning")
+        or ""
+    ).strip()
+    human_scene = str(handoff.get("human_scene") or scene.get("human_scene") or "").strip()
+    core_contrast = str(handoff.get("core_contrast") or scene.get("core_contrast") or "").strip()
+    chart_anchor = str(handoff.get("chart_specific_anchor") or scene.get("chart_specific_anchor") or "").strip()
+    source = str(semantic_focus_result.source or "").strip()
+
+    if source == "life_chapter" and (meaning_key == "speech_authority" or "speech_authority" in meaning_family):
+        return {
+            "hook": "Kısa mesajlarda, yarım kalmış konuşmalarda ve hızlı cevap verme anlarında sözünün ağırlığı değişiyor.",
+            "scene_anchor": "",
+            "core_contrast": "Eskiden refleksle çıkan cümle seni hemen konumlandırıyor gibi gelebilirdi.",
+            "mechanism": "Şimdi ilk tepkiyi son söz yapmak yerine, hangi cümlenin gerçekten sana ait olduğunu seçiyorsun.",
+            "growth_edge": "İlk cevabı son söz gibi kullanmak yerine, ne söyleyeceğini ve hangi cümlenin gerçekten sana ait olduğunu seçebilmek.",
+            "what_it_builds": "Daha sahipli ve daha sorumlu bir konuşma biçimi.",
+            "closer": "Bu dönem sana daha çok konuşmayı değil, sözünü daha sahipli kurmayı öğretiyor.",
+            "legacy_prefix": promise_prefix,
+            "semantic_mode": "guided",
+        }
+    if source == "life_chapter" and (meaning_key == "shared_emotional_territory" or "shared_trust" in meaning_family):
+        return {
+            "hook": "Mahrem konuşmalarda ve birlikte taşınan yüklerde neyin ortak, neyin tek başına kaldığı daha görünür oluyor.",
+            "scene_anchor": "",
+            "core_contrast": "Bazı şeyleri içeride tutmak seni güvende hissettirmiş olabilir.",
+            "mechanism": "Ama güvenin sadece susarak değil, neyi paylaşacağını ve hangi sınırın sana ait olduğunu söyleyerek de kurulabileceğini görüyorsun.",
+            "growth_edge": "Her şeyi içeride tek başına taşımak yerine, hangi yükün paylaşılacağını ve hangi sınırın sana ait olduğunu söyleyebilmek.",
+            "what_it_builds": "Paylaşılan güveni ve özel ağırlığı aynı cümlede tutabilen daha dayanıklı bir yakınlık.",
+            "closer": "Bu sana hem paylaşılanı taşıyan hem özel alanı koruyan daha dayanıklı bir yakınlık kurduruyor.",
+            "legacy_prefix": promise_prefix,
+            "semantic_mode": "guided",
+        }
+    if source == "life_chapter" and (meaning_key == "directional_self_definition" or "nodal_direction" in meaning_family):
+        return {
+            "hook": "Yan yana dururken kendi sözünü ne kadar ayarladığını daha net fark ediyorsun.",
+            "scene_anchor": "",
+            "core_contrast": "İlişkiyi korumak için kendini kısmana gerek kalmadan, yönünü daha açık söylemeyi öğreniyorsun.",
+            "mechanism": "Bu kopmak değil; onayın içinde erimeden kendi çizgini de masada tutmak.",
+            "growth_edge": "Onayı korumak için yönünü yumuşatmak yerine, ilişkiyi silmeden daha doğrudan konuşabilmek.",
+            "what_it_builds": "Onay arayışına çökmeyen daha doğrudan bir yön duygusu.",
+            "closer": "Bu dönem sende onay arayışına çökmeyen daha doğrudan bir yön duygusu kuruyor.",
+            "legacy_prefix": promise_prefix,
+            "semantic_mode": "guided",
+        }
+
+    return _semantic_enriched_fallback_plan(
+        semantic_focus_result=semantic_focus_result,
+        promise_prefix=promise_prefix,
+        opening_seed=opening_seed,
+        big_picture_seed=big_picture_seed,
+        mechanism_seed=mechanism_seed,
+        growth_edge_seed=growth_edge_seed,
+        life_expression_seed=life_expression_seed,
+        what_it_builds_seed=what_it_builds_seed,
+        featured_events=[
+            event
+            for event in ((ctx.period_core or {}).get("featured_events") or [])
+            if isinstance(event, Mapping)
+        ],
+        human_scene=human_scene,
+        core_contrast=core_contrast,
+        chart_anchor=chart_anchor,
+        raw_meaning_text=raw_meaning_text,
+    )
+
+
+_FALLBACK_SCAFFOLD_PHRASES: tuple[str, ...] = (
+    "Burada daha yavaş ama daha kalıcı bir çizgi oluşuyor",
+    "Bu dönem hayatının bir alanı daha görünür hale geliyor",
+    # Softened variant emitted by _soften_organic_fallback_text after the
+    # "Bu dönem" prefix is stripped — still scaffold, still abstract.
+    "Hayatının bir alanı daha görünür hale geliyor",
+    "İlk bakışta görünen şey tek mesele değil",
+    "Sende zaten çalışan birkaç ayrı taraf var",
+    "Bu tema küçük cümlelerin ağırlığı içinden büyüyor",
+    "Bu konu boşuna buradan açılmıyor",
+    "küçük cümleler bile alttaki daha büyük meseleyi görünür kılabilir",
+    # Wave-2 additions: "onlar" without referent + interchangeable closer.
+    "Bu dönem onlar birbirini daha çok duyuyor",
+    "Daha esnek ama dağılmayan bir yön duygusu kuruyorsun",
+)
+
+
+def _strip_fallback_scaffold_sentences(text: str) -> str:
+    """Drop generic non-LifeChapter scaffold sentences from fallback prose.
+
+    Targets short, interchangeable sentences that recur across cases without
+    carrying chart-specific signal. Operates per-sentence so we never mangle
+    well-formed surrounding prose.
+    """
+    if not text:
+        return ""
+    sentences = _split_sentences(text)
+    kept: list[str] = []
+    for sentence in sentences:
+        probe = sentence.lower()
+        if any(phrase.lower() in probe for phrase in _FALLBACK_SCAFFOLD_PHRASES):
+            continue
+        kept.append(sentence)
+    return " ".join(kept).strip()
+
+
+# House-anchored opening scenes for non-LifeChapter fallback.
+# Used to anchor the opening on the natal-side house (or a primary identity-axis
+# secondary domain) instead of a transit-side surface scene.
+_FALLBACK_HOUSE_OPENINGS: dict[int, str] = {
+    1: "Kimliğinin ve duruşunun çizgisi bu dönem daha fazla görünür oluyor.",
+    2: "Değer gördüğün ve özdeğer kurduğun alan bu dönem daha fazla görünür oluyor.",
+    3: "Yakın çevrendeki ses ve gündelik konuşmaların ağırlığı bu dönem daha fazla görünür oluyor.",
+    4: (
+        "Sana ait hissettiren alan bu dönem daha fazla görünür oluyor. "
+        "Ev, iç güvenlik ya da yalnız kaldığında kurduğun düzen sadece arka plan gibi kalmıyor; "
+        "kimliğini ve sınırını da etkiliyor."
+    ),
+    5: "Kendini yaratıcı biçimde gösterdiğin alan bu dönem daha fazla görünür oluyor.",
+    6: "Günlük ritmin ve sürdürülebilirliğin bu dönem daha fazla görünür oluyor.",
+    7: "İlişkilerde kurduğun denge ve karşılıklı alan bu dönem daha fazla görünür oluyor.",
+    8: "Derin bağ ve ortak alanlardaki paylaşım bu dönem daha fazla görünür oluyor.",
+    9: "Hayata verdiğin anlam ve büyük resmin bu dönem daha fazla görünür oluyor.",
+    10: "Dış dünyadaki rolün ve görünür duruşun bu dönem daha fazla görünür oluyor.",
+    11: "Geleceğe doğru kurduğun çevre ve ait olduğun topluluklar bu dönem daha fazla görünür oluyor.",
+    12: "İç dünyana çekildiğin alan ve çözülüşün bu dönem daha fazla görünür oluyor.",
+}
+
+_IDENTITY_AXIS_HOUSES = (1, 4, 7, 10)
+
+
+def _resolve_primary_anchor_house(
+    *,
+    scene_request: Mapping[str, Any],
+    secondary_domains: Sequence[Any],
+    featured_events: Sequence[Mapping[str, Any]],
+) -> int | None:
+    """Pick a natal-side house to anchor the fallback opening on.
+
+    Order of preference:
+    1. ``house_4`` if it appears in ``secondary_domains`` — inner-foundation
+       anchor consistently outperforms the visible-identity anchor in
+       fallback prose (the visible axis can ride along inside the same
+       sentence). Mirrors the manifestation_context_v1 "sana ait hissettiren
+       alan" framing.
+    2. ``scene_request.target_planet_house`` — natal point's house.
+    3. Other identity-axis houses (1, 7, 10) in ``secondary_domains``.
+    4. ``natal_point_house`` of the strongest featured event.
+    """
+    secondary_houses: list[int] = []
+    for entry in secondary_domains or ():
+        token = str(entry or "").strip().lower()
+        if not token.startswith("house_"):
+            continue
+        try:
+            house_num = int(token.split("_", 1)[1])
+        except (ValueError, IndexError):
+            continue
+        if 1 <= house_num <= 12:
+            secondary_houses.append(house_num)
+
+    if 4 in secondary_houses:
+        return 4
+
+    candidate = scene_request.get("target_planet_house") if isinstance(scene_request, Mapping) else None
+    if isinstance(candidate, int) and 1 <= candidate <= 12:
+        return candidate
+
+    for house_num in secondary_houses:
+        if house_num in _IDENTITY_AXIS_HOUSES:
+            return house_num
+
+    for event in featured_events or ():
+        if not isinstance(event, Mapping):
+            continue
+        houses = event.get("houses")
+        if isinstance(houses, Mapping):
+            natal_house = houses.get("natal_point_house")
+            if isinstance(natal_house, int) and 1 <= natal_house <= 12:
+                return natal_house
+    return None
+
+
+def _fallback_primary_anchor_sentence(
+    *,
+    scene_request: Mapping[str, Any],
+    secondary_domains: Sequence[Any],
+    featured_events: Sequence[Mapping[str, Any]],
+    life_scene: str,
+) -> str:
+    """Build a primary-domain anchor sentence for fallback opening.
+
+    Falls back to the supplied ``life_scene`` only when no identifiable
+    natal-side house is available.
+    """
+    house = _resolve_primary_anchor_house(
+        scene_request=scene_request,
+        secondary_domains=secondary_domains,
+        featured_events=featured_events,
+    )
+    if house is not None:
+        return _FALLBACK_HOUSE_OPENINGS.get(house, "")
+    return _direct_scene_sentence("", life_scene)
+
+
+def _h4_inner_combo_has_visible_axis(
+    *,
+    scene_request: Mapping[str, Any],
+    featured_events: Sequence[Mapping[str, Any]],
+) -> bool:
+    target_planet_house = (
+        scene_request.get("target_planet_house") if isinstance(scene_request, Mapping) else None
+    )
+    if target_planet_house in {1, 7, 10}:
+        return True
+    for event in featured_events or ():
+        if not isinstance(event, Mapping):
+            continue
+        houses = event.get("houses")
+        if not isinstance(houses, Mapping):
+            continue
+        np_house = houses.get("natal_point_house")
+        if isinstance(np_house, int) and np_house in {1, 7, 10}:
+            return True
+    return False
+
+
+def _fallback_chart_specific_mechanism_support(
+    *,
+    scene_request: Mapping[str, Any],
+    secondary_domains: Sequence[Any],
+    featured_events: Sequence[Mapping[str, Any]],
+) -> str:
+    """Concrete h4-inner / visible-axis dynamic line.
+
+    Replaces the stripped "Bu dönem onlar birbirini daha çok duyuyor" slot
+    with a felt-sense sentence when the h4 inner-foundation anchor leads and
+    a visible-axis natal point (h1/7/10) is in the picture. Returns "" when
+    no opinionated combo is detected.
+    """
+    house = _resolve_primary_anchor_house(
+        scene_request=scene_request,
+        secondary_domains=secondary_domains,
+        featured_events=featured_events,
+    )
+    if house != 4:
+        return ""
+    if not _h4_inner_combo_has_visible_axis(
+        scene_request=scene_request,
+        featured_events=featured_events,
+    ):
+        return ""
+    return (
+        "Evde ya da yalnız kaldığında taşıdığın duygu, dışarıdaki "
+        "duruşuna daha kolay yansıyor."
+    )
+
+
+def _fallback_chart_specific_closer(
+    *,
+    scene_request: Mapping[str, Any],
+    secondary_domains: Sequence[Any],
+    featured_events: Sequence[Mapping[str, Any]],
+) -> str:
+    """Pick a closer that reflects the natal-side anchor combo.
+
+    When the inner-foundation (h4) anchor leads and the visible-axis
+    (h1/7/10) is also in the picture, return a composite "inside <-> outside"
+    closer instead of the generic "Daha esnek ama dağılmayan…" line. Returns
+    "" when no opinionated combo is detected — caller should keep the
+    seed-derived closer in that case.
+    """
+    house = _resolve_primary_anchor_house(
+        scene_request=scene_request,
+        secondary_domains=secondary_domains,
+        featured_events=featured_events,
+    )
+    if house != 4:
+        return ""
+
+    if _h4_inner_combo_has_visible_axis(
+        scene_request=scene_request,
+        featured_events=featured_events,
+    ):
+        return (
+            "Bu sana içeride hissettiğin şeyle dışarıda gösterdiğin "
+            "duruşu aynı hatta toplamayı öğretiyor."
+        )
+    return (
+        "Bu sana neyin gerçekten sana ait olduğunu daha sakin ayırmayı "
+        "öğretiyor."
+    )
+
+
+def _semantic_enriched_fallback_plan(
+    *,
+    semantic_focus_result: PeriodSemanticFocusResult,
+    promise_prefix: str,
+    opening_seed: str,
+    big_picture_seed: str,
+    mechanism_seed: str,
+    growth_edge_seed: str,
+    life_expression_seed: str,
+    what_it_builds_seed: str,
+    featured_events: Sequence[Mapping[str, Any]],
+    human_scene: str,
+    core_contrast: str,
+    chart_anchor: str,
+    raw_meaning_text: str,
+) -> Dict[str, str]:
+    plan = _fallback_composer_plan(
+        promise_prefix=promise_prefix,
+        opening_seed=opening_seed,
+        big_picture_seed=big_picture_seed,
+        mechanism_seed=mechanism_seed,
+        growth_edge_seed=growth_edge_seed,
+        life_expression_seed=life_expression_seed,
+        what_it_builds_seed=what_it_builds_seed,
+    )
+
+    scene_request = (
+        dict(semantic_focus_result.scene_translation_request or {})
+        if isinstance(semantic_focus_result.scene_translation_request, Mapping)
+        else {}
+    )
+    secondary_domains = list(getattr(semantic_focus_result, "secondary_domains", []) or [])
+    scene_seed = str(scene_request.get("context_seed") or "").strip()
+    life_scene = str(scene_request.get("life_scene") or human_scene or "").strip()
+    focus_hint = str(core_contrast or raw_meaning_text or "").strip()
+    chart_hint = str(chart_anchor or "").strip()
+    evidence_hint = _period_featured_event_evidence_bridge(featured_events)
+
+    # Strip generic scaffold sentences from softened seeds before we layer in
+    # primary-domain anchor / scene-as-support text.
+    for key in ("hook", "core_contrast", "mechanism", "growth_edge", "what_it_builds", "closer"):
+        plan[key] = _strip_fallback_scaffold_sentences(str(plan.get(key) or ""))
+
+    primary_anchor = _fallback_primary_anchor_sentence(
+        scene_request=scene_request,
+        secondary_domains=secondary_domains,
+        featured_events=featured_events,
+        life_scene=life_scene,
+    )
+
+    if primary_anchor:
+        # Primary domain leads. The transit-side scene becomes support.
+        anchor_sentence = _ensure_sentence(primary_anchor)
+        existing_hook = str(plan.get("hook") or "").strip()
+        if anchor_sentence.lower() not in existing_hook.lower():
+            plan["hook"] = (
+                anchor_sentence
+                if not existing_hook
+                else _join_parts(anchor_sentence, existing_hook)
+            )
+        plan["scene_anchor"] = ""
+
+        # Evidence-first mechanism with optional chart-specific lead:
+        # 1. concrete h4+visible-axis felt-sense lead (when applicable)
+        # 2. featured-event evidence summary (raw, chart-specific)
+        # 3. transit-side scene support
+        # 4. any remaining softened seed text (after scaffold strip)
+        # This avoids "Bu dönem onlar…" / "Sende zaten çalışan…" leading
+        # the second block and replaces them with a concrete felt-sense
+        # sentence when the chart shape supports it.
+        seed_mechanism = str(plan.get("mechanism") or "").strip()
+        rebuilt_mechanism = ""
+        chart_specific_lead = _fallback_chart_specific_mechanism_support(
+            scene_request=scene_request,
+            secondary_domains=secondary_domains,
+            featured_events=featured_events,
+        )
+        if chart_specific_lead:
+            rebuilt_mechanism = _ensure_sentence(chart_specific_lead)
+        if evidence_hint:
+            rebuilt_mechanism = _append_sentence_if_missing(
+                rebuilt_mechanism, evidence_hint
+            )
+        scene_support = _direct_scene_sentence(scene_seed, life_scene)
+        if scene_support:
+            scene_support_sentence = _ensure_sentence(scene_support)
+            if scene_support_sentence.lower() not in plan["hook"].lower():
+                rebuilt_mechanism = _append_sentence_if_missing(
+                    rebuilt_mechanism, scene_support_sentence
+                )
+        if seed_mechanism:
+            rebuilt_mechanism = _append_sentence_if_missing(
+                rebuilt_mechanism, seed_mechanism
+            )
+        plan["mechanism"] = rebuilt_mechanism
+
+        # Chart-specific closer override when h4 inner anchor pairs with a
+        # visible-axis (h1/7/10) natal point. Replaces the generic
+        # "Daha esnek ama dağılmayan…" closer (which is now scaffold-stripped
+        # from the seed path anyway).
+        chart_specific_closer = _fallback_chart_specific_closer(
+            scene_request=scene_request,
+            secondary_domains=secondary_domains,
+            featured_events=featured_events,
+        )
+        if chart_specific_closer:
+            plan["closer"] = _ensure_sentence(chart_specific_closer)
+    else:
+        # No natal-side anchor; keep prior scene-led opening behavior.
+        hook_scene = _direct_scene_sentence(scene_seed, life_scene)
+        if hook_scene:
+            hook_sentence = _ensure_sentence(hook_scene)
+            hook_text = str(plan.get("hook") or "").strip()
+            if life_scene and life_scene.lower() not in hook_text.lower():
+                plan["hook"] = _join_parts(hook_sentence, hook_text)
+            elif hook_sentence.lower() not in hook_text.lower():
+                plan["hook"] = _join_parts(hook_sentence, hook_text)
+
+        scene_anchor = _direct_scene_sentence(scene_seed, life_scene)
+        if scene_anchor:
+            scene_sentence = _ensure_sentence(scene_anchor)
+            plan["scene_anchor"] = (
+                ""
+                if scene_sentence.lower() in str(plan.get("hook") or "").lower()
+                else scene_sentence
+            )
+
+        if chart_hint:
+            plan["mechanism"] = _append_sentence_if_missing(plan.get("mechanism"), chart_hint)
+        if evidence_hint:
+            plan["mechanism"] = _append_sentence_if_missing(plan.get("mechanism"), evidence_hint)
+
+    if focus_hint:
+        plan["core_contrast"] = _append_sentence_if_missing(plan.get("core_contrast"), focus_hint)
+
+    if primary_anchor and chart_hint:
+        plan["mechanism"] = _append_sentence_if_missing(plan.get("mechanism"), chart_hint)
+
+    plan["semantic_mode"] = "guided_fallback"
+    return plan
+
+
+def _fallback_composer_plan(
+    *,
+    promise_prefix: str,
+    opening_seed: str,
+    big_picture_seed: str,
+    mechanism_seed: str,
+    growth_edge_seed: str,
+    life_expression_seed: str,
+    what_it_builds_seed: str,
+) -> Dict[str, str]:
+    hook = _ensure_sentence(_soften_organic_fallback_text(_strip_prefix_if_present(opening_seed, promise_prefix), role="hook"))
+    unfolding_a = _ensure_sentence(_soften_organic_fallback_text(big_picture_seed, role="unfolding"))
+    unfolding_b = _ensure_sentence(_soften_organic_fallback_text(mechanism_seed, role="mechanism"))
+    growth = _ensure_sentence(_soften_organic_fallback_text(growth_edge_seed, role="growth"))
+    builds = _ensure_sentence(_soften_organic_fallback_text(what_it_builds_seed, role="builds"))
+    closer = _ensure_sentence(_soften_organic_fallback_text(life_expression_seed or what_it_builds_seed, role="closer"))
+    return {
+        "hook": hook,
+        "scene_anchor": "",
+        "core_contrast": unfolding_a,
+        "mechanism": unfolding_b,
+        "growth_edge": growth,
+        "what_it_builds": builds,
+        "closer": closer,
+        "legacy_prefix": promise_prefix,
+        "semantic_mode": "fallback",
+    }
+
+
+def _append_sentence_if_missing(base: Any, extra: Any) -> str:
+    base_text = str(base or "").strip()
+    extra_text = str(extra or "").strip()
+    if not extra_text:
+        return base_text
+    sentence = _ensure_sentence(extra_text)
+    if not base_text:
+        return sentence
+    if sentence.lower() in base_text.lower() or extra_text.lower() in base_text.lower():
+        return base_text
+    return _join_parts(base_text, sentence)
+
+
+def _period_featured_event_evidence_bridge(
+    featured_events: Sequence[Mapping[str, Any]],
+) -> str:
+    if not featured_events:
+        return ""
+
+    candidates: List[str] = []
+    seen: set[str] = set()
+    first = featured_events[0] if featured_events else {}
+    if isinstance(first, Mapping):
+        interpretation = first.get("interpretation") if isinstance(first.get("interpretation"), Mapping) else {}
+        for value in (
+            interpretation.get("summary"),
+            interpretation.get("where"),
+            interpretation.get("headline"),
+        ):
+            probe = " ".join(_normalized_tokens(str(value or "")))
+            if probe:
+                seen.add(probe)
+                candidates.append(str(value or "").strip())
+                break
+
+    for event in featured_events[1:3]:
+        if not isinstance(event, Mapping):
+            continue
+        interpretation = event.get("interpretation") if isinstance(event.get("interpretation"), Mapping) else {}
+        for value in (
+            interpretation.get("where"),
+            interpretation.get("summary"),
+            interpretation.get("headline"),
+        ):
+            text = str(value or "").strip()
+            probe = " ".join(_normalized_tokens(text))
+            if not probe or probe in seen:
+                continue
+            seen.add(probe)
+            candidates.append(text)
+            break
+        if len(candidates) >= 2:
+            break
+
+    joined = " ".join(candidate for candidate in candidates if candidate)
+    return joined.strip()
+
+
+def _build_period_reading_v1(composer_plan: Mapping[str, Any]) -> Dict[str, Any]:
+    hook_block = _join_parts(
+        str(composer_plan.get("hook") or "").strip(),
+        str(composer_plan.get("scene_anchor") or "").strip(),
+    )
+    unfolding_block = _join_parts(
+        str(composer_plan.get("core_contrast") or "").strip(),
+        str(composer_plan.get("mechanism") or "").strip(),
+    )
+    growth_seed = _join_parts(
+        str(composer_plan.get("growth_edge") or "").strip(),
+        str(composer_plan.get("what_it_builds") or "").strip(),
+    )
+    closer = str(composer_plan.get("closer") or "").strip()
+    semantic_mode = str(composer_plan.get("semantic_mode") or "").strip()
+
+    blocks: List[Dict[str, str]] = []
+    if hook_block:
+        blocks.append({"role": "hook", "text": hook_block})
+    if unfolding_block:
+        blocks.append({"role": "unfolding", "text": unfolding_block})
+    if semantic_mode == "guided" and closer:
+        growth_text = closer
+    else:
+        growth_text = growth_seed or closer
+    if growth_text:
+        blocks.append({"role": "growth", "text": growth_text})
+    if semantic_mode != "guided" and closer and growth_text != closer:
+        blocks.append({"role": "closer", "text": closer})
+
+    blocks = [block for block in blocks if str(block.get("text") or "").strip()]
+    if len(blocks) > 4:
+        blocks = blocks[:4]
+    if len(blocks) < 3:
+        extras = [
+            ("growth", growth_seed),
+            ("closer", closer),
+        ]
+        for role, text in extras:
+            if len(blocks) >= 3:
+                break
+            cleaned = str(text or "").strip()
+            if cleaned and all(existing["text"] != cleaned for existing in blocks):
+                blocks.append({"role": role, "text": cleaned})
+    if len(blocks) > 4:
+        blocks = blocks[:4]
+
+    seen_sentences: set[str] = set()
+    normalized_blocks: List[Dict[str, str]] = []
+    for block in blocks:
+        text = str(block.get("text") or "").strip()
+        if not text:
+            continue
+        polished = _polish_period_block_text(text, seen_sentences=seen_sentences)
+        if not polished:
+            continue
+        normalized_blocks.append(
+            {
+                "role": str(block.get("role") or "").strip(),
+                "text": polished,
+            }
+        )
+    full_text = "\n\n".join(block["text"] for block in normalized_blocks)
+    return {
+        "version": "period_reading_v1",
+        "blocks": normalized_blocks,
+        "full_text": full_text,
+    }
+
+
+def _legacy_fields_from_composer_plan(composer_plan: Mapping[str, Any]) -> Dict[str, str]:
+    prefix = str(composer_plan.get("legacy_prefix") or "").strip()
+    hook = _final_polish_tr(str(composer_plan.get("hook") or "").strip())
+    scene_anchor = _final_polish_tr(str(composer_plan.get("scene_anchor") or "").strip())
+    core_contrast = _final_polish_tr(str(composer_plan.get("core_contrast") or "").strip())
+    mechanism = _final_polish_tr(str(composer_plan.get("mechanism") or "").strip())
+    growth_edge = _final_polish_tr(str(composer_plan.get("growth_edge") or "").strip())
+    what_it_builds = _final_polish_tr(str(composer_plan.get("what_it_builds") or "").strip())
+    closer = _final_polish_tr(str(composer_plan.get("closer") or "").strip())
+    opening = _join_parts(prefix, hook)
+    big_picture = _join_parts(core_contrast, mechanism)
+    relational = closer or scene_anchor or what_it_builds
+    upper = what_it_builds or closer
+    return {
+        "period_opening": opening,
+        "big_picture": big_picture,
+        "mechanism": mechanism or big_picture,
+        "growth_edge": growth_edge or what_it_builds,
+        "relational_or_life_expression": relational,
+        "what_it_builds": what_it_builds or closer,
+        "upper_meaning": upper,
+        "core_story": "\n\n".join(
+            part
+            for part in (hook, big_picture, relational)
+            if str(part).strip()
+        ),
+    }
+
+
+def _render_period_reading_guardrails(period_reading_v1: Mapping[str, Any]) -> Dict[str, Any]:
+    blocks = period_reading_v1.get("blocks") if isinstance(period_reading_v1.get("blocks"), list) else []
+    full_text = str(period_reading_v1.get("full_text") or "").strip()
+    block_issues: List[Dict[str, Any]] = []
+    adjacent_issues: List[Dict[str, Any]] = []
+    for idx, block in enumerate(blocks):
+        if not isinstance(block, Mapping):
+            continue
+        text = str(block.get("text") or "").strip()
+        issues = [
+            *find_forbidden_public_copy_issues(text, check_directives=False),
+            *find_technical_leakage(text, surface="body"),
+            *find_organic_period_copy_issues(text),
+        ]
+        if issues:
+            block_issues.append({"index": idx, "role": str(block.get("role") or ""), "issues": issues})
+        if idx > 0 and isinstance(blocks[idx - 1], Mapping):
+            previous_text = str(blocks[idx - 1].get("text") or "").strip()
+            overlap = _adjacent_block_overlap_issues(previous_text, text)
+            if overlap:
+                adjacent_issues.append({"pair": [idx - 1, idx], "issues": overlap})
+    full_text_issues = [
+        *find_forbidden_public_copy_issues(full_text, check_directives=False),
+        *find_technical_leakage(full_text, surface="body"),
+        *find_organic_period_copy_issues(full_text),
+    ]
+    return {
+        "blocks": block_issues,
+        "adjacent_blocks": adjacent_issues,
+        "full_text": full_text_issues,
+    }
+
+
+def _adjacent_block_overlap_issues(previous_text: str, current_text: str) -> List[Dict[str, Any]]:
+    prev_tokens = _normalized_tokens(previous_text)
+    curr_tokens = _normalized_tokens(current_text)
+    if len(prev_tokens) < 4 or len(curr_tokens) < 4:
+        return []
+    prev_ngrams = {" ".join(prev_tokens[idx : idx + 4]) for idx in range(len(prev_tokens) - 3)}
+    curr_ngrams = {" ".join(curr_tokens[idx : idx + 4]) for idx in range(len(curr_tokens) - 3)}
+    overlap = sorted(prev_ngrams & curr_ngrams)
+    if not overlap:
+        return []
+    return [{"code": "adjacent_block_ngram_overlap", "message": "Adjacent blocks repeat a 4-word phrase.", "match": overlap[0]}]
+
+
+def _normalized_tokens(text: str) -> List[str]:
+    normalized = phrase_lib_tr.strip_tech_tokens(str(text or "").lower())
+    normalized = "".join(ch if ch.isalnum() or ch.isspace() else " " for ch in normalized)
+    return [token for token in normalized.split() if token]
+
+
+def _strip_prefix_if_present(text: str, prefix: str) -> str:
+    token = str(text or "").strip()
+    pref = str(prefix or "").strip()
+    if pref and token.startswith(pref):
+        return token[len(pref) :].strip()
+    return token
+
+
+def _soften_organic_fallback_text(text: str, *, role: str) -> str:
+    token = str(text or "").strip()
+    if not token:
+        return ""
+    replacements = (
+        ("Asıl omurga burada yavaş ama kalıcı biçimde kuruluyor.", "Burada daha yavaş ama daha kalıcı bir çizgi oluşuyor."),
+        ("Görünür olan eşik tam bu hatta toplanıyor.", "Burada görünür olan şey tek bir hatta toplanıyor."),
+        ("Risk,", "Dikkat etmen gereken yer,"),
+        ("ve senden daha bilinçli seçimler istiyor", "ve burada seçimini daha netleştirmen gerekiyor"),
+        ("Bu dönem sende", "Bu sende"),
+        ("Bu sende daha net seçim yapma biraz daha güçlendiriyor.", "Bu, daha net seçim yapabilmeni biraz daha güçlendiriyor."),
+        ("kasını geliştiriyor", "biraz daha güçlendiriyor"),
+        ("Bu tema daha çok ", ""),
+        (" içinden görünür oluyor", " bu dönem daha görünür hale geliyor"),
+        (" tarafında birkaç ayrı ihtiyaç aynı anda söz istiyor.", " tarafında birkaç ihtiyacı aynı anda dile getirmeye çalışıyorsun."),
+        ("Aynı anda birkaç ayrı taraf söz istiyor.", "Aynı anda birkaç farklı ihtiyacı dile getirmeye çalışıyorsun."),
+        ("Asıl ayrım burada:", "Bu yüzden mesele,"),
+        ("Asıl ayrım, ", "Burada dikkat etmen gereken yer, "),
+        ("Sende emeği daha rahat taşıyan bir görünürlük kuruyor.", "Emeğini daha rahat taşıyabildiğin bir görünürlük geliştiriyorsun."),
+        ("Sende daha hafif ama daha seçilmiş bir taşıma biçimi kuruyor.", "Daha hafif ama daha seçilmiş bir taşıma biçimi geliştiriyorsun."),
+        ("Sende sürtünmeyi taşıyabilen daha keskin bir iç koordinasyon kuruyor.", "Sürtünmeyi taşıdıkça içeride daha net bir koordinasyon kuruyorsun."),
+        ("Sende sıkışmış kuvveti yöne çeviren daha net bir hareket alanı kuruyor.", "Sıkışan kuvveti daha net bir yöne çevirmeyi öğreniyorsun."),
+        ("Sende daha sade ama daha sağlam taşınan bir duruş kuruyor.", "Daha sade ama daha sağlam taşınan bir duruş geliştiriyorsun."),
+        ("Sende daha bütünlüklü bir yön kuruyor; içeride ayrı konuşan parçalar aynı cümlede toplanıyor.", "Daha bütünlüklü bir yön kuruyorsun; içeride ayrı konuşan parçaları aynı cümlede topluyorsun."),
+        ("Sende büyüme zaten farklı parçaları aynı ritme alma ihtiyacıyla çalışıyor.", "Farklı parçalarını aynı ritme almayı öğreniyorsun."),
+        ("sende büyüme zaten farklı parçaları aynı ritme alma ihtiyacıyla çalışıyor.", "Farklı parçalarını aynı ritme almayı öğreniyorsun."),
+        ("Bu konu boşuna buradan açılmıyor; sende büyüme zaten farklı parçaları aynı ritme alma ihtiyacıyla çalışıyor.", "Farklı parçalarını aynı ritme almayı öğreniyorsun."),
+    )
+    for old, new in replacements:
+        token = token.replace(old, new)
+    if role == "hook" and token.startswith("Bu dönem hayatının bir alanı daha görünür hale geliyor"):
+        token = token.replace(
+            "Bu dönem hayatının bir alanı daha görünür hale geliyor",
+            "Hayatının bir alanı daha görünür hale geliyor",
+            1,
+        )
+    if token.startswith("Bu sende ") and token.endswith(" biraz daha güçlendiriyor."):
+        token = token.replace("Bu sende ", "Bu, ", 1)
+        token = token.replace(" biraz daha güçlendiriyor.", " çizgisini biraz daha güçlendiriyor.")
+    token = re.sub(r"\b[Ss]ende ([^.]+?) kuruyor\.", lambda match: _second_person_build_clause(match.group(1)), token)
+    token = re.sub(r"\s{2,}", " ", token).strip()
+    return token
+
+
+def _direct_scene_sentence(scene_seed: str, life_scene: str) -> str:
+    seed = str(scene_seed or "").strip()
+    scene = str(life_scene or "").strip()
+    if scene:
+        return f"{_capitalize_first(scene)} bu dönem daha görünür hale geliyor."
+    if not seed:
+        return ""
+    direct = re.sub(r"^Bu tema daha çok\s+", "", seed, flags=re.IGNORECASE).strip()
+    direct = re.sub(r"\s+içinden görünür oluyor\.?$", " bu dönem daha görünür hale geliyor", direct, flags=re.IGNORECASE).strip()
+    return _capitalize_first(direct)
+
+
+def _second_person_build_clause(clause: str) -> str:
+    token = str(clause or "").strip()
+    if not token:
+        return ""
+    if token.startswith("daha bütünlüklü bir yön"):
+        return "Daha bütünlüklü bir yön kuruyorsun."
+    if token.startswith("daha sade ama daha sağlam taşınan bir duruş"):
+        return "Daha sade ama daha sağlam taşınan bir duruş geliştiriyorsun."
+    if token.startswith("daha hafif ama daha seçilmiş bir taşıma biçimi"):
+        return "Daha hafif ama daha seçilmiş bir taşıma biçimi geliştiriyorsun."
+    return f"{_capitalize_first(token)} kuruyorsun."
+
+
+def _polish_period_block_text(text: str, *, seen_sentences: set[str]) -> str:
+    polished = _final_polish_tr(text)
+    sentences = _split_sentences(polished)
+    out: List[str] = []
+    for sentence in sentences:
+        cleaned = _capitalize_first(_final_polish_tr(sentence))
+        if not cleaned:
+            continue
+        probe = " ".join(_normalized_tokens(cleaned))
+        if probe and probe in seen_sentences:
+            continue
+        if probe:
+            seen_sentences.add(probe)
+        out.append(_ensure_sentence(cleaned))
+    return " ".join(out).strip()
+
+
+def _split_sentences(text: str) -> List[str]:
+    token = str(text or "").strip()
+    if not token:
+        return []
+    return [part.strip() for part in re.split(r"(?<=[.!?])\s+", token) if part.strip()]
+
+
+def _ensure_sentence(text: str) -> str:
+    token = str(text or "").strip()
+    if not token:
+        return ""
+    if token[-1] in ".!?":
+        return token
+    return f"{token}."
+
+
+def _join_parts(*parts: str) -> str:
+    out = " ".join(str(part or "").strip() for part in parts if str(part or "").strip()).strip()
+    return out
+
+
+def _dedupe_tokens(values: Sequence[str]) -> List[str]:
+    out: List[str] = []
+    seen: set[str] = set()
+    for value in values:
+        token = str(value or "").strip()
+        if token and token not in seen:
+            seen.add(token)
+            out.append(token)
+    return out
 
 
 def _render_policy_process(policy: Mapping[str, Any], base: str) -> str:

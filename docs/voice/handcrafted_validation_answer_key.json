@@ -43,6 +43,8 @@
       },
       "valence_mode": "maturation",
       "intensity_mode": "medium",
+      "target_valence_mode": "maturation",
+      "target_intensity_mode": "medium",
       "semantic_focus_note": "Bu fixture'da seçilen okuma düşünce fazlalığı değil; sözün omurga kazanması, öz-tanımın olgunlaşması ve ifadenin daha doğal otorite taşıması.",
       "life_chapter_note": "Explicit cycle-detector backing yok. Chapter awareness yalnız builder role, natal backing ve authority/speech tonundan türetildi; return veya kader iddiası yapılmadı.",
       "anti_patterns_avoided": [
@@ -107,6 +109,8 @@
       },
       "valence_mode": "release",
       "intensity_mode": "light",
+      "target_valence_mode": "release",
+      "target_intensity_mode": "light",
       "semantic_focus_note": "Seçilen anlam sınır çekme değil; daha az yük taşıyarak daha güvenli kalma, duygusal sıkılığı boşaltma ve yakınlığın hafiflemesi.",
       "life_chapter_note": "",
       "anti_patterns_avoided": [
@@ -170,6 +174,8 @@
       },
       "valence_mode": "recognition",
       "intensity_mode": "light",
+      "target_valence_mode": "recognition",
+      "target_intensity_mode": "light",
       "semantic_focus_note": "Bu fixture'da seçilen okuma burden değil; görünürlük açılması, becerinin dışarı çıkması ve rolün daha doğal taşınması.",
       "life_chapter_note": "",
       "anti_patterns_avoided": [
@@ -234,6 +240,8 @@
       },
       "valence_mode": "integration",
       "intensity_mode": "dense",
+      "target_valence_mode": "integration",
+      "target_intensity_mode": "dense",
       "semantic_focus_note": "Seçilen okuma problem/alarm değil; iki ayrı ihtiyacın yoğun sürtünme içinden aynı kası kurduğu çapraz-entegrasyon.",
       "life_chapter_note": "",
       "anti_patterns_avoided": [
@@ -297,6 +305,8 @@
       },
       "valence_mode": "momentum",
       "intensity_mode": "medium",
+      "target_valence_mode": "momentum",
+      "target_intensity_mode": "medium",
       "semantic_focus_note": "Seçilen okuma yalnız kontrol ya da korunma değil; yön, görünürlük ve işbirliği içinde yer alma ekseni.",
       "life_chapter_note": "Explicit nodal-return backing yok. Ama eksensel yön ve self/other kalıbı, küçük tetik değil daha uzun bir yön başlığı gibi hafifçe duyuruldu.",
       "anti_patterns_avoided": [

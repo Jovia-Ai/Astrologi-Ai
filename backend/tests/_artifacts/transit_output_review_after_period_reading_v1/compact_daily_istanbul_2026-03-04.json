@@ -1,0 +1,1758 @@
+{
+  "daily": {
+    "daily_synthesis": {
+      "theme": "control_release_tension",
+      "theme_description": "Bugünün ağırlığı kontrol, güven ve içerde tuttuğun şeye düşüyor. Bu tema bugün biraz sürtünmeyle açılıyor.",
+      "headline": "Bugün özellikle kontrolü biraz gevşetmek kolay olmayabilir.",
+      "body": "İçe çekildiğin yerde bir sürtünme çabuk büyüyebilir bugün. Bu en çok içine çekildiğin yerler tarafında; yakınlık, güven ve kontrol başlıklarında görünür olur. Çünkü bu doğrudan yakınlık ve beğeni ölçün çizgine değiyor. O yüzden 5. ev, 10. ev başlığı da bu etkiye kolayca eşlik edebilir. Buradaki kare tonunu daha baskılı ve takılarak hissettirebilir Bugün etkisi daha keskin hissedilebilir. Ama aynı gün konuşurken küçük bir alan açılabilir bugün. Bu yeni bir başlık değil; içinde olduğun \"Zihinsel Otoriteni Insa Ediyorsun\" dönemi bugün en çok kendini ortaya koyma biçimin tarafına vuruyor.",
+      "guidance": "Yalnız kalma ihtiyacını biraz yavaşlat.",
+      "narrative_mode": "pressure_dominant",
+      "primary_signal": {
+        "event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+        "transit_body": "Sun",
+        "natal_point": "Venus",
+        "aspect": "square",
+        "aspect_mode": "friction",
+        "orb_deg": 0.08,
+        "phase": "exactish",
+        "transit_house": 2,
+        "target_house": 12,
+        "source_domain": "money",
+        "target_domain": "inner",
+        "house_touchpoint_tr": "içine çekildiğin yerler",
+        "peak_date_utc": "2026-03-04T09:00:00+00:00",
+        "is_peaking_today": false,
+        "is_rising_today": false,
+        "is_releasing_today": false,
+        "natal_promise_score": 0.8,
+        "rulership_houses": [
+          5,
+          10
+        ]
+      },
+      "period_spine": {
+        "event_id": "b5a7004a12be4474d70579de2dbe14deef2dc3e6",
+        "transit_body": "Chiron",
+        "natal_point": "Jupiter",
+        "aspect": "square",
+        "aspect_mode": "friction",
+        "orb_deg": 0.09,
+        "phase": "exactish",
+        "transit_house": 3,
+        "target_house": 1,
+        "source_domain": "mind",
+        "target_domain": "identity",
+        "house_touchpoint_tr": "kendini ortaya koyma biçimin",
+        "peak_date_utc": "2025-10-30T09:00:00+00:00",
+        "is_peaking_today": false,
+        "is_rising_today": false,
+        "is_releasing_today": false,
+        "natal_promise_score": 0.95,
+        "rulership_houses": [
+          3,
+          12
+        ]
+      },
+      "support_signal": {
+        "event_id": "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+        "transit_body": "Pluto",
+        "natal_point": "South Node",
+        "aspect": "sextile",
+        "aspect_mode": "opening",
+        "orb_deg": 1.93,
+        "phase": "separating",
+        "transit_house": 1,
+        "target_house": 3,
+        "source_domain": "identity",
+        "target_domain": "mind",
+        "house_touchpoint_tr": "zihnin ve konuşma halin",
+        "peak_date_utc": null,
+        "is_peaking_today": false,
+        "is_rising_today": false,
+        "is_releasing_today": false,
+        "natal_promise_score": 0.7,
+        "rulership_houses": []
+      },
+      "planner_debug": {
+        "spine_resolution": {
+          "event_id": "b5a7004a12be4474d70579de2dbe14deef2dc3e6",
+          "source": "period_story_debug",
+          "chapter_role": "peak",
+          "reasons": [
+            "chapter_role:peak",
+            "story_score:0.2864"
+          ]
+        },
+        "support_resolution": {
+          "event_id": "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+          "source": "period_story_debug",
+          "score": 0.6038,
+          "reasons": [
+            "chapter_role:integrator",
+            "supportive_mode:opening",
+            "orb:1.93"
+          ]
+        },
+        "mode_resolution": {
+          "mode": "pressure_dominant",
+          "primary_pressure_score": 0.9184,
+          "support_score": 0.5038,
+          "reason": "daily_pressure_outweighs_support_signal"
+        }
+      },
+      "sources": {
+        "daily": [
+          "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+          "96d22a719b91e2ee6ffcb26f6b884000bf32a74f"
+        ],
+        "period": [
+          "period_core"
+        ],
+        "natal": [
+          "house_12",
+          "natal_point_venus",
+          "house_1"
+        ],
+        "period_spine": [
+          "b5a7004a12be4474d70579de2dbe14deef2dc3e6",
+          "transit_body_chiron",
+          "natal_point_jupiter",
+          "aspect_square"
+        ],
+        "support": [
+          "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+          "transit_body_pluto",
+          "natal_point_south_node",
+          "aspect_sextile"
+        ],
+        "trace": {
+          "event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+          "transit_body": "Sun",
+          "natal_point": "Venus",
+          "aspect": "square",
+          "aspect_mode": "friction",
+          "orb_deg": 0.08,
+          "phase": "exactish",
+          "transit_house": 2,
+          "target_house": 12,
+          "source_domain": "money",
+          "target_domain": "inner",
+          "house_touchpoint_tr": "içine çekildiğin yerler",
+          "peak_date_utc": "2026-03-04T09:00:00+00:00",
+          "is_peaking_today": false,
+          "is_rising_today": false,
+          "is_releasing_today": false,
+          "natal_promise_score": 0.8,
+          "rulership_houses": [
+            5,
+            10
+          ]
+        }
+      },
+      "natal_activation_context": {
+        "top_target_node_ids": [
+          "promise_integrate_vision_with_structure",
+          "promise_learn_clear_expression",
+          "promise_embody_originality"
+        ]
+      },
+      "daily_trigger_selection": {
+        "version": "daily_trigger_selection_v1",
+        "authority": "today_story_candidate_shadow",
+        "daily_selector_demoted": false,
+        "legacy_selection_used_as_fallback": false,
+        "primary_trigger_event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+        "support_event_ids": [
+          "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87",
+          "036d6c607ec1a0b918f208d9eb3701bf9a63b685",
+          "4f022aff91a1e6ad15cdb8962a6fd660338d94bc"
+        ],
+        "background_event_ids": [],
+        "suppressed_event_ids": [],
+        "candidates": [
+          {
+            "event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+            "role": "primary_trigger",
+            "event_nature": "courage",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_integrate_vision_with_structure"
+            ],
+            "backing_node_ids": [
+              "promise_integrate_vision_with_structure"
+            ],
+            "selection_reason": [
+              "period_spine_hook_match",
+              "canonical_story_alignment_wins"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.75,
+              "surfaceability_score": 0.3681,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.8024
+            },
+            "debug": {
+              "source_horizon": "period",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+                "transit_body": "Sun",
+                "natal_point": "Venus",
+                "aspect": "square",
+                "horizon": "period",
+                "bucket": "medium",
+                "phase": "exactish",
+                "chapter_role": {
+                  "role": "peak",
+                  "score": 0.78,
+                  "scores": {
+                    "opener": 0.18,
+                    "builder": 0.1928,
+                    "peak": 0.78,
+                    "release": 0.09,
+                    "integrator": 0.2497
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87",
+            "role": "support",
+            "event_nature": "dissolution",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_integrate_vision_with_structure"
+            ],
+            "backing_node_ids": [
+              "promise_integrate_vision_with_structure"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.75,
+              "surfaceability_score": 0.3281,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.802
+            },
+            "debug": {
+              "source_horizon": "period",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87",
+                "transit_body": "Neptune",
+                "natal_point": "ASC",
+                "aspect": "square",
+                "horizon": "period",
+                "bucket": "long",
+                "phase": "exactish",
+                "chapter_role": {
+                  "role": "peak",
+                  "score": 0.54,
+                  "scores": {
+                    "opener": 0.18,
+                    "builder": 0.2069,
+                    "peak": 0.54,
+                    "release": 0.09,
+                    "integrator": 0.2497
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "036d6c607ec1a0b918f208d9eb3701bf9a63b685",
+            "role": "support",
+            "event_nature": "regulation",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_integrate_vision_with_structure"
+            ],
+            "backing_node_ids": [
+              "promise_integrate_vision_with_structure"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.75,
+              "surfaceability_score": 0.2373,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.7639
+            },
+            "debug": {
+              "source_horizon": "daily",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "036d6c607ec1a0b918f208d9eb3701bf9a63b685",
+                "transit_body": "Moon",
+                "natal_point": "Jupiter",
+                "aspect": "trine",
+                "horizon": "daily",
+                "bucket": "short",
+                "phase": "separating",
+                "chapter_role": {
+                  "role": "integrator",
+                  "score": 0.6497,
+                  "scores": {
+                    "opener": 0.0,
+                    "builder": 0.0376,
+                    "peak": 0.0,
+                    "release": 0.534,
+                    "integrator": 0.6497
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "4f022aff91a1e6ad15cdb8962a6fd660338d94bc",
+            "role": "support",
+            "event_nature": "dissolution",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_integrate_vision_with_structure",
+              "hook:promise_learn_clear_expression"
+            ],
+            "backing_node_ids": [
+              "promise_integrate_vision_with_structure",
+              "promise_learn_clear_expression"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.75,
+              "surfaceability_score": 0.3281,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.759
+            },
+            "debug": {
+              "source_horizon": "period",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "4f022aff91a1e6ad15cdb8962a6fd660338d94bc",
+                "transit_body": "Neptune",
+                "natal_point": "DSC",
+                "aspect": "square",
+                "horizon": "period",
+                "bucket": "long",
+                "phase": "exactish",
+                "chapter_role": {
+                  "role": "peak",
+                  "score": 0.54,
+                  "scores": {
+                    "opener": 0.18,
+                    "builder": 0.2069,
+                    "peak": 0.54,
+                    "release": 0.094,
+                    "integrator": 0.2497
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "b5a7004a12be4474d70579de2dbe14deef2dc3e6",
+            "role": "support",
+            "event_nature": "clarity",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_embody_originality",
+              "hook:promise_integrate_vision_with_structure",
+              "hook:promise_learn_clear_expression"
+            ],
+            "backing_node_ids": [
+              "promise_embody_originality",
+              "promise_integrate_vision_with_structure",
+              "promise_learn_clear_expression"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.25,
+              "surfaceability_score": 0.2681,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.746
+            },
+            "debug": {
+              "source_horizon": "period",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "b5a7004a12be4474d70579de2dbe14deef2dc3e6",
+                "transit_body": "Chiron",
+                "natal_point": "Jupiter",
+                "aspect": "square",
+                "horizon": "period",
+                "bucket": "long",
+                "phase": "exactish",
+                "chapter_role": {
+                  "role": "peak",
+                  "score": 0.54,
+                  "scores": {
+                    "opener": 0.0,
+                    "builder": 0.2069,
+                    "peak": 0.54,
+                    "release": 0.09,
+                    "integrator": 0.2497
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "5ee5ee99a5ae5c5a61312d6e440acdcb80d0c522",
+            "role": "support",
+            "event_nature": "regulation",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_integrate_vision_with_structure"
+            ],
+            "backing_node_ids": [
+              "promise_integrate_vision_with_structure"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.75,
+              "surfaceability_score": 0.2373,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.712
+            },
+            "debug": {
+              "source_horizon": "daily",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "5ee5ee99a5ae5c5a61312d6e440acdcb80d0c522",
+                "transit_body": "Moon",
+                "natal_point": "Neptune",
+                "aspect": "trine",
+                "horizon": "daily",
+                "bucket": "short",
+                "phase": "separating",
+                "chapter_role": {
+                  "role": "integrator",
+                  "score": 0.6497,
+                  "scores": {
+                    "opener": 0.0,
+                    "builder": 0.0376,
+                    "peak": 0.0,
+                    "release": 0.534,
+                    "integrator": 0.6497
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "6222641e998f35bf0e5fae3be6af5f48a9600bab",
+            "role": "support",
+            "event_nature": "clarity",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_integrate_vision_with_structure"
+            ],
+            "backing_node_ids": [
+              "promise_integrate_vision_with_structure"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.25,
+              "surfaceability_score": 0.2417,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.6999
+            },
+            "debug": {
+              "source_horizon": "period",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "6222641e998f35bf0e5fae3be6af5f48a9600bab",
+                "transit_body": "Mercury",
+                "natal_point": "Mercury",
+                "aspect": "sextile",
+                "horizon": "period",
+                "bucket": "medium",
+                "phase": "applying",
+                "chapter_role": {
+                  "role": "integrator",
+                  "score": 0.5934,
+                  "scores": {
+                    "opener": 0.0,
+                    "builder": 0.1928,
+                    "peak": 0.0,
+                    "release": 0.068,
+                    "integrator": 0.5934
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+            "role": "support",
+            "event_nature": "responsibility",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_integrate_vision_with_structure"
+            ],
+            "backing_node_ids": [
+              "promise_integrate_vision_with_structure"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.75,
+              "surfaceability_score": 0.2417,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.6941
+            },
+            "debug": {
+              "source_horizon": "period",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "161ec34605e090dffcc4ebf8f610d818058e3ab8",
+                "transit_body": "Saturn",
+                "natal_point": "Uranus",
+                "aspect": "sextile",
+                "horizon": "period",
+                "bucket": "long",
+                "phase": "applying",
+                "chapter_role": {
+                  "role": "integrator",
+                  "score": 0.5934,
+                  "scores": {
+                    "opener": 0.0,
+                    "builder": 0.2069,
+                    "peak": 0.0,
+                    "release": 0.068,
+                    "integrator": 0.5934
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "670393c4e15f691716ef926e9dfe50aeb24f223c",
+            "role": "support",
+            "event_nature": "dissolution",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_integrate_vision_with_structure"
+            ],
+            "backing_node_ids": [
+              "promise_integrate_vision_with_structure"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.75,
+              "surfaceability_score": 0.2837,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.6877
+            },
+            "debug": {
+              "source_horizon": "period",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "670393c4e15f691716ef926e9dfe50aeb24f223c",
+                "transit_body": "Neptune",
+                "natal_point": "Saturn",
+                "aspect": "conjunction",
+                "horizon": "period",
+                "bucket": "long",
+                "phase": "exactish",
+                "chapter_role": {
+                  "role": "peak",
+                  "score": 0.54,
+                  "scores": {
+                    "opener": 0.0,
+                    "builder": 0.2069,
+                    "peak": 0.54,
+                    "release": 0.086,
+                    "integrator": 0.2539
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "86349821c0ed398e361f6e874c1c589576986731",
+            "role": "support",
+            "event_nature": "courage",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_integrate_vision_with_structure"
+            ],
+            "backing_node_ids": [
+              "promise_integrate_vision_with_structure"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.75,
+              "surfaceability_score": 0.2417,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.6834
+            },
+            "debug": {
+              "source_horizon": "period",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "86349821c0ed398e361f6e874c1c589576986731",
+                "transit_body": "Sun",
+                "natal_point": "Mercury",
+                "aspect": "sextile",
+                "horizon": "period",
+                "bucket": "medium",
+                "phase": "applying",
+                "chapter_role": {
+                  "role": "integrator",
+                  "score": 0.5934,
+                  "scores": {
+                    "opener": 0.0,
+                    "builder": 0.1928,
+                    "peak": 0.0,
+                    "release": 0.068,
+                    "integrator": 0.5934
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "0a40de18772071d6e2ca06709fe0e4437c0a0071",
+            "role": "support",
+            "event_nature": "change",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_embody_originality",
+              "hook:promise_integrate_vision_with_structure"
+            ],
+            "backing_node_ids": [
+              "promise_embody_originality",
+              "promise_integrate_vision_with_structure"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.75,
+              "surfaceability_score": 0.2904,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.6712
+            },
+            "debug": {
+              "source_horizon": "period",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "0a40de18772071d6e2ca06709fe0e4437c0a0071",
+                "transit_body": "Uranus",
+                "natal_point": "Mars",
+                "aspect": "trine",
+                "horizon": "period",
+                "bucket": "long",
+                "phase": "exactish",
+                "chapter_role": {
+                  "role": "integrator",
+                  "score": 0.5958,
+                  "scores": {
+                    "opener": 0.0,
+                    "builder": 0.2069,
+                    "peak": 0.54,
+                    "release": 0.078,
+                    "integrator": 0.5958
+                  }
+                }
+              }
+            }
+          },
+          {
+            "event_id": "4acb15849c62b153ce070571acef2f3a284a2f0b",
+            "role": "support",
+            "event_nature": "dissolution",
+            "matched_spine_line": "",
+            "matched_hook_ids": [
+              "hook:promise_integrate_vision_with_structure"
+            ],
+            "backing_node_ids": [
+              "promise_integrate_vision_with_structure"
+            ],
+            "selection_reason": [
+              "same_period_spine_hook",
+              "secondary_trigger_signal"
+            ],
+            "suppression_reason": null,
+            "score_components": {
+              "story_alignment_score": 1.0,
+              "activation_hook_match_score": 1.0,
+              "period_spine_match_score": 1.0,
+              "event_nature_fit_score": 0.75,
+              "surfaceability_score": 0.2417,
+              "readability_score": 1.0,
+              "legacy_final_daily_score": 0.6655
+            },
+            "debug": {
+              "source_horizon": "period",
+              "qualifies": true,
+              "meaningful": true,
+              "selected_day_top_event": false,
+              "event_snapshot": {
+                "event_id": "4acb15849c62b153ce070571acef2f3a284a2f0b",
+                "transit_body": "Neptune",
+                "natal_point": "Uranus",
+                "aspect": "sextile",
+                "horizon": "period",
+                "bucket": "long",
+                "phase": "applying",
+                "chapter_role": {
+                  "role": "integrator",
+                  "score": 0.5934,
+                  "scores": {
+                    "opener": 0.0,
+                    "builder": 0.2069,
+                    "peak": 0.0,
+                    "release": 0.068,
+                    "integrator": 0.5934
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "debug": {
+          "legacy_primary_event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+          "candidate_primary_trigger_event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+          "mismatch": false,
+          "mismatch_reason": "",
+          "period_spine_hook_id": "hook:promise_integrate_vision_with_structure",
+          "period_spine_source": "canonical_natal_activation_v1",
+          "period_continuation": false
+        }
+      },
+      "today_story_candidate": {
+        "story_type": "period_triggered_today",
+        "primary_period_spine_id": "hook:promise_integrate_vision_with_structure",
+        "primary_spine_line": null,
+        "primary_trigger_event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+        "support_event_ids": [
+          "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87",
+          "036d6c607ec1a0b918f208d9eb3701bf9a63b685",
+          "4f022aff91a1e6ad15cdb8962a6fd660338d94bc"
+        ],
+        "event_nature": "courage",
+        "natal_backing_node_ids": [
+          "promise_integrate_vision_with_structure"
+        ],
+        "chapter_role": "peak",
+        "voice_policy_id": "period_voice_policy_v1",
+        "mechanism_lens": "growth_integration_line.courage",
+        "growth_edge": "growth_integration_default_edge",
+        "reason_line_allowed": true,
+        "reason_line_seed": "growth_integration_default_reason",
+        "debug": {
+          "selected_trigger_reason": "daily_trigger_selection_primary",
+          "suppressed_daily_events": [
+            "96d22a719b91e2ee6ffcb26f6b884000bf32a74f"
+          ],
+          "period_spine_source": "canonical_natal_activation_v1",
+          "activation_hook_match": true,
+          "period_spine_hook_id": "hook:promise_integrate_vision_with_structure",
+          "period_spine_target_node_id": "promise_integrate_vision_with_structure",
+          "voice_policy_debug": {
+            "spine_line": "growth_integration_line",
+            "event_nature": "courage",
+            "event_nature_source": "weighted_event_signal",
+            "policy_match": {
+              "level": "spine_line_generic",
+              "seed_key": "growth_integration_line.default",
+              "fallback_order": [
+                "exact",
+                "spine_line_generic",
+                "event_nature_generic",
+                "legacy_untouched"
+              ]
+            },
+            "match_level": "spine_line_generic",
+            "chapter_role": "peak",
+            "canonical_backing_node_ids": [
+              "promise_integrate_vision_with_structure"
+            ],
+            "meaning_intent": "integration_invitation",
+            "rhetorical_frame": "reframe",
+            "valence_mode": "integration",
+            "intensity_mode": "dense",
+            "valence_debug": {
+              "planet_pair": [
+                "Sun",
+                "Venus"
+              ],
+              "pair_class": "unclassified",
+              "aspect_type": "square",
+              "valence_source": "fallback",
+              "intensity_source": "aspect_default",
+              "fallback_used": true,
+              "bias_notes": [],
+              "recent_valence_modes": [],
+              "rotation_applied": false,
+              "candidates": [
+                "integration",
+                "maturation",
+                "momentum",
+                "recognition"
+              ],
+              "selected_event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6"
+            },
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 2,
+              "house_axis": "2-12",
+              "target_planet": "Venus",
+              "target_planet_house": 12,
+              "ruled_houses": [],
+              "angle": null,
+              "life_scene": "neyi neyle dengelediğin",
+              "life_scene_variants": [
+                "değer gördüğün yer",
+                "emeğinin karşılığı",
+                "neyi neyle dengelediğin"
+              ],
+              "context_seed": "Bu tema daha çok neyi neyle dengelediğin içinden görünür oluyor.",
+              "variant_index": 2,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "8eecaebaead4cc9960c3bbccfdf830adae644db6"
+                ]
+              }
+            },
+            "frame_debug": {
+              "candidates": [
+                "reframe",
+                "sorting"
+              ],
+              "recent_rhetorical_frames": [],
+              "rotation_applied": false
+            },
+            "event_bodies": [
+              "sun"
+            ],
+            "semantic_focus_source": "",
+            "semantic_focus_confidence": 0.0,
+            "matched_event_ids": [
+              "8eecaebaead4cc9960c3bbccfdf830adae644db6"
+            ]
+          }
+        }
+      }
+    },
+    "daily_event_cards": [
+      {
+        "event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+        "transit_body": "Sun",
+        "natal_point": "Venus",
+        "aspect": "square",
+        "phase": "exactish",
+        "bucket": "medium",
+        "orb_deg": 0.08,
+        "houses": {
+          "transit_in_natal_house": 2,
+          "natal_point_house": 12
+        },
+        "timing": {
+          "entry_date_utc": "2026-02-26T09:00:00+00:00",
+          "peak_date_utc": "2026-03-04T09:00:00+00:00",
+          "exit_date_utc": "2026-03-10T09:00:00+00:00",
+          "confidence": 0.9,
+          "orb_limit_deg": 6.0,
+          "step_hours": 24,
+          "window_days": 60,
+          "peaks": [
+            "2026-03-04T09:00:00+00:00"
+          ],
+          "timing_note": null,
+          "debug": {
+            "transit_date_used_for_orb": "2026-03-04T09:00:00+00:00",
+            "transit_date_used_for_timing": "2026-03-04T09:00:00+00:00",
+            "timing_cache_key": "c274a9b45571f32224dbc2b649ea264700f86052",
+            "timing_computed_at_utc": "2026-05-06T17:40:36.588192+00:00"
+          }
+        },
+        "title": "Bu Dönem Sende Yeni Bir Ayar Açıyor.",
+        "signature": "Güneş Venüs ile kare (2. Ev) — tam üstünde",
+        "conflict": "",
+        "shadow": "",
+        "upper": "",
+        "extra_line": "",
+        "time_hint": "Etki şu an en yoğun noktasına yakın. Bu tema birkaç hafta boyunca gündemde kalır.",
+        "time_hint_tr": "Şu an güçlü, dalga dalga birkaç ay",
+        "horizon": "daily",
+        "guidance": [],
+        "watch_out": [],
+        "hook_tags": [
+          "sun",
+          "house_2",
+          "aries",
+          "square"
+        ],
+        "connected_points": [
+          {
+            "kind": "house",
+            "value": 12,
+            "label_tr": "bilincalti/cozulme",
+            "score": 0.886
+          },
+          {
+            "kind": "sign",
+            "value": "sagittarius",
+            "label_tr": "Yay",
+            "score": 0.738
+          },
+          {
+            "kind": "dispositor",
+            "value": "Jupiter",
+            "label_tr": "Jüpiter",
+            "score": 0.708
+          },
+          {
+            "kind": "natal_aspect",
+            "value": "Venus trine Moon",
+            "label_tr": "ucgen",
+            "score": 0.669
+          },
+          {
+            "kind": "rulership_house",
+            "value": 5,
+            "label_tr": "5. Ev / Boğa",
+            "score": 0.61
+          },
+          {
+            "kind": "rulership_house",
+            "value": 10,
+            "label_tr": "10. Ev / Terazi",
+            "score": 0.61
+          }
+        ],
+        "natal_context_pack": {
+          "target": {
+            "planet": "Venus",
+            "sign": "Sagittarius",
+            "sign_tr": "Yay",
+            "house": 12
+          },
+          "dispositor": {
+            "planet": "Jupiter",
+            "sign": "Capricorn",
+            "house": 1,
+            "rx": false
+          },
+          "rulership_houses": [
+            {
+              "sign": "taurus",
+              "house": 5
+            },
+            {
+              "sign": "libra",
+              "house": 10
+            }
+          ],
+          "natal_aspects_focus": [
+            {
+              "aspect": "trine",
+              "with": "Moon",
+              "orb_deg": 0.23,
+              "tone": "flow"
+            },
+            {
+              "aspect": "trine",
+              "with": "Fortune",
+              "orb_deg": 5.33,
+              "tone": "flow"
+            }
+          ]
+        },
+        "derived_context": {
+          "natal_target": {
+            "name": "Venus",
+            "house": 12,
+            "sign": "Sagittarius",
+            "dispositor": "Jupiter",
+            "rulership_houses": [
+              5,
+              10
+            ]
+          },
+          "connected_points": [
+            {
+              "type": "target_house",
+              "label_tr": "bilincalti/cozulme",
+              "score": 0.886
+            },
+            {
+              "type": "target_sign",
+              "label_tr": "Yay",
+              "score": 0.738
+            },
+            {
+              "type": "rulership",
+              "label_tr": "Jüpiter",
+              "score": 0.708
+            },
+            {
+              "type": "natal_aspect",
+              "label_tr": "ucgen",
+              "score": 0.669
+            }
+          ],
+          "links": [],
+          "motifs": [],
+          "derived_domains": [
+            {
+              "domain": "identity",
+              "score": 0.35
+            }
+          ]
+        },
+        "scene": {
+          "start_house": 2,
+          "outcome_house": 12
+        },
+        "natal_promise": {
+          "score": 0.8,
+          "verdict": "high",
+          "drivers": [
+            {
+              "type": "resonance",
+              "text": "Natal aci rezonansi Venus temasini tekrar aktive ediyor.",
+              "score": 1.0
+            },
+            {
+              "type": "orb_phase",
+              "text": "Orb ve faz etkisi olay gucunu belirginlestiriyor.",
+              "score": 1.0
+            },
+            {
+              "type": "dispositor_chain",
+              "text": "Dispositor zinciri: venus -> jupiter -> saturn -> mars -> mercury -> saturn.",
+              "score": 0.9
+            },
+            {
+              "type": "house_ruler_link",
+              "text": "12. ev yonetici bagi olay etkisini natal zemine bagliyor.",
+              "score": 0.75
+            },
+            {
+              "type": "timers",
+              "text": "not available",
+              "score": 0.0
+            },
+            {
+              "type": "impact_breakdown",
+              "text": "impact=0.50, receptivity=0.05, graph=0.25",
+              "score": 0.5
+            }
+          ],
+          "connected_points": [
+            {
+              "kind": "house",
+              "value": 12,
+              "score": 1.0
+            },
+            {
+              "kind": "sign",
+              "value": "sagittarius",
+              "score": 0.658
+            },
+            {
+              "kind": "dispositor_chain",
+              "value": "venus->jupiter->saturn->mars->mercury->saturn",
+              "score": 0.9
+            },
+            {
+              "kind": "planet",
+              "value": "vertex",
+              "score": 1.0
+            },
+            {
+              "kind": "planet",
+              "value": "moon",
+              "score": 0.994
+            },
+            {
+              "kind": "house",
+              "value": 5,
+              "score": 0.899
+            }
+          ],
+          "gate": {
+            "condition": "Dagilan odak toparlanamadiginda etki icten disa tasar. Bagli nokta: house=12.",
+            "how_to_use": "Bir gorev, bir kanal, bir zaman blogu ilkesi uygula. Alan odagi: general."
+          }
+        },
+        "tags": {
+          "duration": "weeks",
+          "phase": "exact",
+          "domain": "general",
+          "intensity": 0.0,
+          "exact_in_days": null
+        },
+        "conflict_label": "Sürtünme",
+        "conflict_tone": "pressure",
+        "tone": "friction",
+        "section_labels": {
+          "conflict": "Sürtünme",
+          "shadow": "Refleks",
+          "upper": "Ustalık"
+        },
+        "why_now": "Etki şu an en yoğun noktasına yakın. Bu tema birkaç hafta boyunca gündemde kalır. Bu açı 2. Evden çalışıp 12. Ev sonucunu tetikliyor.",
+        "headline": "Bu Dönem Sende Yeni Bir Ayar Açıyor.",
+        "opening": "Bu etki önce para kararların, sahip oldukların ve güven duygun tarafında hareket yaratıyor. Sonra bunun karşılığı iç dünya alanın alanında daha görünür hale geliyor.",
+        "essence": "Bu süreç iç dünya alanın alanında eski alışkanlıkları gözden geçirmeni istiyor. Yüzeyde ayar istiyor; altta ise bir baskı tarafını daha bilinçli yönetmeyi öğretiyor.",
+        "mechanism": "Güneş Venüs hattına kare açı yaptığı için etki önce 2. Evde para kararların, sahip oldukların ve güven duygun tarafında başlıyor. Sonra 12. Evde iç dünya alanın alanında belirginleşiyor. Sende Venüs zaten iç dünya alanın tarafında çalıştığı için bu etki yüzeyde kalmıyor.",
+        "asks": "Buradaki davet, para ve özdeğer dengen tarafında olanı içeride net kalabilme kasına çevirmek. Net olanı seçip onu tekrar edilebilir hale getirdiğinde bu dönem hızlanıyor.",
+        "watchout": "Bu süreçte ilk tepkiyle hareket etmek kolay. Özellikle otomatik pilota kaymak refleksi devreye girdiğinde konu gereğinden fazla büyüyebilir.",
+        "what_it_builds": "Bu dönem sende içeride net kalabilme kasını geliştiriyor.",
+        "technical_note": "Teknik not: Güneş Venüs ile kare açı yapıyor. Hedef alan 12. Ev: iç dünya alanın.",
+        "teaser": "",
+        "big_picture": "",
+        "upper_meaning": "",
+        "potential": "",
+        "signature_tr": "Güneş Venüs ile kare (2. Ev) — tam üstünde",
+        "narrative_provenance": {
+          "headline_source": "event.headline",
+          "opening_source": "event.opening",
+          "essence_source": "event.essence",
+          "mechanism_source": "event.mechanism",
+          "asks_source": "event.asks",
+          "watchout_source": "event.watchout",
+          "what_it_builds_source": "event.what_it_builds",
+          "technical_note_source": "event.technical_note",
+          "story_track_id": "",
+          "period_track_used": false,
+          "fallback_keys_used": []
+        },
+        "period_opening": "Bu etki önce para kararların, sahip oldukların ve güven duygun tarafında hareket yaratıyor. Sonra bunun karşılığı iç dünya alanın alanında daha görünür hale geliyor.",
+        "growth_edge": "Bu süreçte ilk tepkiyle hareket etmek kolay. Özellikle otomatik pilota kaymak refleksi devreye girdiğinde konu gereğinden fazla büyüyebilir.",
+        "relational_or_life_expression": "Günlük hayatta bu tema en çok para ve özdeğer dengen tarafında başlar; asıl sonucu iç dünya alanın alanında görünür olur.",
+        "felt_line_tr": "İçe çekildiğin yerde bir sürtünme çabuk büyüyebilir bugün.",
+        "why_it_feels_this_way_tr": "Bugünün tonunu özellikle Güneş Venüs ile kare belirliyor; bu Güneş-Venüs karesi bugün daha görünür çalışıyor. Bu hareket önce 2. evinde, yani özdeğer ve maddi düzen alanında çalışıyor. Ama hikâye orada kalmıyor; 12. evdeki temayı tetiklediği için bu etki en çok içine çekildiğin yerler üzerinde görünür oluyor. Natal haritanda Venüs Yay burcunda 12. evde. Bu yüzden bu açı sende sadece bugünün havasını anlatmıyor; altta zaten çalışan arka plan ve iç dünya temasını yeniden uyandırıyor. Bugün yaşadığın şey tek başına değil; \"Zihinsel Otoriteni Insa Ediyorsun\" döneminin bugüne inen yüzü. Bu hikâye tek katmanlı değil: Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+        "guidance_micro_tr": "Yalnız kalma ihtiyacını biraz yavaşlat.",
+        "signal_label_tr": "Bugün biraz sürtünmeli.",
+        "tone_label_tr": "friction",
+        "house_touchpoint_tr": "içine çekildiğin yerler",
+        "house_touchpoint_hint_tr": "İçine kapanınca daha çok büyüyebilir.",
+        "aspect_mode": "friction",
+        "tone_face": "growth",
+        "is_period_derived": true,
+        "today_facing_fallback": true,
+        "semantic_core": {
+          "source_body": "Sun",
+          "source_force": "self_visibility",
+          "source_house": 2,
+          "source_house_domain": "money",
+          "target_point": "Venus",
+          "target_affinity": "relationships",
+          "target_house": 12,
+          "target_house_domain": "inner",
+          "aspect_mode": "friction",
+          "timing_state": "peaking_today",
+          "structurality": "developing",
+          "rulership_houses": [
+            5,
+            10
+          ]
+        },
+        "domain_scores": {
+          "relationships": 1.085,
+          "inner": 0.3,
+          "money": 0.12,
+          "identity": 0.232,
+          "career": 0.12
+        },
+        "lens_projection": {
+          "lens": "general",
+          "primary_domain": "relationships",
+          "secondary_domain": "inner",
+          "mixed_mode": false,
+          "framing_reason": [
+            "target_affinity:relationships",
+            "target_point:venus",
+            "target_house:12",
+            "source_body:sun"
+          ],
+          "projected_scores": {
+            "relationships": 1.085,
+            "inner": 0.3,
+            "money": 0.12,
+            "identity": 0.232,
+            "career": 0.12
+          }
+        },
+        "daily_score": 0.8024,
+        "chapter_role": {
+          "role": "peak",
+          "score": 0.78,
+          "scores": {
+            "opener": 0.18,
+            "builder": 0.1928,
+            "peak": 0.78,
+            "release": 0.09,
+            "integrator": 0.2497
+          }
+        },
+        "cluster_key": "inner|friction|sun",
+        "cluster_size": 1,
+        "cluster_support_event_ids": [],
+        "source_horizon": "period",
+        "period_story": {
+          "title": "Zihinsel Otoriteni Insa Ediyorsun",
+          "lead": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor. Bu dönem dikkatini tek bir hatta topluyor.",
+          "period_opening": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor. Bu dönem dikkatini tek bir hatta topluyor.",
+          "big_picture": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+          "mechanism": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+          "growth_edge": "Otomatik tepkiyle seçilmiş cevap arasındaki farkı daha net görmek.",
+          "what_it_builds": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+          "upper_meaning": "Bunu daha sahipli bir çizgiye yerleştiriyorsun."
+        }
+      },
+      {
+        "event_id": "96d22a719b91e2ee6ffcb26f6b884000bf32a74f",
+        "transit_body": "Mars",
+        "natal_point": "ASC",
+        "aspect": "sextile",
+        "phase": "separating",
+        "bucket": "medium",
+        "orb_deg": 0.22,
+        "houses": {
+          "transit_in_natal_house": 2,
+          "natal_point_house": null
+        },
+        "timing": {
+          "entry_date_utc": "2026-02-27T09:00:00+00:00",
+          "peak_date_utc": "2026-03-04T09:00:00+00:00",
+          "exit_date_utc": "2026-03-09T09:00:00+00:00",
+          "confidence": 0.9,
+          "orb_limit_deg": 4.0,
+          "step_hours": 24,
+          "window_days": 60,
+          "peaks": [
+            "2026-03-04T09:00:00+00:00"
+          ],
+          "timing_note": null,
+          "debug": {
+            "transit_date_used_for_orb": "2026-03-04T09:00:00+00:00",
+            "transit_date_used_for_timing": "2026-03-04T09:00:00+00:00",
+            "timing_cache_key": "ab38cc9e863ebfe32f1fc5d65462b8458b16738b",
+            "timing_computed_at_utc": "2026-05-06T17:40:36.600394+00:00"
+          }
+        },
+        "title": "Kendini Ortaya Koyuşun Değişiyor.",
+        "signature": "Mars Yükselen ile altmışlık (2. Ev) — geri çekiliyor",
+        "conflict": "",
+        "shadow": "",
+        "upper": "",
+        "extra_line": "",
+        "time_hint": "Etki şu an en yoğun noktasına yakın. Bu tema birkaç hafta boyunca gündemde kalır.",
+        "time_hint_tr": "Geri çekiliyor; izi kalır",
+        "horizon": "daily",
+        "guidance": [],
+        "watch_out": [],
+        "hook_tags": [
+          "mars",
+          "house_2",
+          "aries",
+          "sextile"
+        ],
+        "connected_points": [
+          {
+            "kind": "house",
+            "value": 1,
+            "label_tr": "kimlik/benlik",
+            "score": 0.774
+          },
+          {
+            "kind": "sign",
+            "value": "capricorn",
+            "label_tr": "Oğlak",
+            "score": 0.716
+          },
+          {
+            "kind": "angle_ruler",
+            "value": "Saturn",
+            "label_tr": "ASC yöneticisi: Satürn",
+            "score": 0.602
+          }
+        ],
+        "natal_context_pack": {
+          "target": {
+            "planet": "ASC",
+            "sign": "Capricorn",
+            "sign_tr": "Oğlak",
+            "house": 1
+          },
+          "dispositor": {},
+          "rulership_houses": [],
+          "natal_aspects_focus": [],
+          "angle_ruler": "Saturn"
+        },
+        "derived_context": {
+          "angle": {
+            "name": "ASC",
+            "sign": "Capricorn",
+            "ruler": "Saturn",
+            "ruler_house": 3,
+            "ruler_sign": "Aries"
+          },
+          "natal_target": {
+            "name": "ASC",
+            "house": 1,
+            "sign": "Capricorn",
+            "dispositor": null,
+            "rulership_houses": []
+          },
+          "connected_points": [
+            {
+              "type": "target_house",
+              "label_tr": "kimlik/benlik",
+              "score": 0.774
+            },
+            {
+              "type": "target_sign",
+              "label_tr": "Oğlak",
+              "score": 0.716
+            },
+            {
+              "type": "rulership",
+              "label_tr": "ASC yöneticisi: Satürn",
+              "score": 0.602
+            }
+          ],
+          "links": [
+            {
+              "type": "angle_ruler_resonance",
+              "target": "Saturn",
+              "because": "ASC ruler"
+            }
+          ],
+          "motifs": [],
+          "derived_domains": [
+            {
+              "domain": "identity",
+              "score": 0.55
+            }
+          ]
+        },
+        "scene": {
+          "start_house": 2,
+          "outcome_house": null
+        },
+        "natal_promise": {
+          "score": 1.0,
+          "verdict": "high",
+          "drivers": [
+            {
+              "type": "angle_activation",
+              "text": "ASC aktivasyonu bu olayi dis dunyada daha gorunur kilar.",
+              "score": 1.0
+            },
+            {
+              "type": "dispositor_chain",
+              "text": "Dispositor zinciri: saturn -> mars -> mercury -> saturn.",
+              "score": 0.9
+            },
+            {
+              "type": "natal_emphasis",
+              "text": "1. evde natal yigilim bu temayi buyutur.",
+              "score": 0.85
+            },
+            {
+              "type": "resonance",
+              "text": "Natal aci rezonansi saturn temasini tekrar aktive ediyor.",
+              "score": 0.808
+            },
+            {
+              "type": "house_ruler_link",
+              "text": "1. ev yonetici bagi olay etkisini natal zemine bagliyor.",
+              "score": 0.75
+            },
+            {
+              "type": "impact_breakdown",
+              "text": "impact=0.60, receptivity=0.25, graph=0.25",
+              "score": 0.6
+            }
+          ],
+          "connected_points": [
+            {
+              "kind": "house",
+              "value": 1,
+              "score": 1.0
+            },
+            {
+              "kind": "sign",
+              "value": "capricorn",
+              "score": 0.65
+            },
+            {
+              "kind": "dispositor_chain",
+              "value": "saturn->mars->mercury->saturn",
+              "score": 0.9
+            },
+            {
+              "kind": "planet",
+              "value": "south node",
+              "score": 0.914
+            },
+            {
+              "kind": "planet",
+              "value": "north node",
+              "score": 0.914
+            },
+            {
+              "kind": "planet",
+              "value": "sun",
+              "score": 0.845
+            }
+          ],
+          "gate": {
+            "condition": "Net niyetle ilk adim atildiginda etki disa yansir. Bagli nokta: house=1.",
+            "how_to_use": "Firsati hizli ama olculu bir planla somutlastir. Alan odagi: identity."
+          }
+        },
+        "tags": {
+          "duration": "weeks",
+          "phase": "separating",
+          "domain": "general",
+          "intensity": 0.0,
+          "exact_in_days": null
+        },
+        "why_now": "Etki şu an en yoğun noktasına yakın. Bu tema birkaç hafta boyunca gündemde kalır. Tetik en çok 2. Evde çalışıyor; kimlik hattı aktif; ana vurgu geçti ama yankısı sürüyor.",
+        "conflict_label": "Fırsat",
+        "conflict_tone": "opportunity",
+        "tone": "chance",
+        "section_labels": {
+          "conflict": "Fırsat",
+          "shadow": "Kaçırma riski",
+          "upper": "Kazanca çevir"
+        },
+        "headline": "Kendini Ortaya Koyuşun Değişiyor.",
+        "opening": "Bu etki önce para kararların, sahip oldukların ve güven duygun tarafında hareket yaratıyor. Sonra bunun karşılığı kendini dışarıda nasıl taşıdığın alanında daha görünür hale geliyor.",
+        "essence": "Bu süreç kendini dışarıda nasıl taşıdığın alanında eski alışkanlıkları gözden geçirmeni istiyor. Yüzeyde küçük ama gerçek bir kapı aralıyor; altta ise acele tepki ve gereksiz sertlik tarafını daha bilinçli yönetmeyi öğretiyor.",
+        "mechanism": "Mars Yükselen hattına sekstil açı yaptığı için etki önce 2. Evde para kararların, sahip oldukların ve güven duygun tarafında başlıyor. Sonra 1. Evde kendini dışarıda nasıl taşıdığın alanında belirginleşiyor. Bu hatta mesele sadece görünmek değil, Oğlak tonunda daha güvenilir ve anlaşılır görünmek.",
+        "asks": "Buradaki davet, para ve özdeğer dengen tarafında olanı kendini daha net ortaya koyma kasına çevirmek. Net olanı seçip onu tekrar edilebilir hale getirdiğinde bu dönem hızlanıyor.",
+        "watchout": "Bu süreçte fırsatı fark edip yine de hareketsiz kalmak kolay. Özellikle hız uğruna niyeti bulanıklaştırmak refleksi devreye girdiğinde konu gereğinden fazla büyüyebilir.",
+        "what_it_builds": "Bu dönem sende kendini daha net ortaya koyma kasını geliştiriyor.",
+        "technical_note": "Teknik not: Mars Yükselen ile sekstil açı yapıyor. Hedef alan 1. Ev: kendini ortaya koyuş biçimin.",
+        "teaser": "",
+        "big_picture": "",
+        "upper_meaning": "",
+        "potential": "",
+        "signature_tr": "Mars Yükselen ile altmışlık (2. Ev) — geri çekiliyor",
+        "narrative_provenance": {
+          "headline_source": "event.headline",
+          "opening_source": "event.opening",
+          "essence_source": "event.essence",
+          "mechanism_source": "event.mechanism",
+          "asks_source": "event.asks",
+          "watchout_source": "event.watchout",
+          "what_it_builds_source": "event.what_it_builds",
+          "technical_note_source": "event.technical_note",
+          "story_track_id": "",
+          "period_track_used": false,
+          "fallback_keys_used": []
+        },
+        "period_opening": "Bu etki önce para kararların, sahip oldukların ve güven duygun tarafında hareket yaratıyor. Sonra bunun karşılığı kendini dışarıda nasıl taşıdığın alanında daha görünür hale geliyor.",
+        "growth_edge": "Bu süreçte fırsatı fark edip yine de hareketsiz kalmak kolay. Özellikle hız uğruna niyeti bulanıklaştırmak refleksi devreye girdiğinde konu gereğinden fazla büyüyebilir.",
+        "relational_or_life_expression": "Günlük hayatta bu tema en çok para ve özdeğer dengen tarafında başlar; asıl sonucu kendini dışarıda nasıl taşıdığın alanında görünür olur.",
+        "felt_line_tr": "Kendine karşı küçük bir alan açılabilir bugün.",
+        "why_it_feels_this_way_tr": "Bugünün tonunu özellikle Mars Yükselen ile altmışlık belirliyor; bu Mars-Yükselen sekstili bugün daha görünür çalışıyor. Bu hareket 2. evinde çalıştığı için bugün özdeğer ve maddi düzen tarafı daha görünür. Orada görünen şey, özellikle kendini ortaya koyma biçimin daha çabuk hareketleniyor. Yükselen hattın Oğlak; yöneticisi Satürn sende 3. evde. O yüzden burada görünen şey yalnızca 2. evdeki gündelik tetik değil; doğrudan o hatta inen daha derin bir ayar. Bugün yaşadığın şey tek başına değil; \"Zihinsel Otoriteni Insa Ediyorsun\" döneminin bugüne inen yüzü. Bu hikâye tek katmanlı değil: Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+        "guidance_micro_tr": "Duruşunu zorlamadan aç.",
+        "signal_label_tr": "Küçük bir alan açılıyor.",
+        "tone_label_tr": "opening",
+        "house_touchpoint_tr": "kendini ortaya koyma biçimin",
+        "house_touchpoint_hint_tr": "En çok tavrına vurabilir.",
+        "aspect_mode": "opening",
+        "tone_face": "flow",
+        "is_period_derived": true,
+        "today_facing_fallback": true,
+        "semantic_core": {
+          "source_body": "Mars",
+          "source_force": "desire_boundary",
+          "source_house": 2,
+          "source_house_domain": "money",
+          "target_point": "ASC",
+          "target_affinity": "identity",
+          "target_house": 1,
+          "target_house_domain": "identity",
+          "aspect_mode": "opening",
+          "timing_state": "releasing",
+          "structurality": "developing",
+          "rulership_houses": []
+        },
+        "domain_scores": {
+          "identity": 1.14,
+          "money": 0.12,
+          "relationships": 0.16
+        },
+        "lens_projection": {
+          "lens": "general",
+          "primary_domain": "identity",
+          "secondary_domain": "relationships",
+          "mixed_mode": false,
+          "framing_reason": [
+            "target_affinity:identity",
+            "target_point:asc",
+            "target_house:1",
+            "source_body:mars"
+          ],
+          "projected_scores": {
+            "identity": 1.14,
+            "money": 0.12,
+            "relationships": 0.16
+          }
+        },
+        "daily_score": 0.7756,
+        "chapter_role": {
+          "role": "release",
+          "score": 0.808,
+          "scores": {
+            "opener": 0.18,
+            "builder": 0.1928,
+            "peak": 0.78,
+            "release": 0.808,
+            "integrator": 0.5934
+          }
+        },
+        "cluster_key": "identity|opening|mars",
+        "cluster_size": 1,
+        "cluster_support_event_ids": [],
+        "source_horizon": "period",
+        "period_story": {
+          "title": "Zihinsel Otoriteni Insa Ediyorsun",
+          "lead": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor. Bu dönem dikkatini tek bir hatta topluyor.",
+          "period_opening": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor. Bu dönem dikkatini tek bir hatta topluyor.",
+          "big_picture": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+          "mechanism": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+          "growth_edge": "Otomatik tepkiyle seçilmiş cevap arasındaki farkı daha net görmek.",
+          "what_it_builds": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+          "upper_meaning": "Bunu daha sahipli bir çizgiye yerleştiriyorsun."
+        }
+      }
+    ],
+    "today_story_candidate": {
+      "story_type": "period_triggered_today",
+      "primary_period_spine_id": "hook:promise_integrate_vision_with_structure",
+      "primary_spine_line": null,
+      "primary_trigger_event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+      "support_event_ids": [
+        "9048d00d4e83e4b5c02e0e3981ea3b4243ef2f87",
+        "036d6c607ec1a0b918f208d9eb3701bf9a63b685",
+        "4f022aff91a1e6ad15cdb8962a6fd660338d94bc"
+      ],
+      "event_nature": "courage",
+      "natal_backing_node_ids": [
+        "promise_integrate_vision_with_structure"
+      ],
+      "chapter_role": "peak",
+      "voice_policy_id": "period_voice_policy_v1",
+      "mechanism_lens": "growth_integration_line.courage",
+      "growth_edge": "growth_integration_default_edge",
+      "reason_line_allowed": true,
+      "reason_line_seed": "growth_integration_default_reason",
+      "debug": {
+        "selected_trigger_reason": "daily_trigger_selection_primary",
+        "suppressed_daily_events": [
+          "96d22a719b91e2ee6ffcb26f6b884000bf32a74f"
+        ],
+        "period_spine_source": "canonical_natal_activation_v1",
+        "activation_hook_match": true,
+        "period_spine_hook_id": "hook:promise_integrate_vision_with_structure",
+        "period_spine_target_node_id": "promise_integrate_vision_with_structure",
+        "voice_policy_debug": {
+          "spine_line": "growth_integration_line",
+          "event_nature": "courage",
+          "event_nature_source": "weighted_event_signal",
+          "policy_match": {
+            "level": "spine_line_generic",
+            "seed_key": "growth_integration_line.default",
+            "fallback_order": [
+              "exact",
+              "spine_line_generic",
+              "event_nature_generic",
+              "legacy_untouched"
+            ]
+          },
+          "match_level": "spine_line_generic",
+          "chapter_role": "peak",
+          "canonical_backing_node_ids": [
+            "promise_integrate_vision_with_structure"
+          ],
+          "meaning_intent": "integration_invitation",
+          "rhetorical_frame": "reframe",
+          "valence_mode": "integration",
+          "intensity_mode": "dense",
+          "valence_debug": {
+            "planet_pair": [
+              "Sun",
+              "Venus"
+            ],
+            "pair_class": "unclassified",
+            "aspect_type": "square",
+            "valence_source": "fallback",
+            "intensity_source": "aspect_default",
+            "fallback_used": true,
+            "bias_notes": [],
+            "recent_valence_modes": [],
+            "rotation_applied": false,
+            "candidates": [
+              "integration",
+              "maturation",
+              "momentum",
+              "recognition"
+            ],
+            "selected_event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6"
+          },
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 2,
+            "house_axis": "2-12",
+            "target_planet": "Venus",
+            "target_planet_house": 12,
+            "ruled_houses": [],
+            "angle": null,
+            "life_scene": "neyi neyle dengelediğin",
+            "life_scene_variants": [
+              "değer gördüğün yer",
+              "emeğinin karşılığı",
+              "neyi neyle dengelediğin"
+            ],
+            "context_seed": "Bu tema daha çok neyi neyle dengelediğin içinden görünür oluyor.",
+            "variant_index": 2,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "8eecaebaead4cc9960c3bbccfdf830adae644db6"
+              ]
+            }
+          },
+          "frame_debug": {
+            "candidates": [
+              "reframe",
+              "sorting"
+            ],
+            "recent_rhetorical_frames": [],
+            "rotation_applied": false
+          },
+          "event_bodies": [
+            "sun"
+          ],
+          "semantic_focus_source": "",
+          "semantic_focus_confidence": 0.0,
+          "matched_event_ids": [
+            "8eecaebaead4cc9960c3bbccfdf830adae644db6"
+          ]
+        }
+      }
+    },
+    "daily_humanizer_output": [
+      {
+        "event_id": "8eecaebaead4cc9960c3bbccfdf830adae644db6",
+        "felt_line_tr": "İçe çekildiğin yerde bir sürtünme çabuk büyüyebilir bugün.",
+        "why_it_feels_this_way_tr": "Bugünün tonunu özellikle Güneş Venüs ile kare belirliyor; bu Güneş-Venüs karesi bugün daha görünür çalışıyor. Bu hareket önce 2. evinde, yani özdeğer ve maddi düzen alanında çalışıyor. Ama hikâye orada kalmıyor; 12. evdeki temayı tetiklediği için bu etki en çok içine çekildiğin yerler üzerinde görünür oluyor. Natal haritanda Venüs Yay burcunda 12. evde. Bu yüzden bu açı sende sadece bugünün havasını anlatmıyor; altta zaten çalışan arka plan ve iç dünya temasını yeniden uyandırıyor. Bugün yaşadığın şey tek başına değil; \"Zihinsel Otoriteni Insa Ediyorsun\" döneminin bugüne inen yüzü. Bu hikâye tek katmanlı değil: Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+        "guidance_micro_tr": "Yalnız kalma ihtiyacını biraz yavaşlat.",
+        "house_touchpoint_tr": "içine çekildiğin yerler"
+      },
+      {
+        "event_id": "96d22a719b91e2ee6ffcb26f6b884000bf32a74f",
+        "felt_line_tr": "Kendine karşı küçük bir alan açılabilir bugün.",
+        "why_it_feels_this_way_tr": "Bugünün tonunu özellikle Mars Yükselen ile altmışlık belirliyor; bu Mars-Yükselen sekstili bugün daha görünür çalışıyor. Bu hareket 2. evinde çalıştığı için bugün özdeğer ve maddi düzen tarafı daha görünür. Orada görünen şey, özellikle kendini ortaya koyma biçimin daha çabuk hareketleniyor. Yükselen hattın Oğlak; yöneticisi Satürn sende 3. evde. O yüzden burada görünen şey yalnızca 2. evdeki gündelik tetik değil; doğrudan o hatta inen daha derin bir ayar. Bugün yaşadığın şey tek başına değil; \"Zihinsel Otoriteni Insa Ediyorsun\" döneminin bugüne inen yüzü. Bu hikâye tek katmanlı değil: Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+        "guidance_micro_tr": "Duruşunu zorlamadan aç.",
+        "house_touchpoint_tr": "kendini ortaya koyma biçimin"
+      }
+    ]
+  }
+}

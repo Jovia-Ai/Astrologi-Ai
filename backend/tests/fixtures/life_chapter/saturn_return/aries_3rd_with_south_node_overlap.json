@@ -1,0 +1,41 @@
+{
+  "canonical_natal_state": {
+    "bodies": [
+      {"body": "Saturn", "sign": "Aries", "house": 3},
+      {"body": "North Node", "sign": "Libra", "house": 9},
+      {"body": "South Node", "sign": "Aries", "house": 3}
+    ],
+    "house_cusps": [
+      {"house": 1, "sign": "Capricorn"},
+      {"house": 2, "sign": "Aquarius"},
+      {"house": 3, "sign": "Pisces"},
+      {"house": 4, "sign": "Aries"},
+      {"house": 5, "sign": "Taurus"},
+      {"house": 6, "sign": "Gemini"},
+      {"house": 7, "sign": "Cancer"},
+      {"house": 8, "sign": "Leo"},
+      {"house": 9, "sign": "Virgo"},
+      {"house": 10, "sign": "Libra"},
+      {"house": 11, "sign": "Scorpio"},
+      {"house": 12, "sign": "Sagittarius"}
+    ]
+  },
+  "transit_events": [
+    {
+      "event_id": "evt-saturn-return-aries-3",
+      "event_family": "cycle_event",
+      "event_subtype": "saturn_return",
+      "start_at": "2026-02-01",
+      "exact_at": ["2026-05-10T00:00:00"],
+      "end_at": "2026-11-01",
+      "chapter_opening": true,
+      "structural_significance": 0.96,
+      "precision_signal": 0.91,
+      "current_phase": "exact",
+      "source_bodies": ["Saturn"],
+      "target_points": ["Saturn"],
+      "target_houses": [3]
+    }
+  ],
+  "expected_substrings": ["Koç", "3. ev", "söz ve zihinsel refleks"]
+}

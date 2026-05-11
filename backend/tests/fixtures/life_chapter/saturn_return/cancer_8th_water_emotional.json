@@ -1,0 +1,41 @@
+{
+  "canonical_natal_state": {
+    "bodies": [
+      {"body": "Saturn", "sign": "Cancer", "house": 8},
+      {"body": "North Node", "sign": "Pisces", "house": 4},
+      {"body": "South Node", "sign": "Virgo", "house": 10}
+    ],
+    "house_cusps": [
+      {"house": 1, "sign": "Sagittarius"},
+      {"house": 2, "sign": "Capricorn"},
+      {"house": 3, "sign": "Aquarius"},
+      {"house": 4, "sign": "Pisces"},
+      {"house": 5, "sign": "Aries"},
+      {"house": 6, "sign": "Taurus"},
+      {"house": 7, "sign": "Gemini"},
+      {"house": 8, "sign": "Cancer"},
+      {"house": 9, "sign": "Leo"},
+      {"house": 10, "sign": "Virgo"},
+      {"house": 11, "sign": "Libra"},
+      {"house": 12, "sign": "Scorpio"}
+    ]
+  },
+  "transit_events": [
+    {
+      "event_id": "evt-saturn-return-cancer-8",
+      "event_family": "cycle_event",
+      "event_subtype": "saturn_return",
+      "start_at": "2026-03-01",
+      "exact_at": ["2026-06-15T00:00:00"],
+      "end_at": "2026-12-20",
+      "chapter_opening": true,
+      "structural_significance": 0.94,
+      "precision_signal": 0.88,
+      "current_phase": "exactish",
+      "source_bodies": ["Saturn"],
+      "target_points": ["Saturn"],
+      "target_houses": [8]
+    }
+  ],
+  "expected_substrings": ["Yengeç", "8. ev", "duygusal güvenlik"]
+}

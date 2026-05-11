@@ -1,0 +1,2643 @@
+{
+  "generated_by": "backend/scripts/generate_validation_samples.py",
+  "variant_contracts": {
+    "period": {
+      "A": "legacy_period_output",
+      "B": "canonical_period_spine_plus_voice_policy",
+      "C": "canonical_period_plus_manifestation_context"
+    },
+    "daily": {
+      "A": "legacy_daily_output",
+      "B": "today_story_candidate_plus_current_daily_synthesis",
+      "C": "mock_today_delta_signal_plus_scene_aware_daily"
+    },
+    "natal": {
+      "mode": "sanity_review_only"
+    }
+  },
+  "blind_protocol": {
+    "mapping_visibility": "reviewers_must_not_see_semantic_A_B_C_mapping",
+    "answer_key_location": "docs/voice/sample_validation_samples.json",
+    "randomization": "deterministic_per_chart_seed"
+  },
+  "minimum_requirements": {
+    "minimum_reviewers": 5,
+    "minimum_usable_period_charts": 4,
+    "minimum_usable_daily_charts": 4,
+    "minimum_usable_natal_sanity_charts": 3
+  },
+  "decision_thresholds": {
+    "period_win_primary": "B_or_C_seen_score >= A_seen_score + 0.7 and B_or_C_generic_score < A_generic_score",
+    "period_win_secondary": "B_or_C_best_overall_share >= 0.60",
+    "daily_failure_signal": "If Daily B/C does not beat A, mark as evidence for PR-5 Daily Today-ness Signal"
+  },
+  "numeric_rating_fields": [
+    "seen_score",
+    "generic_score",
+    "too_technical_score",
+    "coaching_motivation_score",
+    "reread_score",
+    "repetition_score"
+  ],
+  "choice_fields": [
+    "best_overall",
+    "worst_overall"
+  ],
+  "pack_readiness": {
+    "usable_period_charts": 5,
+    "usable_daily_charts": 5,
+    "usable_natal_sanity_charts": 3,
+    "validation_ready": true,
+    "period_only_validation_ready": true,
+    "daily_validation_deferred": true,
+    "blocking_reasons": [],
+    "period_only_blocking_reasons": []
+  },
+  "period_daily_cases": [
+    {
+      "fixture_id": "fix02_capricorn_stellium",
+      "fixture_label": "Oğlak/Oğlak — 1. ev stellium (4+ gezegen)",
+      "window_start": "2026-05-01",
+      "window_end": "2026-05-31",
+      "selected_date": "2026-05-03",
+      "status": "ok",
+      "period_variants": [
+        {
+          "source_variant": "canonical_period_plus_manifestation_context",
+          "headline": "Zihinsel Otoriteni Insa Ediyorsun",
+          "body": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.\n\nBu, kendini zorlamak değil. Özellikle yakın çevrendeki ses tarafında büyüyen şeyi hemen sonuca çevirmek de değil.\n\nSende zaten çalışan birkaç ayrı taraf var. Bu dönem onlar birbirine daha yakın duruyor. Bu tema yakın çevrendeki ses içinden büyüyor; küçük cümleler bile alttaki daha büyük meseleyi görünür kılabilir.\n\nAsıl ayrım, yakın çevrendeki ses içinden yükselen şeyi hemen sonuca çevirmemek.",
+          "guidance": "",
+          "debug": {
+            "spine_event_id": "88bc98188b2f7931360493237881969004d50662",
+            "support_event_ids": [
+              "f20ef9eb9742c7eb0940794301fee6ab2a171965",
+              "cfdb5566aa3b5f17512c75c2eb5731b48a275974"
+            ],
+            "track_id": "default",
+            "spine_role": "builder",
+            "support_roles": [
+              "peak",
+              "integrator"
+            ],
+            "canonical_period_spine_source": "canonical_natal_activation_v1",
+            "canonical_period_spine_target_node_id": "promise_integrate_vision_with_structure",
+            "promise_prefix_source": "canonical_period_spine",
+            "period_voice_policy_version": "period_voice_policy_v1",
+            "period_voice_policy_reason_line_allowed": true,
+            "period_voice_policy_avoid_tags": [
+              "generic_hat_copy",
+              "coaching_command",
+              "unbacked_natal_reason",
+              "astro_first_opening"
+            ],
+            "period_voice_policy_meaning_intent": "integration_invitation",
+            "period_voice_policy_rhetorical_frame": "naked",
+            "period_voice_policy_match_level": "spine_line_generic",
+            "period_voice_policy_manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 3,
+              "house_axis": "3-1",
+              "target_planet": "Sun",
+              "target_planet_house": 1,
+              "ruled_houses": [],
+              "angle": "DSC",
+              "life_scene": "yakın çevrendeki ses",
+              "life_scene_variants": [
+                "gündelik konuşmalar",
+                "küçük cümlelerin ağırlığı",
+                "yakın çevrendeki ses"
+              ],
+              "context_seed": "Bu tema daha çok yakın çevrendeki ses içinden görünür oluyor.",
+              "variant_index": 2,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "88bc98188b2f7931360493237881969004d50662",
+                  "f20ef9eb9742c7eb0940794301fee6ab2a171965",
+                  "cfdb5566aa3b5f17512c75c2eb5731b48a275974"
+                ]
+              }
+            },
+            "period_voice_policy": {
+              "spine_line": "growth_integration_line",
+              "event_nature": "dissolution",
+              "event_nature_source": "weighted_event_signal",
+              "policy_match": {
+                "level": "spine_line_generic",
+                "seed_key": "growth_integration_line.default",
+                "fallback_order": [
+                  "exact",
+                  "spine_line_generic",
+                  "event_nature_generic",
+                  "legacy_untouched"
+                ]
+              },
+              "match_level": "spine_line_generic",
+              "chapter_role": "builder",
+              "canonical_backing_node_ids": [
+                "promise_integrate_vision_with_structure"
+              ],
+              "meaning_intent": "integration_invitation",
+              "rhetorical_frame": "naked",
+              "manifestation_context": {
+                "version": "manifestation_context_v1",
+                "primary_house": 3,
+                "house_axis": "3-1",
+                "target_planet": "Sun",
+                "target_planet_house": 1,
+                "ruled_houses": [],
+                "angle": "DSC",
+                "life_scene": "yakın çevrendeki ses",
+                "life_scene_variants": [
+                  "gündelik konuşmalar",
+                  "küçük cümlelerin ağırlığı",
+                  "yakın çevrendeki ses"
+                ],
+                "context_seed": "Bu tema daha çok yakın çevrendeki ses içinden görünür oluyor.",
+                "variant_index": 2,
+                "source": "event_house",
+                "release_strengthened": false,
+                "debug": {
+                  "event_ids": [
+                    "88bc98188b2f7931360493237881969004d50662",
+                    "f20ef9eb9742c7eb0940794301fee6ab2a171965",
+                    "cfdb5566aa3b5f17512c75c2eb5731b48a275974"
+                  ]
+                }
+              },
+              "frame_debug": {
+                "candidates": [
+                  "naked",
+                  "reframe"
+                ],
+                "recent_rhetorical_frames": [],
+                "rotation_applied": false
+              },
+              "event_bodies": [
+                "neptune",
+                "north node",
+                "chiron"
+              ],
+              "matched_event_ids": [
+                "88bc98188b2f7931360493237881969004d50662",
+                "f20ef9eb9742c7eb0940794301fee6ab2a171965",
+                "cfdb5566aa3b5f17512c75c2eb5731b48a275974"
+              ]
+            }
+          },
+          "blind_label": "A",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "repeated_bu_donem_opening",
+            "repeated_opening",
+            "system_scaffold_phrase",
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": "growth_integration_line",
+          "event_nature": "dissolution",
+          "meaning_intent": "integration_invitation",
+          "rhetorical_frame": "naked",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 3,
+            "house_axis": "3-1",
+            "target_planet": "Sun",
+            "target_planet_house": 1,
+            "ruled_houses": [],
+            "angle": "DSC",
+            "life_scene": "yakın çevrendeki ses",
+            "life_scene_variants": [
+              "gündelik konuşmalar",
+              "küçük cümlelerin ağırlığı",
+              "yakın çevrendeki ses"
+            ],
+            "context_seed": "Bu tema daha çok yakın çevrendeki ses içinden görünür oluyor.",
+            "variant_index": 2,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "88bc98188b2f7931360493237881969004d50662",
+                "f20ef9eb9742c7eb0940794301fee6ab2a171965",
+                "cfdb5566aa3b5f17512c75c2eb5731b48a275974"
+              ]
+            }
+          },
+          "display_headline": "Zihinsel Otoriteni İnşa Ediyorsun",
+          "display_body": "Anlam ve yön hattı bu dönemde özellikle belirginleşiyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Hayatının bir alanı daha görünür hale geliyor; senden daha bilinçli seçimler istiyor.\n\nBu, kendini zorlamak değil. Özellikle yakın çevrendeki ses tarafında büyüyen şeyi hemen sonuca çevirmek de değil.\n\nSende zaten çalışan birkaç ayrı taraf var. Şu sıralar onlar birbirine daha yakın duruyor. Bu tema yakın çevrendeki ses içinden büyüyor; küçük cümleler bile alttaki daha büyük meseleyi görünür kılabilir.\n\nAsıl ayrım, yakın çevrendeki ses içinden yükselen şeyi hemen sonuca çevirmemek.",
+          "display_guidance": ""
+        },
+        {
+          "source_variant": "legacy_period_output",
+          "headline": "Zihinsel Otoriteni Insa Ediyorsun",
+          "body": "Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.\n\nMesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.\n\nEtki önce gündelik hayatta görünür oluyor, sonra bunun sonucu daha kalıcı bir davranış değişimine dönüşüyor.\n\nRisk, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+          "guidance": "",
+          "debug": {
+            "track_id": "default",
+            "source": "build_story_track_copy"
+          },
+          "blind_label": "B",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "system_scaffold_phrase",
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": null,
+          "event_nature": null,
+          "meaning_intent": null,
+          "rhetorical_frame": null,
+          "manifestation_context": {},
+          "display_headline": "Zihinsel Otoriteni İnşa Ediyorsun",
+          "display_body": "Hayatının bir alanı daha görünür hale geliyor; senden daha bilinçli seçimler istiyor.\n\nMesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.\n\nEtki önce gündelik hayatta görünür oluyor, sonra bunun sonucu daha kalıcı bir davranış değişimine dönüşüyor.\n\nRisk, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+          "display_guidance": ""
+        },
+        {
+          "source_variant": "canonical_period_spine_plus_voice_policy",
+          "headline": "Zihinsel Otoriteni Insa Ediyorsun",
+          "body": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.\n\nBu, kendini zorlamak değil.\n\nSende zaten çalışan birkaç ayrı taraf var. Bu dönem onlar birbirine daha yakın duruyor.\n\nBu, savunmayı çözmek değil.",
+          "guidance": "",
+          "debug": {
+            "spine_event_id": "88bc98188b2f7931360493237881969004d50662",
+            "support_event_ids": [
+              "f20ef9eb9742c7eb0940794301fee6ab2a171965",
+              "cfdb5566aa3b5f17512c75c2eb5731b48a275974"
+            ],
+            "track_id": "default",
+            "spine_role": "builder",
+            "support_roles": [
+              "peak",
+              "integrator"
+            ],
+            "canonical_period_spine_source": "canonical_natal_activation_v1",
+            "canonical_period_spine_target_node_id": "promise_integrate_vision_with_structure",
+            "promise_prefix_source": "canonical_period_spine",
+            "period_voice_policy_version": "period_voice_policy_v1",
+            "period_voice_policy_reason_line_allowed": true,
+            "period_voice_policy_avoid_tags": [
+              "generic_hat_copy",
+              "coaching_command",
+              "unbacked_natal_reason",
+              "astro_first_opening"
+            ],
+            "period_voice_policy_meaning_intent": "integration_invitation",
+            "period_voice_policy_rhetorical_frame": "naked",
+            "period_voice_policy_match_level": "spine_line_generic",
+            "period_voice_policy_manifestation_context": {},
+            "period_voice_policy": {
+              "spine_line": "growth_integration_line",
+              "event_nature": "dissolution",
+              "event_nature_source": "weighted_event_signal",
+              "policy_match": {
+                "level": "spine_line_generic",
+                "seed_key": "growth_integration_line.default",
+                "fallback_order": [
+                  "exact",
+                  "spine_line_generic",
+                  "event_nature_generic",
+                  "legacy_untouched"
+                ]
+              },
+              "match_level": "spine_line_generic",
+              "chapter_role": "builder",
+              "canonical_backing_node_ids": [
+                "promise_integrate_vision_with_structure"
+              ],
+              "meaning_intent": "integration_invitation",
+              "rhetorical_frame": "naked",
+              "manifestation_context": {},
+              "frame_debug": {
+                "candidates": [
+                  "naked",
+                  "reframe"
+                ],
+                "recent_rhetorical_frames": [],
+                "rotation_applied": false
+              },
+              "event_bodies": [
+                "neptune",
+                "north node",
+                "chiron"
+              ],
+              "matched_event_ids": [
+                "88bc98188b2f7931360493237881969004d50662",
+                "f20ef9eb9742c7eb0940794301fee6ab2a171965",
+                "cfdb5566aa3b5f17512c75c2eb5731b48a275974"
+              ]
+            }
+          },
+          "blind_label": "C",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "isolated_naked_frame",
+            "repeated_bu_donem_opening",
+            "repeated_opening",
+            "system_scaffold_phrase",
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": "growth_integration_line",
+          "event_nature": "dissolution",
+          "meaning_intent": "integration_invitation",
+          "rhetorical_frame": "naked",
+          "manifestation_context": {},
+          "display_headline": "Zihinsel Otoriteni İnşa Ediyorsun",
+          "display_body": "Anlam ve yön hattı bu dönemde özellikle belirginleşiyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Hayatının bir alanı daha görünür hale geliyor; senden daha bilinçli seçimler istiyor.\n\nBu, kendini zorlamak değil.\n\nSende zaten çalışan birkaç ayrı taraf var. Şu sıralar onlar birbirine daha yakın duruyor.\n\nBu, savunmayı çözmek değil.",
+          "display_guidance": ""
+        }
+      ],
+      "daily_variants": [
+        {
+          "source_variant": "mock_today_delta_signal_plus_scene_aware_daily",
+          "headline": "Bugün özellikle görünür olurken rahat kalmak biraz daha rahat olabilir.",
+          "body": "Bugün bu konu dünden daha sesli. Özellikle birlikte yürüdüğün insanlar tarafında görünür oluyor. Bugün Moon trine hattı konuyu daha görünür yapıyor. Yakınlık 0.06°.\n\nAna hareket daha çok regulation tarafında. Günün tonu integrator gibi ilerliyor.",
+          "guidance": "growth_integration_default_edge",
+          "debug": {
+            "story_type": "period_triggered_today",
+            "spine_line": null,
+            "event_nature": "regulation",
+            "meaning_intent": "integration_invitation",
+            "rhetorical_frame": "reframe",
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 11,
+              "house_axis": "11-3",
+              "target_planet": "Saturn",
+              "target_planet_house": 3,
+              "ruled_houses": [],
+              "angle": null,
+              "life_scene": "birlikte yürüdüğün insanlar",
+              "life_scene_variants": [
+                "geleceğe doğru kurduğun çevre",
+                "ait olduğun topluluklar",
+                "birlikte yürüdüğün insanlar"
+              ],
+              "context_seed": "Bu tema daha çok birlikte yürüdüğün insanlar içinden görünür oluyor.",
+              "variant_index": 2,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "f331c043ca99474688982f52bdedfc269d826628"
+                ]
+              }
+            },
+            "life_scene": "birlikte yürüdüğün insanlar",
+            "source": "script_mock_scene_aware_daily",
+            "today_story_candidate_present": true
+          },
+          "blind_label": "A",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [],
+          "story_type": "period_triggered_today",
+          "spine_line": null,
+          "event_nature": "regulation",
+          "meaning_intent": "integration_invitation",
+          "rhetorical_frame": "reframe",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 11,
+            "house_axis": "11-3",
+            "target_planet": "Saturn",
+            "target_planet_house": 3,
+            "ruled_houses": [],
+            "angle": null,
+            "life_scene": "birlikte yürüdüğün insanlar",
+            "life_scene_variants": [
+              "geleceğe doğru kurduğun çevre",
+              "ait olduğun topluluklar",
+              "birlikte yürüdüğün insanlar"
+            ],
+            "context_seed": "Bu tema daha çok birlikte yürüdüğün insanlar içinden görünür oluyor.",
+            "variant_index": 2,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "f331c043ca99474688982f52bdedfc269d826628"
+              ]
+            }
+          }
+        },
+        {
+          "source_variant": "legacy_daily_output",
+          "headline": "Bugün akış açılıyor.",
+          "body": "Konuşurken bir şey daha rahat akıyor bugün.\n\nBugünün tonunu özellikle Ay Satürn ile üçgen belirliyor; bu Ay-Satürn üçgeni bugün daha görünür çalışıyor. Bu hareket önce 11. evinde, yani çevre ve gelecek planları alanında çalışıyor. Ama hikâye orada kalmıyor; 3. evdeki temayı tetiklediği için bu etki en çok zihnin ve konuşma halin üzerinde görünür oluyor. Natal haritanda Satürn Koç burcunda 3. evde. Bu yüzden bu açı sende sadece bugünün havasını anlatmıyor; altta zaten çalışan zihin ve iletişim temasını yeniden uyandırıyor. Yani bugünkü tetik tek başına değil; arkada \"Zihinsel Otoriteni Insa Ediyorsun\" döneminin sana hangi kapıdan açıldığını gösteriyor. Bu hikâye tek katmanlı değil: Bu, kendini zorlamak değil.",
+          "guidance": "Cümleni biraz daha görünür kıl.",
+          "debug": {
+            "source": "daily_event_card_legacy_humanizer"
+          },
+          "blind_label": "B",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "aspect_name",
+            "aspect_word",
+            "planet_name",
+            "sign_name"
+          ],
+          "story_type": null,
+          "spine_line": null,
+          "event_nature": null,
+          "meaning_intent": null,
+          "rhetorical_frame": null,
+          "manifestation_context": {}
+        },
+        {
+          "source_variant": "today_story_candidate_plus_current_daily_synthesis",
+          "headline": "Bugün özellikle görünür olurken rahat kalmak biraz daha rahat olabilir.",
+          "body": "Konuşurken bir şey daha rahat akıyor bugün. Ama aynı gün kendine karşı küçük bir alan açılabilir bugün. Bu en çok zihnin ve konuşma halin tarafında; yakın çevre, mesaj trafiği ve karar anlarında hissedilir. Çünkü bu doğrudan sorumluluk eşiğin çizgine değiyor. O yüzden 1. ev, 2. ev başlığı da bu etkiye kolayca eşlik edebilir. Bu yeni bir başlık değil; içinde olduğun \"Zihinsel Otoriteni Insa Ediyorsun\" dönemi bugün en çok kendini ortaya koyma biçimin tarafına vuruyor.",
+          "guidance": "Duruşunu zorlamadan aç.",
+          "debug": {
+            "story_type": "period_triggered_today",
+            "spine_line": null,
+            "event_nature": "regulation",
+            "meaning_intent": "integration_invitation",
+            "rhetorical_frame": "reframe",
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 11,
+              "house_axis": "11-3",
+              "target_planet": "Saturn",
+              "target_planet_house": 3,
+              "ruled_houses": [],
+              "angle": null,
+              "life_scene": "birlikte yürüdüğün insanlar",
+              "life_scene_variants": [
+                "geleceğe doğru kurduğun çevre",
+                "ait olduğun topluluklar",
+                "birlikte yürüdüğün insanlar"
+              ],
+              "context_seed": "Bu tema daha çok birlikte yürüdüğün insanlar içinden görünür oluyor.",
+              "variant_index": 2,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "f331c043ca99474688982f52bdedfc269d826628"
+                ]
+              }
+            },
+            "source": "daily_synthesis_current_runtime",
+            "today_story_candidate_present": true
+          },
+          "blind_label": "C",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "house_number"
+          ],
+          "story_type": "period_triggered_today",
+          "spine_line": null,
+          "event_nature": "regulation",
+          "meaning_intent": "integration_invitation",
+          "rhetorical_frame": "reframe",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 11,
+            "house_axis": "11-3",
+            "target_planet": "Saturn",
+            "target_planet_house": 3,
+            "ruled_houses": [],
+            "angle": null,
+            "life_scene": "birlikte yürüdüğün insanlar",
+            "life_scene_variants": [
+              "geleceğe doğru kurduğun çevre",
+              "ait olduğun topluluklar",
+              "birlikte yürüdüğün insanlar"
+            ],
+            "context_seed": "Bu tema daha çok birlikte yürüdüğün insanlar içinden görünür oluyor.",
+            "variant_index": 2,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "f331c043ca99474688982f52bdedfc269d826628"
+              ]
+            }
+          }
+        }
+      ],
+      "runtime_quality": {
+        "degraded_path": false,
+        "degraded_path_reason": ""
+      },
+      "answer_key": {
+        "period": {
+          "B": "legacy_period_output",
+          "C": "canonical_period_spine_plus_voice_policy",
+          "A": "canonical_period_plus_manifestation_context"
+        },
+        "daily": {
+          "B": "legacy_daily_output",
+          "C": "today_story_candidate_plus_current_daily_synthesis",
+          "A": "mock_today_delta_signal_plus_scene_aware_daily"
+        }
+      },
+      "surface_availability": {
+        "period": {
+          "available": true,
+          "reasons": []
+        },
+        "daily": {
+          "available": true,
+          "reasons": []
+        }
+      }
+    },
+    {
+      "fixture_id": "fix03_pisces_cancer_water",
+      "fixture_label": "Balık güneş + Yengeç yükselen — su ağırlık",
+      "window_start": "2026-05-01",
+      "window_end": "2026-05-31",
+      "selected_date": "2026-05-03",
+      "status": "ok",
+      "period_variants": [
+        {
+          "source_variant": "canonical_period_spine_plus_voice_policy",
+          "headline": "Denge ve Yapı Temasi Derinlesiyor",
+          "body": "Bu dönem doğum haritandaki yakınlık ve güven hattını özellikle çalıştırıyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Mesele çok insan değil; doğru çevre, doğru hedef ve doğru ortaklık.\n\nKonu daha sert olmak değil; yakınlıkla mesafeyi aynı cümlede tutacak ayarı bulmak.\n\nIlişkilerde sınır daha belirgin hale geliyor. Açılmak istediğin yerle kendini koruduğun yer aynı anda görünür oluyor.\n\nİki uçtan birine gitmek gerekmiyor; küçük ayar bu temayı daha doğru taşır.",
+          "guidance": "",
+          "debug": {
+            "spine_event_id": "da5731b34497a1c7ad69ac956da1151b1aa8676f",
+            "support_event_ids": [
+              "44d7cbe0432f49a2fee4bfa2d26d24ad93580d37",
+              "69046625866cc4387cdf5c298c881cf42214c948"
+            ],
+            "track_id": "network_transform_11",
+            "spine_role": "builder",
+            "support_roles": [
+              "peak",
+              "integrator"
+            ],
+            "canonical_period_spine_source": "canonical_natal_activation_v1",
+            "canonical_period_spine_target_node_id": "promise_build_safe_intimacy",
+            "promise_prefix_source": "canonical_period_spine",
+            "period_voice_policy_version": "period_voice_policy_v1",
+            "period_voice_policy_reason_line_allowed": true,
+            "period_voice_policy_avoid_tags": [
+              "generic_hat_copy",
+              "coaching_command",
+              "unbacked_natal_reason",
+              "astro_first_opening"
+            ],
+            "period_voice_policy_meaning_intent": "trust_calibration",
+            "period_voice_policy_rhetorical_frame": "calibration",
+            "period_voice_policy_match_level": "exact",
+            "period_voice_policy_manifestation_context": {},
+            "period_voice_policy": {
+              "spine_line": "relational_line",
+              "event_nature": "boundary",
+              "event_nature_source": "spine_line_context",
+              "policy_match": {
+                "level": "exact",
+                "seed_key": "relational_line.boundary",
+                "fallback_order": [
+                  "exact",
+                  "spine_line_generic",
+                  "event_nature_generic",
+                  "legacy_untouched"
+                ]
+              },
+              "match_level": "exact",
+              "chapter_role": "builder",
+              "canonical_backing_node_ids": [
+                "promise_build_safe_intimacy"
+              ],
+              "meaning_intent": "trust_calibration",
+              "rhetorical_frame": "calibration",
+              "manifestation_context": {},
+              "frame_debug": {
+                "candidates": [
+                  "calibration",
+                  "mirror"
+                ],
+                "recent_rhetorical_frames": [],
+                "rotation_applied": false
+              },
+              "event_bodies": [
+                "pluto",
+                "saturn",
+                "north node"
+              ],
+              "matched_event_ids": [
+                "da5731b34497a1c7ad69ac956da1151b1aa8676f",
+                "44d7cbe0432f49a2fee4bfa2d26d24ad93580d37",
+                "69046625866cc4387cdf5c298c881cf42214c948"
+              ]
+            }
+          },
+          "blind_label": "A",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "repeated_bu_donem_opening",
+            "repeated_opening",
+            "system_scaffold_phrase",
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": "relational_line",
+          "event_nature": "boundary",
+          "meaning_intent": "trust_calibration",
+          "rhetorical_frame": "calibration",
+          "manifestation_context": {},
+          "display_headline": "Denge ve Yapı Teması Derinleşiyor",
+          "display_body": "Yakınlık ve güven hattı bu dönemde özellikle belirginleşiyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Mesele çok insan değil; doğru çevre, doğru hedef ve doğru ortaklık.\n\nKonu daha sert olmak değil; yakınlıkla mesafeyi aynı cümlede tutacak ayarı bulmak.\n\nİlişkilerde sınır daha belirgin hale geliyor. Açılmak istediğin yerle kendini koruduğun yer aynı anda görünür oluyor.\n\nİki uçtan birine gitmek gerekmiyor; küçük ayar bu temayı daha doğru taşır.",
+          "display_guidance": ""
+        },
+        {
+          "source_variant": "legacy_period_output",
+          "headline": "Denge ve Yapı Temasi Derinlesiyor",
+          "body": "Mesele çok insan değil; doğru çevre, doğru hedef ve doğru ortaklık.\n\nİçeride değişen güç algın, dışarıda hangi çevrede yer almak istediğini de yeniden tanımlıyor.\n\nÖnce içeride eleme oluyor, sonra dışarıda çevre ve hedef kendini yeniden sıralıyor.\n\nRisk, seçiciliği soğukluk ya da kontrol etme ihtiyacına çevirmek.",
+          "guidance": "",
+          "debug": {
+            "track_id": "network_transform_11",
+            "source": "build_story_track_copy"
+          },
+          "blind_label": "B",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": null,
+          "event_nature": null,
+          "meaning_intent": null,
+          "rhetorical_frame": null,
+          "manifestation_context": {},
+          "display_headline": "Denge ve Yapı Teması Derinleşiyor",
+          "display_body": "Mesele çok insan değil; doğru çevre, doğru hedef ve doğru ortaklık.\n\nİçeride değişen güç algın, dışarıda hangi çevrede yer almak istediğini de yeniden tanımlıyor.\n\nÖnce içeride eleme oluyor, sonra dışarıda çevre ve hedef kendini yeniden sıralıyor.\n\nRisk, seçiciliği soğukluk ya da kontrol etme ihtiyacına çevirmek.",
+          "display_guidance": ""
+        },
+        {
+          "source_variant": "canonical_period_plus_manifestation_context",
+          "headline": "Denge ve Yapı Temasi Derinlesiyor",
+          "body": "Bu dönem doğum haritandaki yakınlık ve güven hattını özellikle çalıştırıyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Mesele çok insan değil; doğru çevre, doğru hedef ve doğru ortaklık.\n\nKonu daha sert olmak değil; özellikle kendini başlatma biçimin tarafında yakınlıkla mesafeyi aynı cümlede tutacak ayarı bulmak.\n\nIlişkilerde sınır daha belirgin hale geliyor. Açılmak istediğin yerle kendini koruduğun yer aynı anda görünür oluyor. Bu tema daha çok kendini başlatma biçimin içinden görünür oluyor.\n\nAsıl ayar, kendini başlatma biçimin tarafında neyi açıp neyi biraz geride tuttuğunu daha bilinçli seçmek.",
+          "guidance": "",
+          "debug": {
+            "spine_event_id": "da5731b34497a1c7ad69ac956da1151b1aa8676f",
+            "support_event_ids": [
+              "44d7cbe0432f49a2fee4bfa2d26d24ad93580d37",
+              "69046625866cc4387cdf5c298c881cf42214c948"
+            ],
+            "track_id": "network_transform_11",
+            "spine_role": "builder",
+            "support_roles": [
+              "peak",
+              "integrator"
+            ],
+            "canonical_period_spine_source": "canonical_natal_activation_v1",
+            "canonical_period_spine_target_node_id": "promise_build_safe_intimacy",
+            "promise_prefix_source": "canonical_period_spine",
+            "period_voice_policy_version": "period_voice_policy_v1",
+            "period_voice_policy_reason_line_allowed": true,
+            "period_voice_policy_avoid_tags": [
+              "generic_hat_copy",
+              "coaching_command",
+              "unbacked_natal_reason",
+              "astro_first_opening"
+            ],
+            "period_voice_policy_meaning_intent": "trust_calibration",
+            "period_voice_policy_rhetorical_frame": "calibration",
+            "period_voice_policy_match_level": "exact",
+            "period_voice_policy_manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 1,
+              "house_axis": "1",
+              "target_planet": "Moon",
+              "target_planet_house": 1,
+              "ruled_houses": [],
+              "angle": null,
+              "life_scene": "kendini başlatma biçimin",
+              "life_scene_variants": [
+                "bedenin, duruşun ve kişisel yönün",
+                "kendini başlatma biçimin",
+                "hayata nasıl girdiğin yer"
+              ],
+              "context_seed": "Bu tema daha çok kendini başlatma biçimin içinden görünür oluyor.",
+              "variant_index": 1,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "da5731b34497a1c7ad69ac956da1151b1aa8676f",
+                  "44d7cbe0432f49a2fee4bfa2d26d24ad93580d37",
+                  "69046625866cc4387cdf5c298c881cf42214c948"
+                ]
+              }
+            },
+            "period_voice_policy": {
+              "spine_line": "relational_line",
+              "event_nature": "boundary",
+              "event_nature_source": "spine_line_context",
+              "policy_match": {
+                "level": "exact",
+                "seed_key": "relational_line.boundary",
+                "fallback_order": [
+                  "exact",
+                  "spine_line_generic",
+                  "event_nature_generic",
+                  "legacy_untouched"
+                ]
+              },
+              "match_level": "exact",
+              "chapter_role": "builder",
+              "canonical_backing_node_ids": [
+                "promise_build_safe_intimacy"
+              ],
+              "meaning_intent": "trust_calibration",
+              "rhetorical_frame": "calibration",
+              "manifestation_context": {
+                "version": "manifestation_context_v1",
+                "primary_house": 1,
+                "house_axis": "1",
+                "target_planet": "Moon",
+                "target_planet_house": 1,
+                "ruled_houses": [],
+                "angle": null,
+                "life_scene": "kendini başlatma biçimin",
+                "life_scene_variants": [
+                  "bedenin, duruşun ve kişisel yönün",
+                  "kendini başlatma biçimin",
+                  "hayata nasıl girdiğin yer"
+                ],
+                "context_seed": "Bu tema daha çok kendini başlatma biçimin içinden görünür oluyor.",
+                "variant_index": 1,
+                "source": "event_house",
+                "release_strengthened": false,
+                "debug": {
+                  "event_ids": [
+                    "da5731b34497a1c7ad69ac956da1151b1aa8676f",
+                    "44d7cbe0432f49a2fee4bfa2d26d24ad93580d37",
+                    "69046625866cc4387cdf5c298c881cf42214c948"
+                  ]
+                }
+              },
+              "frame_debug": {
+                "candidates": [
+                  "calibration",
+                  "mirror"
+                ],
+                "recent_rhetorical_frames": [],
+                "rotation_applied": false
+              },
+              "event_bodies": [
+                "pluto",
+                "saturn",
+                "north node"
+              ],
+              "matched_event_ids": [
+                "da5731b34497a1c7ad69ac956da1151b1aa8676f",
+                "44d7cbe0432f49a2fee4bfa2d26d24ad93580d37",
+                "69046625866cc4387cdf5c298c881cf42214c948"
+              ]
+            }
+          },
+          "blind_label": "C",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "repeated_bu_donem_opening",
+            "repeated_opening",
+            "system_scaffold_phrase",
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": "relational_line",
+          "event_nature": "boundary",
+          "meaning_intent": "trust_calibration",
+          "rhetorical_frame": "calibration",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 1,
+            "house_axis": "1",
+            "target_planet": "Moon",
+            "target_planet_house": 1,
+            "ruled_houses": [],
+            "angle": null,
+            "life_scene": "kendini başlatma biçimin",
+            "life_scene_variants": [
+              "bedenin, duruşun ve kişisel yönün",
+              "kendini başlatma biçimin",
+              "hayata nasıl girdiğin yer"
+            ],
+            "context_seed": "Bu tema daha çok kendini başlatma biçimin içinden görünür oluyor.",
+            "variant_index": 1,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "da5731b34497a1c7ad69ac956da1151b1aa8676f",
+                "44d7cbe0432f49a2fee4bfa2d26d24ad93580d37",
+                "69046625866cc4387cdf5c298c881cf42214c948"
+              ]
+            }
+          },
+          "display_headline": "Denge ve Yapı Teması Derinleşiyor",
+          "display_body": "Yakınlık ve güven hattı bu dönemde özellikle belirginleşiyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Mesele çok insan değil; doğru çevre, doğru hedef ve doğru ortaklık.\n\nKonu daha sert olmak değil; özellikle kendini başlatma biçimin tarafında yakınlıkla mesafeyi aynı cümlede tutacak ayarı bulmak.\n\nİlişkilerde sınır daha belirgin hale geliyor. Açılmak istediğin yerle kendini koruduğun yer aynı anda görünür oluyor. Bu tema daha çok kendini başlatma biçimin içinden görünür oluyor.\n\nAsıl ayar, kendini başlatma biçimin tarafında neyi açıp neyi biraz geride tuttuğunu daha bilinçli seçmek.",
+          "display_guidance": ""
+        }
+      ],
+      "daily_variants": [
+        {
+          "source_variant": "today_story_candidate_plus_current_daily_synthesis",
+          "headline": "Bugün özellikle görünür olurken rahat kalmak biraz daha rahat olabilir.",
+          "body": "Kendine karşı bir şey daha doğal akıyor bugün. Ama aynı gün kendine karşı küçük bir alan açılabilir bugün. Bu en çok kendini ortaya koyma biçimin tarafında; duruşun, görünüşün ve kendini ortaya koyma biçiminde belirir. Çünkü bu doğrudan ilk tepkin ve dışarıya verdiğin izlenim çizgine değiyor. Bu yeni bir başlık değil; içinde olduğun \"Denge ve Yapı Temasi Derinlesiyor\" dönemi bugün en çok kendini ortaya koyma biçimin tarafına vuruyor.",
+          "guidance": "Duruşunu zorlamadan aç.",
+          "debug": {
+            "story_type": "period_triggered_today",
+            "spine_line": "relational_line",
+            "event_nature": "courage",
+            "meaning_intent": "visibility_alignment",
+            "rhetorical_frame": "threshold",
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 3,
+              "house_axis": "3-1",
+              "target_planet": "ASC",
+              "target_planet_house": 1,
+              "ruled_houses": [],
+              "angle": "ASC",
+              "life_scene": "gündelik konuşmalar",
+              "life_scene_variants": [
+                "gündelik konuşmalar",
+                "küçük cümlelerin ağırlığı",
+                "yakın çevrendeki ses"
+              ],
+              "context_seed": "Bu tema daha çok gündelik konuşmalar içinden görünür oluyor.",
+              "variant_index": 0,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "5c094e3bd122d16ecf5d3fe427057c9ed74a73f5"
+                ]
+              }
+            },
+            "source": "daily_synthesis_current_runtime",
+            "today_story_candidate_present": true
+          },
+          "blind_label": "A",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [],
+          "story_type": "period_triggered_today",
+          "spine_line": "relational_line",
+          "event_nature": "courage",
+          "meaning_intent": "visibility_alignment",
+          "rhetorical_frame": "threshold",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 3,
+            "house_axis": "3-1",
+            "target_planet": "ASC",
+            "target_planet_house": 1,
+            "ruled_houses": [],
+            "angle": "ASC",
+            "life_scene": "gündelik konuşmalar",
+            "life_scene_variants": [
+              "gündelik konuşmalar",
+              "küçük cümlelerin ağırlığı",
+              "yakın çevrendeki ses"
+            ],
+            "context_seed": "Bu tema daha çok gündelik konuşmalar içinden görünür oluyor.",
+            "variant_index": 0,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "5c094e3bd122d16ecf5d3fe427057c9ed74a73f5"
+              ]
+            }
+          }
+        },
+        {
+          "source_variant": "mock_today_delta_signal_plus_scene_aware_daily",
+          "headline": "Bugün özellikle görünür olurken rahat kalmak biraz daha rahat olabilir.",
+          "body": "Bugün bu konu dünden daha sesli. Özellikle gündelik konuşmalar tarafında görünür oluyor. Bugün Sun trine hattı konuyu daha görünür yapıyor. Yakınlık 0.49°.\n\nAna hareket daha çok courage tarafında. Günün tonu integrator gibi ilerliyor.",
+          "guidance": "relational_default_edge",
+          "debug": {
+            "story_type": "period_triggered_today",
+            "spine_line": "relational_line",
+            "event_nature": "courage",
+            "meaning_intent": "visibility_alignment",
+            "rhetorical_frame": "threshold",
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 3,
+              "house_axis": "3-1",
+              "target_planet": "ASC",
+              "target_planet_house": 1,
+              "ruled_houses": [],
+              "angle": "ASC",
+              "life_scene": "gündelik konuşmalar",
+              "life_scene_variants": [
+                "gündelik konuşmalar",
+                "küçük cümlelerin ağırlığı",
+                "yakın çevrendeki ses"
+              ],
+              "context_seed": "Bu tema daha çok gündelik konuşmalar içinden görünür oluyor.",
+              "variant_index": 0,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "5c094e3bd122d16ecf5d3fe427057c9ed74a73f5"
+                ]
+              }
+            },
+            "life_scene": "gündelik konuşmalar",
+            "source": "script_mock_scene_aware_daily",
+            "today_story_candidate_present": true
+          },
+          "blind_label": "B",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [],
+          "story_type": "period_triggered_today",
+          "spine_line": "relational_line",
+          "event_nature": "courage",
+          "meaning_intent": "visibility_alignment",
+          "rhetorical_frame": "threshold",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 3,
+            "house_axis": "3-1",
+            "target_planet": "ASC",
+            "target_planet_house": 1,
+            "ruled_houses": [],
+            "angle": "ASC",
+            "life_scene": "gündelik konuşmalar",
+            "life_scene_variants": [
+              "gündelik konuşmalar",
+              "küçük cümlelerin ağırlığı",
+              "yakın çevrendeki ses"
+            ],
+            "context_seed": "Bu tema daha çok gündelik konuşmalar içinden görünür oluyor.",
+            "variant_index": 0,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "5c094e3bd122d16ecf5d3fe427057c9ed74a73f5"
+              ]
+            }
+          }
+        },
+        {
+          "source_variant": "legacy_daily_output",
+          "headline": "Bugün akış açılıyor.",
+          "body": "Kendine karşı bir şey daha doğal akıyor bugün.\n\nBugünün tonunu özellikle Güneş Yükselen ile üçgen belirliyor; bu Güneş-Yükselen üçgeni bugün daha görünür çalışıyor. Bu hareket 3. evinde çalıştığı için bugün zihin ve iletişim tarafı daha görünür. Orada görünen şey, özellikle kendini ortaya koyma biçimin daha çabuk hareketleniyor. Yükselen hattın Oğlak; yöneticisi Satürn sende 12. evde. O yüzden burada görünen şey yalnızca 3. evdeki gündelik tetik değil; doğrudan o hatta inen daha derin bir ayar. Bugün yaşadığın şey tek başına değil; \"Denge ve Yapı Temasi Derinlesiyor\" döneminin bugüne inen yüzü. Bu hikâye tek katmanlı değil: Konu daha sert olmak değil; özellikle kendini başlatma biçimin tarafında yakınlıkla mesafeyi aynı cümlede tutacak ayarı bulmak.",
+          "guidance": "Duruşunu biraz daha görünür kıl.",
+          "debug": {
+            "source": "daily_event_card_legacy_humanizer"
+          },
+          "blind_label": "C",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "aspect_name",
+            "planet_name",
+            "sign_name"
+          ],
+          "story_type": null,
+          "spine_line": null,
+          "event_nature": null,
+          "meaning_intent": null,
+          "rhetorical_frame": null,
+          "manifestation_context": {}
+        }
+      ],
+      "runtime_quality": {
+        "degraded_path": false,
+        "degraded_path_reason": ""
+      },
+      "answer_key": {
+        "period": {
+          "B": "legacy_period_output",
+          "A": "canonical_period_spine_plus_voice_policy",
+          "C": "canonical_period_plus_manifestation_context"
+        },
+        "daily": {
+          "C": "legacy_daily_output",
+          "A": "today_story_candidate_plus_current_daily_synthesis",
+          "B": "mock_today_delta_signal_plus_scene_aware_daily"
+        }
+      },
+      "surface_availability": {
+        "period": {
+          "available": true,
+          "reasons": []
+        },
+        "daily": {
+          "available": true,
+          "reasons": []
+        }
+      }
+    },
+    {
+      "fixture_id": "fix04_h10_career_stellium",
+      "fixture_label": "10. ev stellium — kariyer/visibility ağırlığı",
+      "window_start": "2026-05-01",
+      "window_end": "2026-05-31",
+      "selected_date": "2026-05-03",
+      "status": "ok",
+      "period_variants": [
+        {
+          "source_variant": "canonical_period_spine_plus_voice_policy",
+          "headline": "İlişki Dengesini Yeniden Kuruyorsun",
+          "body": "Bu dönem doğum haritandaki yakınlık ve güven hattını özellikle çalıştırıyor. Bu dönem görünürlük kazanan eşik tam bu hatta toplanıyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.\n\nBu, kendini zorlamak değil.\n\nYakın olduğun yerlerde daha çok kendin oluyorsun. Birinin yanında durmak ya da durmamak eskisi kadar yarım his bırakmıyor.\n\nBu, savunmayı çözmek değil.",
+          "guidance": "",
+          "debug": {
+            "spine_event_id": "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+            "support_event_ids": [
+              "8391fb91351eb955734c5aab7c335093dde8fb75",
+              "078fbca184b3ab9e827c558a574eb0dc2430057d"
+            ],
+            "track_id": "default",
+            "spine_role": "peak",
+            "support_roles": [
+              "builder",
+              "release"
+            ],
+            "canonical_period_spine_source": "canonical_natal_activation_v1",
+            "canonical_period_spine_target_node_id": "promise_build_safe_intimacy",
+            "promise_prefix_source": "canonical_period_spine",
+            "period_voice_policy_version": "period_voice_policy_v1",
+            "period_voice_policy_reason_line_allowed": true,
+            "period_voice_policy_avoid_tags": [
+              "generic_hat_copy",
+              "coaching_command",
+              "unbacked_natal_reason",
+              "astro_first_opening"
+            ],
+            "period_voice_policy_meaning_intent": "softening",
+            "period_voice_policy_rhetorical_frame": "naked",
+            "period_voice_policy_match_level": "spine_line_generic",
+            "period_voice_policy_manifestation_context": {},
+            "period_voice_policy": {
+              "spine_line": "relational_line",
+              "event_nature": "dissolution",
+              "event_nature_source": "weighted_event_signal",
+              "policy_match": {
+                "level": "spine_line_generic",
+                "seed_key": "relational_line.default",
+                "fallback_order": [
+                  "exact",
+                  "spine_line_generic",
+                  "event_nature_generic",
+                  "legacy_untouched"
+                ]
+              },
+              "match_level": "spine_line_generic",
+              "chapter_role": "peak",
+              "canonical_backing_node_ids": [
+                "promise_build_safe_intimacy"
+              ],
+              "meaning_intent": "softening",
+              "rhetorical_frame": "naked",
+              "manifestation_context": {},
+              "frame_debug": {
+                "candidates": [
+                  "naked",
+                  "reframe"
+                ],
+                "recent_rhetorical_frames": [],
+                "rotation_applied": false
+              },
+              "event_bodies": [
+                "neptune",
+                "uranus",
+                "sun"
+              ],
+              "matched_event_ids": [
+                "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+                "8391fb91351eb955734c5aab7c335093dde8fb75",
+                "078fbca184b3ab9e827c558a574eb0dc2430057d"
+              ]
+            }
+          },
+          "blind_label": "A",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "isolated_naked_frame",
+            "repeated_bu_donem_opening",
+            "repeated_opening",
+            "system_scaffold_phrase",
+            "threshold_word_leak"
+          ],
+          "story_type": null,
+          "spine_line": "relational_line",
+          "event_nature": "dissolution",
+          "meaning_intent": "softening",
+          "rhetorical_frame": "naked",
+          "manifestation_context": {},
+          "display_headline": "İlişki Dengesini Yeniden Kuruyorsun",
+          "display_body": "Yakınlık ve güven hattı bu dönemde özellikle belirginleşiyor. Görünürlük kazanan çizgi bu kez tam bu hatta toplanıyor. Hayatının bir alanı daha görünür hale geliyor; senden daha bilinçli seçimler istiyor.\n\nBu, kendini zorlamak değil.\n\nYakın olduğun yerlerde daha çok kendin oluyorsun. Birinin yanında durmak ya da durmamak eskisi kadar yarım his bırakmıyor.\n\nBu, savunmayı çözmek değil.",
+          "display_guidance": ""
+        },
+        {
+          "source_variant": "canonical_period_plus_manifestation_context",
+          "headline": "İlişki Dengesini Yeniden Kuruyorsun",
+          "body": "Bu dönem doğum haritandaki yakınlık ve güven hattını özellikle çalıştırıyor. Bu dönem görünürlük kazanan eşik tam bu hatta toplanıyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.\n\nBu, kendini zorlamak değil. Özellikle anlaşma yapma biçimin tarafında büyüyen şeyi hemen sonuca çevirmek de değil.\n\nYakın olduğun yerlerde daha çok kendin oluyorsun. Birinin yanında durmak ya da durmamak eskisi kadar yarım his bırakmıyor. Bu tema daha çok anlaşma yapma biçimin içinden görünür oluyor.\n\nBu, savunmayı çözmek değil.",
+          "guidance": "",
+          "debug": {
+            "spine_event_id": "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+            "support_event_ids": [
+              "8391fb91351eb955734c5aab7c335093dde8fb75",
+              "078fbca184b3ab9e827c558a574eb0dc2430057d"
+            ],
+            "track_id": "default",
+            "spine_role": "peak",
+            "support_roles": [
+              "builder",
+              "release"
+            ],
+            "canonical_period_spine_source": "canonical_natal_activation_v1",
+            "canonical_period_spine_target_node_id": "promise_build_safe_intimacy",
+            "promise_prefix_source": "canonical_period_spine",
+            "period_voice_policy_version": "period_voice_policy_v1",
+            "period_voice_policy_reason_line_allowed": true,
+            "period_voice_policy_avoid_tags": [
+              "generic_hat_copy",
+              "coaching_command",
+              "unbacked_natal_reason",
+              "astro_first_opening"
+            ],
+            "period_voice_policy_meaning_intent": "softening",
+            "period_voice_policy_rhetorical_frame": "naked",
+            "period_voice_policy_match_level": "spine_line_generic",
+            "period_voice_policy_manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 7,
+              "house_axis": "7-10",
+              "target_planet": "Mars",
+              "target_planet_house": 10,
+              "ruled_houses": [],
+              "angle": "ASC",
+              "life_scene": "anlaşma yapma biçimin",
+              "life_scene_variants": [
+                "karşındaki kişiyle kurduğun denge",
+                "anlaşma yapma biçimin",
+                "yakın ilişkideki karşılıklı alan"
+              ],
+              "context_seed": "Bu tema daha çok anlaşma yapma biçimin içinden görünür oluyor.",
+              "variant_index": 1,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+                  "8391fb91351eb955734c5aab7c335093dde8fb75",
+                  "078fbca184b3ab9e827c558a574eb0dc2430057d"
+                ]
+              }
+            },
+            "period_voice_policy": {
+              "spine_line": "relational_line",
+              "event_nature": "dissolution",
+              "event_nature_source": "weighted_event_signal",
+              "policy_match": {
+                "level": "spine_line_generic",
+                "seed_key": "relational_line.default",
+                "fallback_order": [
+                  "exact",
+                  "spine_line_generic",
+                  "event_nature_generic",
+                  "legacy_untouched"
+                ]
+              },
+              "match_level": "spine_line_generic",
+              "chapter_role": "peak",
+              "canonical_backing_node_ids": [
+                "promise_build_safe_intimacy"
+              ],
+              "meaning_intent": "softening",
+              "rhetorical_frame": "naked",
+              "manifestation_context": {
+                "version": "manifestation_context_v1",
+                "primary_house": 7,
+                "house_axis": "7-10",
+                "target_planet": "Mars",
+                "target_planet_house": 10,
+                "ruled_houses": [],
+                "angle": "ASC",
+                "life_scene": "anlaşma yapma biçimin",
+                "life_scene_variants": [
+                  "karşındaki kişiyle kurduğun denge",
+                  "anlaşma yapma biçimin",
+                  "yakın ilişkideki karşılıklı alan"
+                ],
+                "context_seed": "Bu tema daha çok anlaşma yapma biçimin içinden görünür oluyor.",
+                "variant_index": 1,
+                "source": "event_house",
+                "release_strengthened": false,
+                "debug": {
+                  "event_ids": [
+                    "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+                    "8391fb91351eb955734c5aab7c335093dde8fb75",
+                    "078fbca184b3ab9e827c558a574eb0dc2430057d"
+                  ]
+                }
+              },
+              "frame_debug": {
+                "candidates": [
+                  "naked",
+                  "reframe"
+                ],
+                "recent_rhetorical_frames": [],
+                "rotation_applied": false
+              },
+              "event_bodies": [
+                "neptune",
+                "uranus",
+                "sun"
+              ],
+              "matched_event_ids": [
+                "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+                "8391fb91351eb955734c5aab7c335093dde8fb75",
+                "078fbca184b3ab9e827c558a574eb0dc2430057d"
+              ]
+            }
+          },
+          "blind_label": "B",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "repeated_bu_donem_opening",
+            "repeated_opening",
+            "system_scaffold_phrase",
+            "threshold_word_leak"
+          ],
+          "story_type": null,
+          "spine_line": "relational_line",
+          "event_nature": "dissolution",
+          "meaning_intent": "softening",
+          "rhetorical_frame": "naked",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 7,
+            "house_axis": "7-10",
+            "target_planet": "Mars",
+            "target_planet_house": 10,
+            "ruled_houses": [],
+            "angle": "ASC",
+            "life_scene": "anlaşma yapma biçimin",
+            "life_scene_variants": [
+              "karşındaki kişiyle kurduğun denge",
+              "anlaşma yapma biçimin",
+              "yakın ilişkideki karşılıklı alan"
+            ],
+            "context_seed": "Bu tema daha çok anlaşma yapma biçimin içinden görünür oluyor.",
+            "variant_index": 1,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e",
+                "8391fb91351eb955734c5aab7c335093dde8fb75",
+                "078fbca184b3ab9e827c558a574eb0dc2430057d"
+              ]
+            }
+          },
+          "display_headline": "İlişki Dengesini Yeniden Kuruyorsun",
+          "display_body": "Yakınlık ve güven hattı bu dönemde özellikle belirginleşiyor. Görünürlük kazanan çizgi bu kez tam bu hatta toplanıyor. Hayatının bir alanı daha görünür hale geliyor; senden daha bilinçli seçimler istiyor.\n\nBu, kendini zorlamak değil. Özellikle anlaşma yapma biçimin tarafında büyüyen şeyi hemen sonuca çevirmek de değil.\n\nYakın olduğun yerlerde daha çok kendin oluyorsun. Birinin yanında durmak ya da durmamak eskisi kadar yarım his bırakmıyor. Bu tema daha çok anlaşma yapma biçimin içinden görünür oluyor.\n\nBu, savunmayı çözmek değil.",
+          "display_guidance": ""
+        },
+        {
+          "source_variant": "legacy_period_output",
+          "headline": "İlişki Dengesini Yeniden Kuruyorsun",
+          "body": "Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.\n\nMesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.\n\nEtki önce gündelik hayatta görünür oluyor, sonra bunun sonucu daha kalıcı bir davranış değişimine dönüşüyor.\n\nRisk, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+          "guidance": "",
+          "debug": {
+            "track_id": "default",
+            "source": "build_story_track_copy"
+          },
+          "blind_label": "C",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "system_scaffold_phrase"
+          ],
+          "story_type": null,
+          "spine_line": null,
+          "event_nature": null,
+          "meaning_intent": null,
+          "rhetorical_frame": null,
+          "manifestation_context": {},
+          "display_headline": "İlişki Dengesini Yeniden Kuruyorsun",
+          "display_body": "Hayatının bir alanı daha görünür hale geliyor; senden daha bilinçli seçimler istiyor.\n\nMesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.\n\nEtki önce gündelik hayatta görünür oluyor, sonra bunun sonucu daha kalıcı bir davranış değişimine dönüşüyor.\n\nRisk, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+          "display_guidance": ""
+        }
+      ],
+      "daily_variants": [
+        {
+          "source_variant": "today_story_candidate_plus_current_daily_synthesis",
+          "headline": "Bugün arada kalan şeyi konuşmaya açmak zorlasa da kendini daha doğal göstermek tarafı açılabilir.",
+          "body": "Karşı tarafla aranda bir şey daha rahat akıyor bugün. Bu en çok karşı tarafla arandaki çizgi tarafında; beklenti, sınır ve konuşulmamış başlıklarda görünür olur. Çünkü bu doğrudan karşı tarafla tuttuğun çizgi çizgine değiyor. Ama aynı gün kendine karşı bir şey daha rahat akıyor bugün. Buradaki üçgen burada daha rahat bir akış verebilir Bugün etkisi daha keskin hissedilebilir. Bu yeni bir başlık değil; içinde olduğun \"İlişki Dengesini Yeniden Kuruyorsun\" dönemi bugün en çok yönün ve görünürlüğün tarafına vuruyor.",
+          "guidance": "Mesafeyi biraz daha görünür kıl.",
+          "debug": {
+            "story_type": "period_triggered_today",
+            "spine_line": null,
+            "event_nature": "dissolution",
+            "meaning_intent": "softening",
+            "rhetorical_frame": "naked",
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 7,
+              "house_axis": "7",
+              "target_planet": "Mars",
+              "target_planet_house": null,
+              "ruled_houses": [],
+              "angle": null,
+              "life_scene": "karşındaki kişiyle kurduğun denge",
+              "life_scene_variants": [
+                "karşındaki kişiyle kurduğun denge",
+                "anlaşma yapma biçimin",
+                "yakın ilişkideki karşılıklı alan"
+              ],
+              "context_seed": "Bu tema daha çok karşındaki kişiyle kurduğun denge içinden görünür oluyor.",
+              "variant_index": 0,
+              "source": "fallback",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e"
+                ]
+              }
+            },
+            "source": "daily_synthesis_current_runtime",
+            "today_story_candidate_present": true
+          },
+          "blind_label": "A",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "aspect_name",
+            "run_on_sentence_transition"
+          ],
+          "story_type": "period_triggered_today",
+          "spine_line": null,
+          "event_nature": "dissolution",
+          "meaning_intent": "softening",
+          "rhetorical_frame": "naked",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 7,
+            "house_axis": "7",
+            "target_planet": "Mars",
+            "target_planet_house": null,
+            "ruled_houses": [],
+            "angle": null,
+            "life_scene": "karşındaki kişiyle kurduğun denge",
+            "life_scene_variants": [
+              "karşındaki kişiyle kurduğun denge",
+              "anlaşma yapma biçimin",
+              "yakın ilişkideki karşılıklı alan"
+            ],
+            "context_seed": "Bu tema daha çok karşındaki kişiyle kurduğun denge içinden görünür oluyor.",
+            "variant_index": 0,
+            "source": "fallback",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e"
+              ]
+            }
+          }
+        },
+        {
+          "source_variant": "legacy_daily_output",
+          "headline": "Bugün akış açılıyor.",
+          "body": "Karşı tarafla aranda bir şey daha rahat akıyor bugün.\n\nBugünün tonunu özellikle Ay Alçalan ile üçgen belirliyor; bu Ay-Alçalan üçgeni bugün daha görünür çalışıyor. Bu hareket 3. evinde çalıştığı için bugün zihin ve iletişim tarafı daha görünür. Orada görünen şey, özellikle karşı tarafla arandaki çizgi daha çabuk hareketleniyor. Alçalan hattın Balık; yöneticisi Jüpiter sende 5. evde. O yüzden burada görünen şey yalnızca 3. evdeki gündelik tetik değil; doğrudan o hatta inen daha derin bir ayar. Yani bugünkü tetik tek başına değil; arkada \"İlişki Dengesini Yeniden Kuruyorsun\" döneminin sana hangi kapıdan açıldığını gösteriyor. Bu hikâye tek katmanlı değil: Bu, kendini zorlamak değil.",
+          "guidance": "Mesafeyi biraz daha görünür kıl.",
+          "debug": {
+            "source": "daily_event_card_legacy_humanizer"
+          },
+          "blind_label": "B",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "aspect_name",
+            "planet_name",
+            "sign_name"
+          ],
+          "story_type": null,
+          "spine_line": null,
+          "event_nature": null,
+          "meaning_intent": null,
+          "rhetorical_frame": null,
+          "manifestation_context": {}
+        },
+        {
+          "source_variant": "mock_today_delta_signal_plus_scene_aware_daily",
+          "headline": "Bugün arada kalan şeyi konuşmaya açmak zorlasa da kendini daha doğal göstermek tarafı açılabilir.",
+          "body": "Bugün bu konu dünden daha sesli. Özellikle karşındaki kişiyle kurduğun denge tarafında görünür oluyor. Bugün küçük bir sinyal temayı dünden daha sesli hale getiriyor.\n\nAna hareket daha çok dissolution tarafında. Günün tonu builder gibi ilerliyor.",
+          "guidance": "relational_default_edge",
+          "debug": {
+            "story_type": "period_triggered_today",
+            "spine_line": null,
+            "event_nature": "dissolution",
+            "meaning_intent": "softening",
+            "rhetorical_frame": "naked",
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 7,
+              "house_axis": "7",
+              "target_planet": "Mars",
+              "target_planet_house": null,
+              "ruled_houses": [],
+              "angle": null,
+              "life_scene": "karşındaki kişiyle kurduğun denge",
+              "life_scene_variants": [
+                "karşındaki kişiyle kurduğun denge",
+                "anlaşma yapma biçimin",
+                "yakın ilişkideki karşılıklı alan"
+              ],
+              "context_seed": "Bu tema daha çok karşındaki kişiyle kurduğun denge içinden görünür oluyor.",
+              "variant_index": 0,
+              "source": "fallback",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e"
+                ]
+              }
+            },
+            "life_scene": "karşındaki kişiyle kurduğun denge",
+            "source": "script_mock_scene_aware_daily",
+            "today_story_candidate_present": true
+          },
+          "blind_label": "C",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [],
+          "story_type": "period_triggered_today",
+          "spine_line": null,
+          "event_nature": "dissolution",
+          "meaning_intent": "softening",
+          "rhetorical_frame": "naked",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 7,
+            "house_axis": "7",
+            "target_planet": "Mars",
+            "target_planet_house": null,
+            "ruled_houses": [],
+            "angle": null,
+            "life_scene": "karşındaki kişiyle kurduğun denge",
+            "life_scene_variants": [
+              "karşındaki kişiyle kurduğun denge",
+              "anlaşma yapma biçimin",
+              "yakın ilişkideki karşılıklı alan"
+            ],
+            "context_seed": "Bu tema daha çok karşındaki kişiyle kurduğun denge içinden görünür oluyor.",
+            "variant_index": 0,
+            "source": "fallback",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "9e7403d9e1f130b38370cfe5b3e12bd24aaa574e"
+              ]
+            }
+          }
+        }
+      ],
+      "runtime_quality": {
+        "degraded_path": false,
+        "degraded_path_reason": ""
+      },
+      "answer_key": {
+        "period": {
+          "C": "legacy_period_output",
+          "A": "canonical_period_spine_plus_voice_policy",
+          "B": "canonical_period_plus_manifestation_context"
+        },
+        "daily": {
+          "B": "legacy_daily_output",
+          "A": "today_story_candidate_plus_current_daily_synthesis",
+          "C": "mock_today_delta_signal_plus_scene_aware_daily"
+        }
+      },
+      "surface_availability": {
+        "period": {
+          "available": true,
+          "reasons": []
+        },
+        "daily": {
+          "available": true,
+          "reasons": []
+        }
+      }
+    },
+    {
+      "fixture_id": "fix05_t_square_tense",
+      "fixture_label": "T-square paterni — gerilim odaklı",
+      "window_start": "2026-05-01",
+      "window_end": "2026-05-31",
+      "selected_date": "2026-05-03",
+      "status": "ok",
+      "period_variants": [
+        {
+          "source_variant": "legacy_period_output",
+          "headline": "Denge ve Yapı Temasi Derinlesiyor",
+          "body": "Bu dönem ilişkilerde yakınlık kadar tanım ve çerçeve ihtiyacı da büyüyor.\n\nİlişki tarafında mesele sadece bağ kurmak değil; bağı taşıyacak dili ve sınırı kurmak.\n\nÖnce konuşma biçimi değişir, ardından ilişkinin ritmi ve güven duygusu buna cevap verir.\n\nRisk, ima ile anlaşılmayı beklemek ya da karşı tarafın tepkisini bütün niyetin yerine koymak.",
+          "guidance": "",
+          "debug": {
+            "track_id": "mirror_axis_1_7",
+            "source": "build_story_track_copy"
+          },
+          "blind_label": "A",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": null,
+          "event_nature": null,
+          "meaning_intent": null,
+          "rhetorical_frame": null,
+          "manifestation_context": {},
+          "display_headline": "Denge ve Yapı Teması Derinleşiyor",
+          "display_body": "Bu dönem ilişkilerde yakınlık kadar tanım ve çerçeve ihtiyacı da büyüyor.\n\nİlişki tarafında mesele sadece bağ kurmak değil; bağı taşıyacak dili ve sınırı kurmak.\n\nÖnce konuşma biçimi değişir, ardından ilişkinin ritmi ve güven duygusu buna cevap verir.\n\nRisk, ima ile anlaşılmayı beklemek ya da karşı tarafın tepkisini bütün niyetin yerine koymak.",
+          "display_guidance": ""
+        },
+        {
+          "source_variant": "canonical_period_spine_plus_voice_policy",
+          "headline": "Denge ve Yapı Temasi Derinlesiyor",
+          "body": "Bu dönem doğum haritandaki yakınlık ve güven hattını özellikle çalıştırıyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Bu dönem ilişkilerde yakınlık kadar tanım ve çerçeve ihtiyacı da büyüyor.\n\nİlk bakışta bu bir \"kim haklı\" meselesi gibi görünebilir; ama altında, kendini ifade ederken nasıl korunduğun var.\n\nYakın olduğun yerlerde daha çok kendin oluyorsun. Birinin yanında durmak ya da durmamak eskisi kadar yarım his bırakmıyor.\n\nAsıl ayrım burada: yakınlığı kendinden uzaklaşmak sanmamak.",
+          "guidance": "",
+          "debug": {
+            "spine_event_id": "88367fb4a7c76d6f50b814db65c72d65904cd546",
+            "support_event_ids": [
+              "92de88041d925bccd6a67e883828f402821e6b67",
+              "a447749cec34587fb0a1bfc7417575f813aa1ef2"
+            ],
+            "track_id": "mirror_axis_1_7",
+            "spine_role": "builder",
+            "support_roles": [
+              "peak",
+              "integrator"
+            ],
+            "canonical_period_spine_source": "canonical_natal_activation_v1",
+            "canonical_period_spine_target_node_id": "promise_build_safe_intimacy",
+            "promise_prefix_source": "canonical_period_spine",
+            "period_voice_policy_version": "period_voice_policy_v1",
+            "period_voice_policy_reason_line_allowed": true,
+            "period_voice_policy_avoid_tags": [
+              "generic_hat_copy",
+              "coaching_command",
+              "unbacked_natal_reason",
+              "astro_first_opening"
+            ],
+            "period_voice_policy_meaning_intent": "attention_redirect",
+            "period_voice_policy_rhetorical_frame": "reframe",
+            "period_voice_policy_match_level": "spine_line_generic",
+            "period_voice_policy_manifestation_context": {},
+            "period_voice_policy": {
+              "spine_line": "relational_line",
+              "event_nature": "control",
+              "event_nature_source": "weighted_event_signal",
+              "policy_match": {
+                "level": "spine_line_generic",
+                "seed_key": "relational_line.default",
+                "fallback_order": [
+                  "exact",
+                  "spine_line_generic",
+                  "event_nature_generic",
+                  "legacy_untouched"
+                ]
+              },
+              "match_level": "spine_line_generic",
+              "chapter_role": "builder",
+              "canonical_backing_node_ids": [
+                "promise_build_safe_intimacy"
+              ],
+              "meaning_intent": "attention_redirect",
+              "rhetorical_frame": "reframe",
+              "manifestation_context": {},
+              "frame_debug": {
+                "candidates": [
+                  "reframe",
+                  "sorting"
+                ],
+                "recent_rhetorical_frames": [],
+                "rotation_applied": false
+              },
+              "event_bodies": [
+                "pluto",
+                "north node",
+                "sun"
+              ],
+              "matched_event_ids": [
+                "88367fb4a7c76d6f50b814db65c72d65904cd546",
+                "92de88041d925bccd6a67e883828f402821e6b67",
+                "a447749cec34587fb0a1bfc7417575f813aa1ef2"
+              ]
+            }
+          },
+          "blind_label": "B",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "repeated_bu_donem_opening",
+            "repeated_opening",
+            "system_scaffold_phrase",
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": "relational_line",
+          "event_nature": "control",
+          "meaning_intent": "attention_redirect",
+          "rhetorical_frame": "reframe",
+          "manifestation_context": {},
+          "display_headline": "Denge ve Yapı Teması Derinleşiyor",
+          "display_body": "Yakınlık ve güven hattı bu dönemde özellikle belirginleşiyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Şu sıralar ilişkilerde yakınlık kadar tanım ve çerçeve ihtiyacı da büyüyor.\n\nİlk bakışta bu bir \"kim haklı\" meselesi gibi görünebilir; ama altında, kendini ifade ederken nasıl korunduğun var.\n\nYakın olduğun yerlerde daha çok kendin oluyorsun. Birinin yanında durmak ya da durmamak eskisi kadar yarım his bırakmıyor.\n\nAsıl ayrım burada: yakınlığı kendinden uzaklaşmak sanmamak.",
+          "display_guidance": ""
+        },
+        {
+          "source_variant": "canonical_period_plus_manifestation_context",
+          "headline": "Denge ve Yapı Temasi Derinlesiyor",
+          "body": "Bu dönem doğum haritandaki yakınlık ve güven hattını özellikle çalıştırıyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Bu dönem ilişkilerde yakınlık kadar tanım ve çerçeve ihtiyacı da büyüyor.\n\nİlk bakışta bu bir \"kim haklı\" meselesi gibi görünebilir; ama özellikle sana ait hissettiren alan tarafında, altında kendini ifade ederken nasıl korunduğun var.\n\nYakın olduğun yerlerde daha çok kendin oluyorsun. Birinin yanında durmak ya da durmamak eskisi kadar yarım his bırakmıyor. Bu tema daha çok sana ait hissettiren alan içinden görünür oluyor.\n\nAsıl ayrım, sana ait hissettiren alan tarafında büyüyen tepkiyi bütün hikayenin yerine koymamak.",
+          "guidance": "",
+          "debug": {
+            "spine_event_id": "88367fb4a7c76d6f50b814db65c72d65904cd546",
+            "support_event_ids": [
+              "92de88041d925bccd6a67e883828f402821e6b67",
+              "a447749cec34587fb0a1bfc7417575f813aa1ef2"
+            ],
+            "track_id": "mirror_axis_1_7",
+            "spine_role": "builder",
+            "support_roles": [
+              "peak",
+              "integrator"
+            ],
+            "canonical_period_spine_source": "canonical_natal_activation_v1",
+            "canonical_period_spine_target_node_id": "promise_build_safe_intimacy",
+            "promise_prefix_source": "canonical_period_spine",
+            "period_voice_policy_version": "period_voice_policy_v1",
+            "period_voice_policy_reason_line_allowed": true,
+            "period_voice_policy_avoid_tags": [
+              "generic_hat_copy",
+              "coaching_command",
+              "unbacked_natal_reason",
+              "astro_first_opening"
+            ],
+            "period_voice_policy_meaning_intent": "attention_redirect",
+            "period_voice_policy_rhetorical_frame": "reframe",
+            "period_voice_policy_match_level": "spine_line_generic",
+            "period_voice_policy_manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 4,
+              "house_axis": "4-3",
+              "target_planet": "DSC",
+              "target_planet_house": 3,
+              "ruled_houses": [],
+              "angle": "DSC",
+              "life_scene": "sana ait hissettiren alan",
+              "life_scene_variants": [
+                "iç güvenliğin",
+                "evin, köklerin ve kendi içine döndüğün yer",
+                "sana ait hissettiren alan"
+              ],
+              "context_seed": "Bu tema daha çok sana ait hissettiren alan içinden görünür oluyor.",
+              "variant_index": 2,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "88367fb4a7c76d6f50b814db65c72d65904cd546",
+                  "92de88041d925bccd6a67e883828f402821e6b67",
+                  "a447749cec34587fb0a1bfc7417575f813aa1ef2"
+                ]
+              }
+            },
+            "period_voice_policy": {
+              "spine_line": "relational_line",
+              "event_nature": "control",
+              "event_nature_source": "weighted_event_signal",
+              "policy_match": {
+                "level": "spine_line_generic",
+                "seed_key": "relational_line.default",
+                "fallback_order": [
+                  "exact",
+                  "spine_line_generic",
+                  "event_nature_generic",
+                  "legacy_untouched"
+                ]
+              },
+              "match_level": "spine_line_generic",
+              "chapter_role": "builder",
+              "canonical_backing_node_ids": [
+                "promise_build_safe_intimacy"
+              ],
+              "meaning_intent": "attention_redirect",
+              "rhetorical_frame": "reframe",
+              "manifestation_context": {
+                "version": "manifestation_context_v1",
+                "primary_house": 4,
+                "house_axis": "4-3",
+                "target_planet": "DSC",
+                "target_planet_house": 3,
+                "ruled_houses": [],
+                "angle": "DSC",
+                "life_scene": "sana ait hissettiren alan",
+                "life_scene_variants": [
+                  "iç güvenliğin",
+                  "evin, köklerin ve kendi içine döndüğün yer",
+                  "sana ait hissettiren alan"
+                ],
+                "context_seed": "Bu tema daha çok sana ait hissettiren alan içinden görünür oluyor.",
+                "variant_index": 2,
+                "source": "event_house",
+                "release_strengthened": false,
+                "debug": {
+                  "event_ids": [
+                    "88367fb4a7c76d6f50b814db65c72d65904cd546",
+                    "92de88041d925bccd6a67e883828f402821e6b67",
+                    "a447749cec34587fb0a1bfc7417575f813aa1ef2"
+                  ]
+                }
+              },
+              "frame_debug": {
+                "candidates": [
+                  "reframe",
+                  "sorting"
+                ],
+                "recent_rhetorical_frames": [],
+                "rotation_applied": false
+              },
+              "event_bodies": [
+                "pluto",
+                "north node",
+                "sun"
+              ],
+              "matched_event_ids": [
+                "88367fb4a7c76d6f50b814db65c72d65904cd546",
+                "92de88041d925bccd6a67e883828f402821e6b67",
+                "a447749cec34587fb0a1bfc7417575f813aa1ef2"
+              ]
+            }
+          },
+          "blind_label": "C",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "repeated_bu_donem_opening",
+            "repeated_opening",
+            "system_scaffold_phrase",
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": "relational_line",
+          "event_nature": "control",
+          "meaning_intent": "attention_redirect",
+          "rhetorical_frame": "reframe",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 4,
+            "house_axis": "4-3",
+            "target_planet": "DSC",
+            "target_planet_house": 3,
+            "ruled_houses": [],
+            "angle": "DSC",
+            "life_scene": "sana ait hissettiren alan",
+            "life_scene_variants": [
+              "iç güvenliğin",
+              "evin, köklerin ve kendi içine döndüğün yer",
+              "sana ait hissettiren alan"
+            ],
+            "context_seed": "Bu tema daha çok sana ait hissettiren alan içinden görünür oluyor.",
+            "variant_index": 2,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "88367fb4a7c76d6f50b814db65c72d65904cd546",
+                "92de88041d925bccd6a67e883828f402821e6b67",
+                "a447749cec34587fb0a1bfc7417575f813aa1ef2"
+              ]
+            }
+          },
+          "display_headline": "Denge ve Yapı Teması Derinleşiyor",
+          "display_body": "Yakınlık ve güven hattı bu dönemde özellikle belirginleşiyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Şu sıralar ilişkilerde yakınlık kadar tanım ve çerçeve ihtiyacı da büyüyor.\n\nİlk bakışta bu bir \"kim haklı\" meselesi gibi görünebilir; ama özellikle sana ait hissettiren alan tarafında, altında kendini ifade ederken nasıl korunduğun var.\n\nYakın olduğun yerlerde daha çok kendin oluyorsun. Birinin yanında durmak ya da durmamak eskisi kadar yarım his bırakmıyor. Bu tema daha çok sana ait hissettiren alan içinden görünür oluyor.\n\nAsıl ayrım, sana ait hissettiren alan tarafında büyüyen tepkiyi bütün hikayenin yerine koymamak.",
+          "display_guidance": ""
+        }
+      ],
+      "daily_variants": [
+        {
+          "source_variant": "mock_today_delta_signal_plus_scene_aware_daily",
+          "headline": "Bugün özellikle günün temposunu düşürmek daha çabuk gerilebilir.",
+          "body": "Bugün tema tek bir olaydan çok, alttan gelen bir devam hissiyle çalışıyor. Özellikle evin, köklerin ve kendi içine döndüğün yer tarafında görünür oluyor. Bugün belirgin bir tek olaydan çok, birkaç küçük işaret bu hattın çalıştığını hatırlatıyor.\n\nAna hareket daha çok control tarafında. Günün tonu builder gibi ilerliyor.",
+          "guidance": "relational_default_edge",
+          "debug": {
+            "story_type": "period_continuation",
+            "spine_line": "relational_line",
+            "event_nature": "control",
+            "meaning_intent": "attention_redirect",
+            "rhetorical_frame": "reframe",
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 4,
+              "house_axis": "4-7",
+              "target_planet": "DSC",
+              "target_planet_house": 7,
+              "ruled_houses": [],
+              "angle": "DSC",
+              "life_scene": "evin, köklerin ve kendi içine döndüğün yer",
+              "life_scene_variants": [
+                "iç güvenliğin",
+                "evin, köklerin ve kendi içine döndüğün yer",
+                "sana ait hissettiren alan"
+              ],
+              "context_seed": "Bu tema daha çok evin, köklerin ve kendi içine döndüğün yer içinden görünür oluyor.",
+              "variant_index": 1,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "88367fb4a7c76d6f50b814db65c72d65904cd546"
+                ]
+              }
+            },
+            "life_scene": "evin, köklerin ve kendi içine döndüğün yer",
+            "source": "script_mock_scene_aware_daily",
+            "today_story_candidate_present": true
+          },
+          "blind_label": "A",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [],
+          "story_type": "period_continuation",
+          "spine_line": "relational_line",
+          "event_nature": "control",
+          "meaning_intent": "attention_redirect",
+          "rhetorical_frame": "reframe",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 4,
+            "house_axis": "4-7",
+            "target_planet": "DSC",
+            "target_planet_house": 7,
+            "ruled_houses": [],
+            "angle": "DSC",
+            "life_scene": "evin, köklerin ve kendi içine döndüğün yer",
+            "life_scene_variants": [
+              "iç güvenliğin",
+              "evin, köklerin ve kendi içine döndüğün yer",
+              "sana ait hissettiren alan"
+            ],
+            "context_seed": "Bu tema daha çok evin, köklerin ve kendi içine döndüğün yer içinden görünür oluyor.",
+            "variant_index": 1,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "88367fb4a7c76d6f50b814db65c72d65904cd546"
+              ]
+            }
+          }
+        },
+        {
+          "source_variant": "today_story_candidate_plus_current_daily_synthesis",
+          "headline": "Bugün özellikle günün temposunu düşürmek daha çabuk gerilebilir.",
+          "body": "Günün akışında bir sürtünme çabuk büyüyebilir bugün. Bu en çok günün ritmi ve düzenin tarafında; rutin, hız ve beden sinyallerinde hissedilir. Çünkü bu doğrudan yakınlık ve beğeni ölçün çizgine değiyor. O yüzden 7. ev başlığı da bu etkiye kolayca eşlik edebilir. Buradaki kare tonunu daha baskılı ve takılarak hissettirebilir Bugün etkisi daha keskin hissedilebilir. Ama aynı gün konuşurken bir şey daha doğal akıyor bugün. Bu yeni bir başlık değil; içinde olduğun \"Denge ve Yapı Temasi Derinlesiyor\" dönemi bugün en çok karşı tarafla arandaki çizgi tarafına vuruyor.",
+          "guidance": "Tempoyu biraz yavaşlat.",
+          "debug": {
+            "story_type": "period_continuation",
+            "spine_line": "relational_line",
+            "event_nature": "control",
+            "meaning_intent": "attention_redirect",
+            "rhetorical_frame": "reframe",
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 4,
+              "house_axis": "4-7",
+              "target_planet": "DSC",
+              "target_planet_house": 7,
+              "ruled_houses": [],
+              "angle": "DSC",
+              "life_scene": "evin, köklerin ve kendi içine döndüğün yer",
+              "life_scene_variants": [
+                "iç güvenliğin",
+                "evin, köklerin ve kendi içine döndüğün yer",
+                "sana ait hissettiren alan"
+              ],
+              "context_seed": "Bu tema daha çok evin, köklerin ve kendi içine döndüğün yer içinden görünür oluyor.",
+              "variant_index": 1,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "88367fb4a7c76d6f50b814db65c72d65904cd546"
+                ]
+              }
+            },
+            "source": "daily_synthesis_current_runtime",
+            "today_story_candidate_present": true
+          },
+          "blind_label": "B",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "aspect_name",
+            "house_number",
+            "run_on_sentence_transition"
+          ],
+          "story_type": "period_continuation",
+          "spine_line": "relational_line",
+          "event_nature": "control",
+          "meaning_intent": "attention_redirect",
+          "rhetorical_frame": "reframe",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 4,
+            "house_axis": "4-7",
+            "target_planet": "DSC",
+            "target_planet_house": 7,
+            "ruled_houses": [],
+            "angle": "DSC",
+            "life_scene": "evin, köklerin ve kendi içine döndüğün yer",
+            "life_scene_variants": [
+              "iç güvenliğin",
+              "evin, köklerin ve kendi içine döndüğün yer",
+              "sana ait hissettiren alan"
+            ],
+            "context_seed": "Bu tema daha çok evin, köklerin ve kendi içine döndüğün yer içinden görünür oluyor.",
+            "variant_index": 1,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "88367fb4a7c76d6f50b814db65c72d65904cd546"
+              ]
+            }
+          }
+        },
+        {
+          "source_variant": "legacy_daily_output",
+          "headline": "Bugün biraz sürtünmeli.",
+          "body": "Günün akışında bir sürtünme çabuk büyüyebilir bugün.\n\nBugünün tonunu özellikle Jüpiter Venüs ile kare belirliyor; bu Jüpiter-Venüs karesi bugün daha görünür çalışıyor. Bu hareket önce 9. evinde, yani ufuk ve yön arayışı alanında çalışıyor. Ama hikâye orada kalmıyor; 6. evdeki temayı tetiklediği için bu etki en çok günün ritmi ve düzenin üzerinde görünür oluyor. Natal haritanda Venüs Koç burcunda 6. evde. Bu yüzden bu açı sende sadece bugünün havasını anlatmıyor; altta zaten çalışan rutin ve beden ritmi temasını yeniden uyandırıyor. Bugün yaşadığın şey tek başına değil; \"Denge ve Yapı Temasi Derinlesiyor\" döneminin bugüne inen yüzü. Bu hikâye tek katmanlı değil: İlk bakışta bu bir \"kim haklı\" meselesi gibi görünebilir; ama özellikle sana ait hissettiren alan tarafında, altında kendini ifade ederken nasıl korunduğun var.",
+          "guidance": "Tempoyu biraz yavaşlat.",
+          "debug": {
+            "source": "daily_event_card_legacy_humanizer"
+          },
+          "blind_label": "C",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "aspect_name",
+            "aspect_word",
+            "planet_name",
+            "sign_name"
+          ],
+          "story_type": null,
+          "spine_line": null,
+          "event_nature": null,
+          "meaning_intent": null,
+          "rhetorical_frame": null,
+          "manifestation_context": {}
+        }
+      ],
+      "runtime_quality": {
+        "degraded_path": false,
+        "degraded_path_reason": ""
+      },
+      "answer_key": {
+        "period": {
+          "A": "legacy_period_output",
+          "B": "canonical_period_spine_plus_voice_policy",
+          "C": "canonical_period_plus_manifestation_context"
+        },
+        "daily": {
+          "C": "legacy_daily_output",
+          "B": "today_story_candidate_plus_current_daily_synthesis",
+          "A": "mock_today_delta_signal_plus_scene_aware_daily"
+        }
+      },
+      "surface_availability": {
+        "period": {
+          "available": true,
+          "reasons": []
+        },
+        "daily": {
+          "available": true,
+          "reasons": []
+        }
+      }
+    },
+    {
+      "fixture_id": "fix07_aries_libra_nodes",
+      "fixture_label": "GAD Koç / KAD Terazi — yalnız → birlik ekseni",
+      "window_start": "2026-05-01",
+      "window_end": "2026-05-31",
+      "selected_date": "2026-05-03",
+      "status": "ok",
+      "period_variants": [
+        {
+          "source_variant": "legacy_period_output",
+          "headline": "Denge ve Yapı Temasi Derinlesiyor",
+          "body": "Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.\n\nMesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.\n\nEtki önce gündelik hayatta görünür oluyor, sonra bunun sonucu daha kalıcı bir davranış değişimine dönüşüyor.\n\nRisk, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+          "guidance": "",
+          "debug": {
+            "track_id": "default",
+            "source": "build_story_track_copy"
+          },
+          "blind_label": "A",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "system_scaffold_phrase",
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": null,
+          "event_nature": null,
+          "meaning_intent": null,
+          "rhetorical_frame": null,
+          "manifestation_context": {},
+          "display_headline": "Denge ve Yapı Teması Derinleşiyor",
+          "display_body": "Hayatının bir alanı daha görünür hale geliyor; senden daha bilinçli seçimler istiyor.\n\nMesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.\n\nEtki önce gündelik hayatta görünür oluyor, sonra bunun sonucu daha kalıcı bir davranış değişimine dönüşüyor.\n\nRisk, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+          "display_guidance": ""
+        },
+        {
+          "source_variant": "canonical_period_spine_plus_voice_policy",
+          "headline": "Denge ve Yapı Temasi Derinlesiyor",
+          "body": "Bu dönem doğum haritandaki yön ve görünürlük hattını özellikle çalıştırıyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.\n\nKarar şurada: hazır hissetmekle harekete geçmek aynı şey değil.\n\nIş, yön ya da görünürlük tarafında kontrol etmek istediğin yerler belirginleşiyor. Bir şeyi sıkı tutman sadece hırs değil; orada kaybetmek istemediğin bir güç alanı var.\n\nKarar şurada: hazır hissetmekle kendini ortaya koymak aynı şey değil.",
+          "guidance": "",
+          "debug": {
+            "spine_event_id": "7253b0fbc38f83ca4f0cda3cc89b65c5c93302ee",
+            "support_event_ids": [
+              "7e3c181e7f5262326b1f12f4860bb576712dae3c",
+              "d5d55fd708a2b1bcc12c8a5df83c182fa82b7854"
+            ],
+            "track_id": "default",
+            "spine_role": "builder",
+            "support_roles": [
+              "peak",
+              "integrator"
+            ],
+            "canonical_period_spine_source": "canonical_natal_activation_v1",
+            "canonical_period_spine_target_node_id": "promise_mature_visibility",
+            "promise_prefix_source": "canonical_period_spine",
+            "period_voice_policy_version": "period_voice_policy_v1",
+            "period_voice_policy_reason_line_allowed": true,
+            "period_voice_policy_avoid_tags": [
+              "generic_hat_copy",
+              "coaching_command",
+              "unbacked_natal_reason",
+              "astro_first_opening"
+            ],
+            "period_voice_policy_meaning_intent": "visibility_alignment",
+            "period_voice_policy_rhetorical_frame": "threshold",
+            "period_voice_policy_match_level": "exact",
+            "period_voice_policy_manifestation_context": {},
+            "period_voice_policy": {
+              "spine_line": "work_visibility_line",
+              "event_nature": "control",
+              "event_nature_source": "spine_line_context",
+              "policy_match": {
+                "level": "exact",
+                "seed_key": "work_visibility_line.control",
+                "fallback_order": [
+                  "exact",
+                  "spine_line_generic",
+                  "event_nature_generic",
+                  "legacy_untouched"
+                ]
+              },
+              "match_level": "exact",
+              "chapter_role": "builder",
+              "canonical_backing_node_ids": [
+                "promise_mature_visibility"
+              ],
+              "meaning_intent": "visibility_alignment",
+              "rhetorical_frame": "threshold",
+              "manifestation_context": {},
+              "frame_debug": {
+                "candidates": [
+                  "threshold",
+                  "reframe"
+                ],
+                "recent_rhetorical_frames": [],
+                "rotation_applied": false
+              },
+              "event_bodies": [
+                "neptune",
+                "pluto",
+                "chiron"
+              ],
+              "matched_event_ids": [
+                "7253b0fbc38f83ca4f0cda3cc89b65c5c93302ee",
+                "7e3c181e7f5262326b1f12f4860bb576712dae3c",
+                "d5d55fd708a2b1bcc12c8a5df83c182fa82b7854"
+              ]
+            }
+          },
+          "blind_label": "B",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "repeated_bu_donem_opening",
+            "repeated_opening",
+            "system_scaffold_phrase",
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": "work_visibility_line",
+          "event_nature": "control",
+          "meaning_intent": "visibility_alignment",
+          "rhetorical_frame": "threshold",
+          "manifestation_context": {},
+          "display_headline": "Denge ve Yapı Teması Derinleşiyor",
+          "display_body": "Yön ve görünürlük hattı bu dönemde özellikle belirginleşiyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Hayatının bir alanı daha görünür hale geliyor; senden daha bilinçli seçimler istiyor.\n\nKarar şurada: hazır hissetmekle harekete geçmek aynı şey değil.\n\nİş, yön ya da görünürlük tarafında kontrol etmek istediğin yerler belirginleşiyor. Bir şeyi sıkı tutman sadece hırs değil; orada kaybetmek istemediğin bir güç alanı var.\n\nKarar şurada: hazır hissetmekle kendini ortaya koymak aynı şey değil.",
+          "display_guidance": ""
+        },
+        {
+          "source_variant": "canonical_period_plus_manifestation_context",
+          "headline": "Denge ve Yapı Temasi Derinlesiyor",
+          "body": "Bu dönem doğum haritandaki yön ve görünürlük hattını özellikle çalıştırıyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.\n\nKarar şurada: uzak hedeflerin ve inançların tarafında hazır hissetmekle harekete geçmek aynı şey değil.\n\nIş, yön ya da görünürlük tarafında kontrol etmek istediğin yerler belirginleşiyor. Bir şeyi sıkı tutman sadece hırs değil; orada kaybetmek istemediğin bir güç alanı var. Bu tema daha çok uzak hedeflerin ve inançların içinden görünür oluyor.\n\nAsıl ayrım, uzak hedeflerin ve inançların tarafında görünür olan şeyi hemen son kararın gibi taşımamak.",
+          "guidance": "",
+          "debug": {
+            "spine_event_id": "7253b0fbc38f83ca4f0cda3cc89b65c5c93302ee",
+            "support_event_ids": [
+              "7e3c181e7f5262326b1f12f4860bb576712dae3c",
+              "d5d55fd708a2b1bcc12c8a5df83c182fa82b7854"
+            ],
+            "track_id": "default",
+            "spine_role": "builder",
+            "support_roles": [
+              "peak",
+              "integrator"
+            ],
+            "canonical_period_spine_source": "canonical_natal_activation_v1",
+            "canonical_period_spine_target_node_id": "promise_mature_visibility",
+            "promise_prefix_source": "canonical_period_spine",
+            "period_voice_policy_version": "period_voice_policy_v1",
+            "period_voice_policy_reason_line_allowed": true,
+            "period_voice_policy_avoid_tags": [
+              "generic_hat_copy",
+              "coaching_command",
+              "unbacked_natal_reason",
+              "astro_first_opening"
+            ],
+            "period_voice_policy_meaning_intent": "visibility_alignment",
+            "period_voice_policy_rhetorical_frame": "threshold",
+            "period_voice_policy_match_level": "exact",
+            "period_voice_policy_manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 9,
+              "house_axis": "9-5",
+              "target_planet": "ASC",
+              "target_planet_house": 5,
+              "ruled_houses": [],
+              "angle": "ASC",
+              "life_scene": "uzak hedeflerin ve inançların",
+              "life_scene_variants": [
+                "hayata verdiğin anlam",
+                "uzak hedeflerin ve inançların",
+                "büyük resmi kurduğun yer"
+              ],
+              "context_seed": "Bu tema daha çok uzak hedeflerin ve inançların içinden görünür oluyor.",
+              "variant_index": 1,
+              "source": "event_house",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "7253b0fbc38f83ca4f0cda3cc89b65c5c93302ee",
+                  "7e3c181e7f5262326b1f12f4860bb576712dae3c",
+                  "d5d55fd708a2b1bcc12c8a5df83c182fa82b7854"
+                ]
+              }
+            },
+            "period_voice_policy": {
+              "spine_line": "work_visibility_line",
+              "event_nature": "control",
+              "event_nature_source": "spine_line_context",
+              "policy_match": {
+                "level": "exact",
+                "seed_key": "work_visibility_line.control",
+                "fallback_order": [
+                  "exact",
+                  "spine_line_generic",
+                  "event_nature_generic",
+                  "legacy_untouched"
+                ]
+              },
+              "match_level": "exact",
+              "chapter_role": "builder",
+              "canonical_backing_node_ids": [
+                "promise_mature_visibility"
+              ],
+              "meaning_intent": "visibility_alignment",
+              "rhetorical_frame": "threshold",
+              "manifestation_context": {
+                "version": "manifestation_context_v1",
+                "primary_house": 9,
+                "house_axis": "9-5",
+                "target_planet": "ASC",
+                "target_planet_house": 5,
+                "ruled_houses": [],
+                "angle": "ASC",
+                "life_scene": "uzak hedeflerin ve inançların",
+                "life_scene_variants": [
+                  "hayata verdiğin anlam",
+                  "uzak hedeflerin ve inançların",
+                  "büyük resmi kurduğun yer"
+                ],
+                "context_seed": "Bu tema daha çok uzak hedeflerin ve inançların içinden görünür oluyor.",
+                "variant_index": 1,
+                "source": "event_house",
+                "release_strengthened": false,
+                "debug": {
+                  "event_ids": [
+                    "7253b0fbc38f83ca4f0cda3cc89b65c5c93302ee",
+                    "7e3c181e7f5262326b1f12f4860bb576712dae3c",
+                    "d5d55fd708a2b1bcc12c8a5df83c182fa82b7854"
+                  ]
+                }
+              },
+              "frame_debug": {
+                "candidates": [
+                  "threshold",
+                  "reframe"
+                ],
+                "recent_rhetorical_frames": [],
+                "rotation_applied": false
+              },
+              "event_bodies": [
+                "neptune",
+                "pluto",
+                "chiron"
+              ],
+              "matched_event_ids": [
+                "7253b0fbc38f83ca4f0cda3cc89b65c5c93302ee",
+                "7e3c181e7f5262326b1f12f4860bb576712dae3c",
+                "d5d55fd708a2b1bcc12c8a5df83c182fa82b7854"
+              ]
+            }
+          },
+          "blind_label": "C",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "repeated_bu_donem_opening",
+            "repeated_opening",
+            "system_scaffold_phrase",
+            "turkish_character_issue"
+          ],
+          "story_type": null,
+          "spine_line": "work_visibility_line",
+          "event_nature": "control",
+          "meaning_intent": "visibility_alignment",
+          "rhetorical_frame": "threshold",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 9,
+            "house_axis": "9-5",
+            "target_planet": "ASC",
+            "target_planet_house": 5,
+            "ruled_houses": [],
+            "angle": "ASC",
+            "life_scene": "uzak hedeflerin ve inançların",
+            "life_scene_variants": [
+              "hayata verdiğin anlam",
+              "uzak hedeflerin ve inançların",
+              "büyük resmi kurduğun yer"
+            ],
+            "context_seed": "Bu tema daha çok uzak hedeflerin ve inançların içinden görünür oluyor.",
+            "variant_index": 1,
+            "source": "event_house",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "7253b0fbc38f83ca4f0cda3cc89b65c5c93302ee",
+                "7e3c181e7f5262326b1f12f4860bb576712dae3c",
+                "d5d55fd708a2b1bcc12c8a5df83c182fa82b7854"
+              ]
+            }
+          },
+          "display_headline": "Denge ve Yapı Teması Derinleşiyor",
+          "display_body": "Yön ve görünürlük hattı bu dönemde özellikle belirginleşiyor. Bu dönem asıl omurga yavaş ama kalıcı biçimde kuruluyor. Hayatının bir alanı daha görünür hale geliyor; senden daha bilinçli seçimler istiyor.\n\nKarar şurada: uzak hedeflerin ve inançların tarafında hazır hissetmekle harekete geçmek aynı şey değil.\n\nİş, yön ya da görünürlük tarafında kontrol etmek istediğin yerler belirginleşiyor. Bir şeyi sıkı tutman sadece hırs değil; orada kaybetmek istemediğin bir güç alanı var. Bu tema daha çok uzak hedeflerin ve inançların içinden görünür oluyor.\n\nAsıl ayrım, uzak hedeflerin ve inançların tarafında görünür olan şeyi hemen son kararın gibi taşımamak.",
+          "display_guidance": ""
+        }
+      ],
+      "daily_variants": [
+        {
+          "source_variant": "legacy_daily_output",
+          "headline": "Bugün iki taraf konuşuyor.",
+          "body": "Ev halin içinde söylemek isteyip aynı anda geri çekilebilirsin bugün.\n\nBugünün tonunu özellikle Merkür Jüpiter ile karşıt belirliyor; bu Merkür-Jüpiter karşıtı bugün daha görünür çalışıyor. Bu hareket önce 10. evinde, yani kariyer ve görünürlük alanında çalışıyor. Ama hikâye orada kalmıyor; 4. evdeki temayı tetiklediği için bu etki en çok ev içi güven halin üzerinde görünür oluyor. Natal haritanda Jüpiter Akrep burcunda 4. evde. Bu yüzden bu açı sende sadece bugünün havasını anlatmıyor; altta zaten çalışan ev ve iç güven temasını yeniden uyandırıyor. Bugün yaşadığın şey tek başına değil; \"Denge ve Yapı Temasi Derinlesiyor\" döneminin bugüne inen yüzü. Bu hikâye tek katmanlı değil: Karar şurada: uzak hedeflerin ve inançların tarafında hazır hissetmekle harekete geçmek aynı şey değil.",
+          "guidance": "İlk tarafı final sanma.",
+          "debug": {
+            "source": "daily_event_card_legacy_humanizer"
+          },
+          "blind_label": "A",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "aspect_name",
+            "aspect_word",
+            "planet_name",
+            "sign_name"
+          ],
+          "story_type": null,
+          "spine_line": null,
+          "event_nature": null,
+          "meaning_intent": null,
+          "rhetorical_frame": null,
+          "manifestation_context": {}
+        },
+        {
+          "source_variant": "mock_today_delta_signal_plus_scene_aware_daily",
+          "headline": "Bugün özellikle içerideki ihtiyaçlarla dışarıdaki tempoyu dengelemek seni arada bırakabilir.",
+          "body": "Bugün bu konu dünden daha sesli. Özellikle senden beklenen duruş tarafında görünür oluyor. Bugün küçük bir sinyal temayı dünden daha sesli hale getiriyor.\n\nAna hareket daha çok change tarafında. Günün tonu builder gibi ilerliyor.",
+          "guidance": "work_visibility_default_edge",
+          "debug": {
+            "story_type": "period_triggered_today",
+            "spine_line": null,
+            "event_nature": "change",
+            "meaning_intent": "attention_redirect",
+            "rhetorical_frame": "reframe",
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 10,
+              "house_axis": "10",
+              "target_planet": "Uranus",
+              "target_planet_house": null,
+              "ruled_houses": [],
+              "angle": null,
+              "life_scene": "senden beklenen duruş",
+              "life_scene_variants": [
+                "dış dünyadaki rolün",
+                "isminin geçtiği yer",
+                "senden beklenen duruş"
+              ],
+              "context_seed": "Bu tema daha çok senden beklenen duruş içinden görünür oluyor.",
+              "variant_index": 2,
+              "source": "fallback",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "264cb88a8b802a818c10ac9a95416a2226d52ab2"
+                ]
+              }
+            },
+            "life_scene": "senden beklenen duruş",
+            "source": "script_mock_scene_aware_daily",
+            "today_story_candidate_present": true
+          },
+          "blind_label": "B",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [],
+          "story_type": "period_triggered_today",
+          "spine_line": null,
+          "event_nature": "change",
+          "meaning_intent": "attention_redirect",
+          "rhetorical_frame": "reframe",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 10,
+            "house_axis": "10",
+            "target_planet": "Uranus",
+            "target_planet_house": null,
+            "ruled_houses": [],
+            "angle": null,
+            "life_scene": "senden beklenen duruş",
+            "life_scene_variants": [
+              "dış dünyadaki rolün",
+              "isminin geçtiği yer",
+              "senden beklenen duruş"
+            ],
+            "context_seed": "Bu tema daha çok senden beklenen duruş içinden görünür oluyor.",
+            "variant_index": 2,
+            "source": "fallback",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "264cb88a8b802a818c10ac9a95416a2226d52ab2"
+              ]
+            }
+          }
+        },
+        {
+          "source_variant": "today_story_candidate_plus_current_daily_synthesis",
+          "headline": "Bugün özellikle içerideki ihtiyaçlarla dışarıdaki tempoyu dengelemek seni arada bırakabilir.",
+          "body": "Ev halin içinde söylemek isteyip aynı anda geri çekilebilirsin bugün. Bu en çok ev içi güven halin tarafında; aitlik, güven ve ev içi düzen konularında görünür olur. Çünkü bu doğrudan büyütme eğilimin çizgine değiyor. O yüzden 5. ev, 9. ev başlığı da bu etkiye kolayca eşlik edebilir. Buradaki karşıt bir yandan seni, bir yandan karşı tarafı aynı anda konuşturabilir Bugün etkisi daha keskin hissedilebilir. Ama aynı gün kalbini açtığın yerde bir şey daha rahat akıyor bugün. Bu yeni bir başlık değil; içinde olduğun \"Denge ve Yapı Temasi Derinlesiyor\" dönemi bugün en çok kendini ortaya koyma biçimin tarafına vuruyor.",
+          "guidance": "İlk tarafı final sanma.",
+          "debug": {
+            "story_type": "period_triggered_today",
+            "spine_line": null,
+            "event_nature": "change",
+            "meaning_intent": "attention_redirect",
+            "rhetorical_frame": "reframe",
+            "manifestation_context": {
+              "version": "manifestation_context_v1",
+              "primary_house": 10,
+              "house_axis": "10",
+              "target_planet": "Uranus",
+              "target_planet_house": null,
+              "ruled_houses": [],
+              "angle": null,
+              "life_scene": "senden beklenen duruş",
+              "life_scene_variants": [
+                "dış dünyadaki rolün",
+                "isminin geçtiği yer",
+                "senden beklenen duruş"
+              ],
+              "context_seed": "Bu tema daha çok senden beklenen duruş içinden görünür oluyor.",
+              "variant_index": 2,
+              "source": "fallback",
+              "release_strengthened": false,
+              "debug": {
+                "event_ids": [
+                  "264cb88a8b802a818c10ac9a95416a2226d52ab2"
+                ]
+              }
+            },
+            "source": "daily_synthesis_current_runtime",
+            "today_story_candidate_present": true
+          },
+          "blind_label": "C",
+          "available": true,
+          "unavailable_reason": "",
+          "quality_flags": [
+            "aspect_name",
+            "house_number",
+            "run_on_sentence_transition"
+          ],
+          "story_type": "period_triggered_today",
+          "spine_line": null,
+          "event_nature": "change",
+          "meaning_intent": "attention_redirect",
+          "rhetorical_frame": "reframe",
+          "manifestation_context": {
+            "version": "manifestation_context_v1",
+            "primary_house": 10,
+            "house_axis": "10",
+            "target_planet": "Uranus",
+            "target_planet_house": null,
+            "ruled_houses": [],
+            "angle": null,
+            "life_scene": "senden beklenen duruş",
+            "life_scene_variants": [
+              "dış dünyadaki rolün",
+              "isminin geçtiği yer",
+              "senden beklenen duruş"
+            ],
+            "context_seed": "Bu tema daha çok senden beklenen duruş içinden görünür oluyor.",
+            "variant_index": 2,
+            "source": "fallback",
+            "release_strengthened": false,
+            "debug": {
+              "event_ids": [
+                "264cb88a8b802a818c10ac9a95416a2226d52ab2"
+              ]
+            }
+          }
+        }
+      ],
+      "runtime_quality": {
+        "degraded_path": false,
+        "degraded_path_reason": ""
+      },
+      "answer_key": {
+        "period": {
+          "A": "legacy_period_output",
+          "B": "canonical_period_spine_plus_voice_policy",
+          "C": "canonical_period_plus_manifestation_context"
+        },
+        "daily": {
+          "A": "legacy_daily_output",
+          "C": "today_story_candidate_plus_current_daily_synthesis",
+          "B": "mock_today_delta_signal_plus_scene_aware_daily"
+        }
+      },
+      "surface_availability": {
+        "period": {
+          "available": true,
+          "reasons": []
+        },
+        "daily": {
+          "available": true,
+          "reasons": []
+        }
+      }
+    }
+  ],
+  "natal_sanity_cases": [
+    {
+      "fixture_id": "fix02_capricorn_stellium",
+      "fixture_label": "Oğlak/Oğlak — 1. ev stellium (4+ gezegen)",
+      "status": "ok",
+      "surface_mode": "legacy_compat",
+      "excerpt_source": "backend/tests/_artifacts/natal_v8_baseline/fix02_capricorn_stellium.json",
+      "sections": [
+        {
+          "slot": "identity_axis",
+          "headline": "Ritmini koruduğunda yön duygun güçleniyor",
+          "body": "Netlik sende kontrol değil güven meselesi; Yükselen Oğlak belirsizliği uzatmayı sevmez ve yöneticin Satürn'ün 3. ev vurgusu bunu en çok söz, karar ve ton üzerinden görünür kılar, bu yüzden bazen bir cümleyi kurmadan önce içinden ölçüp biçmen ya da konuşma bittikten sonra ne demek istediğini zihninde yeniden toplaman aslında fazla düşünmekten çok netlik aradığını gösterir. İyi çalıştığında bu ton sana cesaret ve direktlik verir; gölgesinde sabırsızlık ya da ani tepki doğurabilir."
+        },
+        {
+          "slot": "mind",
+          "headline": "Karar verirken içinde ne oluyor",
+          "body": "Bir ortama girdiğinde bir şey sana çarptığında zihnin boşta kalmıyor, içeride hemen pozisyon alan bir tarafın çalışıyor. Perde arkasında ise bu hat en çok söz, ton ve karar dili t…"
+        },
+        {
+          "slot": "intimacy",
+          "headline": "Sevginin derinleşme biçimi",
+          "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. Bağ sende en çok güven, mahremiyet ve derinlik tarafında açılıyor; bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi sıcak, görünür ve cömert biçimde hissettirebilme tarafın da belirginleşiyor. Kırıldığında güvensizlikte fazla alınmak ya da kabuğa çekilmek daha kolay tetiklenebiliyor."
+        }
+      ],
+      "quality_flags": [
+        "morphology_issue"
+      ]
+    },
+    {
+      "fixture_id": "fix04_h10_career_stellium",
+      "fixture_label": "10. ev stellium — kariyer/visibility ağırlığı",
+      "status": "ok",
+      "surface_mode": "legacy_compat",
+      "excerpt_source": "backend/tests/_artifacts/natal_v8_baseline/fix04_h10_career_stellium.json",
+      "sections": [
+        {
+          "slot": "identity_axis",
+          "headline": "Netlik kurduğunda gücün daha görünür oluyor",
+          "body": "Netlik sende kontrol değil güven meselesi; Yükselen Başak belirsizliği uzatmayı sevmez ve yöneticin Merkür'ün 10. ev vurgusu bunu en çok günlük kararların ve duruşun üzerinden görünür kılar, bu yüzden bir şeyi içinden tartıp sağlam bir cümleye dönüştürdüğünde hem ritmin hem yön duygun birlikte güçlenir. İyi çalıştığında bu ton sana sezgi ve koruyucu bir hassasiyet verir; gölgesinde fazla alınma ya da geri çekilme yaratabilir."
+        },
+        {
+          "slot": "mind",
+          "headline": "Zihin–eylem–kontrol",
+          "body": "Yükselen Başak sana dışarıda daha ölçülü ve düzenli bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içe…"
+        },
+        {
+          "slot": "intimacy",
+          "headline": "Sevginin derinleşme biçimi",
+          "body": "Bir ortama girdiğinde kalbin yakınlığı hafif yaşamıyor, güven gördüğünde hızla derinleşiyor. Perde arkasında ise bağ sende en çok yaratıcılık ve ifade tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi özgürlük bırakarak ama yine de gerçek kalarak yaşayabilme tarafın da belirginleşiyor. Kırıldığında sınırların bulanıklaşması ya da hayal kırıklığında dağılmak daha kolay tetiklenebiliyor."
+        }
+      ],
+      "quality_flags": [
+        "morphology_issue"
+      ]
+    },
+    {
+      "fixture_id": "fix05_t_square_tense",
+      "fixture_label": "T-square paterni — gerilim odaklı",
+      "status": "ok",
+      "surface_mode": "legacy_compat",
+      "excerpt_source": "backend/tests/_artifacts/natal_v8_baseline/fix05_t_square_tense.json",
+      "sections": [
+        {
+          "slot": "identity_axis",
+          "headline": "Netlik kurduğunda gücün daha görünür oluyor",
+          "body": "Netlik sende kontrol değil güven meselesi; Yükselen Akrep belirsizliği uzatmayı sevmez ve yöneticin Mars'ün 5. ev vurgusu bunu en çok günlük kararların ve duruşun üzerinden görünür kılar, bu yüzden bir şeyi içinden tartıp sağlam bir cümleye dönüştürdüğünde hem ritmin hem yön duygun birlikte güçlenir. İyi çalıştığında bu ton sana sezgisel akış ve hayal gücü verir; gölgesinde dağılma ya da sınır kaybı yaratabilir."
+        },
+        {
+          "slot": "mind",
+          "headline": "Karar verirken içinde ne oluyor",
+          "body": "Bir şey sana çarptığında zihnin boşta kalmıyor; içeride hemen pozisyon alan bir tarafın çalışıyor. Bu hat en çok yaratıcılık ve ifade tarafında belirginleşiyor; bazen söylemeden ö…"
+        },
+        {
+          "slot": "intimacy",
+          "headline": "Kalbinin eşiği",
+          "body": "Kalbin yakınlığı hafif yaşamıyor; güven gördüğünde hızla derinleşiyor. İç hattında bağ sende en çok günlük ritim ve düzen tarafında açılıyor, bu yüzden gerçek açıklık arıyor ve sevildiğini hissedilir biçimde duymak istiyorsun. Açıldığında sevgiyi direkt, cesur ve bekletmeden gösterebilme tarafın da belirginleşiyor. Kırılgan yerde zemin sarsıldığında inatla kapanmak ya da değişime direnmek daha kolay tetiklenebiliyor."
+        }
+      ],
+      "quality_flags": [
+        "morphology_issue"
+      ]
+    }
+  ],
+  "decision_criteria": {
+    "A": "Period B/C clearly wins → runtime alignment ve daily migration devam eder.",
+    "B": "Period no difference → canonical policy renderer görünürlüğü tekrar kontrol edilir.",
+    "C": "Period better but Daily weak → PR-5 Daily Today-ness Signal ve PR-7 Daily Canonical Renderer önceliklenir.",
+    "D": "Legacy wins → legacy insight rescue yapılır; cleanup durur.",
+    "E": "Mixed → frame / scene / proof / daily trigger / natal backing bazında parçalanır."
+  },
+  "validation_questions": [
+    "Hangisi daha \"beni görüyor\" hissi veriyor?",
+    "Hangisi generic horoscope gibi?",
+    "Hangisi fazla teknik?",
+    "Hangisi fazla koçluk/motivasyon gibi?",
+    "Hangisini tekrar okumak isterdin?",
+    "Hangisinde cümleler birbirine benziyor?"
+  ],
+  "post_processed_for_display": true,
+  "post_process_rules": [
+    "turkish_char_normalization",
+    "repeated_opening_reduction",
+    "system_scaffold_softening",
+    "threshold_word_softening"
+  ]
+}

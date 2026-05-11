@@ -1,0 +1,165 @@
+_registry_statuses:
+  - canonical_authority
+  - canonical_selector
+  - renderer
+  - legacy_compat
+  - debug_shadow
+  - fallback_only
+  - deprecate_candidate
+
+_conventions:
+  pattern_name_is_not_meaning_engine: true
+  pattern_name_source_rule: "pattern_name = canonical_node.label"
+  pattern_name_rules:
+    max_per_period_block: 1
+    max_per_daily_block: 0
+    max_per_chart_total: 5
+    reuse_pattern: "1 kez konur, sonra 'o kalıp' / 'bu tarafın' ile geri çağrılır"
+  pattern_name_lint_fail_cases:
+    - "Ay-Merkür gerilimi"
+    - "12. ev projeksiyonu"
+    - "mükemmeliyetçilik"
+    - "Satürnyen disiplin"
+    - "Kaçınmacı bağlanma stili"
+
+backend/app/transit/narrative/period_voice_policy.py:
+  status: canonical_authority
+  domain: period
+  role: spine_line_event_nature_meaning_intent_rhetorical_frame_valence_intensity_policy
+
+backend/app/transit/narrative/manifestation_context_policy.py:
+  status: canonical_authority
+  domain: period_daily
+  role: house_to_life_scene_context_policy
+
+backend/app/transit/narrative/today_story_candidate.py:
+  status: canonical_authority
+  domain: daily
+  role: daily_story_reasoning_object
+
+backend/app/transit/narrative/daily_selection.py:
+  status: canonical_selector
+  domain: daily
+  role: trigger_support_selector
+  note: demoted_from_final_daily_story_owner
+
+backend/app/transit/narrative/astrolog_narrative_engine.py:
+  status: renderer
+  domain: period
+  role: canonical_period_renderer
+
+backend/app/transit/narrative/daily_synthesis.py:
+  status: renderer
+  domain: daily
+  role: renderer_assembler_and_partial_meaning_writer
+  caution: "Writes headline/body/guidance; not a pure renderer; final visible daily prose is still not fully canonical."
+  migration_target: pure_renderer_in_PR7
+  trace_evidence: "PR-0.5 sample shows meaning ownership beyond rendering."
+
+backend/app/transit/narrative/text_quality_tr.py:
+  status: legacy_compat
+  domain: shared_transit
+  role: live_quality_normalization_chokepoint
+  coverage:
+    period_story: yes
+    event_card: yes
+    route_normalize_helpers: partial
+    interpret_content_public_builder: partial
+    daily_synthesis_final_prose: no
+    calendar_signal_micro_summaries: no
+  decision: not_universal_chokepoint
+  caution: deeply_embedded_do_not_delete
+  future:
+    - shared_voice_guardrails_tr_registry_import
+    - runtime_injection_planned_in_PR3_or_PR4
+
+backend/app/transit/narrative/voice_engine_tr.py:
+  status: legacy_compat
+  domain: event_card
+  role: legacy_event_card_copy_builder
+
+backend/app/transit/narrative/deep_archetype_engine.py:
+  status: legacy_compat
+  domain: event_card_period_bridge
+  role: legacy_event_card_orchestration_bridge
+  notes: "Event-card chain remains legacy here even though period story now delegates to canonical period renderer."
+
+backend/app/transit/narrative/daily_humanizer_tr.py:
+  status: legacy_compat
+  domain: daily
+  role: legacy_humanizer_preview_signal_microcopy
+  future: demote_after_daily_canonical_renderer_PR7
+
+backend/app/transit/narrative/chain_explainer_tr.py:
+  status: legacy_compat
+  domain: transit_event
+  role: event_explanation_helper
+
+backend/app/narrative/style_packs/tr_v26.py:
+  status: legacy_compat
+  domain: shared_style
+  role: legacy_planner_token_pack
+  imported_by:
+    - backend/app/builders/narrative_binding.py
+  note: not_duplicate_of_backend_app_style_style_pack_v26_tr_py
+
+backend/app/style/style_pack_v26_tr.py:
+  status: renderer
+  domain: shared_style
+  role: runtime_style_renderer_class
+  class: StylePackV26TR
+  imported_by:
+    - backend/app/builders/narrative_binding.py
+    - backend/app/builders/narrative_renderer_v26.py
+  note: not_duplicate_of_backend_app_narrative_style_packs_tr_v26_py
+
+backend/app/natal/narrative/master_selector.py:
+  status: canonical_authority
+  domain: natal
+  future_role: spine_candidate_reducer
+  caution: must_not_become_hidden_final_authority
+
+backend/app/natal/narrative/profile_narrative_engine.py:
+  status: legacy_compat
+  domain: natal
+  role: legacy_profile_renderer
+
+backend/app/natal/narrative/profile_narrative_engine_signature.py:
+  status: legacy_compat
+  domain: natal
+  role: legacy_signature_helper
+
+backend/app/natal/narrative/voice_profile_resolver.py:
+  status: debug_shadow
+  domain: natal
+  role: tone_calibration_helper
+
+backend/app/natal/personality_imprint/tone_support_library.py:
+  status: debug_shadow
+  domain: natal
+  role: tone_support_library
+
+backend/app/narrative/editorial_render_policy.py:
+  status: debug_shadow
+  domain: shared
+  role: editorial_render_contract_reference
+
+backend/app/transit/present/public_builder.py:
+  status: fallback_only
+  domain: transit_public
+  role: public_payload_normalizer
+
+backend/app/transit/interpret/content_loader.py:
+  status: fallback_only
+  domain: transit_interpret
+  role: content_normalization_bridge
+
+backend/app/engine/tone_profile.py:
+  status: fallback_only
+  domain: shared
+  role: tone_profile_meta
+
+backend/app/engine/tone_apply.py:
+  status: fallback_only
+  domain: shared
+  role: tone_applier

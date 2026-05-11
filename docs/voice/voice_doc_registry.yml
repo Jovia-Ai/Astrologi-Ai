@@ -1,0 +1,245 @@
+_registry_statuses:
+  - canonical_source
+  - source_for_vnext
+  - legacy_reference
+  - stale
+  - archive_candidate
+
+_conventions:
+  pattern_name_is_not_meaning_engine: true
+  pattern_name_source_rule: "pattern_name = canonical_node.label"
+  pattern_name_rules:
+    max_per_period_block: 1
+    max_per_daily_block: 0
+    max_per_chart_total: 5
+    reuse_pattern: "1 kez konur, sonra 'o kalıp' / 'bu tarafın' ile geri çağrılır"
+  pattern_name_lint_fail_cases:
+    - "Ay-Merkür gerilimi"
+    - "12. ev projeksiyonu"
+    - "mükemmeliyetçilik"
+    - "Satürnyen disiplin"
+    - "Kaçınmacı bağlanma stili"
+
+docs/voice/voice_spec.md:
+  status: canonical_source
+  new_role: source_for_vnext
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  keep:
+    - core_voice_dna
+    - layer_voices
+    - contrast_structure
+    - sentence_length_hierarchy
+    - forbidden_categories
+  revise:
+    - technical_reference_density_by_surface
+    - payload_authority_language
+    - surface_rules
+  reason: "Primary SHOU voice source, but vNext must separate semantic source from render slots."
+
+docs/voice/SHOU_Voice_Spec_v1.2.pdf:
+  status: canonical_source
+  new_role: voice_dna_source
+  external_source_path: "/Users/sahradenizozdogan/Desktop/shou logo/SHOU — Voice Spec v1.2.pdf"
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  keep:
+    - four_core_qualities
+    - layer_voice_formulas
+    - contrast_structure
+    - sentence_length_hierarchy
+    - highlight_system
+    - pattern_naming_formula
+    - profile_section_voice
+    - talent_formula
+    - forbidden_language_examples
+  revise:
+    - technical_reference_density_by_surface
+    - olabilir_only_in_cause
+    - question_ban
+    - slide_post_assumptions
+  notes: "Voice DNA source, not current architecture contract."
+
+docs/voice/SHOU_BACKEND_UX_CONTRACT_v3.md:
+  status: source_for_vnext
+  new_role: legacy_product_contract_reference
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  keep:
+    - this_sees_me_principle
+    - opening_hook_micro_patterns
+  demote:
+    - emotional_intent_5_label_taxonomy
+    - sprint_3_deliverables
+  reason: "Useful legacy product contract, but superseded by canonical period architecture plus vNext taxonomy."
+
+docs/voice/share_line_playbook.md:
+  status: canonical_source
+  new_role: surface_specific_rules
+  keep_as_is: true
+  separate_surface_doc: true
+  notes: "Compact and stable. Remains separate from the main vNext spec."
+
+docs/voice/s2_mobile_plan.md:
+  status: legacy_reference
+  new_role: mobile_surface_history
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Mobile planning context only. Not a canonical voice source."
+
+docs/voice/natal_live_sample_1996-12-28_istanbul.json:
+  status: legacy_reference
+  new_role: sample_artifact_reference
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical sample artifact. Useful for comparison, not for new architecture decisions."
+
+docs/narrative_v2_product_spec.md:
+  status: source_for_vnext
+  new_role: render_slot_reference
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  keep:
+    - aspect_house_ruler_rule
+    - fallback_rules
+    - aspect_bundle_selector
+  demote:
+    - natal_source_of_truth
+    - transit_source_of_truth
+    - period_source_of_truth
+  reason: "Hook/mechanism/growth_edge are render slots, not semantic source-of-truth."
+
+docs/system/shou_semantic_role_and_voice_mode_map.md:
+  status: source_for_vnext
+  new_role: architecture_reference
+  keep_as_is: true
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Artifact-first architecture map still useful during migration."
+
+docs/system/shou_surface_orchestration.md:
+  status: source_for_vnext
+  new_role: surface_behavior_reference
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  revise:
+    - canonical_input
+    - source_precedence
+  reason: "Surface rules remain useful, but semantic input precedence changes in vNext."
+
+docs/system/shou_selection_ranking_policy.md:
+  status: source_for_vnext
+  new_role: engineering_reference
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  notes: "Keep as engineering reference now. Move to docs/engineering later."
+
+docs/system/voice_runtime_authority_audit.md:
+  status: source_for_vnext
+  new_role: runtime_audit_reference
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  notes: "PR-0 audit input. Needed for runtime ownership sections."
+
+docs/system/voice_runtime_clarification_report.md:
+  status: source_for_vnext
+  new_role: runtime_clarification_reference
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  notes: "PR-0.5 clarification input. Needed for daily mixed-path and chokepoint sections."
+
+docs/system/projection_voice_sprint1_post_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical sprint snapshot."
+
+docs/system/editorial_composition_layer_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical editorial audit. Keep for context, not as active source."
+
+docs/system/projection_voice_tuning_gap_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical gap audit only."
+
+docs/system/projection_voice_sprint2_plan.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Older sprint plan tied to previous architecture."
+
+docs/system/projection_phase_1_7_voice_regression_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical regression snapshot."
+
+docs/system/profile_narrative_projection_shadow_qa.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical projection QA only."
+
+docs/system/projection_selection_readiness_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Readiness report for older projection path."
+
+docs/system/projection_selection_policy_post_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Older selection policy post-audit."
+
+docs/system/projection_selection_debug_tuning_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical debug tuning notes."
+
+docs/system/projection_selection_phase_c_post_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Older phase checkpoint."
+
+docs/system/projection_selection_phase_d_post_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Older phase checkpoint."
+
+docs/system/projection_shadow_selection_policy_gap_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical shadow policy gap audit."
+
+docs/system/projection_shadow_v1_parity_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Older parity audit snapshot."
+
+docs/system/projection_shadow_v1_phase_1_5_parity_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Older parity phase snapshot."
+
+docs/system/projection_merge_plan.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Older merge plan tied to projection-era architecture."
+
+docs/system/home_daily_transit_variation_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical home/daily variation audit."
+
+docs/system/home_profile_surface_alignment_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical home/profile surface alignment audit."
+
+docs/system/home_profile_surface_cleanup_plan.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Historical cleanup plan for older home/profile surfaces."
+
+docs/system/transit_period_astrolog_reasoning_audit.md:
+  status: archive_candidate
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Important historical reasoning audit, but archive candidate once vNext spec absorbs the findings."
+
+docs/shou_brand_followups.md:
+  status: legacy_reference
+  new_role: brand_followup_reference
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Brand follow-up notes, not runtime or architecture authority."
+
+docs/shou_app_store_release_checklist.md:
+  status: legacy_reference
+  new_role: release_checklist_reference
+  replacement: docs/voice/SHOU_VOICE_VNEXT.md
+  reason: "Release checklist, not voice architecture authority."

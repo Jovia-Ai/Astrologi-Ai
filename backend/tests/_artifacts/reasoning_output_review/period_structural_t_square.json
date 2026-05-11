@@ -1,0 +1,389 @@
+{
+  "case_label": "Structural T-square (cardinal, apex 4th)",
+  "inputs": {
+    "canonical_natal_state": {
+      "bodies": [
+        {
+          "body": "Sun",
+          "sign": "Capricorn",
+          "house": 1
+        },
+        {
+          "body": "Mars",
+          "sign": "Aries",
+          "house": 4
+        },
+        {
+          "body": "Pluto",
+          "sign": "Cancer",
+          "house": 7
+        },
+        {
+          "body": "Saturn",
+          "sign": "Libra",
+          "house": 10
+        }
+      ],
+      "house_cusps": [
+        {
+          "house": 1,
+          "sign": "Capricorn"
+        },
+        {
+          "house": 2,
+          "sign": "Aquarius"
+        },
+        {
+          "house": 3,
+          "sign": "Pisces"
+        },
+        {
+          "house": 4,
+          "sign": "Aries"
+        },
+        {
+          "house": 5,
+          "sign": "Taurus"
+        },
+        {
+          "house": 6,
+          "sign": "Gemini"
+        },
+        {
+          "house": 7,
+          "sign": "Cancer"
+        },
+        {
+          "house": 8,
+          "sign": "Leo"
+        },
+        {
+          "house": 9,
+          "sign": "Virgo"
+        },
+        {
+          "house": 10,
+          "sign": "Libra"
+        },
+        {
+          "house": 11,
+          "sign": "Scorpio"
+        },
+        {
+          "house": 12,
+          "sign": "Sagittarius"
+        }
+      ]
+    },
+    "transit_events": [],
+    "structural_chapter_rail": {
+      "id": "structural_t_square_cardinal",
+      "pattern": "t_square",
+      "modality": "cardinal",
+      "apex_house": 4,
+      "release_point": 10,
+      "members": [
+        {
+          "body": "Mars",
+          "house": 4
+        },
+        {
+          "body": "Pluto",
+          "house": 7
+        },
+        {
+          "body": "Saturn",
+          "house": 10
+        }
+      ]
+    }
+  },
+  "detector_result": {
+    "active_life_chapter": null,
+    "candidates": [
+      {
+        "source_signal_id": "structural_t_square_cardinal",
+        "chapter_type": "structural_natal_chapter",
+        "signal_type": "structural_natal_pattern",
+        "time_window": {
+          "start": "",
+          "peak": "",
+          "end": ""
+        },
+        "candidate_reason": "Natal structural rail bulundu; skeleton bunu gelecekte structural natal chapter üretebilecek derived source olarak tutuyor.",
+        "confidence": "low",
+        "debug": {
+          "source_keys": [
+            "apex_house",
+            "id",
+            "members",
+            "modality",
+            "pattern",
+            "release_point"
+          ],
+          "readiness_status": "not_ready",
+          "chapter_claim_strength": "structural candidate only",
+          "excluded_from_pr_d_v1": true,
+          "future_candidate_pr": "PR-C.4",
+          "structural_pressure_model": "three_part_pressure_system",
+          "apex_release_point": "10",
+          "semantic_focus": {
+            "primary": "three_part_pressure_system",
+            "secondary": [
+              "apex_release_point",
+              "dense_integration"
+            ],
+            "not_this": [
+              "two-needs-only simplification",
+              "generic stress reading"
+            ]
+          },
+          "renderer_handoff": {
+            "human_scene": "basıncın en çok yüzeye çıktığı kişisel alan",
+            "core_contrast": "sürtünmeyi alarm okumak ile onun kurduğu kası görmek",
+            "chapter_weight": "structural natal pattern, not transient mood",
+            "chart_specific_anchor": "üç parçalı basınç sistemi ve release noktası",
+            "voice_register": "integration / dense",
+            "avoid_readings": [
+              "two-needs-only simplification",
+              "generic stress reading"
+            ]
+          }
+        }
+      }
+    ],
+    "debug": {
+      "candidate_count": 1,
+      "candidate_source_ids": [
+        "structural_t_square_cardinal"
+      ],
+      "active_life_chapter_emitted": false,
+      "candidates": [
+        {
+          "source_signal_id": "structural_t_square_cardinal",
+          "chapter_type": "structural_natal_chapter",
+          "signal_type": "structural_natal_pattern",
+          "time_window": {
+            "start": "",
+            "peak": "",
+            "end": ""
+          },
+          "candidate_reason": "Natal structural rail bulundu; skeleton bunu gelecekte structural natal chapter üretebilecek derived source olarak tutuyor.",
+          "confidence": "low",
+          "debug": {
+            "source_keys": [
+              "apex_house",
+              "id",
+              "members",
+              "modality",
+              "pattern",
+              "release_point"
+            ],
+            "readiness_status": "not_ready",
+            "chapter_claim_strength": "structural candidate only",
+            "excluded_from_pr_d_v1": true,
+            "future_candidate_pr": "PR-C.4",
+            "structural_pressure_model": "three_part_pressure_system",
+            "apex_release_point": "10",
+            "semantic_focus": {
+              "primary": "three_part_pressure_system",
+              "secondary": [
+                "apex_release_point",
+                "dense_integration"
+              ],
+              "not_this": [
+                "two-needs-only simplification",
+                "generic stress reading"
+              ]
+            },
+            "renderer_handoff": {
+              "human_scene": "basıncın en çok yüzeye çıktığı kişisel alan",
+              "core_contrast": "sürtünmeyi alarm okumak ile onun kurduğu kası görmek",
+              "chapter_weight": "structural natal pattern, not transient mood",
+              "chart_specific_anchor": "üç parçalı basınç sistemi ve release noktası",
+              "voice_register": "integration / dense",
+              "avoid_readings": [
+                "two-needs-only simplification",
+                "generic stress reading"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "active_life_chapter": null,
+  "candidates": [
+    {
+      "source_signal_id": "structural_t_square_cardinal",
+      "chapter_type": "structural_natal_chapter",
+      "signal_type": "structural_natal_pattern",
+      "time_window": {
+        "start": "",
+        "peak": "",
+        "end": ""
+      },
+      "candidate_reason": "Natal structural rail bulundu; skeleton bunu gelecekte structural natal chapter üretebilecek derived source olarak tutuyor.",
+      "confidence": "low",
+      "debug": {
+        "source_keys": [
+          "apex_house",
+          "id",
+          "members",
+          "modality",
+          "pattern",
+          "release_point"
+        ],
+        "readiness_status": "not_ready",
+        "chapter_claim_strength": "structural candidate only",
+        "excluded_from_pr_d_v1": true,
+        "future_candidate_pr": "PR-C.4",
+        "structural_pressure_model": "three_part_pressure_system",
+        "apex_release_point": "10",
+        "semantic_focus": {
+          "primary": "three_part_pressure_system",
+          "secondary": [
+            "apex_release_point",
+            "dense_integration"
+          ],
+          "not_this": [
+            "two-needs-only simplification",
+            "generic stress reading"
+          ]
+        },
+        "renderer_handoff": {
+          "human_scene": "basıncın en çok yüzeye çıktığı kişisel alan",
+          "core_contrast": "sürtünmeyi alarm okumak ile onun kurduğu kası görmek",
+          "chapter_weight": "structural natal pattern, not transient mood",
+          "chart_specific_anchor": "üç parçalı basınç sistemi ve release noktası",
+          "voice_register": "integration / dense",
+          "avoid_readings": [
+            "two-needs-only simplification",
+            "generic stress reading"
+          ]
+        }
+      }
+    }
+  ],
+  "structural_chapter_rail_input": {
+    "id": "structural_t_square_cardinal",
+    "pattern": "t_square",
+    "modality": "cardinal",
+    "apex_house": 4,
+    "release_point": 10,
+    "members": [
+      {
+        "body": "Mars",
+        "house": 4
+      },
+      {
+        "body": "Pluto",
+        "house": 7
+      },
+      {
+        "body": "Saturn",
+        "house": 10
+      }
+    ]
+  },
+  "period_core": {
+    "title": "Period story for Structural T-square (cardinal, apex 4th)",
+    "core_story": "",
+    "featured_events": [],
+    "tags": []
+  },
+  "renderer_handoff": null,
+  "semantic_focus": null,
+  "suppressed_readings": null,
+  "selected_meaning": null,
+  "natal_architecture_anchor": null,
+  "period_voice_policy": null,
+  "period_narrative_prose": {
+    "period_reading_v1": {
+      "version": "period_reading_v1",
+      "blocks": [
+        {
+          "role": "hook",
+          "text": "Burada daha yavaş ama daha kalıcı bir çizgi oluşuyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve burada seçimini daha netleştirmen gerekiyor."
+        },
+        {
+          "role": "unfolding",
+          "text": "Mesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi. Bu dönem hikâye önce zihin ve iletişim tarafında başlıyor, sonra yavaş yavaş kimlik ve duruş alanına yayılıyor. Yani küçük görünen bir hareket daha büyük bir yön değişimini tetikleyebilir."
+        },
+        {
+          "role": "growth",
+          "text": "Dikkat etmen gereken yer, ilk hissi sonuç sanıp süreci aceleye getirmek. Bu, daha net seçim yapma çizgisini biraz daha güçlendiriyor."
+        },
+        {
+          "role": "closer",
+          "text": "Günlük hayatta bu, daha seçici kararlar ve daha net sınırlar olarak hissedilebilir."
+        }
+      ],
+      "full_text": "Burada daha yavaş ama daha kalıcı bir çizgi oluşuyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve burada seçimini daha netleştirmen gerekiyor.\n\nMesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi. Bu dönem hikâye önce zihin ve iletişim tarafında başlıyor, sonra yavaş yavaş kimlik ve duruş alanına yayılıyor. Yani küçük görünen bir hareket daha büyük bir yön değişimini tetikleyebilir.\n\nDikkat etmen gereken yer, ilk hissi sonuç sanıp süreci aceleye getirmek. Bu, daha net seçim yapma çizgisini biraz daha güçlendiriyor.\n\nGünlük hayatta bu, daha seçici kararlar ve daha net sınırlar olarak hissedilebilir."
+    },
+    "period_opening": "Burada daha yavaş ama daha kalıcı bir çizgi oluşuyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve burada seçimini daha netleştirmen gerekiyor.",
+    "big_picture": "Mesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi. Bu dönem hikâye önce zihin ve iletişim tarafında başlıyor, sonra yavaş yavaş kimlik ve duruş alanına yayılıyor. Yani küçük görünen bir hareket daha büyük bir yön değişimini tetikleyebilir.",
+    "mechanism": "Bu dönem hikâye önce zihin ve iletişim tarafında başlıyor, sonra yavaş yavaş kimlik ve duruş alanına yayılıyor. Yani küçük görünen bir hareket daha büyük bir yön değişimini tetikleyebilir.",
+    "growth_edge": "Dikkat etmen gereken yer, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+    "relational_or_life_expression": "Günlük hayatta bu, daha seçici kararlar ve daha net sınırlar olarak hissedilebilir.",
+    "what_it_builds": "Bu, daha net seçim yapma çizgisini biraz daha güçlendiriyor.",
+    "upper_meaning": "Bu, daha net seçim yapma çizgisini biraz daha güçlendiriyor.",
+    "debug": {
+      "spine_event_id": "",
+      "support_event_ids": [],
+      "track_id": "default",
+      "spine_role": "builder",
+      "support_roles": [],
+      "canonical_period_spine_source": "",
+      "canonical_period_spine_target_node_id": "",
+      "promise_prefix_source": "",
+      "period_voice_policy_version": "",
+      "period_voice_policy_reason_line_allowed": false,
+      "period_voice_policy_avoid_tags": [],
+      "period_voice_policy_meaning_intent": "",
+      "period_voice_policy_rhetorical_frame": "",
+      "period_voice_policy_valence_mode": "",
+      "period_voice_policy_intensity_mode": "",
+      "period_voice_policy_match_level": "",
+      "period_voice_policy_manifestation_context": {},
+      "period_voice_policy": {},
+      "semantic_focus": {},
+      "semantic_focus_consumed": false,
+      "semantic_focus_used_fields": [],
+      "chapter_handoff_used_fields": [],
+      "suppressed_meanings_applied": [],
+      "composer_mode": "legacy_fallback",
+      "chapter_priority": {},
+      "composer_plan": {
+        "hook": "Burada daha yavaş ama daha kalıcı bir çizgi oluşuyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve burada seçimini daha netleştirmen gerekiyor.",
+        "scene_anchor": "",
+        "core_contrast": "Mesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.",
+        "mechanism": "Bu dönem hikâye önce zihin ve iletişim tarafında başlıyor, sonra yavaş yavaş kimlik ve duruş alanına yayılıyor. Yani küçük görünen bir hareket daha büyük bir yön değişimini tetikleyebilir.",
+        "growth_edge": "Dikkat etmen gereken yer, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+        "what_it_builds": "Bu, daha net seçim yapma çizgisini biraz daha güçlendiriyor.",
+        "closer": "Günlük hayatta bu, daha seçici kararlar ve daha net sınırlar olarak hissedilebilir.",
+        "legacy_prefix": "",
+        "semantic_mode": "fallback"
+      },
+      "period_reading_v1_guardrails": {
+        "blocks": [],
+        "adjacent_blocks": [],
+        "full_text": []
+      },
+      "period_reading_v1_full_text": "Burada daha yavaş ama daha kalıcı bir çizgi oluşuyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve burada seçimini daha netleştirmen gerekiyor. Mesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi. Bu dönem hikâye önce zihin ve iletişim tarafında başlıyor, sonra yavaş yavaş kimlik ve duruş alanına yayılıyor. Yani küçük görünen bir hareket daha büyük bir yön değişimini tetikleyebilir. Dikkat etmen gereken yer, ilk hissi sonuç sanıp süreci aceleye getirmek. Bu, daha net seçim yapma çizgisini biraz daha güçlendiriyor. Günlük hayatta bu, daha seçici kararlar ve daha net sınırlar olarak hissedilebilir.",
+      "active_life_chapter_present": false,
+      "active_life_chapter_type": "",
+      "active_life_chapter_phase": "",
+      "active_life_chapter_selected_meaning": "",
+      "render_guardrails": {
+        "period_opening": [],
+        "big_picture": [],
+        "mechanism": [],
+        "growth_edge": [],
+        "relational_or_life_expression": [],
+        "what_it_builds": [],
+        "upper_meaning": []
+      }
+    }
+  }
+}

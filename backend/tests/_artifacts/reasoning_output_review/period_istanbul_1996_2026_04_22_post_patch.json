@@ -1,0 +1,147 @@
+{
+  "case": "Istanbul 1996-12-28 07:10 / window 2026-04-01..2026-04-30 / selected 2026-04-22",
+  "period_reading_v1": {
+    "version": "period_reading_v1",
+    "blocks": [
+      {
+        "role": "hook",
+        "text": "Burada daha yavaş ama daha kalıcı bir çizgi oluşuyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve burada seçimini daha netleştirmen gerekiyor."
+      },
+      {
+        "role": "unfolding",
+        "text": "İlk bakışta görünen şey tek mesele değil; altında daha kişisel bir yön ayarı var. Sende zaten çalışan birkaç ayrı taraf var. Bu dönem onlar birbirini daha çok duyuyor. Bu tema küçük cümlelerin ağırlığı içinden büyüyor; küçük cümleler bile alttaki daha büyük meseleyi görünür kılabilir."
+      },
+      {
+        "role": "growth",
+        "text": "Burada dikkat etmen gereken yer, küçük cümlelerin ağırlığı tarafında büyüyen tepkiyi bütün hikayenin yerine koymamak. Daha esnek ama dağılmayan bir yön duygusu kuruyorsun."
+      },
+      {
+        "role": "closer",
+        "text": "Farklı parçalarını aynı ritme almayı öğreniyorsun."
+      }
+    ],
+    "full_text": "Burada daha yavaş ama daha kalıcı bir çizgi oluşuyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve burada seçimini daha netleştirmen gerekiyor.\n\nİlk bakışta görünen şey tek mesele değil; altında daha kişisel bir yön ayarı var. Sende zaten çalışan birkaç ayrı taraf var. Bu dönem onlar birbirini daha çok duyuyor. Bu tema küçük cümlelerin ağırlığı içinden büyüyor; küçük cümleler bile alttaki daha büyük meseleyi görünür kılabilir.\n\nBurada dikkat etmen gereken yer, küçük cümlelerin ağırlığı tarafında büyüyen tepkiyi bütün hikayenin yerine koymamak. Daha esnek ama dağılmayan bir yön duygusu kuruyorsun.\n\nFarklı parçalarını aynı ritme almayı öğreniyorsun."
+  },
+  "period_opening": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor. Burada daha yavaş ama daha kalıcı bir çizgi oluşuyor. Bu dönem hayatının bir alanı daha görünür hale geliyor ve burada seçimini daha netleştirmen gerekiyor.",
+  "big_picture": "İlk bakışta görünen şey tek mesele değil; altında daha kişisel bir yön ayarı var. Sende zaten çalışan birkaç ayrı taraf var. Bu dönem onlar birbirini daha çok duyuyor. Bu tema küçük cümlelerin ağırlığı içinden büyüyor; küçük cümleler bile alttaki daha büyük meseleyi görünür kılabilir.",
+  "mechanism": "Sende zaten çalışan birkaç ayrı taraf var. Bu dönem onlar birbirini daha çok duyuyor. Bu tema küçük cümlelerin ağırlığı içinden büyüyor; küçük cümleler bile alttaki daha büyük meseleyi görünür kılabilir.",
+  "growth_edge": "Burada dikkat etmen gereken yer, küçük cümlelerin ağırlığı tarafında büyüyen tepkiyi bütün hikayenin yerine koymamak.",
+  "relational_or_life_expression": "Farklı parçalarını aynı ritme almayı öğreniyorsun.",
+  "what_it_builds": "Daha esnek ama dağılmayan bir yön duygusu kuruyorsun.",
+  "upper_meaning": "Daha esnek ama dağılmayan bir yön duygusu kuruyorsun.",
+  "debug": {
+    "composer_mode": "legacy_fallback",
+    "composer_semantic_mode": null,
+    "track_id": "default",
+    "active_life_chapter_present": false,
+    "semantic_focus_source": "period_voice_policy",
+    "primary_domain": "yakın çevrendeki ses",
+    "secondary_domains": [
+      "yakın çevrendeki ses",
+      "house_3",
+      "house_2",
+      "house_4",
+      "house_5"
+    ],
+    "scene_translation_request": {
+      "version": "manifestation_context_v1",
+      "primary_house": 3,
+      "house_axis": "3-1",
+      "target_planet": "Sun",
+      "target_planet_house": 1,
+      "ruled_houses": [],
+      "angle": "ASC",
+      "life_scene": "yakın çevrendeki ses",
+      "life_scene_variants": [
+        "gündelik konuşmalar",
+        "küçük cümlelerin ağırlığı",
+        "yakın çevrendeki ses"
+      ],
+      "context_seed": "Bu tema daha çok yakın çevrendeki ses içinden görünür oluyor.",
+      "variant_index": 2,
+      "source": "event_house",
+      "release_strengthened": false,
+      "debug": {
+        "event_ids": [
+          "88bc98188b2f7931360493237881969004d50662",
+          "f20ef9eb9742c7eb0940794301fee6ab2a171965",
+          "5c094e3bd122d16ecf5d3fe427057c9ed74a73f5",
+          "f8f11ffebcfda30f4a64126627cee7aba340aae4",
+          "76a7cc7df8e50d411c625f3f385d5c228c8dcd94"
+        ]
+      }
+    }
+  },
+  "featured_events_summary": [
+    {
+      "label": "Neptune square Sun (orb 3.78°)",
+      "transit_body": "Neptune",
+      "natal_point": "Sun",
+      "aspect": "square",
+      "polarity": "hard",
+      "phase": "applying",
+      "orb_deg": 3.78,
+      "houses": {
+        "transit_in_natal_house": 3,
+        "natal_point_house": 1
+      },
+      "interpretation_where": "Bunu en cok kimlik ve durus alaninda hissedebilirsin; etkisi zihin ve iletisim tarafina da tasabilir."
+    },
+    {
+      "label": "North Node sextile Sun (orb 0.63°)",
+      "transit_body": "North Node",
+      "natal_point": "Sun",
+      "aspect": "sextile",
+      "polarity": "soft",
+      "phase": "applying",
+      "orb_deg": 0.63,
+      "houses": {
+        "transit_in_natal_house": 2,
+        "natal_point_house": 1
+      },
+      "interpretation_where": "Bunu en cok kimlik ve durus alaninda hissedebilirsin; etkisi para ve ozdeger tarafina da tasabilir."
+    },
+    {
+      "label": "Sun trine ASC (orb 1.06°)",
+      "transit_body": "Sun",
+      "natal_point": "ASC",
+      "aspect": "trine",
+      "polarity": "soft",
+      "phase": "separating",
+      "orb_deg": 1.06,
+      "houses": {
+        "transit_in_natal_house": 4,
+        "natal_point_house": null
+      },
+      "interpretation_where": "Bunu en cok kimlik ve dis imaj tarafinda hissedebilirsin."
+    },
+    {
+      "label": "Uranus sextile South Node (orb 2.89°)",
+      "transit_body": "Uranus",
+      "natal_point": "South Node",
+      "aspect": "sextile",
+      "polarity": "soft",
+      "phase": "applying",
+      "orb_deg": 2.89,
+      "houses": {
+        "transit_in_natal_house": 5,
+        "natal_point_house": 3
+      },
+      "interpretation_where": "Bunu en cok zihin ve iletisim alaninda hissedebilirsin; etkisi yaraticilik ve keyif tarafina da tasabilir."
+    },
+    {
+      "label": "Venus trine Mars (orb 0.11°)",
+      "transit_body": "Venus",
+      "natal_point": "Mars",
+      "aspect": "trine",
+      "polarity": "soft",
+      "phase": "exactish",
+      "orb_deg": 0.11,
+      "houses": {
+        "transit_in_natal_house": 5,
+        "natal_point_house": 9
+      },
+      "interpretation_where": "Bunu en cok yon ve anlam alaninda hissedebilirsin; etkisi yaraticilik ve keyif tarafina da tasabilir."
+    }
+  ]
+}

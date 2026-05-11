@@ -1,0 +1,116 @@
+{
+  "request_payload": {
+    "birth_date": "1996-12-28",
+    "birth_time": "07:10",
+    "birth_place": "Istanbul, TR",
+    "birth_latitude": 41.0082,
+    "birth_longitude": 28.9784,
+    "birth_timezone": "Europe/Istanbul",
+    "start": "2026-04-01",
+    "end": "2026-04-30",
+    "tz": "Europe/Istanbul",
+    "transit_place": "Istanbul, TR",
+    "transit_latitude": 41.0082,
+    "transit_longitude": 28.9784,
+    "transit_timezone": "Europe/Istanbul",
+    "lens": "general",
+    "intent": "beauty_care_nourish",
+    "sub_intent": null,
+    "selected_date": "2026-04-22",
+    "include_best_times": false,
+    "top": 10,
+    "window": 3,
+    "debug": true,
+    "response_mode": "public_only",
+    "payload_profile": "home",
+    "visible_days_limit": null,
+    "subscription_tier": "free",
+    "locale": "tr"
+  },
+  "response": {
+    "range": {
+      "start": "2026-04-01",
+      "end": "2026-04-30",
+      "tz": "Europe/Istanbul"
+    },
+    "public": {
+      "period_core": {},
+      "event_cards": [],
+      "daily_event_cards": [],
+      "daily_synthesis": {},
+      "period_event_cards": [],
+      "daily_selection": {},
+      "period_peak_timeline": [],
+      "timeline": {},
+      "multi_event": {
+        "schema_version": "astro_event.v2",
+        "personal_transit_rail": [],
+        "structural_chapter_rail": [],
+        "solar_year_frame": {},
+        "events_by_id": {}
+      },
+      "personal_transit_rail": [],
+      "structural_chapter_rail": [],
+      "solar_year_frame": {}
+    },
+    "calendar": {
+      "days": [
+        {
+          "date": "2026-04-22",
+          "rating": 17,
+          "heat": 17,
+          "event_count": 17,
+          "signals_count": 17,
+          "has_signals": true,
+          "is_critical": true,
+          "labels": [
+            "duygu ↔ irade çekişme",
+            "akış + akış destek",
+            "akış ↔ irade gerilim"
+          ],
+          "critical_reasons": [
+            "event_peak"
+          ],
+          "signal_label_tr": "Hassas gün.",
+          "tone_label_tr": "ince",
+          "micro_summary_tr": "Hassas gün."
+        }
+      ]
+    },
+    "debug": {
+      "response_mode": "public_only",
+      "payload_profile": "home",
+      "subscription_tier": "free",
+      "visible_days_limit": null,
+      "best_times_enabled": false,
+      "period_coverage": {},
+      "period_selection": {},
+      "period_root_causes": [],
+      "events_debug": [],
+      "degraded_path": {
+        "active": true,
+        "reason": "public_payload_exception",
+        "error_type": "TypeError"
+      },
+      "selected_day_public": {
+        "date": "2026-04-22",
+        "daily_event_cards_count": 0,
+        "period_event_cards_count": 0,
+        "legacy_event_cards_count": 0,
+        "daily_selection": {},
+        "micro_summary_tr": "",
+        "micro_summary_source": "public_only"
+      },
+      "cache_status": "miss",
+      "cache_key": "transit_narrative:v4:a4049c8d7fd06994ced3aded35e7b56f08770cb5"
+    },
+    "meta": {
+      "snapshot_id": "trsnap_713e1313e0ea4c2b99f22b2f31b3b366",
+      "source_meta": {
+        "endpoint": "/transit/narrative",
+        "route_version": "v1",
+        "observability_stage": "phase0_pr1"
+      }
+    }
+  }
+}

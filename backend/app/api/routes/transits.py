@@ -16,6 +16,7 @@ from time import perf_counter
 from fastapi import APIRouter, Header, HTTPException, Query
 from pydantic import BaseModel, ConfigDict, Field
 
+from app.astro_os.natal import build_canonical_natal_state_from_chart_data
 from app.core.config import settings
 from app.engine.transit_engine import (
     build_transit_event_timing,
@@ -27,7 +28,7 @@ from app.transit.interpret.interpretation_engine_v1 import (
     diversify_where_short,
     interpret_items,
 )
-from app.transit.present.public_builder import build_public_response
+from app.transit.present.public_builder import build_home_response, build_public_response
 from app.transit.calendar_builder import build_transit_calendar_public
 from app.transit.calendar.best_times import best_times_from_calendar_payload
 from app.transit.serialize.calendar_serializers import to_ui_day_detail, to_ui_calendar
@@ -50,9 +51,14 @@ from app.transit.narrative.daily_humanizer_tr import (
     humanize_event_card_tr,
     summarize_daily_micro_copy,
 )
+from app.transit.narrative.daily_synthesis import build_daily_synthesis
 from app.transit.narrative.daily_selection import select_daily_and_period_event_cards as build_daily_event_buckets
+from app.transit.narrative.today_story_candidate import build_today_story_candidate
 from app.transit.narrative.selection import select_event_ids
 from app.transit.narrative.generator import make_birth_fingerprint
+from app.transit.narrative.canonical_natal_activation import build_transit_natal_activation_context
+from app.transit.narrative.canonical_natal_activation import build_period_prefix_from_activation_context
+from app.transit.narrative.life_chapter_detector import detect_active_life_chapter
 from app.transit.narrative.text_quality_tr import tr_normalize_tree
 from app.transit.observability import (
     TRACE_EVENT_NAME,
@@ -61,12 +67,15 @@ from app.transit.observability import (
     inject_snapshot_meta,
 )
 from app.services.performance.cache_store import default_cache_store, utc_now
+from app.services.chart_service import compute_natal_chart
 
 router = APIRouter(tags=["transits"])
 logger = logging.getLogger(__name__)
 DEFAULT_FREE_VISIBLE_DAYS_LIMIT = 7
 HOME_MAX_PERIOD_EVENT_CARDS = 3
 HOME_MAX_PERIOD_PEAK_TIMELINE_ITEMS = 4
+HOME_MAX_DAILY_SELECTION_CANDIDATES = 8
+HOME_FAST_EVENT_CARD_CANDIDATES = 2
 
 
 def _json_safe(value: Any) -> Any:
@@ -362,6 +371,7 @@ def _empty_public_narrative_payload() -> Dict[str, Any]:
         "period_core": {},
         "event_cards": [],
         "daily_event_cards": [],
+        "daily_synthesis": {},
         "period_event_cards": [],
         "daily_selection": {},
         "period_peak_timeline": [],
@@ -543,6 +553,164 @@ def _attach_period_story_to_daily_cards(
     return enriched
 
 
+def _try_build_canonical_natal_state_for_transits(
+    request: "TransitNarrativeRequest",
+):
+    try:
+        chart_data = compute_natal_chart(
+            request.birth_date,
+            request.birth_time,
+            request.birth_place,
+            birth_latitude=request.birth_latitude,
+            birth_longitude=request.birth_longitude,
+            birth_timezone=request.birth_timezone,
+        )
+        return build_canonical_natal_state_from_chart_data(
+            chart_data,
+            metadata={
+                "birth_date": request.birth_date,
+                "birth_time": request.birth_time,
+                "birth_place": request.birth_place,
+            },
+            include_debug=False,
+        )
+    except Exception:
+        return None
+
+
+def _structural_chapter_rail_events(structural_chapter_rail: Any) -> List[Mapping[str, Any]]:
+    if isinstance(structural_chapter_rail, Mapping):
+        return [structural_chapter_rail]
+    if isinstance(structural_chapter_rail, list):
+        return [item for item in structural_chapter_rail if isinstance(item, Mapping)]
+    return []
+
+
+def _merged_detector_transit_items(
+    display_items: List[Mapping[str, Any]],
+    structural_chapter_rail: Any,
+) -> List[Mapping[str, Any]]:
+    merged: List[Mapping[str, Any]] = []
+    seen_keys: set[str] = set()
+    for item in [*display_items, *_structural_chapter_rail_events(structural_chapter_rail)]:
+        event_id = str(item.get("event_id") or item.get("id") or "").strip()
+        if event_id:
+            dedupe_key = f"id:{event_id}"
+        else:
+            family = str(item.get("event_family") or item.get("family") or "").strip().lower()
+            subtype = str(item.get("event_subtype") or item.get("subtype") or "").strip().lower()
+            start = str(item.get("start_at") or item.get("date") or "").strip()
+            dedupe_key = f"shape:{family}:{subtype}:{start}"
+        if dedupe_key in seen_keys:
+            continue
+        seen_keys.add(dedupe_key)
+        merged.append(item)
+    return merged
+
+
+def _attach_internal_period_reasoning_state(
+    request: Any,
+    core_response: Mapping[str, Any] | Dict[str, Any],
+) -> tuple[Dict[str, Any], Any | None]:
+    if not isinstance(core_response, Mapping):
+        return {}, None
+
+    response_out = dict(core_response)
+    canonical_natal_state = response_out.get("_canonical_natal_state")
+    if canonical_natal_state is None:
+        canonical_natal_state = _try_build_canonical_natal_state_for_transits(request)
+    if canonical_natal_state is not None:
+        response_out["_canonical_natal_state"] = canonical_natal_state
+
+    transit_items: List[Mapping[str, Any]] = []
+    display = response_out.get("display") if isinstance(response_out.get("display"), Mapping) else {}
+    for item in display.get("items") or []:
+        if isinstance(item, Mapping):
+            transit_items.append(item)
+
+    structural_chapter_rail = None
+    event_engine_v2 = response_out.get("event_engine_v2")
+    if isinstance(event_engine_v2, Mapping):
+        structural_chapter_rail = event_engine_v2.get("structural_chapter_rail")
+    transit_items = _merged_detector_transit_items(transit_items, structural_chapter_rail)
+
+    solar_year_frame = response_out.get("solar_year_frame")
+    if not isinstance(solar_year_frame, Mapping) and isinstance(event_engine_v2, Mapping):
+        nested_solar_year_frame = event_engine_v2.get("solar_year_frame")
+        if isinstance(nested_solar_year_frame, Mapping):
+            solar_year_frame = nested_solar_year_frame
+
+    try:
+        life_chapter_result = detect_active_life_chapter(
+            canonical_natal_state=canonical_natal_state if isinstance(canonical_natal_state, Mapping) else None,
+            transit_events=transit_items,
+            solar_year_frame=solar_year_frame if isinstance(solar_year_frame, Mapping) else None,
+            structural_chapter_rail=structural_chapter_rail if isinstance(structural_chapter_rail, Mapping) else None,
+            debug=False,
+        )
+    except Exception:
+        life_chapter_result = {}
+
+    active_life_chapter = (
+        life_chapter_result.get("active_life_chapter")
+        if isinstance(life_chapter_result, Mapping)
+        else None
+    )
+    if isinstance(active_life_chapter, Mapping) and active_life_chapter:
+        response_out["_active_life_chapter"] = dict(active_life_chapter)
+    debug_payload = (
+        life_chapter_result.get("debug")
+        if isinstance(life_chapter_result, Mapping) and isinstance(life_chapter_result.get("debug"), Mapping)
+        else None
+    )
+    if isinstance(debug_payload, Mapping) and debug_payload:
+        response_out["_active_life_chapter_debug"] = dict(debug_payload)
+    return response_out, canonical_natal_state
+
+
+def _inject_canonical_natal_activation_context(
+    *,
+    request: "TransitNarrativeRequest",
+    canonical_state: Any | None = None,
+    period_core: dict[str, Any],
+    daily_event_cards: list[dict[str, Any]],
+    period_event_cards: list[dict[str, Any]],
+    daily_selection: dict[str, Any],
+    daily_synthesis: dict[str, Any],
+) -> None:
+    state = canonical_state or _try_build_canonical_natal_state_for_transits(request)
+    if state is None:
+        return
+    activation_context = build_transit_natal_activation_context(
+        canonical_state=state,
+        period_core=period_core,
+        daily_event_cards=daily_event_cards,
+        period_event_cards=period_event_cards,
+    )
+
+    period_core["natal_activation_context"] = dict(activation_context.get("period_core") or {})
+    daily_selection["natal_activation_context"] = dict(activation_context.get("daily_selection") or {})
+    daily_synthesis["natal_activation_context"] = dict(activation_context.get("daily_synthesis") or {})
+    prefix = build_period_prefix_from_activation_context(activation_context)
+    if prefix:
+        period_core["canonical_promise_prefix"] = prefix
+        opening = str(period_core.get("period_opening") or "").strip()
+        if opening and prefix not in opening:
+            period_core["period_opening"] = f"{prefix} {opening}".strip()
+        core_story = str(period_core.get("core_story") or "").strip()
+        if core_story and prefix not in core_story:
+            period_core["core_story"] = f"{prefix}\n\n{core_story}".strip()
+    daily_synthesis.setdefault("sources", {})
+    if isinstance(daily_synthesis.get("sources"), Mapping):
+        natal_sources = list((daily_synthesis.get("sources") or {}).get("natal") or [])
+        if activation_context.get("chart_id"):
+            natal_sources = [*natal_sources, str(activation_context.get("chart_id"))]
+        daily_synthesis["sources"] = {
+            **dict(daily_synthesis.get("sources") or {}),
+            "natal": natal_sources[:3],
+        }
+
+
 def _selected_day_context_from_calendar(
     calendar_public: Mapping[str, Any] | None,
     selected_date: str | None,
@@ -562,10 +730,22 @@ def _selected_day_context_from_calendar(
             for item in top_events
             if isinstance(item, Mapping) and str(item.get("id") or "").strip()
         ]
+        top_raw_event_ids = [
+            str(event_id).strip()
+            for event_id in (day.get("top_raw_event_ids") or [])
+            if str(event_id).strip()
+        ]
+        raw_event_ids = [
+            str(event_id).strip()
+            for event_id in (day.get("raw_event_ids") or day.get("event_ids") or [])
+            if str(event_id).strip()
+        ]
         for raw_event_id in (day.get("top_event_ids") or day.get("event_ids") or []):
             token = str(raw_event_id or "").strip()
             if token and token not in top_event_ids:
                 top_event_ids.append(token)
+            if token and token not in top_raw_event_ids and token in raw_event_ids:
+                top_raw_event_ids.append(token)
         labels = [str(label).strip() for label in (day.get("labels") or []) if str(label).strip()]
         event_count = max(
             int(day.get("event_count") or 0),
@@ -582,6 +762,8 @@ def _selected_day_context_from_calendar(
         return {
             "date": str(day.get("date") or "").strip(),
             "top_event_ids": top_event_ids,
+            "top_raw_event_ids": top_raw_event_ids,
+            "raw_event_ids": raw_event_ids,
             "labels": labels,
             "critical_reasons": [
                 str(reason).strip()
@@ -593,6 +775,121 @@ def _selected_day_context_from_calendar(
             "is_critical": bool(day.get("is_critical")),
         }
     return {}
+
+
+def _safe_parse_iso_date(value: Any) -> date_type | None:
+    token = str(value or "").strip()
+    if not token:
+        return None
+    try:
+        return date_type.fromisoformat(token[:10])
+    except ValueError:
+        return None
+
+
+def _selected_day_matchable_ids(
+    selected_day_context: Mapping[str, Any] | None,
+    *,
+    raw_event_ids: set[str],
+) -> List[str]:
+    ordered: List[str] = []
+    for token in (
+        list((selected_day_context or {}).get("top_raw_event_ids") or [])
+        + list((selected_day_context or {}).get("top_event_ids") or [])
+    ):
+        event_id = str(token or "").strip()
+        if not event_id or event_id not in raw_event_ids or event_id in ordered:
+            continue
+        ordered.append(event_id)
+    return ordered
+
+
+def _home_daily_trigger_score(item: Mapping[str, Any], *, selected_date: date_type) -> float:
+    event_id = str(item.get("event_id") or "").strip()
+    if not event_id:
+        return -1.0
+
+    score = 0.0
+    bucket = str(item.get("bucket") or item.get("time_bucket") or "").strip().lower()
+    phase = str(item.get("phase") or "").strip().lower()
+    transit_body = str(item.get("transit_body") or "").strip().lower()
+    timing = item.get("timing") if isinstance(item.get("timing"), Mapping) else {}
+    peak_date = _safe_parse_iso_date(timing.get("peak_date_utc"))
+    entry_date = _safe_parse_iso_date(timing.get("entry_date_utc"))
+
+    if bucket == "short":
+        score += 1.9
+    if phase in {"exact", "exactish"}:
+        score += 1.9
+    elif phase == "applying":
+        score += 1.0
+    elif phase == "separating":
+        score += 0.35
+
+    if peak_date is not None:
+        delta = abs((peak_date - selected_date).days)
+        if delta == 0:
+            score += 2.0
+        elif delta == 1:
+            score += 1.1
+        elif delta == 2:
+            score += 0.45
+
+    if entry_date == selected_date:
+        score += 0.75
+
+    if transit_body in {"moon", "sun", "mercury", "venus", "mars"}:
+        score += 0.45
+    elif transit_body in {"saturn", "uranus", "neptune", "pluto"} and bucket != "short":
+        score -= 0.25
+
+    if bool(item.get("is_structural")) and bucket != "short":
+        score -= 0.35
+
+    return score
+
+
+def _home_daily_candidate_ids(
+    *,
+    raw_events: Sequence[Mapping[str, Any]],
+    selected_day_context: Mapping[str, Any] | None,
+    event_cards: Sequence[Mapping[str, Any]],
+    selected_date: date_type,
+) -> List[str]:
+    raw_event_ids = {
+        str(item.get("event_id") or "").strip()
+        for item in raw_events
+        if isinstance(item, Mapping) and str(item.get("event_id") or "").strip()
+    }
+    day_first_ids = _selected_day_matchable_ids(selected_day_context, raw_event_ids=raw_event_ids)
+
+    scored_triggers: List[tuple[float, str]] = []
+    for item in raw_events:
+        if not isinstance(item, Mapping):
+            continue
+        event_id = str(item.get("event_id") or "").strip()
+        if not event_id or event_id in day_first_ids:
+            continue
+        score = _home_daily_trigger_score(item, selected_date=selected_date)
+        if score >= 1.25:
+            scored_triggers.append((score, event_id))
+    scored_triggers.sort(key=lambda item: (-item[0], item[1]))
+
+    ordered_ids: List[str] = []
+    for event_id in (
+        day_first_ids
+        + [event_id for _score, event_id in scored_triggers]
+        + [
+            str(card.get("event_id") or "").strip()
+            for card in event_cards
+            if isinstance(card, Mapping) and str(card.get("event_id") or "").strip()
+        ]
+    ):
+        if event_id and event_id not in ordered_ids:
+            ordered_ids.append(event_id)
+        if len(ordered_ids) >= HOME_MAX_DAILY_SELECTION_CANDIDATES:
+            break
+    return ordered_ids
 
 
 def _selected_day_context_for_request(
@@ -714,6 +1011,8 @@ def _select_daily_and_period_event_cards(
     selected_day_context: Mapping[str, Any] | None = None,
     natal: Mapping[str, Any] | None = None,
     event_v2_by_id: Mapping[str, Mapping[str, Any]] | None = None,
+    canonical_natal_activation_by_event: Mapping[str, Mapping[str, Any]] | None = None,
+    canonical_period_spine: Mapping[str, Any] | None = None,
     lens: str = "general",
     include_debug_meta: bool = False,
 ) -> Dict[str, Any]:
@@ -724,6 +1023,8 @@ def _select_daily_and_period_event_cards(
         selected_day_context=selected_day_context,
         natal=natal,
         event_v2_by_id=event_v2_by_id,
+        canonical_natal_activation_by_event=canonical_natal_activation_by_event,
+        canonical_period_spine=canonical_period_spine,
         lens=lens,
         include_debug_meta=include_debug_meta,
     )
@@ -845,8 +1146,11 @@ _TRANSIT_NARRATIVE_STAGE_ORDER: Tuple[str, ...] = (
     "calendar_build",
     "selected_day_context_build",
     "raw_event_engine_build",
+    "build_public_response",
+    "build_home_response",
     "narrative_public_payload_build",
     "daily_period_selection",
+    "daily_synthesis_build",
     "best_times_build",
     "response_shape",
     "total",
@@ -1233,6 +1537,20 @@ def _load_period_space_pack() -> Dict[str, Any]:
         pack["housepair_pack"] = _load_normalized_json(base_path / "housepair_interactions.json")
         _PERIOD_SPACE_PACK = pack
     return _PERIOD_SPACE_PACK or {}
+
+
+def prewarm_transit_runtime_assets() -> None:
+    started = perf_counter()
+    try:
+        _load_content_store()
+        _load_period_space_pack()
+    except Exception:  # pragma: no cover - defensive startup path
+        logger.exception("Transit runtime asset prewarm failed")
+        return
+    logger.info(
+        "Transit runtime assets prewarmed in %.2f ms",
+        (perf_counter() - started) * 1000.0,
+    )
 
 
 def _default_house_labels() -> Dict[int, str]:
@@ -2160,6 +2478,7 @@ def _build_narrative_public_payload(
     timing_probe: Dict[str, Any] | None = None,
 ) -> Dict[str, Any]:
     transit_date = request.selected_date or start_date.isoformat()
+    payload_profile = _normalize_payload_profile(request.payload_profile)
     core_request = TransitRequest(
         birth_date=request.birth_date,
         birth_time=request.birth_time,
@@ -2178,31 +2497,57 @@ def _build_narrative_public_payload(
         locale=request.locale,
     )
     raw_event_engine_started = perf_counter()
-    core_response = _build_transits_engine_response(core_request)
+    core_response = _build_transits_engine_response(
+        core_request,
+        include_window_report=payload_profile != "home",
+        include_period_space=payload_profile != "home",
+        include_multi_event_payload=payload_profile != "home",
+    )
+    core_response, canonical_natal_state = _attach_internal_period_reasoning_state(request, core_response)
     _timing_probe_record_stage(
         timing_probe,
         "raw_event_engine_build",
         (perf_counter() - raw_event_engine_started) * 1000.0,
     )
-    public_response_signature = inspect.signature(build_public_response)
-    if "include_debug_artifacts" in public_response_signature.parameters:
-        public_payload = build_public_response(
-            core_response,
-            include_debug_artifacts=bool(request.debug),
-        )
-    else:  # pragma: no cover - compatibility for monkeypatched test doubles
-        public_payload = build_public_response(core_response)
-    period_core_raw = public_payload.get("period_core") if isinstance(public_payload.get("period_core"), Mapping) else {}
-    period_core = dict(period_core_raw)
-    period_root_causes = period_core.pop("_debug_root_causes", [])
-    events_debug = public_payload.get("_events_debug") if isinstance(public_payload.get("_events_debug"), list) else []
     items_unscored = (core_response.get("display") or {}).get("items") or []
     _timing_probe_set_metric(timing_probe, "raw_event_count", len(items_unscored) if isinstance(items_unscored, list) else 0)
     selected_events, period_selection = select_event_ids(
         [item for item in items_unscored if isinstance(item, Mapping)],
-        max_cards=5,
+        max_cards=HOME_FAST_EVENT_CARD_CANDIDATES if payload_profile == "home" else 5,
         natal=core_response.get("natal") if isinstance(core_response, Mapping) else None,
     )
+    public_payload_started = perf_counter()
+    if payload_profile == "home":
+        home_response_signature = inspect.signature(build_home_response)
+        home_kwargs: Dict[str, Any] = {}
+        if "selected_events" in home_response_signature.parameters:
+            home_kwargs["selected_events"] = [item for item in selected_events if isinstance(item, Mapping)]
+        if "include_debug_artifacts" in home_response_signature.parameters:
+            home_kwargs["include_debug_artifacts"] = bool(request.debug)
+        public_payload = build_home_response(core_response, **home_kwargs)
+        _timing_probe_record_stage(
+            timing_probe,
+            "build_home_response",
+            (perf_counter() - public_payload_started) * 1000.0,
+        )
+    else:
+        public_response_signature = inspect.signature(build_public_response)
+        if "include_debug_artifacts" in public_response_signature.parameters:
+            public_payload = build_public_response(
+                core_response,
+                include_debug_artifacts=bool(request.debug),
+            )
+        else:  # pragma: no cover - compatibility for monkeypatched test doubles
+            public_payload = build_public_response(core_response)
+        _timing_probe_record_stage(
+            timing_probe,
+            "build_public_response",
+            (perf_counter() - public_payload_started) * 1000.0,
+        )
+    period_core_raw = public_payload.get("period_core") if isinstance(public_payload.get("period_core"), Mapping) else {}
+    period_core = dict(period_core_raw)
+    period_root_causes = period_core.pop("_debug_root_causes", [])
+    events_debug = public_payload.get("_events_debug") if isinstance(public_payload.get("_events_debug"), list) else []
     selected_ids = {
         str(item.get("event_id") or "")
         for item in selected_events
@@ -2225,20 +2570,52 @@ def _build_narrative_public_payload(
         for card in event_cards
         if str(card.get("event_id") or "").strip()
     }
-    top_event_ids = {
-        str(token).strip()
-        for token in (selected_day_context or {}).get("top_event_ids", [])
-        if str(token).strip()
-    }
     daily_selection_events = [
         item for item in items_unscored if isinstance(item, Mapping)
     ]
-    if not top_event_ids and event_card_ids:
+    if payload_profile == "home":
+        home_selected_date = _safe_parse_iso_date(transit_date) or start_date
+        home_candidate_ids = _home_daily_candidate_ids(
+            raw_events=daily_selection_events,
+            selected_day_context=selected_day_context,
+            event_cards=event_cards,
+            selected_date=home_selected_date,
+        )
+        if home_candidate_ids:
+            event_by_id = {
+                str(item.get("event_id") or "").strip(): item
+                for item in daily_selection_events
+                if str(item.get("event_id") or "").strip()
+            }
+            daily_selection_events = [
+                event_by_id[event_id]
+                for event_id in home_candidate_ids
+                if event_id in event_by_id
+            ]
+        _timing_probe_set_metric(timing_probe, "daily_selection_candidate_count", len(daily_selection_events))
+    elif not (selected_day_context or {}).get("top_event_ids") and not (selected_day_context or {}).get("top_raw_event_ids") and event_card_ids:
         daily_selection_events = [
             item
             for item in daily_selection_events
             if str(item.get("event_id") or "").strip() in event_card_ids
         ]
+    candidate_natal_activation_by_event: dict[str, Any] = {}
+    if canonical_natal_state is not None:
+        candidate_activation_context = build_transit_natal_activation_context(
+            canonical_state=canonical_natal_state,
+            period_core=period_core,
+            daily_event_cards=[
+                dict(item)
+                for item in daily_selection_events
+                if isinstance(item, Mapping)
+            ],
+            period_event_cards=[
+                dict(card)
+                for card in event_cards
+                if isinstance(card, Mapping) and str(card.get("horizon") or "").strip().lower() == "period"
+            ],
+        )
+        candidate_natal_activation_by_event = dict(candidate_activation_context.get("by_event_id") or {})
     daily_period_selection_started = perf_counter()
     selected_buckets = _select_daily_and_period_event_cards(
         raw_events=daily_selection_events,
@@ -2247,6 +2624,10 @@ def _build_narrative_public_payload(
         selected_day_context=selected_day_context,
         natal=core_response.get("natal") if isinstance(core_response.get("natal"), Mapping) else None,
         event_v2_by_id=event_v2_by_id,
+        canonical_natal_activation_by_event=candidate_natal_activation_by_event,
+        canonical_period_spine=period_core.get("canonical_period_spine")
+        if isinstance(period_core.get("canonical_period_spine"), Mapping)
+        else {},
         lens=request.lens,
         include_debug_meta=bool(request.debug),
     )
@@ -2270,7 +2651,6 @@ def _build_narrative_public_payload(
             timeline_item["event_card"] = _humanize_event_card(event_card, lens=request.lens)
         period_peak_timeline.append(timeline_item)
     include_public_coverage = str(os.getenv("PERIOD_COVERAGE_PUBLIC", "0")).strip().lower() in {"1", "true", "yes", "on"}
-    payload_profile = _normalize_payload_profile(request.payload_profile)
     subscription_tier = _normalize_subscription_tier(request.subscription_tier)
     default_visible_limit = DEFAULT_FREE_VISIBLE_DAYS_LIMIT if payload_profile in {"calendar_period"} else None
     visible_days_limit = _effective_visible_days_limit(
@@ -2279,13 +2659,49 @@ def _build_narrative_public_payload(
         default_free_limit=default_visible_limit,
     )
     anchor_date = _request_anchor_date(request, start_date)
+    daily_synthesis_started = perf_counter()
+    daily_synthesis = build_daily_synthesis(
+        daily_event_cards=selected_buckets["daily_event_cards"],
+        period_core=period_core,
+        natal_snapshot=_build_natal_snapshot(core_response.get("natal") or {})
+        if isinstance(core_response.get("natal"), Mapping)
+        else {},
+        period_event_cards=selected_buckets["period_event_cards"],
+    )
+    _timing_probe_record_stage(
+        timing_probe,
+        "daily_synthesis_build",
+        (perf_counter() - daily_synthesis_started) * 1000.0,
+    )
+    _inject_canonical_natal_activation_context(
+        request=request,
+        canonical_state=canonical_natal_state,
+        period_core=period_core,
+        daily_event_cards=selected_buckets["daily_event_cards"],
+        period_event_cards=selected_buckets["period_event_cards"],
+        daily_selection=selected_buckets["daily_selection"],
+        daily_synthesis=daily_synthesis,
+    )
+    trigger_selection = selected_buckets["daily_selection"].get("trigger_selection")
+    if isinstance(trigger_selection, Mapping):
+        daily_synthesis["daily_trigger_selection"] = dict(trigger_selection)
+    daily_synthesis["today_story_candidate"] = build_today_story_candidate(
+        canonical_period_spine=period_core.get("canonical_period_spine")
+        if isinstance(period_core.get("canonical_period_spine"), Mapping)
+        else {},
+        daily_event_cards=selected_buckets["daily_event_cards"],
+        period_event_cards=selected_buckets["period_event_cards"],
+        daily_selection=selected_buckets["daily_selection"],
+    )
     payload = {
         "locale": request.locale,
         "period_core": period_core,
         "event_cards": event_cards,
         "daily_event_cards": selected_buckets["daily_event_cards"],
+        "daily_synthesis": daily_synthesis,
         "period_event_cards": selected_buckets["period_event_cards"],
         "daily_selection": selected_buckets["daily_selection"],
+        "natal_activation_context": dict(period_core.get("natal_activation_context") or {}),
         "period_peak_timeline": period_peak_timeline,
         "timeline": public_payload.get("timeline") or {},
         "multi_event": public_payload.get("multi_event") or {},
@@ -2307,7 +2723,13 @@ def _build_narrative_public_payload(
     )
 
 
-def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
+def _build_transits_engine_response(
+    request: TransitRequest,
+    *,
+    include_window_report: bool = True,
+    include_period_space: bool = True,
+    include_multi_event_payload: bool = True,
+) -> Dict[str, Any]:
     assumptions: list[str] = []
     transit_time = request.transit_time
     if not transit_time:
@@ -2332,27 +2754,29 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             assumptions=assumptions,
         )
         response["locale"] = request.locale or "tr"
-        window_report = build_transit_window_report(
-            birth_date=request.birth_date,
-            birth_time=request.birth_time,
-            birth_place=request.birth_place,
-            birth_latitude=request.birth_latitude,
-            birth_longitude=request.birth_longitude,
-            birth_timezone=request.birth_timezone,
-            transit_date=request.transit_date,
-            transit_time=transit_time,
-            transit_place=request.transit_place,
-            transit_latitude=request.transit_latitude,
-            transit_longitude=request.transit_longitude,
-            transit_timezone=request.transit_timezone,
-            options=options_payload,
-            window_days=DEFAULT_PERIOD_DAYS,
-            step_hours=DEFAULT_PERIOD_STEP_HOURS,
-            refine_near_exact=DEFAULT_PERIOD_REFINE_NEAR_EXACT,
-            max_events=DEFAULT_PERIOD_MAX_EVENTS,
-            orb_hysteresis_deg=DEFAULT_PERIOD_ORB_HYSTERESIS,
-            assumptions=assumptions,
-        )
+        window_report: Dict[str, Any] = {}
+        if include_window_report:
+            window_report = build_transit_window_report(
+                birth_date=request.birth_date,
+                birth_time=request.birth_time,
+                birth_place=request.birth_place,
+                birth_latitude=request.birth_latitude,
+                birth_longitude=request.birth_longitude,
+                birth_timezone=request.birth_timezone,
+                transit_date=request.transit_date,
+                transit_time=transit_time,
+                transit_place=request.transit_place,
+                transit_latitude=request.transit_latitude,
+                transit_longitude=request.transit_longitude,
+                transit_timezone=request.transit_timezone,
+                options=options_payload,
+                window_days=DEFAULT_PERIOD_DAYS,
+                step_hours=DEFAULT_PERIOD_STEP_HOURS,
+                refine_near_exact=DEFAULT_PERIOD_REFINE_NEAR_EXACT,
+                max_events=DEFAULT_PERIOD_MAX_EVENTS,
+                orb_hysteresis_deg=DEFAULT_PERIOD_ORB_HYSTERESIS,
+                assumptions=assumptions,
+            )
         solar_year_frame = build_solar_year_theme(
             birth_date=request.birth_date,
             birth_time=request.birth_time,
@@ -2447,27 +2871,30 @@ def _build_transits_engine_response(request: TransitRequest) -> Dict[str, Any]:
             if active_claims:
                 summary["active_claims"] = sorted(set(active_claims))
             include_axis_focus = bool(request.options.include_axis_focus) if request.options else False
-            period_items = _window_items_for_period_space(
-                window_report, natal=response.get("natal") or {}
-            )
-            presentable["period_space"] = _build_period_space(
-                period_items, include_axis_focus=include_axis_focus
-            )
+            if include_period_space and window_report:
+                period_items = _window_items_for_period_space(
+                    window_report, natal=response.get("natal") or {}
+                )
+                presentable["period_space"] = _build_period_space(
+                    period_items, include_axis_focus=include_axis_focus
+                )
             response["presentable"] = presentable
             response["content_debug"] = _build_content_debug(interpreted_items, content_store)
             response["natal_promise"] = promise
-        response["window_report"] = window_report
+        if include_window_report:
+            response["window_report"] = window_report
         response["solar_year_frame"] = solar_year_frame
-        response["event_engine_v2"] = build_personal_multi_event_payload(
-            report=response,
-            transit_date=request.transit_date,
-            transit_place=request.transit_place,
-            transit_latitude=request.transit_latitude,
-            transit_longitude=request.transit_longitude,
-            transit_timezone=request.transit_timezone,
-            window_report=window_report,
-            solar_year=solar_year_frame,
-        )
+        if include_multi_event_payload:
+            response["event_engine_v2"] = build_personal_multi_event_payload(
+                report=response,
+                transit_date=request.transit_date,
+                transit_place=request.transit_place,
+                transit_latitude=request.transit_latitude,
+                transit_longitude=request.transit_longitude,
+                transit_timezone=request.transit_timezone,
+                window_report=window_report,
+                solar_year=solar_year_frame,
+            )
         return response
     except Exception as exc:  # pragma: no cover - passthrough for API response
         raise HTTPException(status_code=500, detail=str(exc)) from exc
@@ -2482,7 +2909,12 @@ def build_transits(
     started = perf_counter()
     snapshot_id = generate_snapshot_id()
     response = _build_transits_engine_response(request)
-    public = build_public_response(response, include_debug_artifacts=False)
+    response, _ = _attach_internal_period_reasoning_state(request, response)
+    public_response_signature = inspect.signature(build_public_response)
+    if "include_debug_artifacts" in public_response_signature.parameters:
+        public = build_public_response(response, include_debug_artifacts=False)
+    else:  # pragma: no cover - compatibility for monkeypatched test doubles
+        public = build_public_response(response)
     return _finalize_route_response(
         public,
         endpoint="/transits",
@@ -3466,6 +3898,7 @@ def build_transit_narrative(
             "period_core": {},
             "event_cards": [],
             "daily_event_cards": [],
+            "daily_synthesis": {},
             "period_event_cards": [],
             "daily_selection": {},
             "period_peak_timeline": [],

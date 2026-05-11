@@ -1,0 +1,26 @@
+{
+  "canonical_natal_state": {
+    "bodies": [
+      {"body": "North Node", "sign": "Aries", "house": 3},
+      {"body": "South Node", "sign": "Libra", "house": 9}
+    ]
+  },
+  "transit_events": [
+    {
+      "event_id": "evt-nodal-return-aries",
+      "event_family": "cycle_event",
+      "event_subtype": "nodal_return",
+      "start_at": "2026-05-01",
+      "exact_at": ["2026-07-12T00:00:00"],
+      "end_at": "2026-10-10",
+      "chapter_opening": true,
+      "structural_significance": 0.88,
+      "precision_signal": 0.84,
+      "current_phase": "exactish",
+      "source_bodies": ["North Node"],
+      "target_points": ["North Node"],
+      "target_houses": [3]
+    }
+  ],
+  "expected_substrings": ["Koç", "doğrudan yön"]
+}

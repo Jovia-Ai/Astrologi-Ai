@@ -1,0 +1,1572 @@
+{
+  "metadata": {
+    "birth_date": "1996-12-28",
+    "birth_time": "07:10",
+    "birth_place": "Istanbul, TR",
+    "location": {
+      "city": "Istanbul, TR",
+      "latitude": 41.0082,
+      "longitude": 28.9784,
+      "timezone": "Europe/Istanbul"
+    },
+    "birth_datetime": "1996-12-28T07:10:00+02:00",
+    "timezone": "Europe/Istanbul"
+  },
+  "planets": [
+    {
+      "planet": "Sun",
+      "sign": "Capricorn",
+      "house": 1,
+      "degree": 276.75
+    },
+    {
+      "planet": "Moon",
+      "sign": "Leo",
+      "house": 8,
+      "degree": 133.95
+    },
+    {
+      "planet": "Mercury",
+      "sign": "Capricorn",
+      "house": 1,
+      "degree": 287.37
+    },
+    {
+      "planet": "Venus",
+      "sign": "Sagittarius",
+      "house": 12,
+      "degree": 253.71
+    },
+    {
+      "planet": "Mars",
+      "sign": "Virgo",
+      "house": 9,
+      "degree": 177.93
+    },
+    {
+      "planet": "Jupiter",
+      "sign": "Capricorn",
+      "house": 1,
+      "degree": 294.3
+    },
+    {
+      "planet": "Saturn",
+      "sign": "Aries",
+      "house": 3,
+      "degree": 1.16
+    },
+    {
+      "planet": "Uranus",
+      "sign": "Aquarius",
+      "house": 1,
+      "degree": 303.06
+    },
+    {
+      "planet": "Neptune",
+      "sign": "Capricorn",
+      "house": 1,
+      "degree": 296.69
+    },
+    {
+      "planet": "Pluto",
+      "sign": "Sagittarius",
+      "house": 11,
+      "degree": 244.26
+    },
+    {
+      "planet": "North Node",
+      "sign": "Libra",
+      "house": 9,
+      "degree": 182.69
+    },
+    {
+      "planet": "Lilith",
+      "sign": "Leo",
+      "house": 8,
+      "degree": 141.0
+    },
+    {
+      "planet": "Vertex",
+      "sign": "Sagittarius",
+      "house": 12,
+      "degree": 253.71
+    },
+    {
+      "planet": "Fortune",
+      "sign": "Taurus",
+      "house": 5,
+      "degree": 53.99
+    },
+    {
+      "planet": "Ascendant",
+      "sign": "Capricorn",
+      "house": 1,
+      "degree": 271.1868,
+      "is_point": true
+    }
+  ],
+  "aspects_sample_top10": [
+    {
+      "planet1": "Sun",
+      "planet2": "Saturn",
+      "type": "Square",
+      "angle": 84.41,
+      "aspect_angle": 90,
+      "orb": 5.59,
+      "exact_angle": 84.41
+    },
+    {
+      "planet1": "Sun",
+      "planet2": "North Node",
+      "type": "Square",
+      "angle": 94.06,
+      "aspect_angle": 90,
+      "orb": 4.06,
+      "exact_angle": 94.06
+    },
+    {
+      "planet1": "Sun",
+      "planet2": "Ascendant",
+      "type": "Conjunction",
+      "angle": 5.56,
+      "aspect_angle": 0,
+      "orb": 5.56,
+      "exact_angle": 5.56
+    },
+    {
+      "planet1": "Sun",
+      "planet2": "Descendant",
+      "type": "Opposition",
+      "angle": 174.44,
+      "aspect_angle": 180,
+      "orb": 5.56,
+      "exact_angle": 174.44
+    },
+    {
+      "planet1": "Moon",
+      "planet2": "Venus",
+      "type": "Trine",
+      "angle": 119.76,
+      "aspect_angle": 120,
+      "orb": 0.24,
+      "exact_angle": 119.76
+    },
+    {
+      "planet1": "Moon",
+      "planet2": "Lilith",
+      "type": "Conjunction",
+      "angle": 7.05,
+      "aspect_angle": 0,
+      "orb": 7.05,
+      "exact_angle": 7.05
+    },
+    {
+      "planet1": "Moon",
+      "planet2": "Vertex",
+      "type": "Trine",
+      "angle": 119.76,
+      "aspect_angle": 120,
+      "orb": 0.24,
+      "exact_angle": 119.76
+    },
+    {
+      "planet1": "Mercury",
+      "planet2": "Jupiter",
+      "type": "Conjunction",
+      "angle": 6.93,
+      "aspect_angle": 0,
+      "orb": 6.93,
+      "exact_angle": 6.93
+    },
+    {
+      "planet1": "Venus",
+      "planet2": "Vertex",
+      "type": "Conjunction",
+      "angle": 0.0,
+      "aspect_angle": 0,
+      "orb": 0.0,
+      "exact_angle": 0.0
+    },
+    {
+      "planet1": "Mars",
+      "planet2": "Jupiter",
+      "type": "Trine",
+      "angle": 116.37,
+      "aspect_angle": 120,
+      "orb": 3.63,
+      "exact_angle": 116.37
+    }
+  ],
+  "aspects_total_count": 46,
+  "dispositor_flow": {
+    "final_dispositor": "saturn",
+    "dispositor_structure": "loop",
+    "governance_weight": "distributed",
+    "mutual_receptions": [
+      [
+        "uranus",
+        "uranus"
+      ]
+    ],
+    "chains": [
+      [
+        "sun",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "moon",
+        "sun",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "mercury",
+        "saturn",
+        "mars",
+        "mercury"
+      ],
+      [
+        "venus",
+        "jupiter",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "mars",
+        "mercury",
+        "saturn",
+        "mars"
+      ],
+      [
+        "jupiter",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "uranus"
+      ],
+      [
+        "neptune",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "pluto",
+        "jupiter",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "node",
+        "venus",
+        "jupiter",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "lilith",
+        "sun",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "vertex",
+        "jupiter",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "fortune",
+        "venus",
+        "jupiter",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ],
+      [
+        "ascendant",
+        "saturn",
+        "mars",
+        "mercury",
+        "saturn"
+      ]
+    ]
+  },
+  "meta_signals": {
+    "pressure_index": 0.9137854901178277,
+    "support_index": 0.4218990052500079,
+    "psychological_intensity": 0.8882712940706967,
+    "dominant_axis": {
+      "axis": "1-7",
+      "tension": 0.85,
+      "support": 0.422
+    },
+    "ruler_flow": {
+      "final_ruler": "saturn",
+      "flow_type": "loop",
+      "harshness": 0.8
+    },
+    "regulation_required": true
+  },
+  "expression_profile": {
+    "tone": "soft",
+    "sentence_length": "long",
+    "softening_level": 0.5175,
+    "forbidden_phrases": [
+      "aktif eksen",
+      "açı profili",
+      "aktif akış",
+      "zaman dilimi",
+      "bu dönem",
+      "zamanla"
+    ],
+    "fallback_mode": "silent",
+    "tone_source": "voice_profile_v2",
+    "voice_profile_v2": {
+      "engine_version": "voice_profile_v2",
+      "enabled": true,
+      "mode": "active",
+      "directness": {
+        "score": 0.5148,
+        "label": "balanced",
+        "positive": "direct",
+        "negative": "reflective"
+      },
+      "warmth": {
+        "score": 0.5916,
+        "label": "warm",
+        "positive": "warm",
+        "negative": "restrained"
+      },
+      "texture": {
+        "score": 0.7158,
+        "label": "poetic",
+        "positive": "poetic",
+        "negative": "crisp"
+      },
+      "playfulness": {
+        "score": 0.4711,
+        "label": "balanced",
+        "positive": "playful",
+        "negative": "serious"
+      },
+      "holding_style": {
+        "score": 0.5527,
+        "label": "balanced",
+        "positive": "holding",
+        "negative": "confrontive"
+      },
+      "axes": {
+        "direct_vs_reflective": {
+          "score": 0.5148,
+          "label": "balanced",
+          "positive": "direct",
+          "negative": "reflective"
+        },
+        "warm_vs_restrained": {
+          "score": 0.5916,
+          "label": "warm",
+          "positive": "warm",
+          "negative": "restrained"
+        },
+        "poetic_vs_crisp": {
+          "score": 0.7158,
+          "label": "poetic",
+          "positive": "poetic",
+          "negative": "crisp"
+        },
+        "playful_vs_serious": {
+          "score": 0.4711,
+          "label": "balanced",
+          "positive": "playful",
+          "negative": "serious"
+        },
+        "confrontive_vs_holding": {
+          "score": 0.5527,
+          "label": "balanced",
+          "positive": "holding",
+          "negative": "confrontive"
+        }
+      },
+      "drivers": {
+        "spine_confidence": 0.7512,
+        "structurality": 0.4911,
+        "emotional_threshold": 0.6318,
+        "visibility": 0.4268,
+        "privacy": 0.5418,
+        "warmth_capacity": 0.6006,
+        "playful_drive": 0.4212,
+        "seriousness": 0.6973,
+        "public_score": 0.4967,
+        "private_score": 0.3033
+      },
+      "contradiction_context": {
+        "primary_contradiction_id": "structure_vs_originality",
+        "primary_contradiction_label": "structured originality",
+        "primary_contradiction_score": 0.8081
+      },
+      "derived_expression": {
+        "tone": "soft",
+        "sentence_length": "long",
+        "softening_level": 0.5175,
+        "tone_profile": {
+          "directness": 0.5148,
+          "warmth": 0.5916,
+          "intensity": 0.7476,
+          "certainty": 0.6188,
+          "tempo": 0.4946,
+          "distance": 0.5452
+        }
+      },
+      "debug": {
+        "selected_lines": {
+          "primary_identity_spine": {
+            "line_id": "structure_vs_originality__originality_drive_systems_thinking",
+            "label": "structured originality",
+            "confidence": 0.8141
+          },
+          "secondary_balancing_line": {
+            "line_id": "composure_vs_internal_pressure__inner_structure_push_pull_drive",
+            "label": "composed outside, pressured inside",
+            "confidence": 0.7576
+          },
+          "relational_line": {
+            "line_id": "closeness_vs_threshold__emotional_threshold_relational_security",
+            "label": "closeness with a high trust threshold",
+            "confidence": 0.757
+          },
+          "work_visibility_line": {
+            "line_id": "visibility_vs_private_preparation__backstage_creation_creation_luck",
+            "label": "visible but privately prepared",
+            "confidence": 0.6784
+          },
+          "shadow_protection_line": {
+            "line_id": "speed_vs_control__methodical_drive_push_pull_drive",
+            "label": "speed pulled back by control",
+            "confidence": 0.7488
+          }
+        },
+        "mode_reason": "rollout_full_active",
+        "rollout": {
+          "enabled_requested": true,
+          "debug_only": false,
+          "rollout_pct": 100,
+          "seed_bucket": 79,
+          "has_seed_key": true
+        }
+      }
+    },
+    "voice_axes": {
+      "direct_vs_reflective": {
+        "score": 0.5148,
+        "label": "balanced",
+        "positive": "direct",
+        "negative": "reflective"
+      },
+      "warm_vs_restrained": {
+        "score": 0.5916,
+        "label": "warm",
+        "positive": "warm",
+        "negative": "restrained"
+      },
+      "poetic_vs_crisp": {
+        "score": 0.7158,
+        "label": "poetic",
+        "positive": "poetic",
+        "negative": "crisp"
+      },
+      "playful_vs_serious": {
+        "score": 0.4711,
+        "label": "balanced",
+        "positive": "playful",
+        "negative": "serious"
+      },
+      "confrontive_vs_holding": {
+        "score": 0.5527,
+        "label": "balanced",
+        "positive": "holding",
+        "negative": "confrontive"
+      }
+    },
+    "directness": 0.5148,
+    "warmth": 0.5916,
+    "intensity": 0.7476,
+    "certainty": 0.6188,
+    "tempo": 0.4946,
+    "distance": 0.5452
+  },
+  "narrative_anchor": {
+    "domain": "identity",
+    "theme": null,
+    "anchor_slot": "cause",
+    "cause": "Kimliğin doğal bir büyüme, genişleme ve anlam yaratma arzusundan beslenir",
+    "mechanism": "Benlik duygun çoğunlukla yaşamda daha fazlasını deneyimleme ve ufkunu genişletme isteğiyle şekillenir",
+    "anchor_sentence": "Genellikle, Kimliğin doğal bir büyüme, genişleme ve anlam yaratma arzusundan beslenir olduğunda, Benlik duygun çoğunlukla yaşamda daha fazlasını deneyimleme ve ufkunu genişletme isteğiyle şekillenir eğilimi belirir.",
+    "source_fragment_ids": {
+      "cause": "sha256:51edd8036022aee7d7b68ab6f63b8ab3193a220d4e2c6dd28c591f18a7c461d6",
+      "mechanism": "sha256:cfa9db35c555cfc68c7023208a549475690618e0b03eed38503126eab8e90e79"
+    },
+    "experienced_weight": 0.5
+  },
+  "core_story_ui": {
+    "headline": "Ritmini koruduğunda yön duygun güçleniyor",
+    "text": "Netlik sende kontrol değil güven meselesi; Yükselen Oğlak belirsizliği uzatmayı sevmez ve yöneticin Satürn'ün 3. ev vurgusu bunu en çok söz, karar ve ton üzerinden görünür kılar, bu yüzden bazen bir cümleyi kurmadan önce içinden ölçüp biçmen ya da konuşma bittikten sonra ne demek istediğini zihninde yeniden toplaman aslında fazla düşünmekten çok netlik aradığını gösterir. İyi çalıştığında bu ton sana cesaret ve direktlik verir; gölgesinde sabırsızlık ya da ani tepki doğurabilir.",
+    "drivers": [
+      {
+        "type": "angle",
+        "key": "ASC",
+        "value": "Capricorn"
+      },
+      {
+        "type": "ruler",
+        "key": "asc_ruler",
+        "value": "Saturn"
+      },
+      {
+        "type": "house",
+        "key": "asc_ruler_house",
+        "value": 3
+      },
+      {
+        "type": "sign",
+        "key": "asc_ruler_sign",
+        "value": "Aries"
+      }
+    ]
+  },
+  "supporting_threads": [
+    {
+      "id": "identity_mechanics",
+      "title": "Zihin–eylem–kontrol",
+      "one_liner": "Cümle yerine oturduğu anda iç ritmin de hızlanır.",
+      "paragraph": "Cümle yerine oturduğu anda iç ritmin de hızlanır. Yükselen Oğlak sana dışarıda daha ciddi ve hedef odaklı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yükselen Oğlak olup yöneticin Satürn 3. evde ve Koç'ta olduğu için, bu hat en çok söz, ton ve karar dili tarafında belirginleşiyor; Satürn'ün Koç'ta olması da burayı daha hızlı, ateşli ve direkt; gölgesinde dürtüsel bir tona çekiyor.",
+      "body": "Yükselen Oğlak sana dışarıda daha ciddi ve hedef odaklı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yükselen Oğlak olup yöneticin Satürn 3. evde ve Koç'ta olduğu için, bu hat en çok söz, ton ve karar dili tarafında belirginleşiyor; Satürn'ün Koç'ta olması da burayı daha hızlı, ateşli ve direkt; gölgesinde dürtüsel bir tona çekiyor. Bu yüzden bazen tek bir cümleyi söylemeden önce uzun uzun tartıyor, bazen de tam tersine bir anda çok net ve keskin çıkabiliyorsun; iyi gününde bu sana isabetli bir ifade gücü verirken zor gününde zihnin tek bir cümle üzerinde gereğinden fazla yük taşıyabiliyor. Bu yüzden zihnindeki hız sadece tempo değil; iyi çalıştığında cesaret ve netlik, zorlandığında ise savunma refleksi yaratabiliyor. Burada asıl çalışan çizgi, i̇ç yapı ve i̇tme-çekme tarafını düzen kurdukça daha net hissetmen.",
+      "detail_blocks": [
+        "Sen dışarıdan ciddi ve hedef odaklı görünebilirsin. Yükselenin Oğlak olduğu için hayata genelde temkinli giriyorsun. Önce bakıyor, tartıyor, kim nasıl biri anlamaya çalışıyorsun. Ama iş zihnine ve kendini ifade etme biçimine geldiğinde içeride çok daha hızlı, ateşli ve direkt; gölgesinde dürtüsel bir şey çalışıyor. Çünkü senin yöneticin Satürn Koç'ta ve 3. evde. Yani dışarıdan daha sakin görünsen de içeride hep çalışan, tetikte kalan ya da pozisyon alan bir tarafın var. Bu yüzden dışarıdaki sakinlik, içerideki başlatan ve cesur enerjiyi her zaman göstermiyor olabilir.",
+        "Senin zihnin boşta duran bir zihin değil. Sürekli bir şeyi fark eden, bir şeye karşı duran ya da bir şeyi düzeltmek isteyen bir tarafın olabilir. 3. ev bunu iletişime, düşünceye, yakın çevreye ve günlük hayata taşıyor. Koç ise buna cesaret, hız ve direktlik ekliyor; gölgesinde sabırsızlık ya da ani tepki de taşıyabiliyor. O yüzden bazı şeyler sana saçma, adaletsiz ya da gereksiz geldiğinde içeride hemen bir hareket başlıyor. Bir şey içerde çarptığında düşüncen çok hızlı biçimde pozisyona dönüşebiliyor; bu sana çok net ve direkt bir ifade verirken gölgesinde ani tepki ya da savunmaya geçme hali de yaratabiliyor. Karar, ifade ve hareketin birbirini tetiklemesi yüzünden bazen tek bir cümle içeride birkaç tur dönebiliyor.",
+        "Buradaki asıl hikâye şu: içinde aynı anda iki ayrı ritim çalışıyor. Bir yanın 'dur, doğru söyle, dikkatli ol' diyor. Diğer yanın ise 'şimdi söyle, direkt söyle, açık ol' diyor. Bu yüzden bazen çok susup beklersin, bazen de bir anda çok net, çok direkt ya da beklenmedik kadar açık çıkarsın. İnsanlar seni dışarıdan daha ciddi ve hedef odaklı sanarken, içeride ne kadar hızlı çalıştığını sonradan fark edebilir. Bazen kendini fazla tutup sonra bir anda sert çıkman biraz da buradan geliyor olabilir.",
+        "Bu yerleşim çoğu zaman çocukluktan beri bir kendini savunma hali getirebilir. Yakın çevrede, okulda, kardeşlerle ya da günlük iletişimde sesini duyurmak kolay gelmemiş olabilir. Sanki alan açmak bazen sana verilmemiş de senin alman gerekmiş gibi çalışabilir. Bu da seni erken yaşta zihinsel olarak dayanıklı yaparken, bir yandan da hep tetikte kalmana neden olabilir.",
+        "Senin en güçlü taraflarından biri şu: konuştuğunda sadece fikir söylemiyorsun, hareket başlatabiliyorsun. Sözünde hem ağırlık hem kıvılcım var. Bu yüzden insanlar bazen senden çekinebilir ama aynı zamanda sana saygı da duyar. Çünkü sen bir şeyin adını koyduğunda, o artık havada kalmıyor. Kritik anlarda başkalarının dolandığı şeyi çok kısa bir cümleyle açığa çıkarabiliyor, gerektiğinde ilk hareketi sen başlatabiliyorsun.",
+        "Senin burada öğrenmeye geldiğin şey şu olabilir: Sesini kullanmak için sertleşmek zorunda değilsin. Hayat sana hem içindeki enerjiyi kaybetmeden, hem de kendini tüketmeden konuşmayı öğretiyor. Senin gücün sadece hızlı tepki vermende değil; ne zaman duracağını, ne zaman çıkacağını ve ne zaman netleşeceğini öğrenmende. Burada mesele ateşi söndürmek değil; onu daha isabetli ve daha az savunmalı kullanmak.",
+        "Sen dışarıdan ciddi ve hedef odaklı görünüyorsun ama içinde çok daha hızlı, ateşli ve direkt; gölgesinde dürtüsel bir zihin taşıyorsun. Satürn 3. evde ve Koç'ta olduğu için, bir yanın her şeyi ölçmek isterken diğer yanın daha direkt çıkmak isteyebiliyor. Asıl gücün burada: kendi sesini bastırmadan, kendini sertliğe de mahkûm etmeden kullanmayı öğreniyorsun. Senin sözünün hem ağırlığı var hem de ateşi. Hızınla omurgan aynı anda çalıştığında sözün gerçekten yön değiştiriyor; ayarı kaçtığında ise aynı güç keskinliğe dönebiliyor."
+      ],
+      "micro": "Yanlış anlaşılma ihtimali doğduğunda kelimeleri içeride hemen yeniden dizersin.",
+      "chips": [
+        "Yükselen Oğlak",
+        "Satürn 3. ev",
+        "Koç",
+        "İç Yapı"
+      ],
+      "proof_raw": "Satürn · 3. ev · Koç",
+      "section_id": "mind_system",
+      "evidence": [
+        {
+          "kind": "anchor",
+          "label": "1th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:1->ruler:Saturn->house:3",
+          "score": 0.661
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Saturn square Ascendant",
+          "source_type": "aspect",
+          "source_ref": "Saturn:Ascendant:square",
+          "score": 0.6243
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Jupiter in house 1",
+          "source_type": "placement",
+          "source_ref": "planet:Jupiter:house:1",
+          "score": 0.6221
+        },
+        {
+          "kind": "contradiction",
+          "label": "structure vs originality",
+          "source_type": "contradiction_signature",
+          "source_ref": "structure_vs_originality",
+          "score": 0.8407
+        }
+      ],
+      "category_support": {
+        "support_version": "natal_category_support_v1",
+        "family": "identity",
+        "primary_anchor": {
+          "kind": "anchor",
+          "label": "1th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:1->ruler:Saturn->house:3",
+          "score": 0.661
+        },
+        "supporting_combo": [
+          {
+            "kind": "supporting_combo",
+            "label": "Saturn square Ascendant",
+            "source_type": "aspect",
+            "source_ref": "Saturn:Ascendant:square",
+            "score": 0.6243
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Jupiter in house 1",
+            "source_type": "placement",
+            "source_ref": "planet:Jupiter:house:1",
+            "score": 0.6221
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Neptune in house 1",
+            "source_type": "placement",
+            "source_ref": "planet:Neptune:house:1",
+            "score": 0.6154
+          }
+        ],
+        "contradiction_signature": {
+          "kind": "contradiction",
+          "label": "structure vs originality",
+          "source_type": "contradiction_signature",
+          "source_ref": "structure_vs_originality",
+          "score": 0.8407
+        },
+        "hidden_support": [
+          {
+            "kind": "supporting_combo",
+            "label": "Sun in house 1",
+            "source_type": "placement",
+            "source_ref": "planet:Sun:house:1",
+            "score": 0.6108
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Uranus in house 1",
+            "source_type": "placement",
+            "source_ref": "planet:Uranus:house:1",
+            "score": 0.6049
+          }
+        ],
+        "repeated_motifs": [
+          {
+            "kind": "motif",
+            "label": "identity structure",
+            "source_type": "motif",
+            "source_ref": "identity_structure",
+            "score": 1.0
+          },
+          {
+            "kind": "motif",
+            "label": "visionary originality",
+            "source_type": "motif",
+            "source_ref": "visionary_originality",
+            "score": 0.8571
+          }
+        ],
+        "salience": 0.7958,
+        "confidence": 0.9288,
+        "category_id": "identity_mechanics"
+      }
+    },
+    {
+      "id": "relationships_depth",
+      "title": "Duygusal derinlik",
+      "one_liner": "Kalbin, güven olmadan yarım açılmaz.",
+      "paragraph": "Kalbin, güven olmadan yarım açılmaz. Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Yengeç olduğu ve yöneticisi Ay 8. evde ve Aslan'da olduğu için, yakınlık sende kolayca daha derin ve daha belirleyici bir yere oturabiliyor; Ay'ın Aslan'da olması da bu hattı daha görünür, sıcak ve gururlu bir tona çekiyor.",
+      "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Yengeç olduğu ve yöneticisi Ay 8. evde ve Aslan'da olduğu için, yakınlık sende kolayca daha derin ve daha belirleyici bir yere oturabiliyor; Ay'ın Aslan'da olması da bu hattı daha görünür, sıcak ve gururlu bir tona çekiyor. İyi gününde bu sana çok güçlü bir bağ sezgisi veriyor; zor gününde ise ya içine çekiliyor ya da duyguyu bir anda hep ya hiç çizgisine taşıyabiliyorsun. Bu yüzden ilişkide karşılıklı sıcaklık hissettiğinde çok daha rahat ve içten açılabiliyorsun. Bu alanda merkezde duran şey, i̇lişki güveni ve güven eşiği çizgisinin güven geldikçe açılması.",
+      "detail_blocks": [
+        "Sen ilişkide sadece biriyle olmak istemiyorsun. Senin aradığın şey, yanında gerçekten yumuşayabildiğin bir bağ. 7. evin Yengeç olduğu için sen aşkı biraz ev gibi yaşıyorsun. Güven yoksa, duygusal sıcaklık yoksa ve ait hissetmiyorsan kolay kolay tam açılmıyorsun. Bu yapı sana ilişkide şefkat, aidiyet ve gerçek duygusal sıcaklık verirken, zorlandığında güvensizlikte fazla alınmak ya da kabuğa çekilmek tarafı da açığa çıkabiliyor. Bu yüzden güven geldiğinde sıcaklığın ve yumuşaklığın çok daha hızlı görünür oluyor olabilir.",
+        "Birine bağlandığında bunu hafif yaşamıyorsun. Karşındaki insan bir noktadan sonra yalnızca hoşlandığın biri olmaktan çıkıp iç dünyanda yer eden birine dönüşebiliyor. Ay 8. evde olduğu için sen bağ kurarken yüzeyde kalmıyorsun. Ya gerçekten giriyorsun, ya da zaten hiç girmemiş oluyorsun. Yakınlık sadece derinlik değil, şefkat ve rahatlama hissi de getirebilir.",
+        "Ay Aslan'da olduğu için ilişkide kalbinin aradığı ton daha görünür hale geliyor. Sen sadece sevilmek istemiyorsun; özel hissetmek, seçildiğini görmek ve sevginin görünür olmasını da istiyorsun. Sessiz, belirsiz ya da ne hissettirdiği anlaşılmayan sevgiler sende kolay kolay tam karşılık bulmuyor. İyi çalıştığında bu ton sende sevgiyi sıcak, görünür ve cömert biçimde hissettirebilme tarafını büyütüyor; zorlandığında ise görülmediğinde kırılmak ya da gurur üzerinden geri çekilmek tarafı da açığa çıkabiliyor. Kalbin bağ kurduğunda hem yumuşuyor hem de daha cömert çalışıyor olabilir.",
+        "Sen sevdiğinde cömert, koruyan ve duygusal olarak alan açan birine dönüşebiliyorsun. Karşındaki insanın ihtiyacını, tonunu ve geri çekildiği yeri çabuk fark edebiliyorsun. Tam da bu yüzden ilişkide karşı tarafın mesafesi seni normalden daha fazla yaralayabiliyor. Çünkü sen bağa yalnızca ilginle değil, kalbinden yatırım yaparak giriyorsun. Sevildiğinde yalnızca açılmıyor, karşındakine de ciddi bir duygusal alan verebiliyorsun.",
+        "Buradaki hassas nokta şu: sen bazen bağ kurunca sadece sevmiyorsun, o bağın yükünü de taşımaya başlıyorsun. Karşındakini anlamaya, çözmeye ve aradaki bağı korumaya çok emek verebiliyorsun. Bu yüzden kaybetme korkusu, açıkta kalma korkusu ya da 'ben bu kadar açıldım ya karşılığı yoksa?' hissi kolay tetiklenebiliyor. Ve bunu her zaman dışarı göstermeyebilirsin; dışarıda güçlü dururken içeride çok daha derin etkileniyor olabiliyorsun. Bu yüzden ilgisizlik ya da duygusal soğukluk sende normalden daha fazla hayal kırıklığı yaratabiliyor.",
+        "Senin ilişkide öğrenmeye geldiğin şey şu olabilir: derin bağ kurmak için kendini tüketmen gerekmiyor. Yoğun sevmen, çok önemsemen ve ciddi bağlanman güzel; ama gerçek bağın illa kriz, kaygı ya da duygusal savaşla kanıtlanması gerekmiyor. Seni gerçekten besleyen bağ, seni yoran değil; seni sakinleştiren, güven veren ve kalbini yumuşatan bağ. Sevginin akışını korurken, karşı tarafın yükünü tek başına almamak burada önemli.",
+        "Sen ilişkide sadece aşk aramıyorsun. 7. evin Yengeç ve yöneticinin 8. evde olması yüzünden, birinin yanında gerçekten içeri alınmayı arıyorsun. Sevilmekten fazlasını; seçilmek, önemsenmek ve gerçekten tutulmak istiyorsun. Bu seni hassas yapabiliyor olabilir ama aynı zamanda çok derin, çok sadık ve çok gerçek bir sevme biçimi veriyor. Senin sevgin sıcak, gerçek ve besleyici; onu koruman gereken yer kendi sınırların."
+      ],
+      "micro": "Yakınlık ciddileştiğinde önce içini yoklar, sonra açılırsın.",
+      "chips": [
+        "7. ev Yengeç",
+        "Ay 8. ev",
+        "Aslan",
+        "İlişki Güveni"
+      ],
+      "proof_raw": "Ay · 8. ev · Aslan",
+      "section_id": "relationships",
+      "evidence": [
+        {
+          "kind": "anchor",
+          "label": "7th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:7->ruler:Moon->house:8",
+          "score": 0.7791
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Saturn square Ascendant",
+          "source_type": "aspect",
+          "source_ref": "Saturn:Ascendant:square",
+          "score": 0.6843
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Moon trine Venus",
+          "source_type": "aspect",
+          "source_ref": "Moon:Venus:trine",
+          "score": 0.664
+        },
+        {
+          "kind": "contradiction",
+          "label": "closeness vs threshold",
+          "source_type": "contradiction_signature",
+          "source_ref": "closeness_vs_threshold",
+          "score": 0.741
+        }
+      ],
+      "category_support": {
+        "support_version": "natal_category_support_v1",
+        "family": "intimacy",
+        "primary_anchor": {
+          "kind": "anchor",
+          "label": "7th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:7->ruler:Moon->house:8",
+          "score": 0.7791
+        },
+        "supporting_combo": [
+          {
+            "kind": "supporting_combo",
+            "label": "Saturn square Ascendant",
+            "source_type": "aspect",
+            "source_ref": "Saturn:Ascendant:square",
+            "score": 0.6843
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Moon trine Venus",
+            "source_type": "aspect",
+            "source_ref": "Moon:Venus:trine",
+            "score": 0.664
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Venus conjunction Vertex",
+            "source_type": "aspect",
+            "source_ref": "Venus:Vertex:conjunction",
+            "score": 0.6562
+          }
+        ],
+        "contradiction_signature": {
+          "kind": "contradiction",
+          "label": "closeness vs threshold",
+          "source_type": "contradiction_signature",
+          "source_ref": "closeness_vs_threshold",
+          "score": 0.741
+        },
+        "hidden_support": [
+          {
+            "kind": "supporting_combo",
+            "label": "Moon trine Vertex",
+            "source_type": "aspect",
+            "source_ref": "Moon:Vertex:trine",
+            "score": 0.6469
+          },
+          {
+            "kind": "anchor",
+            "label": "8th house ruler route",
+            "source_type": "ruler_route",
+            "source_ref": "house:8->ruler:Sun->house:1",
+            "score": 0.631
+          }
+        ],
+        "repeated_motifs": [
+          {
+            "kind": "motif",
+            "label": "hidden devotion",
+            "source_type": "motif",
+            "source_ref": "hidden_devotion",
+            "score": 1.0
+          },
+          {
+            "kind": "motif",
+            "label": "depth intimacy",
+            "source_type": "motif",
+            "source_ref": "depth_intimacy",
+            "score": 1.0
+          }
+        ],
+        "salience": 0.869,
+        "confidence": 0.959,
+        "category_id": "relationships_depth"
+      }
+    },
+    {
+      "id": "career_visibility",
+      "title": "Görünür olma ritmin",
+      "one_liner": "İnsanlar önce kalite çıtasını, sonra etkini görür.",
+      "paragraph": "İnsanlar önce kalite çıtasını, sonra etkini görür. Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre değil. MC'nin Terazi olması sana denge, ilişki yönetimi ve sunum tarafında avantaj veriyor; yöneticin Venüs 12. evde ve Yay'da olduğu için üretiminin bir kısmı önce içeride olgunlaşmak istiyor; Venüs'ün Yay'da olması da görünürlük hattını daha açık, cesur ve risk alan çalıştırıyor.",
+      "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre değil. MC'nin Terazi olması sana denge, ilişki yönetimi ve sunum tarafında avantaj veriyor; yöneticin Venüs 12. evde ve Yay'da olduğu için üretiminin bir kısmı önce içeride olgunlaşmak istiyor; Venüs'ün Yay'da olması da görünürlük hattını daha açık, cesur ve risk alan çalıştırıyor. İyi gününde bu sana rafine, güven veren ve etkisi kolay dağılmayan bir görünürlük veriyor. Bu yüzden dışarıdaki tempo ile içerdeki hazırlık ritmin her zaman aynı hızda akmayabiliyor; bazen insanlar seni olduğun gibi değil, görmek istedikleri gibi de okuyabiliyor. Görünür tarafta fark yaratan şey, yaratım akışı ve perde arkası hattının hazırlıkla birlikte güçlenmesi.",
+      "detail_blocks": [
+        "Sen görünür olmaya sadece dikkat çekmek gibi bakmıyorsun. MC'nin Terazi olduğu için dış dünyada daha uyumlu ve dengeli bir etki bırakıyorsun. İnsanlar sende yalnızca sonucu değil, o sonucun nasıl taşındığını da fark ediyor. Yani senin için görünürlük biraz da duruş, üslup ve ağırlık meselesi. Bu eksen sana görünürlükte denge, estetik ve ilişki zekası verirken, zorlandığında herkesi gözetirken kendi yönünü geciktirmek tarafı da açığa çıkabiliyor. Bu yüzden görünür olmadan önce içeride uzun bir hazırlık alanı kurmak istiyor olabilirsin; insanlar da sende çoğu zaman yalnızca ne yaptığını değil, nasıl bir enerji taşıdığını okuyor olabilir.",
+        "Ama işin mutfağında seni çalıştıran şey biraz daha başka. Yöneticin Venüs 12. evde ve Yay'da olduğu için üretimin önce kendi içinde şekil almak istiyor. 12. ev bunu önce perde arkasına, hazırlığa ve görünmeden olgunlaşan üretime taşıyor. Yay ise buna cesaret, geniş bakış ve direkt anlam arayışı ekliyor. O yüzden sen çoğu zaman yalnızca ne yaptığınla değil, onu hangi ritimde kurduğunla fark yaratıyorsun. İyi çalıştığında bu ton sende üretimde vizyon, cesaret ve büyük resmi taşıyabilme tarafını büyütüyor; zorlandığında ise fazla açılmak ya da her şeyi aynı anda büyütmek tarafı da açığa çıkabiliyor. Senin için hazırlık erteleme değil; işin ruhunu, yönünü ve dışarıya nasıl yansıyacağını yerli yerine koyma süreci olabilir.",
+        "Buradaki asıl gerilim şu olabilir: bir yanın hazır olmadan görünmek istemiyor, diğer yanın ise içerde olgunlaşan şeyi artık dışarı taşımak istiyor. Bu yüzden bazen çok uzun hazırlık yapıyor, bazen de bir anda karar verip ortaya çıkıyorsun. İnsanlar senden sonucu gördüğünde her şey kolay olmuş gibi sanabilir ama içeride uzun bir toplama süreci yaşanmış oluyor. Senin görünürlüğün çoğu zaman sessiz ama yoğun bir hazırlığın içinden geliyor. Bir yanın henüz hazır hissetmediği şeyi dışarı koymak istemezken, bir yanın da fazla beklediğinde etkinin bulanıklaştığını hissediyor olabilir; bu da görünürlükte hem çekici hem de yorucu bir sis yaratabiliyor.",
+        "Bu yerleşim çoğu zaman seni perde arkasında güç toplamaya alıştırmış olabilir. Bir şeyi tam hazır hissetmeden ortaya koymak istememen biraz da buradan geliyor. Belki de erken yaşta görünür olmadan önce kendi kendine yetmeyi, kendi kaliteni kendi içinde kurmayı öğrendin. Bu güzel bir derinlik veriyor ama bazen seni gereğinden uzun süre içeride tutabiliyor. Erken yaşta görünür olmadan önce kendi kaliteni içeride kurmayı öğrenmiş olman ya da tam görünmeden önce kendini bir kez daha toplama ihtiyacı geliştirmen mümkün.",
+        "Senin en güçlü taraflarından biri şu: görünür olduğunda sadece dikkat çekmiyorsun, iz bırakıyorsun. Venüs'ün Yay'da olması üretimine daha açık, cesur ve risk alan bir ton veriyor. Bu yüzden insanlar sende yalnızca yetkinlik değil, aynı zamanda karakter de hissediyor. Doğru çalıştığında etkini hızlı değil, kalıcı kuruyorsun. Bu iç hazırlık doğru çalıştığında ortaya koyduğun şey yalnızca estetik değil; aynı zamanda sezgisel, karakterli ve kolay unutulmayan bir iz bırakıyor.",
+        "Senin burada öğrenmeye geldiğin şey şu olabilir: görünür olmak için her şeyi tamamen bitirmiş olman gerekmiyor. Kalite duygun çok değerli ama bazen seni gereğinden uzun hazırlıkta tutabiliyor. Hayat sana hem standardını koruyup hem de kendini dolaşıma sokmayı öğretiyor. İşte o zaman yalnızca iyi üreten değil, etkisini gerçekten yayabilen birine dönüşüyorsun. Asıl öğrenme, yumuşaklığını kaybetmeden daha net görünmek ve başkalarının üzerine yüklediği anlamı taşımak zorunda olmadığını fark etmek.",
+        "Sen dış dünyada daha uyumlu ve dengeli bir etki bırakıyorsun ama işin gerçek ritmi içeride daha açık, cesur ve risk alan çalışıyor. Venüs 12. evde ve Yay'da olduğu için görünürlük sende yalnızca sahne değil, hazırlık ve doğru zaman meselesi de oluyor. Asıl gücün burada: hem kaliteni koruyup hem de kendini fazla geride tutmadan ortaya koymayı öğreniyorsun. O zaman görünürlüğün daha doğal, daha güven veren ve daha kalıcı hale geliyor. Senin görünürlüğün sadece sahne değil; perde arkasında kurduğun iç sağlamlık, sezgi ve nüans duygusuyla da çalışıyor."
+      ],
+      "micro": "Görünür olmadan önce içerden bir kez daha ölçüp tartarsın.",
+      "chips": [
+        "MC Terazi",
+        "Venüs 12. ev",
+        "Yay",
+        "Yaratım Akışı"
+      ],
+      "proof_raw": "Venüs · 12. ev · Yay",
+      "section_id": "career_visibility",
+      "evidence": [
+        {
+          "kind": "anchor",
+          "label": "10th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:10->ruler:Venus->house:12",
+          "score": 0.5448
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Jupiter trine Fortune",
+          "source_type": "aspect",
+          "source_ref": "Jupiter:Fortune:trine",
+          "score": 0.6483
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Mars trine Neptune",
+          "source_type": "aspect",
+          "source_ref": "Mars:Neptune:trine",
+          "score": 0.6281
+        },
+        {
+          "kind": "contradiction",
+          "label": "composure vs internal pressure",
+          "source_type": "contradiction_signature",
+          "source_ref": "composure_vs_internal_pressure",
+          "score": 0.6482
+        }
+      ],
+      "category_support": {
+        "support_version": "natal_category_support_v1",
+        "family": "visibility",
+        "primary_anchor": {
+          "kind": "anchor",
+          "label": "10th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:10->ruler:Venus->house:12",
+          "score": 0.5448
+        },
+        "supporting_combo": [
+          {
+            "kind": "supporting_combo",
+            "label": "Jupiter trine Fortune",
+            "source_type": "aspect",
+            "source_ref": "Jupiter:Fortune:trine",
+            "score": 0.6483
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Mars trine Neptune",
+            "source_type": "aspect",
+            "source_ref": "Mars:Neptune:trine",
+            "score": 0.6281
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Saturn square Ascendant",
+            "source_type": "aspect",
+            "source_ref": "Saturn:Ascendant:square",
+            "score": 0.6243
+          }
+        ],
+        "contradiction_signature": {
+          "kind": "contradiction",
+          "label": "composure vs internal pressure",
+          "source_type": "contradiction_signature",
+          "source_ref": "composure_vs_internal_pressure",
+          "score": 0.6482
+        },
+        "hidden_support": [
+          {
+            "kind": "supporting_combo",
+            "label": "Jupiter conjunction Neptune",
+            "source_type": "aspect",
+            "source_ref": "Jupiter:Neptune:conjunction",
+            "score": 0.603
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Jupiter square Midheaven",
+            "source_type": "aspect",
+            "source_ref": "Jupiter:Midheaven:square",
+            "score": 0.5755
+          }
+        ],
+        "repeated_motifs": [
+          {
+            "kind": "motif",
+            "label": "identity structure",
+            "source_type": "motif",
+            "source_ref": "identity_structure",
+            "score": 1.0
+          }
+        ],
+        "salience": 0.682,
+        "confidence": 0.8201,
+        "category_id": "career_visibility"
+      }
+    }
+  ],
+  "sections_v2": [
+    {
+      "id": "mind_system",
+      "title": "Zihin–eylem–kontrol",
+      "subtitle": "Cümle yerine oturduğu anda iç ritmin de hızlanır.",
+      "body": "Yükselen Oğlak sana dışarıda daha ciddi ve hedef odaklı bir duruş veriyor; insanlar çoğu zaman sende önce kontrollü tarafı görüyor. Ama zihnin çoğu zaman o kadar sakin çalışmıyor; içeride karar, tepki ve ifade aynı anda hızlanan bir hat gibi ilerliyor. Yükselen Oğlak olup yöneticin Satürn 3. evde ve Koç'ta olduğu için, bu hat en çok söz, ton ve karar dili tarafında belirginleşiyor; Satürn'ün Koç'ta olması da burayı daha hızlı, ateşli ve direkt; gölgesinde dürtüsel bir tona çekiyor. Bu yüzden bazen tek bir cümleyi söylemeden önce uzun uzun tartıyor, bazen de tam tersine bir anda çok net ve keskin çıkabiliyorsun; iyi gününde bu sana isabetli bir ifade gücü verirken zor gününde zihnin tek bir cümle üzerinde gereğinden fazla yük taşıyabiliyor. Bu yüzden zihnindeki hız sadece tempo değil; iyi çalıştığında cesaret ve netlik, zorlandığında ise savunma refleksi yaratabiliyor. Burada asıl çalışan çizgi, i̇ç yapı ve i̇tme-çekme tarafını düzen kurdukça daha net hissetmen.",
+      "detail_blocks": [
+        "Sen dışarıdan ciddi ve hedef odaklı görünebilirsin. Yükselenin Oğlak olduğu için hayata genelde temkinli giriyorsun. Önce bakıyor, tartıyor, kim nasıl biri anlamaya çalışıyorsun. Ama iş zihnine ve kendini ifade etme biçimine geldiğinde içeride çok daha hızlı, ateşli ve direkt; gölgesinde dürtüsel bir şey çalışıyor. Çünkü senin yöneticin Satürn Koç'ta ve 3. evde. Yani dışarıdan daha sakin görünsen de içeride hep çalışan, tetikte kalan ya da pozisyon alan bir tarafın var. Bu yüzden dışarıdaki sakinlik, içerideki başlatan ve cesur enerjiyi her zaman göstermiyor olabilir.",
+        "Senin zihnin boşta duran bir zihin değil. Sürekli bir şeyi fark eden, bir şeye karşı duran ya da bir şeyi düzeltmek isteyen bir tarafın olabilir. 3. ev bunu iletişime, düşünceye, yakın çevreye ve günlük hayata taşıyor. Koç ise buna cesaret, hız ve direktlik ekliyor; gölgesinde sabırsızlık ya da ani tepki de taşıyabiliyor. O yüzden bazı şeyler sana saçma, adaletsiz ya da gereksiz geldiğinde içeride hemen bir hareket başlıyor. Bir şey içerde çarptığında düşüncen çok hızlı biçimde pozisyona dönüşebiliyor; bu sana çok net ve direkt bir ifade verirken gölgesinde ani tepki ya da savunmaya geçme hali de yaratabiliyor. Karar, ifade ve hareketin birbirini tetiklemesi yüzünden bazen tek bir cümle içeride birkaç tur dönebiliyor.",
+        "Buradaki asıl hikâye şu: içinde aynı anda iki ayrı ritim çalışıyor. Bir yanın 'dur, doğru söyle, dikkatli ol' diyor. Diğer yanın ise 'şimdi söyle, direkt söyle, açık ol' diyor. Bu yüzden bazen çok susup beklersin, bazen de bir anda çok net, çok direkt ya da beklenmedik kadar açık çıkarsın. İnsanlar seni dışarıdan daha ciddi ve hedef odaklı sanarken, içeride ne kadar hızlı çalıştığını sonradan fark edebilir. Bazen kendini fazla tutup sonra bir anda sert çıkman biraz da buradan geliyor olabilir.",
+        "Bu yerleşim çoğu zaman çocukluktan beri bir kendini savunma hali getirebilir. Yakın çevrede, okulda, kardeşlerle ya da günlük iletişimde sesini duyurmak kolay gelmemiş olabilir. Sanki alan açmak bazen sana verilmemiş de senin alman gerekmiş gibi çalışabilir. Bu da seni erken yaşta zihinsel olarak dayanıklı yaparken, bir yandan da hep tetikte kalmana neden olabilir.",
+        "Senin en güçlü taraflarından biri şu: konuştuğunda sadece fikir söylemiyorsun, hareket başlatabiliyorsun. Sözünde hem ağırlık hem kıvılcım var. Bu yüzden insanlar bazen senden çekinebilir ama aynı zamanda sana saygı da duyar. Çünkü sen bir şeyin adını koyduğunda, o artık havada kalmıyor. Kritik anlarda başkalarının dolandığı şeyi çok kısa bir cümleyle açığa çıkarabiliyor, gerektiğinde ilk hareketi sen başlatabiliyorsun.",
+        "Senin burada öğrenmeye geldiğin şey şu olabilir: Sesini kullanmak için sertleşmek zorunda değilsin. Hayat sana hem içindeki enerjiyi kaybetmeden, hem de kendini tüketmeden konuşmayı öğretiyor. Senin gücün sadece hızlı tepki vermende değil; ne zaman duracağını, ne zaman çıkacağını ve ne zaman netleşeceğini öğrenmende. Burada mesele ateşi söndürmek değil; onu daha isabetli ve daha az savunmalı kullanmak.",
+        "Sen dışarıdan ciddi ve hedef odaklı görünüyorsun ama içinde çok daha hızlı, ateşli ve direkt; gölgesinde dürtüsel bir zihin taşıyorsun. Satürn 3. evde ve Koç'ta olduğu için, bir yanın her şeyi ölçmek isterken diğer yanın daha direkt çıkmak isteyebiliyor. Asıl gücün burada: kendi sesini bastırmadan, kendini sertliğe de mahkûm etmeden kullanmayı öğreniyorsun. Senin sözünün hem ağırlığı var hem de ateşi. Hızınla omurgan aynı anda çalıştığında sözün gerçekten yön değiştiriyor; ayarı kaçtığında ise aynı güç keskinliğe dönebiliyor."
+      ],
+      "micro": "Yanlış anlaşılma ihtimali doğduğunda kelimeleri içeride hemen yeniden dizersin.",
+      "chips": [
+        "Yükselen Oğlak",
+        "Satürn 3. ev",
+        "Koç",
+        "İç Yapı"
+      ],
+      "proof_raw": "Satürn · 3. ev · Koç",
+      "legacy_id": "identity_mechanics",
+      "category_support": {
+        "support_version": "natal_category_support_v1",
+        "family": "mind",
+        "primary_anchor": {
+          "kind": "anchor",
+          "label": "3th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:3->ruler:Jupiter->house:1",
+          "score": 0.6566
+        },
+        "supporting_combo": [
+          {
+            "kind": "supporting_combo",
+            "label": "Saturn square Ascendant",
+            "source_type": "aspect",
+            "source_ref": "Saturn:Ascendant:square",
+            "score": 0.6843
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Uranus trine North Node",
+            "source_type": "aspect",
+            "source_ref": "Uranus:North Node:trine",
+            "score": 0.641
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Mars trine Neptune",
+            "source_type": "aspect",
+            "source_ref": "Mars:Neptune:trine",
+            "score": 0.6381
+          }
+        ],
+        "contradiction_signature": {
+          "kind": "contradiction",
+          "label": "composure vs internal pressure",
+          "source_type": "contradiction_signature",
+          "source_ref": "composure_vs_internal_pressure",
+          "score": 0.6482
+        },
+        "hidden_support": [
+          {
+            "kind": "supporting_combo",
+            "label": "Saturn sextile Uranus",
+            "source_type": "aspect",
+            "source_ref": "Saturn:Uranus:sextile",
+            "score": 0.6229
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Uranus sextile Pluto",
+            "source_type": "aspect",
+            "source_ref": "Uranus:Pluto:sextile",
+            "score": 0.6185
+          }
+        ],
+        "repeated_motifs": [
+          {
+            "kind": "motif",
+            "label": "language boundary",
+            "source_type": "motif",
+            "source_ref": "language_boundary",
+            "score": 0.7429
+          }
+        ],
+        "salience": 0.7142,
+        "confidence": 0.8581,
+        "category_id": "mind_system"
+      },
+      "evidence": [
+        {
+          "kind": "anchor",
+          "label": "3th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:3->ruler:Jupiter->house:1",
+          "score": 0.6566
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Saturn square Ascendant",
+          "source_type": "aspect",
+          "source_ref": "Saturn:Ascendant:square",
+          "score": 0.6843
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Uranus trine North Node",
+          "source_type": "aspect",
+          "source_ref": "Uranus:North Node:trine",
+          "score": 0.641
+        },
+        {
+          "kind": "contradiction",
+          "label": "composure vs internal pressure",
+          "source_type": "contradiction_signature",
+          "source_ref": "composure_vs_internal_pressure",
+          "score": 0.6482
+        }
+      ]
+    },
+    {
+      "id": "relationships",
+      "title": "Duygusal derinlik",
+      "subtitle": "Kalbin, güven olmadan yarım açılmaz.",
+      "body": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun. Bu yüzden bir bağın gidişi sende yalnızca söylenen şeyden değil, söylenmeyenlerden de etkileniyor. 7. evin Yengeç olduğu ve yöneticisi Ay 8. evde ve Aslan'da olduğu için, yakınlık sende kolayca daha derin ve daha belirleyici bir yere oturabiliyor; Ay'ın Aslan'da olması da bu hattı daha görünür, sıcak ve gururlu bir tona çekiyor. İyi gününde bu sana çok güçlü bir bağ sezgisi veriyor; zor gününde ise ya içine çekiliyor ya da duyguyu bir anda hep ya hiç çizgisine taşıyabiliyorsun. Bu yüzden ilişkide karşılıklı sıcaklık hissettiğinde çok daha rahat ve içten açılabiliyorsun. Bu alanda merkezde duran şey, i̇lişki güveni ve güven eşiği çizgisinin güven geldikçe açılması.",
+      "detail_blocks": [
+        "Sen ilişkide sadece biriyle olmak istemiyorsun. Senin aradığın şey, yanında gerçekten yumuşayabildiğin bir bağ. 7. evin Yengeç olduğu için sen aşkı biraz ev gibi yaşıyorsun. Güven yoksa, duygusal sıcaklık yoksa ve ait hissetmiyorsan kolay kolay tam açılmıyorsun. Bu yapı sana ilişkide şefkat, aidiyet ve gerçek duygusal sıcaklık verirken, zorlandığında güvensizlikte fazla alınmak ya da kabuğa çekilmek tarafı da açığa çıkabiliyor. Bu yüzden güven geldiğinde sıcaklığın ve yumuşaklığın çok daha hızlı görünür oluyor olabilir.",
+        "Birine bağlandığında bunu hafif yaşamıyorsun. Karşındaki insan bir noktadan sonra yalnızca hoşlandığın biri olmaktan çıkıp iç dünyanda yer eden birine dönüşebiliyor. Ay 8. evde olduğu için sen bağ kurarken yüzeyde kalmıyorsun. Ya gerçekten giriyorsun, ya da zaten hiç girmemiş oluyorsun. Yakınlık sadece derinlik değil, şefkat ve rahatlama hissi de getirebilir.",
+        "Ay Aslan'da olduğu için ilişkide kalbinin aradığı ton daha görünür hale geliyor. Sen sadece sevilmek istemiyorsun; özel hissetmek, seçildiğini görmek ve sevginin görünür olmasını da istiyorsun. Sessiz, belirsiz ya da ne hissettirdiği anlaşılmayan sevgiler sende kolay kolay tam karşılık bulmuyor. İyi çalıştığında bu ton sende sevgiyi sıcak, görünür ve cömert biçimde hissettirebilme tarafını büyütüyor; zorlandığında ise görülmediğinde kırılmak ya da gurur üzerinden geri çekilmek tarafı da açığa çıkabiliyor. Kalbin bağ kurduğunda hem yumuşuyor hem de daha cömert çalışıyor olabilir.",
+        "Sen sevdiğinde cömert, koruyan ve duygusal olarak alan açan birine dönüşebiliyorsun. Karşındaki insanın ihtiyacını, tonunu ve geri çekildiği yeri çabuk fark edebiliyorsun. Tam da bu yüzden ilişkide karşı tarafın mesafesi seni normalden daha fazla yaralayabiliyor. Çünkü sen bağa yalnızca ilginle değil, kalbinden yatırım yaparak giriyorsun. Sevildiğinde yalnızca açılmıyor, karşındakine de ciddi bir duygusal alan verebiliyorsun.",
+        "Buradaki hassas nokta şu: sen bazen bağ kurunca sadece sevmiyorsun, o bağın yükünü de taşımaya başlıyorsun. Karşındakini anlamaya, çözmeye ve aradaki bağı korumaya çok emek verebiliyorsun. Bu yüzden kaybetme korkusu, açıkta kalma korkusu ya da 'ben bu kadar açıldım ya karşılığı yoksa?' hissi kolay tetiklenebiliyor. Ve bunu her zaman dışarı göstermeyebilirsin; dışarıda güçlü dururken içeride çok daha derin etkileniyor olabiliyorsun. Bu yüzden ilgisizlik ya da duygusal soğukluk sende normalden daha fazla hayal kırıklığı yaratabiliyor.",
+        "Senin ilişkide öğrenmeye geldiğin şey şu olabilir: derin bağ kurmak için kendini tüketmen gerekmiyor. Yoğun sevmen, çok önemsemen ve ciddi bağlanman güzel; ama gerçek bağın illa kriz, kaygı ya da duygusal savaşla kanıtlanması gerekmiyor. Seni gerçekten besleyen bağ, seni yoran değil; seni sakinleştiren, güven veren ve kalbini yumuşatan bağ. Sevginin akışını korurken, karşı tarafın yükünü tek başına almamak burada önemli.",
+        "Sen ilişkide sadece aşk aramıyorsun. 7. evin Yengeç ve yöneticinin 8. evde olması yüzünden, birinin yanında gerçekten içeri alınmayı arıyorsun. Sevilmekten fazlasını; seçilmek, önemsenmek ve gerçekten tutulmak istiyorsun. Bu seni hassas yapabiliyor olabilir ama aynı zamanda çok derin, çok sadık ve çok gerçek bir sevme biçimi veriyor. Senin sevgin sıcak, gerçek ve besleyici; onu koruman gereken yer kendi sınırların."
+      ],
+      "micro": "Yakınlık ciddileştiğinde önce içini yoklar, sonra açılırsın.",
+      "chips": [
+        "7. ev Yengeç",
+        "Ay 8. ev",
+        "Aslan",
+        "İlişki Güveni"
+      ],
+      "proof_raw": "Ay · 8. ev · Aslan",
+      "legacy_id": "relationships_depth",
+      "category_support": {
+        "support_version": "natal_category_support_v1",
+        "family": "intimacy",
+        "primary_anchor": {
+          "kind": "anchor",
+          "label": "7th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:7->ruler:Moon->house:8",
+          "score": 0.7791
+        },
+        "supporting_combo": [
+          {
+            "kind": "supporting_combo",
+            "label": "Saturn square Ascendant",
+            "source_type": "aspect",
+            "source_ref": "Saturn:Ascendant:square",
+            "score": 0.6843
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Moon trine Venus",
+            "source_type": "aspect",
+            "source_ref": "Moon:Venus:trine",
+            "score": 0.664
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Venus conjunction Vertex",
+            "source_type": "aspect",
+            "source_ref": "Venus:Vertex:conjunction",
+            "score": 0.6562
+          }
+        ],
+        "contradiction_signature": {
+          "kind": "contradiction",
+          "label": "closeness vs threshold",
+          "source_type": "contradiction_signature",
+          "source_ref": "closeness_vs_threshold",
+          "score": 0.741
+        },
+        "hidden_support": [
+          {
+            "kind": "supporting_combo",
+            "label": "Moon trine Vertex",
+            "source_type": "aspect",
+            "source_ref": "Moon:Vertex:trine",
+            "score": 0.6469
+          },
+          {
+            "kind": "anchor",
+            "label": "8th house ruler route",
+            "source_type": "ruler_route",
+            "source_ref": "house:8->ruler:Sun->house:1",
+            "score": 0.631
+          }
+        ],
+        "repeated_motifs": [
+          {
+            "kind": "motif",
+            "label": "hidden devotion",
+            "source_type": "motif",
+            "source_ref": "hidden_devotion",
+            "score": 1.0
+          },
+          {
+            "kind": "motif",
+            "label": "depth intimacy",
+            "source_type": "motif",
+            "source_ref": "depth_intimacy",
+            "score": 1.0
+          }
+        ],
+        "salience": 0.869,
+        "confidence": 0.959,
+        "category_id": "relationships"
+      },
+      "evidence": [
+        {
+          "kind": "anchor",
+          "label": "7th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:7->ruler:Moon->house:8",
+          "score": 0.7791
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Saturn square Ascendant",
+          "source_type": "aspect",
+          "source_ref": "Saturn:Ascendant:square",
+          "score": 0.6843
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Moon trine Venus",
+          "source_type": "aspect",
+          "source_ref": "Moon:Venus:trine",
+          "score": 0.664
+        },
+        {
+          "kind": "contradiction",
+          "label": "closeness vs threshold",
+          "source_type": "contradiction_signature",
+          "source_ref": "closeness_vs_threshold",
+          "score": 0.741
+        }
+      ]
+    },
+    {
+      "id": "career_visibility",
+      "title": "Görünür olma ritmin",
+      "subtitle": "İnsanlar önce kalite çıtasını, sonra etkini görür.",
+      "body": "Sen işte yalnızca iyi yapmak istemiyorsun; yaptığın şeyin yerine oturmasını ve içe sinmesini de istiyorsun. Bu yüzden hazırlık süreci sende işin kendisi kadar önemli çalışıyor; acele görünür olmak çoğu zaman sana göre değil. MC'nin Terazi olması sana denge, ilişki yönetimi ve sunum tarafında avantaj veriyor; yöneticin Venüs 12. evde ve Yay'da olduğu için üretiminin bir kısmı önce içeride olgunlaşmak istiyor; Venüs'ün Yay'da olması da görünürlük hattını daha açık, cesur ve risk alan çalıştırıyor. İyi gününde bu sana rafine, güven veren ve etkisi kolay dağılmayan bir görünürlük veriyor. Bu yüzden dışarıdaki tempo ile içerdeki hazırlık ritmin her zaman aynı hızda akmayabiliyor; bazen insanlar seni olduğun gibi değil, görmek istedikleri gibi de okuyabiliyor. Görünür tarafta fark yaratan şey, yaratım akışı ve perde arkası hattının hazırlıkla birlikte güçlenmesi.",
+      "detail_blocks": [
+        "Sen görünür olmaya sadece dikkat çekmek gibi bakmıyorsun. MC'nin Terazi olduğu için dış dünyada daha uyumlu ve dengeli bir etki bırakıyorsun. İnsanlar sende yalnızca sonucu değil, o sonucun nasıl taşındığını da fark ediyor. Yani senin için görünürlük biraz da duruş, üslup ve ağırlık meselesi. Bu eksen sana görünürlükte denge, estetik ve ilişki zekası verirken, zorlandığında herkesi gözetirken kendi yönünü geciktirmek tarafı da açığa çıkabiliyor. Bu yüzden görünür olmadan önce içeride uzun bir hazırlık alanı kurmak istiyor olabilirsin; insanlar da sende çoğu zaman yalnızca ne yaptığını değil, nasıl bir enerji taşıdığını okuyor olabilir.",
+        "Ama işin mutfağında seni çalıştıran şey biraz daha başka. Yöneticin Venüs 12. evde ve Yay'da olduğu için üretimin önce kendi içinde şekil almak istiyor. 12. ev bunu önce perde arkasına, hazırlığa ve görünmeden olgunlaşan üretime taşıyor. Yay ise buna cesaret, geniş bakış ve direkt anlam arayışı ekliyor. O yüzden sen çoğu zaman yalnızca ne yaptığınla değil, onu hangi ritimde kurduğunla fark yaratıyorsun. İyi çalıştığında bu ton sende üretimde vizyon, cesaret ve büyük resmi taşıyabilme tarafını büyütüyor; zorlandığında ise fazla açılmak ya da her şeyi aynı anda büyütmek tarafı da açığa çıkabiliyor. Senin için hazırlık erteleme değil; işin ruhunu, yönünü ve dışarıya nasıl yansıyacağını yerli yerine koyma süreci olabilir.",
+        "Buradaki asıl gerilim şu olabilir: bir yanın hazır olmadan görünmek istemiyor, diğer yanın ise içerde olgunlaşan şeyi artık dışarı taşımak istiyor. Bu yüzden bazen çok uzun hazırlık yapıyor, bazen de bir anda karar verip ortaya çıkıyorsun. İnsanlar senden sonucu gördüğünde her şey kolay olmuş gibi sanabilir ama içeride uzun bir toplama süreci yaşanmış oluyor. Senin görünürlüğün çoğu zaman sessiz ama yoğun bir hazırlığın içinden geliyor. Bir yanın henüz hazır hissetmediği şeyi dışarı koymak istemezken, bir yanın da fazla beklediğinde etkinin bulanıklaştığını hissediyor olabilir; bu da görünürlükte hem çekici hem de yorucu bir sis yaratabiliyor.",
+        "Bu yerleşim çoğu zaman seni perde arkasında güç toplamaya alıştırmış olabilir. Bir şeyi tam hazır hissetmeden ortaya koymak istememen biraz da buradan geliyor. Belki de erken yaşta görünür olmadan önce kendi kendine yetmeyi, kendi kaliteni kendi içinde kurmayı öğrendin. Bu güzel bir derinlik veriyor ama bazen seni gereğinden uzun süre içeride tutabiliyor. Erken yaşta görünür olmadan önce kendi kaliteni içeride kurmayı öğrenmiş olman ya da tam görünmeden önce kendini bir kez daha toplama ihtiyacı geliştirmen mümkün.",
+        "Senin en güçlü taraflarından biri şu: görünür olduğunda sadece dikkat çekmiyorsun, iz bırakıyorsun. Venüs'ün Yay'da olması üretimine daha açık, cesur ve risk alan bir ton veriyor. Bu yüzden insanlar sende yalnızca yetkinlik değil, aynı zamanda karakter de hissediyor. Doğru çalıştığında etkini hızlı değil, kalıcı kuruyorsun. Bu iç hazırlık doğru çalıştığında ortaya koyduğun şey yalnızca estetik değil; aynı zamanda sezgisel, karakterli ve kolay unutulmayan bir iz bırakıyor.",
+        "Senin burada öğrenmeye geldiğin şey şu olabilir: görünür olmak için her şeyi tamamen bitirmiş olman gerekmiyor. Kalite duygun çok değerli ama bazen seni gereğinden uzun hazırlıkta tutabiliyor. Hayat sana hem standardını koruyup hem de kendini dolaşıma sokmayı öğretiyor. İşte o zaman yalnızca iyi üreten değil, etkisini gerçekten yayabilen birine dönüşüyorsun. Asıl öğrenme, yumuşaklığını kaybetmeden daha net görünmek ve başkalarının üzerine yüklediği anlamı taşımak zorunda olmadığını fark etmek.",
+        "Sen dış dünyada daha uyumlu ve dengeli bir etki bırakıyorsun ama işin gerçek ritmi içeride daha açık, cesur ve risk alan çalışıyor. Venüs 12. evde ve Yay'da olduğu için görünürlük sende yalnızca sahne değil, hazırlık ve doğru zaman meselesi de oluyor. Asıl gücün burada: hem kaliteni koruyup hem de kendini fazla geride tutmadan ortaya koymayı öğreniyorsun. O zaman görünürlüğün daha doğal, daha güven veren ve daha kalıcı hale geliyor. Senin görünürlüğün sadece sahne değil; perde arkasında kurduğun iç sağlamlık, sezgi ve nüans duygusuyla da çalışıyor."
+      ],
+      "micro": "Görünür olmadan önce içerden bir kez daha ölçüp tartarsın.",
+      "chips": [
+        "MC Terazi",
+        "Venüs 12. ev",
+        "Yay",
+        "Yaratım Akışı"
+      ],
+      "proof_raw": "Venüs · 12. ev · Yay",
+      "legacy_id": "career_visibility",
+      "category_support": {
+        "support_version": "natal_category_support_v1",
+        "family": "visibility",
+        "primary_anchor": {
+          "kind": "anchor",
+          "label": "10th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:10->ruler:Venus->house:12",
+          "score": 0.5448
+        },
+        "supporting_combo": [
+          {
+            "kind": "supporting_combo",
+            "label": "Jupiter trine Fortune",
+            "source_type": "aspect",
+            "source_ref": "Jupiter:Fortune:trine",
+            "score": 0.6483
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Mars trine Neptune",
+            "source_type": "aspect",
+            "source_ref": "Mars:Neptune:trine",
+            "score": 0.6281
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Saturn square Ascendant",
+            "source_type": "aspect",
+            "source_ref": "Saturn:Ascendant:square",
+            "score": 0.6243
+          }
+        ],
+        "contradiction_signature": {
+          "kind": "contradiction",
+          "label": "composure vs internal pressure",
+          "source_type": "contradiction_signature",
+          "source_ref": "composure_vs_internal_pressure",
+          "score": 0.6482
+        },
+        "hidden_support": [
+          {
+            "kind": "supporting_combo",
+            "label": "Jupiter conjunction Neptune",
+            "source_type": "aspect",
+            "source_ref": "Jupiter:Neptune:conjunction",
+            "score": 0.603
+          },
+          {
+            "kind": "supporting_combo",
+            "label": "Jupiter square Midheaven",
+            "source_type": "aspect",
+            "source_ref": "Jupiter:Midheaven:square",
+            "score": 0.5755
+          }
+        ],
+        "repeated_motifs": [
+          {
+            "kind": "motif",
+            "label": "identity structure",
+            "source_type": "motif",
+            "source_ref": "identity_structure",
+            "score": 1.0
+          }
+        ],
+        "salience": 0.682,
+        "confidence": 0.8201,
+        "category_id": "career_visibility"
+      },
+      "evidence": [
+        {
+          "kind": "anchor",
+          "label": "10th house ruler route",
+          "source_type": "ruler_route",
+          "source_ref": "house:10->ruler:Venus->house:12",
+          "score": 0.5448
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Jupiter trine Fortune",
+          "source_type": "aspect",
+          "source_ref": "Jupiter:Fortune:trine",
+          "score": 0.6483
+        },
+        {
+          "kind": "supporting_combo",
+          "label": "Mars trine Neptune",
+          "source_type": "aspect",
+          "source_ref": "Mars:Neptune:trine",
+          "score": 0.6281
+        },
+        {
+          "kind": "contradiction",
+          "label": "composure vs internal pressure",
+          "source_type": "contradiction_signature",
+          "source_ref": "composure_vs_internal_pressure",
+          "score": 0.6482
+        }
+      ]
+    }
+  ],
+  "user_compact_domains": [
+    {
+      "domain": "identity",
+      "title": "Identity",
+      "summary": "Kimliğin doğal bir büyüme, genişleme ve anlam yaratma arzusundan beslenir. Benlik duygun çoğunlukla yaşamda daha fazlasını deneyimleme ve ufkunu genişletme isteğiyle şekillenir. Dışarıya iyimser, enerjik, geniş perspektifli ve ilham veren görünürsün.",
+      "highlights": [
+        {
+          "label": "Recognition",
+          "text": "Kimliğin doğal bir büyüme, genişleme ve anlam yaratma arzusundan beslenir.",
+          "evidence": []
+        },
+        {
+          "label": "Experienced Reality",
+          "text": "Benlik duygun çoğunlukla yaşamda daha fazlasını deneyimleme ve ufkunu genişletme isteğiyle şekillenir.",
+          "evidence": []
+        },
+        {
+          "label": "Potential",
+          "text": "Dışarıya iyimser, enerjik, geniş perspektifli ve ilham veren görünürsün.",
+          "evidence": []
+        },
+        {
+          "label": "Shadow",
+          "text": "Kendini fazla abartma, aşırılık veya gerçeklerden kopma eğilimi oluşabilir.",
+          "evidence": [],
+          "safety": true
+        }
+      ],
+      "signals": {
+        "count": 6,
+        "top_axes": [],
+        "top_themes": []
+      }
+    },
+    {
+      "domain": "relationships",
+      "title": "Relationships",
+      "summary": "İlişkilerde ciddiyet, güven ve sorumluluk beklersin. İlişkilerinde güven veren, dayanıklı ve istikrarlı bir figür olursun. Duygularını yumuşak ama dürüst şekilde paylaştığında ilişkilerin daha derin ve samimi olur.",
+      "highlights": [
+        {
+          "label": "Recognition",
+          "text": "İlişkilerde ciddiyet, güven ve sorumluluk beklersin.",
+          "evidence": [
+            {
+              "ref": "neptune_in_capricorn",
+              "type": "planet",
+              "salience": 0.56,
+              "summary": "İlişkilerde ciddiyet, güven ve sorumluluk beklersin."
+            }
+          ]
+        },
+        {
+          "label": "Experienced Reality",
+          "text": "İlişkilerinde güven veren, dayanıklı ve istikrarlı bir figür olursun.",
+          "evidence": [
+            {
+              "ref": "neptune_in_capricorn",
+              "type": "planet",
+              "salience": 0.56,
+              "summary": "İlişkilerinde güven veren, dayanıklı ve istikrarlı bir figür olursun."
+            }
+          ]
+        },
+        {
+          "label": "Potential",
+          "text": "Duygularını yumuşak ama dürüst şekilde paylaştığında ilişkilerin daha derin ve samimi olur.",
+          "evidence": [
+            {
+              "ref": "neptune_in_capricorn",
+              "type": "planet",
+              "salience": 0.56,
+              "summary": "Duygularını yumuşak ama dürüst şekilde paylaştığında ilişkilerin daha derin ve samimi olur."
+            }
+          ]
+        },
+        {
+          "label": "Shadow",
+          "text": "Hayal kırıklıkları tekrarlanabilir.",
+          "evidence": [
+            {
+              "ref": "neptune_in_capricorn",
+              "type": "planet",
+              "salience": 0.56,
+              "summary": "Duygusal mesafe, bağda yalnızlık hissi yaratabilir."
+            }
+          ],
+          "safety": true
+        }
+      ],
+      "signals": {
+        "count": 10,
+        "top_axes": [],
+        "top_themes": []
+      }
+    },
+    {
+      "domain": "mind",
+      "title": "Mind",
+      "summary": "Zihnin yapı kurma, planlama ve uzun vadeli düşünme üzerine çalışır. Strateji, yönetim, sistem tasarımı ve organizasyon alanlarında güçlü bir zihinsel potansiyele sahipsin. Vizyon ile planlamayı birleştirdiğinde zihnin hem pratik hem sezgisel işler üretir.",
+      "highlights": [
+        {
+          "label": "Recognition",
+          "text": "Zihnin yapı kurma, planlama ve uzun vadeli düşünme üzerine çalışır.",
+          "evidence": [
+            {
+              "ref": "neptune_in_capricorn",
+              "type": "planet",
+              "salience": 0.56,
+              "summary": "Zihnin yapı kurma, planlama ve uzun vadeli düşünme üzerine çalışır."
+            }
+          ]
+        },
+        {
+          "label": "Experienced Reality",
+          "text": "Strateji, yönetim, sistem tasarımı ve organizasyon alanlarında güçlü bir zihinsel potansiyele sahipsin.",
+          "evidence": [
+            {
+              "ref": "neptune_in_capricorn",
+              "type": "planet",
+              "salience": 0.56,
+              "summary": "Strateji, yönetim, sistem tasarımı ve organizasyon alanlarında güçlü bir zihinsel potansiyele sahipsin."
+            }
+          ]
+        },
+        {
+          "label": "Potential",
+          "text": "Vizyon ile planlamayı birleştirdiğinde zihnin hem pratik hem sezgisel işler üretir.",
+          "evidence": [
+            {
+              "ref": "neptune_in_capricorn",
+              "type": "planet",
+              "salience": 0.56,
+              "summary": "Vizyon ile planlamayı birleştirdiğinde zihnin hem pratik hem sezgisel işler üretir."
+            }
+          ]
+        },
+        {
+          "label": "Shadow",
+          "text": "Zihinsel bulanıklık kararları zorlaştırabilir.",
+          "evidence": [
+            {
+              "ref": "neptune_in_capricorn",
+              "type": "planet",
+              "salience": 0.56,
+              "summary": "Aşırı gerçekçilik, hayal gücünü bastırabilir."
+            }
+          ],
+          "safety": true
+        }
+      ],
+      "signals": {
+        "count": 9,
+        "top_axes": [],
+        "top_themes": []
+      }
+    }
+  ],
+  "user_compact_micro_insights": [
+    {
+      "text": "Kimliğin doğal bir büyüme, genişleme ve anlam yaratma arzusundan beslenir.",
+      "domain": "identity",
+      "evidence": []
+    },
+    {
+      "text": "İlişkilerde ciddiyet, güven ve sorumluluk beklersin.",
+      "domain": "relationships",
+      "evidence": [
+        {
+          "ref": "neptune_in_capricorn",
+          "type": "planet",
+          "salience": 0.56,
+          "summary": "İlişkilerde ciddiyet, güven ve sorumluluk beklersin."
+        }
+      ]
+    }
+  ],
+  "data_quality": {
+    "summary": {
+      "blocked_sections": [
+        "emotions"
+      ],
+      "fallback_used_slots": [],
+      "missing_signals": [
+        "psychology.cause",
+        "psychology.mechanism",
+        "psychology.effect",
+        "psychology.shadow",
+        "psychology.potential"
+      ],
+      "confidence": 0.4218990052500079,
+      "uncertainty": 0.9137854901178277
+    },
+    "detail": {
+      "slot_empty_reasons": {
+        "psychology.cause": "no_supporting_candidates",
+        "psychology.mechanism": "no_supporting_candidates",
+        "psychology.effect": "no_supporting_candidates",
+        "psychology.shadow": "no_supporting_candidates",
+        "psychology.potential": "no_supporting_candidates"
+      },
+      "fallback_sources": {},
+      "upper_meaning_reasons": [
+        "pressure_high",
+        "capacity_low",
+        "integration_ok"
+      ],
+      "phase2_domains": [
+        "identity",
+        "mind",
+        "relationships"
+      ],
+      "max_domains": 3,
+      "upper_meaning_gate": {
+        "enabled": false,
+        "reasons": [
+          "pressure_high",
+          "capacity_low",
+          "integration_ok"
+        ],
+        "pressure_index": 0.914,
+        "support_index": 0.422,
+        "capacity": 0.468,
+        "integration": 0.593,
+        "thresholds": {
+          "pressure_min": 0.45,
+          "support_min": 0.45,
+          "capacity_min": 0.55,
+          "integration_min": 0.55
+        },
+        "source": "meta_summary"
+      }
+    }
+  },
+  "patterns": {},
+  "axis_activation": {
+    "active_axes": [
+      "1-7",
+      "2-8",
+      "3-9",
+      "4-10"
+    ],
+    "axis_tension": "high"
+  }
+}

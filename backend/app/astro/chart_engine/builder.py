@@ -83,6 +83,16 @@ def _coerce_coordinate(value: Any) -> float | None:
         return None
 
 
+def _first_present(*values: Any) -> Any:
+    for value in values:
+        if value is None:
+            continue
+        if isinstance(value, str) and not value.strip():
+            continue
+        return value
+    return None
+
+
 def _explicit_location(
     *,
     label: str,
@@ -234,21 +244,21 @@ def build_natal_chart(payload: Mapping[str, Any]) -> Dict[str, Any]:
     city, date_value, time_value = extract_birth_inputs(payload)
     location = resolve_location(
         city,
-        latitude=(
-            payload.get("birth_latitude")
-            or payload.get("latitude")
-            or payload.get("lat")
+        latitude=_first_present(
+            payload.get("birth_latitude"),
+            payload.get("latitude"),
+            payload.get("lat"),
         ),
-        longitude=(
-            payload.get("birth_longitude")
-            or payload.get("longitude")
-            or payload.get("lng")
-            or payload.get("lon")
+        longitude=_first_present(
+            payload.get("birth_longitude"),
+            payload.get("longitude"),
+            payload.get("lng"),
+            payload.get("lon"),
         ),
-        timezone=(
-            payload.get("birth_timezone")
-            or payload.get("timezone")
-            or payload.get("tz")
+        timezone=_first_present(
+            payload.get("birth_timezone"),
+            payload.get("timezone"),
+            payload.get("tz"),
         ),
     )
     local_dt, utc_dt = parse_birth_datetime_components(date_value, time_value, location.timezone)

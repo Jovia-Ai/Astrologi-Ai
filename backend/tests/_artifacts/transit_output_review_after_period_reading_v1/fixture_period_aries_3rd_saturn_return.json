@@ -1,0 +1,800 @@
+{
+  "source": {
+    "mode": "fixture_based_runtime_builder",
+    "note": "Tier-1 fixture rendered through current build_period_core with LIFE_CHAPTER_PRIORITY_ENABLED=true for PR-D v1 inspection.",
+    "group": "saturn_return",
+    "name": "aries_3rd_with_south_node_overlap"
+  },
+  "active_life_chapter": {
+    "version": "life_chapter_v1",
+    "chapter_id": "lc:saturn_return:evt-saturn-return-aries-3",
+    "chapter_type": "saturn_return",
+    "domain": "communication_learning",
+    "spine_line": null,
+    "time_window": {
+      "start": "2026-02-01",
+      "peak": "2026-05-10T00:00:00",
+      "end": "2026-11-01"
+    },
+    "phase": "first_pass",
+    "activated_natal_factors": [
+      {
+        "type": "planet",
+        "id": "natal_saturn"
+      },
+      {
+        "type": "house",
+        "id": "house_3"
+      },
+      {
+        "type": "node",
+        "id": "south_node"
+      }
+    ],
+    "core_question": "Koç 3. ev hattında sözünü ve zihinsel reflekslerini düğüm ekseniyle birlikte nasıl daha seçilmiş bir otoriteye dönüştürüyorsun?",
+    "selected_meaning": "Koç 3. ev hattında söz ve zihinsel reflekslerin, düğüm ekseniyle birlikte, daha seçilmiş ve daha sorumlu bir forma yerleşmesi",
+    "selected_meaning_family": "speech_authority_maturation",
+    "semantic_focus": {
+      "primary": "speech_authority",
+      "secondary": [
+        "self_definition",
+        "mental_reflex_maturation"
+      ],
+      "not_this": [
+        "generic communication difficulty",
+        "sibling conflict prediction"
+      ]
+    },
+    "domain_ownership": {
+      "primary_domain": "communication_learning",
+      "secondary_domains": [
+        "identity_presence",
+        "mental_patterning"
+      ],
+      "rationale": "Saturn return 3. evde sözü, zihinsel refleksi ve yakın çevre içindeki duruşu daha seçilmiş bir otoriteye topluyor. South Node overlap eski refleksif söz kalıbını chapter'ın merkezine taşıyor."
+    },
+    "natal_architecture_anchor": {
+      "label": "identity_as_construction_project",
+      "human": "kimlik uzun süreli bir yapı kurma biçimiyle çalışıyor",
+      "evidence": [
+        "Capricorn rising",
+        "Saturn return"
+      ]
+    },
+    "scene_priority": [
+      {
+        "scene": "kısa mesajlar",
+        "priority": "primary"
+      },
+      {
+        "scene": "yarım kalmış konuşmalar",
+        "priority": "secondary"
+      },
+      {
+        "scene": "hızlı cevap verme anları",
+        "priority": "supporting"
+      }
+    ],
+    "chapter_claim_strength": "foundational long-cycle chapter",
+    "shared_domain_priority": [],
+    "trust_axis_anchor": null,
+    "shared_vs_private_contrast": "hızlı çıkan söz ile seçilmiş duruş arasında belirginleşen fark",
+    "structural_pressure_model": null,
+    "apex_release_point": null,
+    "renderer_handoff": {
+      "human_scene": "kısa mesajlar, yarım kalmış konuşmalar, hızlı cevap verme anları",
+      "core_contrast": "hızlı cevap vermek ile gerçekten nerede durduğunu söylemek",
+      "chapter_weight": "not ordinary transit; long-cycle maturation",
+      "chart_specific_anchor": "eski refleksif konuşma kalıbının daha seçilmiş bir söz formuna yerleşmesi",
+      "voice_register": "maturation / medium",
+      "avoid_readings": [
+        "generic communication difficulty",
+        "sibling conflict prediction",
+        "ordinary transit framing"
+      ]
+    },
+    "evidence": [
+      {
+        "factor": "Transit Saturn conjunct natal Saturn",
+        "role": "return",
+        "explanation": "Saturn return ana olgunlaşma döngüsünü doğrudan açıyor."
+      },
+      {
+        "factor": "Natal Saturn in Koç 3",
+        "role": "natal_context",
+        "explanation": "Koç 3. ev hattında Satürn bu chapter'da yalnız yerleşimini değil, yönettiği 1, 2. ev başlıklarını da olgunlaştırıyor."
+      },
+      {
+        "factor": "House 3 domain ownership",
+        "role": "house_context",
+        "explanation": "Koç 3. ev hattında söz, düşünce ve yakın çevre içindeki refleksler chapter'ın ana sahnesi oluyor."
+      },
+      {
+        "factor": "South/North Node same sign/house overlap",
+        "role": "axis_overlap",
+        "explanation": "Satürn dönüşü south_node ile aynı sign/house alanına düştüğü için chapter eksensel ve karmik bir ağırlık kazanıyor."
+      },
+      {
+        "factor": "selected chapter focus",
+        "role": "semantic_focus_support",
+        "explanation": "Koç 3. ev hattında hızlı söz çıkışı ile eski yön refleksi aynı hatta çalıştığı için chosen stance chapter'ın ana kontrastı oluyor."
+      },
+      {
+        "factor": "shallow reading suppression",
+        "role": "suppression_guard",
+        "explanation": "South Node overlap varken chapter kardeş çatışması ya da iletişim stresi diye daraltılmıyor; eski refleksif söz kalıbı bastırılıyor."
+      }
+    ],
+    "suppressed_readings": [
+      {
+        "reading": "generic communication difficulty",
+        "reason": "Saturn return sadece iletişim zorluğu değil; natal Saturn temasının olgunlaşmasıdır."
+      },
+      {
+        "reading": "generic burden / heaviness",
+        "reason": "Bu chapter olgunlaşma; yük cliché'sine indirgenmemeli."
+      }
+    ],
+    "suppressed_surface_readings": [
+      {
+        "reading": "generic communication difficulty",
+        "reason": "3. ev burada yalnız iletişim zorluğu değil; sözün taşıdığı otoritenin olgunlaşması."
+      },
+      {
+        "reading": "sibling conflict prediction",
+        "reason": "Yakın çevre alanı tetiklenebilir ama chapter'ın sahibi kardeş çatışması değil, ifade refleksinin olgunlaşması."
+      }
+    ],
+    "voice_hints": {
+      "valence_mode": "maturation",
+      "intensity_mode": "medium",
+      "rhetorical_frame": "construction",
+      "tone": "friend-warm"
+    },
+    "priority": "life_chapter",
+    "confidence": "high",
+    "debug": {
+      "source_event_ids": [
+        "evt-saturn-return-aries-3"
+      ],
+      "source_signal_types": [
+        "saturn_return",
+        "node_overlap"
+      ],
+      "node_overlap": {
+        "has_overlap": true,
+        "matched_nodes": [
+          "south_node"
+        ],
+        "same_sign": true,
+        "same_house": true,
+        "saturn_sign": "Aries",
+        "saturn_house": 3
+      },
+      "phase_source": "event_payload_phase_field",
+      "phase_reason": "event metadata indicates exact or active pass",
+      "selection_reason": "highest-confidence Tier-1 candidate selected: saturn_return",
+      "confidence_rationale": "Koç 3. ev hattında known, phase first_pass, node overlap present -> high confidence",
+      "overlap_reason": "natal South Node in same sign/house as Saturn return — axis activation",
+      "suppressed_candidates": []
+    }
+  },
+  "period_core": {
+    "title": "Denge ve Yapi Temasi Derinlesiyor",
+    "core_story": "Kısa mesajlarda, yarım kalmış konuşmalarda ve hızlı cevap verme anlarında sözünün ağırlığı değişiyor.\n\nEskiden refleksle çıkan cümle seni hemen konumlandırıyor gibi gelebilirdi. Şimdi ilk tepkiyi son söz yapmak yerine, hangi cümlenin gerçekten sana ait olduğunu seçiyorsun.\n\nBu dönem sana daha çok konuşmayı değil, sözünü daha sahipli kurmayı öğretiyor.",
+    "upper_meaning": "Daha sahipli ve daha sorumlu bir konuşma biçimi.",
+    "tags": [
+      {
+        "type": "dominant_house",
+        "value": "3"
+      },
+      {
+        "type": "dominant_planet",
+        "value": "Saturn"
+      }
+    ],
+    "featured_events": [
+      {
+        "event_id": "evt-saturn-return-aries-3",
+        "event_family": "cycle_event",
+        "event_subtype": "saturn_return",
+        "start_at": "2026-02-01",
+        "exact_at": [
+          "2026-05-10T00:00:00"
+        ],
+        "end_at": "2026-11-01",
+        "chapter_opening": true,
+        "structural_significance": 0.96,
+        "precision_signal": 0.91,
+        "current_phase": "exact",
+        "source_bodies": [
+          "Saturn"
+        ],
+        "target_points": [
+          "Saturn"
+        ],
+        "target_houses": [
+          3
+        ],
+        "chapter_role": {
+          "role": "builder"
+        },
+        "story_score": 0.95,
+        "selection_index": 0,
+        "semantic_role": "evidence_support",
+        "semantic_owner": "life_chapter"
+      }
+    ],
+    "canonical_period_spine": {
+      "source": "canonical_natal_activation_v1",
+      "target_node_id": "promise_focus",
+      "spine_lines": [
+        "growth_integration_line"
+      ],
+      "matched_event_ids": [
+        "evt-saturn-return-aries-3"
+      ],
+      "primary_domain": "communication_learning"
+    },
+    "semantic_focus": {
+      "version": "period_semantic_focus_v1",
+      "selected_meaning": "speech_authority",
+      "meaning_family": "speech_authority_maturation",
+      "primary_domain": "communication_learning",
+      "secondary_domains": [
+        "identity_presence",
+        "mental_patterning",
+        "self_definition",
+        "mental_reflex_maturation",
+        "büyük resmi kurduğun yer"
+      ],
+      "why_this_meaning": [
+        "active_life_chapter provided semantic_focus",
+        "life_chapter confidence is high enough to anchor selected meaning",
+        "canonical_period_spine matched natal activation hook",
+        "manifestation_context mapped dominant house to lived scene"
+      ],
+      "suppressed_meanings": [
+        "generic communication difficulty",
+        "generic burden / heaviness",
+        "sibling conflict prediction",
+        "ordinary transit framing"
+      ],
+      "confidence": 0.85,
+      "source": "life_chapter",
+      "evidence_count": 8,
+      "scene_translation_request": {
+        "version": "manifestation_context_v1",
+        "primary_house": 9,
+        "house_axis": "9",
+        "target_planet": null,
+        "target_planet_house": null,
+        "ruled_houses": [],
+        "angle": null,
+        "life_scene": "büyük resmi kurduğun yer",
+        "life_scene_variants": [
+          "hayata verdiğin anlam",
+          "uzak hedeflerin ve inançların",
+          "büyük resmi kurduğun yer"
+        ],
+        "context_seed": "Bu tema daha çok büyük resmi kurduğun yer içinden görünür oluyor.",
+        "variant_index": 2,
+        "source": "fallback",
+        "release_strengthened": false,
+        "debug": {
+          "event_ids": [
+            "evt-saturn-return-aries-3"
+          ]
+        },
+        "human_scene": "kısa mesajlar, yarım kalmış konuşmalar, hızlı cevap verme anları",
+        "core_contrast": "hızlı cevap vermek ile gerçekten nerede durduğunu söylemek",
+        "chapter_weight": "not ordinary transit; long-cycle maturation",
+        "chart_specific_anchor": "eski refleksif konuşma kalıbının daha seçilmiş bir söz formuna yerleşmesi",
+        "voice_register": "maturation / medium",
+        "avoid_readings": [
+          "generic communication difficulty",
+          "sibling conflict prediction",
+          "ordinary transit framing"
+        ],
+        "scene_priority": [
+          {
+            "scene": "kısa mesajlar",
+            "priority": "primary"
+          },
+          {
+            "scene": "yarım kalmış konuşmalar",
+            "priority": "secondary"
+          },
+          {
+            "scene": "hızlı cevap verme anları",
+            "priority": "supporting"
+          }
+        ],
+        "shared_vs_private_contrast": "hızlı çıkan söz ile seçilmiş duruş arasında belirginleşen fark"
+      },
+      "voice_register_hints": {
+        "valence_mode": "maturation",
+        "intensity_mode": "medium",
+        "rhetorical_frame": "construction",
+        "tone": "friend-warm"
+      },
+      "debug": {
+        "raw_selected_meaning_text": "Koç 3. ev hattında söz ve zihinsel reflekslerin, düğüm ekseniyle birlikte, daha seçilmiş ve daha sorumlu bir forma yerleşmesi",
+        "chapter_type": "ChapterType.SATURN_RETURN",
+        "chapter_phase": "ChapterPhase.FIRST_PASS",
+        "renderer_handoff_keys": [
+          "avoid_readings",
+          "chapter_weight",
+          "chart_specific_anchor",
+          "core_contrast",
+          "human_scene",
+          "voice_register"
+        ],
+        "semantic_focus_primary": "speech_authority",
+        "selected_meaning_family": "speech_authority_maturation",
+        "used_fields": [
+          "active_life_chapter"
+        ],
+        "missing_fields": [],
+        "canonical_natal_state_present": true,
+        "period_core_seed_keys": [
+          "canonical_period_spine",
+          "core_story",
+          "featured_events",
+          "tags",
+          "title",
+          "upper_meaning"
+        ]
+      }
+    },
+    "chapter_priority": {
+      "enabled": true,
+      "applied": true,
+      "owner": "life_chapter",
+      "chapter_type": "saturn_return",
+      "chapter_id": "lc:saturn_return:evt-saturn-return-aries-3",
+      "semantic_focus_source": "life_chapter",
+      "scope": "pr_d_v1_tier_1",
+      "event_cards_role": "evidence_support",
+      "reason": "eligible_tier1_life_chapter"
+    },
+    "big_picture": "Eskiden refleksle çıkan cümle seni hemen konumlandırıyor gibi gelebilirdi. Şimdi ilk tepkiyi son söz yapmak yerine, hangi cümlenin gerçekten sana ait olduğunu seçiyorsun.",
+    "period_reading_v1": {
+      "version": "period_reading_v1",
+      "blocks": [
+        {
+          "role": "hook",
+          "text": "Kısa mesajlarda, yarım kalmış konuşmalarda ve hızlı cevap verme anlarında sözünün ağırlığı değişiyor."
+        },
+        {
+          "role": "unfolding",
+          "text": "Eskiden refleksle çıkan cümle seni hemen konumlandırıyor gibi gelebilirdi. Şimdi ilk tepkiyi son söz yapmak yerine, hangi cümlenin gerçekten sana ait olduğunu seçiyorsun."
+        },
+        {
+          "role": "growth",
+          "text": "Bu dönem sana daha çok konuşmayı değil, sözünü daha sahipli kurmayı öğretiyor."
+        }
+      ],
+      "full_text": "Kısa mesajlarda, yarım kalmış konuşmalarda ve hızlı cevap verme anlarında sözünün ağırlığı değişiyor.\n\nEskiden refleksle çıkan cümle seni hemen konumlandırıyor gibi gelebilirdi. Şimdi ilk tepkiyi son söz yapmak yerine, hangi cümlenin gerçekten sana ait olduğunu seçiyorsun.\n\nBu dönem sana daha çok konuşmayı değil, sözünü daha sahipli kurmayı öğretiyor."
+    },
+    "period_opening": "Kısa mesajlarda, yarım kalmış konuşmalarda ve hızlı cevap verme anlarında sözünün ağırlığı değişiyor.",
+    "mechanism": "Şimdi ilk tepkiyi son söz yapmak yerine, hangi cümlenin gerçekten sana ait olduğunu seçiyorsun.",
+    "growth_edge": "İlk cevabı son söz gibi kullanmak yerine, ne söyleyeceğini ve hangi cümlenin gerçekten sana ait olduğunu seçebilmek.",
+    "relational_or_life_expression": "Bu dönem sana daha çok konuşmayı değil, sözünü daha sahipli kurmayı öğretiyor.",
+    "what_it_builds": "Daha sahipli ve daha sorumlu bir konuşma biçimi.",
+    "narrative_version": "period_story_v2",
+    "_period_story_debug": {
+      "spine_event_id": "evt-saturn-return-aries-3",
+      "support_event_ids": [],
+      "track_id": "default",
+      "spine_role": "builder",
+      "support_roles": [],
+      "canonical_period_spine_source": "canonical_natal_activation_v1",
+      "canonical_period_spine_target_node_id": "promise_focus",
+      "promise_prefix_source": "",
+      "period_voice_policy_version": "period_voice_policy_v1",
+      "period_voice_policy_reason_line_allowed": true,
+      "period_voice_policy_avoid_tags": [
+        "generic_hat_copy",
+        "coaching_command",
+        "unbacked_natal_reason",
+        "astro_first_opening"
+      ],
+      "period_voice_policy_meaning_intent": "speech_authority_maturation",
+      "period_voice_policy_rhetorical_frame": "reframe",
+      "period_voice_policy_valence_mode": "integration",
+      "period_voice_policy_intensity_mode": "medium",
+      "period_voice_policy_match_level": "spine_line_generic",
+      "period_voice_policy_manifestation_context": {
+        "version": "manifestation_context_v1",
+        "primary_house": 9,
+        "house_axis": "9",
+        "target_planet": null,
+        "target_planet_house": null,
+        "ruled_houses": [],
+        "angle": null,
+        "life_scene": "büyük resmi kurduğun yer",
+        "life_scene_variants": [
+          "hayata verdiğin anlam",
+          "uzak hedeflerin ve inançların",
+          "büyük resmi kurduğun yer"
+        ],
+        "context_seed": "Bu tema daha çok büyük resmi kurduğun yer içinden görünür oluyor.",
+        "variant_index": 2,
+        "source": "fallback",
+        "release_strengthened": false,
+        "debug": {
+          "event_ids": [
+            "evt-saturn-return-aries-3"
+          ]
+        }
+      },
+      "period_voice_policy": {
+        "spine_line": "growth_integration_line",
+        "event_nature": "clarity",
+        "event_nature_source": "default",
+        "policy_match": {
+          "level": "spine_line_generic",
+          "seed_key": "growth_integration_line.default",
+          "fallback_order": [
+            "exact",
+            "spine_line_generic",
+            "event_nature_generic",
+            "legacy_untouched"
+          ]
+        },
+        "match_level": "spine_line_generic",
+        "chapter_role": "builder",
+        "canonical_backing_node_ids": [
+          "promise_focus"
+        ],
+        "meaning_intent": "speech_authority_maturation",
+        "rhetorical_frame": "reframe",
+        "valence_mode": "integration",
+        "intensity_mode": "medium",
+        "valence_debug": {
+          "planet_pair": [
+            "",
+            ""
+          ],
+          "pair_class": "unclassified",
+          "aspect_type": "",
+          "valence_source": "fallback",
+          "intensity_source": "aspect_default",
+          "fallback_used": true,
+          "bias_notes": [],
+          "recent_valence_modes": [],
+          "rotation_applied": false,
+          "candidates": [
+            "integration",
+            "opening"
+          ],
+          "selected_event_id": "evt-saturn-return-aries-3"
+        },
+        "manifestation_context": {
+          "version": "manifestation_context_v1",
+          "primary_house": 9,
+          "house_axis": "9",
+          "target_planet": null,
+          "target_planet_house": null,
+          "ruled_houses": [],
+          "angle": null,
+          "life_scene": "büyük resmi kurduğun yer",
+          "life_scene_variants": [
+            "hayata verdiğin anlam",
+            "uzak hedeflerin ve inançların",
+            "büyük resmi kurduğun yer"
+          ],
+          "context_seed": "Bu tema daha çok büyük resmi kurduğun yer içinden görünür oluyor.",
+          "variant_index": 2,
+          "source": "fallback",
+          "release_strengthened": false,
+          "debug": {
+            "event_ids": [
+              "evt-saturn-return-aries-3"
+            ]
+          }
+        },
+        "frame_debug": {
+          "candidates": [
+            "reframe",
+            "sorting"
+          ],
+          "recent_rhetorical_frames": [],
+          "rotation_applied": false
+        },
+        "event_bodies": [],
+        "semantic_focus_source": "life_chapter",
+        "semantic_focus_confidence": 0.85,
+        "matched_event_ids": [
+          "evt-saturn-return-aries-3"
+        ]
+      },
+      "semantic_focus": {
+        "version": "period_semantic_focus_v1",
+        "selected_meaning": "speech_authority",
+        "meaning_family": "speech_authority_maturation",
+        "primary_domain": "communication_learning",
+        "secondary_domains": [
+          "identity_presence",
+          "mental_patterning",
+          "self_definition",
+          "mental_reflex_maturation",
+          "büyük resmi kurduğun yer"
+        ],
+        "why_this_meaning": [
+          "active_life_chapter provided semantic_focus",
+          "life_chapter confidence is high enough to anchor selected meaning",
+          "canonical_period_spine matched natal activation hook",
+          "manifestation_context mapped dominant house to lived scene"
+        ],
+        "suppressed_meanings": [
+          "generic communication difficulty",
+          "generic burden / heaviness",
+          "sibling conflict prediction",
+          "ordinary transit framing"
+        ],
+        "confidence": 0.85,
+        "source": "life_chapter",
+        "evidence_count": 8,
+        "scene_translation_request": {
+          "version": "manifestation_context_v1",
+          "primary_house": 9,
+          "house_axis": "9",
+          "target_planet": null,
+          "target_planet_house": null,
+          "ruled_houses": [],
+          "angle": null,
+          "life_scene": "büyük resmi kurduğun yer",
+          "life_scene_variants": [
+            "hayata verdiğin anlam",
+            "uzak hedeflerin ve inançların",
+            "büyük resmi kurduğun yer"
+          ],
+          "context_seed": "Bu tema daha çok büyük resmi kurduğun yer içinden görünür oluyor.",
+          "variant_index": 2,
+          "source": "fallback",
+          "release_strengthened": false,
+          "debug": {
+            "event_ids": [
+              "evt-saturn-return-aries-3"
+            ]
+          },
+          "human_scene": "kısa mesajlar, yarım kalmış konuşmalar, hızlı cevap verme anları",
+          "core_contrast": "hızlı cevap vermek ile gerçekten nerede durduğunu söylemek",
+          "chapter_weight": "not ordinary transit; long-cycle maturation",
+          "chart_specific_anchor": "eski refleksif konuşma kalıbının daha seçilmiş bir söz formuna yerleşmesi",
+          "voice_register": "maturation / medium",
+          "avoid_readings": [
+            "generic communication difficulty",
+            "sibling conflict prediction",
+            "ordinary transit framing"
+          ],
+          "scene_priority": [
+            {
+              "scene": "kısa mesajlar",
+              "priority": "primary"
+            },
+            {
+              "scene": "yarım kalmış konuşmalar",
+              "priority": "secondary"
+            },
+            {
+              "scene": "hızlı cevap verme anları",
+              "priority": "supporting"
+            }
+          ],
+          "shared_vs_private_contrast": "hızlı çıkan söz ile seçilmiş duruş arasında belirginleşen fark"
+        },
+        "voice_register_hints": {
+          "valence_mode": "maturation",
+          "intensity_mode": "medium",
+          "rhetorical_frame": "construction",
+          "tone": "friend-warm"
+        },
+        "debug": {
+          "raw_selected_meaning_text": "Koç 3. ev hattında söz ve zihinsel reflekslerin, düğüm ekseniyle birlikte, daha seçilmiş ve daha sorumlu bir forma yerleşmesi",
+          "chapter_type": "ChapterType.SATURN_RETURN",
+          "chapter_phase": "ChapterPhase.FIRST_PASS",
+          "renderer_handoff_keys": [
+            "avoid_readings",
+            "chapter_weight",
+            "chart_specific_anchor",
+            "core_contrast",
+            "human_scene",
+            "voice_register"
+          ],
+          "semantic_focus_primary": "speech_authority",
+          "selected_meaning_family": "speech_authority_maturation",
+          "used_fields": [
+            "active_life_chapter"
+          ],
+          "missing_fields": [],
+          "canonical_natal_state_present": true,
+          "period_core_seed_keys": [
+            "canonical_period_spine",
+            "core_story",
+            "featured_events",
+            "tags",
+            "title",
+            "upper_meaning"
+          ]
+        }
+      },
+      "semantic_focus_consumed": true,
+      "semantic_focus_used_fields": [
+        "selected_meaning",
+        "meaning_family",
+        "scene_translation_request",
+        "suppressed_meanings",
+        "raw_selected_meaning_text"
+      ],
+      "chapter_handoff_used_fields": [
+        "renderer_handoff.human_scene",
+        "renderer_handoff.core_contrast",
+        "renderer_handoff.chart_specific_anchor",
+        "selected_meaning"
+      ],
+      "suppressed_meanings_applied": [
+        "generic communication difficulty",
+        "generic burden / heaviness",
+        "sibling conflict prediction",
+        "ordinary transit framing"
+      ],
+      "composer_mode": "semantic_focus_guided",
+      "chapter_priority": {
+        "enabled": true,
+        "applied": true,
+        "owner": "life_chapter",
+        "chapter_type": "saturn_return",
+        "chapter_id": "lc:saturn_return:evt-saturn-return-aries-3",
+        "semantic_focus_source": "life_chapter",
+        "scope": "pr_d_v1_tier_1",
+        "event_cards_role": "evidence_support",
+        "reason": "eligible_tier1_life_chapter"
+      },
+      "composer_plan": {
+        "hook": "Kısa mesajlarda, yarım kalmış konuşmalarda ve hızlı cevap verme anlarında sözünün ağırlığı değişiyor.",
+        "scene_anchor": "",
+        "core_contrast": "Eskiden refleksle çıkan cümle seni hemen konumlandırıyor gibi gelebilirdi.",
+        "mechanism": "Şimdi ilk tepkiyi son söz yapmak yerine, hangi cümlenin gerçekten sana ait olduğunu seçiyorsun.",
+        "growth_edge": "İlk cevabı son söz gibi kullanmak yerine, ne söyleyeceğini ve hangi cümlenin gerçekten sana ait olduğunu seçebilmek.",
+        "what_it_builds": "Daha sahipli ve daha sorumlu bir konuşma biçimi.",
+        "closer": "Bu dönem sana daha çok konuşmayı değil, sözünü daha sahipli kurmayı öğretiyor.",
+        "legacy_prefix": "",
+        "semantic_mode": "guided"
+      },
+      "period_reading_v1_guardrails": {
+        "blocks": [],
+        "adjacent_blocks": [],
+        "full_text": []
+      },
+      "period_reading_v1_full_text": "Kısa mesajlarda, yarım kalmış konuşmalarda ve hızlı cevap verme anlarında sözünün ağırlığı değişiyor. Eskiden refleksle çıkan cümle seni hemen konumlandırıyor gibi gelebilirdi. Şimdi ilk tepkiyi son söz yapmak yerine, hangi cümlenin gerçekten sana ait olduğunu seçiyorsun. Bu dönem sana daha çok konuşmayı değil, sözünü daha sahipli kurmayı öğretiyor.",
+      "active_life_chapter_present": true,
+      "active_life_chapter_type": "ChapterType.SATURN_RETURN",
+      "active_life_chapter_phase": "ChapterPhase.FIRST_PASS",
+      "active_life_chapter_selected_meaning": "Koç 3. ev hattında söz ve zihinsel reflekslerin, düğüm ekseniyle birlikte, daha seçilmiş ve daha sorumlu bir forma yerleşmesi",
+      "render_guardrails": {
+        "period_opening": [],
+        "big_picture": [],
+        "mechanism": [],
+        "growth_edge": [],
+        "relational_or_life_expression": [],
+        "what_it_builds": [],
+        "upper_meaning": []
+      }
+    },
+    "story_tracks": {
+      "default": {
+        "track_id": "default",
+        "version": "v2",
+        "lead": "Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.",
+        "period_opening": "Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.",
+        "big_picture": "Mesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.",
+        "mechanism": "Etki önce gündelik hayatta görünür oluyor, sonra bunun sonucu daha kalıcı bir davranış değişimine dönüşüyor.",
+        "growth_edge": "Risk, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+        "relational_or_life_expression": "Günlük hayatta bu, daha seçici kararlar ve daha net sınırlar olarak hissedilebilir.",
+        "what_it_builds": "Bu dönem sende daha net seçim yapma kasını geliştiriyor.",
+        "contribution": "Bu dönem sende daha net seçim yapma kasını geliştiriyor.",
+        "upper_meaning": "Bu dönem sende daha net seçim yapma kasını geliştiriyor."
+      }
+    },
+    "_event_story_map": {
+      "evt-saturn-return-aries-3": "default"
+    }
+  },
+  "transit_events": [
+    {
+      "event_id": "evt-saturn-return-aries-3",
+      "event_family": "cycle_event",
+      "event_subtype": "saturn_return",
+      "start_at": "2026-02-01",
+      "exact_at": [
+        "2026-05-10T00:00:00"
+      ],
+      "end_at": "2026-11-01",
+      "chapter_opening": true,
+      "structural_significance": 0.96,
+      "precision_signal": 0.91,
+      "current_phase": "exact",
+      "source_bodies": [
+        "Saturn"
+      ],
+      "target_points": [
+        "Saturn"
+      ],
+      "target_houses": [
+        3
+      ]
+    }
+  ],
+  "canonical_natal_state": {
+    "bodies": [
+      {
+        "body": "Saturn",
+        "sign": "Aries",
+        "house": 3
+      },
+      {
+        "body": "North Node",
+        "sign": "Libra",
+        "house": 9
+      },
+      {
+        "body": "South Node",
+        "sign": "Aries",
+        "house": 3
+      }
+    ],
+    "house_cusps": [
+      {
+        "house": 1,
+        "sign": "Capricorn"
+      },
+      {
+        "house": 2,
+        "sign": "Aquarius"
+      },
+      {
+        "house": 3,
+        "sign": "Pisces"
+      },
+      {
+        "house": 4,
+        "sign": "Aries"
+      },
+      {
+        "house": 5,
+        "sign": "Taurus"
+      },
+      {
+        "house": 6,
+        "sign": "Gemini"
+      },
+      {
+        "house": 7,
+        "sign": "Cancer"
+      },
+      {
+        "house": 8,
+        "sign": "Leo"
+      },
+      {
+        "house": 9,
+        "sign": "Virgo"
+      },
+      {
+        "house": 10,
+        "sign": "Libra"
+      },
+      {
+        "house": 11,
+        "sign": "Scorpio"
+      },
+      {
+        "house": 12,
+        "sign": "Sagittarius"
+      }
+    ]
+  }
+}

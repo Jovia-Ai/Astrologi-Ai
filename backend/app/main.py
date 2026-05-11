@@ -7,6 +7,7 @@ import swisseph as swe
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.routes import transits as transits_route_module
 from app.api.routes.natal_interpretation import router as natal_interpretation_router
 from app.api.routes.home import router as home_router
 from app.api.routes.sky import router as sky_router
@@ -39,6 +40,10 @@ def create_app() -> FastAPI:
     assert_ephemeris_ready(settings.swisseph_path)
     swe.set_ephe_path(settings.swisseph_path)
     logger.info("Swiss Ephemeris path set to %s", settings.swisseph_path)
+
+    @app.on_event("startup")
+    def _prewarm_transit_runtime_assets() -> None:
+        transits_route_module.prewarm_transit_runtime_assets()
 
     app.include_router(health.router)
     app.include_router(user.router)

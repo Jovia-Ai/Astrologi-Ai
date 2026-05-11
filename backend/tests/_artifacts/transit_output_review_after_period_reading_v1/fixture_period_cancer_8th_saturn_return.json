@@ -1,0 +1,855 @@
+{
+  "source": {
+    "mode": "fixture_based_runtime_builder",
+    "note": "Tier-1 fixture rendered through current build_period_core with LIFE_CHAPTER_PRIORITY_ENABLED=true for PR-D v1 inspection.",
+    "group": "saturn_return",
+    "name": "cancer_8th_water_emotional"
+  },
+  "active_life_chapter": {
+    "version": "life_chapter_v1",
+    "chapter_id": "lc:saturn_return:evt-saturn-return-cancer-8",
+    "chapter_type": "saturn_return",
+    "domain": "trust_transformation",
+    "spine_line": null,
+    "time_window": {
+      "start": "2026-03-01",
+      "peak": "2026-06-15T00:00:00",
+      "end": "2026-12-20"
+    },
+    "phase": "first_pass",
+    "activated_natal_factors": [
+      {
+        "type": "planet",
+        "id": "natal_saturn"
+      },
+      {
+        "type": "house",
+        "id": "house_8"
+      }
+    ],
+    "core_question": "Yengeç 8. ev hattında duygusal güvenlik, ortak yük ve derin bağ kurma biçimini nasıl daha seçilmiş ve daha kalıcı bir forma dönüştürüyorsun?",
+    "selected_meaning": "Yengeç 8. ev hattında duygusal güvenlik, ortak yük ve derin bağ kurma biçiminin; birlikte taşınanla içeride tek başına taşınanı daha bilinçli ayıran dayanıklı bir forma yerleşmesi",
+    "selected_meaning_family": "shared_trust_maturation",
+    "semantic_focus": {
+      "primary": "shared_emotional_territory",
+      "secondary": [
+        "trust_under_pressure",
+        "intimacy_boundary_maturation",
+        "shared_resource_weight"
+      ],
+      "not_this": [
+        "generic emotional regulation",
+        "body-rhythm reading without body backing",
+        "oversensitivity cliché"
+      ]
+    },
+    "domain_ownership": {
+      "primary_domain": "trust_transformation",
+      "secondary_domains": [
+        "shared_resources",
+        "intimacy_psychology"
+      ],
+      "rationale": "Cancer 8. ev Saturn return derin bağ, ortak yük, güven ve paylaşılan duygusal alanın nasıl taşındığını olgunlaştırır."
+    },
+    "natal_architecture_anchor": {
+      "label": "shared_depth_requires_structure",
+      "human": "derin paylaşım ve güven alanı yapı, sınır ve ölçü istiyor",
+      "evidence": [
+        "Cancer 8th house Saturn",
+        "Saturn return"
+      ]
+    },
+    "scene_priority": [
+      {
+        "scene": "mahrem konuşmalar",
+        "priority": "primary"
+      },
+      {
+        "scene": "birlikte taşınan yükler",
+        "priority": "secondary"
+      },
+      {
+        "scene": "duygusal borç ve sorumluluğun sessizce paylaşıldığı anlar",
+        "priority": "supporting"
+      }
+    ],
+    "chapter_claim_strength": "deep long-cycle chapter",
+    "shared_domain_priority": [
+      "shared_burden",
+      "emotional_exchange",
+      "dependency_tension",
+      "trust_under_pressure",
+      "private_emotional_weight"
+    ],
+    "trust_axis_anchor": "güven vermek, almak, duygusal yükü ve sessiz yükümlülüğü nasıl paylaştığın bu chapter'ın ana ekseni",
+    "shared_vs_private_contrast": "birlikte taşınan duygusal yük ile içeride tek başına tutulmuş özel ağırlık arasındaki fark",
+    "structural_pressure_model": null,
+    "apex_release_point": null,
+    "renderer_handoff": {
+      "human_scene": "mahrem konuşmalar, birlikte taşınan yükler, duygusal borç ve sorumluluğun sessizce paylaşıldığı anlar",
+      "core_contrast": "birlikte taşımak ile her şeyi tek başına içeride tutmak",
+      "chapter_weight": "not ordinary transit; deep shared-space maturation",
+      "chart_specific_anchor": "ortak duygusal alanın, güvenin ve paylaşılmış ağırlığın daha dayanıklı bir forma yerleşmesi",
+      "voice_register": "maturation / dense",
+      "avoid_readings": [
+        "generic emotional regulation",
+        "body-rhythm reading",
+        "surface mood language",
+        "self-care simplification",
+        "generic vulnerability language"
+      ]
+    },
+    "evidence": [
+      {
+        "factor": "Transit Saturn conjunct natal Saturn",
+        "role": "return",
+        "explanation": "Saturn return ana olgunlaşma döngüsünü doğrudan açıyor."
+      },
+      {
+        "factor": "Natal Saturn in Yengeç 8",
+        "role": "natal_context",
+        "explanation": "Yengeç 8. ev hattında Satürn bu chapter'da yalnız yerleşimini değil, yönettiği 2, 3. ev başlıklarını da olgunlaştırıyor."
+      },
+      {
+        "factor": "House 8 domain ownership",
+        "role": "house_context",
+        "explanation": "Yengeç 8. ev hattında burada mesele yalnız duygusal yoğunluk değil; neyin birlikte, neyin yalnız taşındığını ayıran ortak güven ve alışveriş yapısı."
+      },
+      {
+        "factor": "selected chapter focus",
+        "role": "semantic_focus_support",
+        "explanation": "Yengeç 8. ev hattında güven, duygusal alışveriş, birlikte taşınan ağırlık ve içeride yalnız tutulan yük aynı semantic odağa toplanıyor."
+      },
+      {
+        "factor": "shallow reading suppression",
+        "role": "suppression_guard",
+        "explanation": "8. ev vurgusu generic hassasiyet, self-care ya da kırılganlık diline indirgenmiyor; ortak güven ve paylaşılmış yük alanı korunuyor."
+      }
+    ],
+    "suppressed_readings": [
+      {
+        "reading": "generic communication difficulty",
+        "reason": "Saturn return sadece iletişim zorluğu değil; natal Saturn temasının olgunlaşmasıdır."
+      },
+      {
+        "reading": "generic burden / heaviness",
+        "reason": "Bu chapter olgunlaşma; yük cliché'sine indirgenmemeli."
+      }
+    ],
+    "suppressed_surface_readings": [
+      {
+        "reading": "generic emotional regulation",
+        "reason": "8. ev sahibi duygu düzenleme değil; ortak yük, güven, mahremiyet ve paylaşılmış alan."
+      },
+      {
+        "reading": "body-rhythm reading",
+        "reason": "1./6. ev ya da belirgin beden bağlamı yoksa bu chapter beden rutini diye okunmamalı."
+      },
+      {
+        "reading": "oversensitivity cliché",
+        "reason": "Su ve Yengeç vurgusu tek başına fazla hassasiyet klişesine indirgenmemeli; burada güven ve paylaşım yapısı okunuyor."
+      },
+      {
+        "reading": "self-care simplification",
+        "reason": "Bu chapter bakım önerisine indirgenmiyor; ortak yük ve duygusal alışverişin yapısı okunuyor."
+      },
+      {
+        "reading": "generic vulnerability language",
+        "reason": "Kırılganlık burada tek başına tema değil; neyin birlikte, neyin yalnız taşındığı daha belirleyici."
+      }
+    ],
+    "voice_hints": {
+      "valence_mode": "maturation",
+      "intensity_mode": "dense",
+      "rhetorical_frame": "deepening",
+      "tone": "friend-warm"
+    },
+    "priority": "life_chapter",
+    "confidence": "high",
+    "debug": {
+      "source_event_ids": [
+        "evt-saturn-return-cancer-8"
+      ],
+      "source_signal_types": [
+        "saturn_return"
+      ],
+      "node_overlap": {
+        "has_overlap": false,
+        "matched_nodes": [],
+        "same_sign": false,
+        "same_house": false,
+        "saturn_sign": "Cancer",
+        "saturn_house": 8
+      },
+      "phase_source": "event_payload_phase_field",
+      "phase_reason": "event metadata indicates exact or active pass",
+      "selection_reason": "highest-confidence Tier-1 candidate selected: saturn_return",
+      "confidence_rationale": "Yengeç 8. ev hattında known, phase first_pass, no node overlap -> high confidence",
+      "overlap_reason": "",
+      "suppressed_candidates": []
+    }
+  },
+  "period_core": {
+    "title": "Denge ve Yapi Temasi Derinlesiyor",
+    "core_story": "Mahrem konuşmalarda ve birlikte taşınan yüklerde neyin ortak, neyin tek başına kaldığı daha görünür oluyor.\n\nBazı şeyleri içeride tutmak seni güvende hissettirmiş olabilir. Ama güvenin sadece susarak değil, neyi paylaşacağını ve hangi sınırın sana ait olduğunu söyleyerek de kurulabileceğini görüyorsun.\n\nBu sana hem paylaşılanı taşıyan hem özel alanı koruyan daha dayanıklı bir yakınlık kurduruyor.",
+    "upper_meaning": "Paylaşılan güveni ve özel ağırlığı aynı cümlede tutabilen daha dayanıklı bir yakınlık.",
+    "tags": [
+      {
+        "type": "dominant_house",
+        "value": "3"
+      },
+      {
+        "type": "dominant_planet",
+        "value": "Saturn"
+      }
+    ],
+    "featured_events": [
+      {
+        "event_id": "evt-saturn-return-cancer-8",
+        "event_family": "cycle_event",
+        "event_subtype": "saturn_return",
+        "start_at": "2026-03-01",
+        "exact_at": [
+          "2026-06-15T00:00:00"
+        ],
+        "end_at": "2026-12-20",
+        "chapter_opening": true,
+        "structural_significance": 0.94,
+        "precision_signal": 0.88,
+        "current_phase": "exactish",
+        "source_bodies": [
+          "Saturn"
+        ],
+        "target_points": [
+          "Saturn"
+        ],
+        "target_houses": [
+          8
+        ],
+        "chapter_role": {
+          "role": "builder"
+        },
+        "story_score": 0.95,
+        "selection_index": 0,
+        "semantic_role": "evidence_support",
+        "semantic_owner": "life_chapter"
+      }
+    ],
+    "canonical_period_spine": {
+      "source": "canonical_natal_activation_v1",
+      "target_node_id": "promise_focus",
+      "spine_lines": [
+        "relational_line"
+      ],
+      "matched_event_ids": [
+        "evt-saturn-return-cancer-8"
+      ],
+      "primary_domain": "emotional_security"
+    },
+    "semantic_focus": {
+      "version": "period_semantic_focus_v1",
+      "selected_meaning": "shared_emotional_territory",
+      "meaning_family": "shared_trust_maturation",
+      "primary_domain": "trust_transformation",
+      "secondary_domains": [
+        "shared_resources",
+        "intimacy_psychology",
+        "shared_burden",
+        "emotional_exchange",
+        "dependency_tension",
+        "trust_under_pressure",
+        "private_emotional_weight",
+        "intimacy_boundary_maturation",
+        "shared_resource_weight",
+        "yakın ilişkideki karşılıklı alan"
+      ],
+      "why_this_meaning": [
+        "active_life_chapter provided semantic_focus",
+        "life_chapter confidence is high enough to anchor selected meaning",
+        "canonical_period_spine matched natal activation hook",
+        "manifestation_context mapped dominant house to lived scene"
+      ],
+      "suppressed_meanings": [
+        "generic communication difficulty",
+        "generic burden / heaviness",
+        "generic emotional regulation",
+        "body-rhythm reading",
+        "oversensitivity cliché",
+        "self-care simplification",
+        "generic vulnerability language",
+        "body-rhythm reading without body backing",
+        "surface mood language"
+      ],
+      "confidence": 0.85,
+      "source": "life_chapter",
+      "evidence_count": 7,
+      "scene_translation_request": {
+        "version": "manifestation_context_v1",
+        "primary_house": 7,
+        "house_axis": "7",
+        "target_planet": null,
+        "target_planet_house": null,
+        "ruled_houses": [],
+        "angle": null,
+        "life_scene": "yakın ilişkideki karşılıklı alan",
+        "life_scene_variants": [
+          "karşındaki kişiyle kurduğun denge",
+          "anlaşma yapma biçimin",
+          "yakın ilişkideki karşılıklı alan"
+        ],
+        "context_seed": "Bu tema daha çok yakın ilişkideki karşılıklı alan içinden görünür oluyor.",
+        "variant_index": 2,
+        "source": "fallback",
+        "release_strengthened": false,
+        "debug": {
+          "event_ids": [
+            "evt-saturn-return-cancer-8"
+          ]
+        },
+        "human_scene": "mahrem konuşmalar, birlikte taşınan yükler, duygusal borç ve sorumluluğun sessizce paylaşıldığı anlar",
+        "core_contrast": "birlikte taşımak ile her şeyi tek başına içeride tutmak",
+        "chapter_weight": "not ordinary transit; deep shared-space maturation",
+        "chart_specific_anchor": "ortak duygusal alanın, güvenin ve paylaşılmış ağırlığın daha dayanıklı bir forma yerleşmesi",
+        "voice_register": "maturation / dense",
+        "avoid_readings": [
+          "generic emotional regulation",
+          "body-rhythm reading",
+          "surface mood language",
+          "self-care simplification",
+          "generic vulnerability language"
+        ],
+        "scene_priority": [
+          {
+            "scene": "mahrem konuşmalar",
+            "priority": "primary"
+          },
+          {
+            "scene": "birlikte taşınan yükler",
+            "priority": "secondary"
+          },
+          {
+            "scene": "duygusal borç ve sorumluluğun sessizce paylaşıldığı anlar",
+            "priority": "supporting"
+          }
+        ],
+        "shared_domain_priority": [
+          "shared_burden",
+          "emotional_exchange",
+          "dependency_tension",
+          "trust_under_pressure",
+          "private_emotional_weight"
+        ],
+        "trust_axis_anchor": "güven vermek, almak, duygusal yükü ve sessiz yükümlülüğü nasıl paylaştığın bu chapter'ın ana ekseni",
+        "shared_vs_private_contrast": "birlikte taşınan duygusal yük ile içeride tek başına tutulmuş özel ağırlık arasındaki fark"
+      },
+      "voice_register_hints": {
+        "valence_mode": "maturation",
+        "intensity_mode": "dense",
+        "rhetorical_frame": "deepening",
+        "tone": "friend-warm"
+      },
+      "debug": {
+        "raw_selected_meaning_text": "Yengeç 8. ev hattında duygusal güvenlik, ortak yük ve derin bağ kurma biçiminin; birlikte taşınanla içeride tek başına taşınanı daha bilinçli ayıran dayanıklı bir forma yerleşmesi",
+        "chapter_type": "ChapterType.SATURN_RETURN",
+        "chapter_phase": "ChapterPhase.FIRST_PASS",
+        "renderer_handoff_keys": [
+          "avoid_readings",
+          "chapter_weight",
+          "chart_specific_anchor",
+          "core_contrast",
+          "human_scene",
+          "voice_register"
+        ],
+        "semantic_focus_primary": "shared_emotional_territory",
+        "selected_meaning_family": "shared_trust_maturation",
+        "used_fields": [
+          "active_life_chapter"
+        ],
+        "missing_fields": [],
+        "canonical_natal_state_present": true,
+        "period_core_seed_keys": [
+          "canonical_period_spine",
+          "core_story",
+          "featured_events",
+          "tags",
+          "title",
+          "upper_meaning"
+        ]
+      }
+    },
+    "chapter_priority": {
+      "enabled": true,
+      "applied": true,
+      "owner": "life_chapter",
+      "chapter_type": "saturn_return",
+      "chapter_id": "lc:saturn_return:evt-saturn-return-cancer-8",
+      "semantic_focus_source": "life_chapter",
+      "scope": "pr_d_v1_tier_1",
+      "event_cards_role": "evidence_support",
+      "reason": "eligible_tier1_life_chapter"
+    },
+    "big_picture": "Bazı şeyleri içeride tutmak seni güvende hissettirmiş olabilir. Ama güvenin sadece susarak değil, neyi paylaşacağını ve hangi sınırın sana ait olduğunu söyleyerek de kurulabileceğini görüyorsun.",
+    "period_reading_v1": {
+      "version": "period_reading_v1",
+      "blocks": [
+        {
+          "role": "hook",
+          "text": "Mahrem konuşmalarda ve birlikte taşınan yüklerde neyin ortak, neyin tek başına kaldığı daha görünür oluyor."
+        },
+        {
+          "role": "unfolding",
+          "text": "Bazı şeyleri içeride tutmak seni güvende hissettirmiş olabilir. Ama güvenin sadece susarak değil, neyi paylaşacağını ve hangi sınırın sana ait olduğunu söyleyerek de kurulabileceğini görüyorsun."
+        },
+        {
+          "role": "growth",
+          "text": "Bu sana hem paylaşılanı taşıyan hem özel alanı koruyan daha dayanıklı bir yakınlık kurduruyor."
+        }
+      ],
+      "full_text": "Mahrem konuşmalarda ve birlikte taşınan yüklerde neyin ortak, neyin tek başına kaldığı daha görünür oluyor.\n\nBazı şeyleri içeride tutmak seni güvende hissettirmiş olabilir. Ama güvenin sadece susarak değil, neyi paylaşacağını ve hangi sınırın sana ait olduğunu söyleyerek de kurulabileceğini görüyorsun.\n\nBu sana hem paylaşılanı taşıyan hem özel alanı koruyan daha dayanıklı bir yakınlık kurduruyor."
+    },
+    "period_opening": "Mahrem konuşmalarda ve birlikte taşınan yüklerde neyin ortak, neyin tek başına kaldığı daha görünür oluyor.",
+    "mechanism": "Ama güvenin sadece susarak değil, neyi paylaşacağını ve hangi sınırın sana ait olduğunu söyleyerek de kurulabileceğini görüyorsun.",
+    "growth_edge": "Her şeyi içeride tek başına taşımak yerine, hangi yükün paylaşılacağını ve hangi sınırın sana ait olduğunu söyleyebilmek.",
+    "relational_or_life_expression": "Bu sana hem paylaşılanı taşıyan hem özel alanı koruyan daha dayanıklı bir yakınlık kurduruyor.",
+    "what_it_builds": "Paylaşılan güveni ve özel ağırlığı aynı cümlede tutabilen daha dayanıklı bir yakınlık.",
+    "narrative_version": "period_story_v2",
+    "_period_story_debug": {
+      "spine_event_id": "evt-saturn-return-cancer-8",
+      "support_event_ids": [],
+      "track_id": "default",
+      "spine_role": "builder",
+      "support_roles": [],
+      "canonical_period_spine_source": "canonical_natal_activation_v1",
+      "canonical_period_spine_target_node_id": "promise_focus",
+      "promise_prefix_source": "",
+      "period_voice_policy_version": "period_voice_policy_v1",
+      "period_voice_policy_reason_line_allowed": true,
+      "period_voice_policy_avoid_tags": [
+        "generic_hat_copy",
+        "coaching_command",
+        "unbacked_natal_reason",
+        "astro_first_opening"
+      ],
+      "period_voice_policy_meaning_intent": "shared_trust_maturation",
+      "period_voice_policy_rhetorical_frame": "reframe",
+      "period_voice_policy_valence_mode": "integration",
+      "period_voice_policy_intensity_mode": "medium",
+      "period_voice_policy_match_level": "spine_line_generic",
+      "period_voice_policy_manifestation_context": {
+        "version": "manifestation_context_v1",
+        "primary_house": 7,
+        "house_axis": "7",
+        "target_planet": null,
+        "target_planet_house": null,
+        "ruled_houses": [],
+        "angle": null,
+        "life_scene": "yakın ilişkideki karşılıklı alan",
+        "life_scene_variants": [
+          "karşındaki kişiyle kurduğun denge",
+          "anlaşma yapma biçimin",
+          "yakın ilişkideki karşılıklı alan"
+        ],
+        "context_seed": "Bu tema daha çok yakın ilişkideki karşılıklı alan içinden görünür oluyor.",
+        "variant_index": 2,
+        "source": "fallback",
+        "release_strengthened": false,
+        "debug": {
+          "event_ids": [
+            "evt-saturn-return-cancer-8"
+          ]
+        }
+      },
+      "period_voice_policy": {
+        "spine_line": "relational_line",
+        "event_nature": "clarity",
+        "event_nature_source": "default",
+        "policy_match": {
+          "level": "spine_line_generic",
+          "seed_key": "relational_line.default",
+          "fallback_order": [
+            "exact",
+            "spine_line_generic",
+            "event_nature_generic",
+            "legacy_untouched"
+          ]
+        },
+        "match_level": "spine_line_generic",
+        "chapter_role": "builder",
+        "canonical_backing_node_ids": [
+          "promise_focus"
+        ],
+        "meaning_intent": "shared_trust_maturation",
+        "rhetorical_frame": "reframe",
+        "valence_mode": "integration",
+        "intensity_mode": "medium",
+        "valence_debug": {
+          "planet_pair": [
+            "",
+            ""
+          ],
+          "pair_class": "unclassified",
+          "aspect_type": "",
+          "valence_source": "fallback",
+          "intensity_source": "aspect_default",
+          "fallback_used": true,
+          "bias_notes": [],
+          "recent_valence_modes": [],
+          "rotation_applied": false,
+          "candidates": [
+            "integration",
+            "opening"
+          ],
+          "selected_event_id": "evt-saturn-return-cancer-8"
+        },
+        "manifestation_context": {
+          "version": "manifestation_context_v1",
+          "primary_house": 7,
+          "house_axis": "7",
+          "target_planet": null,
+          "target_planet_house": null,
+          "ruled_houses": [],
+          "angle": null,
+          "life_scene": "yakın ilişkideki karşılıklı alan",
+          "life_scene_variants": [
+            "karşındaki kişiyle kurduğun denge",
+            "anlaşma yapma biçimin",
+            "yakın ilişkideki karşılıklı alan"
+          ],
+          "context_seed": "Bu tema daha çok yakın ilişkideki karşılıklı alan içinden görünür oluyor.",
+          "variant_index": 2,
+          "source": "fallback",
+          "release_strengthened": false,
+          "debug": {
+            "event_ids": [
+              "evt-saturn-return-cancer-8"
+            ]
+          }
+        },
+        "frame_debug": {
+          "candidates": [
+            "reframe",
+            "sorting"
+          ],
+          "recent_rhetorical_frames": [],
+          "rotation_applied": false
+        },
+        "event_bodies": [],
+        "semantic_focus_source": "life_chapter",
+        "semantic_focus_confidence": 0.85,
+        "matched_event_ids": [
+          "evt-saturn-return-cancer-8"
+        ]
+      },
+      "semantic_focus": {
+        "version": "period_semantic_focus_v1",
+        "selected_meaning": "shared_emotional_territory",
+        "meaning_family": "shared_trust_maturation",
+        "primary_domain": "trust_transformation",
+        "secondary_domains": [
+          "shared_resources",
+          "intimacy_psychology",
+          "shared_burden",
+          "emotional_exchange",
+          "dependency_tension",
+          "trust_under_pressure",
+          "private_emotional_weight",
+          "intimacy_boundary_maturation",
+          "shared_resource_weight",
+          "yakın ilişkideki karşılıklı alan"
+        ],
+        "why_this_meaning": [
+          "active_life_chapter provided semantic_focus",
+          "life_chapter confidence is high enough to anchor selected meaning",
+          "canonical_period_spine matched natal activation hook",
+          "manifestation_context mapped dominant house to lived scene"
+        ],
+        "suppressed_meanings": [
+          "generic communication difficulty",
+          "generic burden / heaviness",
+          "generic emotional regulation",
+          "body-rhythm reading",
+          "oversensitivity cliché",
+          "self-care simplification",
+          "generic vulnerability language",
+          "body-rhythm reading without body backing",
+          "surface mood language"
+        ],
+        "confidence": 0.85,
+        "source": "life_chapter",
+        "evidence_count": 7,
+        "scene_translation_request": {
+          "version": "manifestation_context_v1",
+          "primary_house": 7,
+          "house_axis": "7",
+          "target_planet": null,
+          "target_planet_house": null,
+          "ruled_houses": [],
+          "angle": null,
+          "life_scene": "yakın ilişkideki karşılıklı alan",
+          "life_scene_variants": [
+            "karşındaki kişiyle kurduğun denge",
+            "anlaşma yapma biçimin",
+            "yakın ilişkideki karşılıklı alan"
+          ],
+          "context_seed": "Bu tema daha çok yakın ilişkideki karşılıklı alan içinden görünür oluyor.",
+          "variant_index": 2,
+          "source": "fallback",
+          "release_strengthened": false,
+          "debug": {
+            "event_ids": [
+              "evt-saturn-return-cancer-8"
+            ]
+          },
+          "human_scene": "mahrem konuşmalar, birlikte taşınan yükler, duygusal borç ve sorumluluğun sessizce paylaşıldığı anlar",
+          "core_contrast": "birlikte taşımak ile her şeyi tek başına içeride tutmak",
+          "chapter_weight": "not ordinary transit; deep shared-space maturation",
+          "chart_specific_anchor": "ortak duygusal alanın, güvenin ve paylaşılmış ağırlığın daha dayanıklı bir forma yerleşmesi",
+          "voice_register": "maturation / dense",
+          "avoid_readings": [
+            "generic emotional regulation",
+            "body-rhythm reading",
+            "surface mood language",
+            "self-care simplification",
+            "generic vulnerability language"
+          ],
+          "scene_priority": [
+            {
+              "scene": "mahrem konuşmalar",
+              "priority": "primary"
+            },
+            {
+              "scene": "birlikte taşınan yükler",
+              "priority": "secondary"
+            },
+            {
+              "scene": "duygusal borç ve sorumluluğun sessizce paylaşıldığı anlar",
+              "priority": "supporting"
+            }
+          ],
+          "shared_domain_priority": [
+            "shared_burden",
+            "emotional_exchange",
+            "dependency_tension",
+            "trust_under_pressure",
+            "private_emotional_weight"
+          ],
+          "trust_axis_anchor": "güven vermek, almak, duygusal yükü ve sessiz yükümlülüğü nasıl paylaştığın bu chapter'ın ana ekseni",
+          "shared_vs_private_contrast": "birlikte taşınan duygusal yük ile içeride tek başına tutulmuş özel ağırlık arasındaki fark"
+        },
+        "voice_register_hints": {
+          "valence_mode": "maturation",
+          "intensity_mode": "dense",
+          "rhetorical_frame": "deepening",
+          "tone": "friend-warm"
+        },
+        "debug": {
+          "raw_selected_meaning_text": "Yengeç 8. ev hattında duygusal güvenlik, ortak yük ve derin bağ kurma biçiminin; birlikte taşınanla içeride tek başına taşınanı daha bilinçli ayıran dayanıklı bir forma yerleşmesi",
+          "chapter_type": "ChapterType.SATURN_RETURN",
+          "chapter_phase": "ChapterPhase.FIRST_PASS",
+          "renderer_handoff_keys": [
+            "avoid_readings",
+            "chapter_weight",
+            "chart_specific_anchor",
+            "core_contrast",
+            "human_scene",
+            "voice_register"
+          ],
+          "semantic_focus_primary": "shared_emotional_territory",
+          "selected_meaning_family": "shared_trust_maturation",
+          "used_fields": [
+            "active_life_chapter"
+          ],
+          "missing_fields": [],
+          "canonical_natal_state_present": true,
+          "period_core_seed_keys": [
+            "canonical_period_spine",
+            "core_story",
+            "featured_events",
+            "tags",
+            "title",
+            "upper_meaning"
+          ]
+        }
+      },
+      "semantic_focus_consumed": true,
+      "semantic_focus_used_fields": [
+        "selected_meaning",
+        "meaning_family",
+        "scene_translation_request",
+        "suppressed_meanings",
+        "raw_selected_meaning_text"
+      ],
+      "chapter_handoff_used_fields": [
+        "renderer_handoff.human_scene",
+        "renderer_handoff.core_contrast",
+        "renderer_handoff.chart_specific_anchor",
+        "selected_meaning"
+      ],
+      "suppressed_meanings_applied": [
+        "generic communication difficulty",
+        "generic burden / heaviness",
+        "generic emotional regulation",
+        "body-rhythm reading",
+        "oversensitivity cliché",
+        "self-care simplification",
+        "generic vulnerability language",
+        "body-rhythm reading without body backing",
+        "surface mood language"
+      ],
+      "composer_mode": "semantic_focus_guided",
+      "chapter_priority": {
+        "enabled": true,
+        "applied": true,
+        "owner": "life_chapter",
+        "chapter_type": "saturn_return",
+        "chapter_id": "lc:saturn_return:evt-saturn-return-cancer-8",
+        "semantic_focus_source": "life_chapter",
+        "scope": "pr_d_v1_tier_1",
+        "event_cards_role": "evidence_support",
+        "reason": "eligible_tier1_life_chapter"
+      },
+      "composer_plan": {
+        "hook": "Mahrem konuşmalarda ve birlikte taşınan yüklerde neyin ortak, neyin tek başına kaldığı daha görünür oluyor.",
+        "scene_anchor": "",
+        "core_contrast": "Bazı şeyleri içeride tutmak seni güvende hissettirmiş olabilir.",
+        "mechanism": "Ama güvenin sadece susarak değil, neyi paylaşacağını ve hangi sınırın sana ait olduğunu söyleyerek de kurulabileceğini görüyorsun.",
+        "growth_edge": "Her şeyi içeride tek başına taşımak yerine, hangi yükün paylaşılacağını ve hangi sınırın sana ait olduğunu söyleyebilmek.",
+        "what_it_builds": "Paylaşılan güveni ve özel ağırlığı aynı cümlede tutabilen daha dayanıklı bir yakınlık.",
+        "closer": "Bu sana hem paylaşılanı taşıyan hem özel alanı koruyan daha dayanıklı bir yakınlık kurduruyor.",
+        "legacy_prefix": "",
+        "semantic_mode": "guided"
+      },
+      "period_reading_v1_guardrails": {
+        "blocks": [],
+        "adjacent_blocks": [],
+        "full_text": []
+      },
+      "period_reading_v1_full_text": "Mahrem konuşmalarda ve birlikte taşınan yüklerde neyin ortak, neyin tek başına kaldığı daha görünür oluyor. Bazı şeyleri içeride tutmak seni güvende hissettirmiş olabilir. Ama güvenin sadece susarak değil, neyi paylaşacağını ve hangi sınırın sana ait olduğunu söyleyerek de kurulabileceğini görüyorsun. Bu sana hem paylaşılanı taşıyan hem özel alanı koruyan daha dayanıklı bir yakınlık kurduruyor.",
+      "active_life_chapter_present": true,
+      "active_life_chapter_type": "ChapterType.SATURN_RETURN",
+      "active_life_chapter_phase": "ChapterPhase.FIRST_PASS",
+      "active_life_chapter_selected_meaning": "Yengeç 8. ev hattında duygusal güvenlik, ortak yük ve derin bağ kurma biçiminin; birlikte taşınanla içeride tek başına taşınanı daha bilinçli ayıran dayanıklı bir forma yerleşmesi",
+      "render_guardrails": {
+        "period_opening": [],
+        "big_picture": [],
+        "mechanism": [],
+        "growth_edge": [],
+        "relational_or_life_expression": [],
+        "what_it_builds": [],
+        "upper_meaning": []
+      }
+    },
+    "story_tracks": {
+      "default": {
+        "track_id": "default",
+        "version": "v2",
+        "lead": "Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.",
+        "period_opening": "Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.",
+        "big_picture": "Mesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.",
+        "mechanism": "Etki önce gündelik hayatta görünür oluyor, sonra bunun sonucu daha kalıcı bir davranış değişimine dönüşüyor.",
+        "growth_edge": "Risk, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+        "relational_or_life_expression": "Günlük hayatta bu, daha seçici kararlar ve daha net sınırlar olarak hissedilebilir.",
+        "what_it_builds": "Bu dönem sende daha net seçim yapma kasını geliştiriyor.",
+        "contribution": "Bu dönem sende daha net seçim yapma kasını geliştiriyor.",
+        "upper_meaning": "Bu dönem sende daha net seçim yapma kasını geliştiriyor."
+      }
+    },
+    "_event_story_map": {
+      "evt-saturn-return-cancer-8": "default"
+    }
+  },
+  "transit_events": [
+    {
+      "event_id": "evt-saturn-return-cancer-8",
+      "event_family": "cycle_event",
+      "event_subtype": "saturn_return",
+      "start_at": "2026-03-01",
+      "exact_at": [
+        "2026-06-15T00:00:00"
+      ],
+      "end_at": "2026-12-20",
+      "chapter_opening": true,
+      "structural_significance": 0.94,
+      "precision_signal": 0.88,
+      "current_phase": "exactish",
+      "source_bodies": [
+        "Saturn"
+      ],
+      "target_points": [
+        "Saturn"
+      ],
+      "target_houses": [
+        8
+      ]
+    }
+  ],
+  "canonical_natal_state": {
+    "bodies": [
+      {
+        "body": "Saturn",
+        "sign": "Cancer",
+        "house": 8
+      },
+      {
+        "body": "North Node",
+        "sign": "Pisces",
+        "house": 4
+      },
+      {
+        "body": "South Node",
+        "sign": "Virgo",
+        "house": 10
+      }
+    ],
+    "house_cusps": [
+      {
+        "house": 1,
+        "sign": "Sagittarius"
+      },
+      {
+        "house": 2,
+        "sign": "Capricorn"
+      },
+      {
+        "house": 3,
+        "sign": "Aquarius"
+      },
+      {
+        "house": 4,
+        "sign": "Pisces"
+      },
+      {
+        "house": 5,
+        "sign": "Aries"
+      },
+      {
+        "house": 6,
+        "sign": "Taurus"
+      },
+      {
+        "house": 7,
+        "sign": "Gemini"
+      },
+      {
+        "house": 8,
+        "sign": "Cancer"
+      },
+      {
+        "house": 9,
+        "sign": "Leo"
+      },
+      {
+        "house": 10,
+        "sign": "Virgo"
+      },
+      {
+        "house": 11,
+        "sign": "Libra"
+      },
+      {
+        "house": 12,
+        "sign": "Scorpio"
+      }
+    ]
+  }
+}

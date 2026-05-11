@@ -1,0 +1,703 @@
+{
+  "source": {
+    "mode": "fixture_based_runtime_builder",
+    "note": "Tier-1 fixture rendered through current build_period_core with LIFE_CHAPTER_PRIORITY_ENABLED=true for PR-D v1 inspection.",
+    "group": "nodal",
+    "name": "nn_aries_sn_libra"
+  },
+  "active_life_chapter": {
+    "version": "life_chapter_v1",
+    "chapter_id": "lc:nodal_activation:evt-nodal-activation",
+    "chapter_type": "nodal_activation",
+    "domain": "communication_learning",
+    "spine_line": null,
+    "time_window": {
+      "start": "2026-05-01",
+      "peak": "2026-05-03T00:00:00",
+      "end": "2026-05-10"
+    },
+    "phase": "first_pass",
+    "activated_natal_factors": [
+      {
+        "type": "node",
+        "id": "node_axis"
+      },
+      {
+        "type": "house",
+        "id": "house_3"
+      }
+    ],
+    "core_question": "Koç 3. ev hattında başkalarına göre ayar verme alışkanlığından çıkıp kendi yönünü nasıl daha açık seçiyorsun?",
+    "selected_meaning": "Koç 3. ev hattında başkalarına göre ayar verme refleksinden çıkıp daha doğrudan yön seçmeye alan açılması",
+    "selected_meaning_family": "nodal_direction_self_definition",
+    "semantic_focus": {
+      "primary": "directional_self_definition",
+      "secondary": [
+        "self_assertion_without_self_erasure",
+        "relational_deconditioning"
+      ],
+      "not_this": [
+        "generic self/other balance"
+      ]
+    },
+    "domain_ownership": {
+      "primary_domain": "identity_presence",
+      "secondary_domains": [
+        "relationships_agreements",
+        "belief_direction"
+      ],
+      "rationale": "NN Koç / SN Terazi aksı başkalarına göre ayar verme kalıbından çıkıp daha doğrudan yön seçmeyi büyüme hattı yapar."
+    },
+    "natal_architecture_anchor": {
+      "label": "directional_self_definition_axis",
+      "human": "ilişkiye göre ayar verme kalıbından çıkıp daha doğrudan yön seçme ekseni çalışıyor",
+      "evidence": [
+        "North Node Aries",
+        "South Node Libra"
+      ]
+    },
+    "scene_priority": [
+      {
+        "scene": "eski yön refleksinin geri çağrıldığı anlar",
+        "priority": "primary"
+      },
+      {
+        "scene": "kısa mesajlar, gündelik konuşmalar, yarım kalmış cümleler",
+        "priority": "secondary"
+      }
+    ],
+    "chapter_claim_strength": "major axis chapter",
+    "shared_domain_priority": [],
+    "trust_axis_anchor": null,
+    "shared_vs_private_contrast": "ilişkiyi korumak ile kendi yönünü silmeden söylemek arasındaki fark",
+    "structural_pressure_model": null,
+    "apex_release_point": null,
+    "renderer_handoff": {
+      "human_scene": "yan yana dururken kendi sözünü ayarladığın anlar, yön seçimi, görünür pozisyon alma",
+      "core_contrast": "ilişkiyi korumak ile kendi yönünü silmeden söylemek",
+      "chapter_weight": "major axis chapter",
+      "chart_specific_anchor": "başkalarına göre ayar verme refleksinden daha doğrudan bir yöne geçiş",
+      "voice_register": "momentum / medium",
+      "avoid_readings": [
+        "generic self/other balance",
+        "fated relationship drama"
+      ]
+    },
+    "evidence": [
+      {
+        "factor": "Transit node chapter signal",
+        "role": "activation",
+        "explanation": "Node ekseni tekrar eden yön ve ilişki kalıplarını chapter düzeyinde görünür kılıyor."
+      },
+      {
+        "factor": "North Node Aries / South Node Libra",
+        "role": "natal_context",
+        "explanation": "Node direction bilindiği için chapter meaning generic denge söylemine düşmeden yön seçebiliyor."
+      },
+      {
+        "factor": "selected node focus",
+        "role": "semantic_focus_support",
+        "explanation": "kısa mesajlar, gündelik konuşmalar, yarım kalmış cümleler içinde eski yön refleksinin yeniden görünmesi activation chapter'ı destekliyor."
+      },
+      {
+        "factor": "shallow node reading suppression",
+        "role": "suppression_guard",
+        "explanation": "Node chapter burada generic denge ya da kader söylemine değil, yön kalıbının seçilmiş biçimine bağlanıyor."
+      }
+    ],
+    "suppressed_readings": [
+      {
+        "reading": "generic relationship or direction drama",
+        "reason": "Nodal activation eksensel bir tekrar temasını işaret eder; bunu olay tahminine çevirmiyoruz."
+      }
+    ],
+    "suppressed_surface_readings": [
+      {
+        "reading": "generic self/other balance",
+        "reason": "Node direction biliniyorsa bu chapter denge klişesine düşmeden yön taşır."
+      },
+      {
+        "reading": "fated relationship drama",
+        "reason": "Node chapter ilişki kaderi değil, yön ve seçim alışkanlığının eksensel tekrarıdır."
+      }
+    ],
+    "voice_hints": {
+      "valence_mode": "momentum",
+      "intensity_mode": "medium",
+      "rhetorical_frame": "directional",
+      "tone": "friend-warm"
+    },
+    "priority": "life_chapter",
+    "confidence": "medium",
+    "debug": {
+      "source_event_ids": [
+        "evt-nodal-activation"
+      ],
+      "source_signal_types": [
+        "nodal_opposition"
+      ],
+      "node_overlap": {
+        "has_overlap": false,
+        "matched_nodes": [],
+        "same_sign": false,
+        "same_house": false
+      },
+      "phase_source": "event_payload_phase_field",
+      "phase_reason": "event metadata indicates exact or active pass",
+      "selection_reason": "highest-confidence Tier-1 candidate selected: nodal_activation",
+      "confidence_rationale": "Koç 3. ev hattında known, phase first_pass, no node overlap -> medium confidence",
+      "overlap_reason": "",
+      "suppressed_candidates": []
+    }
+  },
+  "period_core": {
+    "title": "Denge ve Yapi Temasi Derinlesiyor",
+    "core_story": "Yan yana dururken kendi sözünü ne kadar ayarladığını daha net fark ediyorsun.\n\nİlişkiyi korumak için kendini kısmana gerek kalmadan, yönünü daha açık söylemeyi öğreniyorsun. Bu kopmak değil; onayın içinde erimeden kendi çizgini de masada tutmak.\n\nBu dönem sende onay arayışına çökmeyen daha doğrudan bir yön duygusu kuruyor.",
+    "upper_meaning": "Onay arayışına çökmeyen daha doğrudan bir yön duygusu.",
+    "tags": [
+      {
+        "type": "dominant_house",
+        "value": "3"
+      },
+      {
+        "type": "dominant_planet",
+        "value": "Saturn"
+      }
+    ],
+    "featured_events": [
+      {
+        "event_id": "evt-nodal-activation",
+        "event_family": "cycle_event",
+        "event_subtype": "nodal_opposition",
+        "start_at": "2026-05-01",
+        "exact_at": [
+          "2026-05-03T00:00:00"
+        ],
+        "end_at": "2026-05-10",
+        "chapter_opening": true,
+        "structural_significance": 0.9,
+        "precision_signal": 0.86,
+        "current_phase": "exact",
+        "source_bodies": [
+          "North Node"
+        ],
+        "target_points": [
+          "North Node"
+        ],
+        "target_houses": [
+          3
+        ],
+        "chapter_role": {
+          "role": "builder"
+        },
+        "story_score": 0.95,
+        "selection_index": 0,
+        "semantic_role": "evidence_support",
+        "semantic_owner": "life_chapter"
+      }
+    ],
+    "canonical_period_spine": {
+      "source": "canonical_natal_activation_v1",
+      "target_node_id": "promise_focus",
+      "spine_lines": [
+        "primary_identity_line"
+      ],
+      "matched_event_ids": [
+        "evt-nodal-activation"
+      ],
+      "primary_domain": "identity"
+    },
+    "semantic_focus": {
+      "version": "period_semantic_focus_v1",
+      "selected_meaning": "directional_self_definition",
+      "meaning_family": "nodal_direction_self_definition",
+      "primary_domain": "identity_presence",
+      "secondary_domains": [
+        "relationships_agreements",
+        "belief_direction",
+        "self_assertion_without_self_erasure",
+        "relational_deconditioning",
+        "bedenin, duruşun ve kişisel yönün"
+      ],
+      "why_this_meaning": [
+        "active_life_chapter provided semantic_focus",
+        "life_chapter confidence is high enough to anchor selected meaning",
+        "canonical_period_spine matched natal activation hook",
+        "manifestation_context mapped dominant house to lived scene"
+      ],
+      "suppressed_meanings": [
+        "generic relationship or direction drama",
+        "generic self/other balance",
+        "fated relationship drama"
+      ],
+      "confidence": 0.85,
+      "source": "life_chapter",
+      "evidence_count": 6,
+      "scene_translation_request": {
+        "version": "manifestation_context_v1",
+        "primary_house": 1,
+        "house_axis": "1",
+        "target_planet": null,
+        "target_planet_house": null,
+        "ruled_houses": [],
+        "angle": null,
+        "life_scene": "bedenin, duruşun ve kişisel yönün",
+        "life_scene_variants": [
+          "bedenin, duruşun ve kişisel yönün",
+          "kendini başlatma biçimin",
+          "hayata nasıl girdiğin yer"
+        ],
+        "context_seed": "Bu tema daha çok bedenin, duruşun ve kişisel yönün içinden görünür oluyor.",
+        "variant_index": 0,
+        "source": "fallback",
+        "release_strengthened": false,
+        "debug": {
+          "event_ids": [
+            "evt-nodal-activation"
+          ]
+        },
+        "human_scene": "yan yana dururken kendi sözünü ayarladığın anlar, yön seçimi, görünür pozisyon alma",
+        "core_contrast": "ilişkiyi korumak ile kendi yönünü silmeden söylemek",
+        "chapter_weight": "major axis chapter",
+        "chart_specific_anchor": "başkalarına göre ayar verme refleksinden daha doğrudan bir yöne geçiş",
+        "voice_register": "momentum / medium",
+        "avoid_readings": [
+          "generic self/other balance",
+          "fated relationship drama"
+        ],
+        "scene_priority": [
+          {
+            "scene": "eski yön refleksinin geri çağrıldığı anlar",
+            "priority": "primary"
+          },
+          {
+            "scene": "kısa mesajlar, gündelik konuşmalar, yarım kalmış cümleler",
+            "priority": "secondary"
+          }
+        ],
+        "shared_vs_private_contrast": "ilişkiyi korumak ile kendi yönünü silmeden söylemek arasındaki fark"
+      },
+      "voice_register_hints": {
+        "valence_mode": "momentum",
+        "intensity_mode": "medium",
+        "rhetorical_frame": "directional",
+        "tone": "friend-warm"
+      },
+      "debug": {
+        "raw_selected_meaning_text": "Koç 3. ev hattında başkalarına göre ayar verme refleksinden çıkıp daha doğrudan yön seçmeye alan açılması",
+        "chapter_type": "ChapterType.NODAL_ACTIVATION",
+        "chapter_phase": "ChapterPhase.FIRST_PASS",
+        "renderer_handoff_keys": [
+          "avoid_readings",
+          "chapter_weight",
+          "chart_specific_anchor",
+          "core_contrast",
+          "human_scene",
+          "voice_register"
+        ],
+        "semantic_focus_primary": "directional_self_definition",
+        "selected_meaning_family": "nodal_direction_self_definition",
+        "used_fields": [
+          "active_life_chapter"
+        ],
+        "missing_fields": [],
+        "canonical_natal_state_present": true,
+        "period_core_seed_keys": [
+          "canonical_period_spine",
+          "core_story",
+          "featured_events",
+          "tags",
+          "title",
+          "upper_meaning"
+        ]
+      }
+    },
+    "chapter_priority": {
+      "enabled": true,
+      "applied": true,
+      "owner": "life_chapter",
+      "chapter_type": "nodal_activation",
+      "chapter_id": "lc:nodal_activation:evt-nodal-activation",
+      "semantic_focus_source": "life_chapter",
+      "scope": "pr_d_v1_tier_1",
+      "event_cards_role": "evidence_support",
+      "reason": "eligible_tier1_life_chapter"
+    },
+    "big_picture": "İlişkiyi korumak için kendini kısmana gerek kalmadan, yönünü daha açık söylemeyi öğreniyorsun. Bu kopmak değil; onayın içinde erimeden kendi çizgini de masada tutmak.",
+    "period_reading_v1": {
+      "version": "period_reading_v1",
+      "blocks": [
+        {
+          "role": "hook",
+          "text": "Yan yana dururken kendi sözünü ne kadar ayarladığını daha net fark ediyorsun."
+        },
+        {
+          "role": "unfolding",
+          "text": "İlişkiyi korumak için kendini kısmana gerek kalmadan, yönünü daha açık söylemeyi öğreniyorsun. Bu kopmak değil; onayın içinde erimeden kendi çizgini de masada tutmak."
+        },
+        {
+          "role": "growth",
+          "text": "Bu dönem sende onay arayışına çökmeyen daha doğrudan bir yön duygusu kuruyor."
+        }
+      ],
+      "full_text": "Yan yana dururken kendi sözünü ne kadar ayarladığını daha net fark ediyorsun.\n\nİlişkiyi korumak için kendini kısmana gerek kalmadan, yönünü daha açık söylemeyi öğreniyorsun. Bu kopmak değil; onayın içinde erimeden kendi çizgini de masada tutmak.\n\nBu dönem sende onay arayışına çökmeyen daha doğrudan bir yön duygusu kuruyor."
+    },
+    "period_opening": "Yan yana dururken kendi sözünü ne kadar ayarladığını daha net fark ediyorsun.",
+    "mechanism": "Bu kopmak değil; onayın içinde erimeden kendi çizgini de masada tutmak.",
+    "growth_edge": "Onayı korumak için yönünü yumuşatmak yerine, ilişkiyi silmeden daha doğrudan konuşabilmek.",
+    "relational_or_life_expression": "Bu dönem sende onay arayışına çökmeyen daha doğrudan bir yön duygusu kuruyor.",
+    "what_it_builds": "Onay arayışına çökmeyen daha doğrudan bir yön duygusu.",
+    "narrative_version": "period_story_v2",
+    "_period_story_debug": {
+      "spine_event_id": "evt-nodal-activation",
+      "support_event_ids": [],
+      "track_id": "default",
+      "spine_role": "builder",
+      "support_roles": [],
+      "canonical_period_spine_source": "canonical_natal_activation_v1",
+      "canonical_period_spine_target_node_id": "promise_focus",
+      "promise_prefix_source": "",
+      "period_voice_policy_version": "period_voice_policy_v1",
+      "period_voice_policy_reason_line_allowed": true,
+      "period_voice_policy_avoid_tags": [
+        "generic_hat_copy",
+        "coaching_command",
+        "unbacked_natal_reason",
+        "astro_first_opening"
+      ],
+      "period_voice_policy_meaning_intent": "nodal_direction_self_definition",
+      "period_voice_policy_rhetorical_frame": "reframe",
+      "period_voice_policy_valence_mode": "integration",
+      "period_voice_policy_intensity_mode": "medium",
+      "period_voice_policy_match_level": "spine_line_generic",
+      "period_voice_policy_manifestation_context": {
+        "version": "manifestation_context_v1",
+        "primary_house": 1,
+        "house_axis": "1",
+        "target_planet": null,
+        "target_planet_house": null,
+        "ruled_houses": [],
+        "angle": null,
+        "life_scene": "bedenin, duruşun ve kişisel yönün",
+        "life_scene_variants": [
+          "bedenin, duruşun ve kişisel yönün",
+          "kendini başlatma biçimin",
+          "hayata nasıl girdiğin yer"
+        ],
+        "context_seed": "Bu tema daha çok bedenin, duruşun ve kişisel yönün içinden görünür oluyor.",
+        "variant_index": 0,
+        "source": "fallback",
+        "release_strengthened": false,
+        "debug": {
+          "event_ids": [
+            "evt-nodal-activation"
+          ]
+        }
+      },
+      "period_voice_policy": {
+        "spine_line": "primary_identity_line",
+        "event_nature": "clarity",
+        "event_nature_source": "default",
+        "policy_match": {
+          "level": "spine_line_generic",
+          "seed_key": "primary_identity_line.default",
+          "fallback_order": [
+            "exact",
+            "spine_line_generic",
+            "event_nature_generic",
+            "legacy_untouched"
+          ]
+        },
+        "match_level": "spine_line_generic",
+        "chapter_role": "builder",
+        "canonical_backing_node_ids": [
+          "promise_focus"
+        ],
+        "meaning_intent": "nodal_direction_self_definition",
+        "rhetorical_frame": "reframe",
+        "valence_mode": "integration",
+        "intensity_mode": "medium",
+        "valence_debug": {
+          "planet_pair": [
+            "",
+            ""
+          ],
+          "pair_class": "unclassified",
+          "aspect_type": "",
+          "valence_source": "fallback",
+          "intensity_source": "aspect_default",
+          "fallback_used": true,
+          "bias_notes": [],
+          "recent_valence_modes": [],
+          "rotation_applied": false,
+          "candidates": [
+            "integration",
+            "opening"
+          ],
+          "selected_event_id": "evt-nodal-activation"
+        },
+        "manifestation_context": {
+          "version": "manifestation_context_v1",
+          "primary_house": 1,
+          "house_axis": "1",
+          "target_planet": null,
+          "target_planet_house": null,
+          "ruled_houses": [],
+          "angle": null,
+          "life_scene": "bedenin, duruşun ve kişisel yönün",
+          "life_scene_variants": [
+            "bedenin, duruşun ve kişisel yönün",
+            "kendini başlatma biçimin",
+            "hayata nasıl girdiğin yer"
+          ],
+          "context_seed": "Bu tema daha çok bedenin, duruşun ve kişisel yönün içinden görünür oluyor.",
+          "variant_index": 0,
+          "source": "fallback",
+          "release_strengthened": false,
+          "debug": {
+            "event_ids": [
+              "evt-nodal-activation"
+            ]
+          }
+        },
+        "frame_debug": {
+          "candidates": [
+            "reframe",
+            "sorting"
+          ],
+          "recent_rhetorical_frames": [],
+          "rotation_applied": false
+        },
+        "event_bodies": [],
+        "semantic_focus_source": "life_chapter",
+        "semantic_focus_confidence": 0.85,
+        "matched_event_ids": [
+          "evt-nodal-activation"
+        ]
+      },
+      "semantic_focus": {
+        "version": "period_semantic_focus_v1",
+        "selected_meaning": "directional_self_definition",
+        "meaning_family": "nodal_direction_self_definition",
+        "primary_domain": "identity_presence",
+        "secondary_domains": [
+          "relationships_agreements",
+          "belief_direction",
+          "self_assertion_without_self_erasure",
+          "relational_deconditioning",
+          "bedenin, duruşun ve kişisel yönün"
+        ],
+        "why_this_meaning": [
+          "active_life_chapter provided semantic_focus",
+          "life_chapter confidence is high enough to anchor selected meaning",
+          "canonical_period_spine matched natal activation hook",
+          "manifestation_context mapped dominant house to lived scene"
+        ],
+        "suppressed_meanings": [
+          "generic relationship or direction drama",
+          "generic self/other balance",
+          "fated relationship drama"
+        ],
+        "confidence": 0.85,
+        "source": "life_chapter",
+        "evidence_count": 6,
+        "scene_translation_request": {
+          "version": "manifestation_context_v1",
+          "primary_house": 1,
+          "house_axis": "1",
+          "target_planet": null,
+          "target_planet_house": null,
+          "ruled_houses": [],
+          "angle": null,
+          "life_scene": "bedenin, duruşun ve kişisel yönün",
+          "life_scene_variants": [
+            "bedenin, duruşun ve kişisel yönün",
+            "kendini başlatma biçimin",
+            "hayata nasıl girdiğin yer"
+          ],
+          "context_seed": "Bu tema daha çok bedenin, duruşun ve kişisel yönün içinden görünür oluyor.",
+          "variant_index": 0,
+          "source": "fallback",
+          "release_strengthened": false,
+          "debug": {
+            "event_ids": [
+              "evt-nodal-activation"
+            ]
+          },
+          "human_scene": "yan yana dururken kendi sözünü ayarladığın anlar, yön seçimi, görünür pozisyon alma",
+          "core_contrast": "ilişkiyi korumak ile kendi yönünü silmeden söylemek",
+          "chapter_weight": "major axis chapter",
+          "chart_specific_anchor": "başkalarına göre ayar verme refleksinden daha doğrudan bir yöne geçiş",
+          "voice_register": "momentum / medium",
+          "avoid_readings": [
+            "generic self/other balance",
+            "fated relationship drama"
+          ],
+          "scene_priority": [
+            {
+              "scene": "eski yön refleksinin geri çağrıldığı anlar",
+              "priority": "primary"
+            },
+            {
+              "scene": "kısa mesajlar, gündelik konuşmalar, yarım kalmış cümleler",
+              "priority": "secondary"
+            }
+          ],
+          "shared_vs_private_contrast": "ilişkiyi korumak ile kendi yönünü silmeden söylemek arasındaki fark"
+        },
+        "voice_register_hints": {
+          "valence_mode": "momentum",
+          "intensity_mode": "medium",
+          "rhetorical_frame": "directional",
+          "tone": "friend-warm"
+        },
+        "debug": {
+          "raw_selected_meaning_text": "Koç 3. ev hattında başkalarına göre ayar verme refleksinden çıkıp daha doğrudan yön seçmeye alan açılması",
+          "chapter_type": "ChapterType.NODAL_ACTIVATION",
+          "chapter_phase": "ChapterPhase.FIRST_PASS",
+          "renderer_handoff_keys": [
+            "avoid_readings",
+            "chapter_weight",
+            "chart_specific_anchor",
+            "core_contrast",
+            "human_scene",
+            "voice_register"
+          ],
+          "semantic_focus_primary": "directional_self_definition",
+          "selected_meaning_family": "nodal_direction_self_definition",
+          "used_fields": [
+            "active_life_chapter"
+          ],
+          "missing_fields": [],
+          "canonical_natal_state_present": true,
+          "period_core_seed_keys": [
+            "canonical_period_spine",
+            "core_story",
+            "featured_events",
+            "tags",
+            "title",
+            "upper_meaning"
+          ]
+        }
+      },
+      "semantic_focus_consumed": true,
+      "semantic_focus_used_fields": [
+        "selected_meaning",
+        "meaning_family",
+        "scene_translation_request",
+        "suppressed_meanings",
+        "raw_selected_meaning_text"
+      ],
+      "chapter_handoff_used_fields": [
+        "renderer_handoff.human_scene",
+        "renderer_handoff.core_contrast",
+        "renderer_handoff.chart_specific_anchor",
+        "selected_meaning"
+      ],
+      "suppressed_meanings_applied": [
+        "generic relationship or direction drama",
+        "generic self/other balance",
+        "fated relationship drama"
+      ],
+      "composer_mode": "semantic_focus_guided",
+      "chapter_priority": {
+        "enabled": true,
+        "applied": true,
+        "owner": "life_chapter",
+        "chapter_type": "nodal_activation",
+        "chapter_id": "lc:nodal_activation:evt-nodal-activation",
+        "semantic_focus_source": "life_chapter",
+        "scope": "pr_d_v1_tier_1",
+        "event_cards_role": "evidence_support",
+        "reason": "eligible_tier1_life_chapter"
+      },
+      "composer_plan": {
+        "hook": "Yan yana dururken kendi sözünü ne kadar ayarladığını daha net fark ediyorsun.",
+        "scene_anchor": "",
+        "core_contrast": "İlişkiyi korumak için kendini kısmana gerek kalmadan, yönünü daha açık söylemeyi öğreniyorsun.",
+        "mechanism": "Bu kopmak değil; onayın içinde erimeden kendi çizgini de masada tutmak.",
+        "growth_edge": "Onayı korumak için yönünü yumuşatmak yerine, ilişkiyi silmeden daha doğrudan konuşabilmek.",
+        "what_it_builds": "Onay arayışına çökmeyen daha doğrudan bir yön duygusu.",
+        "closer": "Bu dönem sende onay arayışına çökmeyen daha doğrudan bir yön duygusu kuruyor.",
+        "legacy_prefix": "",
+        "semantic_mode": "guided"
+      },
+      "period_reading_v1_guardrails": {
+        "blocks": [],
+        "adjacent_blocks": [],
+        "full_text": []
+      },
+      "period_reading_v1_full_text": "Yan yana dururken kendi sözünü ne kadar ayarladığını daha net fark ediyorsun. İlişkiyi korumak için kendini kısmana gerek kalmadan, yönünü daha açık söylemeyi öğreniyorsun. Bu kopmak değil; onayın içinde erimeden kendi çizgini de masada tutmak. Bu dönem sende onay arayışına çökmeyen daha doğrudan bir yön duygusu kuruyor.",
+      "active_life_chapter_present": true,
+      "active_life_chapter_type": "ChapterType.NODAL_ACTIVATION",
+      "active_life_chapter_phase": "ChapterPhase.FIRST_PASS",
+      "active_life_chapter_selected_meaning": "Koç 3. ev hattında başkalarına göre ayar verme refleksinden çıkıp daha doğrudan yön seçmeye alan açılması",
+      "render_guardrails": {
+        "period_opening": [],
+        "big_picture": [],
+        "mechanism": [],
+        "growth_edge": [],
+        "relational_or_life_expression": [],
+        "what_it_builds": [],
+        "upper_meaning": []
+      }
+    },
+    "story_tracks": {
+      "default": {
+        "track_id": "default",
+        "version": "v2",
+        "lead": "Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.",
+        "period_opening": "Bu dönem hayatının bir alanı daha görünür hale geliyor ve senden daha bilinçli seçimler istiyor.",
+        "big_picture": "Mesele sadece bir konunun açılması değil; ona nasıl yaklaştığının değişmesi.",
+        "mechanism": "Etki önce gündelik hayatta görünür oluyor, sonra bunun sonucu daha kalıcı bir davranış değişimine dönüşüyor.",
+        "growth_edge": "Risk, ilk hissi sonuç sanıp süreci aceleye getirmek.",
+        "relational_or_life_expression": "Günlük hayatta bu, daha seçici kararlar ve daha net sınırlar olarak hissedilebilir.",
+        "what_it_builds": "Bu dönem sende daha net seçim yapma kasını geliştiriyor.",
+        "contribution": "Bu dönem sende daha net seçim yapma kasını geliştiriyor.",
+        "upper_meaning": "Bu dönem sende daha net seçim yapma kasını geliştiriyor."
+      }
+    },
+    "_event_story_map": {
+      "evt-nodal-activation": "default"
+    }
+  },
+  "transit_events": [
+    {
+      "event_id": "evt-nodal-activation",
+      "event_family": "cycle_event",
+      "event_subtype": "nodal_opposition",
+      "start_at": "2026-05-01",
+      "exact_at": [
+        "2026-05-03T00:00:00"
+      ],
+      "end_at": "2026-05-10",
+      "chapter_opening": true,
+      "structural_significance": 0.9,
+      "precision_signal": 0.86,
+      "current_phase": "exact",
+      "source_bodies": [
+        "North Node"
+      ],
+      "target_points": [
+        "North Node"
+      ],
+      "target_houses": [
+        3
+      ]
+    }
+  ],
+  "canonical_natal_state": {
+    "bodies": [
+      {
+        "body": "North Node",
+        "sign": "Aries",
+        "house": 3
+      },
+      {
+        "body": "South Node",
+        "sign": "Libra",
+        "house": 9
+      }
+    ]
+  }
+}

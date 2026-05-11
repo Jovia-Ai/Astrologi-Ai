@@ -73,6 +73,25 @@ class LifeChapterEvidence(BaseModel):
             raise ValueError("evidence fields must be non-empty")
         return token
 
+    @field_validator("role")
+    @classmethod
+    def _validate_role(cls, value: str) -> str:
+        token = str(value or "").strip()
+        allowed = {
+            "return",
+            "activation",
+            "natal_context",
+            "axis_overlap",
+            "semantic_focus_support",
+            "suppression_guard",
+            "house_context",
+            "dispositor_context",
+            "pattern_structure",
+        }
+        if token not in allowed:
+            raise ValueError(f"evidence.role must be one of {sorted(allowed)}")
+        return token
+
 
 class SuppressedReading(BaseModel):
     model_config = ConfigDict(extra="forbid")
@@ -165,6 +184,43 @@ class LifeChapterVoiceHints(BaseModel):
         return token or None
 
 
+class LifeChapterNatalArchitectureAnchor(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    label: str
+    human: str
+    evidence: list[str] = Field(default_factory=list)
+
+    @field_validator("label", "human")
+    @classmethod
+    def _validate_required_text(cls, value: str) -> str:
+        token = str(value or "").strip()
+        if not token:
+            raise ValueError("natal_architecture_anchor fields must be non-empty")
+        return token
+
+    @model_validator(mode="after")
+    def _validate_evidence(self) -> "LifeChapterNatalArchitectureAnchor":
+        if not self.evidence:
+            raise ValueError("natal_architecture_anchor.evidence must be present and non-empty")
+        return self
+
+
+class LifeChapterScenePriorityItem(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    scene: str
+    priority: Literal["primary", "secondary", "supporting"]
+
+    @field_validator("scene")
+    @classmethod
+    def _validate_scene(cls, value: str) -> str:
+        token = str(value or "").strip()
+        if not token:
+            raise ValueError("scene_priority[].scene must be non-empty")
+        return token
+
+
 class LifeChapterTimeWindow(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
@@ -205,6 +261,14 @@ class LifeChapter(BaseModel):
     selected_meaning_family: str
     semantic_focus: LifeChapterSemanticFocus
     domain_ownership: LifeChapterDomainOwnership
+    natal_architecture_anchor: LifeChapterNatalArchitectureAnchor
+    scene_priority: list[LifeChapterScenePriorityItem]
+    chapter_claim_strength: str
+    shared_domain_priority: list[str] = Field(default_factory=list)
+    trust_axis_anchor: str | None = None
+    shared_vs_private_contrast: str | None = None
+    structural_pressure_model: str | None = None
+    apex_release_point: str | None = None
     renderer_handoff: LifeChapterRendererHandoff
     evidence: list[LifeChapterEvidence]
     suppressed_readings: list[SuppressedReading]
@@ -214,7 +278,7 @@ class LifeChapter(BaseModel):
     confidence: ChapterConfidence
     debug: dict[str, Any] = Field(default_factory=dict)
 
-    @field_validator("chapter_id", "domain", "core_question", "selected_meaning_family")
+    @field_validator("chapter_id", "domain", "core_question", "selected_meaning_family", "chapter_claim_strength")
     @classmethod
     def _validate_required_text(cls, value: str) -> str:
         token = str(value or "").strip()
@@ -225,6 +289,14 @@ class LifeChapter(BaseModel):
     @field_validator("spine_line")
     @classmethod
     def _validate_spine_line(cls, value: str | None) -> str | None:
+        if value is None:
+            return None
+        token = str(value).strip()
+        return token or None
+
+    @field_validator("trust_axis_anchor", "shared_vs_private_contrast", "structural_pressure_model", "apex_release_point")
+    @classmethod
+    def _validate_optional_text(cls, value: str | None) -> str | None:
         if value is None:
             return None
         token = str(value).strip()
@@ -250,4 +322,6 @@ class LifeChapter(BaseModel):
             raise ValueError("suppressed_readings must be present and non-empty")
         if not self.suppressed_surface_readings:
             raise ValueError("suppressed_surface_readings must be present and non-empty")
+        if not self.scene_priority:
+            raise ValueError("scene_priority must be present and non-empty")
         return self

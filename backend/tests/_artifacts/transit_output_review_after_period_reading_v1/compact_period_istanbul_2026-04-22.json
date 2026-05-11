@@ -1,0 +1,328 @@
+{
+  "period_core": {
+    "title": "Denge ve Yapı Temasi Derinlesiyor",
+    "core_story": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor.\n\nBu dönem dikkatini tek bir hatta topluyor. Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor. Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+    "upper_meaning": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+    "period_reading_v1": {
+      "version": "period_reading_v1",
+      "blocks": [
+        {
+          "role": "hook",
+          "text": "Bu dönem dikkatini tek bir hatta topluyor."
+        },
+        {
+          "role": "unfolding",
+          "text": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor."
+        },
+        {
+          "role": "growth",
+          "text": "Bunu daha sahipli bir çizgiye yerleştiriyorsun."
+        }
+      ],
+      "full_text": "Bu dönem dikkatini tek bir hatta topluyor.\n\nKüçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.\n\nBunu daha sahipli bir çizgiye yerleştiriyorsun."
+    },
+    "period_opening": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor. Bu dönem dikkatini tek bir hatta topluyor.",
+    "big_picture": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+    "mechanism": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+    "growth_edge": "Otomatik tepkiyle seçilmiş cevap arasındaki farkı daha net görmek.",
+    "relational_or_life_expression": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+    "what_it_builds": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+    "semantic_focus": {
+      "version": "period_semantic_focus_v1",
+      "selected_meaning": "integration_invitation",
+      "meaning_family": "integration_invitation",
+      "primary_domain": "sana ait hissettiren alan",
+      "secondary_domains": [
+        "sana ait hissettiren alan",
+        "house_4",
+        "house_3",
+        "house_1"
+      ],
+      "why_this_meaning": [
+        "period_voice_policy provided meaning intent fallback",
+        "canonical_period_spine matched natal activation hook",
+        "manifestation_context mapped dominant house to lived scene",
+        "selected events support same domain"
+      ],
+      "suppressed_meanings": [
+        "generic_hat_copy",
+        "coaching_command",
+        "unbacked_natal_reason",
+        "astro_first_opening"
+      ],
+      "confidence": 0.7,
+      "source": "period_voice_policy",
+      "evidence_count": 4,
+      "scene_translation_request": {
+        "version": "manifestation_context_v1",
+        "primary_house": 4,
+        "house_axis": "4-1",
+        "target_planet": "Neptune",
+        "target_planet_house": 1,
+        "ruled_houses": [],
+        "angle": "ASC",
+        "life_scene": "sana ait hissettiren alan",
+        "life_scene_variants": [
+          "iç güvenliğin",
+          "evin, köklerin ve kendi içine döndüğün yer",
+          "sana ait hissettiren alan"
+        ],
+        "context_seed": "Bu tema daha çok sana ait hissettiren alan içinden görünür oluyor.",
+        "variant_index": 2,
+        "source": "event_house",
+        "release_strengthened": true,
+        "debug": {
+          "event_ids": [
+            "254e183d13228b2952e4b5ee8a61abc7e721bef7",
+            "c7e1654d0d711f1f6afcb5f762dda3b337e31e38",
+            "5c094e3bd122d16ecf5d3fe427057c9ed74a73f5",
+            "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+            "4acb15849c62b153ce070571acef2f3a284a2f0b"
+          ]
+        }
+      },
+      "voice_register_hints": {
+        "valence_mode": "release",
+        "intensity_mode": "dense",
+        "rhetorical_frame": "reframe"
+      },
+      "debug": {
+        "raw_selected_meaning_source": "integration_invitation",
+        "used_fields": [
+          "period_voice_policy"
+        ],
+        "missing_fields": [
+          "active_life_chapter",
+          "canonical_period_spine.meaning_seed"
+        ],
+        "canonical_natal_state_present": true,
+        "period_core_seed_keys": [
+          "canonical_period_spine",
+          "core_story",
+          "featured_events",
+          "tags",
+          "title",
+          "upper_meaning"
+        ]
+      }
+    },
+    "chapter_priority": {
+      "enabled": false,
+      "applied": false,
+      "owner": "life_chapter",
+      "chapter_type": "",
+      "chapter_id": "",
+      "semantic_focus_source": "period_voice_policy",
+      "scope": "pr_d_v1_tier_1",
+      "event_cards_role": "selected_owner",
+      "reason": "flag_disabled"
+    },
+    "_period_story_debug": {
+      "composer_mode": "semantic_focus_guided",
+      "composer_plan": {
+        "hook": "Bu dönem dikkatini tek bir hatta topluyor.",
+        "scene_anchor": "",
+        "core_contrast": "",
+        "mechanism": "Küçük görünen anlar alttaki daha büyük meseleyi görünür kılıyor.",
+        "growth_edge": "Otomatik tepkiyle seçilmiş cevap arasındaki farkı daha net görmek.",
+        "what_it_builds": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+        "closer": "Bunu daha sahipli bir çizgiye yerleştiriyorsun.",
+        "legacy_prefix": "Bu dönem doğum haritandaki anlam ve yön hattını özellikle çalıştırıyor.",
+        "semantic_mode": "guided"
+      },
+      "semantic_focus": {
+        "version": "period_semantic_focus_v1",
+        "selected_meaning": "integration_invitation",
+        "meaning_family": "integration_invitation",
+        "primary_domain": "sana ait hissettiren alan",
+        "secondary_domains": [
+          "sana ait hissettiren alan",
+          "house_4",
+          "house_3",
+          "house_1"
+        ],
+        "why_this_meaning": [
+          "period_voice_policy provided meaning intent fallback",
+          "canonical_period_spine matched natal activation hook",
+          "manifestation_context mapped dominant house to lived scene",
+          "selected events support same domain"
+        ],
+        "suppressed_meanings": [
+          "generic_hat_copy",
+          "coaching_command",
+          "unbacked_natal_reason",
+          "astro_first_opening"
+        ],
+        "confidence": 0.7,
+        "source": "period_voice_policy",
+        "evidence_count": 4,
+        "scene_translation_request": {
+          "version": "manifestation_context_v1",
+          "primary_house": 4,
+          "house_axis": "4-1",
+          "target_planet": "Neptune",
+          "target_planet_house": 1,
+          "ruled_houses": [],
+          "angle": "ASC",
+          "life_scene": "sana ait hissettiren alan",
+          "life_scene_variants": [
+            "iç güvenliğin",
+            "evin, köklerin ve kendi içine döndüğün yer",
+            "sana ait hissettiren alan"
+          ],
+          "context_seed": "Bu tema daha çok sana ait hissettiren alan içinden görünür oluyor.",
+          "variant_index": 2,
+          "source": "event_house",
+          "release_strengthened": true,
+          "debug": {
+            "event_ids": [
+              "254e183d13228b2952e4b5ee8a61abc7e721bef7",
+              "c7e1654d0d711f1f6afcb5f762dda3b337e31e38",
+              "5c094e3bd122d16ecf5d3fe427057c9ed74a73f5",
+              "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+              "4acb15849c62b153ce070571acef2f3a284a2f0b"
+            ]
+          }
+        },
+        "voice_register_hints": {
+          "valence_mode": "release",
+          "intensity_mode": "dense",
+          "rhetorical_frame": "reframe"
+        },
+        "debug": {
+          "raw_selected_meaning_source": "integration_invitation",
+          "used_fields": [
+            "period_voice_policy"
+          ],
+          "missing_fields": [
+            "active_life_chapter",
+            "canonical_period_spine.meaning_seed"
+          ],
+          "canonical_natal_state_present": true,
+          "period_core_seed_keys": [
+            "canonical_period_spine",
+            "core_story",
+            "featured_events",
+            "tags",
+            "title",
+            "upper_meaning"
+          ]
+        }
+      },
+      "period_reading_v1_guardrails": {
+        "blocks": [],
+        "adjacent_blocks": [],
+        "full_text": []
+      }
+    },
+    "featured_events": [
+      {
+        "event_id": "254e183d13228b2952e4b5ee8a61abc7e721bef7",
+        "title": "Chiron square Neptune (orb 0.29°)",
+        "label": "Chiron square Neptune (orb 0.29°)",
+        "transit_body": "Chiron",
+        "natal_point": "Neptune",
+        "semantic_role": null,
+        "semantic_owner": null,
+        "house_overlay": 4,
+        "natal_point_house": 1,
+        "aspect": "square",
+        "domain": null,
+        "tags": [
+          "self",
+          "pressure",
+          "friction"
+        ]
+      },
+      {
+        "event_id": "c7e1654d0d711f1f6afcb5f762dda3b337e31e38",
+        "title": "Saturn trine Fortune (orb 0.23°)",
+        "label": "Saturn trine Fortune (orb 0.23°)",
+        "transit_body": "Saturn",
+        "natal_point": "Fortune",
+        "semantic_role": null,
+        "semantic_owner": null,
+        "house_overlay": 3,
+        "natal_point_house": 7,
+        "aspect": "trine",
+        "domain": null,
+        "tags": [
+          "relationships",
+          "support",
+          "flow",
+          "limits",
+          "responsibility",
+          "discipline"
+        ]
+      },
+      {
+        "event_id": "5c094e3bd122d16ecf5d3fe427057c9ed74a73f5",
+        "title": "Sun trine ASC (orb 1.06°)",
+        "label": "Sun trine ASC (orb 1.06°)",
+        "transit_body": "Sun",
+        "natal_point": "ASC",
+        "semantic_role": null,
+        "semantic_owner": null,
+        "house_overlay": 4,
+        "natal_point_house": null,
+        "aspect": "trine",
+        "domain": null,
+        "tags": [
+          "self",
+          "support",
+          "flow"
+        ]
+      },
+      {
+        "event_id": "b66e8f9d1fe74f30df6447f63e57b0b2e99e1f19",
+        "title": "Pluto sextile South Node (orb 2.77°)",
+        "label": "Pluto sextile South Node (orb 2.77°)",
+        "transit_body": "Pluto",
+        "natal_point": "South Node",
+        "semantic_role": null,
+        "semantic_owner": null,
+        "house_overlay": 1,
+        "natal_point_house": 3,
+        "aspect": "sextile",
+        "domain": null,
+        "tags": [
+          "self",
+          "support",
+          "opportunity",
+          "intensity",
+          "power",
+          "transform"
+        ]
+      },
+      {
+        "event_id": "4acb15849c62b153ce070571acef2f3a284a2f0b",
+        "title": "Neptune sextile Uranus (orb 0.09°)",
+        "label": "Neptune sextile Uranus (orb 0.09°)",
+        "transit_body": "Neptune",
+        "natal_point": "Uranus",
+        "semantic_role": null,
+        "semantic_owner": null,
+        "house_overlay": 3,
+        "natal_point_house": 1,
+        "aspect": "sextile",
+        "domain": null,
+        "tags": [
+          "self",
+          "support",
+          "opportunity",
+          "fog",
+          "idealization",
+          "boundaries",
+          "dissolve"
+        ]
+      }
+    ]
+  },
+  "public.period": {
+    "core_story": null,
+    "summary": {},
+    "period_space": null,
+    "one_liner": null,
+    "main_theme": null
+  }
+}

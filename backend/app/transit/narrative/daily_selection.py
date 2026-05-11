@@ -18,6 +18,7 @@ from app.transit.narrative.event_feature_vector import build_event_feature_vecto
 from app.transit.narrative.experience_clusterer import cluster_daily_experience_rows
 from app.transit.narrative.personalization_context import extract_personalization_context
 from app.transit.narrative.point_policy import is_public_event, normalize_point_token
+from app.transit.narrative.period_voice_policy import build_period_voice_policy
 from app.transit.narrative.selection_evaluator import evaluate_daily_selection
 
 CONFIG_PATH = Path(__file__).resolve().parents[4] / "config" / "transit" / "daily_selection.yaml"
@@ -27,6 +28,7 @@ DEFAULT_CONFIG: Dict[str, Any] = {
         "orb_weight_max": 0.28,
         "exactness_max": 0.18,
         "natal_resonance_max": 0.14,
+        "canonical_natal_activation_max": 0.10,
         "angle_activation_max": 0.12,
         "peak_day_boost_max": 0.10,
     },
@@ -494,6 +496,16 @@ def _natal_resonance_weight(item: Mapping[str, Any], card: Mapping[str, Any] | N
     return round(max(0.0, resonance) * max_weight, 4)
 
 
+def _canonical_natal_activation_weight(context: Mapping[str, Any], config: Mapping[str, Any]) -> float:
+    max_weight = _safe_float(
+        (config.get("component_weights") or {}).get("canonical_natal_activation_max"),
+        default=0.10,
+    )
+    activation = context.get("canonical_activation") if isinstance(context.get("canonical_activation"), Mapping) else {}
+    activation_score = _safe_float(activation.get("activation_score"), default=0.0)
+    return round(max(0.0, activation_score) * max_weight, 4)
+
+
 def _event_family_weight(item: Mapping[str, Any], card: Mapping[str, Any] | None, config: Mapping[str, Any]) -> float:
     strength_weights = config.get("strength_weights") if isinstance(config.get("strength_weights"), Mapping) else {}
     family_cfg = strength_weights.get("event_family_weights") if isinstance(strength_weights.get("event_family_weights"), Mapping) else {}
@@ -542,6 +554,19 @@ def _label_alignment_score(labels: Sequence[str], house: int | None) -> float:
     return min(1.0, matched / max(1, len(labels)))
 
 
+def _selected_day_matchable_event_ids(selected_day_context: Mapping[str, Any] | None) -> set[str]:
+    if not isinstance(selected_day_context, Mapping):
+        return set()
+    return {
+        str(token).strip()
+        for token in (
+            list(selected_day_context.get("top_raw_event_ids") or [])
+            + list(selected_day_context.get("top_event_ids") or [])
+        )
+        if str(token).strip()
+    }
+
+
 def _calendar_salience_weight(
     item: Mapping[str, Any],
     context: Mapping[str, Any],
@@ -553,7 +578,7 @@ def _calendar_salience_weight(
     max_weight = _safe_float(today_weights.get("calendar_salience_max"), default=0.12)
     selected_day_context = context.get("selected_day_context") if isinstance(context.get("selected_day_context"), Mapping) else {}
     event_id = str(item.get("event_id") or "").strip()
-    top_event_ids = {str(token).strip() for token in (selected_day_context.get("top_event_ids") or []) if str(token).strip()}
+    top_event_ids = _selected_day_matchable_event_ids(selected_day_context)
     labels = [str(label).strip() for label in (selected_day_context.get("labels") or []) if str(label).strip()]
     critical_reasons = [str(reason).strip().lower() for reason in (selected_day_context.get("critical_reasons") or []) if str(reason).strip()]
 
@@ -792,8 +817,16 @@ def build_scoring_context(
             "body": body,
             "narrative_metrics": dict(metrics),
             "selected_day_context": dict(context.get("selected_day_context") or {}),
+            "canonical_natal_activation_by_event": dict(context.get("canonical_natal_activation_by_event") or {}),
         }
     )
+    event_id = str(event.get("event_id") or "").strip()
+    activation_map = (
+        out.get("canonical_natal_activation_by_event")
+        if isinstance(out.get("canonical_natal_activation_by_event"), Mapping)
+        else {}
+    )
+    out["canonical_activation"] = dict(activation_map.get(event_id) or {}) if event_id else {}
     return out
 
 
@@ -808,6 +841,7 @@ def compute_strength_score(event: Mapping[str, Any], selected_date: str, context
         "exactness_weight": _exactness_weight(event, ctx["card"], config),
         "angle_activation_weight": _angle_activation_weight(event, ctx["card"], config),
         "natal_resonance_weight": _natal_resonance_weight(event, ctx["card"], config),
+        "canonical_natal_activation_weight": _canonical_natal_activation_weight(ctx, config),
         "event_family_weight": _event_family_weight(event, ctx["card"], config),
     }
     return round(sum(parts.values()), 4)
@@ -956,6 +990,7 @@ def _build_row(
     existing_by_id: Mapping[str, Mapping[str, Any]],
     natal: Mapping[str, Any] | None,
     event_v2_by_id: Mapping[str, Mapping[str, Any]],
+    canonical_natal_activation_by_event: Mapping[str, Mapping[str, Any]],
     config: Mapping[str, Any],
     personalization_context: Mapping[str, Any],
     lens: str = "general",
@@ -975,6 +1010,7 @@ def _build_row(
             "card": card,
             "preview": humanize_event_card_tr(card, lens=lens),
             "selected_day_context": selected_day_context,
+            "canonical_natal_activation_by_event": canonical_natal_activation_by_event,
         },
     )
     strength_score = compute_strength_score(item, selected_date, context)
@@ -1012,7 +1048,7 @@ def _build_row(
     eligible_today_min = _safe_float(thresholds.get("eligible_today_min"), 0.12)
     eligible_narrative_min = _safe_float(thresholds.get("eligible_narrative_min"), 0.12)
 
-    top_event_ids = {str(token).strip() for token in (selected_day_context.get("top_event_ids") or []) if str(token).strip()}
+    top_event_ids = _selected_day_matchable_event_ids(selected_day_context)
     explicit_lunation = _is_explicit_lunation(item, context["card"])
     short_window = _is_short_window(item, context["card"], config)
     orb = _safe_float(item.get("orb_deg"), 99.0)
@@ -1068,6 +1104,7 @@ def _build_row(
             "narrative_score": narrative_score,
             "delta_salience_score": delta_salience_score,
             "personalization_score": personalization_score,
+            "canonical_natal_activation_score": _safe_float(context.get("canonical_activation", {}).get("activation_score"), 0.0),
             "humanizer_confidence": humanizer_confidence,
         },
         "feature_vector": feature_vector,
@@ -1078,6 +1115,7 @@ def _build_row(
         "qualifies": qualifies,
         "meaningful": meaningful,
         "eligible": eligible,
+        "canonical_activation": dict(context.get("canonical_activation") or {}),
         "redundancy_key": str(context["narrative_metrics"].get("redundancy_key") or ""),
     }
 
@@ -1179,7 +1217,266 @@ def _selection_v3_meta(row: Mapping[str, Any]) -> Dict[str, Any]:
             "memorability": meaning.get("memorability"),
         },
         "personalization": dict(personalization),
+        "canonical_activation": dict(row.get("canonical_activation") or {}),
         "redundancy": dict(redundancy),
+    }
+
+
+def _clean_strings(values: Any) -> List[str]:
+    if not isinstance(values, Sequence) or isinstance(values, (str, bytes)):
+        values = [values]
+    out: List[str] = []
+    for value in values:
+        token = str(value or "").strip()
+        if token and token not in out:
+            out.append(token)
+    return out
+
+
+def _primary_spine_line(period_spine: Mapping[str, Any]) -> str:
+    lines = _clean_strings(period_spine.get("spine_lines") or [])
+    return lines[0] if lines else ""
+
+
+def _row_activation(row: Mapping[str, Any]) -> Mapping[str, Any]:
+    return row.get("canonical_activation") if isinstance(row.get("canonical_activation"), Mapping) else {}
+
+
+def _row_matched_hook_ids(row: Mapping[str, Any]) -> List[str]:
+    return _clean_strings(_row_activation(row).get("matched_hook_ids") or [])
+
+
+def _row_backing_node_ids(row: Mapping[str, Any]) -> List[str]:
+    return _clean_strings(_row_activation(row).get("target_node_ids") or [])
+
+
+def _row_matches_period_spine(row: Mapping[str, Any], period_spine: Mapping[str, Any]) -> bool:
+    hook_id = str(period_spine.get("hook_id") or "").strip()
+    target_node_id = str(period_spine.get("target_node_id") or "").strip()
+    hook_ids = set(_row_matched_hook_ids(row))
+    target_node_ids = set(_row_backing_node_ids(row))
+    return bool((hook_id and hook_id in hook_ids) or (target_node_id and target_node_id in target_node_ids))
+
+
+def _trigger_event_snapshot(row: Mapping[str, Any]) -> Dict[str, Any]:
+    card = row.get("card") if isinstance(row.get("card"), Mapping) else {}
+    item = row.get("item") if isinstance(row.get("item"), Mapping) else {}
+    snapshot: Dict[str, Any] = {}
+    for key in (
+        "event_id",
+        "transit_body",
+        "natal_point",
+        "aspect",
+        "horizon",
+        "bucket",
+        "phase",
+        "event_family",
+        "event_subtype",
+        "event_kind",
+        "is_exceptional",
+    ):
+        value = card.get(key)
+        if value is None or value == "":
+            value = item.get(key)
+        if value is not None and value != "":
+            snapshot[key] = value
+    chapter_role = row.get("chapter_role") if isinstance(row.get("chapter_role"), Mapping) else {}
+    if chapter_role:
+        snapshot["chapter_role"] = dict(chapter_role)
+    return snapshot
+
+
+def _trigger_event_nature(row: Mapping[str, Any], period_spine: Mapping[str, Any]) -> str | None:
+    if not period_spine:
+        return None
+    backing_ids = _row_backing_node_ids(row)
+    if not backing_ids:
+        target_node_id = str(period_spine.get("target_node_id") or "").strip()
+        backing_ids = [target_node_id] if target_node_id and _row_matches_period_spine(row, period_spine) else []
+    policy = build_period_voice_policy(
+        canonical_period_spine=period_spine,
+        matched_events=[_trigger_event_snapshot(row)],
+        chapter_role=str((row.get("chapter_role") or {}).get("role") or "") if isinstance(row.get("chapter_role"), Mapping) else "",
+        canonical_backing_node_ids=backing_ids,
+    )
+    debug = policy.get("debug") if isinstance(policy.get("debug"), Mapping) else {}
+    return str(debug.get("event_nature") or "").strip() or None
+
+
+def _trigger_selection_candidate(
+    row: Mapping[str, Any],
+    *,
+    role: str,
+    period_spine: Mapping[str, Any],
+    selection_reason: Sequence[str],
+    suppression_reason: str | None = None,
+) -> Dict[str, Any]:
+    activation = _row_activation(row)
+    matched_spine_line = _primary_spine_line(period_spine) if period_spine and _row_matches_period_spine(row, period_spine) else None
+    activation_score = _safe_float(activation.get("activation_score"), 0.0)
+    hook_match_score = 1.0 if period_spine and _row_matches_period_spine(row, period_spine) else 0.0
+    event_nature = _trigger_event_nature(row, period_spine)
+    event_nature_fit_score = 0.75 if event_nature and event_nature != "clarity" else 0.25
+    surfaceability_score = min(
+        1.0,
+        _safe_float(row.get("today_score"), 0.0) + (_safe_float(row.get("score_breakdown", {}).get("humanizer_confidence"), 0.0) * 0.15),
+    )
+    readability_score = min(1.0, _safe_float(row.get("narrative_score"), 0.0))
+
+    return {
+        "event_id": str(row.get("event_id") or "").strip(),
+        "role": role,
+        "event_nature": event_nature,
+        "matched_spine_line": matched_spine_line,
+        "matched_hook_ids": _row_matched_hook_ids(row),
+        "backing_node_ids": _row_backing_node_ids(row),
+        "selection_reason": list(selection_reason),
+        "suppression_reason": suppression_reason,
+        "score_components": {
+            "story_alignment_score": hook_match_score,
+            "activation_hook_match_score": max(activation_score, hook_match_score),
+            "period_spine_match_score": hook_match_score,
+            "event_nature_fit_score": event_nature_fit_score,
+            "surfaceability_score": round(surfaceability_score, 4),
+            "readability_score": round(readability_score, 4),
+            "legacy_final_daily_score": _safe_float(row.get("score"), 0.0),
+        },
+        "debug": {
+            "source_horizon": str(row.get("source_horizon") or ""),
+            "qualifies": bool(row.get("qualifies")),
+            "meaningful": bool(row.get("meaningful")),
+            "selected_day_top_event": bool(row.get("selected_day_top_event")),
+            "event_snapshot": _trigger_event_snapshot(row),
+        },
+    }
+
+
+def build_daily_trigger_selection(
+    *,
+    scored_rows: Sequence[Mapping[str, Any]],
+    daily_rows: Sequence[Mapping[str, Any]],
+    canonical_period_spine: Mapping[str, Any] | None = None,
+    used_period_fallback: bool = False,
+) -> Dict[str, Any]:
+    period_spine = canonical_period_spine if isinstance(canonical_period_spine, Mapping) else {}
+    daily_ids = [str(row.get("event_id") or "").strip() for row in daily_rows if str(row.get("event_id") or "").strip()]
+    legacy_primary_event_id = daily_ids[0] if daily_ids else None
+    eligible_rows = [dict(row) for row in scored_rows if str(row.get("event_id") or "").strip()]
+    hook_matched_rows = [
+        row
+        for row in eligible_rows
+        if period_spine and _row_matches_period_spine(row, period_spine) and bool(row.get("meaningful"))
+    ]
+    hook_matched_rows.sort(
+        key=lambda row: (
+            -_safe_float(row.get("score"), 0.0),
+            -_safe_float(row.get("today_score"), 0.0),
+            str(row.get("event_id") or ""),
+        )
+    )
+
+    primary_trigger_event_id = str(hook_matched_rows[0].get("event_id") or "").strip() if hook_matched_rows else None
+    support_event_ids: List[str] = []
+    background_event_ids: List[str] = []
+    suppressed_event_ids: List[str] = []
+    candidates: List[Dict[str, Any]] = []
+
+    for row in eligible_rows:
+        event_id = str(row.get("event_id") or "").strip()
+        if not event_id:
+            continue
+
+        if not bool(row.get("eligible")) or not bool(row.get("meaningful")):
+            role = "suppressed"
+            reason = ["not_meaningful_enough_for_story_trigger"]
+            suppression_reason = "not_meaningful_or_ineligible"
+        elif primary_trigger_event_id and event_id == primary_trigger_event_id:
+            role = "primary_trigger"
+            reason = ["period_spine_hook_match", "canonical_story_alignment_wins"]
+            suppression_reason = None
+        elif period_spine and _row_matches_period_spine(row, period_spine):
+            role = "support"
+            reason = ["same_period_spine_hook", "secondary_trigger_signal"]
+            suppression_reason = None
+            support_event_ids.append(event_id)
+        elif period_spine and primary_trigger_event_id:
+            role = "suppressed"
+            reason = ["legacy_or_surface_signal_not_period_aligned"]
+            suppression_reason = "not_aligned_with_active_period_spine"
+        elif period_spine:
+            role = "support" if event_id in daily_ids else "background"
+            reason = ["period_continuation_support"] if event_id in daily_ids else ["period_continuation_background"]
+            suppression_reason = None
+            if role == "support":
+                support_event_ids.append(event_id)
+            else:
+                background_event_ids.append(event_id)
+        elif legacy_primary_event_id and event_id == legacy_primary_event_id:
+            role = "primary_trigger"
+            reason = ["legacy_daily_primary_without_period_spine"]
+            suppression_reason = None
+            primary_trigger_event_id = event_id
+        elif event_id in daily_ids:
+            role = "support"
+            reason = ["legacy_daily_support_without_period_spine"]
+            suppression_reason = None
+            support_event_ids.append(event_id)
+        else:
+            role = "background"
+            reason = ["not_selected_by_legacy_daily_selector"]
+            suppression_reason = None
+            background_event_ids.append(event_id)
+
+        if role == "suppressed":
+            suppressed_event_ids.append(event_id)
+        candidates.append(
+            _trigger_selection_candidate(
+                row,
+                role=role,
+                period_spine=period_spine,
+                selection_reason=reason,
+                suppression_reason=suppression_reason,
+            )
+        )
+
+    support_event_ids = [event_id for event_id in support_event_ids if event_id != primary_trigger_event_id][:3]
+    background_event_ids = [event_id for event_id in background_event_ids if event_id not in {primary_trigger_event_id, *support_event_ids}][:5]
+    suppressed_event_ids = [event_id for event_id in suppressed_event_ids if event_id not in {primary_trigger_event_id, *support_event_ids}]
+    candidate_primary_event_id = primary_trigger_event_id
+    mismatch = bool(legacy_primary_event_id != candidate_primary_event_id)
+    if not period_spine:
+        mismatch_reason = "no_period_spine_legacy_daily_flavor_authority"
+        authority = "legacy_daily_flavor_no_period_spine"
+    elif mismatch:
+        mismatch_reason = (
+            "legacy_selected_highest_surfaceability_candidate_selected_period_hook_match"
+            if candidate_primary_event_id
+            else "canonical_period_continuation_does_not_force_daily_trigger"
+        )
+        authority = "today_story_candidate_shadow"
+    else:
+        mismatch_reason = ""
+        authority = "today_story_candidate_shadow"
+
+    return {
+        "version": "daily_trigger_selection_v1",
+        "authority": authority,
+        "daily_selector_demoted": False,
+        "legacy_selection_used_as_fallback": bool(not period_spine or used_period_fallback),
+        "primary_trigger_event_id": candidate_primary_event_id,
+        "support_event_ids": support_event_ids,
+        "background_event_ids": background_event_ids,
+        "suppressed_event_ids": suppressed_event_ids,
+        "candidates": candidates[:12],
+        "debug": {
+            "legacy_primary_event_id": legacy_primary_event_id,
+            "candidate_primary_trigger_event_id": candidate_primary_event_id,
+            "mismatch": mismatch,
+            "mismatch_reason": mismatch_reason,
+            "period_spine_hook_id": str(period_spine.get("hook_id") or "").strip(),
+            "period_spine_source": str(period_spine.get("source") or "").strip(),
+            "period_continuation": bool(period_spine and not candidate_primary_event_id),
+        },
     }
 
 
@@ -1191,6 +1488,8 @@ def select_daily_and_period_event_cards(
     selected_day_context: Mapping[str, Any] | None = None,
     natal: Mapping[str, Any] | None = None,
     event_v2_by_id: Mapping[str, Mapping[str, Any]] | None = None,
+    canonical_natal_activation_by_event: Mapping[str, Mapping[str, Any]] | None = None,
+    canonical_period_spine: Mapping[str, Any] | None = None,
     lens: str = "general",
     include_debug_meta: bool = True,
 ) -> Dict[str, Any]:
@@ -1235,6 +1534,7 @@ def select_daily_and_period_event_cards(
             existing_by_id=event_card_index,
             natal=natal,
             event_v2_by_id=v2_index,
+            canonical_natal_activation_by_event=canonical_natal_activation_by_event or {},
             config=config,
             personalization_context=personalization_context,
             lens=lens,
@@ -1333,6 +1633,13 @@ def select_daily_and_period_event_cards(
         "period_count": len(period_cards),
         "candidate_event_ids": [str(row["event_id"]) for row in daily_rows],
     }
+    trigger_selection = build_daily_trigger_selection(
+        scored_rows=scored_rows,
+        daily_rows=daily_rows,
+        canonical_period_spine=canonical_period_spine,
+        used_period_fallback=used_period_fallback,
+    )
+    daily_selection["trigger_selection"] = trigger_selection
 
     if include_debug_meta:
         daily_selection["score_breakdown"] = {
@@ -1342,6 +1649,7 @@ def select_daily_and_period_event_cards(
                 "narrative_score": row["narrative_score"],
                 "delta_salience_score": row.get("delta_salience_score"),
                 "personalization_score": row.get("personalization_score"),
+                "canonical_natal_activation_score": row.get("score_breakdown", {}).get("canonical_natal_activation_score"),
                 "final_daily_score": row["score"],
                 "rerank_score": row.get("rerank_score"),
                 "rerank_penalties": row.get("rerank_penalties", []),
@@ -1385,11 +1693,7 @@ def select_daily_and_period_event_cards(
         "daily_selection": {
             **daily_selection,
             "selected_day_top_event_ids": sorted(
-                {
-                    str(token).strip()
-                    for token in (selected_day_context.get("top_event_ids") or [])
-                    if str(token).strip()
-                }
+                _selected_day_matchable_event_ids(selected_day_context)
             ),
         },
     }

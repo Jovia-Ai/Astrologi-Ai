@@ -71,6 +71,10 @@ class Settings(BaseSettings):
     enable_stale_while_revalidate: bool = Field(default=True, validation_alias="ENABLE_STALE_WHILE_REVALIDATE")
     enable_background_refresh: bool = Field(default=True, validation_alias="ENABLE_BACKGROUND_REFRESH")
     enable_timing_logs: bool = Field(default=True, validation_alias="ENABLE_TIMING_LOGS")
+    life_chapter_priority_enabled: bool = Field(
+        default=False,
+        validation_alias="LIFE_CHAPTER_PRIORITY_ENABLED",
+    )
     performance_cache_backend: str = Field(default="memory", validation_alias="PERFORMANCE_CACHE_BACKEND")
     performance_cache_redis_url: str | None = Field(default=None, validation_alias="PERFORMANCE_CACHE_REDIS_URL")
     performance_cache_redis_prefix: str = Field(

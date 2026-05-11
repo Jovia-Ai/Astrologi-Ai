@@ -1,0 +1,41 @@
+{
+  "canonical_natal_state": {
+    "bodies": [
+      {"body": "Saturn", "sign": "Leo", "house": 10},
+      {"body": "North Node", "sign": "Taurus", "house": 7},
+      {"body": "South Node", "sign": "Scorpio", "house": 1}
+    ],
+    "house_cusps": [
+      {"house": 1, "sign": "Scorpio"},
+      {"house": 2, "sign": "Sagittarius"},
+      {"house": 3, "sign": "Capricorn"},
+      {"house": 4, "sign": "Aquarius"},
+      {"house": 5, "sign": "Pisces"},
+      {"house": 6, "sign": "Aries"},
+      {"house": 7, "sign": "Taurus"},
+      {"house": 8, "sign": "Gemini"},
+      {"house": 9, "sign": "Cancer"},
+      {"house": 10, "sign": "Leo"},
+      {"house": 11, "sign": "Virgo"},
+      {"house": 12, "sign": "Libra"}
+    ]
+  },
+  "transit_events": [
+    {
+      "event_id": "evt-saturn-return-leo-10",
+      "event_family": "cycle_event",
+      "event_subtype": "saturn_return",
+      "start_at": "2026-01-20",
+      "exact_at": ["2026-04-21T00:00:00"],
+      "end_at": "2026-09-30",
+      "chapter_opening": true,
+      "structural_significance": 0.95,
+      "precision_signal": 0.9,
+      "current_phase": "exact",
+      "source_bodies": ["Saturn"],
+      "target_points": ["Saturn"],
+      "target_houses": [10]
+    }
+  ],
+  "expected_substrings": ["Aslan", "10. ev", "kamusal rol"]
+}

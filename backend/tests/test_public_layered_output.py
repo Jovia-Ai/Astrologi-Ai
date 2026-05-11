@@ -1,6 +1,7 @@
 from app.transit.present import public_builder
 from app.transit.present.public_builder import build_public_response
 from app.transit.narrative.deep_archetype_engine import build_combined_meaning
+from app.astro_os.natal.contracts import CanonicalNatalStateV1
 
 
 def _natal_snapshot() -> dict:
@@ -136,6 +137,11 @@ def test_public_response_includes_layered_fields() -> None:
         "what_it_builds",
     ):
         assert isinstance(period.get(key), str) and str(period.get(key)).strip()
+    reading = period.get("period_reading_v1")
+    assert isinstance(reading, dict)
+    assert reading.get("version") == "period_reading_v1"
+    assert isinstance(reading.get("blocks"), list) and 3 <= len(reading["blocks"]) <= 4
+    assert "\n\n".join(block["text"] for block in reading["blocks"]) == reading.get("full_text")
 
     cards = public["event_cards"]
     assert isinstance(cards, list) and cards
@@ -199,6 +205,182 @@ def test_public_response_includes_layered_fields() -> None:
     assert "lines" in timeline and len(timeline["lines"]) >= 1
 
 
+def test_build_home_response_keeps_period_story_debug_and_featured_events(monkeypatch) -> None:
+    response = {
+        "locale": "tr",
+        "natal": _natal_snapshot(),
+        "display": {
+            "items": [
+                _event(
+                    event_id="evt_spine",
+                    body="Neptune",
+                    natal="Sun",
+                    aspect="square",
+                    house=1,
+                ),
+                _event(
+                    event_id="evt_support",
+                    body="North Node",
+                    natal="Sun",
+                    aspect="sextile",
+                    house=2,
+                    tier="support",
+                ),
+            ]
+        },
+    }
+
+    monkeypatch.setattr(
+        public_builder,
+        "build_event_card",
+        lambda item, context=None: (_ for _ in ()).throw(AssertionError("build_event_card should stay off the Home fast path")),
+    )
+    monkeypatch.setattr(
+        public_builder,
+        "_build_home_period_core",
+        lambda _response, event_cards=None, locale="tr": {
+            "title": "Period core",
+            "featured_events": [{"event_id": "evt_spine"}, {"event_id": "evt_support"}],
+            "_period_story_debug": {
+                "spine_event_id": "evt_spine",
+                "support_event_ids": ["evt_support"],
+                "spine_role": "builder",
+                "support_roles": ["peak"],
+            },
+        },
+    )
+
+    out = public_builder.build_home_response(response)
+
+    assert [str(card.get("event_id") or "") for card in out["event_cards"]] == ["evt_spine"]
+    assert out["period_core"]["featured_events"] == [{"event_id": "evt_spine"}, {"event_id": "evt_support"}]
+    assert out["period_core"]["_period_story_debug"]["spine_event_id"] == "evt_spine"
+    assert out["period_core"]["_period_story_debug"]["support_event_ids"] == ["evt_support"]
+
+
+def test_build_home_response_expands_seed_events_with_support_candidates(monkeypatch) -> None:
+    response = {
+        "locale": "tr",
+        "natal": _natal_snapshot(),
+        "display": {
+            "items": [
+                _event(
+                    event_id="evt_spine",
+                    body="Neptune",
+                    natal="Sun",
+                    aspect="square",
+                    house=1,
+                    weight=1.4,
+                ),
+                _event(
+                    event_id="evt_support_same_point",
+                    body="Venus",
+                    natal="Sun",
+                    aspect="sextile",
+                    house=2,
+                    weight=1.15,
+                    tier="support",
+                ),
+                _event(
+                    event_id="evt_support_same_domain",
+                    body="Mars",
+                    natal="ASC",
+                    aspect="trine",
+                    house=1,
+                    weight=1.05,
+                    tier="support",
+                ),
+                _event(
+                    event_id="evt_noise",
+                    body="Saturn",
+                    natal="Moon",
+                    aspect="square",
+                    house=10,
+                    weight=0.8,
+                ),
+            ]
+        },
+    }
+
+    captured: dict[str, list[str]] = {}
+
+    monkeypatch.setattr(
+        public_builder,
+        "build_event_card",
+        lambda item, context=None: (_ for _ in ()).throw(AssertionError("build_event_card should stay off the Home fast path")),
+    )
+
+    def _fake_period_core(_response, event_cards=None, locale="tr"):
+        captured["event_ids"] = [str(card.get("event_id") or "") for card in event_cards or []]
+        return {
+            "title": "Period core",
+            "featured_events": [{"event_id": "evt_spine"}],
+            "_period_story_debug": {
+                "spine_event_id": "evt_spine",
+                "support_event_ids": [],
+                "spine_role": "builder",
+                "support_roles": [],
+            },
+        }
+
+    monkeypatch.setattr(public_builder, "_build_home_period_core", _fake_period_core)
+
+    out = public_builder.build_home_response(
+        response,
+        selected_events=[response["display"]["items"][0]],
+    )
+
+    assert captured["event_ids"] == ["evt_spine"]
+    assert [str(card.get("event_id") or "") for card in out["event_cards"]] == ["evt_spine"]
+    assert [str(item.get("event_id") or "") for item in out["period_core"]["featured_events"]] == [
+        "evt_spine",
+        "evt_support_same_point",
+        "evt_support_same_domain",
+    ]
+    assert out["period_core"]["_period_story_debug"]["support_event_ids"] == [
+        "evt_support_same_point",
+        "evt_support_same_domain",
+    ]
+
+
+def test_build_home_response_period_core_uses_interpretation_fallbacks() -> None:
+    response = {
+        "locale": "tr",
+        "natal": _natal_snapshot(),
+        "display": {
+            "items": [
+                {
+                    **_event(
+                        event_id="evt_spine",
+                        body="Neptune",
+                        natal="Sun",
+                        aspect="square",
+                        house=1,
+                    ),
+                    "interpretation": {
+                        "headline": "Durus temasi",
+                        "summary": "Bugun tepki verirken temponu ayarlaman gerekebilir.",
+                        "context_sentence": "Bu etki seni ozellikle gorunurluk tarafinda daha dikkatli olmaya iter.",
+                        "upper_meaning": "Hiz yerine netlige donmek bugunun ana dersi olabilir.",
+                        "where": "Bunu en cok durusun ve ilk tepkin uzerinden hissedebilirsin.",
+                        "watch": ["Asiri hizlanma"],
+                    },
+                }
+            ]
+        },
+    }
+
+    out = public_builder.build_home_response(response)
+    period_core = out["period_core"]
+
+    assert period_core["title"].strip()
+    assert period_core["period_opening"] == "Bugun tepki verirken temponu ayarlaman gerekebilir."
+    assert period_core["big_picture"] == "Hız yerine netlige donmek bugunun ana dersi olabilir."
+    assert period_core["mechanism"] == "Bu etki seni özellikle görünürlük tarafında daha dikkatli olmaya iter."
+    assert period_core["relational_or_life_expression"] == "Bunu en çok durusun ve ilk tepkin üzerinden hissedebilirsin."
+    assert period_core["what_it_builds"] == "Hız yerine netlige donmek bugunun ana dersi olabilir."
+
+
 def test_public_response_supports_english_public_copy() -> None:
     response = {
         "locale": "en",
@@ -242,6 +424,56 @@ def test_public_response_supports_english_public_copy() -> None:
     assert "dönem" not in merged
     assert "gün" not in merged
     assert "saturn" in merged
+
+
+def test_public_response_exposes_canonical_period_spine_when_canonical_state_present() -> None:
+    response = {
+        "locale": "tr",
+        "transit_date": "2026-03-10",
+        "metrics": {"pressure_index": 0.62, "support_index": 0.54},
+        "presentable": {"summary": {"main_theme": "career", "one_liner": "Donem temasi"}},
+        "natal": _natal_snapshot(),
+        "_canonical_natal_state": CanonicalNatalStateV1(
+            chart_id="chart_period_spine",
+            meaning_graph={
+                "version": "natal_meaning_graph_v1",
+                "activation_hooks": [
+                    {
+                        "hook_id": "hook:career",
+                        "target_node_id": "promise_mature_visibility",
+                        "domains": ["career_visibility"],
+                        "spine_lines": ["work_visibility_line"],
+                    }
+                ],
+            },
+        ),
+        "display": {
+            "items": [
+                {
+                    **_event(
+                        event_id="evt_career",
+                        body="Saturn",
+                        natal="MC",
+                        aspect="trine",
+                        house=10,
+                        weight=1.4,
+                    ),
+                    "domains": ["career"],
+                }
+            ]
+        },
+    }
+
+    out = build_public_response(response)
+    period_core = out["period_core"]
+    canonical_period_spine = period_core["canonical_period_spine"]
+
+    assert canonical_period_spine["source"] == "canonical_natal_activation_v1"
+    assert canonical_period_spine["target_node_id"] == "promise_mature_visibility"
+    assert canonical_period_spine["matched_event_ids"] == ["evt_career"]
+    assert canonical_period_spine["source_debug"]["matched_event_ids"] == ["evt_career"]
+    assert period_core["period_opening"].startswith(canonical_period_spine["prefix"])
+    assert period_core["period_reading_v1"]["version"] == "period_reading_v1"
 
 
 def test_saturn_aries_third_house_combined_meaning_keywords() -> None:
@@ -361,7 +593,7 @@ def test_public_response_caps_period_peak_timeline(monkeypatch) -> None:
         }
 
     monkeypatch.setattr(public_builder, "build_active_event_cards", lambda _response, max_cards=5: [])
-    monkeypatch.setattr(public_builder, "build_period_core", lambda _response, event_cards=None: {})
+    monkeypatch.setattr(public_builder, "build_period_core", lambda _response, event_cards=None, locale="tr": {})
     monkeypatch.setattr(public_builder, "build_event_card", _stub_build_event_card)
 
     out = build_public_response(response)

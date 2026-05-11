@@ -43,6 +43,21 @@ def _base_payload(*, chapter_type: ChapterType = ChapterType.SATURN_RETURN, sele
             "secondary_domains": ["identity_presence"],
             "rationale": "3. evdeki Satürn dönüşü söz ve zihinsel refleks alanını sahipleniyor.",
         },
+        "natal_architecture_anchor": {
+            "label": "identity_as_construction_project",
+            "human": "kimlik uzun süreli bir yapı kurma biçimiyle çalışıyor",
+            "evidence": ["Capricorn rising", "Saturn return"],
+        },
+        "scene_priority": [
+            {"scene": "kısa mesajlar", "priority": "primary"},
+            {"scene": "yarım kalmış konuşmalar", "priority": "secondary"},
+        ],
+        "chapter_claim_strength": "foundational long-cycle chapter",
+        "shared_domain_priority": [],
+        "trust_axis_anchor": None,
+        "shared_vs_private_contrast": None,
+        "structural_pressure_model": None,
+        "apex_release_point": None,
         "renderer_handoff": {
             "human_scene": "kısa mesajlar, yarım kalmış konuşmalar, hızlı cevap verme anları",
             "core_contrast": "hızlı cevap vermek ile gerçekten nerede durduğunu söylemek",
@@ -54,7 +69,7 @@ def _base_payload(*, chapter_type: ChapterType = ChapterType.SATURN_RETURN, sele
         "evidence": [
             LifeChapterEvidence(
                 factor="transit_saturn_conj_natal_saturn",
-                role="chapter_trigger",
+                role="return",
                 explanation="Transit Satürn natal Satürn hattını doğrudan tetikliyor.",
             )
         ],
@@ -112,6 +127,20 @@ def test_missing_suppressed_readings_fails() -> None:
 def test_missing_suppressed_surface_readings_fails() -> None:
     payload = _base_payload()
     payload["suppressed_surface_readings"] = []
+    with pytest.raises(ValidationError):
+        LifeChapter(**payload)
+
+
+def test_missing_scene_priority_fails() -> None:
+    payload = _base_payload()
+    payload["scene_priority"] = []
+    with pytest.raises(ValidationError):
+        LifeChapter(**payload)
+
+
+def test_invalid_evidence_role_fails() -> None:
+    payload = _base_payload()
+    payload["evidence"] = [{"factor": "x", "role": "chapter_trigger", "explanation": "y"}]
     with pytest.raises(ValidationError):
         LifeChapter(**payload)
 

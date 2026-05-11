@@ -500,6 +500,28 @@ def rewrite_period_core_en(period_core: Mapping[str, Any], *, item: Mapping[str,
             else track_story
             for track_id, track_story in story_tracks.items()
         }
+    period_reading_v1 = out.get("period_reading_v1")
+    if isinstance(period_reading_v1, Mapping):
+        reading_out = dict(period_reading_v1)
+        blocks = reading_out.get("blocks")
+        if isinstance(blocks, list):
+            rewritten_blocks = []
+            for block in blocks:
+                if not isinstance(block, Mapping):
+                    rewritten_blocks.append(block)
+                    continue
+                block_out = dict(block)
+                block_out["text"] = humanize_en_text(str(block_out.get("text") or ""))
+                rewritten_blocks.append(block_out)
+            reading_out["blocks"] = rewritten_blocks
+            reading_out["full_text"] = "\n\n".join(
+                str(block.get("text") or "").strip()
+                for block in rewritten_blocks
+                if isinstance(block, Mapping) and str(block.get("text") or "").strip()
+            )
+        elif "full_text" in reading_out:
+            reading_out["full_text"] = humanize_en_text(str(reading_out.get("full_text") or ""))
+        out["period_reading_v1"] = reading_out
     return out
 
 

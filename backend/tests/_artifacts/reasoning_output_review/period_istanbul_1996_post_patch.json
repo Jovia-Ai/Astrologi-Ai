@@ -1,0 +1,4 @@
+{
+  "status": "error",
+  "error": "swisseph.calc_ut: SwissEph file 'seas_18.se1' not found in PATH '/usr/share/swisseph:/usr/local/share/swisseph/'"
+}
