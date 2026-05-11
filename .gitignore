@@ -35,3 +35,9 @@ backend/jovia_model/
 # See docs/setup_ephemeris.md and backend/scripts/setup_ephemeris.sh.
 backend/ephemeris/
 
+
+# Swiss Ephemeris sources — installed externally, never tracked.
+swisseph/
+
+# Git worktree directories — managed by git, never tracked as files.
+.claude/worktrees/

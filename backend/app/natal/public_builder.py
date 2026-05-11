@@ -4,6 +4,12 @@ import os
 from typing import Any, Dict, Mapping
 
 from app.narrative.narrative_contract_v2 import build_contract_descriptor_v2
+from app.meaning.meaning_graph_builder import build_meaning_graph_v1
+from app.meaning.meaning_graph_v1_1_builder import build_meaning_graph_v1_1
+from app.meaning.projection_shadow_v1_builder import (
+    build_profile_narrative_projection_v1,
+    build_profile_v8_projection_v1,
+)
 from app.narrative.humanize_tr import (
     clean_public_block_tr,
     cleanup_tr_punctuation,
@@ -14,6 +20,8 @@ from app.narrative.humanize_tr import (
     sentence_safe_clamp,
 )
 from app.natal.narrative.aspect_bundle_selector import select_aspect_bundles
+from app.natal.natal_promise_cluster_plan import build_natal_promise_cluster_plan_v1
+from app.natal.natal_promise_packets import build_natal_promise_packets_v1
 from app.natal.profile_v8_payload_builder import build_profile_and_full_map_v8_payload
 from app.natal.profile_insights import build_profile_insight_modules
 from app.natal.profile_detail_editorial import (
@@ -28,6 +36,12 @@ from .public_models import (
     PublicNarrativeAnchor,
     PublicNatalView,
 )
+
+_ENABLED_VALUES = {"1", "true", "yes", "on"}
+
+
+def _env_enabled(name: str, default: str = "false") -> bool:
+    return os.getenv(name, default).strip().lower() in _ENABLED_VALUES
 
 
 def _allowlist_meaning_weighting(value: Any) -> Dict[str, Any]:
@@ -44,14 +58,24 @@ def _allowlist_meaning_weighting(value: Any) -> Dict[str, Any]:
     return {key: payload.get(key) for key in allowed if key in payload}
 
 
-def build_public_natal_view(response: Dict[str, Any], *, locale: str = "tr", include_debug: bool = False) -> Dict[str, Any]:
+def build_public_natal_view(
+    response: Dict[str, Any],
+    *,
+    locale: str = "tr",
+    include_debug: bool = False,
+    include_full_profile: bool = False,
+) -> Dict[str, Any]:
     meta = response.get("meta") or {}
     narrative_anchor = response.get("narrative_anchor") or {}
     meaning_weighting = response.get("meaning_weighting") or {}
 
     dynamic_insights_enabled = bool(response.get("dynamic_insights")) or bool(
-        os.getenv("ENABLE_DYNAMIC_INSIGHTS", "false").strip().lower() in {"1", "true", "yes", "on"}
+        _env_enabled("ENABLE_DYNAMIC_INSIGHTS")
     )
+    promise_projection_enabled = _env_enabled("ENABLE_NATAL_PROMISE_PROJECTION_V1")
+    promise_packet_debug_enabled = include_debug or _env_enabled("ENABLE_NATAL_PROMISE_PACKET_DEBUG")
+    raw_sections_v2 = [dict(item) for item in response.get("sections_v2") or [] if isinstance(item, Mapping)]
+    raw_supporting_threads = [dict(item) for item in response.get("supporting_threads") or [] if isinstance(item, Mapping)]
 
     compact = _humanize_user_compact(response.get("user_compact"))
     upper_meaning = _humanize_upper_meaning(response.get("upper_meaning_selected"))
@@ -70,25 +94,92 @@ def build_public_natal_view(response: Dict[str, Any], *, locale: str = "tr", inc
     )
     supporting_threads = _humanize_supporting_threads(response.get("supporting_threads"))
     narrative_v2 = _build_narrative_v2(response, include_debug=include_debug)
-    profile_insight_modules = build_profile_insight_modules(
-        moon_sign=_extract_planet_sign(response.get("planets"), "Moon"),
-    )
-    profile_narrative = _humanize_profile_narrative(
-        response.get("profile_narrative"),
-        include_debug=include_debug,
+    profile_narrative: Dict[str, Any] | None = None
+    sections_v2: list[dict[str, Any]] = []
+    profile_v8: Dict[str, Any] | None = None
+    full_map_v8: Dict[str, Any] | None = None
+    if include_full_profile:
+        profile_insight_modules = build_profile_insight_modules(
+            moon_sign=_extract_planet_sign(response.get("planets"), "Moon"),
+        )
+        profile_narrative = _humanize_profile_narrative(
+            response.get("profile_narrative"),
+            include_debug=include_debug,
+            supporting_threads=supporting_threads,
+            personality_imprint=personality_imprint,
+            narrative_v2=narrative_v2,
+            insight_modules=profile_insight_modules,
+        )
+        sections_v2 = _humanize_sections_v2(response.get("sections_v2"))
+        profile_v8, full_map_v8 = build_profile_and_full_map_v8_payload(
+            response=response,
+            profile_narrative=profile_narrative or {},
+            sections_v2=sections_v2,
+            supporting_threads=supporting_threads,
+            narrative_v2=narrative_v2 or {},
+            personality_imprint=personality_imprint or {},
+        )
+    meaning_graph = build_meaning_graph_v1(
+        core_story_ui=core_story_ui if isinstance(core_story_ui, Mapping) else None,
+        user_compact=compact if isinstance(compact, Mapping) else None,
+        personality_imprint=personality_imprint if isinstance(personality_imprint, Mapping) else None,
         supporting_threads=supporting_threads,
-        personality_imprint=personality_imprint,
-        narrative_v2=narrative_v2,
-        insight_modules=profile_insight_modules,
+        locale=locale or "tr",
     )
-    sections_v2 = _humanize_sections_v2(response.get("sections_v2"))
-    profile_v8, full_map_v8 = build_profile_and_full_map_v8_payload(
-        response=response,
-        profile_narrative=profile_narrative or {},
-        sections_v2=sections_v2,
+    meaning_graph_v1_1 = build_meaning_graph_v1_1(
+        core_story_ui=core_story_ui if isinstance(core_story_ui, Mapping) else None,
+        user_compact=compact if isinstance(compact, Mapping) else None,
+        personality_imprint=personality_imprint if isinstance(personality_imprint, Mapping) else None,
         supporting_threads=supporting_threads,
-        narrative_v2=narrative_v2 or {},
-        personality_imprint=personality_imprint or {},
+        locale=locale or "tr",
+    )
+    packet_sections_source = raw_sections_v2 or sections_v2
+    packet_threads_source = raw_supporting_threads or supporting_threads
+    packet_meaning_graph_v1_1 = build_meaning_graph_v1_1(
+        core_story_ui=response.get("core_story_ui") if isinstance(response.get("core_story_ui"), Mapping) else None,
+        user_compact=response.get("user_compact") if isinstance(response.get("user_compact"), Mapping) else None,
+        personality_imprint=response.get("personality_imprint") if isinstance(response.get("personality_imprint"), Mapping) else None,
+        supporting_threads=packet_threads_source,
+        locale=locale or "tr",
+    )
+    natal_promise_packets_v1 = build_natal_promise_packets_v1(
+        sections_v2=packet_sections_source,
+        supporting_threads=packet_threads_source,
+        meaning_graph_v1_1=packet_meaning_graph_v1_1,
+        planets=response.get("planets") if isinstance(response.get("planets"), list) else None,
+        aspects=response.get("aspects") if isinstance(response.get("aspects"), list) else None,
+        natal_graph_compact=response.get("natal_graph_compact") if isinstance(response.get("natal_graph_compact"), Mapping) else None,
+        metadata=response.get("metadata") if isinstance(response.get("metadata"), Mapping) else None,
+        meta_info=response.get("meta_info") if isinstance(response.get("meta_info"), Mapping) else None,
+        locale=locale or "tr",
+    )
+    natal_promise_packets_v1_candidate_inventory = build_natal_promise_packets_v1(
+        sections_v2=packet_sections_source,
+        supporting_threads=packet_threads_source,
+        meaning_graph_v1_1=packet_meaning_graph_v1_1,
+        planets=response.get("planets") if isinstance(response.get("planets"), list) else None,
+        aspects=response.get("aspects") if isinstance(response.get("aspects"), list) else None,
+        natal_graph_compact=response.get("natal_graph_compact") if isinstance(response.get("natal_graph_compact"), Mapping) else None,
+        metadata=response.get("metadata") if isinstance(response.get("metadata"), Mapping) else None,
+        meta_info=response.get("meta_info") if isinstance(response.get("meta_info"), Mapping) else None,
+        locale=locale or "tr",
+        mode="candidate_inventory",
+    )
+    natal_promise_cluster_plan_v1 = build_natal_promise_cluster_plan_v1(
+        natal_promise_packets_v1_candidate_inventory.get("packets"),
+        locale=locale or "tr",
+    )
+    profile_narrative_projection_v1 = build_profile_narrative_projection_v1(
+        meaning_graph_v1_1=meaning_graph_v1_1,
+        natal_promise_packets_v1=natal_promise_packets_v1 if promise_projection_enabled else None,
+        natal_promise_cluster_plan_v1=natal_promise_cluster_plan_v1 if promise_projection_enabled else None,
+        include_packet_debug=promise_packet_debug_enabled,
+    )
+    profile_v8_projection_v1 = build_profile_v8_projection_v1(
+        meaning_graph_v1_1=meaning_graph_v1_1,
+        natal_promise_packets_v1=natal_promise_packets_v1 if promise_projection_enabled else None,
+        natal_promise_cluster_plan_v1=natal_promise_cluster_plan_v1 if promise_projection_enabled else None,
+        include_packet_debug=promise_packet_debug_enabled,
     )
 
     public = PublicNatalView(
@@ -113,6 +204,10 @@ def build_public_natal_view(response: Dict[str, Any], *, locale: str = "tr", inc
         profile_narrative=profile_narrative,
         profile_v8=profile_v8,
         full_map_v8=full_map_v8,
+        meaning_graph=meaning_graph,
+        meaning_graph_v1_1=meaning_graph_v1_1,
+        profile_narrative_projection_v1=profile_narrative_projection_v1,
+        profile_v8_projection_v1=profile_v8_projection_v1,
         sections_v2=sections_v2,
         supporting_threads=supporting_threads,
         narrative_v2=narrative_v2,

@@ -2,6 +2,8 @@ import json
 import re
 from pathlib import Path
 
+import pytest
+
 import app.natal.public_builder as natal_public_builder_module
 from app.natal.public_builder import build_public_natal_view
 
@@ -167,7 +169,7 @@ def test_public_natal_view_includes_supporting_threads_and_graph() -> None:
         },
     }
 
-    public = build_public_natal_view(response, locale="tr")
+    public = build_public_natal_view(response, locale="tr", include_full_profile=True)
     assert public["supporting_threads"]
     assert public["supporting_threads"][0]["id"] == "identity_mechanics"
     assert public["personality_imprint"]["headline"] == "Kişilik İmzası"
@@ -231,13 +233,63 @@ def test_public_natal_view_includes_supporting_threads_and_graph() -> None:
     assert any(item.get("stat_label") == "orb" for item in profile_v8["differentiators"])
     full_map_v8 = public["full_map_v8"]
     assert set(full_map_v8.keys()) == {"kimlik", "iliski", "kariyer", "golge"}
+    meaning_graph = public["meaning_graph"]
+    assert meaning_graph["version"] == "meaning_graph_v1"
+    assert meaning_graph["canonical"] is True
+    assert meaning_graph["locale"] == "tr"
+    assert isinstance(meaning_graph["nodes"], list)
+    assert isinstance(meaning_graph["evidence"], list)
+    families = {str(node.get("source_family")) for node in meaning_graph["nodes"]}
+    assert {"core_story_ui", "personality_imprint", "supporting_threads"} <= families
+    assert "user_compact" in meaning_graph["meta"]["missing_source_families"]
+    first_node = meaning_graph["nodes"][0]
+    assert {
+        "node_id",
+        "layer",
+        "domain",
+        "source_family",
+        "source_path",
+        "title",
+        "summary",
+        "confidence",
+        "tags",
+        "evidence_ids",
+        "mapping_status",
+        "rank",
+    } <= set(first_node.keys())
+    assert meaning_graph["meta"]["node_count"] == len(meaning_graph["nodes"])
+    assert meaning_graph["meta"]["evidence_count"] == len(meaning_graph["evidence"])
+    meaning_graph_v1_1 = public["meaning_graph_v1_1"]
+    assert meaning_graph_v1_1["version"] == "meaning_graph_v1_1"
+    assert meaning_graph_v1_1["canonical_intent"] is True
+    assert isinstance(meaning_graph_v1_1["nodes"], list)
+    assert isinstance(meaning_graph_v1_1["evidence"], list)
+    assert "relations" not in meaning_graph_v1_1
+    assert "groups" not in meaning_graph_v1_1
+    profile_narrative_projection_v1 = public["profile_narrative_projection_v1"]
+    assert profile_narrative_projection_v1["version"] == "profile_narrative_projection_v1"
+    projected_core = profile_narrative_projection_v1["profile_public"]["core_blocks"]
+    assert isinstance(projected_core, list)
+    assert projected_core
+    assert projected_core[0]["trace"]["node_id"]
+    assert isinstance(projected_core[0]["trace"]["evidence_ids"], list)
+    profile_v8_projection_v1 = public["profile_v8_projection_v1"]
+    assert profile_v8_projection_v1["version"] == "profile_v8_projection_v1"
+    assert profile_v8_projection_v1["hero"]["trace"]["node_id"]
+    assert isinstance(profile_v8_projection_v1["hero"]["trace"]["evidence_ids"], list)
+    assert "natal_promise_cluster_plan_v1" not in public
     serialized_v8 = json.dumps({"profile_v8": profile_v8, "full_map_v8": full_map_v8}, ensure_ascii=False).lower()
     assert "_debug" not in serialized_v8
     assert "_internal" not in serialized_v8
     assert "_pattern" not in serialized_v8
     assert "_bundle" not in serialized_v8
 
-    debug_public = build_public_natal_view(response, locale="tr", include_debug=True)
+    debug_public = build_public_natal_view(
+        response,
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
     assert debug_public["personality_imprint"]["selection_debug"]["selected_keys"] == ["sun_house_10"]
     assert debug_public["profile_narrative"]["profile_internal"]["blocks_debug"]
     assert "section_priority_matrix" in debug_public["narrative_v2"]
@@ -252,7 +304,7 @@ def test_public_natal_view_builds_editorial_visibility_detail_blocks_for_sample_
     )
     response = json.loads(artifact_path.read_text())
 
-    public = build_public_natal_view(response, locale="tr")
+    public = build_public_natal_view(response, locale="tr", include_full_profile=True)
     detail_cards = public["profile_narrative"]["profile_public"]["detail_cards"]
     career_card = next(card for card in detail_cards if card["id"] == "career_visibility")
 
@@ -298,7 +350,7 @@ def test_public_natal_view_naturalizes_profile_copy_and_humanizes_chips() -> Non
         },
     }
 
-    public = build_public_natal_view(response, locale="tr")
+    public = build_public_natal_view(response, locale="tr", include_full_profile=True)
     block = public["profile_narrative"]["profile_public"]["blocks"][0]
     body = str(block["body"]).lower()
 
@@ -354,6 +406,7 @@ def test_public_natal_view_editorializes_synthesized_bundle_cards(monkeypatch) -
             "profile_narrative": {"profile_public": {"engine_version": "profile_narrative_v2", "blocks": []}},
         },
         locale="tr",
+        include_full_profile=True,
     )
 
     extra_blocks = public["profile_narrative"]["profile_public"]["extra_blocks"]
@@ -398,8 +451,8 @@ def test_public_natal_view_profile_copy_cleanup_is_deterministic() -> None:
         },
     }
 
-    first = build_public_natal_view(response, locale="tr")
-    second = build_public_natal_view(response, locale="tr")
+    first = build_public_natal_view(response, locale="tr", include_full_profile=True)
+    second = build_public_natal_view(response, locale="tr", include_full_profile=True)
 
     assert first["profile_narrative"]["profile_public"]["blocks"] == second["profile_narrative"]["profile_public"]["blocks"]
     body = str(first["profile_narrative"]["profile_public"]["blocks"][0]["body"])
@@ -444,7 +497,7 @@ def test_public_natal_view_softens_core_story_and_sectional_coaching_language() 
         ],
     }
 
-    public = build_public_natal_view(response, locale="tr")
+    public = build_public_natal_view(response, locale="tr", include_full_profile=True)
 
     core_story = str(public["core_story"])
     assert "Bu ihtiyaç yükseldiğinde" not in core_story
@@ -460,3 +513,231 @@ def test_public_natal_view_softens_core_story_and_sectional_coaching_language() 
     assert "görünürlük adımları" not in str(thread["paragraph"]).lower()
     assert "yayınlanabilir iyi seviyesi" not in str(thread["paragraph"]).lower()
     assert "küçük ve düzenli dozlarla" not in str(thread["micro"]).lower()
+
+
+def test_public_natal_view_meaning_graph_is_stable_and_backward_compatible() -> None:
+    response = {
+        "core_story": "Kısa test metni.",
+        "core_story_ui": {"headline": "Öz İz", "text": "Genel hatta güven üretirsin."},
+        "meta": {"pressure_index": 0.4, "support_index": 0.6},
+        "narrative_anchor": {"domain": "identity"},
+        "user_compact": {
+            "domains": [
+                {
+                    "domain": "kimlik",
+                    "title": "Kimlik",
+                    "summary": "Sakin ama yön veren bir çizgi.",
+                    "highlights": [{"text": "İçeride netlik ararsın."}],
+                }
+            ],
+            "micro_insights": [{"domain": "career", "text": "Görünürlükte kalite ararsın."}],
+        },
+        "personality_imprint": {
+            "entries": [
+                {
+                    "key": "sun_house_10",
+                    "label_tr": "Güneş 10. Ev",
+                    "tags": ["başarı"],
+                    "trait": "Ciddiye alınmak istersin.",
+                    "shadow": "Bazen baskı artar.",
+                    "gift": "Hedef tutarlılığı üretirsin.",
+                }
+            ]
+        },
+        "supporting_threads": [
+            {
+                "id": "identity_mechanics",
+                "title": "Kimlik",
+                "paragraph": "Kök motivasyonun görünür etki üretmek.",
+            }
+        ],
+    }
+
+    first = build_public_natal_view(response, locale="tr")
+    second = build_public_natal_view(response, locale="tr")
+
+    first_graph = first["meaning_graph"]
+    second_graph = second["meaning_graph"]
+    assert first_graph == second_graph
+
+    expected_existing_keys = {
+        "locale",
+        "core_story",
+        "core_story_ui",
+        "user_compact",
+        "upper_meaning",
+        "theme_scores",
+        "meta_summary",
+        "meaning_weighting",
+        "data_quality_summary",
+        "narrative_anchor",
+        "natal_graph_compact",
+        "personality_imprint",
+        "profile_narrative",
+        "profile_v8",
+        "full_map_v8",
+        "sections_v2",
+        "supporting_threads",
+        "narrative_v2",
+        "profile_narrative_projection_v1",
+        "profile_v8_projection_v1",
+        "flags",
+    }
+    assert expected_existing_keys <= set(first.keys())
+
+    assert first_graph["version"] == "meaning_graph_v1"
+    assert first_graph["canonical"] is True
+    assert isinstance(first_graph["taxonomy"]["layers"], list)
+    assert isinstance(first_graph["taxonomy"]["domains"], list)
+    assert isinstance(first_graph["nodes"], list)
+    assert isinstance(first_graph["evidence"], list)
+    assert first_graph["meta"]["node_count"] == len(first_graph["nodes"])
+    first_graph_v1_1 = first["meaning_graph_v1_1"]
+    assert first_graph_v1_1["version"] == "meaning_graph_v1_1"
+    assert isinstance(first_graph_v1_1["nodes"], list)
+
+
+def test_public_natal_view_lazily_builds_full_profile_branches() -> None:
+    response = {
+        "core_story": "Kısa test metni.",
+        "core_story_ui": {"headline": "Öz İz", "text": "Genel hatta güven üretirsin."},
+        "meta": {"pressure_index": 0.4, "support_index": 0.6},
+        "narrative_anchor": {"domain": "identity"},
+        "planets": [{"planet": "Moon", "house": 8, "sign": "Scorpio"}],
+        "profile_narrative": {
+            "profile_public": {
+                "engine_version": "profile_narrative_v2",
+                "blocks": [
+                    {
+                        "id": "mind_voice",
+                        "headline": "Zihin tonu",
+                        "teaser": "Kısa teaser.",
+                        "body": "Akıcı profile body metni.",
+                        "micro": "Kısa bir mikro içgörü.",
+                        "astro_hint": "Merkür 1. ev",
+                        "chips": ["Satürn 3.ev"],
+                    }
+                ],
+            }
+        },
+        "sections_v2": [
+            {
+                "id": "mind_system",
+                "title": "Zihin sistemi",
+                "subtitle": "Netleşince hızlanıyorsun.",
+                "body": "Akıcı tema metni.",
+                "micro": "Kısa örnek.",
+            }
+        ],
+        "personality_imprint": {"entries": []},
+        "supporting_threads": [],
+    }
+
+    lazy_public = build_public_natal_view(response, locale="tr")
+    assert lazy_public["profile_narrative"] is None
+    assert lazy_public["profile_v8"] is None
+    assert lazy_public["full_map_v8"] is None
+    assert lazy_public["sections_v2"] == []
+    assert isinstance(lazy_public["profile_narrative_projection_v1"], dict)
+    assert isinstance(lazy_public["profile_v8_projection_v1"], dict)
+
+    full_public = build_public_natal_view(response, locale="tr", include_full_profile=True)
+    assert isinstance(full_public["profile_narrative"], dict)
+    assert isinstance(full_public["profile_v8"], dict)
+    assert isinstance(full_public["full_map_v8"], dict)
+    assert isinstance(full_public["sections_v2"], list)
+    assert full_public["sections_v2"]
+
+
+@pytest.mark.parametrize("projection_key", ["profile_narrative_projection_v1", "profile_v8_projection_v1"])
+def test_public_natal_view_cluster_plan_uses_richer_raw_candidate_inventory(monkeypatch, projection_key: str) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    response = json.loads(
+        (
+            Path(__file__).resolve().parent
+            / "_artifacts"
+            / "natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"
+        ).read_text()
+    )
+
+    public = build_public_natal_view(response, locale="tr", include_debug=True, include_full_profile=True)
+    traceability = public[projection_key]["traceability"]
+    cluster_plan = traceability["natal_promise_cluster_plan_v1"]
+    candidate_ids = {
+        packet["id"]
+        for packet in cluster_plan["candidate_packets"]
+    }
+
+    assert len(cluster_plan["candidate_packets"]) > 5
+    assert "moon_trine_venus_emotional_warmth_chart_exact" in candidate_ids
+    assert "saturn_sextile_uranus_structured_originality_chart_exact" in candidate_ids
+    focus_map = {item["domain"]: item["tier"] for item in cluster_plan["focus_map"]}
+    assert focus_map["mind"] in {"medium_strong", "strong"}
+    assert focus_map["relationship"] in {"medium_strong", "strong"}
+    assert focus_map["career"] in {"medium_strong", "strong"}
+
+
+def test_public_natal_view_cluster_plan_renderer_localizes_and_separates_reused_copy(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    response = json.loads(
+        (
+            Path(__file__).resolve().parent
+            / "_artifacts"
+            / "natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"
+        ).read_text()
+    )
+
+    public = build_public_natal_view(response, locale="tr", include_debug=True, include_full_profile=True)
+    narrative_blocks = public["profile_narrative_projection_v1"]["profile_public"]["blocks"]
+    block_by_node_id = {
+        str(block["node_id"] or "").strip(): block
+        for block in narrative_blocks
+    }
+
+    hidden_love = block_by_node_id["promise::venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact"]
+    assert hidden_love["headline"] == "Bazı duygular sende önce içeride büyüyor olabilir."
+    assert "sevgiyi bazen önce içeride büyüten" in hidden_love["body"].lower()
+    assert "üretim ve görünürlük" not in hidden_love["body"].lower()
+
+    identity_saturn_uranus = block_by_node_id["promise::saturn_sextile_uranus_structured_originality_identity_chart_exact"]
+    assert identity_saturn_uranus["headline"] == "Ciddi görünsen de içeride daha farklı bir çizgi taşıyorsun."
+    assert "Saturn sextile Uranus" not in identity_saturn_uranus["body"]
+
+    all_public_copy = " ".join(
+        [
+            *(
+                value
+                for block in narrative_blocks
+                for value in (
+                    str(block.get("headline") or ""),
+                    str(block.get("teaser") or ""),
+                    str(block.get("body") or ""),
+                )
+            ),
+            str(public["profile_v8_projection_v1"]["hero"].get("headline") or ""),
+            str(public["profile_v8_projection_v1"]["hero"].get("summary") or ""),
+            str(public["profile_v8_projection_v1"]["identity_axis"].get("headline") or ""),
+            str(public["profile_v8_projection_v1"]["identity_axis"].get("body") or ""),
+        ]
+    )
+    for raw_anchor in (
+        "Saturn sextile Uranus",
+        "Moon trine Venus",
+        "Mercury conjunction Jupiter",
+        "Mercury conjunct Jupiter",
+        "Sun square Saturn",
+        "Mars opposite Saturn",
+        "Mars opposition Saturn",
+        "Chiron conjunct MC",
+        "Midheaven",
+    ):
+        assert raw_anchor not in all_public_copy
+
+    extra_block_ids = {
+        str(block["node_id"] or "").strip()
+        for block in public["profile_narrative_projection_v1"]["profile_public"]["extra_blocks"]
+    }
+    assert "promise::chiron_conjunct_mc_visibility_wound_to_voice_chart_exact" in extra_block_ids
+    assert "promise::saturn_trine_pluto_deep_resilience_chart_exact" in extra_block_ids

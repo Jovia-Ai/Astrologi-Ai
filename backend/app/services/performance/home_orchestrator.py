@@ -230,7 +230,10 @@ class HomeOrchestrator:
         with timer.stage("global_compute"):
             sky_payload = self._get_global_sky_payload(context=context, now=now)
         with timer.stage("user_overlay"):
-            natal_public = self._build_natal_public(context)
+            natal_public = self._build_natal_public(
+                context,
+                include_full_profile=mode == "deep",
+            )
         with timer.stage("ranking"):
             transit_payload = self._build_transit_payload(
                 context,
@@ -250,7 +253,12 @@ class HomeOrchestrator:
                 sky_payload=sky_payload,
             )
 
-    def _build_natal_public(self, context: HomeRequestContext) -> dict[str, Any]:
+    def _build_natal_public(
+        self,
+        context: HomeRequestContext,
+        *,
+        include_full_profile: bool = False,
+    ) -> dict[str, Any]:
         response = interpret_natal_chart_ui(
             NatalInterpretationRequest(
                 birth_date=context.birth_date,
@@ -260,6 +268,7 @@ class HomeOrchestrator:
                 birth_longitude=context.birth_longitude,
                 birth_timezone=context.birth_timezone,
                 locale=context.locale,
+                include_full_profile=include_full_profile,
             )
         )
         return dict(response.get("public") or {})
