@@ -20,6 +20,11 @@ def _istanbul_2020_response() -> dict:
     return json.loads(path.read_text())
 
 
+def _izmir_1996_response() -> dict:
+    path = Path("backend/tests/_artifacts/natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json")
+    return json.loads(path.read_text())
+
+
 def _legacy_graph() -> dict:
     return {
         "version": "meaning_graph_v1_1",
@@ -118,7 +123,7 @@ def test_build_natal_promise_packets_istanbul_preserves_gift_forward_mix() -> No
         supporting_threads=public.get("supporting_threads"),
     )
 
-    assert packets["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4"
+    assert packets["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4_plus_v0_5"
     assert len(packets["packets"]) >= 3
     assert any(packet["promise_type"] in {"gift", "love_style", "mind_style", "mind_identity"} for packet in packets["packets"])
     assert not all(packet["promise_type"] in {"shadow_or_friction", "wound_to_gift"} for packet in packets["packets"])
@@ -202,7 +207,7 @@ def test_build_natal_promise_packets_2020_candidate_inventory_fires_v0_4_overlay
     )
     candidate_ids = {packet["id"] for packet in candidate_inventory["packets"]}
 
-    assert candidate_inventory["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4"
+    assert candidate_inventory["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4_plus_v0_5"
     assert len(candidate_inventory["packets"]) >= 10
     assert "gemini_asc_venus_1h_social_relational_presence_chart_exact" in candidate_ids
     assert "sun_aries_12h_hidden_private_fire_chart_exact" in candidate_ids
@@ -254,6 +259,44 @@ def test_build_natal_promise_packets_istanbul_1996_does_not_pick_up_v0_4_chart_e
     assert "gemini_asc_venus_1h_social_relational_presence_chart_exact" not in candidate_ids
     assert "sun_aries_12h_hidden_private_fire_chart_exact" not in candidate_ids
     assert "aquarius_mc_mars_conjunct_mc_visible_freedom_drive" not in candidate_ids
+
+
+def test_build_natal_promise_packets_izmir_1996_candidate_inventory_fires_v0_5_overlay() -> None:
+    raw = _izmir_1996_response()
+
+    candidate_inventory = build_natal_promise_packets_v1(
+        sections_v2=raw.get("sections_v2"),
+        supporting_threads=raw.get("supporting_threads"),
+        planets=raw.get("planets"),
+        aspects=raw.get("aspects"),
+        natal_graph_compact=raw.get("natal_graph_compact"),
+        metadata=raw.get("metadata"),
+        meta_info=raw.get("meta_info"),
+        mode="candidate_inventory",
+    )
+    packets = candidate_inventory["packets"]
+    candidate_ids = {packet["id"] for packet in packets}
+    packet_lookup = {str(packet.get("id") or "").strip(): packet for packet in packets}
+
+    assert candidate_inventory["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4_plus_v0_5"
+    assert len(packets) >= 13
+    assert "taurus_asc_venus_12h_hidden_value_identity_chart_exact" in candidate_ids
+    assert "venus_taurus_12h_private_love_inner_beauty_chart_exact" in candidate_ids
+    assert "mc_capricorn_ruler_saturn_pisces_12h_invisible_preparation_chart_exact" in candidate_ids
+    assert "saturn_pisces_12h_private_maturity_boundary_sensitivity_chart_exact" in candidate_ids
+    assert "dsc_scorpio_ruler_mars_pisces_12h_trust_threshold_silent_desire_chart_exact" in candidate_ids
+    assert "pluto_7h_relationship_power_depth_chart_exact" in candidate_ids
+    assert "mars_pisces_12h_hidden_action_soft_drive_chart_exact" in candidate_ids
+    assert any(packet_id.startswith("sun_mars_pisces_12h_private_will_and_hidden_drive") for packet_id in candidate_ids)
+    assert "pisces_12h_stellium_inner_world_saturation_chart_exact" in candidate_ids
+    assert "mercury_pisces_11h_social_intuition_mind_chart_exact" in candidate_ids
+    assert "mercury_square_pluto_deep_mind_pressure_chart_exact" in candidate_ids
+    assert any(packet_id.startswith("uranus_square_asc_venus_unsettled_outer_signal") for packet_id in candidate_ids)
+
+    assert packet_lookup["taurus_asc_venus_12h_hidden_value_identity_chart_exact"]["chart_facts_match"] is True
+    assert packet_lookup["dsc_scorpio_ruler_mars_pisces_12h_trust_threshold_silent_desire_chart_exact"]["chart_facts_match"] is True
+    assert packet_lookup["mc_capricorn_ruler_saturn_pisces_12h_invisible_preparation_chart_exact"]["chart_facts_match"] is True
+    assert packet_lookup["pisces_12h_stellium_inner_world_saturation_chart_exact"]["chart_facts_match"] is True
 
 
 def test_profile_narrative_projection_v1_hybrid_fallback_prefers_packets() -> None:

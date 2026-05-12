@@ -137,6 +137,16 @@ def build_natal_promise_cluster_plan_v1(
                 )
             )
             continue
+        if packet.get("chart_facts_match") is False:
+            suppressed_aux_pre.append(
+                PacketSuppressionStateV1(
+                    packet_id=str(packet.get("id") or "").strip(),
+                    suppressed_from_public_main=True,
+                    keep_for=["debug", "transit_activation"],
+                    reason="packet encodes chart facts that do not match this chart",
+                )
+            )
+            continue
         eligible.append(packet)
     normalized = eligible
     focus_map = _build_focus_map(normalized)
@@ -230,6 +240,8 @@ def _domain_family(packet: Mapping[str, Any]) -> str:
     ).lower()
     if domain in {"mind", "communication"}:
         return "mind"
+    if domain in {"inner_world", "spirituality", "emotional_world", "action"}:
+        return "inner_world"
     if domain in {"relationship", "relationships", "love", "emotional_depth"}:
         return "relationship"
     if domain in {"career", "visibility", "creativity"}:
@@ -269,10 +281,16 @@ def _packet_subtype(*, packet: Mapping[str, Any], domain_family: str) -> str:
             return "affection_gift"
         if "trust_bond" in packet_id or "venus_trine_saturn" in packet_id:
             return "trust_bond"
+        if "trust_threshold_silent_desire" in packet_id or "dsc_scorpio_ruler_mars_pisces_12h" in packet_id:
+            return "trust_threshold_silent_desire"
         if "attraction_signal" in packet_id or "venus_trine_mars" in packet_id:
             return "attraction_signal"
         if "emotional_routine_sensitivity" in packet_id or "moon_scorpio_6h" in packet_id:
             return "emotional_routine_sensitivity"
+        if "private_love_inner_beauty" in packet_id or "venus_taurus_12h" in packet_id:
+            return "private_love_inner_beauty"
+        if "relationship_power_depth" in packet_id or "pluto_7h" in packet_id:
+            return "relationship_power_depth"
         if "attachment_architecture" in packet_id or "moon_leo_8h" in packet_id or ("7. ev" in anchors and "ay 8. ev" in anchors):
             return "attachment_architecture"
         if "hidden_private_love" in packet_id or "venus_sagittarius_12h" in packet_id:
@@ -280,6 +298,8 @@ def _packet_subtype(*, packet: Mapping[str, Any], domain_family: str) -> str:
     if domain_family == "career":
         if "internal_visibility_maturation" in packet_id or "career_duplicate" in packet_id or "venus_sagittarius_12h" in packet_id:
             return "internal_visibility_maturation"
+        if "invisible_preparation" in packet_id or "mc_capricorn_ruler_saturn_pisces_12h" in packet_id:
+            return "invisible_preparation"
         if "healing_voice" in packet_id or ("chiron" in packet_id and "mc" in packet_id):
             return "healing_voice"
     if domain_family == "mind":
@@ -287,9 +307,28 @@ def _packet_subtype(*, packet: Mapping[str, Any], domain_family: str) -> str:
             return "structured_originality"
         if "speech_decision_language" in packet_id or "saturn_3h" in packet_id:
             return "speech_decision_language"
+        if "social_intuition_mind" in packet_id or "mercury_pisces_11h" in packet_id:
+            return "social_intuition_mind"
+        if "deep_mind_pressure" in packet_id or "mercury_square_pluto" in packet_id:
+            return "deep_mind_pressure"
     if domain_family == "identity":
         if "self_construction" in packet_id or "capricorn_asc" in packet_id:
             return "self_construction"
+        if "hidden_value_identity" in packet_id or "taurus_asc_venus_12h" in packet_id:
+            return "hidden_value_identity"
+        if "soft_hidden_magnetism" in packet_id or "venus_12h_conjunct_asc" in packet_id:
+            return "soft_hidden_magnetism"
+        if "unsettled_outer_signal" in packet_id or "uranus_square_asc_venus" in packet_id:
+            return "unsettled_outer_signal"
+    if domain_family == "inner_world":
+        if "inner_world_saturation" in packet_id or "pisces_12h_stellium" in packet_id:
+            return "inner_world_saturation"
+        if "private_maturity_boundary_sensitivity" in packet_id or "saturn_pisces_12h" in packet_id:
+            return "private_maturity"
+        if "hidden_action_soft_drive" in packet_id or "mars_pisces_12h" in packet_id:
+            return "hidden_action_soft_drive"
+        if "private_will_and_hidden_drive" in packet_id or "sun_mars_pisces_12h" in packet_id:
+            return "private_will_hidden_drive"
     if domain_family == "action_pressure":
         return "resilience_under_pressure"
     return ""
@@ -809,17 +848,32 @@ def _cluster_repeated_support(cluster: NatalPromiseClusterV1) -> float:
 
 
 def _cluster_main_readability(cluster: NatalPromiseClusterV1) -> float:
-    subtype_bonus = 0.2 if any(subtype in {"affection_gift", "structured_originality", "internal_visibility_maturation", "self_construction"} for subtype in cluster.subtypes) else 0.1
+    subtype_bonus = 0.2 if any(
+        subtype in {
+            "affection_gift",
+            "structured_originality",
+            "internal_visibility_maturation",
+            "self_construction",
+            "hidden_value_identity",
+            "invisible_preparation",
+            "trust_threshold_silent_desire",
+            "inner_world_saturation",
+            "deep_mind_pressure",
+        }
+        for subtype in cluster.subtypes
+    ) else 0.1
     return min(1.0, 0.6 + subtype_bonus)
 
 
 def _cluster_priority_bonus(cluster: NatalPromiseClusterV1) -> float:
     bonus = 0.0
-    if cluster.domain_family in {"identity", "mind", "relationship", "career"}:
+    if cluster.domain_family in {"identity", "mind", "relationship", "career", "inner_world"}:
         bonus += 0.06
     if any(pt in {"mind_style", "mind_identity", "career_signature", "love_style"} for pt in cluster.promise_types):
         bonus += 0.05
     if cluster.domain_family == "identity" and "self_construction" in cluster.subtypes:
+        bonus += 0.04
+    if cluster.domain_family == "inner_world" and "inner_world_saturation" in cluster.subtypes:
         bonus += 0.04
     return bonus
 
@@ -1075,24 +1129,39 @@ def _domain_preference_rank(cluster: NatalPromiseClusterV1) -> tuple[int, float]
     preference_map = {
         "relationship": {
             "attachment_architecture": 0,
-            "trust_bond": 1,
-            "affection_gift": 2,
-            "attraction_signal": 3,
-            "emotional_routine_sensitivity": 4,
-            "hidden_private_love_pattern": 5,
+            "trust_threshold_silent_desire": 1,
+            "trust_bond": 2,
+            "affection_gift": 3,
+            "private_love_inner_beauty": 4,
+            "relationship_power_depth": 5,
+            "attraction_signal": 6,
+            "emotional_routine_sensitivity": 7,
+            "hidden_private_love_pattern": 8,
         },
         "mind": {
             "structured_originality": 0,
             "speech_decision_language": 1,
-            "big_mind": 2,
+            "deep_mind_pressure": 2,
+            "social_intuition_mind": 3,
+            "big_mind": 4,
         },
         "identity": {
-            "self_construction": 0,
-            "deep_resilience": 1,
+            "hidden_value_identity": 0,
+            "self_construction": 1,
+            "soft_hidden_magnetism": 2,
+            "unsettled_outer_signal": 3,
+            "deep_resilience": 4,
         },
         "career": {
-            "internal_visibility_maturation": 0,
-            "healing_voice": 1,
+            "invisible_preparation": 0,
+            "internal_visibility_maturation": 1,
+            "healing_voice": 2,
+        },
+        "inner_world": {
+            "inner_world_saturation": 0,
+            "private_maturity": 1,
+            "private_will_hidden_drive": 2,
+            "hidden_action_soft_drive": 3,
         },
     }
     rank = preference_map.get(cluster.domain_family, {}).get(semantic_key, 2 if semantic_key else 3)
@@ -1266,12 +1335,38 @@ def _cluster_semantic_key(cluster: NatalPromiseClusterV1) -> str:
         return "self_construction"
     if "trust_bond" in packet_id or "venus_trine_saturn" in packet_id:
         return "trust_bond"
+    if "trust_threshold_silent_desire" in packet_id or "dsc_scorpio_ruler_mars_pisces_12h" in packet_id:
+        return "trust_threshold_silent_desire"
     if "attraction_signal" in packet_id or "venus_trine_mars" in packet_id:
         return "attraction_signal"
     if "emotional_routine_sensitivity" in packet_id or "moon_scorpio_6h" in packet_id:
         return "emotional_routine_sensitivity"
+    if "private_love_inner_beauty" in packet_id or "venus_taurus_12h" in packet_id:
+        return "private_love_inner_beauty"
+    if "relationship_power_depth" in packet_id or "pluto_7h" in packet_id:
+        return "relationship_power_depth"
     if "hidden_expansive_love" in packet_id:
         return "hidden_private_love_pattern" if cluster.domain_family == "relationship" else "internal_visibility_maturation"
+    if "invisible_preparation" in packet_id or "mc_capricorn_ruler_saturn_pisces_12h" in packet_id:
+        return "invisible_preparation"
+    if "hidden_value_identity" in packet_id or "taurus_asc_venus_12h" in packet_id:
+        return "hidden_value_identity"
+    if "soft_hidden_magnetism" in packet_id or "venus_12h_conjunct_asc" in packet_id:
+        return "soft_hidden_magnetism"
+    if "unsettled_outer_signal" in packet_id or "uranus_square_asc_venus" in packet_id:
+        return "unsettled_outer_signal"
+    if "social_intuition_mind" in packet_id or "mercury_pisces_11h" in packet_id:
+        return "social_intuition_mind"
+    if "deep_mind_pressure" in packet_id or "mercury_square_pluto" in packet_id:
+        return "deep_mind_pressure"
+    if "inner_world_saturation" in packet_id or "pisces_12h_stellium" in packet_id:
+        return "inner_world_saturation"
+    if "private_maturity_boundary_sensitivity" in packet_id or "saturn_pisces_12h" in packet_id:
+        return "private_maturity"
+    if "hidden_action_soft_drive" in packet_id or "mars_pisces_12h" in packet_id:
+        return "hidden_action_soft_drive"
+    if "private_will_and_hidden_drive" in packet_id or "sun_mars_pisces_12h" in packet_id:
+        return "private_will_hidden_drive"
     return ""
 
 

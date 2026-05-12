@@ -1865,6 +1865,73 @@ def test_istanbul_v8_identity_axis_unchanged_or_strictly_better() -> None:
     )
 
 
+def test_izmir_v8_identity_axis_prefers_distinct_non_hero_cluster_after_v0_5() -> None:
+    payload = _v8_for_artifact(
+        "backend/tests/_artifacts/natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json"
+    )
+    v8 = payload["v8"]
+    plan = payload["plan"]
+
+    hero_packet_id = _slot_packet_id(v8["hero"])
+    identity_packet_id = _slot_packet_id(v8["identity_axis"])
+
+    assert any(
+        str(cluster.get("id") or "").startswith("identity_")
+        for cluster in plan.get("clusters") or []
+    ), "Izmir v0.5 should surface an identity-family cluster."
+
+    assert "taurus_asc_venus_12h_hidden_value_identity" in hero_packet_id
+    assert identity_packet_id and identity_packet_id != hero_packet_id, (
+        f"identity_axis should stay distinct from hero after v0.5; "
+        f"hero={hero_packet_id!r}, identity={identity_packet_id!r}"
+    )
+
+
+def test_izmir_narrative_relationship_body_uses_evidence_consistent_7h_sign() -> None:
+    narrative = _narrative_for_artifact(
+        "backend/tests/_artifacts/natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json"
+    )
+    blocks = list((narrative.get("profile_public") or {}).get("blocks") or [])
+    relationship_blocks = [
+        block for block in blocks
+        if str(block.get("node_id") or "").startswith("promise::")
+        and "dsc_scorpio_ruler_mars_pisces_12h_trust_threshold_silent_desire" in str(block.get("node_id") or "")
+    ]
+    assert relationship_blocks
+
+    bodies = [str(block.get("body") or "") for block in relationship_blocks]
+    for body in bodies:
+        assert "7. ev Yay" not in body
+        assert "7. evinin Yay" not in body
+    assert any("7. evinin Akrep" in body for body in bodies)
+
+
+def test_izmir_public_surfaces_do_not_leak_gemini_mind_copy_on_taurus_chart() -> None:
+    narrative = _narrative_for_artifact(
+        "backend/tests/_artifacts/natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json"
+    )
+    v8_payload = _v8_for_artifact(
+        "backend/tests/_artifacts/natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json"
+    )
+
+    text_blobs = [
+        *[
+            str(value)
+            for block in (narrative.get("profile_public") or {}).get("core_blocks", [])
+            for value in (
+                block.get("headline") or "",
+                block.get("teaser") or "",
+                block.get("body") or "",
+            )
+        ],
+        str(v8_payload["v8"]["hero"].get("summary") or ""),
+        str(v8_payload["v8"]["identity_axis"].get("body") or ""),
+    ]
+    for text in text_blobs:
+        assert "Yükseleninin İkizler" not in text
+        assert "Yükselenin İkizler" not in text
+
+
 # ---------------------------------------------------------------------------
 # Adana copy-polish pass regressions.
 # See docs/system/adana_cluster_plan_audit_after_v0_3_final.md §7 for the

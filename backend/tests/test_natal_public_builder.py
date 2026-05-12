@@ -816,6 +816,37 @@ def test_public_natal_view_2020_copy_polish_naturalizes_surface_without_duplicat
     )
 
 
+def test_public_natal_view_izmir_1996_mind_override_is_guarded_by_exact_chart_facts(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    response = _artifact_response("natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json")
+    public = build_public_natal_view(
+        response,
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+    packet = next(
+        pkt
+        for pkt in public["profile_narrative_projection_v1"]["traceability"]["natal_promise_cluster_plan_v1"]["candidate_packets"]
+        if str(pkt.get("id") or "").strip() == "mercury_pisces_11h_social_intuition_mind_chart_exact"
+    )
+
+    from app.meaning.projection_shadow_v1_builder import _packet_body_text, _packet_copy_override
+
+    override = _packet_copy_override(packet)
+
+    body = _packet_body_text(packet=packet, max_sentences=4)
+    teaser = str(packet.get("direct_meaning") or "")
+
+    for text in (body, teaser, *[str(value or "") for value in override.values()]):
+        assert "Yükseleninin İkizler" not in text
+        assert "Yükselenin İkizler" not in text
+        assert "Merkür'ünün de 11. evde Balık'ta" not in text
+
+    assert "İkizler" not in body
+
+
 def test_public_natal_view_copy_polish_keeps_1996_istanbul_and_adana_surfaces_stable(monkeypatch) -> None:
     monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
     monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
@@ -853,3 +884,88 @@ def test_public_natal_view_copy_polish_keeps_1996_istanbul_and_adana_surfaces_st
     assert str(
         adana_blocks["promise::venus_square_pluto_intense_love_chart_exact"].get("body") or ""
     ).startswith("Venüs'ün Plüton'la kare çalışması, ilişkilerde çekimi")
+
+
+def test_public_natal_view_izmir_v0_5_copy_polish_naturalizes_surface_without_leaks_or_duplicates(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    izmir = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+    narrative = izmir["profile_narrative_projection_v1"]["profile_public"]
+    blocks = list(narrative.get("blocks") or [])
+    block_map = {
+        str(block.get("node_id") or "").strip(): block
+        for block in blocks
+    }
+
+    taurus_identity = block_map["promise::taurus_asc_venus_12h_hidden_value_identity_chart_exact"]
+    assert taurus_identity["headline"] == "Dışarıdan sakin görünsen de içindeki değer hemen açılmaz."
+    assert "Yükseleninin Boğa Venüs 12. ev Boğa" not in str(taurus_identity.get("body") or "")
+
+    career_block = block_map["promise::mc_capricorn_ruler_saturn_pisces_12h_invisible_preparation_chart_exact"]
+    assert career_block["headline"] == "Dışarıda sağlam görünmeden önce içeride uzun süre hazırlanırsın."
+
+    diff_headlines = [
+        str(item.get("headline") or "").strip()
+        for item in izmir["profile_v8_projection_v1"].get("differentiators") or []
+        if str(item.get("headline") or "").strip()
+    ]
+    core_headlines = {
+        str(block.get("headline") or "").strip()
+        for block in narrative.get("core_blocks") or []
+        if str(block.get("headline") or "").strip()
+    }
+    assert not (core_headlines & set(diff_headlines)), (
+        f"Izmir differentiators still duplicate core headlines: {core_headlines & set(diff_headlines)}"
+    )
+
+    headline_teaser_pairs = [
+        (
+            str(block.get("headline") or "").strip(),
+            str(block.get("teaser") or "").strip(),
+        )
+        for block in blocks
+    ]
+    assert len(headline_teaser_pairs) == len(set(headline_teaser_pairs)), headline_teaser_pairs
+
+    all_text = "\n".join(
+        str(value or "")
+        for block in blocks
+        for value in (block.get("headline"), block.get("teaser"), block.get("body"))
+    )
+    all_text += "\n" + "\n".join(diff_headlines)
+
+    for bad_phrase in (
+        "olması de",
+        "Yükseleninin Boğa Venüs 12. ev Boğa",
+        "private maturity",
+        "Yükseleninin İkizler",
+        "Yükselenin İkizler",
+        "7. ev Yay",
+        "7. evinin Yay",
+    ):
+        assert bad_phrase not in all_text
+
+    assert "Sessiz çekim, sadelik, güven veren varlık, içte büyüyen değer ve derin bağlılık." not in all_text
+
+    identity_axis_headline = str(izmir["profile_v8_projection_v1"]["identity_axis"].get("headline") or "")
+    assert identity_axis_headline == "Dışarıdan sakin görünsen de içeride daha elektrikli bir taraf çalışabilir."
+
+    istanbul_2020 = build_public_natal_view(
+        _artifact_response("natal_interpret_full_2020-04-10_08-26_istanbul_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+    blocks_2020 = {
+        str(block.get("node_id") or "").strip(): block
+        for block in istanbul_2020["profile_narrative_projection_v1"]["profile_public"]["blocks"]
+    }
+    assert blocks_2020["promise::venus_trine_saturn_trust_bond_chart_exact"]["headline"] == (
+        "Sevgi verdiğinde bunun içinde tutarlılık ve söz taşıyan bir taraf var."
+    )

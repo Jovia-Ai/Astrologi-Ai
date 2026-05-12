@@ -15,6 +15,11 @@ def _istanbul_2020_response() -> dict:
     return json.loads(path.read_text())
 
 
+def _izmir_1996_response() -> dict:
+    path = Path("backend/tests/_artifacts/natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json")
+    return json.loads(path.read_text())
+
+
 def _packet(
     *,
     packet_id: str,
@@ -280,11 +285,160 @@ def test_natal_promise_cluster_plan_2020_istanbul_v0_4_overlay_surfaces_new_doma
     assert any("emotional_routine_sensitivity" in cluster_id for cluster_id in detail_ids)
     assert any("relationship_relationships" in cluster_id for cluster_id in detail_ids)
 
+
+def test_natal_promise_cluster_plan_istanbul_1997_truthfulness_guards_block_false_saturn_uranus_packets(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    from app.api.routes.natal_interpretation import NatalInterpretationRequest, interpret_natal_chart_ui
+
+    response = interpret_natal_chart_ui(
+        NatalInterpretationRequest(
+            birth_date="1997-01-21",
+            birth_time="10:30",
+            birth_place="Istanbul, TR",
+            locale="tr",
+            summary_only=False,
+            include_full_profile=True,
+        ),
+        debug=False,
+        include_debug=True,
+        profile_engine=None,
+    )
+    public = response["public"]
+    projection = public["profile_narrative_projection_v1"]
+    v8 = public["profile_v8_projection_v1"]
+    plan = v8["traceability"]["natal_promise_cluster_plan_v1"]
+
+    candidate_lookup = {
+        str(packet.get("id") or "").strip(): packet
+        for packet in plan["candidate_packets"]
+    }
+    bad_packet_ids = {
+        "saturn_sextile_uranus_structured_originality_chart_exact",
+        "saturn_sextile_uranus_structured_originality_identity_chart_exact",
+    }
+    for packet_id in bad_packet_ids:
+        assert candidate_lookup[packet_id]["chart_facts_match"] is False
+
+    suppressed_lookup = {
+        str(item.get("packet_id") or "").strip(): item
+        for item in plan["suppressed_packets"]
+    }
+    for packet_id in bad_packet_ids:
+        keep_for = set(suppressed_lookup[packet_id]["keep_for"])
+        assert {"debug", "transit_activation"} <= keep_for
+        assert "detail" not in keep_for
+        assert "public_support" not in keep_for
+
+    assert bad_packet_ids <= set(plan["surface_plan"]["debug_packet_ids"])
+
+    surfaced_node_ids = {
+        str(block.get("node_id") or "").strip()
+        for block in projection["profile_public"]["blocks"]
+    }
+    surfaced_node_ids |= {
+        str((v8.get("hero") or {}).get("node_id") or "").strip(),
+        str((v8.get("identity_axis") or {}).get("node_id") or "").strip(),
+        *(
+            str(item.get("node_id") or "").strip()
+            for item in (v8.get("insight_strip") or [])
+        ),
+        *(
+            str(item.get("node_id") or "").strip()
+            for item in (v8.get("differentiators") or [])
+        ),
+    }
+    assert "promise::saturn_sextile_uranus_structured_originality_chart_exact" not in surfaced_node_ids
+    assert "promise::saturn_sextile_uranus_structured_originality_identity_chart_exact" not in surfaced_node_ids
+
+    public_text = "\n".join(
+        str(value or "")
+        for block in (projection["profile_public"]["blocks"] or [])
+        for value in (
+            block.get("headline"),
+            block.get("teaser"),
+            block.get("body"),
+            block.get("micro"),
+        )
+    )
+    public_text += "\n" + "\n".join(
+        str(value or "")
+        for section in [
+            v8.get("hero") or {},
+            v8.get("identity_axis") or {},
+            *(v8.get("insight_strip") or []),
+            *(v8.get("differentiators") or []),
+        ]
+        for value in (
+            section.get("headline"),
+            section.get("summary"),
+            section.get("title"),
+            section.get("subtitle"),
+            section.get("body"),
+        )
+    )
+    for bad_phrase in (
+        "Yükselen Oğlak",
+        "Satürn 3. ev",
+        "Uranüs 1. ev",
+        "pressure vs resilience",
+    ):
+        assert bad_phrase not in public_text
+
     projection = public["profile_v8_projection_v1"]
     hero_node = str(projection["hero"]["trace"]["node_id"])
     identity_axis_node = str(projection["identity_axis"]["trace"]["node_id"])
     assert "gemini_asc_venus_1h_social_relational_presence" in hero_node
     assert "sun_aries_12h_hidden_private_fire" in identity_axis_node
+    assert hero_node != identity_axis_node
+
+
+def test_natal_promise_cluster_plan_izmir_1996_v0_5_overlay_surfaces_hidden_value_and_inner_world(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    response = _izmir_1996_response()
+    public = build_public_natal_view(response, locale="tr", include_debug=True, include_full_profile=True)
+    plan = public["profile_v8_projection_v1"]["traceability"]["natal_promise_cluster_plan_v1"]
+
+    candidate_ids = {packet["id"] for packet in plan["candidate_packets"]}
+    assert "taurus_asc_venus_12h_hidden_value_identity_chart_exact" in candidate_ids
+    assert "mc_capricorn_ruler_saturn_pisces_12h_invisible_preparation_chart_exact" in candidate_ids
+    assert "dsc_scorpio_ruler_mars_pisces_12h_trust_threshold_silent_desire_chart_exact" in candidate_ids
+    assert "pisces_12h_stellium_inner_world_saturation_chart_exact" in candidate_ids
+    assert "mercury_square_pluto_deep_mind_pressure_chart_exact" in candidate_ids
+
+    focus_tiers = {item["domain"]: item["tier"] for item in plan["focus_map"]}
+    assert focus_tiers["identity"] in {"medium_strong", "strong"}
+    assert focus_tiers["career"] in {"medium_strong", "strong"}
+    assert focus_tiers["relationship"] in {"medium_strong", "strong"}
+    assert focus_tiers["mind"] in {"supporting", "medium_strong", "strong"}
+    assert focus_tiers["inner_world"] in {"supporting", "medium_strong", "strong"}
+
+    public_main_ids = set(plan["surface_plan"]["public_main_cluster_ids"])
+    public_support_ids = set(plan["surface_plan"]["public_support_cluster_ids"])
+    detail_ids = set(plan["surface_plan"]["detail_cluster_ids"])
+    surfaced = public_main_ids | public_support_ids | detail_ids
+
+    assert any("hidden_value_identity" in cluster_id for cluster_id in public_main_ids)
+    assert any("invisible_preparation" in cluster_id for cluster_id in public_main_ids)
+    relationship_main_ids = [cluster_id for cluster_id in public_main_ids if cluster_id.startswith("relationship_")]
+    assert relationship_main_ids
+    assert any(
+        "trust_threshold_silent_desire" in cluster_id or "relationship_power_depth" in cluster_id
+        for cluster_id in relationship_main_ids
+    ), f"expected specific Izmir relationship public_main, got {relationship_main_ids}"
+    assert not any("relationship_relationships" in cluster_id for cluster_id in relationship_main_ids)
+    assert any(cluster_id.startswith("inner_world_") for cluster_id in surfaced)
+    assert any("deep_mind_pressure" in cluster_id for cluster_id in surfaced)
+
+    projection = public["profile_v8_projection_v1"]
+    hero_node = str(projection["hero"]["trace"]["node_id"])
+    identity_axis_node = str(projection["identity_axis"]["trace"]["node_id"])
+    assert "taurus_asc_venus_12h_hidden_value_identity" in hero_node
     assert hero_node != identity_axis_node
 
 

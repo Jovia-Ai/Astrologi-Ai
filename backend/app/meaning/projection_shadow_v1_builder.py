@@ -32,6 +32,7 @@ _DOMAIN_LABELS: dict[str, str] = {
     "mind": "zihin",
     "relationships": "ilişkiler",
     "relationship": "ilişkiler",
+    "inner_world": "iç dünya",
     "life_direction": "yaşam yönü",
     "emotional": "duygusal alan",
     "general": "genel yaşam",
@@ -43,6 +44,7 @@ _DOMAIN_LOCATIVE_LABELS: dict[str, str] = {
     "mind": "zihinde",
     "relationships": "ilişkilerde",
     "relationship": "ilişkilerde",
+    "inner_world": "iç dünyada",
     "life_direction": "yaşam yönünde",
     "emotional": "duygusal alanda",
     "general": "genel yaşamda",
@@ -609,18 +611,20 @@ def build_profile_v8_projection_v1(
         pool=identity_pool,
         hero_cluster_id=hero_cluster_id,
     )
+    identity_axis_eyebrow = "Kimlik Ekseni"
     if not identity_node:
         # No identity-family cluster available anywhere in the plan (or every
         # identity-family cluster is the same one the hero already consumed).
-        # Fall back to the legacy recognition/mechanism layer preference so
-        # that profiles without an identity cluster keep the prior surface.
-        identity_node = (
-            _pick_first(
-                identity_pool,
-                preferred_layers=("recognition", "mechanism"),
-            )
-            or (identity_pool[0] if identity_pool else hero_node)
+        # Prefer a distinct non-hero family when one exists, and relabel the
+        # slot honestly instead of surfacing a mind/career/relationship node
+        # under "Kimlik Ekseni".
+        identity_node = _pick_honest_axis_fallback_node(
+            pool=identity_pool,
+            hero_cluster_id=hero_cluster_id,
+            hero_family=_node_cluster_domain_family(hero_node),
         )
+        if identity_node:
+            identity_axis_eyebrow = "Öne Çıkan Hat"
     identity_node_id = _node_id(identity_node)
     if identity_node_id:
         used_slot_ids.add(identity_node_id)
@@ -761,7 +765,7 @@ def build_profile_v8_projection_v1(
         "hero": _hero_from_node(node=hero_node),
         "identity_axis": _section_from_node(
             node=identity_node,
-            eyebrow="Kimlik Ekseni",
+            eyebrow=identity_axis_eyebrow,
         ),
         "insight_strip": [
             _insight_cell_from_node(node=node)
@@ -1784,6 +1788,51 @@ def _pick_identity_axis_node(
             _safe_float(raw.get("strength"), 0.0),
         )
         candidates.append((subtype_rank, layer_rank, -priority, index, dict(raw)))
+
+    if not candidates:
+        return {}
+
+    candidates.sort(key=lambda item: (item[0], item[1], item[2], item[3]))
+    return candidates[0][4]
+
+
+def _pick_honest_axis_fallback_node(
+    *,
+    pool: Sequence[Mapping[str, Any]],
+    hero_cluster_id: str,
+    hero_family: str,
+) -> Dict[str, Any]:
+    """Fallback for v8 identity_axis when no identity-family cluster exists.
+
+    Prefer a node from a different cluster and, when possible, from a
+    different domain family than the hero. This keeps thin surfaces from
+    collapsing into the same packet family twice.
+    """
+
+    if not pool:
+        return {}
+
+    hero_cluster = hero_cluster_id.strip().lower()
+    hero_family_norm = hero_family.strip().lower()
+    family_pref = {
+        "relationship": 0,
+        "career": 1,
+        "mind": 2,
+        "identity": 3,
+    }
+    candidates: list[tuple[int, int, float, int, Dict[str, Any]]] = []
+    for index, raw in enumerate(pool):
+        node_cluster = _node_cluster_id(raw).lower()
+        if hero_cluster and node_cluster and node_cluster == hero_cluster:
+            continue
+        family = _node_cluster_domain_family(raw)
+        same_family_rank = 1 if hero_family_norm and family == hero_family_norm else 0
+        domain_rank = family_pref.get(family, 4)
+        priority = _safe_float(
+            (raw.get("projection_hints") or {}).get("priority"),
+            _safe_float(raw.get("strength"), 0.0),
+        )
+        candidates.append((same_family_rank, domain_rank, -priority, index, dict(raw)))
 
     if not candidates:
         return {}
@@ -3405,6 +3454,7 @@ def _packet_label(packet: Mapping[str, Any] | None) -> str:
         "relationship": "İlişki",
         "love": "İlişki",
         "emotional_depth": "Duygu",
+        "inner_world": "İç dünya",
         "career": "Kariyer",
         "visibility": "Kariyer",
         "behavior_reflex": "Refleks",
@@ -3887,7 +3937,7 @@ def _packet_copy_override(packet: Mapping[str, Any]) -> dict[str, str]:
         if packet_id.endswith("_aux"):
             override["differentiator_headline"] = "Kendi yolunu açma cesareti"
         return override
-    if match_id == "mind_mind_system" and role_domain == "mind":
+    if match_id == "mind_mind_system" and role_domain == "mind" and _packet_matches_gemini_mind_signature(packet):
         return {
             "headline": "Ne yapacağını bildiğin an tempo kendiliğinden yükselir.",
             "teaser": "Sen dışarıdan meraklı ve hareketli görünebilirsin. Yükselenin İkizler olduğu için bir ortama girer girmez zihnin çalışmaya, bağlantılar kurmaya başlıyor.",
@@ -3958,14 +4008,169 @@ def _packet_copy_override(packet: Mapping[str, Any]) -> dict[str, str]:
             ),
         }
     if match_id == "relationship_relationships" and role_domain == "relationship":
+        anchors = packet.get("technical_anchors") if isinstance(packet.get("technical_anchors"), Sequence) else []
+        clauses = [
+            _anchor_clause(str(anchor).strip())
+            for anchor in anchors[:2]
+            if _anchor_clause(str(anchor).strip())
+        ]
+        if len(clauses) >= 2:
+            opener = f"{clauses[0]} ve {clauses[1]}, ilişkide hem yoğunluk hem de güven aradığını gösteriyor. "
+        elif clauses:
+            opener = f"{clauses[0]}, ilişkide hem yoğunluk hem de güven aradığını gösteriyor. "
+        else:
+            opener = "Bu ilişkilenme hattı sende hem yoğunluk hem de güven aradığını gösteriyor. "
         return {
             "headline": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun.",
             "teaser": "Yakınlık burada çoğu zaman hafif ilerlemez, daha derin bir yere çekilebilir.",
             "micro": "İlişkide sadece yakınlık değil, içinin genişlediği bir güven aramak.",
             "body": (
-                "Jüpiter'inin 9. evde Oğlak'ta olması ve 7. evinin Yay'da açılması, ilişkide hem alan hem de güven aradığını gösteriyor. "
+                f"{opener}"
                 "Yakınlık sende çoğu zaman hafif bir hoşlanmadan çok, zamanla içeri oturan bir bağa dönüşmek ister. "
                 "Bu yüzden ilişkide yalnızca sıcaklık değil, birlikte büyüyebileceğin ve içinin genişlediği bir güven de arayabilirsin."
+            ),
+        }
+    if match_id == "taurus_asc_venus_12h_hidden_value_identity" and role_domain == "identity":
+        return {
+            "headline": "Dışarıdan sakin görünsen de içindeki değer hemen açılmaz.",
+            "teaser": "Sende çekim sessiz, güven yavaş, bağlılık derin çalışabilir.",
+            "micro": "Bir şeyi gerçekten sevdiğinde bunu önce içinde taşımak.",
+            "body": (
+                "Yükseleninin Boğa, Venüs'ünün de 12. evde Boğa'da olması, dışarıdan sakin ve güven veren bir izlenim bırakabileceğini gösteriyor. "
+                "Ama içindeki değer, sevgi ve çekim hemen yüzeye çıkmayabilir. "
+                "Bir şeyi gerçekten sevdiğinde bunu önce içeride taşır, güven oluşmadan kolayca göstermeyebilirsin. "
+                "Bu seni uzak yapmaz; sadece kalbini ve değerini herkese aynı hızda açmadığını gösterir."
+            ),
+        }
+    if match_id in {
+        "dsc_scorpio_ruler_mars_pisces_12h_trust_threshold_silent_desire",
+        "dsc_scorpio_ruler_mars_pisces_12h_trust_threshold_silent_desire_aux",
+    } and role_domain == "relationship":
+        override = {
+            "headline": "En yoğun arzuların bile bazen önce sessizleşir, içeride büyür.",
+            "teaser": "İlişkide yüzeysel sıcaklık yetmeyebilir; güven, derinlik ve duygusal dürüstlük arayabilirsin.",
+            "micro": "Birine yaklaşmak isteyip aynı anda kendini korumaya almak.",
+            "body": (
+                "7. evinin Akrep'te, yöneticisi Mars'ının da 12. evde Balık'ta olması, ilişkide güvenin ve derinliğin çok önemli olduğunu gösteriyor. "
+                "Birine yaklaşmak isteyip aynı anda kendini korumaya alabilirsin. "
+                "Arzu ve kırılganlık sende hemen dışarı taşmayabilir; önce içeride büyür, sonra güven bulursa görünür olur. "
+                "Bu yüzden yakınlık sende çoğu zaman hızlı değil, içeriden oturan bir eşikle açılır."
+            ),
+        }
+        override["differentiator_headline"] = "Güven oluşmadan yoğun duyguyu hemen açmayabilirsin."
+        return override
+    if match_id == "pisces_12h_stellium_inner_world_saturation" and role_domain == "inner_world":
+        return {
+            "headline": "Görünmeyen alanda işlediğin şeyler, zamanla dışarıdaki yönünü belirler.",
+            "teaser": "Birçok şey sende dışarıda olmadan önce içeride olur.",
+            "micro": "Karar, arzu ve sorumluluğun önce iç dünyanda şekillenmesi.",
+            "body": (
+                "Haritanda birçok temel gösterge 12. eve bağlandığı için, karar, arzu, sevgi ve sorumluluk önce iç dünyanda işlenebilir. "
+                "Dışarıdan sakin görünürken içeride çok yoğun bir hazırlık, çözülme ya da toparlanma yaşanıyor olabilir. "
+                "Birçok şeyi hemen dışarıda değil, önce yalnızlıkta anlayıp biçimlendirmek senin ritmine daha yakın durabilir. "
+                "Görünmeyen alanda yaptığın bu iç çalışma, zamanla dışarıdaki yönünü belirler."
+            ),
+        }
+    if match_id == "mc_capricorn_ruler_saturn_pisces_12h_invisible_preparation" and role_domain == "career":
+        return {
+            "headline": "Dışarıda sağlam görünmeden önce içeride uzun süre hazırlanırsın.",
+            "teaser": "Kariyerinde hızlı çıkıştan çok görünmeyen emek ve sessiz olgunlaşma çalışıyor olabilir.",
+            "micro": "Perde açılmadan önce içeride uzun bir hazırlık yapmak.",
+            "body": (
+                "Kariyer hattının Oğlak'ta, yöneticisi Satürn'ünün de 12. evde Balık'ta olması, görünür olmadan önce içeride uzun süre olgunlaşan bir emek verdiğini gösterir. "
+                "Dışarıda sağlam görünmek istersin; ama o sağlamlığın arkasında çoğu zaman kimsenin görmediği bir hazırlık ve sessiz sorumluluk vardır. "
+                "Bu yüzden bir şeyi paylaşmadan önce onu yeterince içerden taşıdığından emin olmak isteyebilirsin. "
+                "Buradaki gelişim, kusursuz olmayı beklemek yerine olgunlaşan emeğini zamanında dışarı açabilmektir."
+            ),
+        }
+    if match_id == "mercury_pisces_11h_social_intuition_mind" and role_domain == "mind":
+        return {
+            "headline": "Bir grubun içinde söylenmeyen şeyi bile hızlıca hissedebilirsin.",
+            "teaser": "Zihnin sosyal çevrelerde sadece söyleneni değil, ortamın duygusunu da okuyabilir.",
+            "micro": "Bir grubun içinde herkesin söylemediği şeyi sezmek.",
+            "body": (
+                "Merkür'ünün 11. evde Balık'ta olması, sosyal çevrelerde sadece söyleneni değil, ortamın duygusunu da okuyan bir zihin verir. "
+                "Bir grubun içinde herkesin söylemediği şeyi sezebilir, bağların altında akan duyguyu hızlıca yakalayabilirsin. "
+                "Bu sana güçlü bir sosyal sezgi verir. "
+                "Ama sınırlar bulanıklaştığında başkasının yükünü de fazla üstlenebilirsin."
+            ),
+        }
+    if match_id == "mercury_square_pluto_deep_mind_pressure" and role_domain == "mind":
+        return {
+            "headline": "Zihnin bir konunun yüzeyinde kalmak istemeyebilir.",
+            "teaser": "Söylenenin altında başka bir anlam olup olmadığını hızlıca sezebilirsin.",
+            "micro": "Bir konuşmanın altındaki niyeti çözmeden rahatlayamamak.",
+            "body": (
+                "Merkür'ünün Plüton'la kare çalışması, söylenenin altındaki niyeti, gizli anlamı ya da ilişkideki güç dengesini hızlı fark eden bir taraf verir. "
+                "Bu sana derin bir sezgi kazandırır; ama bazen bir şeyi çözmeden bırakmak zorlaşabilir. "
+                "Basit bir cevabın yetmediği, meselenin köküne inmek istediğin anlar burada çoğalır. "
+                "Derin düşüncen açıklıkla birleştiğinde ise gerçekten dönüştürücü bir içgörüye dönüşür."
+            ),
+        }
+    if match_id == "saturn_pisces_12h_private_maturity_boundary_sensitivity" and role_domain == "inner_world":
+        return {
+            "headline": "Bazı sorumlulukları dışarıdan görünmeden içeride taşıyor olabilirsin.",
+            "teaser": "Sınır, sorumluluk ve olgunlaşma sende daha içsel ve hassas bir alandan geçebilir.",
+            "micro": "Kimsenin görmediği yükleri tek başına taşımaya çalışmak.",
+            "body": (
+                "Satürn'ünün 12. evde Balık'ta olması, sınır, sorumluluk ve olgunlaşma temalarını daha içsel ve hassas bir alana taşır. "
+                "Kimsenin görmediği yükleri tek başına taşıma eğilimin olabilir. "
+                "Burada gelişen şey, hassasiyetini dağıtmadan koruyabilmek ve ona sınır eşlik ettirebilmektir. "
+                "İçinden geçen her şeyi tek başına yüklenmek yerine, neyin sana ait olduğunu ayırdıkça daha sağlam bir olgunluk kurarsın."
+            ),
+        }
+    if match_id in {
+        "uranus_square_asc_venus_unsettled_outer_signal",
+        "uranus_square_asc_venus_unsettled_outer_signal_aux",
+    }:
+        override = {
+            "headline": "Dışarıdan sakin görünsen de içeride daha elektrikli bir taraf çalışabilir.",
+            "teaser": "Güven ve sakinlik isterken, bir yanın da özgür ve kalıpsız kalmak isteyebilir.",
+            "micro": "Yakınlık fazla sabitlendiğinde alan ihtiyacının yükselmesi.",
+            "body": (
+                "Dışarıdan sakin ve yumuşak bir izlenim bırakıyor olsan da, içeride daha özgür, daha farklı ve kolay kalıba girmeyen bir taraf çalışabilir. "
+                "Yakınlık fazla sabitlendiğinde ya da kendi ritmini kaybettiğinde bir anda alan ihtiyacın yükselebilir. "
+                "Bu seni tutarsız yapmaz; sadece güven arayan tarafınla özgürlük isteyen tarafının aynı anda çalıştığını gösterir. "
+                "Rahat ettiğin yer, kopuşla değil kendi ritmini açıkça kurarak özgürlüğe alan açabildiğin yerdir."
+            ),
+        }
+        if packet_id.endswith("_aux") or match_id.endswith("_aux"):
+            override["differentiator_headline"] = "Sakin görünen çizginin altında özgürlük ihtiyacı"
+        return override
+    if match_id == "mars_pisces_12h_hidden_action_soft_drive" and role_domain == "inner_world":
+        return {
+            "headline": "Harekete geçmeden önce içeride uzun süre sezebilir ve tartabilirsin.",
+            "teaser": "İstek ve eylem sende çoğu zaman önce sessizce birikir, sonra yön bulur.",
+            "micro": "Ne istediğini hemen göstermeden önce bunu içeride uzun süre taşımak.",
+            "body": (
+                "Mars'ının 12. evde Balık'ta olması, harekete geçmeden önce içeride uzun süre sezebilen ve tartabilen bir yan verdiğini gösteriyor. "
+                "Bir şeyi istemen hemen görünür bir çıkışa dönüşmeyebilir; önce içerde birikir, sonra yön bulur. "
+                "Bu sana yumuşak ama derin bir hareket gücü verir. "
+                "Zorlayan tarafta ise kendi isteğini dolaylı anlatmak ya da öfkeyi içeride fazla tutmak öne çıkabilir."
+            ),
+        }
+    if match_id == "venus_12h_conjunct_asc_soft_hidden_magnetism" and role_domain == "identity":
+        return {
+            "headline": "Çok şey göstermeden de insanlarda iz bırakan bir tarafın olabilir.",
+            "teaser": "Sende çekim gösterişten çok sessiz bir varlık gibi çalışabilir.",
+            "micro": "Sessiz kaldığında bile ortamda bir yumuşaklık bırakmak.",
+            "body": (
+                "Venüs'ünün 12. evden Yükseleninle kavuşması, sende açıklaması zor bir yumuşaklık ve çekim bırakabilir. "
+                "Çok şey göstermeden de insanlar sende sakin, estetik ya da güven veren bir taraf hissedebilir. "
+                "Bu etki daha çok içeride taşıdığın sessiz değer duygusundan gelir. "
+                "Kendini tamamen saklamadan bu varlığı taşımayı öğrendikçe etkini daha rahat sahiplenirsin."
+            ),
+        }
+    if match_id == "venus_taurus_12h_private_love_inner_beauty" and role_domain == "relationship":
+        return {
+            "headline": "Sevgi sende bazen önce içeride büyür, sonra yavaş yavaş görünür olur.",
+            "teaser": "Birine bağlandığında bunu hemen söylemekten çok önce içinde taşımaya yatkın olabilirsin.",
+            "micro": "Bir duyguyu dışarı açmadan önce uzun süre içinde korumak.",
+            "body": (
+                "Venüs'ünün 12. evde Boğa'da olması, sevgiyi hızlıca gösterilen bir duygu olmaktan çok içeride büyüyen bir bağlılığa dönüştürebilir. "
+                "Birine bağlandığında bunu hemen söylemekten çok önce içinde taşımaya yatkın olabilirsin. "
+                "Sevgi sende huzur, dokunma, güven ve sakin varlık üzerinden daha rahat açılır. "
+                "Buradaki gelişim, içeride büyüyen duyguyu güvenli olduğunda görünür temasla buluşturabilmektir."
             ),
         }
     if match_id == "moon_leo_8h_deep_proud_heart" and role_domain == "relationship" and cluster_id == "relationship_attachment_architecture":
@@ -4078,6 +4283,29 @@ def _packet_match_id(packet: Mapping[str, Any]) -> str:
         if packet_id.endswith(suffix):
             return packet_id[: -len(suffix)]
     return packet_id
+
+
+def _packet_matches_gemini_mind_signature(packet: Mapping[str, Any]) -> bool:
+    evidence_ids = {
+        str(item).strip()
+        for item in (packet.get("source_evidence_ids") or [])
+        if str(item).strip()
+    }
+    anchors = {
+        str(item).strip()
+        for item in (packet.get("technical_anchors") or [])
+        if str(item).strip()
+    }
+    lived_scene = str(packet.get("lived_scene") or "").strip()
+
+    has_gemini_asc = "angle:ASC:Gemini" in evidence_ids or "Yükselen İkizler" in anchors or "Yükselenin İkizler" in lived_scene
+    has_mercury_11h_signature = (
+        "Merkür · 11. ev · Balık" in anchors
+        or "Merkür 11. ev" in anchors
+        or "Merkür Balık'ta ve 11. evde" in lived_scene
+        or "Merkür'ünün de 11. evde Balık'ta" in lived_scene
+    )
+    return has_gemini_asc and has_mercury_11h_signature
 
 
 def _packet_cluster_context(packet: Mapping[str, Any]) -> Mapping[str, Any]:

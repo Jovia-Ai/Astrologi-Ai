@@ -28,6 +28,8 @@ _DOMAIN_ALIASES = {
     "communication": "communication",
     "identity": "identity",
     "behavior_reflex": "behavior_reflex",
+    "inner_world": "inner_world",
+    "spirituality": "spirituality",
     "relationship": "relationship",
     "relationships": "relationship",
     "love": "love",
@@ -35,6 +37,11 @@ _DOMAIN_ALIASES = {
     "career": "career",
     "visibility": "visibility",
     "creativity": "creativity",
+    "money_self_worth": "money_self_worth",
+    "self_worth": "money_self_worth",
+    "community": "community",
+    "responsibility": "career",
+    "action": "inner_world",
 }
 _PROMISE_TYPE_ALIASES = {
     "gift": "gift",
@@ -53,12 +60,16 @@ _DOMAIN_TYPE_FALLBACKS = {
     "communication": {"mind_style": 0.22, "behavior_reflex": 0.12},
     "identity": {"behavior_reflex": 0.2, "gift": 0.08},
     "behavior_reflex": {"behavior_reflex": 0.24, "mind_style": 0.12},
+    "inner_world": {"need": 0.2, "wound_to_gift": 0.18, "behavior_reflex": 0.08},
+    "spirituality": {"need": 0.18, "wound_to_gift": 0.14},
     "relationship": {"love_style": 0.22, "need": 0.18},
     "love": {"love_style": 0.26, "gift": 0.12},
     "emotional_depth": {"need": 0.18, "love_style": 0.18},
     "career": {"career_signature": 0.26, "wound_to_gift": 0.12},
     "visibility": {"career_signature": 0.22, "wound_to_gift": 0.14},
     "creativity": {"gift": 0.18, "career_signature": 0.1},
+    "money_self_worth": {"behavior_reflex": 0.16, "love_style": 0.12, "gift": 0.1},
+    "community": {"mind_style": 0.16, "gift": 0.12},
 }
 _PROMISE_TYPE_LAYER = {
     "gift": "potential",
@@ -1036,6 +1047,7 @@ def _build_chart_signature_candidates(
             ],
         },
     ]
+    variants.extend(_v0_5_chart_signature_variants())
     out: list[dict[str, Any]] = []
     for variant in variants:
         match_id = str(variant.get("match_id") or "").strip()
@@ -1320,6 +1332,204 @@ def _support_motif(label: str, source_ref: str, score: float) -> dict[str, Any]:
     }
 
 
+def _v0_5_chart_signature_variants() -> list[dict[str, Any]]:
+    return [
+        {
+            "match_id": "taurus_asc_venus_12h_hidden_value_identity",
+            "forced_domain": "identity",
+            "variant_suffix": "chart_exact",
+            "title": "Kimlikte saklı değer ve sessiz çekim",
+            "proof_raw": "Yükselen Boğa · Venüs 12. ev Boğa",
+            "chips": ["Yükselen Boğa", "Venüs · 12. ev · Boğa", "Venüs ASC yakın"],
+            "scene": "Bir şeyi gerçekten sevdiğinde bunu hemen göstermeyip önce içeride taşımak.",
+            "salience": 0.94,
+            "confidence": 0.96,
+            "primary_anchor": _support_anchor("Ascendant Taurus", "planet:Ascendant:sign:Taurus", 0.95, source_type="angle"),
+            "supporting_combo": [
+                _support_anchor("Venus in Taurus 12H", "planet:Venus:sign:Taurus:house:12", 0.96, source_type="placement"),
+                _support_anchor("Venus conjunction Ascendant", "Venus:Ascendant:conjunction", 0.92, source_type="aspect"),
+            ],
+            "repeated_motifs": [_support_motif("hidden value identity", "hidden_value_identity", 0.88)],
+        },
+        {
+            "match_id": "venus_taurus_12h_private_love_inner_beauty",
+            "forced_domain": "relationship",
+            "variant_suffix": "chart_exact",
+            "title": "İlişkide içeride büyüyen sevgi",
+            "proof_raw": "Venüs · 12. ev · Boğa",
+            "chips": ["Venüs · 12. ev · Boğa", "Sessiz sevgi", "Duyusal güven"],
+            "scene": "Birine bağlandığında bunu önce içinde koruyup daha yavaş görünür kılmak.",
+            "salience": 0.9,
+            "confidence": 0.94,
+            "primary_anchor": _support_anchor("Venus in Taurus 12H", "planet:Venus:sign:Taurus:house:12", 0.95, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Venus conjunction Ascendant", "Venus:Ascendant:conjunction", 0.9, source_type="aspect"),
+            ],
+            "repeated_motifs": [_support_motif("private love", "private_love", 0.84)],
+        },
+        {
+            "match_id": "venus_12h_conjunct_asc_soft_hidden_magnetism",
+            "forced_domain": "identity",
+            "variant_suffix": "chart_exact",
+            "title": "Kimlikte sessiz magnetizma",
+            "proof_raw": "Venüs kavuşum ASC · 12. ev",
+            "chips": ["Venüs ASC kavuşumu", "Venüs 12. ev", "Sessiz çekim"],
+            "scene": "Çok şey göstermeden de ortamda iz bırakmak.",
+            "salience": 0.86,
+            "confidence": 0.92,
+            "primary_anchor": _support_anchor("Venus conjunction Ascendant", "Venus:Ascendant:conjunction", 0.93, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Venus in house 12", "planet:Venus:house:12", 0.88, source_type="placement"),
+            ],
+        },
+        {
+            "match_id": "mc_capricorn_ruler_saturn_pisces_12h_invisible_preparation",
+            "forced_domain": "career",
+            "variant_suffix": "chart_exact",
+            "title": "Kariyerde görünmeyen hazırlık ve sessiz olgunlaşma",
+            "proof_raw": "MC Oğlak · Satürn 12. ev Balık",
+            "chips": ["MC Oğlak", "Satürn · 12. ev · Balık", "Perde arkası emek"],
+            "scene": "Görünür olmadan önce içeride uzun süre prova yapmak.",
+            "salience": 0.94,
+            "confidence": 0.96,
+            "primary_anchor": _support_anchor("10th house ruler route", "house:10->ruler:Saturn->house:12", 0.96, source_type="ruler_route"),
+            "supporting_combo": [
+                _support_anchor("Midheaven Capricorn", "house:10:cusp_sign:Capricorn", 0.93, source_type="angle"),
+                _support_anchor("Saturn in Pisces 12H", "planet:Saturn:sign:Pisces:house:12", 0.94, source_type="placement"),
+            ],
+            "repeated_motifs": [_support_motif("invisible preparation", "invisible_preparation", 0.9)],
+        },
+        {
+            "match_id": "saturn_pisces_12h_private_maturity_boundary_sensitivity",
+            "forced_domain": "inner_world",
+            "variant_suffix": "chart_exact",
+            "title": "İç dünyada sessiz yük ve olgunlaşma",
+            "proof_raw": "Satürn · 12. ev · Balık",
+            "chips": ["Satürn · 12. ev · Balık", "Sınır hassasiyeti", "Sessiz sorumluluk"],
+            "scene": "Bazı yükleri kimse anlamadan içeride taşımak.",
+            "salience": 0.88,
+            "confidence": 0.93,
+            "primary_anchor": _support_anchor("Saturn in Pisces 12H", "planet:Saturn:sign:Pisces:house:12", 0.94, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Saturn sextile Neptune", "Saturn:Neptune:sextile", 0.84, source_type="aspect"),
+            ],
+        },
+        {
+            "match_id": "dsc_scorpio_ruler_mars_pisces_12h_trust_threshold_silent_desire",
+            "forced_domain": "relationship",
+            "variant_suffix": "chart_exact",
+            "title": "İlişkide güven eşiği ve sessiz arzu",
+            "proof_raw": "DSC Akrep · Mars 12. ev Balık",
+            "chips": ["7. ev Akrep", "Mars · 12. ev · Balık", "Güven eşiği"],
+            "scene": "Birine yaklaşmak isteyip aynı anda kendini korumaya almak.",
+            "salience": 0.94,
+            "confidence": 0.96,
+            "primary_anchor": _support_anchor("7th house ruler route", "house:7->ruler:Mars->house:12", 0.96, source_type="ruler_route"),
+            "supporting_combo": [
+                _support_anchor("7th cusp Scorpio", "house:7:cusp_sign:Scorpio", 0.92, source_type="angle"),
+                _support_anchor("Mars in Pisces 12H", "planet:Mars:sign:Pisces:house:12", 0.94, source_type="placement"),
+            ],
+            "repeated_motifs": [_support_motif("trust threshold", "trust_threshold", 0.88)],
+        },
+        {
+            "match_id": "pluto_7h_relationship_power_depth",
+            "forced_domain": "relationship",
+            "variant_suffix": "chart_exact",
+            "title": "İlişkide güç ve dönüşüm derinliği",
+            "proof_raw": "Plüton 7. ev",
+            "chips": ["Plüton 7. ev", "Yoğun karşılaşma", "Dönüşen bağ"],
+            "scene": "Bazı ilişkilerin kapanmış görünse bile içeride uzun süre iz bırakması.",
+            "salience": 0.84,
+            "confidence": 0.9,
+            "primary_anchor": _support_anchor("Pluto in house 7", "planet:Pluto:house:7", 0.9, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("7th cusp Scorpio", "house:7:cusp_sign:Scorpio", 0.82, source_type="angle"),
+            ],
+        },
+        {
+            "match_id": "mars_pisces_12h_hidden_action_soft_drive",
+            "forced_domain": "inner_world",
+            "variant_suffix": "chart_exact",
+            "title": "İç dünyada sessiz hareket ve yumuşak itki",
+            "proof_raw": "Mars · 12. ev · Balık",
+            "chips": ["Mars · 12. ev · Balık", "Sessiz çaba", "Sezgisel aksiyon"],
+            "scene": "Ne istediğini hemen açmadan önce içeride uzun süre sezmek.",
+            "salience": 0.86,
+            "confidence": 0.91,
+            "primary_anchor": _support_anchor("Mars in Pisces 12H", "planet:Mars:sign:Pisces:house:12", 0.92, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Mars sextile Midheaven", "Mars:Midheaven:sextile", 0.84, source_type="aspect"),
+            ],
+        },
+        {
+            "match_id": "sun_mars_pisces_12h_private_will_and_hidden_drive",
+            "forced_domain": "inner_world",
+            "variant_suffix": "chart_exact",
+            "title": "İç dünyada özel irade ve saklı cesaret",
+            "proof_raw": "Güneş kavuşum Mars · 12. ev Balık",
+            "chips": ["Güneş-Mars kavuşumu", "12. ev Balık", "Sessiz mücadele"],
+            "scene": "Başkaları fark etmeden içeride çoktan karar almış olmak.",
+            "salience": 0.9,
+            "confidence": 0.94,
+            "primary_anchor": _support_anchor("Sun conjunction Mars", "Sun:Mars:conjunction", 0.95, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Sun in Pisces 12H", "planet:Sun:sign:Pisces:house:12", 0.9, source_type="placement"),
+                _support_anchor("Mars in Pisces 12H", "planet:Mars:sign:Pisces:house:12", 0.9, source_type="placement"),
+            ],
+        },
+        {
+            "match_id": "pisces_12h_stellium_inner_world_saturation",
+            "forced_domain": "inner_world",
+            "variant_suffix": "chart_exact",
+            "title": "Haritada güçlü iç dünya doygunluğu",
+            "proof_raw": "12. ev yoğunluğu",
+            "chips": ["12. ev yoğunluğu", "Balık vurgusu", "Görünmeyen süreçler"],
+            "scene": "Karar, arzu ve sorumlulukların önce sessiz bir alanda şekillenmesi.",
+            "salience": 0.96,
+            "confidence": 0.97,
+            "primary_anchor": _support_anchor("12th house saturation", "house:12:saturation", 0.97, source_type="ruler_route"),
+            "supporting_combo": [
+                _support_anchor("Sun in house 12", "planet:Sun:house:12", 0.9, source_type="placement"),
+                _support_anchor("Mars in house 12", "planet:Mars:house:12", 0.9, source_type="placement"),
+                _support_anchor("Saturn in house 12", "planet:Saturn:house:12", 0.9, source_type="placement"),
+                _support_anchor("Venus in house 12", "planet:Venus:house:12", 0.9, source_type="placement"),
+            ],
+            "repeated_motifs": [_support_motif("inner world saturation", "inner_world_saturation", 0.92)],
+        },
+        {
+            "match_id": "mercury_pisces_11h_social_intuition_mind",
+            "forced_domain": "mind",
+            "variant_suffix": "chart_exact",
+            "title": "Zihinde sosyal sezgi ve atmosfer okuma",
+            "proof_raw": "Merkür · 11. ev · Balık",
+            "chips": ["Merkür · 11. ev · Balık", "Sosyal sezgi", "Atmosfer okuma"],
+            "scene": "Bir grubun içinde söylenmeyen şeyi hızlıca hissetmek.",
+            "salience": 0.86,
+            "confidence": 0.91,
+            "primary_anchor": _support_anchor("Mercury in Pisces 11H", "planet:Mercury:sign:Pisces:house:11", 0.92, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Mercury sextile Ascendant", "Mercury:Ascendant:sextile", 0.82, source_type="aspect"),
+            ],
+        },
+        {
+            "match_id": "uranus_square_asc_venus_unsettled_outer_signal",
+            "forced_domain": "identity",
+            "variant_suffix": "chart_exact",
+            "title": "Kimlikte sakin tonun altında elektrik",
+            "proof_raw": "Uranüs kare ASC · Venüs kare Uranüs",
+            "chips": ["Uranüs kare ASC", "Venüs kare Uranüs", "Özgürlük ihtiyacı"],
+            "scene": "Yakınlık fazla sabitlendiğinde bir anda alan ihtiyacının yükselmesi.",
+            "salience": 0.82,
+            "confidence": 0.89,
+            "primary_anchor": _support_anchor("Uranus square Ascendant", "Uranus:Ascendant:square", 0.94, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Venus square Uranus", "Venus:Uranus:square", 0.92, source_type="aspect"),
+                _support_anchor("Ascendant Taurus", "planet:Ascendant:sign:Taurus", 0.8, source_type="angle"),
+            ],
+        },
+    ]
+
+
 def _chart_seed_body(*, match: Mapping[str, Any], variant: Mapping[str, Any]) -> str:
     parts: list[str] = []
     direct = str(match.get("direct_meaning") or "").strip()
@@ -1445,6 +1655,50 @@ def _chart_variant_supported(
             and int((planet_map.get("saturn") or {}).get("house") or 0) == 9
             and int((planet_map.get("pluto") or {}).get("house") or 0) == 9
         )
+    # ---- v0.5 chart-fact guards ----
+    if match_id == "taurus_asc_venus_12h_hidden_value_identity":
+        return (
+            _asc_sign(metadata_like=planet_map, house_rulers=house_rulers) == "taurus"
+            and _planet_in_sign_house(planet_map, "venus", "Taurus", 12)
+        )
+    if match_id == "venus_taurus_12h_private_love_inner_beauty":
+        return _planet_in_sign_house(planet_map, "venus", "Taurus", 12)
+    if match_id == "venus_12h_conjunct_asc_soft_hidden_magnetism":
+        return (
+            int((planet_map.get("venus") or {}).get("house") or 0) == 12
+            and _has_aspect(aspects, "Venus", "Ascendant", "Conjunction")
+        )
+    if match_id == "mc_capricorn_ruler_saturn_pisces_12h_invisible_preparation":
+        return (
+            _house_cusp_sign(house_rulers, 10) == "capricorn"
+            and _planet_in_sign_house(planet_map, "saturn", "Pisces", 12)
+        )
+    if match_id == "saturn_pisces_12h_private_maturity_boundary_sensitivity":
+        return _planet_in_sign_house(planet_map, "saturn", "Pisces", 12)
+    if match_id == "dsc_scorpio_ruler_mars_pisces_12h_trust_threshold_silent_desire":
+        return (
+            _house_cusp_sign(house_rulers, 7) == "scorpio"
+            and _planet_in_sign_house(planet_map, "mars", "Pisces", 12)
+        )
+    if match_id == "pluto_7h_relationship_power_depth":
+        return int((planet_map.get("pluto") or {}).get("house") or 0) == 7
+    if match_id == "mars_pisces_12h_hidden_action_soft_drive":
+        return _planet_in_sign_house(planet_map, "mars", "Pisces", 12)
+    if match_id == "sun_mars_pisces_12h_private_will_and_hidden_drive":
+        return (
+            _has_aspect(aspects, "Sun", "Mars", "Conjunction")
+            and _planet_in_sign_house(planet_map, "sun", "Pisces", 12)
+            and _planet_in_sign_house(planet_map, "mars", "Pisces", 12)
+        )
+    if match_id == "pisces_12h_stellium_inner_world_saturation":
+        return _planet_count_in_house(planet_map, 12, planets={"sun", "mars", "saturn", "venus"}) >= 3
+    if match_id == "mercury_pisces_11h_social_intuition_mind":
+        return _planet_in_sign_house(planet_map, "mercury", "Pisces", 11)
+    if match_id == "uranus_square_asc_venus_unsettled_outer_signal":
+        return (
+            _has_aspect(aspects, "Uranus", "Ascendant", "Square")
+            and _has_aspect(aspects, "Venus", "Uranus", "Square")
+        )
     return False
 
 
@@ -1490,6 +1744,13 @@ def _chart_variant_match_score(
         return _aspect_match_score(aspects, "Venus", "Mars", "Trine", default=0.9)
     if match_id == "venus_trine_saturn_trust_bond":
         return _aspect_match_score(aspects, "Venus", "Saturn", "Trine", default=0.9)
+    # v0.5 aspect-based score lookups.
+    if match_id == "venus_12h_conjunct_asc_soft_hidden_magnetism":
+        return _aspect_match_score(aspects, "Venus", "Ascendant", "Conjunction", default=0.91)
+    if match_id == "sun_mars_pisces_12h_private_will_and_hidden_drive":
+        return _aspect_match_score(aspects, "Sun", "Mars", "Conjunction", default=0.93)
+    if match_id == "uranus_square_asc_venus_unsettled_outer_signal":
+        return _aspect_match_score(aspects, "Uranus", "Ascendant", "Square", default=0.93)
     return 0.9
 
 
@@ -1641,6 +1902,107 @@ _CHART_FACT_VALIDATORS: dict[str, dict[str, Any]] = {
         "sign": "scorpio",
         "house": 6,
     },
+    # Aspect-first chart-signature variants that still encode hard placement
+    # assumptions in their ids / chips / override copy. Keep them available for
+    # debug/transit use, but mark ``chart_facts_match=False`` unless the full
+    # placement frame really matches.
+    "saturn_sextile_uranus_structured_originality": {
+        "kind": "all_of",
+        "filter_registry_entry": False,
+        "validators": [
+            {
+                "kind": "asc_sign",
+                "asc_sign": "capricorn",
+            },
+            {
+                "kind": "planet_in_sign_house",
+                "planet": "saturn",
+                "sign": "aries",
+                "house": 3,
+            },
+            {
+                "kind": "planet_in_house",
+                "planet": "uranus",
+                "house": 1,
+            },
+        ],
+    },
+    # v0.5 placement-encoded packets.
+    "taurus_asc_venus_12h_hidden_value_identity": {
+        "kind": "asc_with_planet_in_sign_house",
+        "asc_sign": "taurus",
+        "planet": "venus",
+        "sign": "taurus",
+        "house": 12,
+    },
+    "venus_taurus_12h_private_love_inner_beauty": {
+        "kind": "planet_in_sign_house",
+        "planet": "venus",
+        "sign": "taurus",
+        "house": 12,
+    },
+    "mc_capricorn_ruler_saturn_pisces_12h_invisible_preparation": {
+        "kind": "house_cusp_sign_with_planet_in_sign_house",
+        "house": 10,
+        "cusp_sign": "capricorn",
+        "planet": "saturn",
+        "sign": "pisces",
+        "planet_house": 12,
+    },
+    "saturn_pisces_12h_private_maturity_boundary_sensitivity": {
+        "kind": "planet_in_sign_house",
+        "planet": "saturn",
+        "sign": "pisces",
+        "house": 12,
+    },
+    "dsc_scorpio_ruler_mars_pisces_12h_trust_threshold_silent_desire": {
+        "kind": "house_cusp_sign_with_planet_in_sign_house",
+        "house": 7,
+        "cusp_sign": "scorpio",
+        "planet": "mars",
+        "sign": "pisces",
+        "planet_house": 12,
+    },
+    "pluto_7h_relationship_power_depth": {
+        "kind": "planet_in_house",
+        "planet": "pluto",
+        "house": 7,
+    },
+    "mars_pisces_12h_hidden_action_soft_drive": {
+        "kind": "planet_in_sign_house",
+        "planet": "mars",
+        "sign": "pisces",
+        "house": 12,
+    },
+    "sun_mars_pisces_12h_private_will_and_hidden_drive": {
+        "kind": "all_of",
+        "validators": [
+            {
+                "kind": "planet_in_sign_house",
+                "planet": "sun",
+                "sign": "pisces",
+                "house": 12,
+            },
+            {
+                "kind": "planet_in_sign_house",
+                "planet": "mars",
+                "sign": "pisces",
+                "house": 12,
+            },
+        ],
+    },
+    "pisces_12h_stellium_inner_world_saturation": {
+        "kind": "planets_in_house_count",
+        "house": 12,
+        "planets": ["sun", "mars", "saturn", "venus"],
+        "min_count": 3,
+    },
+    "mercury_pisces_11h_social_intuition_mind": {
+        "kind": "planet_in_sign_house",
+        "planet": "mercury",
+        "sign": "pisces",
+        "house": 11,
+    },
 }
 
 
@@ -1680,7 +2042,7 @@ def _filter_entries_against_chart(
         if not isinstance(value, Mapping):
             continue
         validator = _CHART_FACT_VALIDATORS.get(key)
-        if validator is None:
+        if validator is None or validator.get("filter_registry_entry") is False:
             out[key] = value
             continue
         if _evaluate_chart_fact_validator(
@@ -1777,6 +2139,45 @@ def _evaluate_chart_fact_validator(
     if kind == "planet_in_house":
         planet_name = str(validator.get("planet") or "").lower()
         return int((planet_map.get(planet_name) or {}).get("house") or 0) == int(validator.get("house") or 0)
+    if kind == "house_cusp_sign":
+        return _house_cusp_sign(house_rulers, int(validator.get("house") or 0)) == str(validator.get("sign") or "").strip().lower()
+    if kind == "house_cusp_sign_with_planet_in_sign_house":
+        if _house_cusp_sign(house_rulers, int(validator.get("house") or 0)) != str(validator.get("cusp_sign") or "").strip().lower():
+            return False
+        return _planet_in_sign_house(
+            planet_map,
+            str(validator.get("planet") or ""),
+            str(validator.get("sign") or ""),
+            int(validator.get("planet_house") or 0),
+        )
+    if kind == "planet_aspect":
+        return _has_aspect(
+            validator.get("_aspects") or [],
+            str(validator.get("planet1") or ""),
+            str(validator.get("planet2") or ""),
+            str(validator.get("aspect_type") or ""),
+        )
+    if kind == "planets_in_house_count":
+        planets = {
+            str(item).strip().lower()
+            for item in (validator.get("planets") or [])
+            if str(item).strip()
+        }
+        return _planet_count_in_house(planet_map, int(validator.get("house") or 0), planets=planets) >= int(validator.get("min_count") or 0)
+    if kind == "all_of":
+        for child in validator.get("validators") or []:
+            if not isinstance(child, Mapping):
+                continue
+            child_dict = dict(child)
+            if child_dict.get("kind") == "planet_aspect":
+                child_dict["_aspects"] = validator.get("_aspects") or []
+            if not _evaluate_chart_fact_validator(
+                validator=child_dict,
+                planet_map=planet_map,
+                house_rulers=house_rulers,
+            ):
+                return False
+        return True
     return True
 
 
@@ -1787,6 +2188,27 @@ def _asc_sign(*, metadata_like: Mapping[str, Mapping[str, Any]], house_rulers: M
         return cusp_sign
     asc = metadata_like.get("ascendant") or {}
     return str(asc.get("sign") or "").strip().lower()
+
+
+def _house_cusp_sign(house_rulers: Mapping[str, Any], house: int) -> str:
+    item = house_rulers.get(str(house)) if isinstance(house_rulers.get(str(house)), Mapping) else {}
+    return str(item.get("cusp_sign") or "").strip().lower()
+
+
+def _planet_count_in_house(
+    planet_map: Mapping[str, Mapping[str, Any]],
+    house: int,
+    *,
+    planets: set[str] | None = None,
+) -> int:
+    allowed = {str(item).strip().lower() for item in (planets or set()) if str(item).strip()}
+    count = 0
+    for planet_name, item in planet_map.items():
+        if allowed and planet_name not in allowed:
+            continue
+        if int(item.get("house") or 0) == int(house):
+            count += 1
+    return count
 
 
 def _best_category_support(*, seed: Mapping[str, Any], thread: Mapping[str, Any] | None) -> Mapping[str, Any]:
@@ -1918,6 +2340,8 @@ _DOMAIN_FAMILY_MAP = {
     "communication": "mind",
     "identity": "identity",
     "behavior_reflex": "identity",
+    "inner_world": "inner_world",
+    "spirituality": "inner_world",
     "relationship": "relationship",
     "love": "relationship",
     "emotional_depth": "relationship",
@@ -1928,6 +2352,9 @@ _DOMAIN_FAMILY_MAP = {
     "career": "career",
     "visibility": "career",
     "creativity": "career",
+    "money_self_worth": "identity",
+    "self_worth": "identity",
+    "community": "community",
 }
 
 
@@ -2882,15 +3309,22 @@ def _dedupe_packets(packets: Sequence[Mapping[str, Any]], *, mode: str = "select
 
 def _base_packet_id(packet: Mapping[str, Any]) -> str:
     packet_id = str(packet.get("id") or "").strip()
-    for suffix in (
+    suffixes = (
+        "_identity_chart_exact",
+        "_relationship_chart_exact",
         "_aux",
         "_identity_overlay",
         "_behavior_reflex_overlay",
         "_career_overlay",
         "_chart_exact",
-        "_identity_chart_exact",
-        "_relationship_chart_exact",
-    ):
+    )
+    for suffix in suffixes:
+        if not packet_id.endswith(suffix):
+            continue
+        candidate = packet_id[: -len(suffix)]
+        if candidate in _CHART_FACT_VALIDATORS:
+            return candidate
+    for suffix in suffixes:
         if packet_id.endswith(suffix):
             return packet_id[: -len(suffix)]
     return packet_id
@@ -3047,6 +3481,8 @@ def _support_items(
 
 def _humanize_contradiction(label: str) -> str:
     normalized = _normalize_text(label)
+    if "pressure vs resilience" in normalized:
+        return "Bazen de baskı ile dayanıklılık arasındaki çekişme daha belirgin hale gelebilir."
     if "structured originality" in normalized or "structure vs originality" in normalized:
         return "Bir yanın düzen kurmak isterken, başka bir yanın daha farklı ve özgür bir yol arıyor olabilir."
     if "composure vs internal pressure" in normalized:
