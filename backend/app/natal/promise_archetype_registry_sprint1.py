@@ -855,6 +855,231 @@ NATAL_PROMISE_LIBRARY_V0_3: Dict[str, Dict[str, Any]] = {
 }
 
 
+# v0.4 addendum — Gemini / Aries / Aquarius / Scorpio coverage.
+# Additive only. Designed to recover the 2020-04-10 Istanbul chart's identity,
+# career-action, relationship-trust, emotional-routine, and belief-authority
+# signatures without changing the existing overlay architecture.
+NATAL_PROMISE_LIBRARY_V0_4: Dict[str, Dict[str, Any]] = {
+    "gemini_asc_venus_1h_social_relational_presence": {
+        "id": "gemini_asc_venus_1h_social_relational_presence",
+        "match": {
+            "labels": [],
+            "source_refs": ["asc:gemini", "planet:Venus:sign:Gemini:house:1"],
+        },
+        "promise_type": "behavior_reflex",
+        "preferred_types": ["behavior_reflex", "gift", "love_style"],
+        "domains": ["identity", "relationship", "visibility"],
+        "themes": [
+            "sosyal canlılık",
+            "ilişki kuran ilk izlenim",
+            "oyunlu çekim",
+            "hafif ama uyanık duruş",
+        ],
+        "direct_meaning": "İnsanların seni ilk anda sosyal, canlı ve ilişki kurmaya açık hissetmesi kolay olabilir.",
+        "lived_scenes": [
+            "Bir ortama girdiğinde hızlıca bağ kuracak bir ton bulmak.",
+            "İlgiyi ağırlıkla değil, hafiflik ve hareketle çekmek.",
+            "Sohbetin içinde hem meraklı hem de oyunlu bir tarafın görünmesi.",
+        ],
+        "gift": "İnsanla hızlı temas kurmak, sosyal havayı canlandırmak ve ilgiyi doğal taşımak.",
+        "shadow_or_friction": "Dağılmak, her şeye aynı anda açılmak, hafif görünürken derin ihtiyacı geciktirmek.",
+        "growth_direction": "Sosyal parlaklığı yalnızca hızda değil, gerçek seçimlerinde de taşımak.",
+        "voice_seeds": [
+            "İlk izlenimde sende hızlıca temas kuran, canlı bir sosyal ton hissedilebilir.",
+            "İnsanlara yaklaşırken sende merakla oyunu aynı anda taşıyan bir taraf olabilir.",
+            "Duruşun hafif görünse de kimle ne kadar açılacağını hızlı sezebiliyor olabilirsin.",
+        ],
+    },
+    "sun_aries_12h_hidden_private_fire": {
+        "id": "sun_aries_12h_hidden_private_fire",
+        "match": {
+            "labels": [],
+            "source_refs": ["planet:Sun:sign:Aries:house:12"],
+        },
+        "promise_type": "behavior_reflex",
+        "preferred_types": ["behavior_reflex", "wound_to_gift", "gift"],
+        "domains": ["identity", "behavior_reflex", "emotional_depth"],
+        "themes": [
+            "gizli ateş",
+            "özel alanda irade",
+            "geri planda hızlanan benlik",
+            "içeride bağımsızlık",
+        ],
+        "direct_meaning": "Dışarıdan hemen görünmese de içeride hızlı, bağımsız ve kolay sönmeyen bir ateş çalışabilir.",
+        "lived_scenes": [
+            "Bir şeye gerçekten yönelmeden önce bunu uzun süre kendi içinde taşımak.",
+            "Hızlı tepkiyi dışarıda göstermeyip içeride büyütmek.",
+            "Kendi alanında yalnızken daha netleşen güçlü bir irade hissetmek.",
+        ],
+        "gift": "Sessiz ama güçlü irade, içeride hızla toparlanan benlik, görünmeden de yön tutabilmek.",
+        "shadow_or_friction": "Öfkeyi içeri atmak, yalnız savaşmak, yardım istemeden kendi başına halletmeye çalışma.",
+        "growth_direction": "İçerideki ateşi saklanmak için değil, daha bilinçli görünmek için kullanmak.",
+        "voice_seeds": [
+            "Sende dışarıdan hemen görünmeyen ama içeride hızla alevlenen bir taraf olabilir.",
+            "Kendi alanında kaldığında iraden daha net ve daha keskin çalışıyor olabilir.",
+            "İçerideki ateşini bastırmak yerine onu daha bilinçli yönlendirdiğinde kimliğin güçlenir.",
+        ],
+    },
+    "aquarius_mc_mars_conjunct_mc_visible_freedom_drive": {
+        "id": "aquarius_mc_mars_conjunct_mc_visible_freedom_drive",
+        "match": {
+            "labels": [],
+            "source_refs": ["Mars:Midheaven:conjunction", "Uranus:Midheaven:square"],
+        },
+        "promise_type": "career_signature",
+        "preferred_types": ["career_signature", "drive", "wound_to_gift"],
+        "domains": ["career", "visibility", "identity"],
+        "themes": [
+            "görünür eylem",
+            "kariyerde hız",
+            "özgürlük ihtiyacı",
+            "kendi yönünü belirleme",
+            "bağımsız duruş",
+        ],
+        "direct_meaning": "Görünürlük hattın, hız, inisiyatif ve kendi yönünü kendin belirleme isteğiyle çalışabilir.",
+        "lived_scenes": [
+            "Bir işte beklemekten çok harekete geçerek yol açmak istemek.",
+            "Kariyerde kendi yöntemini kurmadan tam rahatlayamamak.",
+            "Sana uymayan görünürlük biçimlerine hızla itiraz etmek.",
+        ],
+        "gift": "Görünür işte cesur başlatıcılık, bağımsız hareket ve canlı yön duygusu.",
+        "shadow_or_friction": "Sabırsız kopuş, yön değişimlerini sert yapmak, özgürlük ihtiyacını çatışmaya çevirmek.",
+        "growth_direction": "Hızı sadece kaçışta değil, daha bilinçli bir yön kurmakta kullanmak.",
+        "voice_seeds": [
+            "Kariyerde sende beklemekten çok hareket ederek yol açan bir enerji olabilir.",
+            "Görünür olduğunda kendi yönünü kendin belirleme ihtiyacın güçleniyor olabilir.",
+            "Özgürlük ihtiyacını rastgele kopuşa değil, daha net bir kariyer çizgisine çevirdiğinde etki büyür.",
+        ],
+    },
+    "venus_trine_mars_relational_attraction_signal": {
+        "id": "venus_trine_mars_relational_attraction_signal",
+        "match": {
+            "labels": ["Venus trine Mars"],
+            "source_refs": ["Venus:Mars:trine"],
+        },
+        "promise_type": "love_style",
+        "preferred_types": ["love_style", "gift"],
+        "domains": ["relationship", "love", "identity"],
+        "themes": [
+            "doğal çekim",
+            "sıcak yaklaşım",
+            "oyunlu yakınlık",
+            "beden ve duygu akışı",
+        ],
+        "direct_meaning": "İlgini belli ettiğinde sıcaklık, çekim ve hareket aynı anda çalışabilir.",
+        "lived_scenes": [
+            "Birine yaklaşırken bunu sadece sözle değil tonunla ve enerjinle de hissettirmek.",
+            "Yakınlıkta oyun, hareket ve canlılığın hızlı yükselmesi.",
+            "Sevgiyle istek arasında doğal bir akış hissetmek.",
+        ],
+        "gift": "Yakınlıkta canlılık, sıcak çekim ve doğal hareket.",
+        "shadow_or_friction": "Hızlı yükselip tempoyu fazla aceleye çekmek, çekimi ritim yerine dürtüyle taşımak.",
+        "growth_direction": "Çekimi yalnızca hızla değil, karşılıklılık ve ritimle büyütmek.",
+        "voice_seeds": [
+            "Birine ilgi duyduğunda bunu yalnızca düşünmez, enerjinle de belli edebilirsin.",
+            "Yakınlıkta sende oyunla çekimin aynı anda açılması kolay olabilir.",
+            "Çekim sende doğal çalışıyor olabilir; ritimle birleştiğinde daha kalıcı bir bağ kurar.",
+        ],
+    },
+    "venus_trine_saturn_trust_bond": {
+        "id": "venus_trine_saturn_trust_bond",
+        "match": {
+            "labels": ["Venus trine Saturn"],
+            "source_refs": ["Venus:Saturn:trine"],
+        },
+        "promise_type": "love_style",
+        "preferred_types": ["love_style", "gift", "need"],
+        "domains": ["relationship", "love", "emotional_depth"],
+        "themes": [
+            "güven veren sevgi",
+            "tutarlılık",
+            "zamana yayılan bağ",
+            "sadakat",
+            "ölçülü yakınlık",
+        ],
+        "direct_meaning": "Sevgi sende hafiflik kadar güven, tutarlılık ve zamanla kurulan sadakati de ister.",
+        "lived_scenes": [
+            "Bir bağın sadece heyecanlı değil, güvenilir de olmasına önem vermek.",
+            "Yakınlıkta acele değil, ritim ve tutarlılık aramak.",
+            "Sevdiğin kişiye sözle değil, sürdürülebilir duruşla güven vermek.",
+        ],
+        "gift": "Sevgiyi güven, sadakat ve uzun vadeli emekle taşıyabilmek.",
+        "shadow_or_friction": "Fazla kontrollü açılmak, duyguyu güven gelene kadar uzun süre tutmak, yakınlığı fazla test etmek.",
+        "growth_direction": "Güveni duyguyu geciktirmenin değil, daha rahat açılmanın zemini haline getirmek.",
+        "voice_seeds": [
+            "Yakınlıkta sende sadece heyecan değil, güvenilirlik de çok şey belirliyor olabilir.",
+            "Sevgi verdiğinde bunun içinde tutarlılık ve söz taşıyan bir taraf var.",
+            "Bir bağı kalıcı yapan şeyin yalnızca his değil, güven olduğunu erken sezebilirsin.",
+        ],
+    },
+    "moon_scorpio_6h_emotional_routine_sensitivity": {
+        "id": "moon_scorpio_6h_emotional_routine_sensitivity",
+        "match": {
+            "labels": [],
+            "source_refs": ["planet:Moon:sign:Scorpio:house:6"],
+        },
+        "promise_type": "need",
+        "preferred_types": ["need", "wound_to_gift", "love_style"],
+        "domains": ["emotional_depth", "relationship", "behavior_reflex"],
+        "themes": [
+            "günlük duygusal hassasiyet",
+            "rutin içinde yoğun his",
+            "bedensel sezgi",
+            "kolay derine işleme",
+        ],
+        "direct_meaning": "Duygun, günlük akışta bile kolay yüzeyde kalmayabilir; küçük şeyler içeride daha derine işleyebilir.",
+        "lived_scenes": [
+            "Günlük ritimdeki küçük bir değişimin içeride sandığından daha çok yer kaplaması.",
+            "Birinin tonu veya tavrı küçük görünse de bedeninde hemen bir karşılık yaratması.",
+            "Rutin bozulduğunda duygunun daha yoğun uyanması.",
+        ],
+        "gift": "İnce sezgi, duygusal alt akımı erken fark etme ve gündelik olanda bile derin bağ kurma.",
+        "shadow_or_friction": "Küçük gerilimleri bedeninde biriktirmek, gündelik baskıyı yoğun hissetmek, duyguyu bırakmakta zorlanmak.",
+        "growth_direction": "Yoğun hissi yalnızca yük gibi değil, ritmini korumaya yardım eden bir sinyal gibi okumak.",
+        "voice_seeds": [
+            "Gündelik şeyler sende bazen göründüğünden daha derin bir duygu uyandırabilir.",
+            "Rutinindeki küçük bir değişim bile içeride büyük bir hassasiyeti açabilir.",
+            "Bedenin ve duygun sana çoğu zaman küçük sinyallerle konuşuyor olabilir.",
+        ],
+    },
+    "mercury_sextile_9h_capricorn_aquarius_intellectual_authority": {
+        "id": "mercury_sextile_9h_capricorn_aquarius_intellectual_authority",
+        "match": {
+            "labels": [],
+            "source_refs": [
+                "Mercury:Jupiter:sextile",
+                "Mercury:Saturn:sextile",
+                "Mercury:Pluto:sextile",
+            ],
+        },
+        "promise_type": "mind_style",
+        "preferred_types": ["mind_style", "gift", "career_signature"],
+        "domains": ["mind", "communication", "career", "identity"],
+        "themes": [
+            "entelektüel omurga",
+            "inanç ve fikir kurma",
+            "sağlam düşünce",
+            "otoriteli anlatım",
+            "büyük resmi yapılandırma",
+        ],
+        "direct_meaning": "Bir fikri sadece sezmek değil, onu çerçeveleyip sağlam bir görüşe dönüştürmek sende güçlü olabilir.",
+        "lived_scenes": [
+            "Bir düşünceyi daha büyük bir çerçeveye oturtmadan rahatlayamamak.",
+            "Fikri hem açık hem de ağırlığı olan bir dille kurmak istemek.",
+            "Bilgiyi kanaate, kanaati de duruşa çevirmek.",
+        ],
+        "gift": "Düşünceye omurga vermek, inancı zihinsel çerçeveye dönüştürmek, sözde güven yaratmak.",
+        "shadow_or_friction": "Kendi fikrini fazla yüklenmek, zihni sürekli ispat modunda tutmak, düşünceyi fazla kontrol etmek.",
+        "growth_direction": "Ağırlığı katılığa değil, açık ama sağlam bir zihinsel otoriteye çevirmek.",
+        "voice_seeds": [
+            "Bir fikri sadece bulmak değil, ona sağlam bir çerçeve vermek sende güçlü olabilir.",
+            "Zihnin sezgiyle açılan şeyi kolayca görüşe ve yapıya çevirebiliyor olabilir.",
+            "Sözünün ağırlığı, bildiğini daha büyük bir çerçeveye yerleştirebildiğinde artar.",
+        ],
+    },
+}
+
+
 def get_natal_promise_archetype_registry_sprint1() -> Dict[str, Any]:
     entries: Dict[str, Dict[str, Any]] = {}
     for key, entry in NATAL_PROMISE_ARCHETYPE_LIBRARY_V0_1.items():
@@ -867,8 +1092,12 @@ def get_natal_promise_archetype_registry_sprint1() -> Dict[str, Any]:
     for key, entry in NATAL_PROMISE_LIBRARY_V0_3.items():
         if key not in entries:
             entries[key] = deepcopy(dict(entry))
+    # v0.4 addendum — additive overlay, never replaces v0.1/v0.2/v0.3 archetypes.
+    for key, entry in NATAL_PROMISE_LIBRARY_V0_4.items():
+        if key not in entries:
+            entries[key] = deepcopy(dict(entry))
     return {
         "version": REGISTRY_VERSION,
-        "authority": "v0.1_plus_manual_delta_v0_2_plus_v0_3",
+        "authority": "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4",
         "entries": entries,
     }

@@ -8,6 +8,16 @@ import app.natal.public_builder as natal_public_builder_module
 from app.natal.public_builder import build_public_natal_view
 
 
+def _artifact_response(filename: str) -> dict:
+    return json.loads(
+        (
+            Path(__file__).resolve().parent
+            / "_artifacts"
+            / filename
+        ).read_text()
+    )
+
+
 def test_public_natal_view_includes_supporting_threads_and_graph() -> None:
     response = {
         "core_story": "Kisa test metni.",
@@ -741,3 +751,105 @@ def test_public_natal_view_cluster_plan_renderer_localizes_and_separates_reused_
     }
     assert "promise::chiron_conjunct_mc_visibility_wound_to_voice_chart_exact" in extra_block_ids
     assert "promise::saturn_trine_pluto_deep_resilience_chart_exact" in extra_block_ids
+
+
+def test_public_natal_view_2020_copy_polish_naturalizes_surface_without_duplicate_diff_headlines(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    response = _artifact_response("natal_interpret_full_2020-04-10_08-26_istanbul_user_compact_debug.json")
+
+    public = build_public_natal_view(response, locale="tr", include_debug=True, include_full_profile=True)
+    profile_public = public["profile_narrative_projection_v1"]["profile_public"]
+    core_blocks = list(profile_public["core_blocks"])
+    extra_blocks = list(profile_public["extra_blocks"])
+    block_by_node_id = {
+        str(block.get("node_id") or "").strip(): block
+        for block in [*core_blocks, *extra_blocks]
+    }
+
+    career_core = block_by_node_id["promise::aquarius_mc_mars_conjunct_mc_visible_freedom_drive"]
+    assert "Bazen de." not in str(career_core.get("body") or "")
+    assert str(career_core.get("body") or "").startswith("Mars'ının kariyer hattına çok yakın olması")
+
+    trust_block = block_by_node_id["promise::venus_trine_saturn_trust_bond_chart_exact"]
+    assert str(trust_block.get("body") or "").startswith("Venüs'ünün Satürn'le uyumlu çalışması")
+
+    mind_block = block_by_node_id["promise::mind_mind_system"]
+    assert "Ne yapacağını bildiğin an tempo kendiliğinden yükselir. Ne yapacağını bildiğin an tempo kendiliğinden yükselir." not in str(
+        mind_block.get("body") or ""
+    )
+
+    public_text = " ".join(
+        [
+            *(
+                value
+                for block in [*core_blocks, *extra_blocks]
+                for value in (
+                    str(block.get("headline") or ""),
+                    str(block.get("teaser") or ""),
+                    str(block.get("body") or ""),
+                )
+            ),
+            str(public["profile_v8_projection_v1"]["hero"].get("headline") or ""),
+            str(public["profile_v8_projection_v1"]["hero"].get("summary") or ""),
+            str(public["profile_v8_projection_v1"]["identity_axis"].get("headline") or ""),
+            str(public["profile_v8_projection_v1"]["identity_axis"].get("body") or ""),
+            *(
+                str(item.get("headline") or "")
+                for item in public["profile_v8_projection_v1"]["differentiators"]
+            ),
+        ]
+    )
+    for bad_phrase in ("kadar Güven de", "olması de", "Özel ateş birlikte"):
+        assert bad_phrase not in public_text, f"bad copy join leaked into 2020 public text: {bad_phrase!r}"
+
+    core_headlines = {
+        str(block.get("headline") or "").strip()
+        for block in core_blocks
+    }
+    differentiator_headlines = [
+        str(item.get("headline") or "").strip()
+        for item in public["profile_v8_projection_v1"]["differentiators"]
+    ]
+    assert not (core_headlines & set(differentiator_headlines)), (
+        f"2020 differentiators still duplicate core headlines: {core_headlines & set(differentiator_headlines)}"
+    )
+
+
+def test_public_natal_view_copy_polish_keeps_1996_istanbul_and_adana_surfaces_stable(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    istanbul_1996 = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+    narrative_1996_blocks = {
+        str(block.get("node_id") or "").strip(): block
+        for block in istanbul_1996["profile_narrative_projection_v1"]["profile_public"]["blocks"]
+    }
+    assert narrative_1996_blocks["promise::venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact"]["headline"] == (
+        "Bazı duygular sende önce içeride büyüyor olabilir."
+    )
+    assert narrative_1996_blocks["promise::saturn_sextile_uranus_structured_originality_identity_chart_exact"]["headline"] == (
+        "Ciddi görünsen de içeride daha farklı bir çizgi taşıyorsun."
+    )
+
+    adana = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1998-09-12_07-30_adana_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+    adana_blocks = {
+        str(block.get("node_id") or "").strip(): block
+        for block in adana["profile_narrative_projection_v1"]["profile_public"]["blocks"]
+    }
+    assert str(
+        adana_blocks["promise::mc_cancer_moon_gemini_9h_teaching_voice_chart_exact"].get("body") or ""
+    ).startswith("Kariyer hattının Yengeç'te, yöneticisi Ay'ın da 9. evde İkizler'de olması")
+    assert str(
+        adana_blocks["promise::venus_square_pluto_intense_love_chart_exact"].get("body") or ""
+    ).startswith("Venüs'ün Plüton'la kare çalışması, ilişkilerde çekimi")

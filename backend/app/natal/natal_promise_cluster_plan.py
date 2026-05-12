@@ -267,6 +267,12 @@ def _packet_subtype(*, packet: Mapping[str, Any], domain_family: str) -> str:
     if domain_family == "relationship":
         if "affection_gift" in packet_id or "moon_trine_venus" in packet_id:
             return "affection_gift"
+        if "trust_bond" in packet_id or "venus_trine_saturn" in packet_id:
+            return "trust_bond"
+        if "attraction_signal" in packet_id or "venus_trine_mars" in packet_id:
+            return "attraction_signal"
+        if "emotional_routine_sensitivity" in packet_id or "moon_scorpio_6h" in packet_id:
+            return "emotional_routine_sensitivity"
         if "attachment_architecture" in packet_id or "moon_leo_8h" in packet_id or ("7. ev" in anchors and "ay 8. ev" in anchors):
             return "attachment_architecture"
         if "hidden_private_love" in packet_id or "venus_sagittarius_12h" in packet_id:
@@ -887,6 +893,7 @@ def _build_surface_plan(
         allowed, reason = _can_select_public_main(
             candidate,
             selected_lookup=selected_lookup,
+            domain_lookup=domain_lookup,
             domain_counts=domain_counts,
             family_counts=family_counts,
             focus_map=focus_map,
@@ -912,6 +919,7 @@ def _build_surface_plan(
         allowed, reason = _can_select_public_main(
             cluster,
             selected_lookup=selected_lookup,
+            domain_lookup=domain_lookup,
             domain_counts=domain_counts,
             family_counts=family_counts,
             focus_map=focus_map,
@@ -1039,7 +1047,10 @@ def _required_public_main_domains(
     for domain_family, domain_clusters in grouped.items():
         focus = _focus_score(domain_family, focus_map)
         subtype_count = len({_cluster_semantic_key(cluster) for cluster in domain_clusters if _cluster_semantic_key(cluster)})
-        if focus >= 0.65 and subtype_count >= 2:
+        threshold = 0.65
+        if domain_family == "relationship" and subtype_count >= 2:
+            threshold = 0.45
+        if focus >= threshold and subtype_count >= 2:
             required.append(domain_family)
     required.sort(key=lambda item: (-_focus_score(item, focus_map), item))
     return required
@@ -1064,8 +1075,11 @@ def _domain_preference_rank(cluster: NatalPromiseClusterV1) -> tuple[int, float]
     preference_map = {
         "relationship": {
             "attachment_architecture": 0,
-            "affection_gift": 1,
-            "hidden_private_love_pattern": 3,
+            "trust_bond": 1,
+            "affection_gift": 2,
+            "attraction_signal": 3,
+            "emotional_routine_sensitivity": 4,
+            "hidden_private_love_pattern": 5,
         },
         "mind": {
             "structured_originality": 0,
@@ -1090,6 +1104,7 @@ def _can_select_public_main(
     cluster: NatalPromiseClusterV1,
     *,
     selected_lookup: Mapping[str, NatalPromiseClusterV1],
+    domain_lookup: Mapping[str, Sequence[NatalPromiseClusterV1]],
     domain_counts: Mapping[str, int],
     family_counts: Mapping[str, int],
     focus_map: Sequence[DomainFocusScoreV1],
@@ -1099,6 +1114,12 @@ def _can_select_public_main(
     focus = _focus_score(cluster.domain_family, focus_map)
     semantic_key = _cluster_semantic_key(cluster)
     family_key = _main_packet_family_key(cluster)
+    if (
+        cluster.domain_family == "relationship"
+        and _is_generic_cluster(cluster)
+        and _has_specific_relationship_public_alternative(cluster, domain_lookup=domain_lookup)
+    ):
+        return False, "relationship_generic_prefers_specific_subtype"
     if family_key and family_counts.get(family_key, 0) > 0:
         other = next(
             (
@@ -1170,6 +1191,7 @@ def _prefer_detail_surface(
 def _public_main_rejection_reason(reason: str) -> str:
     mapping = {
         "same_signal_family_already_in_public_main": "same signal family already has a stronger public-main cluster",
+        "relationship_generic_prefers_specific_subtype": "generic relationship cluster stayed below a more specific relationship subtype",
         "relationship_hidden_private_prefers_support": "hidden/private love pattern stays support-detail unless relationship dominates the chart",
         "domain_saturation": "domain already has a stronger public-main representative",
         "domain_public_main_cap": "domain already reached the public-main diversity cap",
@@ -1242,9 +1264,34 @@ def _cluster_semantic_key(cluster: NatalPromiseClusterV1) -> str:
         return "structured_originality"
     if "self_construction" in packet_id:
         return "self_construction"
+    if "trust_bond" in packet_id or "venus_trine_saturn" in packet_id:
+        return "trust_bond"
+    if "attraction_signal" in packet_id or "venus_trine_mars" in packet_id:
+        return "attraction_signal"
+    if "emotional_routine_sensitivity" in packet_id or "moon_scorpio_6h" in packet_id:
+        return "emotional_routine_sensitivity"
     if "hidden_expansive_love" in packet_id:
         return "hidden_private_love_pattern" if cluster.domain_family == "relationship" else "internal_visibility_maturation"
     return ""
+
+
+def _has_specific_relationship_public_alternative(
+    cluster: NatalPromiseClusterV1,
+    *,
+    domain_lookup: Mapping[str, Sequence[NatalPromiseClusterV1]],
+) -> bool:
+    if cluster.domain_family != "relationship":
+        return False
+    siblings = domain_lookup.get("relationship") or []
+    specific_siblings = [
+        item
+        for item in siblings
+        if item.id != cluster.id and not _is_generic_cluster(item) and _cluster_semantic_key(item)
+    ]
+    if len(specific_siblings) < 2:
+        return False
+    best_specific = max(specific_siblings, key=lambda item: (item.public_card_priority, item.cluster_strength, item.id))
+    return best_specific.public_card_priority >= (cluster.public_card_priority - 0.08)
 
 
 def _is_generic_cluster(cluster: NatalPromiseClusterV1) -> bool:

@@ -15,6 +15,11 @@ def _istanbul_public() -> dict:
     return payload.get("public", payload)
 
 
+def _istanbul_2020_response() -> dict:
+    path = Path("backend/tests/_artifacts/natal_interpret_full_2020-04-10_08-26_istanbul_user_compact_debug.json")
+    return json.loads(path.read_text())
+
+
 def _legacy_graph() -> dict:
     return {
         "version": "meaning_graph_v1_1",
@@ -113,7 +118,7 @@ def test_build_natal_promise_packets_istanbul_preserves_gift_forward_mix() -> No
         supporting_threads=public.get("supporting_threads"),
     )
 
-    assert packets["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3"
+    assert packets["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4"
     assert len(packets["packets"]) >= 3
     assert any(packet["promise_type"] in {"gift", "love_style", "mind_style", "mind_identity"} for packet in packets["packets"])
     assert not all(packet["promise_type"] in {"shadow_or_friction", "wound_to_gift"} for packet in packets["packets"])
@@ -180,6 +185,75 @@ def test_build_natal_promise_packets_candidate_inventory_uses_raw_chart_signatur
     assert "capricorn_asc_sun_1h_composed_self_construction_chart_exact" in candidate_ids
     assert "saturn_3h_aries_speech_decision_language_chart_exact" in candidate_ids
     assert "moon_leo_8h_deep_proud_heart_chart_exact" in candidate_ids
+
+
+def test_build_natal_promise_packets_2020_candidate_inventory_fires_v0_4_overlay() -> None:
+    raw = _istanbul_2020_response()
+
+    candidate_inventory = build_natal_promise_packets_v1(
+        sections_v2=raw.get("sections_v2"),
+        supporting_threads=raw.get("supporting_threads"),
+        planets=raw.get("planets"),
+        aspects=raw.get("aspects"),
+        natal_graph_compact=raw.get("natal_graph_compact"),
+        metadata=raw.get("metadata"),
+        meta_info=raw.get("meta_info"),
+        mode="candidate_inventory",
+    )
+    candidate_ids = {packet["id"] for packet in candidate_inventory["packets"]}
+
+    assert candidate_inventory["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4"
+    assert len(candidate_inventory["packets"]) >= 10
+    assert "gemini_asc_venus_1h_social_relational_presence_chart_exact" in candidate_ids
+    assert "sun_aries_12h_hidden_private_fire_chart_exact" in candidate_ids
+    assert "aquarius_mc_mars_conjunct_mc_visible_freedom_drive" in candidate_ids
+    assert "venus_trine_mars_relational_attraction_signal_chart_exact" in candidate_ids
+    assert "venus_trine_saturn_trust_bond_chart_exact" in candidate_ids
+    assert "moon_scorpio_6h_emotional_routine_sensitivity_chart_exact" in candidate_ids
+    assert "mercury_sextile_9h_capricorn_aquarius_intellectual_authority_chart_exact" in candidate_ids
+
+
+def test_build_natal_promise_packets_2020_selected_inventory_broadens_safely() -> None:
+    raw = _istanbul_2020_response()
+
+    selected = build_natal_promise_packets_v1(
+        sections_v2=raw.get("sections_v2"),
+        supporting_threads=raw.get("supporting_threads"),
+        planets=raw.get("planets"),
+        aspects=raw.get("aspects"),
+        natal_graph_compact=raw.get("natal_graph_compact"),
+        metadata=raw.get("metadata"),
+        meta_info=raw.get("meta_info"),
+        mode="selected",
+    )
+    selected_ids = [packet["id"] for packet in selected["packets"]]
+
+    assert len(selected_ids) == 4
+    assert "gemini_asc_venus_1h_social_relational_presence_chart_exact" in selected_ids
+    assert "relationship_relationships" in selected_ids
+    assert len(selected_ids) == len(set(selected_ids))
+    assert not any(packet_id.endswith("_aux") for packet_id in selected_ids)
+
+
+def test_build_natal_promise_packets_istanbul_1996_does_not_pick_up_v0_4_chart_exacts() -> None:
+    raw = json.loads(
+        Path("backend/tests/_artifacts/natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json").read_text()
+    )
+    candidate_inventory = build_natal_promise_packets_v1(
+        sections_v2=raw.get("sections_v2"),
+        supporting_threads=raw.get("supporting_threads"),
+        planets=raw.get("planets"),
+        aspects=raw.get("aspects"),
+        natal_graph_compact=raw.get("natal_graph_compact"),
+        metadata=raw.get("metadata"),
+        meta_info=raw.get("meta_info"),
+        mode="candidate_inventory",
+    )
+    candidate_ids = {packet["id"] for packet in candidate_inventory["packets"]}
+
+    assert "gemini_asc_venus_1h_social_relational_presence_chart_exact" not in candidate_ids
+    assert "sun_aries_12h_hidden_private_fire_chart_exact" not in candidate_ids
+    assert "aquarius_mc_mars_conjunct_mc_visible_freedom_drive" not in candidate_ids
 
 
 def test_profile_narrative_projection_v1_hybrid_fallback_prefers_packets() -> None:

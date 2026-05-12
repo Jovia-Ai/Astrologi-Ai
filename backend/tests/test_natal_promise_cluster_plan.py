@@ -10,6 +10,11 @@ def _istanbul_response() -> dict:
     return json.loads(path.read_text())
 
 
+def _istanbul_2020_response() -> dict:
+    path = Path("backend/tests/_artifacts/natal_interpret_full_2020-04-10_08-26_istanbul_user_compact_debug.json")
+    return json.loads(path.read_text())
+
+
 def _packet(
     *,
     packet_id: str,
@@ -227,6 +232,60 @@ def test_natal_promise_cluster_plan_synthetic_multi_domain_case() -> None:
         packet["id"]
         for packet in packets
     } <= set(plan["surface_plan"]["debug_packet_ids"])
+
+
+def test_natal_promise_cluster_plan_2020_istanbul_v0_4_overlay_surfaces_new_domains(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    response = _istanbul_2020_response()
+    public = build_public_natal_view(response, locale="tr", include_debug=True, include_full_profile=True)
+    plan = public["profile_v8_projection_v1"]["traceability"]["natal_promise_cluster_plan_v1"]
+
+    candidate_ids = {packet["id"] for packet in plan["candidate_packets"]}
+    assert len(plan["candidate_packets"]) >= 10
+    assert "gemini_asc_venus_1h_social_relational_presence_chart_exact" in candidate_ids
+    assert "sun_aries_12h_hidden_private_fire_chart_exact" in candidate_ids
+    assert "aquarius_mc_mars_conjunct_mc_visible_freedom_drive" in candidate_ids
+    assert "venus_trine_mars_relational_attraction_signal_chart_exact" in candidate_ids
+    assert "venus_trine_saturn_trust_bond_chart_exact" in candidate_ids
+    assert "moon_scorpio_6h_emotional_routine_sensitivity_chart_exact" in candidate_ids
+    assert "mercury_sextile_9h_capricorn_aquarius_intellectual_authority_chart_exact" in candidate_ids
+
+    focus_tiers = {item["domain"]: item["tier"] for item in plan["focus_map"]}
+    assert focus_tiers["career"] == "strong"
+    assert focus_tiers["mind"] in {"medium_strong", "strong"}
+    assert focus_tiers["identity"] in {"medium_strong", "strong"}
+    assert focus_tiers["relationship"] in {"supporting", "medium_strong", "strong"}
+
+    public_main_ids = set(plan["surface_plan"]["public_main_cluster_ids"])
+    detail_ids = set(plan["surface_plan"]["detail_cluster_ids"])
+    assert any("identity" in cluster_id for cluster_id in public_main_ids)
+    assert any("career" in cluster_id for cluster_id in public_main_ids)
+    assert any("mind" in cluster_id for cluster_id in public_main_ids)
+    assert any("relationship" in cluster_id for cluster_id in public_main_ids)
+    relationship_main_ids = [cluster_id for cluster_id in public_main_ids if "relationship" in cluster_id]
+    assert relationship_main_ids
+    assert any(
+        "trust_bond" in cluster_id or "attraction_signal" in cluster_id
+        for cluster_id in relationship_main_ids
+    ), f"2020 relationship public_main should be specific, not generic: {relationship_main_ids}"
+    assert not any("relationship_relationships" in cluster_id for cluster_id in relationship_main_ids)
+    assert any("mercury_sextile_9h_capricorn_aquarius_intellectual_authority" in cluster_id for cluster_id in detail_ids)
+    assert any(
+        "attraction_signal" in cluster_id
+        or "trust_bond" in cluster_id
+        for cluster_id in detail_ids
+    )
+    assert any("sun_aries_12h_hidden_private_fire" in cluster_id for cluster_id in detail_ids)
+    assert any("emotional_routine_sensitivity" in cluster_id for cluster_id in detail_ids)
+    assert any("relationship_relationships" in cluster_id for cluster_id in detail_ids)
+
+    projection = public["profile_v8_projection_v1"]
+    hero_node = str(projection["hero"]["trace"]["node_id"])
+    identity_axis_node = str(projection["identity_axis"]["trace"]["node_id"])
+    assert "gemini_asc_venus_1h_social_relational_presence" in hero_node
+    assert "sun_aries_12h_hidden_private_fire" in identity_axis_node
+    assert hero_node != identity_axis_node
 
 
 def _adana_artifact_data():

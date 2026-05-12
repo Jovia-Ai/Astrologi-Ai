@@ -181,6 +181,16 @@ def build_natal_promise_packets_v1(
     packets.sort(key=lambda item: (-_safe_float(item.get("strength"), 0.0), str(item.get("id") or "")))
     if normalized_mode == "selected":
         packets = _select_packet_inventory(packets)
+        packets = _backfill_selected_packet_inventory(
+            packets,
+            registry_entries=entries,
+            planets=planets,
+            aspects=aspects,
+            natal_graph_compact=natal_graph_compact,
+            metadata=metadata,
+            meta_info=meta_info,
+            locale=locale,
+        )
     # Bug 5 (Adana audit): packet ids that encode a specific placement (e.g.
     # ``moon_leo_8h_deep_proud_heart``, ``capricorn_asc_sun_1h_...``) get
     # picked up from a registry whose match logic is title- and text-based,
@@ -913,6 +923,118 @@ def _build_chart_signature_candidates(
             "primary_anchor": _support_anchor("Neptune in house 4", "planet:Neptune:house:4", 0.88, source_type="placement"),
             "supporting_combo": [],
         },
+        # ---- v0.4 addendum (additive) ----
+        {
+            "match_id": "gemini_asc_venus_1h_social_relational_presence",
+            "forced_domain": "identity",
+            "variant_suffix": "chart_exact",
+            "title": "Sosyal ve ilişkisel ilk izlenim",
+            "proof_raw": "Yükselen · İkizler · Venüs 1. ev",
+            "chips": ["Yükselen İkizler", "Venüs 1. ev", "İkizler"],
+            "scene": "Bir ortama girdiğinde hızlıca temas kuracak bir ton bulmak.",
+            "salience": 0.9,
+            "confidence": 0.94,
+            "primary_anchor": _support_anchor("Ascendant Gemini", "planet:Ascendant:sign:Gemini", 0.94, source_type="angle"),
+            "supporting_combo": [
+                _support_anchor("Venus in Gemini 1H", "planet:Venus:sign:Gemini:house:1", 0.92, source_type="placement"),
+                _support_anchor("Venus trine Mars", "Venus:Mars:trine", 0.82, source_type="aspect"),
+            ],
+        },
+        {
+            "match_id": "sun_aries_12h_hidden_private_fire",
+            "forced_domain": "identity",
+            "variant_suffix": "chart_exact",
+            "title": "İçeride çalışan özel ateş",
+            "proof_raw": "Güneş · 12. ev · Koç",
+            "chips": ["Güneş 12. ev", "Koç", "Özel ateş"],
+            "scene": "Bir şeye gerçekten yönelmeden önce bunu uzun süre kendi içinde taşımak.",
+            "salience": 0.88,
+            "confidence": 0.93,
+            "primary_anchor": _support_anchor("Sun in Aries 12H", "planet:Sun:sign:Aries:house:12", 0.93, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Sun square Jupiter", "Sun:Jupiter:square", 0.78, source_type="aspect"),
+                _support_anchor("Sun square Pluto", "Sun:Pluto:square", 0.8, source_type="aspect"),
+            ],
+        },
+        {
+            "match_id": "aquarius_mc_mars_conjunct_mc_visible_freedom_drive",
+            "forced_domain": "career",
+            "variant_suffix": "chart_exact",
+            "title": "Kariyerde görünür hareket ve özgürlük",
+            "proof_raw": "MC Kova · Mars kavuşum MC",
+            "chips": ["MC Kova", "Mars kavuşum MC", "Uranüs kare MC"],
+            "scene": "Bir işte beklemekten çok harekete geçerek yol açmak istemek.",
+            "salience": 0.92,
+            "confidence": 0.95,
+            "primary_anchor": _support_anchor("Mars conjunct Midheaven", "Mars:Midheaven:conjunction", 0.95, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Uranus square Midheaven", "Uranus:Midheaven:square", 0.9, source_type="aspect"),
+                _support_anchor("Mars in Aquarius 10H", "planet:Mars:sign:Aquarius:house:10", 0.9, source_type="placement"),
+            ],
+        },
+        {
+            "match_id": "venus_trine_mars_relational_attraction_signal",
+            "forced_domain": "relationship",
+            "variant_suffix": "chart_exact",
+            "title": "Yakınlıkta sıcak çekim",
+            "proof_raw": "Venüs üçgen Mars",
+            "chips": ["Venüs üçgen Mars", "Çekim", "Sıcak yaklaşım"],
+            "scene": "Birine yaklaşırken bunu yalnızca sözle değil tonunla ve enerjinle de hissettirmek.",
+            "salience": 0.86,
+            "confidence": 0.92,
+            "primary_anchor": _support_anchor("Venus trine Mars", "Venus:Mars:trine", 0.92, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Venus in Gemini 1H", "planet:Venus:sign:Gemini:house:1", 0.82, source_type="placement"),
+            ],
+        },
+        {
+            "match_id": "venus_trine_saturn_trust_bond",
+            "forced_domain": "relationship",
+            "variant_suffix": "chart_exact",
+            "title": "Yakınlıkta güven ve sadakat",
+            "proof_raw": "Venüs üçgen Satürn",
+            "chips": ["Venüs üçgen Satürn", "Güven", "Tutarlılık"],
+            "scene": "Bir bağın sadece heyecanlı değil, güvenilir de olmasına önem vermek.",
+            "salience": 0.88,
+            "confidence": 0.93,
+            "primary_anchor": _support_anchor("Venus trine Saturn", "Venus:Saturn:trine", 0.93, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Saturn in Aquarius 9H", "planet:Saturn:sign:Aquarius:house:9", 0.82, source_type="placement"),
+            ],
+        },
+        {
+            "match_id": "moon_scorpio_6h_emotional_routine_sensitivity",
+            "forced_domain": "relationship",
+            "variant_suffix": "chart_exact",
+            "title": "Günlük ritimde yoğun duygusal hassasiyet",
+            "proof_raw": "Ay · 6. ev · Akrep",
+            "chips": ["Ay 6. ev", "Akrep", "Duygusal ritim"],
+            "scene": "Rutinindeki küçük bir değişimin içeride sandığından daha çok yer kaplaması.",
+            "salience": 0.84,
+            "confidence": 0.91,
+            "primary_anchor": _support_anchor("Moon in Scorpio 6H", "planet:Moon:sign:Scorpio:house:6", 0.91, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Moon trine Neptune", "Moon:Neptune:trine", 0.84, source_type="aspect"),
+                _support_anchor("Moon sextile Pluto", "Moon:Pluto:sextile", 0.8, source_type="aspect"),
+            ],
+        },
+        {
+            "match_id": "mercury_sextile_9h_capricorn_aquarius_intellectual_authority",
+            "forced_domain": "mind",
+            "variant_suffix": "chart_exact",
+            "title": "İnançta ve fikirde zihinsel otorite",
+            "proof_raw": "Merkür sekstil Jüpiter/Satürn/Plüton · 9. ev stelyumu",
+            "chips": ["Merkür sekstil Jüpiter", "Merkür sekstil Satürn", "9. ev omurgası"],
+            "scene": "Bir düşünceyi daha büyük bir çerçeveye oturtmadan rahatlayamamak.",
+            "salience": 0.9,
+            "confidence": 0.94,
+            "primary_anchor": _support_anchor("Mercury sextile Saturn", "Mercury:Saturn:sextile", 0.94, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Mercury sextile Jupiter", "Mercury:Jupiter:sextile", 0.9, source_type="aspect"),
+                _support_anchor("Mercury sextile Pluto", "Mercury:Pluto:sextile", 0.9, source_type="aspect"),
+                _support_anchor("Jupiter Saturn Pluto in 9H", "planets:Jupiter,Saturn,Pluto:house:9", 0.88, source_type="placement"),
+            ],
+        },
     ]
     out: list[dict[str, Any]] = []
     for variant in variants:
@@ -1286,6 +1408,43 @@ def _chart_variant_supported(
     if match_id == "neptune_4h_soft_inner_presence":
         item = planet_map.get("neptune") or {}
         return int(item.get("house") or 0) == 4
+    # ---- v0.4 chart-fact guards ----
+    if match_id == "gemini_asc_venus_1h_social_relational_presence":
+        return (
+            _asc_sign(metadata_like=planet_map, house_rulers=house_rulers) == "gemini"
+            and _planet_in_sign_house(planet_map, "venus", "Gemini", 1)
+        )
+    if match_id == "sun_aries_12h_hidden_private_fire":
+        return _planet_in_sign_house(planet_map, "sun", "Aries", 12)
+    if match_id == "aquarius_mc_mars_conjunct_mc_visible_freedom_drive":
+        return (
+            _planet_in_sign_house(planet_map, "mars", "Aquarius", 10)
+            and _has_aspect(aspects, "Mars", "Midheaven", "Conjunction")
+            and _has_aspect(aspects, "Uranus", "Midheaven", "Square")
+        )
+    if match_id == "venus_trine_mars_relational_attraction_signal":
+        return (
+            _has_aspect(aspects, "Venus", "Mars", "Trine")
+            and _planet_in_sign_house(planet_map, "venus", "Gemini", 1)
+            and _planet_in_sign_house(planet_map, "mars", "Aquarius", 10)
+        )
+    if match_id == "venus_trine_saturn_trust_bond":
+        return (
+            _has_aspect(aspects, "Venus", "Saturn", "Trine")
+            and _planet_in_sign_house(planet_map, "venus", "Gemini", 1)
+            and _planet_in_sign_house(planet_map, "saturn", "Aquarius", 9)
+        )
+    if match_id == "moon_scorpio_6h_emotional_routine_sensitivity":
+        return _planet_in_sign_house(planet_map, "moon", "Scorpio", 6)
+    if match_id == "mercury_sextile_9h_capricorn_aquarius_intellectual_authority":
+        return (
+            _has_aspect(aspects, "Mercury", "Jupiter", "Sextile")
+            and _has_aspect(aspects, "Mercury", "Saturn", "Sextile")
+            and _has_aspect(aspects, "Mercury", "Pluto", "Sextile")
+            and int((planet_map.get("jupiter") or {}).get("house") or 0) == 9
+            and int((planet_map.get("saturn") or {}).get("house") or 0) == 9
+            and int((planet_map.get("pluto") or {}).get("house") or 0) == 9
+        )
     return False
 
 
@@ -1324,6 +1483,13 @@ def _chart_variant_match_score(
         return _aspect_match_score(aspects, "Mars", "Chiron", "Square", default=0.86)
     if match_id == "sun_opposite_jupiter_service_expansion_tension":
         return _aspect_match_score(aspects, "Sun", "Jupiter", "Opposition", default=0.86)
+    # v0.4 aspect-based score lookups.
+    if match_id == "aquarius_mc_mars_conjunct_mc_visible_freedom_drive":
+        return _aspect_match_score(aspects, "Mars", "Midheaven", "Conjunction", default=0.94)
+    if match_id == "venus_trine_mars_relational_attraction_signal":
+        return _aspect_match_score(aspects, "Venus", "Mars", "Trine", default=0.9)
+    if match_id == "venus_trine_saturn_trust_bond":
+        return _aspect_match_score(aspects, "Venus", "Saturn", "Trine", default=0.9)
     return 0.9
 
 
@@ -1455,6 +1621,26 @@ _CHART_FACT_VALIDATORS: dict[str, dict[str, Any]] = {
         "planet": "neptune",
         "house": 4,
     },
+    # v0.4 placement-encoded packets.
+    "gemini_asc_venus_1h_social_relational_presence": {
+        "kind": "asc_with_planet_in_sign_house",
+        "asc_sign": "gemini",
+        "planet": "venus",
+        "sign": "gemini",
+        "house": 1,
+    },
+    "sun_aries_12h_hidden_private_fire": {
+        "kind": "planet_in_sign_house",
+        "planet": "sun",
+        "sign": "aries",
+        "house": 12,
+    },
+    "moon_scorpio_6h_emotional_routine_sensitivity": {
+        "kind": "planet_in_sign_house",
+        "planet": "moon",
+        "sign": "scorpio",
+        "house": 6,
+    },
 }
 
 
@@ -1577,6 +1763,17 @@ def _evaluate_chart_fact_validator(
         asc_sign = _asc_sign(metadata_like=planet_map, house_rulers=house_rulers)
         expected_asc = str(validator.get("asc_sign") or "").strip().lower()
         return asc_sign == expected_asc
+    if kind == "asc_with_planet_in_sign_house":
+        asc_sign = _asc_sign(metadata_like=planet_map, house_rulers=house_rulers)
+        expected_asc = str(validator.get("asc_sign") or "").strip().lower()
+        if asc_sign != expected_asc:
+            return False
+        return _planet_in_sign_house(
+            planet_map,
+            str(validator.get("planet") or ""),
+            str(validator.get("sign") or ""),
+            int(validator.get("house") or 0),
+        )
     if kind == "planet_in_house":
         planet_name = str(validator.get("planet") or "").lower()
         return int((planet_map.get(planet_name) or {}).get("house") or 0) == int(validator.get("house") or 0)
@@ -2730,6 +2927,73 @@ def _select_packet_inventory(packets: Sequence[Mapping[str, Any]]) -> list[dict[
                 if packet not in selected:
                     selected = [dict(packet), *selected[:5]]
                 break
+    return selected[:6]
+
+
+def _backfill_selected_packet_inventory(
+    packets: Sequence[Mapping[str, Any]],
+    *,
+    registry_entries: Mapping[str, Mapping[str, Any]],
+    planets: Sequence[Mapping[str, Any]] | None,
+    aspects: Sequence[Mapping[str, Any]] | None,
+    natal_graph_compact: Mapping[str, Any] | None,
+    metadata: Mapping[str, Any] | None,
+    meta_info: Mapping[str, Any] | None,
+    locale: str,
+) -> list[dict[str, Any]]:
+    selected = [dict(packet) for packet in packets if isinstance(packet, Mapping)]
+    if len(selected) >= 4:
+        return selected[:6]
+    if not any(str(packet.get("id") or "").strip() == "relationship_relationships" for packet in selected):
+        return selected[:6]
+    chart_candidates = _build_chart_signature_candidates(
+        registry_entries=registry_entries,
+        planets=planets,
+        aspects=aspects,
+        natal_graph_compact=natal_graph_compact,
+        metadata=metadata,
+        meta_info=meta_info,
+        locale=locale,
+        mode="candidate_inventory",
+    )
+    if not chart_candidates:
+        return selected[:6]
+    chart_candidates = _dedupe_packets(chart_candidates, mode="candidate_inventory")
+    relationship_specific = [
+        packet
+        for packet in chart_candidates
+        if str(packet.get("domain") or "").strip() == "relationship"
+        and str(packet.get("id") or "").strip() != "relationship_relationships"
+    ]
+    if len(relationship_specific) < 2:
+        return selected[:6]
+    chart_exact_domains = {
+        str(packet.get("domain") or "").strip()
+        for packet in chart_candidates
+        if str(packet.get("domain") or "").strip()
+    }
+    if (len(chart_candidates) + len(selected)) < 10 or len(chart_exact_domains) < 4:
+        return selected[:6]
+    selected_ids = {str(packet.get("id") or "").strip() for packet in selected}
+    selected_domains = {str(packet.get("domain") or "").strip() for packet in selected if str(packet.get("domain") or "").strip()}
+    missing_domain_candidates = [
+        packet
+        for packet in chart_candidates
+        if str(packet.get("id") or "").strip() not in selected_ids
+        and str(packet.get("domain") or "").strip()
+        and str(packet.get("domain") or "").strip() not in selected_domains
+    ]
+    if not missing_domain_candidates:
+        return selected[:6]
+    domain_priority = {"identity": 0, "mind": 1, "relationship": 2, "career": 3}
+    missing_domain_candidates.sort(
+        key=lambda item: (
+            domain_priority.get(str(item.get("domain") or "").strip(), 9),
+            -_safe_float(item.get("strength"), 0.0),
+            str(item.get("id") or ""),
+        )
+    )
+    selected.append(dict(missing_domain_candidates[0]))
     return selected[:6]
 
 

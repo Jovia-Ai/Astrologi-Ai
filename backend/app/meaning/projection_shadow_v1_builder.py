@@ -3187,6 +3187,11 @@ def _differentiator_from_node(
         )
     else:
         diff_title = _clip_to_headline(raw_diff_title) or "Fark Yaratan Çizgi"
+    if packet:
+        override = _packet_copy_override(packet)
+        diff_override = str(override.get("differentiator_headline") or "").strip()
+        if diff_override:
+            diff_title = _clip_to_headline(diff_override) or diff_title
     return {
         "headline": diff_title,
         "body": _smart_clip(summary, 320),
@@ -3797,6 +3802,7 @@ def _packet_copy_override(packet: Mapping[str, Any]) -> dict[str, str]:
     match_id = _packet_match_id(packet)
     role_domain = _packet_role_domain(packet)
     cluster_id = _packet_cluster_id(packet)
+    packet_id = str(packet.get("id") or "").strip()
 
     if match_id == "venus_sagittarius_12h_hidden_expansive_love" and role_domain == "relationship":
         return {
@@ -3853,6 +3859,114 @@ def _packet_copy_override(packet: Mapping[str, Any]) -> dict[str, str]:
         return {
             "headline": "Birini sevdiğinde yalnızca yaklaşmak değil, ona iyi gelmek de istersin.",
             "teaser": "Sevginin içinde yumuşatma, güzelleştirme ve bakım verme tarafı var.",
+        }
+    if match_id == "venus_trine_saturn_trust_bond" and role_domain == "relationship":
+        return {
+            "headline": "Sevgi verdiğinde bunun içinde tutarlılık ve söz taşıyan bir taraf var.",
+            "teaser": "Sevgi sende hafiflik kadar güven, tutarlılık ve zamanla kurulan sadakati de ister.",
+            "micro": "Bir bağın sadece heyecanlı değil, güvenilir de olmasına önem vermek.",
+            "body": (
+                "Venüs'ünün Satürn'le uyumlu çalışması, ilişkide hafifliğin yanında güven ve tutarlılık da aradığını gösteriyor. "
+                "Bir bağın sadece heyecanlı değil, zamanla sağlamlaşan bir yerde durması senin için önemli olabilir. "
+                "Sevgi sende sözün davranışla desteklendiği yerde daha rahat açılır. "
+                "Gerilimli anlarda ise fazla kontrollü açılmak, duyguyu güven gelene kadar uzun süre tutmak ya da yakınlığı fazla test etmek öne çıkabilir."
+            ),
+        }
+    if match_id in {"aquarius_mc_mars_conjunct_mc_visible_freedom_drive", "aquarius_mc_mars_conjunct_mc_visible_freedom_drive_aux"} and role_domain == "career":
+        override = {
+            "headline": "Görünür işte cesur başlatıcılık, bağımsız hareket ve canlı yön duygusu.",
+            "teaser": "Görünürlük hattın, hız, inisiyatif ve kendi yönünü kendin belirleme isteğiyle çalışabilir.",
+            "micro": "Sen görünür olmaya sadece dikkat çekmek gibi bakmıyorsun.",
+            "body": (
+                "Mars'ının kariyer hattına çok yakın olması, dış dünyada pasif kalmak istemeyen bir enerji verdiğini gösteriyor. "
+                "Bir şeyi başlatmak, kendi yönünü göstermek ve gerektiğinde yolu açmak isteyebilirsin. "
+                "Kova vurgusu bunu daha bağımsız, yenilikçi ve klasik kalıplara kolay sığmayan bir çizgiye taşıyor. "
+                "Zorlandığında özgürlük ihtiyacını ani kopuşlara ya da yön değişimlerine çevirmemeye dikkat etmen gerekir."
+            ),
+        }
+        if packet_id.endswith("_aux"):
+            override["differentiator_headline"] = "Kendi yolunu açma cesareti"
+        return override
+    if match_id == "mind_mind_system" and role_domain == "mind":
+        return {
+            "headline": "Ne yapacağını bildiğin an tempo kendiliğinden yükselir.",
+            "teaser": "Sen dışarıdan meraklı ve hareketli görünebilirsin. Yükselenin İkizler olduğu için bir ortama girer girmez zihnin çalışmaya, bağlantılar kurmaya başlıyor.",
+            "micro": "Bir ortama girdiğinde bağlantıları hızlı kurmak.",
+            "body": (
+                "Yükseleninin İkizler, yöneticisi Merkür'ünün de 11. evde Balık'ta olması zihnini hem hızlı hem de sezgisel çalıştırıyor. "
+                "Bir ortama girdiğinde bağlantıları çabuk kurabilir, insanların ne söylediği kadar ortamın duygusunu da sezebilirsin. "
+                "Net bağlam geldiğinde tempon yükselir. "
+                "Ama sınırlar belirsizleştiğinde zihnin dağılabilir."
+            ),
+        }
+    if match_id == "gemini_asc_venus_1h_social_relational_presence" and role_domain == "identity":
+        return {
+            "headline": "Duruşun hafif görünse de kimle ne kadar açılacağını hızlı sezebiliyor olabilirsin.",
+            "teaser": "İnsanların seni ilk anda sosyal, canlı ve ilişki kurmaya açık hissetmesi kolay olabilir.",
+            "micro": "Bir ortama girdiğinde hızlıca temas kuracak bir ton bulmak.",
+            "body": (
+                "Yükseleninin İkizler, Venüs'ünün de 1. evde olması dışarıdan sosyal, canlı ve kolay temas kuran bir izlenim verir. "
+                "İnsanların seni ilk anda ulaşılabilir ve meraklı hissetmesi kolay olabilir. "
+                "Ama bu hafif görünüm, herkese aynı açıklıkta olduğun anlamına gelmez. "
+                "Kime ne kadar açılacağını hızlı sezebilen bir tarafın var."
+            ),
+        }
+    if match_id == "moon_scorpio_6h_emotional_routine_sensitivity" and role_domain == "relationship":
+        return {
+            "headline": "Duygun günlük akışta bile kolay yüzeyde kalmayabilir, küçük şeyler içeride daha derine işleyebilir.",
+            "teaser": "Rutinindeki küçük bir değişiklik bile içeride sandığından daha fazla yer kaplayabilir.",
+            "micro": "Günlük akıştaki küçük bir değişimin bile içeride uzun süre kalması.",
+            "body": (
+                "Ay'ının Akrep'te ve 6. evde olması, günlük akışın sende duygusal olarak daha derin çalıştığını gösteriyor. "
+                "Rutinindeki küçük bir değişiklik bile içeride sandığından daha fazla yer kaplayabilir. "
+                "Bu sana güçlü bir sezgi ve krizleri erken fark etme becerisi verir. "
+                "Ama kontrol ihtiyacı arttığında bedenin ve ritmin de gerilebilir."
+            ),
+        }
+    if match_id == "mercury_sextile_9h_capricorn_aquarius_intellectual_authority" and role_domain == "mind":
+        return {
+            "headline": "Bir fikri sadece bulmak değil, ona sağlam bir çerçeve vermek sende güçlü olabilir.",
+            "teaser": "Bir fikri sadece sezmek değil, onu çerçeveleyip sağlam bir görüşe dönüştürmek sende güçlü olabilir.",
+            "micro": "Öğrendiğin şeyi daha büyük bir görüşe yerleştirmek.",
+            "body": (
+                "Merkür'ünün Jüpiter, Satürn ve Plüton'la destekleyici bağları, zihninin bir fikri sadece sezmekle kalmayıp ona sağlam bir çerçeve vermek istediğini gösteriyor. "
+                "Öğrendiğin şeyi daha büyük bir görüşe yerleştirmek sende güçlü olabilir. "
+                "Bir düşünceyi daha geniş bir bağlama oturtmadan rahatlamamak da bu zihinsel omurganın parçası olabilir."
+            ),
+        }
+    if match_id == "sun_aries_12h_hidden_private_fire" and role_domain == "identity":
+        return {
+            "headline": "Sende dışarıdan hemen görünmeyen ama içeride hızla alevlenen bir taraf olabilir.",
+            "teaser": "Dışarıdan hemen görünmese de içeride hızlı, bağımsız ve kolay sönmeyen bir ateş çalışabilir.",
+            "micro": "Bir şeye gerçekten yönelmeden önce bunu uzun süre kendi içinde taşımak.",
+            "body": (
+                "Güneş'inin 12. evde Koç'ta olması, dışarıdan hemen görünmeyen ama içeride hızlı alevlenen bir taraf verdiğini gösteriyor. "
+                "Bir şeye gerçekten yönelmeden önce bunu uzun süre kendi içinde taşıyabilirsin. "
+                "Cesaretin bazen sessiz başlar. "
+                "Doğru anı bulduğunda görünür olur."
+            ),
+        }
+    if match_id == "venus_trine_mars_relational_attraction_signal" and role_domain == "relationship":
+        return {
+            "headline": "Birine yaklaşırken bunu yalnızca sözle değil tonunla ve enerjinle de hissettirmek.",
+            "teaser": "İlgini belli ettiğinde sıcaklık, çekim ve hareket aynı anda çalışabilir.",
+            "micro": "Yakınlıkta canlılık ve karşılıklı çekimin hızlı yükselmesi.",
+            "body": (
+                "Venüs'ünün Mars'la uyumlu çalışması, ilgini sadece sözle değil tonunla, enerjinle ve hareketinle gösterebildiğini anlatır. "
+                "Yakınlıkta canlılık ve karşılıklı çekim hızlı yükselebilir. "
+                "Bu enerjiyi aceleye değil, ritme dönüştürdüğünde bağ daha doğal akar."
+            ),
+        }
+    if match_id == "relationship_relationships" and role_domain == "relationship":
+        return {
+            "headline": "Sen ilişkide yüzeysel bir sıcaklıktan çok, içine oturan bir güven arıyorsun.",
+            "teaser": "Yakınlık burada çoğu zaman hafif ilerlemez, daha derin bir yere çekilebilir.",
+            "micro": "İlişkide sadece yakınlık değil, içinin genişlediği bir güven aramak.",
+            "body": (
+                "Jüpiter'inin 9. evde Oğlak'ta olması ve 7. evinin Yay'da açılması, ilişkide hem alan hem de güven aradığını gösteriyor. "
+                "Yakınlık sende çoğu zaman hafif bir hoşlanmadan çok, zamanla içeri oturan bir bağa dönüşmek ister. "
+                "Bu yüzden ilişkide yalnızca sıcaklık değil, birlikte büyüyebileceğin ve içinin genişlediği bir güven de arayabilirsin."
+            ),
         }
     if match_id == "moon_leo_8h_deep_proud_heart" and role_domain == "relationship" and cluster_id == "relationship_attachment_architecture":
         return {
@@ -3932,7 +4046,6 @@ def _packet_copy_override(packet: Mapping[str, Any]) -> dict[str, str]:
     # variant to an `action_pressure` cluster, not a literal `community`
     # role_domain.
     if match_id == "mars_leo_11h_warm_visible_drive":
-        packet_id = str(packet.get("id") or "").strip()
         forced_domain = str(packet.get("domain") or "").strip().lower()
         if packet_id.endswith("_community_chart_exact") or forced_domain == "community":
             return {
