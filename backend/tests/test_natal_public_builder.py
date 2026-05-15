@@ -56,6 +56,27 @@ def _live_public_view_from_batch_chart(chart_id: str) -> dict:
     return dict(response.get("public") or {})
 
 
+def _live_public_view_from_request(*, birth_date: str, birth_time: str, birth_place: str, birth_latitude: float | None, birth_longitude: float | None, birth_timezone: str | None) -> dict:
+    from app.api.routes.natal_interpretation import NatalInterpretationRequest, interpret_natal_chart_ui
+
+    response = interpret_natal_chart_ui(
+        NatalInterpretationRequest(
+            birth_date=birth_date,
+            birth_time=birth_time,
+            birth_place=birth_place,
+            birth_latitude=birth_latitude,
+            birth_longitude=birth_longitude,
+            birth_timezone=birth_timezone,
+            locale="tr",
+            summary_only=False,
+            include_full_profile=True,
+        ),
+        debug=False,
+        include_debug=True,
+    )
+    return dict(response.get("public") or {})
+
+
 def _without_traceability(value):
     if isinstance(value, dict):
         return {
@@ -1990,6 +2011,57 @@ def test_v0_9b_p0_truthfulness_no_dangling_connectors(monkeypatch) -> None:
             assert not olmasi.search(chunk), f"{chart_id}: olması de regression"
             assert not bazen_upper.search(chunk), f"{chart_id}: Bazen de. regression"
             assert not bazen_lower.search(chunk), f"{chart_id}: bazen de. regression"
+
+
+def test_v0_9b_sanliurfa_1988_calibration_case_moon_fires_relationship_miss_public_stable(monkeypatch) -> None:
+    """Sanliurfa 1988 joins the v0.9b calibration set as a mixed-chart
+    case: moon_signature should fire as private_emotional_processing,
+    relationship_route currently remains a documented miss, and public
+    output must stay unchanged."""
+    _v0_9b_set_base_flags(monkeypatch)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", raising=False)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", raising=False)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", raising=False)
+    baseline = _projection_surface_snapshot(
+        _live_public_view_from_request(
+            birth_date="1988-10-10",
+            birth_time="05:30",
+            birth_place="Sanliurfa, TR",
+            birth_latitude=37.1674,
+            birth_longitude=38.7955,
+            birth_timezone="Europe/Istanbul",
+        )
+    )
+
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    rendered_public = _live_public_view_from_request(
+        birth_date="1988-10-10",
+        birth_time="05:30",
+        birth_place="Sanliurfa, TR",
+        birth_latitude=37.1674,
+        birth_longitude=38.7955,
+        birth_timezone="Europe/Istanbul",
+    )
+    _v0_9b_assert_no_public_leak(rendered_public, "sanliurfa_1988_10_10")
+    assert _projection_surface_snapshot(rendered_public) == baseline
+
+    plan = (
+        rendered_public.get("profile_narrative_projection_v1") or {}
+    ).get("traceability", {}).get("natal_promise_cluster_plan_v1") or {}
+    packets = plan.get("candidate_packets") or []
+
+    moon_candidates = [p for p in packets if p.get("family") == "moon_signature"]
+    assert moon_candidates, packets
+    moon = moon_candidates[0]
+    assert moon["subtype"] == "private_emotional_processing", moon
+    assert moon["public_job"] == "debug_only", moon
+    assert moon["confidence_tier"] == "medium", moon
+    assert moon["public_eligibility"]["public_main_eligible"] is False, moon
+    assert moon["public_eligibility"]["public_support_eligible"] is False, moon
+
+    relationship_candidates = [p for p in packets if p.get("family") == "relationship_route"]
+    assert relationship_candidates == [], relationship_candidates
 
 
 def test_v0_9b_flags_change_interpret_ui_cache_key() -> None:

@@ -117,6 +117,90 @@ fallback (`trust_steadiness`) carries the neutral-anchor penalty so
 under-evidenced charts do not promote anything beyond
 `debug_only` even if rollout flags are enabled.
 
+### 1.3.1 Sanliurfa 1988 Calibration Addendum
+
+The chart `1988-10-10 05:30 Sanliurfa, TR` should join the next
+v0.9b calibration set as a normal/mixed relationship-route stress
+case.
+
+Observed debug-only read on the live pipeline:
+
+- `moon_signature` fires correctly as
+  `private_emotional_processing @ 0.66`
+- `relationship_route` does not fire at all
+- `identity_route` does register the Libra ASC + Sun/Mercury 1H
+  spine on the v0.9a side
+- `career_route` currently resolves to
+  `invisible_preparation_before_visibility`, which is useful as a gap
+  marker but not the best semantic fit for this chart
+
+The relationship miss is load-bearing because the chart carries a
+clear activation pattern that should not collapse into a generic
+trust-only read:
+
+- `DSC Aries`
+- `DSC ruler Mars in Aries 6H retrograde`
+- `Mars` hard aspects to `Saturn / Uranus / Neptune`
+- strong daily-action / immediate-response tone in the relationship
+  signature
+
+Two calibration options are open for the next v0.9b pass:
+
+**Option A — widen `boundary_conflict` detection**
+
+Allow `boundary_conflict` to score from a broader Mars-anchored
+relationship activation pattern, not only a 7H/8H house lock:
+
+- `Aries` or `Scorpio` DSC
+- DSC ruler `Mars` strongly dignified, angular, or otherwise
+  functionally loud
+- `Mars` in `1H / 6H / 10H / 12H`
+- `Mars` hard aspects to `Saturn / Uranus / Neptune / Chiron`
+- extra weight when `Mars` is retrograde
+- extra weight when `Mars` is tied to daily/action houses
+  (`6H` especially)
+
+This path keeps subtype count stable and treats the Sanliurfa chart as
+a wider reading of relationship conflict/stance activation.
+
+**Option B — add a new subtype: `direct_relational_activation`**
+
+Meaning:
+
+- relationship activates direct response
+- quick positioning
+- daily-action rhythm
+- the need to take a clear stance
+
+This option is preferable if the next calibration slice shows that the
+pattern is not primarily "conflict" but "immediate relational
+mobilization" across multiple charts.
+
+Expected debug-only candidate shape for Sanliurfa 1988 after
+calibration:
+
+```yaml
+family: relationship_route
+subtype: direct_relational_activation | boundary_conflict
+domain: relationship
+domain_reason:
+  - DSC route
+  - DSC ruler involved
+  - Mars boundary/desire signature
+  - 6H daily/action route
+confidence_target: medium
+public_job: debug_only
+lived_scene: Yakınlık sende bazen hemen tepki verme, pozisyon alma veya günlük ritimde açıkça hareket etme ihtiyacını uyandırabilir.
+```
+
+Recommendation for planning:
+
+- keep both options open in v0.9b.0.x calibration
+- prefer **Option B** if 3-5 additional mixed charts show the same
+  Aries/Scorpio DSC + Mars-led daily-activation pattern
+- prefer **Option A** if the broader Mars-led cases still read best
+  under a single "boundary/conflict" semantic family
+
 ### 1.4 Confidence Scoring
 
 ```
@@ -310,6 +394,48 @@ the 50-chart batch:
 If actual measurements skew significantly above this (e.g. > 60% of
 charts hit ≥ 0.80 on relationship_route), the rollout pauses and the
 scoring weights are recalibrated *before* any public flag flips.
+
+### 3.1 Sanliurfa 1988 — Cross-Family Calibration Read
+
+Sanliurfa 1988 is a useful calibration chart because the four family
+signals separate cleanly:
+
+- `moon_signature` already fires in the expected direction:
+  `Moon Libra 12H + Moon square Neptune -> private_emotional_processing`
+- `relationship_route` under-detects a real Mars-led activation
+  pattern and currently misses entirely
+- `identity_route` already sees the `Libra ASC + Sun/Mercury 1H`
+  identity-speech spine on the v0.9a side
+- `career_route` currently overfits a backstage/preparation subtype
+  where the chart more likely wants a future voice/public-role tension
+  subtype
+
+This makes the chart especially valuable for v0.9b calibration
+because it shows:
+
+- one Moon success case
+- one relationship miss
+- one identity confirmation outside v0.9b scope
+- one future career mismatch note without requiring any immediate
+  v0.9b implementation change
+
+### 3.2 Future Career Note — Not Part of v0.9b
+
+For the same Sanliurfa chart, the current `career_route` resolution
+(`invisible_preparation_before_visibility`) is not the best semantic
+fit for:
+
+- `MC Cancer`
+- `Sun/Mercury 1H`
+- `MC` square `Sun/Mercury`
+
+Future career grammar planning should consider a subtype closer to:
+
+`public_role_identity_voice_tension`
+
+This note is not a v0.9b implementation target. It is recorded here
+only so the chart is not misread later as a pure Moon or relationship
+calibration case.
 
 ---
 
@@ -540,6 +666,26 @@ relationship-strong, moon-strong, both-strong) and asserts the
 expected `keep_for` / candidate visibility transitions per the
 table in §7.
 
+### 9.7 Add Sanliurfa 1988 to the next calibration batch
+
+Include `1988-10-10 05:30 Sanliurfa, TR` in the next v0.9b
+debug-only review slice with these expectations:
+
+- `moon_signature` fires as
+  `private_emotional_processing` at medium confidence and stays
+  `debug_only`
+- `relationship_route` is currently a known miss and should become a
+  calibration assertion once Option A or Option B from §1.3.1 is
+  implemented
+- `identity_route` remains a confirming side-signal for
+  `Libra ASC + Sun/Mercury 1H`
+- `mind` is logged as a future grammar gap (`Mercury 1H` +
+  `Saturn/Uranus 3H`)
+- `career_route` is logged as a future subtype-mismatch note, not as
+  evidence that the chart is already well covered
+- public surfaces remain unchanged across all v0.9b debug-only flag
+  combinations
+
 ---
 
 ## 10. Expected Metrics on the 50-Chart Batch
@@ -608,6 +754,32 @@ These are informational targets; v0.9b.0 ships if the zero-tolerance
 invariants in §10.3 and §10.4 all hold, even if §10.5's score targets
 miss.
 
+### 10.6 Sanliurfa 1988 — Expected outcome after calibration
+
+Once the next relationship calibration pass lands, Sanliurfa 1988 is
+expected to move from:
+
+- Moon-only composed coverage
+- generic relationship fallback ownership
+
+to:
+
+- `moon_signature.private_emotional_processing`
+- `relationship_route.boundary_conflict` or
+  `relationship_route.direct_relational_activation`
+
+with both candidates remaining `debug_only` in the immediate v0.9b
+phase.
+
+Acceptance target for this specific chart:
+
+- relationship candidate confidence reaches `medium`
+- `domain_reason` includes `DSC route`, `DSC ruler involved`, and a
+  Mars-led relationship anchor
+- public output remains unchanged
+- the chart joins the ongoing calibration set rather than any public
+  rollout allowlist
+
 ---
 
 ## Acceptance Criteria for v0.9b.0
@@ -669,7 +841,11 @@ The eight relationship subtypes (`trust_steadiness`,
 `intimacy_depth`, `private_emotional_processing`) line up with the
 v0.9a career_route construction shape so the same selection, scoring,
 and dedup paths apply unchanged. Renderer, registry, and public
-output stay frozen.
+output stay frozen. Sanliurfa 1988 is explicitly added as the next
+relationship/moon calibration chart: Moon already resolves in the
+expected `private_emotional_processing` direction, while the
+relationship family currently misses a Mars-led Aries-DSC activation
+signature that should inform the next subtype/rule adjustment.
 
 Phase C mobile work and renderer allowlist widening explicitly remain
 out of scope. v0.9b.1 (renderer allowlist) and v0.9b.2 (public_support

@@ -1,0 +1,5331 @@
+{
+  "version": "natal_50_chart_discovery_coverage_audit_v1",
+  "source_prompt_section": "natal_compositional_semantic_grammar_plan.md#16",
+  "charts": [
+    {
+      "chart_id": "fix01_leo_leo_classic",
+      "label": "Aslan güneş + Aslan yükselen — klasik 1. ev güçlü kimlik",
+      "birth_data": {
+        "birth_date": "1995-08-10",
+        "birth_time": "14:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "New York, US",
+        "birth_latitude": 40.7128,
+        "birth_longitude": -74.006,
+        "birth_timezone": "America/New_York"
+      },
+      "origin": [
+        "baseline"
+      ],
+      "raw_signature": "ASC Scorpio; MC Virgo; Sun Leo 9H; Moon Aquarius 3H; Mercury Virgo 9H; Venus Leo 9H; Mars Libra 11H; Jupiter Sagittarius 1H; Saturn Pisces 4H; Uranus Capricorn 2H; Neptune Capricorn 2H; Pluto Scorpio 1H",
+      "candidate_packet_count": 18,
+      "unique_candidate_packet_count": 18,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 5,
+      "focus_map": {
+        "relationship": "strong",
+        "mind": "strong",
+        "career": "strong",
+        "identity": "detail_only"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 4,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 5,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 2,
+      "duplicate_headline_count": 10,
+      "v8_duplication": 0,
+      "health_score": 70,
+      "top_discovery_gaps": [
+        "moon_signature",
+        "identity_route",
+        "relationship_route",
+        "career_route",
+        "axis_3h_9h"
+      ],
+      "all_discovery_gaps": {
+        "moon_signature": 1,
+        "identity_route": 1,
+        "relationship_route": 1,
+        "career_route": 1,
+        "axis_3h_9h": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "identity",
+        "relationship",
+        "career",
+        "mind"
+      ],
+      "top_overused_fallbacks": [
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact",
+        "relationship_love_like_relationship_relationships",
+        "mind_mind_like_mind_mind_system",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "relationship_love_like_relationship_relationships",
+        "mind_mind_like_mind_mind_system",
+        "career_career_like_career_career_visibility",
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "mind_deep_mind_pressure"
+      ]
+    },
+    {
+      "chart_id": "fix02_capricorn_stellium",
+      "label": "Oğlak/Oğlak — 1. ev stellium (4+ gezegen)",
+      "birth_data": {
+        "birth_date": "1996-12-28",
+        "birth_time": "07:10",
+        "birth_time_confidence": "exact",
+        "birth_place": "Istanbul, TR",
+        "birth_latitude": 41.0082,
+        "birth_longitude": 28.9784,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "baseline",
+        "accepted_golden"
+      ],
+      "raw_signature": "ASC Capricorn; MC Libra; Sun Capricorn 1H; Moon Leo 8H; Mercury Capricorn 1H; Venus Sagittarius 12H; Mars Virgo 9H; Jupiter Capricorn 1H; Saturn Aries 3H; Uranus Aquarius 1H; Neptune Capricorn 1H; Pluto Sagittarius 11H",
+      "candidate_packet_count": 11,
+      "unique_candidate_packet_count": 11,
+      "selected_packet_count": 3,
+      "public_main_count": 5,
+      "public_support_count": 0,
+      "detail_count": 3,
+      "coverage_warnings": [
+        "generic_fallback_public_main"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 1,
+      "generic_public_main_count": 1,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 1,
+      "non_public_discovery_packet_count": 0,
+      "focus_map": {
+        "identity": "strong",
+        "relationship": "strong",
+        "mind": "medium_strong",
+        "career": "medium_strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 4,
+        "composed_semantic": 0,
+        "generic_fallback": 1,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 11,
+        "composed_semantic": 0,
+        "generic_fallback": 0,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 15,
+      "v8_duplication": 0,
+      "health_score": 94,
+      "top_discovery_gaps": [],
+      "all_discovery_gaps": {},
+      "top_underpromoted_domains": [],
+      "top_overused_fallbacks": [
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 1
+      },
+      "public_main_cluster_ids": [
+        "identity_self_construction",
+        "relationship_attachment_architecture",
+        "mind_speech_decision_language",
+        "career_healing_voice",
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "mind_gift_like_mercury_conjunct_jupiter_big_mind_chart_exact",
+        "identity_gift_like_saturn_sextile_uranus_structured_originality_identity_chart_exact",
+        "relationship_hidden_private_love_pattern"
+      ]
+    },
+    {
+      "chart_id": "fix03_pisces_cancer_water",
+      "label": "Balık güneş + Yengeç yükselen — su ağırlık",
+      "birth_data": {
+        "birth_date": "1989-03-05",
+        "birth_time": "04:15",
+        "birth_time_confidence": "exact",
+        "birth_place": "London, GB",
+        "birth_latitude": 51.5074,
+        "birth_longitude": -0.1278,
+        "birth_timezone": "Europe/London"
+      },
+      "origin": [
+        "baseline"
+      ],
+      "raw_signature": "ASC Capricorn; MC Scorpio; Sun Pisces 2H; Moon Aquarius 1H; Mercury Aquarius 1H; Venus Pisces 1H; Mars Taurus 4H; Jupiter Taurus 4H; Saturn Capricorn 12H; Uranus Capricorn 12H; Neptune Capricorn 12H; Pluto Scorpio 9H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "house_12h",
+        "house_4h_ic",
+        "career_route",
+        "relationship_route",
+        "identity_route",
+        "moon_signature"
+      ],
+      "all_discovery_gaps": {
+        "house_12h": 1,
+        "house_4h_ic": 1,
+        "career_route": 1,
+        "relationship_route": 1,
+        "identity_route": 1,
+        "moon_signature": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "career",
+        "relationship",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "fix04_h10_career_stellium",
+      "label": "10. ev stellium — kariyer/visibility ağırlığı",
+      "birth_data": {
+        "birth_date": "1985-06-15",
+        "birth_time": "12:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Tokyo, JP",
+        "birth_latitude": 35.6762,
+        "birth_longitude": 139.6503,
+        "birth_timezone": "Asia/Tokyo"
+      },
+      "origin": [
+        "baseline"
+      ],
+      "raw_signature": "ASC Virgo; MC Gemini; Sun Gemini 9H; Moon Taurus 8H; Mercury Cancer 10H; Venus Taurus 8H; Mars Cancer 10H; Jupiter Aquarius 5H; Saturn Scorpio 2H; Uranus Sagittarius 3H; Neptune Capricorn 4H; Pluto Scorpio 2H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong",
+        "identity": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "career_route",
+        "moon_signature",
+        "identity_route",
+        "axis_2h_8h",
+        "axis_3h_9h"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "career_route": 1,
+        "moon_signature": 1,
+        "identity_route": 1,
+        "axis_2h_8h": 1,
+        "axis_3h_9h": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "career",
+        "emotional",
+        "identity",
+        "mind"
+      ],
+      "top_overused_fallbacks": [
+        "identity_identity_like_neptune_4h_soft_inner_presence_chart_exact",
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "identity_identity_like_neptune_4h_soft_inner_presence_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "fix05_t_square_tense",
+      "label": "T-square paterni — gerilim odaklı",
+      "birth_data": {
+        "birth_date": "1992-04-22",
+        "birth_time": "18:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "Buenos Aires, AR",
+        "birth_latitude": -34.6037,
+        "birth_longitude": -58.3816,
+        "birth_timezone": "America/Argentina/Buenos_Aires"
+      },
+      "origin": [
+        "baseline"
+      ],
+      "raw_signature": "ASC Scorpio; MC Cancer; Sun Taurus 6H; Moon Capricorn 3H; Mercury Aries 6H; Venus Aries 6H; Mars Pisces 5H; Jupiter Virgo 11H; Saturn Aquarius 4H; Uranus Capricorn 3H; Neptune Capricorn 3H; Pluto Scorpio 1H",
+      "candidate_packet_count": 14,
+      "unique_candidate_packet_count": 14,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 4,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 4,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 74,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "identity_route",
+        "career_route",
+        "axis_3h_9h"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "identity_route": 1,
+        "career_route": 1,
+        "axis_3h_9h": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "identity",
+        "career",
+        "mind"
+      ],
+      "top_overused_fallbacks": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "mind_wound_like_moon_square_mercury_emotion_mind_friction_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "fix06_grand_trine_flow",
+      "label": "Grand Trine — akış paterni",
+      "birth_data": {
+        "birth_date": "1978-11-10",
+        "birth_time": "23:45",
+        "birth_time_confidence": "exact",
+        "birth_place": "Sydney, AU",
+        "birth_latitude": -33.8688,
+        "birth_longitude": 151.2093,
+        "birth_timezone": "Australia/Sydney"
+      },
+      "origin": [
+        "baseline"
+      ],
+      "raw_signature": "ASC Cancer; MC Taurus; Sun Scorpio 4H; Moon Pisces 8H; Mercury Sagittarius 5H; Venus Scorpio 4H; Mars Sagittarius 5H; Jupiter Leo 1H; Saturn Virgo 2H; Uranus Scorpio 4H; Neptune Sagittarius 5H; Pluto Libra 3H",
+      "candidate_packet_count": 18,
+      "unique_candidate_packet_count": 18,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 3,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 2,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 60,
+      "top_discovery_gaps": [
+        "house_4h_ic",
+        "relationship_route",
+        "house_5h",
+        "moon_signature",
+        "axis_2h_8h",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "house_4h_ic": 1,
+        "relationship_route": 1,
+        "house_5h": 1,
+        "moon_signature": 1,
+        "axis_2h_8h": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "relationship",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_healing_voice"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "fix07_aries_libra_nodes",
+      "label": "GAD Koç / KAD Terazi — yalnız → birlik ekseni",
+      "birth_data": {
+        "birth_date": "1982-07-04",
+        "birth_time": "09:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Madrid, ES",
+        "birth_latitude": 40.4168,
+        "birth_longitude": -3.7038,
+        "birth_timezone": "Europe/Madrid"
+      },
+      "origin": [
+        "baseline"
+      ],
+      "raw_signature": "ASC Leo; MC Aries; Sun Cancer 12H; Moon Sagittarius 5H; Mercury Gemini 11H; Venus Gemini 11H; Mars Libra 3H; Jupiter Scorpio 4H; Saturn Libra 3H; Uranus Sagittarius 4H; Neptune Sagittarius 5H; Pluto Libra 3H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 7,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 7,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_12h",
+        "house_4h_ic",
+        "moon_signature",
+        "house_5h",
+        "career_route"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_12h": 1,
+        "house_4h_ic": 1,
+        "moon_signature": 1,
+        "house_5h": 1,
+        "career_route": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "fix08_cancer_capricorn_nodes",
+      "label": "GAD Yengeç / KAD Oğlak — duygusal güvenlik → yapı ekseni",
+      "birth_data": {
+        "birth_date": "1990-02-14",
+        "birth_time": "15:20",
+        "birth_time_confidence": "exact",
+        "birth_place": "Mumbai, IN",
+        "birth_latitude": 19.076,
+        "birth_longitude": 72.8777,
+        "birth_timezone": "Asia/Kolkata"
+      },
+      "origin": [
+        "baseline"
+      ],
+      "raw_signature": "ASC Cancer; MC Aries; Sun Aquarius 8H; Moon Libra 4H; Mercury Aquarius 7H; Venus Capricorn 7H; Mars Capricorn 6H; Jupiter Cancer 12H; Saturn Capricorn 7H; Uranus Capricorn 6H; Neptune Capricorn 7H; Pluto Scorpio 5H",
+      "candidate_packet_count": 12,
+      "unique_candidate_packet_count": 12,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 4,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 7,
+        "discovery_scaffold": 4,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 74,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_12h",
+        "career_route",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_12h": 1,
+        "career_route": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 1,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "relationship_wound_like_moon_square_venus_need_affection_friction_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "fix09_edge_cusp_planet",
+      "label": "Edge case — ekinoks tarihi, gezegen 0° cusp'ta",
+      "birth_data": {
+        "birth_date": "1975-09-23",
+        "birth_time": "06:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Cairo, EG",
+        "birth_latitude": 30.0444,
+        "birth_longitude": 31.2357,
+        "birth_timezone": "Africa/Cairo"
+      },
+      "origin": [
+        "baseline"
+      ],
+      "raw_signature": "ASC Virgo; MC Gemini; Sun Virgo 1H; Moon Aries 8H; Mercury Libra 2H; Venus Leo 12H; Mars Gemini 10H; Jupiter Aries 8H; Saturn Leo 11H; Uranus Scorpio 2H; Neptune Sagittarius 3H; Pluto Libra 1H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 4,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 2,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 4,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 74,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "career_route",
+        "axis_2h_8h",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "relationship_love_like_relationship_relationships",
+        "mind_mind_like_mind_mind_system",
+        "career_wound_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "relationship_love_like_relationship_relationships",
+        "mind_mind_like_mind_mind_system",
+        "career_wound_like_career_career_visibility",
+        "relationship_hidden_romantic_pride"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "relationship_affection_gift"
+      ]
+    },
+    {
+      "chart_id": "fix10_y2k_complex",
+      "label": "Multi-stellium karmaşık — 2000 başlangıcı",
+      "birth_data": {
+        "birth_date": "2000-01-01",
+        "birth_time": "00:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Greenwich, GB",
+        "birth_latitude": 51.4769,
+        "birth_longitude": 0.0005,
+        "birth_timezone": "Europe/London"
+      },
+      "origin": [
+        "baseline"
+      ],
+      "raw_signature": "ASC Libra; MC Cancer; Sun Capricorn 4H; Moon Scorpio 2H; Mercury Capricorn 3H; Venus Sagittarius 2H; Mars Aquarius 5H; Jupiter Aries 7H; Saturn Taurus 8H; Uranus Aquarius 5H; Neptune Aquarius 4H; Pluto Sagittarius 3H",
+      "candidate_packet_count": 19,
+      "unique_candidate_packet_count": 19,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 2,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 7,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong",
+        "identity": "medium_strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 3,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 7,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 10,
+      "v8_duplication": 2,
+      "health_score": 66,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_4h_ic",
+        "house_5h",
+        "career_route",
+        "axis_2h_8h",
+        "axis_3h_9h"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_4h_ic": 1,
+        "house_5h": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "axis_3h_9h": 1,
+        "moon_signature": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career",
+        "mind"
+      ],
+      "top_overused_fallbacks": [
+        "identity_identity_like_libra_asc_venus_chart_ruler_chart_exact",
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "identity_identity_like_libra_asc_venus_chart_ruler_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "career_career_like_saturn_taurus_8h_steady_public_maturity_chart_exact",
+        "identity_identity_like_neptune_4h_soft_inner_presence_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "fix11_unknown_birthtime",
+      "label": "Doğum saati bilinmeyen — noon konvansiyonu + confidence=unknown",
+      "birth_data": {
+        "birth_date": "1988-09-22",
+        "birth_time": "12:00",
+        "birth_time_confidence": "unknown",
+        "birth_place": "Ankara, TR",
+        "birth_latitude": 39.9208,
+        "birth_longitude": 32.8541,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "baseline",
+        "unknown_birthtime"
+      ],
+      "raw_signature": "ASC Sagittarius; MC Virgo; Sun Virgo 10H; Moon Aquarius 2H; Mercury Libra 11H; Venus Leo 9H; Mars Aries 4H; Jupiter Gemini 7H; Saturn Sagittarius 1H; Uranus Sagittarius 1H; Neptune Capricorn 2H; Pluto Scorpio 11H",
+      "candidate_packet_count": 13,
+      "unique_candidate_packet_count": 13,
+      "selected_packet_count": 2,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 8,
+      "focus_map": {
+        "identity": "strong",
+        "mind": "strong",
+        "relationship": "detail_only"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 5,
+        "composed_semantic": 0,
+        "generic_fallback": 0,
+        "discovery_scaffold": 8,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "career_route",
+        "mercury_signature",
+        "axis_2h_8h",
+        "axis_3h_9h",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "career_route": 1,
+        "mercury_signature": 1,
+        "axis_2h_8h": 1,
+        "axis_3h_9h": 1,
+        "identity_route": 1,
+        "moon_signature": 1,
+        "tight_aspect_emotional_depth": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "career",
+        "mind",
+        "identity",
+        "emotional"
+      ],
+      "top_overused_fallbacks": [
+        "relationship_love_like_venus_square_pluto_intense_love_chart_exact",
+        "mind_mind_like_mercury_sextile_9h_capricorn_aquarius_intellectual_authority",
+        "identity_wound_like_mars_square_chiron_tender_courage"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mercury_sextile_9h_capricorn_aquarius_intellectual_authority",
+        "identity_wound_like_mars_square_chiron_tender_courage",
+        "relationship_love_like_venus_square_pluto_intense_love_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "adana_1998_09_12",
+      "label": "Adana 1998 accepted golden",
+      "birth_data": {
+        "birth_date": "1998-09-12",
+        "birth_time": "07:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "Adana, TR",
+        "birth_latitude": 37.0,
+        "birth_longitude": 35.3213,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "accepted_golden"
+      ],
+      "raw_signature": "ASC Libra; MC Cancer; Sun Virgo 12H; Moon Gemini 9H; Mercury Virgo 12H; Venus Virgo 11H; Mars Leo 11H; Jupiter Pisces 6H; Saturn Taurus 8H; Uranus Aquarius 5H; Neptune Capricorn 4H; Pluto Sagittarius 3H",
+      "candidate_packet_count": 22,
+      "unique_candidate_packet_count": 22,
+      "selected_packet_count": 2,
+      "public_main_count": 5,
+      "public_support_count": 0,
+      "detail_count": 14,
+      "coverage_warnings": [
+        "generic_fallback_public_main"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 5,
+      "generic_public_main_count": 5,
+      "customized_fallback_public_main_count": 3,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 0,
+      "focus_map": {
+        "identity": "medium_strong",
+        "mind": "medium_strong",
+        "career": "medium_strong",
+        "relationship": "medium_strong",
+        "community": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 5,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 22,
+        "composed_semantic": 0,
+        "generic_fallback": 0,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 15,
+      "v8_duplication": 8,
+      "health_score": 74,
+      "top_discovery_gaps": [],
+      "all_discovery_gaps": {},
+      "top_underpromoted_domains": [],
+      "top_overused_fallbacks": [
+        "career_career_like_mc_cancer_moon_gemini_9h_teaching_voice_chart_exact",
+        "relationship_love_like_venus_square_pluto_intense_love_chart_exact",
+        "community_identity_like_mars_leo_11h_warm_visible_drive_community_chart_exact",
+        "mind_gift_like_mercury_conjunct_venus_refined_relational_language",
+        "identity_wound_like_mars_square_chiron_tender_courage"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 3,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "mind_gift_like_mercury_conjunct_venus_refined_relational_language",
+        "identity_wound_like_mars_square_chiron_tender_courage",
+        "career_career_like_mc_cancer_moon_gemini_9h_teaching_voice_chart_exact",
+        "relationship_love_like_venus_square_pluto_intense_love_chart_exact",
+        "community_identity_like_mars_leo_11h_warm_visible_drive_community_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "mind_mind_like_mercury_virgo_12h_private_analytical_mind_chart_exact",
+        "mind_mind_like_moon_gemini_9h_curious_mind_chart_exact",
+        "career_career_like_saturn_taurus_8h_steady_public_maturity_chart_exact",
+        "relationship_love_like_venus_virgo_11h_selective_social_care_chart_exact",
+        "mind_deep_mind_pressure",
+        "identity_identity_like_libra_asc_venus_chart_ruler_chart_exact",
+        "identity_identity_like_neptune_4h_soft_inner_presence_chart_exact",
+        "identity_identity_like_sun_virgo_12h_quiet_inner_self_chart_exact",
+        "identity_wound_like_sun_opposite_jupiter_service_expansion_tension_chart_exact",
+        "mind_wound_like_moon_square_mercury_emotion_mind_friction_aux",
+        "relationship_identity_like_mars_leo_11h_warm_visible_drive_chart_exact",
+        "relationship_wound_like_mars_opposite_uranus_freedom_in_action_chart_exact",
+        "relationship_wound_like_moon_opposite_pluto_emotional_intensity_control_chart_exact",
+        "relationship_wound_like_moon_square_venus_need_affection_friction"
+      ]
+    },
+    {
+      "chart_id": "izmir_1996_03_08",
+      "label": "Izmir 1996 overlay golden",
+      "birth_data": {
+        "birth_date": "1996-03-08",
+        "birth_time": "08:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "Izmir, TR",
+        "birth_latitude": 38.4237,
+        "birth_longitude": 27.1428,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "accepted_golden"
+      ],
+      "raw_signature": "ASC Taurus; MC Capricorn; Sun Pisces 12H; Moon Libra 6H; Mercury Pisces 11H; Venus Taurus 12H; Mars Pisces 12H; Jupiter Capricorn 9H; Saturn Pisces 12H; Uranus Aquarius 10H; Neptune Capricorn 10H; Pluto Sagittarius 7H",
+      "candidate_packet_count": 17,
+      "unique_candidate_packet_count": 17,
+      "selected_packet_count": 2,
+      "public_main_count": 5,
+      "public_support_count": 0,
+      "detail_count": 7,
+      "coverage_warnings": [],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 0,
+      "generic_public_main_count": 0,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 0,
+      "non_public_discovery_packet_count": 0,
+      "focus_map": {
+        "identity": "strong",
+        "career": "strong",
+        "relationship": "medium_strong",
+        "inner_world": "medium_strong",
+        "mind": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 5,
+        "composed_semantic": 0,
+        "generic_fallback": 0,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 17,
+        "composed_semantic": 0,
+        "generic_fallback": 0,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 13,
+      "v8_duplication": 0,
+      "health_score": 100,
+      "top_discovery_gaps": [],
+      "all_discovery_gaps": {},
+      "top_underpromoted_domains": [],
+      "top_overused_fallbacks": [],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 0
+      },
+      "public_main_cluster_ids": [
+        "identity_hidden_value_identity",
+        "relationship_trust_threshold_silent_desire",
+        "inner_world_inner_world_saturation",
+        "career_invisible_preparation",
+        "mind_social_intuition_mind"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "inner_world_hidden_action_soft_drive",
+        "identity_unsettled_outer_signal",
+        "relationship_wound_like_uranus_square_asc_venus_unsettled_outer_signal",
+        "relationship_private_love_inner_beauty",
+        "relationship_relationship_power_depth",
+        "inner_world_private_maturity",
+        "mind_deep_mind_pressure"
+      ]
+    },
+    {
+      "chart_id": "istanbul_1994_06_25",
+      "label": "Istanbul 1994 accepted golden",
+      "birth_data": {
+        "birth_date": "1994-06-25",
+        "birth_time": "10:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Istanbul, TR",
+        "birth_latitude": 41.0082,
+        "birth_longitude": 28.9784,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "accepted_golden"
+      ],
+      "raw_signature": "ASC Leo; MC Taurus; Sun Cancer 11H; Moon Capricorn 5H; Mercury Cancer 11H; Venus Leo 12H; Mars Taurus 10H; Jupiter Scorpio 3H; Saturn Pisces 7H; Uranus Capricorn 5H; Neptune Capricorn 5H; Pluto Scorpio 4H",
+      "candidate_packet_count": 14,
+      "unique_candidate_packet_count": 14,
+      "selected_packet_count": 2,
+      "public_main_count": 6,
+      "public_support_count": 2,
+      "detail_count": 4,
+      "coverage_warnings": [],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 0,
+      "generic_public_main_count": 0,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 0,
+      "non_public_discovery_packet_count": 0,
+      "focus_map": {
+        "mind": "strong",
+        "identity": "medium_strong",
+        "home_family": "medium_strong",
+        "career": "supporting",
+        "creativity": "supporting",
+        "relationship": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 6,
+        "composed_semantic": 0,
+        "generic_fallback": 0,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 14,
+        "composed_semantic": 0,
+        "generic_fallback": 0,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 12,
+      "v8_duplication": 0,
+      "health_score": 100,
+      "top_discovery_gaps": [],
+      "all_discovery_gaps": {},
+      "top_underpromoted_domains": [],
+      "top_overused_fallbacks": [],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 0
+      },
+      "public_main_cluster_ids": [
+        "mind_social_emotional_intelligence",
+        "identity_warm_visibility_belonging",
+        "home_family_roots_inner_security_transformation",
+        "relationship_freedom_responsibility_sensitivity",
+        "career_steady_public_drive",
+        "creativity_structured_imagination"
+      ],
+      "public_support_cluster_ids": [
+        "identity_visible_sensitivity_self_correction",
+        "home_family_private_emotional_inheritance"
+      ],
+      "detail_cluster_ids": [
+        "mind_deep_speech_psychological_learning",
+        "relationship_hidden_romantic_pride",
+        "career_public_power_roots_tension",
+        "creativity_serious_heart_creative_form"
+      ]
+    },
+    {
+      "chart_id": "istanbul_1997_01_21",
+      "label": "Istanbul 1997 accepted golden",
+      "birth_data": {
+        "birth_date": "1997-01-21",
+        "birth_time": "10:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "Istanbul, TR",
+        "birth_latitude": 41.0082,
+        "birth_longitude": 28.9784,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "accepted_golden"
+      ],
+      "raw_signature": "ASC Aries; MC Capricorn; Sun Aquarius 11H; Moon Cancer 3H; Mercury Capricorn 10H; Venus Capricorn 10H; Mars Libra 6H; Jupiter Capricorn 11H; Saturn Aries 12H; Uranus Aquarius 11H; Neptune Capricorn 10H; Pluto Sagittarius 8H",
+      "candidate_packet_count": 22,
+      "unique_candidate_packet_count": 22,
+      "selected_packet_count": 2,
+      "public_main_count": 6,
+      "public_support_count": 6,
+      "detail_count": 4,
+      "coverage_warnings": [],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 0,
+      "generic_public_main_count": 0,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 0,
+      "non_public_discovery_packet_count": 0,
+      "focus_map": {
+        "career": "strong",
+        "axis_tension": "strong",
+        "home_family": "strong",
+        "mind": "medium_strong",
+        "community": "medium_strong",
+        "relationship": "medium_strong",
+        "action": "medium_strong",
+        "inner_world": "supporting",
+        "identity": "detail_only"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 6,
+        "composed_semantic": 0,
+        "generic_fallback": 0,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 19,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 2,
+      "duplicate_headline_count": 13,
+      "v8_duplication": 0,
+      "health_score": 96,
+      "top_discovery_gaps": [],
+      "all_discovery_gaps": {},
+      "top_underpromoted_domains": [],
+      "top_overused_fallbacks": [],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 0
+      },
+      "public_main_cluster_ids": [
+        "career_public_voice_strategic_mind",
+        "axis_tension_private_security_public_voice_axis",
+        "community_collective_identity",
+        "relationship_harmony_wound_depth",
+        "action_action_through_balance",
+        "home_family_home_security_roots"
+      ],
+      "public_support_cluster_ids": [
+        "career_public_style_responsibility",
+        "axis_tension_service_action_axis",
+        "community_future_collective_signal",
+        "action_action_restraint",
+        "relationship_public_love_responsibility",
+        "mind_gift_like_mercury_conjunct_venus_refined_relational_language_chart_exact"
+      ],
+      "detail_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_axis_like_moon_mercury_ic_mc_private_security_public_voice_axis",
+        "inner_world_private_pressure",
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "istanbul_2020_04_10",
+      "label": "Istanbul 2020 accepted golden",
+      "birth_data": {
+        "birth_date": "2020-04-10",
+        "birth_time": "08:26",
+        "birth_time_confidence": "exact",
+        "birth_place": "Istanbul, TR",
+        "birth_latitude": 41.0082,
+        "birth_longitude": 28.9784,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "accepted_golden"
+      ],
+      "raw_signature": "ASC Gemini; MC Aquarius; Sun Aries 12H; Moon Scorpio 6H; Mercury Pisces 11H; Venus Gemini 1H; Mars Aquarius 10H; Jupiter Capricorn 9H; Saturn Aquarius 9H; Uranus Taurus 12H; Neptune Pisces 11H; Pluto Capricorn 9H",
+      "candidate_packet_count": 13,
+      "unique_candidate_packet_count": 13,
+      "selected_packet_count": 4,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 6,
+      "coverage_warnings": [
+        "generic_fallback_public_main"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 0,
+      "focus_map": {
+        "career": "strong",
+        "mind": "medium_strong",
+        "identity": "medium_strong",
+        "relationship": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 9,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 14,
+      "v8_duplication": 2,
+      "health_score": 74,
+      "top_discovery_gaps": [],
+      "all_discovery_gaps": {},
+      "top_underpromoted_domains": [],
+      "top_overused_fallbacks": [
+        "identity_identity_like_gemini_asc_venus_1h_social_relational_presence_chart_exact",
+        "career_career_like_aquarius_mc_mars_conjunct_mc_visible_freedom_drive",
+        "mind_mind_like_mind_mind_system"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "relationship_trust_bond",
+        "career_career_like_aquarius_mc_mars_conjunct_mc_visible_freedom_drive",
+        "mind_mind_like_mind_mind_system",
+        "identity_identity_like_gemini_asc_venus_1h_social_relational_presence_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "mind_mind_like_mercury_sextile_9h_capricorn_aquarius_intellectual_authority_chart_exact",
+        "mind_social_intuition_mind",
+        "relationship_attraction_signal",
+        "relationship_love_like_relationship_relationships",
+        "identity_identity_like_sun_aries_12h_hidden_private_fire_chart_exact",
+        "relationship_emotional_routine_sensitivity"
+      ]
+    },
+    {
+      "chart_id": "kutahya_1959_10_21",
+      "label": "Kutahya 1959 mixed normal",
+      "birth_data": {
+        "birth_date": "1959-10-21",
+        "birth_time": "11:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Kutahya, TR",
+        "birth_latitude": 39.4167,
+        "birth_longitude": 29.9833,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "mixed_normal"
+      ],
+      "raw_signature": "ASC Sagittarius; MC Libra; Sun Libra 10H; Moon Gemini 6H; Mercury Scorpio 11H; Venus Virgo 9H; Mars Libra 10H; Jupiter Sagittarius 11H; Saturn Capricorn 1H; Uranus Leo 8H; Neptune Scorpio 10H; Pluto Virgo 8H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 5,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong",
+        "identity": "detail_only"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 5,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "career_route",
+        "identity_route",
+        "relationship_route",
+        "axis_2h_8h",
+        "moon_signature"
+      ],
+      "all_discovery_gaps": {
+        "career_route": 1,
+        "identity_route": 1,
+        "relationship_route": 1,
+        "axis_2h_8h": 1,
+        "moon_signature": 1
+      },
+      "top_underpromoted_domains": [
+        "career",
+        "identity",
+        "relationship",
+        "emotional"
+      ],
+      "top_overused_fallbacks": [
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility",
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "izmir_1996_05_20",
+      "label": "Izmir 1996 normal chart",
+      "birth_data": {
+        "birth_date": "1996-05-20",
+        "birth_time": "00:45",
+        "birth_time_confidence": "exact",
+        "birth_place": "Izmir, TR",
+        "birth_latitude": 38.4237,
+        "birth_longitude": 27.1428,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "mixed_normal"
+      ],
+      "raw_signature": "ASC Aquarius; MC Scorpio; Sun Taurus 4H; Moon Gemini 5H; Mercury Taurus 3H; Venus Gemini 5H; Mars Taurus 3H; Jupiter Capricorn 12H; Saturn Aries 2H; Uranus Aquarius 1H; Neptune Capricorn 12H; Pluto Sagittarius 10H",
+      "candidate_packet_count": 12,
+      "unique_candidate_packet_count": 12,
+      "selected_packet_count": 2,
+      "public_main_count": 2,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 2,
+      "generic_public_main_count": 2,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 0,
+      "non_public_discovery_packet_count": 9,
+      "focus_map": {
+        "career": "supporting",
+        "identity": "detail_only"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 2,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 2,
+        "composed_semantic": 0,
+        "generic_fallback": 1,
+        "discovery_scaffold": 9,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 1,
+      "duplicate_headline_count": 15,
+      "v8_duplication": 0,
+      "health_score": 68,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "mercury_signature",
+        "house_12h",
+        "moon_signature",
+        "identity_route",
+        "house_5h"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "mercury_signature": 1,
+        "house_12h": 1,
+        "moon_signature": 1,
+        "identity_route": 1,
+        "house_5h": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "tight_aspect_relationship": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "mind",
+        "emotional",
+        "identity",
+        "career"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 1,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 0
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "izmir_2007_07_19",
+      "label": "Izmir 2007 mixed normal",
+      "birth_data": {
+        "birth_date": "2007-07-19",
+        "birth_time": "13:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "Izmir, TR",
+        "birth_latitude": 38.4237,
+        "birth_longitude": 27.1428,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "mixed_normal"
+      ],
+      "raw_signature": "ASC Libra; MC Cancer; Sun Cancer 9H; Moon Virgo 11H; Mercury Cancer 9H; Venus Virgo 10H; Mars Taurus 7H; Jupiter Sagittarius 2H; Saturn Leo 10H; Uranus Pisces 5H; Neptune Aquarius 4H; Pluto Sagittarius 3H",
+      "candidate_packet_count": 20,
+      "unique_candidate_packet_count": 20,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 3,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 7,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong",
+        "identity": "medium_strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 4,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 7,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 11,
+      "v8_duplication": 1,
+      "health_score": 70,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_4h_ic",
+        "career_route",
+        "house_5h",
+        "axis_3h_9h",
+        "moon_signature"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_4h_ic": 1,
+        "career_route": 1,
+        "house_5h": 1,
+        "axis_3h_9h": 1,
+        "moon_signature": 1,
+        "tight_aspect_emotional_depth": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career",
+        "mind"
+      ],
+      "top_overused_fallbacks": [
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact",
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "identity_identity_like_libra_asc_venus_chart_ruler_chart_exact",
+        "identity_identity_like_neptune_4h_soft_inner_presence_chart_exact",
+        "identity_wound_like_mars_square_chiron_tender_courage_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "istanbul_2012_08_02",
+      "label": "Istanbul 2012 mixed normal",
+      "birth_data": {
+        "birth_date": "2012-08-02",
+        "birth_time": "13:45",
+        "birth_time_confidence": "exact",
+        "birth_place": "Istanbul, TR",
+        "birth_latitude": 41.0082,
+        "birth_longitude": 28.9784,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "mixed_normal"
+      ],
+      "raw_signature": "ASC Scorpio; MC Leo; Sun Leo 9H; Moon Aquarius 3H; Mercury Leo 9H; Venus Gemini 8H; Mars Libra 11H; Jupiter Gemini 8H; Saturn Libra 12H; Uranus Aries 5H; Neptune Pisces 4H; Pluto Capricorn 2H",
+      "candidate_packet_count": 14,
+      "unique_candidate_packet_count": 14,
+      "selected_packet_count": 2,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 2,
+      "generic_public_main_count": 2,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 1,
+      "non_public_discovery_packet_count": 7,
+      "focus_map": {
+        "career": "strong",
+        "relationship": "strong",
+        "identity": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 2,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 4,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 7,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 70,
+      "top_discovery_gaps": [
+        "mercury_signature",
+        "house_4h_ic",
+        "moon_signature",
+        "career_route",
+        "axis_2h_8h",
+        "axis_3h_9h"
+      ],
+      "all_discovery_gaps": {
+        "mercury_signature": 1,
+        "house_4h_ic": 1,
+        "moon_signature": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "axis_3h_9h": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "mind",
+        "emotional",
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "identity_identity_like_neptune_4h_soft_inner_presence_chart_exact",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 1
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "relationship_trust_bond",
+        "identity_identity_like_neptune_4h_soft_inner_presence_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "ankara_1993_06_10",
+      "label": "Ankara 1993",
+      "birth_data": {
+        "birth_date": "1993-06-10",
+        "birth_time": "19:45",
+        "birth_time_confidence": "exact",
+        "birth_place": "Ankara, TR",
+        "birth_latitude": 39.9208,
+        "birth_longitude": 32.8541,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Sagittarius; MC Libra; Sun Gemini 7H; Moon Pisces 3H; Mercury Cancer 7H; Venus Taurus 5H; Mars Leo 8H; Jupiter Libra 10H; Saturn Pisces 3H; Uranus Capricorn 2H; Neptune Capricorn 2H; Pluto Scorpio 11H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "moon_signature",
+        "identity_route",
+        "career_route",
+        "axis_2h_8h",
+        "tight_aspect_relationship"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "moon_signature": 1,
+        "identity_route": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "tight_aspect_relationship": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "identity",
+        "career"
+      ],
+      "top_overused_fallbacks": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "bursa_1987_11_03",
+      "label": "Bursa 1987",
+      "birth_data": {
+        "birth_date": "1987-11-03",
+        "birth_time": "08:20",
+        "birth_time_confidence": "exact",
+        "birth_place": "Bursa, TR",
+        "birth_latitude": 40.195,
+        "birth_longitude": 29.06,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Sagittarius; MC Virgo; Sun Scorpio 12H; Moon Aries 4H; Mercury Libra 11H; Venus Scorpio 12H; Mars Libra 11H; Jupiter Aries 5H; Saturn Sagittarius 1H; Uranus Sagittarius 1H; Neptune Capricorn 2H; Pluto Scorpio 12H",
+      "candidate_packet_count": 11,
+      "unique_candidate_packet_count": 11,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 2,
+      "generic_public_main_count": 2,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 4,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "identity": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 2,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 6,
+        "discovery_scaffold": 4,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 70,
+      "top_discovery_gaps": [
+        "house_4h_ic",
+        "relationship_route",
+        "moon_signature",
+        "career_route"
+      ],
+      "all_discovery_gaps": {
+        "house_4h_ic": 1,
+        "relationship_route": 1,
+        "moon_signature": 1,
+        "career_route": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "relationship",
+        "career"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "identity_soft_hidden_magnetism"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "antalya_1999_02_27",
+      "label": "Antalya 1999",
+      "birth_data": {
+        "birth_date": "1999-02-27",
+        "birth_time": "16:10",
+        "birth_time_confidence": "exact",
+        "birth_place": "Antalya, TR",
+        "birth_latitude": 36.8969,
+        "birth_longitude": 30.7133,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Leo; MC Taurus; Sun Pisces 7H; Moon Leo 12H; Mercury Pisces 8H; Venus Aries 8H; Mars Scorpio 3H; Jupiter Aries 8H; Saturn Aries 9H; Uranus Aquarius 6H; Neptune Aquarius 6H; Pluto Sagittarius 4H",
+      "candidate_packet_count": 12,
+      "unique_candidate_packet_count": 12,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 2,
+      "generic_public_main_count": 2,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 1,
+      "non_public_discovery_packet_count": 3,
+      "focus_map": {
+        "career": "strong",
+        "relationship": "strong",
+        "mind": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 2,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 6,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 3,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 11,
+      "v8_duplication": 0,
+      "health_score": 80,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_4h_ic",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_4h_ic": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "mind_gift_like_mercury_conjunct_jupiter_big_mind_chart_exact",
+        "career_career_like_aquarius_mc_mars_conjunct_mc_visible_freedom_drive"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 1
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_aquarius_mc_mars_conjunct_mc_visible_freedom_drive",
+        "relationship_affection_gift",
+        "mind_gift_like_mercury_conjunct_jupiter_big_mind_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "career_wound_like_career_career_visibility"
+      ]
+    },
+    {
+      "chart_id": "konya_1974_05_19",
+      "label": "Konya 1974",
+      "birth_data": {
+        "birth_date": "1974-05-19",
+        "birth_time": "06:40",
+        "birth_time_confidence": "exact",
+        "birth_place": "Konya, TR",
+        "birth_latitude": 37.8746,
+        "birth_longitude": 32.4932,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Gemini; MC Aquarius; Sun Taurus 12H; Moon Aries 11H; Mercury Gemini 12H; Venus Aries 11H; Mars Cancer 2H; Jupiter Pisces 10H; Saturn Cancer 1H; Uranus Libra 5H; Neptune Sagittarius 6H; Pluto Libra 5H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong",
+        "identity": "detail_only"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "house_12h",
+        "career_route",
+        "relationship_route",
+        "house_5h",
+        "identity_route",
+        "moon_signature"
+      ],
+      "all_discovery_gaps": {
+        "house_12h": 1,
+        "career_route": 1,
+        "relationship_route": 1,
+        "house_5h": 1,
+        "identity_route": 1,
+        "moon_signature": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "career",
+        "relationship",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "identity_wound_like_mars_square_chiron_tender_courage_chart_exact",
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "identity_wound_like_mars_square_chiron_tender_courage_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "trabzon_2001_09_14",
+      "label": "Trabzon 2001",
+      "birth_data": {
+        "birth_date": "2001-09-14",
+        "birth_time": "21:15",
+        "birth_time_confidence": "exact",
+        "birth_place": "Trabzon, TR",
+        "birth_latitude": 41.0015,
+        "birth_longitude": 39.7178,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Taurus; MC Aquarius; Sun Virgo 5H; Moon Leo 4H; Mercury Libra 6H; Venus Leo 4H; Mars Capricorn 8H; Jupiter Cancer 2H; Saturn Gemini 1H; Uranus Aquarius 10H; Neptune Aquarius 10H; Pluto Sagittarius 7H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "house_4h_ic",
+        "career_route",
+        "moon_signature",
+        "axis_2h_8h",
+        "identity_route",
+        "tight_aspect_emotional_depth"
+      ],
+      "all_discovery_gaps": {
+        "house_4h_ic": 1,
+        "career_route": 1,
+        "moon_signature": 1,
+        "axis_2h_8h": 1,
+        "identity_route": 1,
+        "tight_aspect_emotional_depth": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_wound_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_wound_like_career_career_visibility",
+        "relationship_relationship_power_depth"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "gaziantep_1986_01_08",
+      "label": "Gaziantep 1986",
+      "birth_data": {
+        "birth_date": "1986-01-08",
+        "birth_time": "12:05",
+        "birth_time_confidence": "exact",
+        "birth_place": "Gaziantep, TR",
+        "birth_latitude": 37.0662,
+        "birth_longitude": 37.3833,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Taurus; MC Capricorn; Sun Capricorn 9H; Moon Sagittarius 8H; Mercury Capricorn 9H; Venus Capricorn 9H; Mars Scorpio 7H; Jupiter Aquarius 10H; Saturn Sagittarius 7H; Uranus Sagittarius 8H; Neptune Capricorn 9H; Pluto Scorpio 6H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "relationship": "strong",
+        "mind": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "moon_signature",
+        "career_route",
+        "axis_2h_8h",
+        "axis_3h_9h",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "moon_signature": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "axis_3h_9h": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career",
+        "mind",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "relationship_love_like_relationship_relationships",
+        "mind_mind_like_mind_mind_system"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "relationship_love_like_relationship_relationships",
+        "mind_mind_like_mind_mind_system"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "diyarbakir_1994_03_22",
+      "label": "Diyarbakir 1994",
+      "birth_data": {
+        "birth_date": "1994-03-22",
+        "birth_time": "03:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "Diyarbakir, TR",
+        "birth_latitude": 37.9144,
+        "birth_longitude": 40.2306,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Capricorn; MC Scorpio; Sun Aries 2H; Moon Cancer 6H; Mercury Pisces 1H; Venus Aries 2H; Mars Pisces 1H; Jupiter Scorpio 9H; Saturn Pisces 1H; Uranus Capricorn 12H; Neptune Capricorn 12H; Pluto Scorpio 10H",
+      "candidate_packet_count": 17,
+      "unique_candidate_packet_count": 17,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 2,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "relationship": "strong",
+        "mind": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 2,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 10,
+      "v8_duplication": 0,
+      "health_score": 74,
+      "top_discovery_gaps": [
+        "house_12h",
+        "career_route",
+        "identity_route",
+        "relationship_route",
+        "axis_3h_9h",
+        "tight_aspect_relationship"
+      ],
+      "all_discovery_gaps": {
+        "house_12h": 1,
+        "career_route": 1,
+        "identity_route": 1,
+        "relationship_route": 1,
+        "axis_3h_9h": 1,
+        "tight_aspect_relationship": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "career",
+        "identity",
+        "relationship",
+        "mind"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "relationship_love_like_relationship_relationships",
+        "mind_mind_like_mind_mind_system"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "relationship_love_like_relationship_relationships",
+        "mind_mind_like_mind_mind_system"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "mind_deep_mind_pressure",
+        "relationship_wound_like_moon_square_venus_need_affection_friction_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "samsun_1970_07_29",
+      "label": "Samsun 1970",
+      "birth_data": {
+        "birth_date": "1970-07-29",
+        "birth_time": "18:50",
+        "birth_time_confidence": "exact",
+        "birth_place": "Samsun, TR",
+        "birth_latitude": 41.2867,
+        "birth_longitude": 36.33,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Aquarius; MC Scorpio; Sun Leo 7H; Moon Gemini 5H; Mercury Leo 7H; Venus Virgo 7H; Mars Leo 7H; Jupiter Libra 8H; Saturn Taurus 3H; Uranus Libra 8H; Neptune Scorpio 10H; Pluto Virgo 8H",
+      "candidate_packet_count": 14,
+      "unique_candidate_packet_count": 14,
+      "selected_packet_count": 2,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "relationship": "strong",
+        "career": "strong",
+        "mind": "strong",
+        "identity": "detail_only"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 5,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 74,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "moon_signature",
+        "career_route",
+        "axis_2h_8h",
+        "identity_route",
+        "tight_aspect_emotional_depth"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "moon_signature": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "identity_route": 1,
+        "tight_aspect_emotional_depth": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact",
+        "relationship_love_like_relationship_relationships",
+        "career_mind_like_mercury_sextile_9h_capricorn_aquarius_intellectual_authority"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "relationship_love_like_relationship_relationships",
+        "career_mind_like_mercury_sextile_9h_capricorn_aquarius_intellectual_authority",
+        "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "mind_mind_like_mercury_sextile_9h_capricorn_aquarius_intellectual_authority"
+      ]
+    },
+    {
+      "chart_id": "kayseri_2003_12_11",
+      "label": "Kayseri 2003",
+      "birth_data": {
+        "birth_date": "2003-12-11",
+        "birth_time": "09:35",
+        "birth_time_confidence": "exact",
+        "birth_place": "Kayseri, TR",
+        "birth_latitude": 38.7205,
+        "birth_longitude": 35.4826,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Capricorn; MC Scorpio; Sun Sagittarius 11H; Moon Cancer 6H; Mercury Capricorn 12H; Venus Capricorn 12H; Mars Pisces 2H; Jupiter Virgo 8H; Saturn Cancer 6H; Uranus Aquarius 1H; Neptune Aquarius 1H; Pluto Sagittarius 11H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 7,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 7,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "house_12h",
+        "relationship_route",
+        "career_route",
+        "axis_2h_8h",
+        "identity_route",
+        "moon_signature"
+      ],
+      "all_discovery_gaps": {
+        "house_12h": 1,
+        "relationship_route": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "identity_route": 1,
+        "moon_signature": 1,
+        "tight_aspect_relationship": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "relationship",
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "eskisehir_1991_04_05",
+      "label": "Eskisehir 1991",
+      "birth_data": {
+        "birth_date": "1991-04-05",
+        "birth_time": "14:10",
+        "birth_time_confidence": "exact",
+        "birth_place": "Eskisehir, TR",
+        "birth_latitude": 39.7767,
+        "birth_longitude": 30.5206,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Leo; MC Taurus; Sun Aries 9H; Moon Sagittarius 5H; Mercury Aries 9H; Venus Taurus 10H; Mars Cancer 11H; Jupiter Leo 12H; Saturn Aquarius 6H; Uranus Capricorn 6H; Neptune Capricorn 6H; Pluto Scorpio 4H",
+      "candidate_packet_count": 14,
+      "unique_candidate_packet_count": 14,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 5,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 5,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_12h",
+        "moon_signature",
+        "career_route",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_12h": 1,
+        "moon_signature": 1,
+        "career_route": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "mersin_1981_08_17",
+      "label": "Mersin 1981",
+      "birth_data": {
+        "birth_date": "1981-08-17",
+        "birth_time": "23:20",
+        "birth_time_confidence": "exact",
+        "birth_place": "Mersin, TR",
+        "birth_latitude": 36.8121,
+        "birth_longitude": 34.6415,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Taurus; MC Aquarius; Sun Leo 4H; Moon Pisces 11H; Mercury Virgo 5H; Venus Virgo 5H; Mars Cancer 3H; Jupiter Libra 6H; Saturn Libra 5H; Uranus Scorpio 7H; Neptune Sagittarius 8H; Pluto Libra 6H",
+      "candidate_packet_count": 12,
+      "unique_candidate_packet_count": 12,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 5,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "detail_only"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 7,
+        "discovery_scaffold": 5,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_5h",
+        "career_route",
+        "identity_route",
+        "moon_signature"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_5h": 1,
+        "career_route": 1,
+        "identity_route": 1,
+        "moon_signature": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 1,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "new_york_1984_10_02",
+      "label": "New York 1984",
+      "birth_data": {
+        "birth_date": "1984-10-02",
+        "birth_time": "05:45",
+        "birth_time_confidence": "exact",
+        "birth_place": "New York, US",
+        "birth_latitude": 40.7128,
+        "birth_longitude": -74.006,
+        "birth_timezone": "America/New_York"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Virgo; MC Gemini; Sun Libra 1H; Moon Capricorn 4H; Mercury Libra 1H; Venus Scorpio 2H; Mars Sagittarius 4H; Jupiter Capricorn 4H; Saturn Scorpio 2H; Uranus Sagittarius 3H; Neptune Sagittarius 4H; Pluto Scorpio 2H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong",
+        "identity": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "house_4h_ic",
+        "moon_signature",
+        "identity_route",
+        "relationship_route",
+        "career_route",
+        "axis_3h_9h"
+      ],
+      "all_discovery_gaps": {
+        "house_4h_ic": 1,
+        "moon_signature": 1,
+        "identity_route": 1,
+        "relationship_route": 1,
+        "career_route": 1,
+        "axis_3h_9h": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "identity",
+        "relationship",
+        "career",
+        "mind"
+      ],
+      "top_overused_fallbacks": [
+        "identity_identity_like_neptune_4h_soft_inner_presence_chart_exact",
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "identity_identity_like_neptune_4h_soft_inner_presence_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "london_1972_12_30",
+      "label": "London 1972",
+      "birth_data": {
+        "birth_date": "1972-12-30",
+        "birth_time": "17:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "London, GB",
+        "birth_latitude": 51.5074,
+        "birth_longitude": -0.1278,
+        "birth_timezone": "Europe/London"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Cancer; MC Aries; Sun Capricorn 6H; Moon Scorpio 5H; Mercury Sagittarius 5H; Venus Sagittarius 5H; Mars Sagittarius 5H; Jupiter Capricorn 6H; Saturn Gemini 11H; Uranus Libra 4H; Neptune Sagittarius 5H; Pluto Libra 4H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 74,
+      "top_discovery_gaps": [
+        "house_5h",
+        "house_4h_ic",
+        "relationship_route",
+        "moon_signature",
+        "career_route",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "house_5h": 1,
+        "house_4h_ic": 1,
+        "relationship_route": 1,
+        "moon_signature": 1,
+        "career_route": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "relationship",
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "mind_gift_like_mercury_conjunct_venus_refined_relational_language_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "tokyo_1998_06_21",
+      "label": "Tokyo 1998",
+      "birth_data": {
+        "birth_date": "1998-06-21",
+        "birth_time": "11:05",
+        "birth_time_confidence": "exact",
+        "birth_place": "Tokyo, JP",
+        "birth_latitude": 35.6762,
+        "birth_longitude": 139.6503,
+        "birth_timezone": "Asia/Tokyo"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Virgo; MC Gemini; Sun Gemini 10H; Moon Taurus 9H; Mercury Cancer 10H; Venus Taurus 9H; Mars Gemini 9H; Jupiter Pisces 7H; Saturn Taurus 8H; Uranus Aquarius 5H; Neptune Aquarius 5H; Pluto Sagittarius 3H",
+      "candidate_packet_count": 17,
+      "unique_candidate_packet_count": 17,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 7,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 7,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 1,
+      "health_score": 70,
+      "top_discovery_gaps": [
+        "career_route",
+        "identity_route",
+        "relationship_route",
+        "house_5h",
+        "axis_2h_8h",
+        "axis_3h_9h"
+      ],
+      "all_discovery_gaps": {
+        "career_route": 1,
+        "identity_route": 1,
+        "relationship_route": 1,
+        "house_5h": 1,
+        "axis_2h_8h": 1,
+        "axis_3h_9h": 1,
+        "moon_signature": 1
+      },
+      "top_underpromoted_domains": [
+        "career",
+        "identity",
+        "relationship",
+        "emotional",
+        "mind"
+      ],
+      "top_overused_fallbacks": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "career_career_like_saturn_taurus_8h_steady_public_maturity_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "buenos_aires_1980_09_09",
+      "label": "Buenos Aires 1980",
+      "birth_data": {
+        "birth_date": "1980-09-09",
+        "birth_time": "01:25",
+        "birth_time_confidence": "exact",
+        "birth_place": "Buenos Aires, AR",
+        "birth_latitude": -34.6037,
+        "birth_longitude": -58.3816,
+        "birth_timezone": "America/Argentina/Buenos_Aires"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Gemini; MC Pisces; Sun Virgo 3H; Moon Virgo 3H; Mercury Virgo 4H; Venus Leo 2H; Mars Scorpio 5H; Jupiter Virgo 3H; Saturn Virgo 4H; Uranus Scorpio 6H; Neptune Sagittarius 7H; Pluto Libra 4H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "house_4h_ic",
+        "relationship_route",
+        "moon_signature",
+        "career_route",
+        "axis_3h_9h",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "house_4h_ic": 1,
+        "relationship_route": 1,
+        "moon_signature": 1,
+        "career_route": 1,
+        "axis_3h_9h": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "relationship",
+        "career",
+        "mind",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "sydney_1993_02_01",
+      "label": "Sydney 1993",
+      "birth_data": {
+        "birth_date": "1993-02-01",
+        "birth_time": "19:55",
+        "birth_time_confidence": "exact",
+        "birth_place": "Sydney, AU",
+        "birth_latitude": -33.8688,
+        "birth_longitude": 151.2093,
+        "birth_timezone": "Australia/Sydney"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Leo; MC Taurus; Sun Aquarius 7H; Moon Taurus 9H; Mercury Aquarius 7H; Venus Pisces 8H; Mars Cancer 11H; Jupiter Libra 2H; Saturn Aquarius 7H; Uranus Capricorn 6H; Neptune Capricorn 6H; Pluto Scorpio 3H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 74,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "career_route",
+        "axis_2h_8h",
+        "axis_3h_9h",
+        "identity_route",
+        "tight_aspect_relationship"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "axis_3h_9h": 1,
+        "identity_route": 1,
+        "tight_aspect_relationship": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "career",
+        "mind",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "relationship_wound_like_moon_opposite_pluto_emotional_intensity_control_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "madrid_2004_04_18",
+      "label": "Madrid 2004",
+      "birth_data": {
+        "birth_date": "2004-04-18",
+        "birth_time": "07:40",
+        "birth_time_confidence": "exact",
+        "birth_place": "Madrid, ES",
+        "birth_latitude": 40.4168,
+        "birth_longitude": -3.7038,
+        "birth_timezone": "Europe/Madrid"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Taurus; MC Capricorn; Sun Aries 12H; Moon Aries 12H; Mercury Aries 12H; Venus Gemini 2H; Mars Gemini 2H; Jupiter Virgo 5H; Saturn Cancer 3H; Uranus Pisces 11H; Neptune Aquarius 11H; Pluto Sagittarius 8H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "medium_strong",
+        "identity": "detail_only"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "career_route",
+        "moon_signature",
+        "axis_2h_8h",
+        "identity_route",
+        "tight_aspect_relationship"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "career_route": 1,
+        "moon_signature": 1,
+        "axis_2h_8h": 1,
+        "identity_route": 1,
+        "tight_aspect_relationship": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "career",
+        "emotional",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "identity_identity_like_sun_aries_12h_hidden_private_fire_chart_exact",
+        "mind_mind_like_mind_mind_system",
+        "career_wound_like_career_career_visibility",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "career_wound_like_career_career_visibility",
+        "relationship_love_like_relationship_relationships",
+        "identity_identity_like_sun_aries_12h_hidden_private_fire_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "mumbai_1977_07_07",
+      "label": "Mumbai 1977",
+      "birth_data": {
+        "birth_date": "1977-07-07",
+        "birth_time": "13:10",
+        "birth_time_confidence": "exact",
+        "birth_place": "Mumbai, IN",
+        "birth_latitude": 19.076,
+        "birth_longitude": 72.8777,
+        "birth_timezone": "Asia/Kolkata"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Libra; MC Cancer; Sun Cancer 9H; Moon Aries 6H; Mercury Cancer 10H; Venus Gemini 8H; Mars Taurus 8H; Jupiter Gemini 9H; Saturn Leo 10H; Uranus Scorpio 1H; Neptune Sagittarius 2H; Pluto Libra 12H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 4,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong",
+        "identity": "medium_strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 2,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 4,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 74,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_12h",
+        "career_route",
+        "axis_2h_8h"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_12h": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career"
+      ],
+      "top_overused_fallbacks": [
+        "identity_identity_like_libra_asc_venus_chart_ruler_chart_exact",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_wound_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_wound_like_career_career_visibility",
+        "identity_identity_like_libra_asc_venus_chart_ruler_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "relationship_wound_like_moon_opposite_pluto_emotional_intensity_control_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "cairo_1991_01_15",
+      "label": "Cairo 1991",
+      "birth_data": {
+        "birth_date": "1991-01-15",
+        "birth_time": "22:35",
+        "birth_time_confidence": "exact",
+        "birth_place": "Cairo, EG",
+        "birth_latitude": 30.0444,
+        "birth_longitude": 31.2357,
+        "birth_timezone": "Africa/Cairo"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Libra; MC Cancer; Sun Capricorn 4H; Moon Capricorn 4H; Mercury Capricorn 3H; Venus Aquarius 5H; Mars Taurus 8H; Jupiter Leo 11H; Saturn Capricorn 4H; Uranus Capricorn 4H; Neptune Capricorn 4H; Pluto Scorpio 2H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 5,
+      "focus_map": {
+        "career": "strong",
+        "relationship": "strong",
+        "mind": "strong",
+        "identity": "medium_strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 2,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 5,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 1,
+      "health_score": 70,
+      "top_discovery_gaps": [
+        "house_4h_ic",
+        "relationship_route",
+        "moon_signature",
+        "career_route",
+        "axis_2h_8h"
+      ],
+      "all_discovery_gaps": {
+        "house_4h_ic": 1,
+        "relationship_route": 1,
+        "moon_signature": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "relationship",
+        "career"
+      ],
+      "top_overused_fallbacks": [
+        "identity_identity_like_libra_asc_venus_chart_ruler_chart_exact",
+        "relationship_love_like_relationship_relationships",
+        "mind_mind_like_mind_mind_system",
+        "career_wound_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "relationship_love_like_relationship_relationships",
+        "mind_mind_like_mind_mind_system",
+        "career_wound_like_career_career_visibility",
+        "identity_identity_like_libra_asc_venus_chart_ruler_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "identity_identity_like_neptune_4h_soft_inner_presence_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "paris_1986_05_12",
+      "label": "Paris 1986",
+      "birth_data": {
+        "birth_date": "1986-05-12",
+        "birth_time": "10:10",
+        "birth_time_confidence": "exact",
+        "birth_place": "Paris, FR",
+        "birth_latitude": 48.8566,
+        "birth_longitude": 2.3522,
+        "birth_timezone": "Europe/Paris"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Cancer; MC Pisces; Sun Taurus 11H; Moon Gemini 12H; Mercury Taurus 11H; Venus Gemini 12H; Mars Capricorn 6H; Jupiter Pisces 9H; Saturn Sagittarius 5H; Uranus Sagittarius 6H; Neptune Capricorn 6H; Pluto Scorpio 5H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_12h",
+        "moon_signature",
+        "house_5h",
+        "career_route",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_12h": 1,
+        "moon_signature": 1,
+        "house_5h": 1,
+        "career_route": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "berlin_1999_11_24",
+      "label": "Berlin 1999",
+      "birth_data": {
+        "birth_date": "1999-11-24",
+        "birth_time": "06:55",
+        "birth_time_confidence": "exact",
+        "birth_place": "Berlin, DE",
+        "birth_latitude": 52.52,
+        "birth_longitude": 13.405,
+        "birth_timezone": "Europe/Berlin"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Scorpio; MC Virgo; Sun Sagittarius 1H; Moon Gemini 7H; Mercury Scorpio 12H; Venus Libra 11H; Mars Capricorn 2H; Jupiter Aries 5H; Saturn Taurus 6H; Uranus Aquarius 3H; Neptune Aquarius 2H; Pluto Sagittarius 1H",
+      "candidate_packet_count": 14,
+      "unique_candidate_packet_count": 14,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 2,
+      "generic_public_main_count": 2,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 4,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 2,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 4,
+        "composed_semantic": 0,
+        "generic_fallback": 6,
+        "discovery_scaffold": 4,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 80,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "identity_route",
+        "career_route",
+        "axis_3h_9h"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "identity_route": 1,
+        "career_route": 1,
+        "axis_3h_9h": 1
+      },
+      "top_underpromoted_domains": [
+        "identity",
+        "career",
+        "mind"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_affection_gift"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "relationship_wound_like_moon_opposite_pluto_emotional_intensity_control_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "rome_1971_02_06",
+      "label": "Rome 1971",
+      "birth_data": {
+        "birth_date": "1971-02-06",
+        "birth_time": "15:15",
+        "birth_time_confidence": "exact",
+        "birth_place": "Rome, IT",
+        "birth_latitude": 41.9028,
+        "birth_longitude": 12.4964,
+        "birth_timezone": "Europe/Rome"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Cancer; MC Aries; Sun Aquarius 8H; Moon Cancer 12H; Mercury Capricorn 7H; Venus Capricorn 6H; Mars Sagittarius 5H; Jupiter Sagittarius 5H; Saturn Taurus 11H; Uranus Libra 4H; Neptune Sagittarius 5H; Pluto Virgo 3H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 4,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 2,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 4,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 1,
+      "health_score": 70,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_5h",
+        "moon_signature",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_5h": 1,
+        "moon_signature": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility",
+        "career_healing_voice"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "relationship_love_like_venus_square_pluto_intense_love_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "los_angeles_1994_07_28",
+      "label": "Los Angeles 1994",
+      "birth_data": {
+        "birth_date": "1994-07-28",
+        "birth_time": "20:40",
+        "birth_time_confidence": "exact",
+        "birth_place": "Los Angeles, US",
+        "birth_latitude": 34.0522,
+        "birth_longitude": -118.2437,
+        "birth_timezone": "America/Los_Angeles"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Aquarius; MC Sagittarius; Sun Leo 6H; Moon Aries 2H; Mercury Cancer 5H; Venus Virgo 7H; Mars Gemini 4H; Jupiter Scorpio 8H; Saturn Pisces 1H; Uranus Capricorn 12H; Neptune Capricorn 12H; Pluto Scorpio 9H",
+      "candidate_packet_count": 12,
+      "unique_candidate_packet_count": 12,
+      "selected_packet_count": 2,
+      "public_main_count": 2,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 2,
+      "generic_public_main_count": 2,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 2,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 3,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 16,
+      "v8_duplication": 0,
+      "health_score": 70,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "house_12h",
+        "career_route",
+        "axis_2h_8h",
+        "axis_3h_9h",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "house_12h": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "axis_3h_9h": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "emotional",
+        "career",
+        "mind",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_wound_like_moon_square_mercury_emotion_mind_friction"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_wound_like_moon_square_mercury_emotion_mind_friction"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "mexico_city_1988_08_31",
+      "label": "Mexico City 1988",
+      "birth_data": {
+        "birth_date": "1988-08-31",
+        "birth_time": "09:05",
+        "birth_time_confidence": "exact",
+        "birth_place": "Mexico City, MX",
+        "birth_latitude": 19.4326,
+        "birth_longitude": -99.1332,
+        "birth_timezone": "America/Mexico_City"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Libra; MC Cancer; Sun Virgo 11H; Moon Taurus 7H; Mercury Libra 12H; Venus Cancer 10H; Mars Aries 6H; Jupiter Gemini 8H; Saturn Sagittarius 3H; Uranus Sagittarius 3H; Neptune Capricorn 3H; Pluto Scorpio 1H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 2,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 4,
+      "generic_public_main_count": 4,
+      "customized_fallback_public_main_count": 1,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 3,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong",
+        "identity": "supporting"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 4,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 3,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 3,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 11,
+      "v8_duplication": 0,
+      "health_score": 74,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "career_route",
+        "axis_3h_9h"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "career_route": 1,
+        "axis_3h_9h": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "career",
+        "mind"
+      ],
+      "top_overused_fallbacks": [
+        "identity_identity_like_libra_asc_venus_chart_ruler_chart_exact",
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 1,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "identity_identity_like_libra_asc_venus_chart_ruler_chart_exact"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "relationship_wound_like_moon_opposite_pluto_emotional_intensity_control_chart_exact",
+        "identity_wound_like_mars_square_chiron_tender_courage_chart_exact"
+      ]
+    },
+    {
+      "chart_id": "sao_paulo_2002_03_17",
+      "label": "Sao Paulo 2002",
+      "birth_data": {
+        "birth_date": "2002-03-17",
+        "birth_time": "02:50",
+        "birth_time_confidence": "exact",
+        "birth_place": "Sao Paulo, BR",
+        "birth_latitude": -23.5505,
+        "birth_longitude": -46.6333,
+        "birth_timezone": "America/Sao_Paulo"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Aquarius; MC Scorpio; Sun Pisces 2H; Moon Taurus 3H; Mercury Pisces 2H; Venus Aries 3H; Mars Taurus 4H; Jupiter Cancer 5H; Saturn Gemini 4H; Uranus Aquarius 1H; Neptune Aquarius 12H; Pluto Sagittarius 11H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "house_4h_ic",
+        "moon_signature",
+        "identity_route",
+        "relationship_route",
+        "house_5h",
+        "career_route"
+      ],
+      "all_discovery_gaps": {
+        "house_4h_ic": 1,
+        "moon_signature": 1,
+        "identity_route": 1,
+        "relationship_route": 1,
+        "house_5h": 1,
+        "career_route": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "identity",
+        "relationship",
+        "career"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "toronto_1976_06_26",
+      "label": "Toronto 1976",
+      "birth_data": {
+        "birth_date": "1976-06-26",
+        "birth_time": "11:45",
+        "birth_time_confidence": "exact",
+        "birth_place": "Toronto, CA",
+        "birth_latitude": 43.6532,
+        "birth_longitude": -79.3832,
+        "birth_timezone": "America/Toronto"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Virgo; MC Gemini; Sun Cancer 10H; Moon Gemini 10H; Mercury Gemini 10H; Venus Cancer 10H; Mars Leo 12H; Jupiter Taurus 9H; Saturn Leo 11H; Uranus Scorpio 2H; Neptune Sagittarius 3H; Pluto Libra 1H",
+      "candidate_packet_count": 14,
+      "unique_candidate_packet_count": 14,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 6,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 2,
+        "composed_semantic": 0,
+        "generic_fallback": 6,
+        "discovery_scaffold": 6,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "career_route",
+        "identity_route",
+        "axis_2h_8h",
+        "axis_3h_9h",
+        "moon_signature"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "career_route": 1,
+        "identity_route": 1,
+        "axis_2h_8h": 1,
+        "axis_3h_9h": 1,
+        "moon_signature": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "career",
+        "identity",
+        "mind",
+        "emotional"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_venus_square_pluto_intense_love"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_venus_square_pluto_intense_love"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "dubai_1995_01_03",
+      "label": "Dubai 1995",
+      "birth_data": {
+        "birth_date": "1995-01-03",
+        "birth_time": "04:25",
+        "birth_time_confidence": "exact",
+        "birth_place": "Dubai, AE",
+        "birth_latitude": 25.2048,
+        "birth_longitude": 55.2708,
+        "birth_timezone": "Asia/Dubai"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Sagittarius; MC Virgo; Sun Capricorn 2H; Moon Aquarius 2H; Mercury Capricorn 2H; Venus Scorpio 12H; Mars Virgo 9H; Jupiter Sagittarius 1H; Saturn Pisces 3H; Uranus Capricorn 2H; Neptune Capricorn 2H; Pluto Scorpio 12H",
+      "candidate_packet_count": 14,
+      "unique_candidate_packet_count": 14,
+      "selected_packet_count": 3,
+      "public_main_count": 3,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 5,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 5,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 8,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "house_12h",
+        "relationship_route",
+        "identity_route",
+        "career_route",
+        "moon_signature"
+      ],
+      "all_discovery_gaps": {
+        "house_12h": 1,
+        "relationship_route": 1,
+        "identity_route": 1,
+        "career_route": 1,
+        "moon_signature": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "relationship",
+        "identity",
+        "career"
+      ],
+      "top_overused_fallbacks": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "career_career_like_career_career_visibility"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "singapore_1983_10_19",
+      "label": "Singapore 1983",
+      "birth_data": {
+        "birth_date": "1983-10-19",
+        "birth_time": "18:05",
+        "birth_time_confidence": "exact",
+        "birth_place": "Singapore, SG",
+        "birth_latitude": 1.3521,
+        "birth_longitude": 103.8198,
+        "birth_timezone": "Asia/Singapore"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Aries; MC Capricorn; Sun Libra 7H; Moon Pisces 12H; Mercury Libra 7H; Venus Virgo 5H; Mars Virgo 6H; Jupiter Sagittarius 8H; Saturn Scorpio 7H; Uranus Sagittarius 8H; Neptune Sagittarius 9H; Pluto Libra 7H",
+      "candidate_packet_count": 15,
+      "unique_candidate_packet_count": 15,
+      "selected_packet_count": 3,
+      "public_main_count": 4,
+      "public_support_count": 0,
+      "detail_count": 0,
+      "coverage_warnings": [
+        "support_detail_empty",
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 3,
+      "generic_public_main_count": 3,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 3,
+      "non_public_discovery_packet_count": 5,
+      "focus_map": {
+        "career": "strong",
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 9,
+        "discovery_scaffold": 5,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 9,
+      "v8_duplication": 0,
+      "health_score": 64,
+      "top_discovery_gaps": [
+        "moon_signature",
+        "career_route",
+        "axis_2h_8h",
+        "axis_3h_9h",
+        "identity_route"
+      ],
+      "all_discovery_gaps": {
+        "moon_signature": 1,
+        "career_route": 1,
+        "axis_2h_8h": 1,
+        "axis_3h_9h": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "emotional",
+        "career",
+        "mind",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 3
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships",
+        "relationship_relationship_power_depth"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": []
+    },
+    {
+      "chart_id": "johannesburg_1990_12_12",
+      "label": "Johannesburg 1990",
+      "birth_data": {
+        "birth_date": "1990-12-12",
+        "birth_time": "07:25",
+        "birth_time_confidence": "exact",
+        "birth_place": "Johannesburg, ZA",
+        "birth_latitude": -26.2041,
+        "birth_longitude": 28.0473,
+        "birth_timezone": "Africa/Johannesburg"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Capricorn; MC Libra; Sun Sagittarius 12H; Moon Libra 10H; Mercury Capricorn 12H; Venus Sagittarius 12H; Mars Gemini 5H; Jupiter Leo 8H; Saturn Capricorn 1H; Uranus Capricorn 12H; Neptune Capricorn 12H; Pluto Scorpio 11H",
+      "candidate_packet_count": 11,
+      "unique_candidate_packet_count": 11,
+      "selected_packet_count": 3,
+      "public_main_count": 2,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 2,
+      "generic_public_main_count": 2,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 4,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 2,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 1,
+        "composed_semantic": 0,
+        "generic_fallback": 6,
+        "discovery_scaffold": 4,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 14,
+      "v8_duplication": 0,
+      "health_score": 80,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "identity_route",
+        "career_route",
+        "moon_signature"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "identity_route": 1,
+        "career_route": 1,
+        "moon_signature": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "identity",
+        "career",
+        "emotional"
+      ],
+      "top_overused_fallbacks": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "mind_mind_like_mind_mind_system",
+        "relationship_love_like_relationship_relationships"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "relationship_hidden_private_love_pattern"
+      ]
+    },
+    {
+      "chart_id": "amsterdam_1985_04_16",
+      "label": "Amsterdam 1985",
+      "birth_data": {
+        "birth_date": "1985-04-16",
+        "birth_time": "13:55",
+        "birth_time_confidence": "exact",
+        "birth_place": "Amsterdam, NL",
+        "birth_latitude": 52.3676,
+        "birth_longitude": 4.9041,
+        "birth_timezone": "Europe/Amsterdam"
+      },
+      "origin": [
+        "manual_batch"
+      ],
+      "raw_signature": "ASC Leo; MC Taurus; Sun Aries 9H; Moon Pisces 8H; Mercury Aries 9H; Venus Aries 9H; Mars Taurus 10H; Jupiter Aquarius 6H; Saturn Scorpio 4H; Uranus Sagittarius 5H; Neptune Capricorn 5H; Pluto Scorpio 4H",
+      "candidate_packet_count": 16,
+      "unique_candidate_packet_count": 16,
+      "selected_packet_count": 3,
+      "public_main_count": 2,
+      "public_support_count": 0,
+      "detail_count": 1,
+      "coverage_warnings": [
+        "generic_fallback_public_main",
+        "mixed_chart_undercovered"
+      ],
+      "missing_domain_flags": [],
+      "fallback_public_main_count": 2,
+      "generic_public_main_count": 2,
+      "customized_fallback_public_main_count": 0,
+      "cluster_specific_fallback_count": 2,
+      "non_public_discovery_packet_count": 8,
+      "focus_map": {
+        "mind": "strong",
+        "relationship": "strong",
+        "career": "strong"
+      },
+      "public_main_source_type_distribution": {
+        "exact_registry": 0,
+        "composed_semantic": 0,
+        "generic_fallback": 2,
+        "discovery_scaffold": 0,
+        "legacy_graph": 0
+      },
+      "candidate_source_type_distribution": {
+        "exact_registry": 5,
+        "composed_semantic": 0,
+        "generic_fallback": 3,
+        "discovery_scaffold": 8,
+        "legacy_graph": 0
+      },
+      "chart_facts_match_false_count": 0,
+      "duplicate_headline_count": 15,
+      "v8_duplication": 0,
+      "health_score": 80,
+      "top_discovery_gaps": [
+        "relationship_route",
+        "career_route",
+        "mercury_signature",
+        "house_4h_ic",
+        "moon_signature",
+        "house_5h"
+      ],
+      "all_discovery_gaps": {
+        "relationship_route": 1,
+        "career_route": 1,
+        "mercury_signature": 1,
+        "house_4h_ic": 1,
+        "moon_signature": 1,
+        "house_5h": 1,
+        "axis_3h_9h": 1,
+        "identity_route": 1
+      },
+      "top_underpromoted_domains": [
+        "relationship",
+        "career",
+        "mind",
+        "emotional",
+        "identity"
+      ],
+      "top_overused_fallbacks": [
+        "career_career_like_career_career_visibility",
+        "mind_gift_like_mercury_conjunct_venus_refined_relational_language"
+      ],
+      "fallback_public_main_quality": {
+        "raw_generic_fallback": 0,
+        "customized_fallback_with_bespoke_copy": 0,
+        "cluster_specific_fallback": 2
+      },
+      "public_main_cluster_ids": [
+        "career_career_like_career_career_visibility",
+        "mind_gift_like_mercury_conjunct_venus_refined_relational_language"
+      ],
+      "public_support_cluster_ids": [],
+      "detail_cluster_ids": [
+        "relationship_gift_like_mercury_conjunct_venus_refined_relational_language"
+      ]
+    }
+  ],
+  "aggregate": {
+    "chart_count": 50,
+    "origin_distribution": {
+      "baseline": 11,
+      "accepted_golden": 6,
+      "unknown_birthtime": 1,
+      "mixed_normal": 4,
+      "manual_batch": 30
+    },
+    "candidate_source_type_distribution": {
+      "exact_registry": 169,
+      "composed_semantic": 0,
+      "generic_fallback": 340,
+      "discovery_scaffold": 248,
+      "legacy_graph": 0
+    },
+    "public_main_source_type_distribution": {
+      "exact_registry": 31,
+      "composed_semantic": 0,
+      "generic_fallback": 144,
+      "discovery_scaffold": 0,
+      "legacy_graph": 0
+    },
+    "most_frequent_discovery_gaps": [
+      {
+        "gap_family": "relationship_route",
+        "count": 41
+      },
+      {
+        "gap_family": "career_route",
+        "count": 41
+      },
+      {
+        "gap_family": "identity_route",
+        "count": 38
+      },
+      {
+        "gap_family": "moon_signature",
+        "count": 34
+      },
+      {
+        "gap_family": "axis_2h_8h",
+        "count": 21
+      },
+      {
+        "gap_family": "axis_3h_9h",
+        "count": 19
+      },
+      {
+        "gap_family": "house_4h_ic",
+        "count": 15
+      },
+      {
+        "gap_family": "house_5h",
+        "count": 13
+      },
+      {
+        "gap_family": "house_12h",
+        "count": 12
+      },
+      {
+        "gap_family": "tight_aspect_relationship",
+        "count": 6
+      },
+      {
+        "gap_family": "mercury_signature",
+        "count": 4
+      },
+      {
+        "gap_family": "tight_aspect_emotional_depth",
+        "count": 4
+      }
+    ],
+    "most_frequent_raw_generic_fallback_public_main_owners": [
+      {
+        "cluster_id": "career_career_like_career_career_visibility",
+        "count": 6
+      },
+      {
+        "cluster_id": "mind_mind_like_mind_mind_system",
+        "count": 4
+      },
+      {
+        "cluster_id": "relationship_love_like_relationship_relationships",
+        "count": 4
+      },
+      {
+        "cluster_id": "identity_gift_like_saturn_trine_pluto_deep_resilience_chart_exact",
+        "count": 1
+      }
+    ],
+    "most_common_underpromoted_domains": [
+      {
+        "domain": "career",
+        "count": 41
+      },
+      {
+        "domain": "emotional",
+        "count": 39
+      },
+      {
+        "domain": "identity",
+        "count": 38
+      },
+      {
+        "domain": "relationship",
+        "count": 38
+      },
+      {
+        "domain": "mind",
+        "count": 20
+      }
+    ],
+    "lowest_health_score_charts": [
+      {
+        "chart_id": "fix06_grand_trine_flow",
+        "health_score": 60
+      },
+      {
+        "chart_id": "fix04_h10_career_stellium",
+        "health_score": 64
+      },
+      {
+        "chart_id": "konya_1974_05_19",
+        "health_score": 64
+      },
+      {
+        "chart_id": "kutahya_1959_10_21",
+        "health_score": 64
+      },
+      {
+        "chart_id": "madrid_2004_04_18",
+        "health_score": 64
+      },
+      {
+        "chart_id": "new_york_1984_10_02",
+        "health_score": 64
+      },
+      {
+        "chart_id": "ankara_1993_06_10",
+        "health_score": 64
+      },
+      {
+        "chart_id": "buenos_aires_1980_09_09",
+        "health_score": 64
+      },
+      {
+        "chart_id": "dubai_1995_01_03",
+        "health_score": 64
+      },
+      {
+        "chart_id": "eskisehir_1991_04_05",
+        "health_score": 64
+      }
+    ],
+    "highest_health_score_charts": [
+      {
+        "chart_id": "istanbul_1994_06_25",
+        "health_score": 100
+      },
+      {
+        "chart_id": "izmir_1996_03_08",
+        "health_score": 100
+      },
+      {
+        "chart_id": "istanbul_1997_01_21",
+        "health_score": 96
+      },
+      {
+        "chart_id": "fix02_capricorn_stellium",
+        "health_score": 94
+      },
+      {
+        "chart_id": "amsterdam_1985_04_16",
+        "health_score": 80
+      },
+      {
+        "chart_id": "antalya_1999_02_27",
+        "health_score": 80
+      },
+      {
+        "chart_id": "berlin_1999_11_24",
+        "health_score": 80
+      },
+      {
+        "chart_id": "johannesburg_1990_12_12",
+        "health_score": 80
+      },
+      {
+        "chart_id": "diyarbakir_1994_03_22",
+        "health_score": 74
+      },
+      {
+        "chart_id": "fix05_t_square_tense",
+        "health_score": 74
+      }
+    ],
+    "top_20_grammar_or_archetype_families_to_consider_next": [
+      {
+        "family": "relationship_route",
+        "count": 41,
+        "expected_semantic_family": "relationship route",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "career_route",
+        "count": 41,
+        "expected_semantic_family": "career route",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "identity_route",
+        "count": 38,
+        "expected_semantic_family": "identity route",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "moon_signature",
+        "count": 34,
+        "expected_semantic_family": "moon signature",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "axis_2h_8h",
+        "count": 21,
+        "expected_semantic_family": "self-worth / exchange / trust axis",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "axis_3h_9h",
+        "count": 19,
+        "expected_semantic_family": "speech / belief / perspective axis",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "house_4h_ic",
+        "count": 15,
+        "expected_semantic_family": "roots / home security / inner base",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "house_5h",
+        "count": 13,
+        "expected_semantic_family": "creativity / romance / joy visibility",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "house_12h",
+        "count": 12,
+        "expected_semantic_family": "private world / hidden preparation / backstage value",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "tight_aspect_relationship",
+        "count": 6,
+        "expected_semantic_family": "composed semantic family needed",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "mercury_signature",
+        "count": 4,
+        "expected_semantic_family": "mercury signature",
+        "recommended_path": "grammar_candidate"
+      },
+      {
+        "family": "tight_aspect_emotional_depth",
+        "count": 4,
+        "expected_semantic_family": "composed semantic family needed",
+        "recommended_path": "grammar_candidate"
+      }
+    ],
+    "top_10_representative_charts_for_next_golden_review": [
+      {
+        "chart_id": "fix06_grand_trine_flow",
+        "health_score": 60,
+        "top_discovery_gaps": [
+          "house_4h_ic",
+          "relationship_route",
+          "house_5h"
+        ]
+      },
+      {
+        "chart_id": "fix04_h10_career_stellium",
+        "health_score": 64,
+        "top_discovery_gaps": [
+          "relationship_route",
+          "career_route",
+          "moon_signature"
+        ]
+      },
+      {
+        "chart_id": "konya_1974_05_19",
+        "health_score": 64,
+        "top_discovery_gaps": [
+          "house_12h",
+          "career_route",
+          "relationship_route"
+        ]
+      },
+      {
+        "chart_id": "kutahya_1959_10_21",
+        "health_score": 64,
+        "top_discovery_gaps": [
+          "career_route",
+          "identity_route",
+          "relationship_route"
+        ]
+      },
+      {
+        "chart_id": "madrid_2004_04_18",
+        "health_score": 64,
+        "top_discovery_gaps": [
+          "relationship_route",
+          "career_route",
+          "moon_signature"
+        ]
+      },
+      {
+        "chart_id": "new_york_1984_10_02",
+        "health_score": 64,
+        "top_discovery_gaps": [
+          "house_4h_ic",
+          "moon_signature",
+          "identity_route"
+        ]
+      },
+      {
+        "chart_id": "ankara_1993_06_10",
+        "health_score": 64,
+        "top_discovery_gaps": [
+          "relationship_route",
+          "moon_signature",
+          "identity_route"
+        ]
+      },
+      {
+        "chart_id": "buenos_aires_1980_09_09",
+        "health_score": 64,
+        "top_discovery_gaps": [
+          "house_4h_ic",
+          "relationship_route",
+          "moon_signature"
+        ]
+      },
+      {
+        "chart_id": "dubai_1995_01_03",
+        "health_score": 64,
+        "top_discovery_gaps": [
+          "house_12h",
+          "relationship_route",
+          "identity_route"
+        ]
+      },
+      {
+        "chart_id": "eskisehir_1991_04_05",
+        "health_score": 64,
+        "top_discovery_gaps": [
+          "relationship_route",
+          "house_12h",
+          "moon_signature"
+        ]
+      }
+    ],
+    "recommended_v0_9_addendum_theme": "Route Families First Compositional Grammar Pack: identity, career, moon, mercury, and relationship routes before wider registry expansion.",
+    "representative_chart_excerpts_by_gap_family": {
+      "relationship_route": [
+        {
+          "chart_id": "fix06_grand_trine_flow",
+          "label": "Grand Trine — akış paterni",
+          "raw_signature": "ASC Cancer; MC Taurus; Sun Scorpio 4H; Moon Pisces 8H; Mercury Sagittarius 5H; Venus Scorpio 4H; Mars Sagittarius 5H; Jupiter Leo 1H; Saturn Virgo 2H; Uranus Scorpio 4H; Neptune Sagittarius 5H; Pluto Libra 3H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: career_career_like_career_career_visibility, mind_mind_like_mind_mind_system",
+          "discovery_candidate": "relationship_route",
+          "expected_semantic_family": "relationship route",
+          "why_it_matters": "DSC-ruler / Venus / Mars / Moon relationship structure is still under-promoted when chart-family packets are missing.",
+          "should_become": "grammar_candidate",
+          "health_score": 60
+        },
+        {
+          "chart_id": "ankara_1993_06_10",
+          "label": "Ankara 1993",
+          "raw_signature": "ASC Sagittarius; MC Libra; Sun Gemini 7H; Moon Pisces 3H; Mercury Cancer 7H; Venus Taurus 5H; Mars Leo 8H; Jupiter Libra 10H; Saturn Pisces 3H; Uranus Capricorn 2H; Neptune Capricorn 2H; Pluto Scorpio 11H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: mind_mind_like_mind_mind_system, relationship_love_like_relationship_relationships",
+          "discovery_candidate": "relationship_route",
+          "expected_semantic_family": "relationship route",
+          "why_it_matters": "DSC-ruler / Venus / Mars / Moon relationship structure is still under-promoted when chart-family packets are missing.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        },
+        {
+          "chart_id": "buenos_aires_1980_09_09",
+          "label": "Buenos Aires 1980",
+          "raw_signature": "ASC Gemini; MC Pisces; Sun Virgo 3H; Moon Virgo 3H; Mercury Virgo 4H; Venus Leo 2H; Mars Scorpio 5H; Jupiter Virgo 3H; Saturn Virgo 4H; Uranus Scorpio 6H; Neptune Sagittarius 7H; Pluto Libra 4H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: career_career_like_career_career_visibility, mind_mind_like_mind_mind_system",
+          "discovery_candidate": "relationship_route",
+          "expected_semantic_family": "relationship route",
+          "why_it_matters": "DSC-ruler / Venus / Mars / Moon relationship structure is still under-promoted when chart-family packets are missing.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        }
+      ],
+      "career_route": [
+        {
+          "chart_id": "ankara_1993_06_10",
+          "label": "Ankara 1993",
+          "raw_signature": "ASC Sagittarius; MC Libra; Sun Gemini 7H; Moon Pisces 3H; Mercury Cancer 7H; Venus Taurus 5H; Mars Leo 8H; Jupiter Libra 10H; Saturn Pisces 3H; Uranus Capricorn 2H; Neptune Capricorn 2H; Pluto Scorpio 11H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: mind_mind_like_mind_mind_system, relationship_love_like_relationship_relationships",
+          "discovery_candidate": "career_route",
+          "expected_semantic_family": "career route",
+          "why_it_matters": "MC + ruler + 10H routes are often discovered correctly but can still lose to generic visibility fallback.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        },
+        {
+          "chart_id": "buenos_aires_1980_09_09",
+          "label": "Buenos Aires 1980",
+          "raw_signature": "ASC Gemini; MC Pisces; Sun Virgo 3H; Moon Virgo 3H; Mercury Virgo 4H; Venus Leo 2H; Mars Scorpio 5H; Jupiter Virgo 3H; Saturn Virgo 4H; Uranus Scorpio 6H; Neptune Sagittarius 7H; Pluto Libra 4H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: career_career_like_career_career_visibility, mind_mind_like_mind_mind_system",
+          "discovery_candidate": "career_route",
+          "expected_semantic_family": "career route",
+          "why_it_matters": "MC + ruler + 10H routes are often discovered correctly but can still lose to generic visibility fallback.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        },
+        {
+          "chart_id": "dubai_1995_01_03",
+          "label": "Dubai 1995",
+          "raw_signature": "ASC Sagittarius; MC Virgo; Sun Capricorn 2H; Moon Aquarius 2H; Mercury Capricorn 2H; Venus Scorpio 12H; Mars Virgo 9H; Jupiter Sagittarius 1H; Saturn Pisces 3H; Uranus Capricorn 2H; Neptune Capricorn 2H; Pluto Scorpio 12H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: mind_mind_like_mind_mind_system, relationship_love_like_relationship_relationships",
+          "discovery_candidate": "career_route",
+          "expected_semantic_family": "career route",
+          "why_it_matters": "MC + ruler + 10H routes are often discovered correctly but can still lose to generic visibility fallback.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        }
+      ],
+      "identity_route": [
+        {
+          "chart_id": "fix06_grand_trine_flow",
+          "label": "Grand Trine — akış paterni",
+          "raw_signature": "ASC Cancer; MC Taurus; Sun Scorpio 4H; Moon Pisces 8H; Mercury Sagittarius 5H; Venus Scorpio 4H; Mars Sagittarius 5H; Jupiter Leo 1H; Saturn Virgo 2H; Uranus Scorpio 4H; Neptune Sagittarius 5H; Pluto Libra 3H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: career_career_like_career_career_visibility, mind_mind_like_mind_mind_system",
+          "discovery_candidate": "identity_route",
+          "expected_semantic_family": "identity route",
+          "why_it_matters": "ASC + chart ruler + Sun routes are structurally visible but still under-promoted when no exact family exists.",
+          "should_become": "grammar_candidate",
+          "health_score": 60
+        },
+        {
+          "chart_id": "ankara_1993_06_10",
+          "label": "Ankara 1993",
+          "raw_signature": "ASC Sagittarius; MC Libra; Sun Gemini 7H; Moon Pisces 3H; Mercury Cancer 7H; Venus Taurus 5H; Mars Leo 8H; Jupiter Libra 10H; Saturn Pisces 3H; Uranus Capricorn 2H; Neptune Capricorn 2H; Pluto Scorpio 11H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: mind_mind_like_mind_mind_system, relationship_love_like_relationship_relationships",
+          "discovery_candidate": "identity_route",
+          "expected_semantic_family": "identity route",
+          "why_it_matters": "ASC + chart ruler + Sun routes are structurally visible but still under-promoted when no exact family exists.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        },
+        {
+          "chart_id": "buenos_aires_1980_09_09",
+          "label": "Buenos Aires 1980",
+          "raw_signature": "ASC Gemini; MC Pisces; Sun Virgo 3H; Moon Virgo 3H; Mercury Virgo 4H; Venus Leo 2H; Mars Scorpio 5H; Jupiter Virgo 3H; Saturn Virgo 4H; Uranus Scorpio 6H; Neptune Sagittarius 7H; Pluto Libra 4H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: career_career_like_career_career_visibility, mind_mind_like_mind_mind_system",
+          "discovery_candidate": "identity_route",
+          "expected_semantic_family": "identity route",
+          "why_it_matters": "ASC + chart ruler + Sun routes are structurally visible but still under-promoted when no exact family exists.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        }
+      ],
+      "moon_signature": [
+        {
+          "chart_id": "fix06_grand_trine_flow",
+          "label": "Grand Trine — akış paterni",
+          "raw_signature": "ASC Cancer; MC Taurus; Sun Scorpio 4H; Moon Pisces 8H; Mercury Sagittarius 5H; Venus Scorpio 4H; Mars Sagittarius 5H; Jupiter Leo 1H; Saturn Virgo 2H; Uranus Scorpio 4H; Neptune Sagittarius 5H; Pluto Libra 3H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: career_career_like_career_career_visibility, mind_mind_like_mind_mind_system",
+          "discovery_candidate": "moon_signature",
+          "expected_semantic_family": "moon signature",
+          "why_it_matters": "Emotional rhythm is discoverable, but mixed charts still need better Moon-to-domain semantic composition.",
+          "should_become": "grammar_candidate",
+          "health_score": 60
+        },
+        {
+          "chart_id": "ankara_1993_06_10",
+          "label": "Ankara 1993",
+          "raw_signature": "ASC Sagittarius; MC Libra; Sun Gemini 7H; Moon Pisces 3H; Mercury Cancer 7H; Venus Taurus 5H; Mars Leo 8H; Jupiter Libra 10H; Saturn Pisces 3H; Uranus Capricorn 2H; Neptune Capricorn 2H; Pluto Scorpio 11H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: mind_mind_like_mind_mind_system, relationship_love_like_relationship_relationships",
+          "discovery_candidate": "moon_signature",
+          "expected_semantic_family": "moon signature",
+          "why_it_matters": "Emotional rhythm is discoverable, but mixed charts still need better Moon-to-domain semantic composition.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        },
+        {
+          "chart_id": "buenos_aires_1980_09_09",
+          "label": "Buenos Aires 1980",
+          "raw_signature": "ASC Gemini; MC Pisces; Sun Virgo 3H; Moon Virgo 3H; Mercury Virgo 4H; Venus Leo 2H; Mars Scorpio 5H; Jupiter Virgo 3H; Saturn Virgo 4H; Uranus Scorpio 6H; Neptune Sagittarius 7H; Pluto Libra 4H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: career_career_like_career_career_visibility, mind_mind_like_mind_mind_system",
+          "discovery_candidate": "moon_signature",
+          "expected_semantic_family": "moon signature",
+          "why_it_matters": "Emotional rhythm is discoverable, but mixed charts still need better Moon-to-domain semantic composition.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        }
+      ],
+      "axis_2h_8h": [
+        {
+          "chart_id": "fix06_grand_trine_flow",
+          "label": "Grand Trine — akış paterni",
+          "raw_signature": "ASC Cancer; MC Taurus; Sun Scorpio 4H; Moon Pisces 8H; Mercury Sagittarius 5H; Venus Scorpio 4H; Mars Sagittarius 5H; Jupiter Leo 1H; Saturn Virgo 2H; Uranus Scorpio 4H; Neptune Sagittarius 5H; Pluto Libra 3H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: career_career_like_career_career_visibility, mind_mind_like_mind_mind_system",
+          "discovery_candidate": "axis_2h_8h",
+          "expected_semantic_family": "self-worth / exchange / trust axis",
+          "why_it_matters": "Generic relationship or career fallback can absorb worth, dependency, and shared-resource themes that need their own grammar.",
+          "should_become": "grammar_candidate",
+          "health_score": 60
+        },
+        {
+          "chart_id": "ankara_1993_06_10",
+          "label": "Ankara 1993",
+          "raw_signature": "ASC Sagittarius; MC Libra; Sun Gemini 7H; Moon Pisces 3H; Mercury Cancer 7H; Venus Taurus 5H; Mars Leo 8H; Jupiter Libra 10H; Saturn Pisces 3H; Uranus Capricorn 2H; Neptune Capricorn 2H; Pluto Scorpio 11H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: mind_mind_like_mind_mind_system, relationship_love_like_relationship_relationships",
+          "discovery_candidate": "axis_2h_8h",
+          "expected_semantic_family": "self-worth / exchange / trust axis",
+          "why_it_matters": "Generic relationship or career fallback can absorb worth, dependency, and shared-resource themes that need their own grammar.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        },
+        {
+          "chart_id": "fix04_h10_career_stellium",
+          "label": "10. ev stellium — kariyer/visibility ağırlığı",
+          "raw_signature": "ASC Virgo; MC Gemini; Sun Gemini 9H; Moon Taurus 8H; Mercury Cancer 10H; Venus Taurus 8H; Mars Cancer 10H; Jupiter Aquarius 5H; Saturn Scorpio 2H; Uranus Sagittarius 3H; Neptune Capricorn 4H; Pluto Scorpio 2H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: identity_identity_like_neptune_4h_soft_inner_presence_chart_exact, career_career_like_career_career_visibility",
+          "discovery_candidate": "axis_2h_8h",
+          "expected_semantic_family": "self-worth / exchange / trust axis",
+          "why_it_matters": "Generic relationship or career fallback can absorb worth, dependency, and shared-resource themes that need their own grammar.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        }
+      ],
+      "axis_3h_9h": [
+        {
+          "chart_id": "buenos_aires_1980_09_09",
+          "label": "Buenos Aires 1980",
+          "raw_signature": "ASC Gemini; MC Pisces; Sun Virgo 3H; Moon Virgo 3H; Mercury Virgo 4H; Venus Leo 2H; Mars Scorpio 5H; Jupiter Virgo 3H; Saturn Virgo 4H; Uranus Scorpio 6H; Neptune Sagittarius 7H; Pluto Libra 4H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: career_career_like_career_career_visibility, mind_mind_like_mind_mind_system",
+          "discovery_candidate": "axis_3h_9h",
+          "expected_semantic_family": "speech / belief / perspective axis",
+          "why_it_matters": "Mind fallback can flatten the difference between communication habit and worldview architecture.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        },
+        {
+          "chart_id": "fix04_h10_career_stellium",
+          "label": "10. ev stellium — kariyer/visibility ağırlığı",
+          "raw_signature": "ASC Virgo; MC Gemini; Sun Gemini 9H; Moon Taurus 8H; Mercury Cancer 10H; Venus Taurus 8H; Mars Cancer 10H; Jupiter Aquarius 5H; Saturn Scorpio 2H; Uranus Sagittarius 3H; Neptune Capricorn 4H; Pluto Scorpio 2H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: identity_identity_like_neptune_4h_soft_inner_presence_chart_exact, career_career_like_career_career_visibility",
+          "discovery_candidate": "axis_3h_9h",
+          "expected_semantic_family": "speech / belief / perspective axis",
+          "why_it_matters": "Mind fallback can flatten the difference between communication habit and worldview architecture.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        },
+        {
+          "chart_id": "fix11_unknown_birthtime",
+          "label": "Doğum saati bilinmeyen — noon konvansiyonu + confidence=unknown",
+          "raw_signature": "ASC Sagittarius; MC Virgo; Sun Virgo 10H; Moon Aquarius 2H; Mercury Libra 11H; Venus Leo 9H; Mars Aries 4H; Jupiter Gemini 7H; Saturn Sagittarius 1H; Uranus Sagittarius 1H; Neptune Capricorn 2H; Pluto Scorpio 11H",
+          "current_public_issue": "generic fallback public_main still owns visible surface; support/detail remains underfilled; discovery signals remain debug-only; overused fallbacks: relationship_love_like_venus_square_pluto_intense_love_chart_exact, mind_mind_like_mercury_sextile_9h_capricorn_aquarius_intellectual_authority",
+          "discovery_candidate": "axis_3h_9h",
+          "expected_semantic_family": "speech / belief / perspective axis",
+          "why_it_matters": "Mind fallback can flatten the difference between communication habit and worldview architecture.",
+          "should_become": "grammar_candidate",
+          "health_score": 64
+        }
+      ]
+    },
+    "fallback_public_main_quality_distribution": {
+      "raw_generic_fallback": 3,
+      "customized_fallback_with_bespoke_copy": 20,
+      "cluster_specific_fallback": 121
+    }
+  }
+}
