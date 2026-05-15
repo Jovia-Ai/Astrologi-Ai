@@ -12,6 +12,11 @@ from app.narrative.editorial_render_policy import (
     opening_key,
     quality_issues,
 )
+from app.meaning.composed_detail_renderer import (
+    project_composed_detail_cards_to_public_lane,
+    project_moon_home_inner_security_to_public_lane,
+    render_composed_detail_card_v0_9a_2,
+)
 from app.natal.profile_detail_editorial import (
     build_editorial_detail_blocks_for_profile_block,
 )
@@ -33,6 +38,8 @@ _DOMAIN_LABELS: dict[str, str] = {
     "relationships": "ilişkiler",
     "relationship": "ilişkiler",
     "inner_world": "iç dünya",
+    "home_family": "ev ve kökler",
+    "creativity": "yaratıcılık",
     "life_direction": "yaşam yönü",
     "emotional": "duygusal alan",
     "general": "genel yaşam",
@@ -45,6 +52,8 @@ _DOMAIN_LOCATIVE_LABELS: dict[str, str] = {
     "relationships": "ilişkilerde",
     "relationship": "ilişkilerde",
     "inner_world": "iç dünyada",
+    "home_family": "ev ve köklerde",
+    "creativity": "yaratıcılıkta",
     "life_direction": "yaşam yönünde",
     "emotional": "duygusal alanda",
     "general": "genel yaşamda",
@@ -103,6 +112,7 @@ _SIMILARITY_STOPWORDS: set[str] = {
 }
 _SELECTION_DEBUG_ENV = "ENABLE_PROJECTION_SELECTION_DEBUG"
 _LAST_SELECTION_DEBUG: dict[str, Any] = {}
+_ENABLED_VALUES = {"1", "true", "yes", "on"}
 
 
 def get_last_projection_selection_debug() -> dict[str, Any]:
@@ -111,6 +121,14 @@ def get_last_projection_selection_debug() -> dict[str, Any]:
 
 def clear_last_projection_selection_debug() -> None:
     _LAST_SELECTION_DEBUG.clear()
+
+
+def _env_enabled(name: str, default: str = "false") -> bool:
+    return os.getenv(name, default).strip().lower() in _ENABLED_VALUES
+
+
+def _composed_semantics_render_detail_enabled() -> bool:
+    return _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL")
 
 
 def _selection_debug_enabled(selection_debug: MutableMapping[str, Any] | None) -> bool:
@@ -203,6 +221,26 @@ def build_profile_narrative_projection_v1(
     packet_payload = _coerce_packet_payload(natal_promise_packets_v1)
     cluster_payload = _coerce_cluster_plan_payload(natal_promise_cluster_plan_v1)
     cluster_context = _cluster_packet_payloads(cluster_payload)
+    composed_detail_cards = _render_composed_detail_cards(
+        cluster_payload=cluster_payload,
+    )
+    public_composed_detail_cards = project_composed_detail_cards_to_public_lane(
+        composed_detail_cards
+    )
+    # v0.9b.1 — append moon_signature.home_inner_security cards to the
+    # same lane after the career cards. Operates directly on the
+    # cluster plan's candidate_packets (the Moon family does not flow
+    # through the v0.9a.2 trace renderer). Career cards take top
+    # placement per the v0.9b.1 plan §3.3 ordering contract.
+    moon_home_inner_security_cards = project_moon_home_inner_security_to_public_lane(
+        cluster_payload.get("candidate_packets")
+        if isinstance(cluster_payload.get("candidate_packets"), Sequence)
+        else []
+    )
+    if moon_home_inner_security_cards:
+        public_composed_detail_cards = (
+            list(public_composed_detail_cards) + moon_home_inner_security_cards
+        )
     packet_nodes = _packet_projection_nodes(packet_payload)
     packet_count = len(packet_nodes)
     legacy_nodes = list(nodes)
@@ -493,12 +531,27 @@ def build_profile_narrative_projection_v1(
             "core_blocks": core_blocks,
             "extra_blocks": extra_blocks,
             "detail_cards": detail_cards,
+            # v0.9a.3 Phase B — dedicated composed detail lane.
+            # Field is omitted entirely when the lane flag is off or no
+            # card passes the allowlist + quality checks.
+            **(
+                {"composed_detail_cards": public_composed_detail_cards}
+                if public_composed_detail_cards
+                else {}
+            ),
         },
         "traceability": {
             "node_count": len(nodes),
             "evidence_count": len(evidence_map),
             "packet_count": packet_count,
             "cluster_public_main_count": cluster_main_count,
+            **(
+                {
+                    "composed_detail_cards_v0_9a_2": composed_detail_cards,
+                }
+                if include_packet_debug and composed_detail_cards
+                else {}
+            ),
             **(
                 {
                     "natal_promise_packets_v1": packet_payload,
@@ -537,6 +590,9 @@ def build_profile_v8_projection_v1(
     packet_payload = _coerce_packet_payload(natal_promise_packets_v1)
     cluster_payload = _coerce_cluster_plan_payload(natal_promise_cluster_plan_v1)
     cluster_context = _cluster_packet_payloads(cluster_payload)
+    composed_detail_cards = _render_composed_detail_cards(
+        cluster_payload=cluster_payload,
+    )
     packet_nodes = _packet_projection_nodes(packet_payload)
     packet_count = len(packet_nodes)
     cluster_main_nodes = _packet_projection_nodes(cluster_context["v8_primary_payload"])
@@ -780,6 +836,13 @@ def build_profile_v8_projection_v1(
             "evidence_count": len(evidence_map),
             "packet_count": packet_count,
             "cluster_public_main_count": cluster_main_count,
+            **(
+                {
+                    "composed_detail_cards_v0_9a_2": composed_detail_cards,
+                }
+                if include_packet_debug and composed_detail_cards
+                else {}
+            ),
             **(
                 {
                     "natal_promise_packets_v1": packet_payload,
@@ -1029,6 +1092,55 @@ def _cluster_packet_payloads(cluster_payload: Mapping[str, Any]) -> dict[str, di
     }
 
 
+def _render_composed_detail_cards(
+    *,
+    cluster_payload: Mapping[str, Any],
+) -> list[dict[str, Any]]:
+    """Render composed detail cards from the cluster's suppressed/detail
+    packets when ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL is on.
+
+    The returned list is the shared source for both:
+    - the debug traceability lane
+      (`traceability.composed_detail_cards_v0_9a_2`, emitted only when
+      `include_packet_debug` is true at the call site), and
+    - the v0.9a.3 Phase B public detail lane
+      (`profile_public.composed_detail_cards`, emitted only when
+      `ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE` is true and
+      the per-card allowlist/quality passes via
+      `project_composed_detail_cards_to_public_lane`).
+
+    Both downstream gates filter further; this function only enforces the
+    RENDER_DETAIL flag and the cluster-level "keep_for: detail" gate.
+    """
+    if not _composed_semantics_render_detail_enabled():
+        return []
+    packets = (
+        cluster_payload.get("candidate_packets")
+        if isinstance(cluster_payload.get("candidate_packets"), Sequence)
+        else []
+    )
+    suppressed_lookup = {
+        str(item.get("packet_id") or "").strip(): dict(item)
+        for item in (cluster_payload.get("suppressed_packets") or [])
+        if isinstance(item, Mapping) and str(item.get("packet_id") or "").strip()
+    }
+    rendered: list[dict[str, Any]] = []
+    for packet in packets:
+        if not isinstance(packet, Mapping):
+            continue
+        packet_id = str(packet.get("id") or "").strip()
+        keep_for = suppressed_lookup.get(packet_id, {}).get("keep_for")
+        keep_for_values: set[str] = set()
+        if isinstance(keep_for, Sequence) and not isinstance(keep_for, (str, bytes)):
+            keep_for_values = {str(item).strip() for item in keep_for}
+        if "detail" not in keep_for_values:
+            continue
+        card = render_composed_detail_card_v0_9a_2(packet)
+        if card:
+            rendered.append(card)
+    return rendered
+
+
 def _cluster_main_packet_copy(
     *,
     cluster: Mapping[str, Any],
@@ -1143,6 +1255,9 @@ def _packet_projection_nodes(packet_payload: Mapping[str, Any]) -> list[dict[str
             continue
         packet_id = str(packet.get("id") or "").strip()
         if not packet_id:
+            continue
+        source_type = str(packet.get("source_type") or (packet.get("meta") or {}).get("source_type") or "").strip()
+        if source_type == "composed_semantic":
             continue
         promise_type = str(packet.get("promise_type") or "").strip()
         priority = _safe_float((packet.get("projection_hints") or {}).get("priority"), _safe_float(packet.get("strength"), 0.0))
@@ -3361,6 +3476,16 @@ def _family_key(node: Mapping[str, Any]) -> str:
 def _chips(node: Mapping[str, Any]) -> list[str]:
     packet = _packet_from_node(node)
     if packet:
+        override = _packet_copy_override(packet)
+        override_chips = override.get("chips")
+        if isinstance(override_chips, Sequence) and not isinstance(override_chips, (str, bytes)):
+            clean_override = [
+                str(chip).strip()
+                for chip in override_chips
+                if str(chip).strip()
+            ]
+            if clean_override:
+                return clean_override[:3]
         out: list[str] = []
         domain = _packet_label(packet)
         if domain:
@@ -3455,10 +3580,11 @@ def _packet_label(packet: Mapping[str, Any] | None) -> str:
         "love": "İlişki",
         "emotional_depth": "Duygu",
         "inner_world": "İç dünya",
+        "home_family": "Ev/kökler",
         "career": "Kariyer",
         "visibility": "Kariyer",
         "behavior_reflex": "Refleks",
-        "creativity": "Yaratım",
+        "creativity": "Yaratıcılık",
         # Adana audit polish: ``community`` is used as a forced_domain for the
         # mars_leo_11h community variant. Without this entry the chip slot
         # used to fall through to the ``"İçgörü"`` default, which read as a
@@ -3636,15 +3762,35 @@ def _packet_anchor_sentence(packet: Mapping[str, Any]) -> str:
                 f"{top[0]} bu hattın tonunu belirginleştiriyor",
             ],
         ))
+    de_particle = _vowel_harmonized_de_particle(top[1])
     return _ensure_sentence(_pick_packet_variant(
         packet=packet,
         salt="anchor_sentence_double",
         templates=[
             f"{top[0]} ile {top[1]} birlikte {tail}",
             f"{top[0]} ve {top[1]} aynı çizgiyi güçlendiriyor",
-            f"{top[0]} kadar {top[1]} de bu hattın karakterini belirliyor",
+            # NOTE: "de"/"da" must follow Turkish vowel harmony of the preceding
+            # word. The previous unconditional " de " produced grammatical
+            # defects like "Koç olması de bu hattın..." (audit P0).
+            f"{top[0]} kadar {top[1]} {de_particle} bu hattın karakterini belirliyor",
         ],
     ))
+
+
+def _vowel_harmonized_de_particle(preceding_text: str) -> str:
+    """Return the Turkish particle "de" or "da" matching the last vowel of
+    ``preceding_text`` (vowel harmony).
+
+    Back vowels (a, ı, o, u) → "da". Front vowels (e, i, ö, ü) → "de".
+    Falls back to "de" when no vowel is found.
+    """
+    back_vowels = {"a", "ı", "o", "u"}
+    for ch in reversed(str(preceding_text or "").lower()):
+        if ch in back_vowels:
+            return "da"
+        if ch in {"e", "i", "ö", "ü"}:
+            return "de"
+    return "de"
 
 
 def _packet_scene_sentences(packet: Mapping[str, Any], *, max_sentences: int) -> list[str]:
@@ -3848,7 +3994,7 @@ def _packet_tension_sentence(*, text: str, promise_type: str, packet: Mapping[st
     ))
 
 
-def _packet_copy_override(packet: Mapping[str, Any]) -> dict[str, str]:
+def _packet_copy_override(packet: Mapping[str, Any]) -> dict[str, Any]:
     match_id = _packet_match_id(packet)
     role_domain = _packet_role_domain(packet)
     cluster_id = _packet_cluster_id(packet)
@@ -3920,6 +4066,142 @@ def _packet_copy_override(packet: Mapping[str, Any]) -> dict[str, str]:
                 "Bir bağın sadece heyecanlı değil, zamanla sağlamlaşan bir yerde durması senin için önemli olabilir. "
                 "Sevgi sende sözün davranışla desteklendiği yerde daha rahat açılır. "
                 "Gerilimli anlarda ise fazla kontrollü açılmak, duyguyu güven gelene kadar uzun süre tutmak ya da yakınlığı fazla test etmek öne çıkabilir."
+            ),
+        }
+    if match_id == "mercury_capricorn_mc_public_voice_strategic_mind":
+        return {
+            "headline": "Kariyer hattında sözün, aklın ve karar dilin çok görünür olabilir.",
+            "teaser": "Dış dünyada yalnızca ne yaptığın değil, onu nasıl anlattığın da fark edilir.",
+            "micro": "Net bir cümle kurduğunda dışarıdaki rolün güçlenir.",
+            "body": (
+                "Merkür'ünün Oğlak'ta ve MC hattına yakın çalışması, public sesini stratejik ve ciddiye alınan bir yere taşır. "
+                "İnsanlar sende yalnızca sonucu değil, düşünceyi nasıl kurduğunu ve nasıl konum aldığını da görür. "
+                "Bu hat olgunlaştığında söz, kendini kontrol etmenin değil dış dünyada net yön almanın aracı olur."
+            ),
+        }
+    if match_id == "moon_cancer_ic_home_security_roots":
+        return {
+            "headline": "İçeride güvende hissetmediğinde dışarıdaki duruşun da etkilenebilir.",
+            "teaser": "Ev, aile ve aidiyet sende arka plan değil; duygusal merkez gibi çalışır.",
+            "micro": "İç güvenlik kurulduğunda dışarıdaki netliğin de güçlenir.",
+            "body": (
+                "Ay'ının Yengeç'te ve IC hattına yakın olması, iç güvenlik ihtiyacını çok güçlendiriyor. "
+                "Ev, aile, yakın çevre veya kendini ait hissettiğin yerler sende sadece arka plan değildir; duygusal merkezini belirler. "
+                "Dışarıda güçlü ve net görünsen bile, içeride güvende hissetmediğinde kararların ve cümlelerin daha fazla etkilenebilir."
+            ),
+        }
+    if match_id in {
+        "moon_mercury_ic_mc_private_security_public_voice_axis",
+        "moon_mercury_ic_mc_private_security_public_voice_axis_aux",
+    }:
+        override: dict[str, Any] = {
+            "headline": "İç güvenliğin, dışarıda nasıl konuştuğunu doğrudan etkileyebilir.",
+            "teaser": "Ev/aidiyet duygusuyla kariyer/dış rol arasında güçlü bir hat var.",
+            "micro": "Kalbini yok saymadan güçlü bir public ses kurmak.",
+            "body": (
+                "Ay'ının IC'ye, Merkür'ünün de MC'ye yakın çalışması özel alan ile dış rol arasında güçlü bir eksen kuruyor. "
+                "İçeride duygusal olarak ne kadar güvende hissettiğin, dışarıda ne kadar net konuşabildiğini etkileyebilir. "
+                "Bu gerilim seni bölmek için değil; hem kalbini hem sözünü aynı hatta toplamayı öğretmek için çalışır."
+            ),
+            "chips": ["İçgörü", "Ay–Merkür aksı", "IC/MC hattı"],
+        }
+        if match_id.endswith("_aux") or packet_id.endswith("_aux"):
+            override["headline"] = "İçeride güvende hissettiğin yer, dışarıda kurduğun sözü etkileyebilir."
+            override["body"] = (
+                "Ay'ının IC'ye, Merkür'ünün de MC'ye yakın çalışması, özel alanla dış rol arasında güçlü bir eksen kuruyor. "
+                "İçeride duygusal olarak ne kadar güvende hissettiğin, dışarıda ne kadar net konuşabildiğini etkileyebilir. "
+                "Bu gerilim seni bölmek için değil; hem kalbini hem sözünü aynı hatta toplamayı öğretmek için çalışır."
+            )
+            override["differentiator_headline"] = "İçeride güvende hissettiğin yer, dışarıda kurduğun sözü etkileyebilir."
+        return override
+    if match_id == "aries_asc_mars_libra_6h_action_through_balance":
+        return {
+            "headline": "Hızlı hareket etmek isteyen tarafın, dengeyi de hesaba katmak ister.",
+            "teaser": "Yükselen Koç doğrudanlık verir; Mars'ın Terazi 6. evde olması bu hareketi ilişki, düzen ve günlük işleyişten geçirir.",
+            "micro": "Hızlı tepkiyle adil kalma ihtiyacının aynı anda çalışması.",
+            "body": (
+                "Yükseleninin Koç olması hayata doğrudan katılmak isteyen bir taraf verir. "
+                "Ama yöneticin Mars'ın Terazi'de ve 6. evde olması, bu hareketi ilişki, denge ve günlük işleyiş alanına taşır. "
+                "Bir yanın hızlıca hamle yapmak isterken, başka bir yanın bunu nasıl yaparsam denge bozulmaz diye tartabilir."
+            ),
+        }
+    if match_id == "mars_opposite_saturn_action_restraint_inner_brake":
+        return {
+            "headline": "Hızlanmak isteyen tarafınla kendini tutan tarafın aynı anda çalışabilir.",
+            "teaser": "Bir şeye başlamadan önce içeride görünmeyen bir fren devreye girebilir.",
+            "micro": "Hıza sağlam bir zamanlama ve yapı vermek.",
+            "body": (
+                "Mars-Satürn karşıtlığı, harekete geçmek isteyen tarafla durduran veya hata yapmamak isteyen tarafı aynı anda çalıştırabilir. "
+                "Bu bazen başlamadan yorulmak gibi hissedilir; olgunlaştığında ise acele güç yerine dayanıklı ve zamanlaması iyi bir hareket verir."
+            ),
+        }
+    if match_id == "sun_aquarius_11h_collective_identity_future_networks":
+        return {
+            "headline": "Kimliğin, hangi çevrede hangi fikri taşıdığından da beslenir.",
+            "teaser": "Güneş'in Kova 11. evde çalıştığı için topluluklar, arkadaşlıklar ve ortak hedefler kimlik hattını güçlendirir.",
+            "micro": "Farklılığını bir gruba yeni yön açmak için kullanmak.",
+            "body": (
+                "Güneş'inin Kova'da ve 11. evde olması, kimliğini yalnızca kişisel başarıdan değil topluluklar ve geleceğe dönük fikirlerden de besler. "
+                "Bir gruba ait olmak isterken, o grubun içinde farklı bir yön açmak da isteyebilirsin. "
+                "Kendi farklılığın, ortak bir geleceğe yeni bakış getirdiğinde güçlenir."
+            ),
+        }
+    if match_id == "libra_dsc_chiron_scorpio_7h_harmony_wound_depth":
+        override = {
+            "headline": "İlişkide denge istersin; ama bu denge yüzeysel bir uyum gibi çalışmaz.",
+            "teaser": "Yakınlık derinleştiğinde güven, kırılganlık ve gerçekten görülme temaları daha hassaslaşabilir.",
+            "micro": "Uyumun en güçlü hali, gerçek konuları da taşıyabildiğinde ortaya çıkar.",
+            "body": (
+                "Libra DSC ilişkide denge, adalet ve karşılıklılık arar. "
+                "Chiron'un Akrep'te 7. evde olması ise yakınlık derinleştiğinde güven, kırılganlık ve kontrol temalarını hassaslaştırır. "
+                "Birine yaklaşırken hem uyumlu kalmak isteyebilir hem de derinde incinmemek için kendini kontrol edebilirsin."
+            ),
+        }
+        if packet_id.endswith("_chart_exact"):
+            override["differentiator_headline"] = "Yakınlık derinleştiğinde güven ve kırılganlık daha görünür olur."
+        return override
+    if match_id == "saturn_aries_12h_private_pressure_hidden_self_control":
+        return {
+            "headline": "Bazı mücadeleleri dışarıdan görünmeden, kendi içinde veriyor olabilirsin.",
+            "teaser": "Satürn'ün Koç'ta 12. evde olması cesaret, öfke ve hareket temasını iç baskı alanına taşıyabilir.",
+            "micro": "Cesareti bastırmak yerine doğru zamanda net bir harekete çevirmek.",
+            "body": (
+                "Satürn'ünün Koç'ta ve 12. evde olması, cesaretini her zaman hemen göstermediğini anlatır. "
+                "Kendi isteğini ortaya koymadan önce içeride uzun süre tartabilir, bazı mücadeleleri kimse görmeden taşıyabilirsin. "
+                "Bu hat olgunlaştığında cesaret acele değil, net ve sağlam bir hareket olarak görünür."
+            ),
+        }
+    if match_id == "capricorn_10h_mercury_venus_neptune_public_style_responsibility":
+        return {
+            "headline": "Dış dünyada sözün, üslubun ve duruşun birlikte algılanabilir.",
+            "teaser": "10. ev Oğlak vurgusu public imajı ciddiyet, estetik ve sorumluluk üzerinden kurar.",
+            "micro": "Bir şeyi sadece yapmak değil, nasıl sunduğun da önem kazanır.",
+            "body": (
+                "Merkür, Venüs ve Neptün'ün Oğlak 10. ev hattı, dış dünyada sözünü, ilişki dilini ve estetik duruşunu aynı public role bağlar. "
+                "Bir şeyi sunarken hem düzgün, hem güzel, hem de güvenilir görünmesini isteyebilirsin. "
+                "Public rolün en iyi, ciddiyetle içtenliği aynı yerde tuttuğunda güçlenir."
+            ),
+        }
+    if match_id == "venus_capricorn_10h_public_love_style_responsibility":
+        return {
+            "headline": "Sevgi ve değer verme biçimin dışarıda ciddi ve güvenilir bir tonda görünebilir.",
+            "teaser": "Bir bağın sadece hisle değil, davranış ve emekle de taşınmasını önemseyebilirsin.",
+            "micro": "İlişkide saygı ve güven duygusu yaratmak.",
+            "body": (
+                "Venüs'ünün Oğlak'ta ve 10. evde olması, sevgi ve değer verme biçimini dışarıda daha ciddi ve güvenilir gösterir. "
+                "İlişki senin için yalnızca his değil; emek, davranış ve uzun vadeli sorumlulukla da kanıtlanan bir şey olabilir."
+            ),
+        }
+    if match_id == "saturn_trine_pluto_deep_resilience":
+        return {
+            "headline": "Zorlandığında bile dağılıp gitmeyen, içeride yapı kuran bir gücün var.",
+            "teaser": "Baskı geldiğinde bile yapıyı koruyup içerden dönüşebilmek.",
+            "micro": "Baskı arttığında daha kontrollü ve dayanıklı kalabilmek.",
+            "body": (
+                "Satürn–Plüton desteğinin çalışması ile Güneş–Satürn geriliminin çalışması birlikte bu temayı daha görünür hale getiriyor. "
+                "Baskı geldiğinde bile yapıyı koruyup içerden dönüşebilmek bu hattın önemli taraflarından biri. "
+                "Zor zamanlarda bile çözülmek yerine omurgayı koruyabilmek sende derin bir dayanıklılık yaratabilir. "
+                "Denge kaçtığında ise her şeyi tek başına taşımaya çalışmak ve duyguyu fazla sıkıştırmak öne çıkabilir."
             ),
         }
     if match_id in {"aquarius_mc_mars_conjunct_mc_visible_freedom_drive", "aquarius_mc_mars_conjunct_mc_visible_freedom_drive_aux"} and role_domain == "career":
@@ -4171,6 +4453,152 @@ def _packet_copy_override(packet: Mapping[str, Any]) -> dict[str, str]:
                 "Birine bağlandığında bunu hemen söylemekten çok önce içinde taşımaya yatkın olabilirsin. "
                 "Sevgi sende huzur, dokunma, güven ve sakin varlık üzerinden daha rahat açılır. "
                 "Buradaki gelişim, içeride büyüyen duyguyu güvenli olduğunda görünür temasla buluşturabilmektir."
+            ),
+        }
+    if match_id == "leo_asc_sun_cancer_11h_warm_visibility_belonging" and role_domain == "identity":
+        return {
+            "headline": "Parlamak senin için yalnızca görünmek değil, kalpten bağ kurduğun yerde anlam kazanabilir.",
+            "teaser": "Dışarıdan sıcak ve fark edilen bir duruşun olabilir, ama gerçekten açıldığın yer ait hissettiğin çevrelerdir.",
+            "micro": "Ait hissettiğin çevrelerde daha sıcak ve görünür açılmak.",
+            "body": (
+                "Yükseleninin Aslan olması dışarıdan sıcak, görünür ve fark edilen bir duruş verebilir. "
+                "Ama Güneş'inin Yengeç'te ve 11. evde olması, bu görünürlüğün sadece ben buradayım demekle çalışmadığını gösterir. "
+                "Kendini en çok ait hissettiğin çevrelerde, kalpten bağ kurduğun insanların yanında açarsın. "
+                "Parlamak sende çoğu zaman birilerine sıcaklık vermek, bir çevreyi korumak ya da aitlik hissi yaratmakla birleşir."
+            ),
+        }
+    if match_id == "sun_mercury_cancer_11h_social_emotional_intelligence" and role_domain == "mind":
+        return {
+            "headline": "Zihnin sadece bilgi toplamak için değil, insanları duygusal olarak anlamak için çalışabilir.",
+            "teaser": "Çevreni ve sosyal bağlarını duygusal hafızayla okuyabilirsin.",
+            "micro": "Bir grupta kimin neye ihtiyaç duyduğunu hızlıca sezmek.",
+            "body": (
+                "Güneş'inin ve Merkür'ünün 11. evde Yengeç'te olması, çevreni ve sosyal bağlarını duygusal hafızayla okuduğunu gösteriyor. "
+                "Bir grupta kimin neye ihtiyaç duyduğunu, kimin nerede güvende hissetmediğini hızlıca sezebilirsin. "
+                "Konuşman sadece bilgi vermek için değil, insanları birbirine yaklaştırmak veya ortamı yumuşatmak için de çalışabilir. "
+                "Denge kaçtığında çevrenin duygusunu fazla üstlenmek zihnini yorabilir."
+            ),
+        }
+    if match_id == "pluto_node_scorpio_4h_roots_inner_security_transformation" and role_domain == "home_family":
+        return {
+            "headline": "Ev, aile ve geçmiş sende sadece arka plan gibi çalışmayabilir.",
+            "teaser": "İç güvenlik alanında derinleşen ve dönüştüren güçlü bir hat var.",
+            "micro": "Köklerden gelen yoğunluğu kendi iç güvenliğini kuracak bir güce çevirmek.",
+            "body": (
+                "4. evindeki Akrep ve Plüton/Kuzey Ay Düğümü vurgusu, iç güvenlik alanını derin bir dönüşüm sahasına çeviriyor. "
+                "Dışarıda güçlü görünsen bile, içeride gerçekten güvende hissetmediğin yerde kontrol ihtiyacı veya kapanma artabilir. "
+                "Aile, ev ya da geçmişle ilgili konular sende kolayca yüzeyde kalmayabilir. "
+                "Buradaki gelişim, köklerden gelen yoğunluğu kendi iç alanını bilinçli kuracak bir güce çevirebilmek."
+            ),
+        }
+    if match_id == "moon_uranus_neptune_capricorn_5h_structured_imagination" and role_domain == "creativity":
+        return {
+            "headline": "İçindeki yaratıcı taraf, ilhamı forma sokmak ister.",
+            "teaser": "Yaratıcılığın hem farklı hem de disiplinli bir yerden akabilir.",
+            "micro": "İlhamı boğmadan, ona taşıyabilecek bir form vermek.",
+            "body": (
+                "Ay'ının 5. evde Oğlak'ta olması, kalpten gelen şeyi bile ciddiye alma ve yapılandırma ihtiyacını artırır. "
+                "Uranüs ve Neptün'ün aynı alanda çalışması ise bu üretime hem farklılık hem sezgi katar. "
+                "Bir fikir önce ilham gibi gelebilir. Sonra onu kullanılabilir ve ciddiye alınan bir forma sokmak isteyebilirsin. "
+                "Zorlandığında ilhamı fazla kontrol etmek yaratıcı akışı daraltabilir."
+            ),
+        }
+    if match_id == "mc_taurus_mars_10h_steady_public_drive" and role_domain == "career":
+        return {
+            "headline": "Dış dünyada gücünü sözle değil, yaptığı işle göstermek.",
+            "teaser": "Kariyer hattında yavaş ama güçlü ilerleyen bir enerji var.",
+            "micro": "Somut sonuç almak ve emeğinin karşılığını görmek istemek.",
+            "body": (
+                "MC'nin Boğa'da, Mars'ının da 10. evde olması, dış dünyada somut sonuç almak ve emeğinin karşılığını görmek isteyen güçlü bir enerji verir. "
+                "Bir şeyi gerçekten istediğinde kolay vazgeçmeyebilir, gücünü sözden çok yaptığın işle göstermek isteyebilirsin. "
+                "Bu hat sana dayanıklı bir kariyer ritmi ve kalıcı üretim gücü verir. "
+                "Denge kaçtığında ise inat, kontrol ya da gücü fazla zorlayarak kanıtlama ihtiyacı öne çıkabilir."
+            ),
+            "differentiator_headline": "Somut etki bırakma gücü",
+        }
+    if match_id == "aquarius_dsc_saturn_pisces_7h_freedom_responsibility_sensitivity" and role_domain == "relationship":
+        return {
+            "headline": "Yakınlıkta hem kendi alanını korumak hem de güvenilir bir bağ aramak.",
+            "teaser": "İlişkide hem özgür alan hem de şefkatli bir sorumluluk ihtiyacı çalışabilir.",
+            "micro": "Seni boğmayan ama yarı yolda da bırakmayan bir bağ aramak.",
+            "body": (
+                "7. evinin Kova, Satürn'ünün de 7. evde Balık'ta olması, ilişkide hem özgür alan hem de şefkatli bir sorumluluk aradığını gösteriyor. "
+                "Yakınlıkta arkadaşlık, zihinsel temas ve kendi ritmini koruyabilmek önemli olabilir. "
+                "Ama bağ hafife alınsın da istemezsin. Güvenilirlik ve duyarlılık burada aynı anda çalışır. "
+                "Zorlandığında özgürlük ve bağlılık arasında sıkışmış hissedebilirsin."
+            ),
+            "differentiator_headline": "Özgür ama güvenilir bağ ihtiyacı",
+        }
+    if match_id == "venus_leo_12h_hidden_romantic_pride" and role_domain == "relationship":
+        return {
+            "headline": "Sevgi sende içeride büyük ve gururlu bir yerde büyüyebilir.",
+            "teaser": "Özel hissetmek istersin, ama bunu herkese aynı açıklıkta göstermeyebilirsin.",
+            "micro": "Romantik duyguyu içeride büyütüp dışarıda daha seçerek göstermek.",
+            "body": (
+                "Venüs'ünün 12. evde Aslan'da olması, sevginin hemen görünmeyen ama içeride sıcak ve özel bir yerde büyüdüğünü gösteriyor. "
+                "Özel hissetmek istersin, ama bunu herkese aynı açıklıkta göstermeyebilirsin. "
+                "Birine karşı büyük bir sevgi hissetsen bile bunu önce içeride taşıyabilir, kalbini kime göstereceğini seçebilirsin. "
+                "Buradaki gelişim, kalbinin sıcaklığını gizlemek yerine güvenli ve yaratıcı biçimde ifade edebilmek."
+            ),
+        }
+    if match_id == "chiron_virgo_1h_visible_sensitivity_self_correction" and role_domain == "identity":
+        return {
+            "headline": "Kendini gösterirken hemen kusuru fark eden bir tarafın olabilir.",
+            "teaser": "Görünür olmak sende bazen yeterince iyi miyim sorusunu açabilir.",
+            "micro": "Görünür alanda kendini düzeltme ve daha iyi yapma hassasiyeti.",
+            "body": (
+                "Chiron'un 1. evde Başak'ta olması, görünür olduğunda kendini düzeltme, daha iyi yapma ya da eksik görülmekten çekinme hassasiyetini artırabilir. "
+                "İnsanların seni nasıl gördüğünü çok detaylı fark edebilirsin. "
+                "Bu bazen kendine sert davranmana neden olabilir. Ama zamanla aynı dikkat başkalarına da iyileştirici bir alan açan bir beceriye dönüşür. "
+                "Buradaki güç, kusursuz görünmekten çok hassasiyetini şefkatle kullanabilmekte."
+            ),
+        }
+    if match_id == "jupiter_scorpio_3h_deep_speech_psychological_learning" and role_domain == "mind":
+        return {
+            "headline": "Yakın çevrendeki küçük sözler bile sende büyük içgörüler açabilir.",
+            "teaser": "Konuşmalarda yüzeyde kalmak sana yetmeyebilir.",
+            "micro": "Bir cümlenin altında saklı olanı hızlıca sezmek.",
+            "body": (
+                "Jüpiter'inin 3. evde Akrep'te olması, konuşmalarda yüzeyin altındaki anlamı hızlıca arayan bir zihin verir. "
+                "Yakın çevrendeki küçük sözler bile sende büyük içgörüler açabilir. "
+                "Bir konuyu öğrenirken psikolojik tarafına, gizli motivasyonuna ya da kökündeki gerilime inmek isteyebilirsin. "
+                "Bu derinlik açıklıkla birleştiğinde sözün hem güçlü hem dönüştürücü olur."
+            ),
+            "differentiator_headline": "Sözün altındaki anlamı okuma",
+        }
+    if match_id == "mars_opposite_pluto_public_power_roots_tension" and role_domain == "career":
+        return {
+            "headline": "Kariyerde güçlü etki bırakma isteğin, içerideki güvenlik ihtiyacıyla bağlantılı olabilir.",
+            "teaser": "Dış dünyadaki güç hattın, kökler ve iç güvenlik alanıyla gerilimli çalışabilir.",
+            "micro": "Public güç ile özel güvenlik ihtiyacını aynı anda taşımak.",
+            "body": (
+                "Mars'ın 10. evde Boğa'da, Plüton'un da 4. evde Akrep'te karşıt çalışması, dış dünyada güçlü etki bırakma isteğini iç güvenlik ihtiyacına bağlar. "
+                "Ev, aile ya da geçmiş alanı tetiklendiğinde kariyerde kendini kanıtlama isteğin yükselebilir. "
+                "Bu sana kriz anında dayanıklılık verir; ama kontrol savaşına girersen gücünü fazla zorlayabilirsin. "
+                "En sağlam etkin, gücü bilinçli ve sürdürülebilir biçimde kullandığında çıkar."
+            ),
+        }
+    if match_id == "moon_capricorn_5h_serious_heart_creative_form" and role_domain == "creativity":
+        return {
+            "headline": "Sevgi ve üretim sende sadece coşkuyla değil, emek ve yapı ile de çalışır.",
+            "teaser": "Kalpten gelen şeyi bile önce formu olan bir şeye çevirmek isteyebilirsin.",
+            "micro": "Yaratıcı tarafını ciddiye alınan bir biçimde göstermek.",
+            "body": (
+                "Ay'ının 5. evde Oğlak'ta olması, kalpten gelen duygu ve yaratıcı ifadeyi daha ciddi, emek isteyen bir alana taşır. "
+                "Yaratıcı bir şeyi hemen göstermek yerine ciddiye alınacak hale getirmek isteyebilirsin. "
+                "Bu sana kalıcı üretim ve sadık bir kalp verir. "
+                "Zorlandığında ise keyfi görev gibi yaşamak ya da duygunu fazla kontrol etmek öne çıkabilir."
+            ),
+        }
+    if match_id == "ic_scorpio_pluto_node_private_emotional_inheritance" and role_domain == "home_family":
+        return {
+            "headline": "Aile ve geçmiş alanında söylenmeyenleri bile güçlü hissedebilirsin.",
+            "teaser": "İç güvenliğin, geçmişten gelen bazı yoğunlukları dönüştürdükçe güçlenir.",
+            "micro": "Geçmişten gelen duygusal mirası kendi iç güvenliğine çevirmek.",
+            "body": (
+                "IC'nin Akrep'te, Plüton ve Kuzey Ay Düğümü'nün de 4. evde olması aile, ev ve geçmiş alanını daha derin bir iç mirasa bağlar. "
+                "Söylenmeyen şeyleri bile güçlü hissedebilir, evin duygusal atmosferinden kolay etkilenebilirsin. "
+                "Buradaki gelişim, geçmişten gelen yoğunluğu sadece taşımak değil, kendi iç güvenliğini kuracak bir bilince çevirmektir."
             ),
         }
     if match_id == "moon_leo_8h_deep_proud_heart" and role_domain == "relationship" and cluster_id == "relationship_attachment_architecture":
@@ -4596,7 +5024,7 @@ def _localize_public_copy_tr(text: str) -> str:
         return f"{prefix} {upper}"
 
     clean = re.sub(
-        r"([.!?:;])\s+([a-zçğıöşü])",
+        r"([.!?:])\s+([a-zçğıöşü])",
         _sentence_cap,
         clean,
     )

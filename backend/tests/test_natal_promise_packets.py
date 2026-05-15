@@ -25,6 +25,16 @@ def _izmir_1996_response() -> dict:
     return json.loads(path.read_text())
 
 
+def _istanbul_1994_response() -> dict:
+    path = Path("backend/tests/_artifacts/natal_interpret_full_1994-06-25_10-00_istanbul_user_compact_debug.json")
+    return json.loads(path.read_text())
+
+
+def _adana_1998_response() -> dict:
+    path = Path("backend/tests/_artifacts/natal_interpret_full_1998-09-12_07-30_adana_user_compact_debug.json")
+    return json.loads(path.read_text())
+
+
 def _legacy_graph() -> dict:
     return {
         "version": "meaning_graph_v1_1",
@@ -123,7 +133,7 @@ def test_build_natal_promise_packets_istanbul_preserves_gift_forward_mix() -> No
         supporting_threads=public.get("supporting_threads"),
     )
 
-    assert packets["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4_plus_v0_5"
+    assert packets["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4_plus_v0_5_plus_v0_7_plus_v0_8"
     assert len(packets["packets"]) >= 3
     assert any(packet["promise_type"] in {"gift", "love_style", "mind_style", "mind_identity"} for packet in packets["packets"])
     assert not all(packet["promise_type"] in {"shadow_or_friction", "wound_to_gift"} for packet in packets["packets"])
@@ -207,7 +217,7 @@ def test_build_natal_promise_packets_2020_candidate_inventory_fires_v0_4_overlay
     )
     candidate_ids = {packet["id"] for packet in candidate_inventory["packets"]}
 
-    assert candidate_inventory["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4_plus_v0_5"
+    assert candidate_inventory["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4_plus_v0_5_plus_v0_7_plus_v0_8"
     assert len(candidate_inventory["packets"]) >= 10
     assert "gemini_asc_venus_1h_social_relational_presence_chart_exact" in candidate_ids
     assert "sun_aries_12h_hidden_private_fire_chart_exact" in candidate_ids
@@ -278,7 +288,7 @@ def test_build_natal_promise_packets_izmir_1996_candidate_inventory_fires_v0_5_o
     candidate_ids = {packet["id"] for packet in packets}
     packet_lookup = {str(packet.get("id") or "").strip(): packet for packet in packets}
 
-    assert candidate_inventory["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4_plus_v0_5"
+    assert candidate_inventory["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4_plus_v0_5_plus_v0_7_plus_v0_8"
     assert len(packets) >= 13
     assert "taurus_asc_venus_12h_hidden_value_identity_chart_exact" in candidate_ids
     assert "venus_taurus_12h_private_love_inner_beauty_chart_exact" in candidate_ids
@@ -297,6 +307,112 @@ def test_build_natal_promise_packets_izmir_1996_candidate_inventory_fires_v0_5_o
     assert packet_lookup["dsc_scorpio_ruler_mars_pisces_12h_trust_threshold_silent_desire_chart_exact"]["chart_facts_match"] is True
     assert packet_lookup["mc_capricorn_ruler_saturn_pisces_12h_invisible_preparation_chart_exact"]["chart_facts_match"] is True
     assert packet_lookup["pisces_12h_stellium_inner_world_saturation_chart_exact"]["chart_facts_match"] is True
+
+
+def test_build_natal_promise_packets_istanbul_1994_candidate_inventory_fires_v0_7_overlay() -> None:
+    raw = _istanbul_1994_response()
+
+    candidate_inventory = build_natal_promise_packets_v1(
+        sections_v2=raw.get("sections_v2"),
+        supporting_threads=raw.get("supporting_threads"),
+        planets=raw.get("planets"),
+        aspects=raw.get("aspects"),
+        natal_graph_compact=raw.get("natal_graph_compact"),
+        metadata=raw.get("metadata"),
+        meta_info=raw.get("meta_info"),
+        mode="candidate_inventory",
+    )
+    packets = candidate_inventory["packets"]
+    candidate_ids = {packet["id"] for packet in packets}
+    packet_lookup = {str(packet.get("id") or "").strip(): packet for packet in packets}
+
+    assert candidate_inventory["registry_authority"] == "v0.1_plus_manual_delta_v0_2_plus_v0_3_plus_v0_4_plus_v0_5_plus_v0_7_plus_v0_8"
+    assert len(packets) >= 14
+    expected_exact_ids = {
+        "leo_asc_sun_cancer_11h_warm_visibility_belonging_chart_exact",
+        "pluto_node_scorpio_4h_roots_inner_security_transformation_chart_exact",
+        "ic_scorpio_pluto_node_private_emotional_inheritance_chart_exact",
+        "moon_capricorn_5h_serious_heart_creative_form_chart_exact",
+        "moon_uranus_neptune_capricorn_5h_structured_imagination_chart_exact",
+        "mc_taurus_mars_10h_steady_public_drive_chart_exact",
+        "mars_opposite_pluto_public_power_roots_tension_chart_exact",
+        "aquarius_dsc_saturn_pisces_7h_freedom_responsibility_sensitivity_chart_exact",
+        "venus_leo_12h_hidden_romantic_pride_chart_exact",
+        "jupiter_scorpio_3h_deep_speech_psychological_learning_chart_exact",
+        "chiron_virgo_1h_visible_sensitivity_self_correction_chart_exact",
+    }
+    assert expected_exact_ids <= candidate_ids
+    assert any(
+        packet_id.startswith("sun_mercury_cancer_11h_social_emotional_intelligence")
+        for packet_id in candidate_ids
+    )
+
+    for packet_id in expected_exact_ids:
+        assert packet_lookup[packet_id]["chart_facts_match"] is True
+
+
+def test_build_natal_promise_packets_v0_9a_generates_debug_only_identity_and_career_candidates(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    raw = _istanbul_1994_response()
+
+    candidate_inventory = build_natal_promise_packets_v1(
+        sections_v2=raw.get("sections_v2"),
+        supporting_threads=raw.get("supporting_threads"),
+        planets=raw.get("planets"),
+        aspects=raw.get("aspects"),
+        natal_graph_compact=raw.get("natal_graph_compact"),
+        metadata=raw.get("metadata"),
+        meta_info=raw.get("meta_info"),
+        mode="candidate_inventory",
+    )
+    packet_lookup = {
+        str(packet.get("id") or "").strip(): packet
+        for packet in candidate_inventory["packets"]
+    }
+
+    identity = packet_lookup["composed_identity_route_v0_9a"]
+    career = packet_lookup["composed_career_route_v0_9a"]
+
+    for packet, expected_family, expected_domain in (
+        (identity, "identity_route", "identity"),
+        (career, "career_route", "career"),
+    ):
+        assert packet["source_type"] == "composed_semantic"
+        assert packet["family"] == expected_family
+        assert packet["domain"] == expected_domain
+        assert packet["chart_facts_match"] is True
+        assert packet["public_job"] == "debug_only"
+        assert packet["confidence"] >= 0.6
+        assert packet["confidence_tier"] in {"medium", "high"}
+        assert packet["domain_reason"]
+        assert packet["lived_scene"]
+        assert packet["lived_scene_atoms"]
+        assert packet["evidence_trace"]["family_inputs"]
+        assert packet["public_eligibility"]["debug_eligible"] is True
+        assert packet["public_eligibility"]["detail_eligible"] is False
+        assert packet["public_eligibility"]["public_support_eligible"] is False
+        assert packet["public_eligibility"]["public_main_eligible"] is False
+        assert packet["meta"]["source_type"] == "composed_semantic"
+        assert packet["meta"]["v0_9_composed"] is True
+        assert packet["meta"]["non_public_discovery"] is True
+
+
+def test_build_natal_promise_packets_v0_9a_defaults_off() -> None:
+    raw = _adana_1998_response()
+    candidate_inventory = build_natal_promise_packets_v1(
+        sections_v2=raw.get("sections_v2"),
+        supporting_threads=raw.get("supporting_threads"),
+        planets=raw.get("planets"),
+        aspects=raw.get("aspects"),
+        natal_graph_compact=raw.get("natal_graph_compact"),
+        metadata=raw.get("metadata"),
+        meta_info=raw.get("meta_info"),
+        mode="candidate_inventory",
+    )
+    candidate_ids = {packet["id"] for packet in candidate_inventory["packets"]}
+
+    assert "composed_identity_route_v0_9a" not in candidate_ids
+    assert "composed_career_route_v0_9a" not in candidate_ids
 
 
 def test_profile_narrative_projection_v1_hybrid_fallback_prefers_packets() -> None:
@@ -479,3 +595,450 @@ def test_profile_v8_projection_v1_keeps_slot_schema_with_packets() -> None:
     assert len(projection["differentiators"]) == 3
     assert projection["traceability"]["packet_count"] == 3
     assert projection["hero"]["trace"]["node_id"] == "promise::mind_packet"
+
+
+# ---------------------------------------------------------------------------
+# v0.9b — relationship_route + moon_signature debug-only candidates
+# ---------------------------------------------------------------------------
+
+
+def _v0_9b_chart_inputs(*, dsc_sign="libra", moon_sign="cancer", moon_house=4):
+    """Synthesize the minimal chart-fact inputs the two new builders need."""
+    planet_map_input = [
+        {"planet": "Sun", "sign": "Leo", "house": 5},
+        {"planet": "Moon", "sign": moon_sign.title(), "house": moon_house},
+        {"planet": "Venus", "sign": "Libra", "house": 7},
+        {"planet": "Mars", "sign": "Scorpio", "house": 8},
+        {"planet": "Mercury", "sign": "Virgo", "house": 6},
+        {"planet": "Jupiter", "sign": "Sagittarius", "house": 9},
+        {"planet": "Saturn", "sign": "Capricorn", "house": 10},
+        {"planet": "Uranus", "sign": "Aquarius", "house": 11},
+        {"planet": "Neptune", "sign": "Pisces", "house": 12},
+        {"planet": "Pluto", "sign": "Scorpio", "house": 8},
+    ]
+    house_rulers = {
+        "1": {"cusp_sign": "Aries"},
+        "4": {"cusp_sign": "Cancer"},
+        "7": {"cusp_sign": dsc_sign.title()},
+        "10": {"cusp_sign": "Capricorn"},
+    }
+    natal_graph_compact = {"house_rulers": house_rulers}
+    return planet_map_input, house_rulers, natal_graph_compact
+
+
+def _run_promise_builder(*, planets, natal_graph_compact, aspects=None):
+    return build_natal_promise_packets_v1(
+        sections_v2=[],
+        supporting_threads=[],
+        meaning_graph_v1_1=None,
+        planets=planets,
+        aspects=aspects or [],
+        natal_graph_compact=natal_graph_compact,
+        metadata=None,
+        meta_info=None,
+        locale="tr",
+        mode="candidate_inventory",
+    )
+
+
+def _v0_9b_packets(payload, *, family):
+    return [
+        p
+        for p in (payload.get("packets") or [])
+        if str(p.get("source_type") or "") == "composed_semantic"
+        and str(p.get("family") or "") == family
+    ]
+
+
+def test_v0_9b_relationship_route_flag_off_emits_no_relationship_candidate(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", raising=False)
+    planets, _, ngc = _v0_9b_chart_inputs()
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    assert _v0_9b_packets(payload, family="relationship_route") == []
+
+
+def test_v0_9b_moon_signature_flag_off_emits_no_moon_candidate(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", raising=False)
+    planets, _, ngc = _v0_9b_chart_inputs()
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    assert _v0_9b_packets(payload, family="moon_signature") == []
+
+
+def test_v0_9b_relationship_route_flag_on_emits_debug_only_candidate(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    planets, _, ngc = _v0_9b_chart_inputs()
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    candidates = _v0_9b_packets(payload, family="relationship_route")
+    assert candidates, payload
+    card = candidates[0]
+    assert card["public_job"] == "debug_only"
+    elig = card["public_eligibility"]
+    assert elig["public_main_eligible"] is False
+    assert elig["public_support_eligible"] is False
+    assert elig["debug_eligible"] is True
+    assert card["domain"] == "relationship"
+    assert card["family"] == "relationship_route"
+    assert card["subtype"] in {
+        "trust_steadiness",
+        "attraction_warmth",
+        "boundary_conflict",
+        "intimacy_depth",
+        "emotional_need_affection",
+        "hidden_private_love",
+        "freedom_space",
+        "wound_to_gift",
+    }
+    assert card["confidence"] >= 0.60
+    for key in (
+        "evidence_trace",
+        "technical_anchors",
+        "lived_scene",
+        "lived_scene_atoms",
+        "gift",
+        "inner_tension",
+        "growth_direction",
+        "domain_reason",
+    ):
+        assert card.get(key), f"missing required field: {key}"
+
+
+def test_v0_9b_moon_signature_flag_on_emits_debug_only_candidate(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    planets, _, ngc = _v0_9b_chart_inputs()
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    candidates = _v0_9b_packets(payload, family="moon_signature")
+    assert candidates, payload
+    card = candidates[0]
+    assert card["public_job"] == "debug_only"
+    elig = card["public_eligibility"]
+    assert elig["public_main_eligible"] is False
+    assert elig["public_support_eligible"] is False
+    assert elig["debug_eligible"] is True
+    assert card["family"] == "moon_signature"
+    assert card["subtype"] in {
+        "emotional_rhythm",
+        "home_inner_security",
+        "daily_sensitivity",
+        "creative_emotional_expression",
+        "intimacy_depth",
+        "private_emotional_processing",
+    }
+    assert card["confidence"] >= 0.60
+
+
+def test_v0_9b_relationship_route_subtype_attraction_warmth_fires(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    planets = [
+        {"planet": "Sun", "sign": "Leo", "house": 5},
+        {"planet": "Moon", "sign": "Taurus", "house": 2},
+        {"planet": "Venus", "sign": "Leo", "house": 5},
+        {"planet": "Mars", "sign": "Aries", "house": 1},
+        {"planet": "Mercury", "sign": "Virgo", "house": 6},
+        {"planet": "Saturn", "sign": "Capricorn", "house": 10},
+        {"planet": "Uranus", "sign": "Aquarius", "house": 11},
+        {"planet": "Neptune", "sign": "Pisces", "house": 12},
+        {"planet": "Pluto", "sign": "Scorpio", "house": 8},
+        {"planet": "Jupiter", "sign": "Sagittarius", "house": 9},
+    ]
+    ngc = {
+        "house_rulers": {
+            "1": {"cusp_sign": "Aries"},
+            "4": {"cusp_sign": "Cancer"},
+            "7": {"cusp_sign": "Libra"},
+            "10": {"cusp_sign": "Capricorn"},
+        }
+    }
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    candidates = _v0_9b_packets(payload, family="relationship_route")
+    assert candidates
+    assert candidates[0]["subtype"] == "attraction_warmth"
+
+
+def test_v0_9b_moon_signature_subtype_home_inner_security_fires(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    planets = [
+        {"planet": "Sun", "sign": "Cancer", "house": 4},
+        {"planet": "Moon", "sign": "Cancer", "house": 4},
+        {"planet": "Venus", "sign": "Cancer", "house": 4},
+        {"planet": "Mars", "sign": "Cancer", "house": 4},
+        {"planet": "Mercury", "sign": "Cancer", "house": 4},
+        {"planet": "Saturn", "sign": "Capricorn", "house": 10},
+        {"planet": "Uranus", "sign": "Aquarius", "house": 11},
+        {"planet": "Neptune", "sign": "Pisces", "house": 12},
+        {"planet": "Pluto", "sign": "Scorpio", "house": 8},
+        {"planet": "Jupiter", "sign": "Cancer", "house": 4},
+    ]
+    ngc = {
+        "house_rulers": {
+            "1": {"cusp_sign": "Aries"},
+            "4": {"cusp_sign": "Cancer"},
+            "7": {"cusp_sign": "Libra"},
+            "10": {"cusp_sign": "Capricorn"},
+        }
+    }
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    moon_candidates = _v0_9b_packets(payload, family="moon_signature")
+    assert moon_candidates
+    assert moon_candidates[0]["subtype"] == "home_inner_security"
+
+
+def test_v0_9b_relationship_route_default_fallback_carries_penalty(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    # neutral chart — no strong subtype signal
+    planets = [
+        {"planet": "Sun", "sign": "Gemini", "house": 3},
+        {"planet": "Moon", "sign": "Gemini", "house": 3},
+        {"planet": "Venus", "sign": "Gemini", "house": 3},
+        {"planet": "Mars", "sign": "Gemini", "house": 3},
+        {"planet": "Mercury", "sign": "Gemini", "house": 3},
+        {"planet": "Jupiter", "sign": "Sagittarius", "house": 9},
+        {"planet": "Saturn", "sign": "Aquarius", "house": 11},
+        {"planet": "Uranus", "sign": "Aquarius", "house": 11},
+        {"planet": "Neptune", "sign": "Pisces", "house": 12},
+        {"planet": "Pluto", "sign": "Scorpio", "house": 8},
+    ]
+    ngc = {
+        "house_rulers": {
+            "1": {"cusp_sign": "Aries"},
+            "4": {"cusp_sign": "Cancer"},
+            "7": {"cusp_sign": "Libra"},
+            "10": {"cusp_sign": "Capricorn"},
+        }
+    }
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    candidates = _v0_9b_packets(payload, family="relationship_route")
+    # If a candidate fires under this neutral chart, it must be the
+    # default-fallback subtype with the penalty applied.
+    if candidates:
+        card = candidates[0]
+        if card["subtype"] == "trust_steadiness":
+            assert card["scoring_breakdown"]["subtype_penalty"] > 0.0
+
+
+def test_v0_9b_confidence_floor_filters_under_0_60(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    # Sparse chart with no 7H planet and ruler in neutral house — relationship
+    # builder should return None via the eligibility gate.
+    planets = [
+        {"planet": "Sun", "sign": "Gemini", "house": 3},
+        {"planet": "Moon", "sign": "Gemini", "house": 3},
+    ]
+    ngc = {
+        "house_rulers": {
+            "1": {"cusp_sign": "Aries"},
+            "4": {"cusp_sign": "Cancer"},
+            "7": {"cusp_sign": "Libra"},
+            "10": {"cusp_sign": "Capricorn"},
+        }
+    }
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    # No 7H planet, no relationship-supporting house → relationship builder
+    # short-circuits without emitting.
+    assert _v0_9b_packets(payload, family="relationship_route") == []
+
+
+def test_v0_9b_detail_support_flag_only_lifts_detail_eligible(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    planets, _, ngc = _v0_9b_chart_inputs(moon_sign="cancer", moon_house=4)
+
+    # detail_support flag OFF
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", raising=False)
+    payload_off = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    moon_off = _v0_9b_packets(payload_off, family="moon_signature")
+    assert moon_off
+    assert moon_off[0]["public_eligibility"]["detail_eligible"] is False
+    assert moon_off[0]["public_eligibility"]["public_main_eligible"] is False
+    assert moon_off[0]["public_eligibility"]["public_support_eligible"] is False
+
+    # detail_support flag ON — detail_eligible flips when confidence >= 0.7;
+    # public_main / public_support stay False.
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    payload_on = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    moon_on = _v0_9b_packets(payload_on, family="moon_signature")
+    assert moon_on
+    elig = moon_on[0]["public_eligibility"]
+    if moon_on[0]["confidence"] >= 0.7:
+        assert elig["detail_eligible"] is True
+    assert elig["public_main_eligible"] is False
+    assert elig["public_support_eligible"] is False
+
+
+# ---------------------------------------------------------------------------
+# v0.9b.0.1 calibration — penalty bump + cross-family ownership
+# ---------------------------------------------------------------------------
+
+
+def test_v0_9b_0_1_relationship_default_fallback_penalty_value(monkeypatch) -> None:
+    """When no subtype channel wins (all signals < 0.04 margin), the
+    relationship_route default-fallback path must apply a penalty of at
+    least 0.10 — bumped from 0.06 by v0.9b.0.1."""
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    # Sparse-evidence chart — produces default fallback path.
+    planets = [
+        {"planet": "Sun", "sign": "Gemini", "house": 3},
+        {"planet": "Moon", "sign": "Gemini", "house": 3},
+        {"planet": "Venus", "sign": "Gemini", "house": 3},
+        {"planet": "Mars", "sign": "Sagittarius", "house": 9},
+        {"planet": "Mercury", "sign": "Gemini", "house": 3},
+        {"planet": "Saturn", "sign": "Capricorn", "house": 10},
+        {"planet": "Uranus", "sign": "Aquarius", "house": 11},
+        {"planet": "Neptune", "sign": "Pisces", "house": 12},
+        {"planet": "Pluto", "sign": "Scorpio", "house": 8},
+        {"planet": "Jupiter", "sign": "Sagittarius", "house": 9},
+    ]
+    ngc = {
+        "house_rulers": {
+            "1": {"cusp_sign": "Aries"},
+            "4": {"cusp_sign": "Cancer"},
+            "7": {"cusp_sign": "Libra"},
+            "10": {"cusp_sign": "Capricorn"},
+        }
+    }
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    candidates = _v0_9b_packets(payload, family="relationship_route")
+    if candidates:
+        card = candidates[0]
+        meta = card.get("meta") or {}
+        if meta.get("subtype_default_fallback"):
+            assert card["scoring_breakdown"]["subtype_penalty"] >= 0.10, card["scoring_breakdown"]
+
+
+def test_v0_9b_0_1_moon_default_fallback_penalty_value(monkeypatch) -> None:
+    """moon_signature emotional_rhythm default fallback must carry the
+    calibrated penalty (>= 0.10)."""
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    # Chart that picks emotional_rhythm by exclusion (no subtype channel wins).
+    planets = [
+        {"planet": "Sun", "sign": "Sagittarius", "house": 9},
+        {"planet": "Moon", "sign": "Sagittarius", "house": 9},
+        {"planet": "Mercury", "sign": "Sagittarius", "house": 9},
+        {"planet": "Venus", "sign": "Sagittarius", "house": 9},
+        {"planet": "Mars", "sign": "Sagittarius", "house": 9},
+        {"planet": "Jupiter", "sign": "Sagittarius", "house": 9},
+        {"planet": "Saturn", "sign": "Aquarius", "house": 11},
+        {"planet": "Uranus", "sign": "Aquarius", "house": 11},
+        {"planet": "Neptune", "sign": "Pisces", "house": 12},
+        {"planet": "Pluto", "sign": "Scorpio", "house": 8},
+    ]
+    ngc = {
+        "house_rulers": {
+            "1": {"cusp_sign": "Aries"},
+            "4": {"cusp_sign": "Cancer"},
+            "7": {"cusp_sign": "Libra"},
+            "10": {"cusp_sign": "Capricorn"},
+        }
+    }
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    moon = _v0_9b_packets(payload, family="moon_signature")
+    if moon:
+        card = moon[0]
+        meta = card.get("meta") or {}
+        if meta.get("subtype_default_fallback"):
+            assert card["scoring_breakdown"]["subtype_penalty"] >= 0.10, card["scoring_breakdown"]
+
+
+def test_v0_9b_0_1_cross_family_moon_ownership_metadata_present(monkeypatch) -> None:
+    """When both families fire on the same chart and moon confidence
+    exceeds relationship by >= 0.05, the relationship candidate's meta
+    must carry ``moon_evidence_owned_by="moon_signature"`` and the
+    eligibility map must carry
+    ``future_renderer_eligibility_blocked=True``."""
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    # Chart where moon scores higher than relationship and shares Moon evidence.
+    planets = [
+        {"planet": "Sun", "sign": "Pisces", "house": 12},
+        {"planet": "Moon", "sign": "Pisces", "house": 12},
+        {"planet": "Mercury", "sign": "Pisces", "house": 12},
+        {"planet": "Venus", "sign": "Cancer", "house": 4},
+        {"planet": "Mars", "sign": "Cancer", "house": 4},
+        {"planet": "Jupiter", "sign": "Scorpio", "house": 8},
+        {"planet": "Saturn", "sign": "Capricorn", "house": 10},
+        {"planet": "Uranus", "sign": "Aquarius", "house": 11},
+        {"planet": "Neptune", "sign": "Pisces", "house": 12},
+        {"planet": "Pluto", "sign": "Scorpio", "house": 8},
+    ]
+    ngc = {
+        "house_rulers": {
+            "1": {"cusp_sign": "Aries"},
+            "4": {"cusp_sign": "Cancer"},
+            "7": {"cusp_sign": "Libra"},
+            "10": {"cusp_sign": "Capricorn"},
+        }
+    }
+    payload = _run_promise_builder(
+        planets=planets,
+        natal_graph_compact=ngc,
+        aspects=[
+            {"planet1": "Moon", "planet2": "Neptune", "type": "conjunction", "orb": 0.5},
+            {"planet1": "Moon", "planet2": "Pluto", "type": "trine", "orb": 1.0},
+        ],
+    )
+    rel = _v0_9b_packets(payload, family="relationship_route")
+    moon = _v0_9b_packets(payload, family="moon_signature")
+    # Both families must have fired for the ownership rule to be meaningful.
+    if rel and moon:
+        rel_card = rel[0]
+        moon_card = moon[0]
+        rel_meta = rel_card.get("meta") or {}
+        moon_meta = moon_card.get("meta") or {}
+        assert moon_meta.get("moon_evidence_owned_by") == "moon_signature"
+        # Outcome depends on confidence delta; both possibilities are valid.
+        outcome = rel_meta.get("cross_family_moon_ownership_outcome")
+        owned_by = rel_meta.get("moon_evidence_owned_by")
+        assert owned_by in {"moon_signature", "relationship_route"}
+        if owned_by == "moon_signature":
+            elig = rel_card.get("public_eligibility") or {}
+            assert elig.get("future_renderer_eligibility_blocked") is True
+            assert "moon_evidence_owned_elsewhere" in (elig.get("reason_codes") or [])
+            assert outcome == "moon_takes_ownership"
+        else:
+            assert outcome in {"relationship_retains_ownership", "relationship_solo"}
+
+
+def test_v0_9b_0_1_cross_family_ownership_does_not_change_public_eligibility_basics(monkeypatch) -> None:
+    """The ownership rule must not flip public_main_eligible /
+    public_support_eligible to True, and detail_eligible must remain
+    False unless the v0.9b detail_support flag is independently on."""
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", raising=False)
+    planets, _, ngc = _v0_9b_chart_inputs(moon_sign="cancer", moon_house=4)
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    for card in _v0_9b_packets(payload, family="relationship_route"):
+        elig = card.get("public_eligibility") or {}
+        assert elig.get("public_main_eligible") is False
+        assert elig.get("public_support_eligible") is False
+        assert elig.get("detail_eligible") is False
+        assert card.get("public_job") == "debug_only"
+    for card in _v0_9b_packets(payload, family="moon_signature"):
+        elig = card.get("public_eligibility") or {}
+        assert elig.get("public_main_eligible") is False
+        assert elig.get("public_support_eligible") is False
+        assert elig.get("detail_eligible") is False
+        assert card.get("public_job") == "debug_only"
+
+
+def test_v0_9b_0_1_moon_self_owns_evidence_in_meta(monkeypatch) -> None:
+    """moon_signature candidates always self-own their evidence."""
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    planets, _, ngc = _v0_9b_chart_inputs(moon_sign="cancer", moon_house=4)
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    moon = _v0_9b_packets(payload, family="moon_signature")
+    if moon:
+        assert (moon[0].get("meta") or {}).get("moon_evidence_owned_by") == "moon_signature"

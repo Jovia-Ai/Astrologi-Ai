@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import copy
+import os
 import re
 from collections import defaultdict
+from dataclasses import asdict, dataclass
 from typing import Any, Dict, Iterable, List, Mapping, Sequence
 
 from .promise_archetype_registry_sprint1 import (
@@ -12,6 +14,20 @@ from .promise_archetype_registry_sprint1 import (
 
 PACKET_VERSION = "natal_promise_packets_v1"
 _SCORING_VERSION = "sprint1_context_scoring_v1"
+_ENABLED_VALUES = {"1", "true", "yes", "on"}
+_PACKET_SOURCE_TYPES = {
+    "exact_registry",
+    "composed_semantic",
+    "generic_fallback",
+    "discovery_scaffold",
+    "legacy_graph",
+}
+_GENERIC_PACKET_IDS = {
+    "identity_identity",
+    "relationship_relationships",
+    "career_career_visibility",
+    "mind_mind_system",
+}
 _BANNED_PHRASES = {
     "micro insight",
     "potansiyel",
@@ -30,6 +46,9 @@ _DOMAIN_ALIASES = {
     "behavior_reflex": "behavior_reflex",
     "inner_world": "inner_world",
     "spirituality": "spirituality",
+    "emotional_world": "emotional_world",
+    "home_family": "home_family",
+    "roots": "home_family",
     "relationship": "relationship",
     "relationships": "relationship",
     "love": "love",
@@ -40,8 +59,15 @@ _DOMAIN_ALIASES = {
     "money_self_worth": "money_self_worth",
     "self_worth": "money_self_worth",
     "community": "community",
+    "learning": "mind",
+    "body": "identity",
+    "service": "identity",
     "responsibility": "career",
-    "action": "inner_world",
+    "action": "action",
+    "daily_life": "action",
+    "axis_tension": "axis_tension",
+    "community": "community",
+    "vision": "community",
 }
 _PROMISE_TYPE_ALIASES = {
     "gift": "gift",
@@ -54,6 +80,25 @@ _PROMISE_TYPE_ALIASES = {
     "career_signature": "career_signature",
     "behavior_reflex": "behavior_reflex",
     "mind_identity": "mind_identity",
+    "identity_style": "identity_style",
+    "social_mind_style": "social_mind_style",
+    "roots_transformation": "roots_transformation",
+    "home_family_signature": "home_family_signature",
+    "creative_emotional_style": "creative_emotional_style",
+    "creative_signature": "creative_signature",
+    "career_friction_to_power": "career_friction_to_power",
+    "relationship_need": "relationship_need",
+    "identity_action_style": "identity_action_style",
+    "action_friction_to_strength": "action_friction_to_strength",
+    "inner_pressure_to_maturity": "inner_pressure_to_maturity",
+    "emotional_home_signature": "emotional_home_signature",
+    "career_mind_signature": "career_mind_signature",
+    "axis_tension": "axis_tension",
+    "collective_identity": "collective_identity",
+    "community_signature": "community_signature",
+    "relationship_wound_to_gift": "relationship_wound_to_gift",
+    "career_love_style": "career_love_style",
+    "life_direction_axis": "life_direction_axis",
 }
 _DOMAIN_TYPE_FALLBACKS = {
     "mind": {"mind_style": 0.28, "gift": 0.12},
@@ -62,14 +107,21 @@ _DOMAIN_TYPE_FALLBACKS = {
     "behavior_reflex": {"behavior_reflex": 0.24, "mind_style": 0.12},
     "inner_world": {"need": 0.2, "wound_to_gift": 0.18, "behavior_reflex": 0.08},
     "spirituality": {"need": 0.18, "wound_to_gift": 0.14},
+    "emotional_world": {"need": 0.18, "gift": 0.12, "creative_emotional_style": 0.1},
+    "home_family": {"roots_transformation": 0.28, "home_family_signature": 0.24, "need": 0.1},
     "relationship": {"love_style": 0.22, "need": 0.18},
     "love": {"love_style": 0.26, "gift": 0.12},
     "emotional_depth": {"need": 0.18, "love_style": 0.18},
     "career": {"career_signature": 0.26, "wound_to_gift": 0.12},
     "visibility": {"career_signature": 0.22, "wound_to_gift": 0.14},
-    "creativity": {"gift": 0.18, "career_signature": 0.1},
+    "creativity": {"creative_signature": 0.24, "creative_emotional_style": 0.2, "gift": 0.18, "career_signature": 0.1},
     "money_self_worth": {"behavior_reflex": 0.16, "love_style": 0.12, "gift": 0.1},
     "community": {"mind_style": 0.16, "gift": 0.12},
+    "action": {"identity_action_style": 0.24, "action_friction_to_strength": 0.22, "behavior_reflex": 0.12},
+    "axis_tension": {"axis_tension": 0.28, "life_direction_axis": 0.18, "wound_to_gift": 0.1},
+    "learning": {"mind_style": 0.18, "gift": 0.1},
+    "body": {"wound_to_gift": 0.18, "behavior_reflex": 0.1},
+    "service": {"wound_to_gift": 0.16, "gift": 0.1},
 }
 _PROMISE_TYPE_LAYER = {
     "gift": "potential",
@@ -82,7 +134,60 @@ _PROMISE_TYPE_LAYER = {
     "career_signature": "effect",
     "behavior_reflex": "mechanism",
     "mind_identity": "mechanism",
+    "identity_style": "mechanism",
+    "social_mind_style": "mechanism",
+    "roots_transformation": "shadow",
+    "home_family_signature": "cause",
+    "creative_emotional_style": "effect",
+    "creative_signature": "effect",
+    "career_friction_to_power": "shadow",
+    "relationship_need": "mechanism",
+    "identity_action_style": "mechanism",
+    "action_friction_to_strength": "shadow",
+    "inner_pressure_to_maturity": "shadow",
+    "emotional_home_signature": "cause",
+    "career_mind_signature": "effect",
+    "axis_tension": "shadow",
+    "collective_identity": "mechanism",
+    "community_signature": "effect",
+    "relationship_wound_to_gift": "shadow",
+    "career_love_style": "effect",
+    "life_direction_axis": "mechanism",
 }
+
+
+@dataclass
+class ComposedSemanticCandidateV1:
+    id: str
+    family: str
+    subtype: str
+    source_type: str
+    domain: str
+    promise_type: str
+    domain_reason: list[str]
+    public_job: str
+    confidence: float
+    confidence_tier: str
+    chart_facts_match: bool
+    technical_anchors: list[str]
+    source_evidence_ids: list[str]
+    evidence_trace: dict[str, Any]
+    direct_meaning: str
+    lived_scene: str
+    lived_scene_atoms: list[str]
+    gift: str
+    inner_tension: str
+    growth_direction: str
+    avoid_readings: list[str]
+    projection_hints: dict[str, Any]
+    scoring_breakdown: dict[str, float]
+    matched_archetypes: list[str]
+    public_eligibility: dict[str, Any]
+    meta: dict[str, Any]
+
+
+def _env_enabled(name: str, default: str = "false") -> bool:
+    return os.getenv(name, default).strip().lower() in _ENABLED_VALUES
 
 
 def build_natal_promise_packets_v1(
@@ -186,6 +291,28 @@ def build_natal_promise_packets_v1(
         mode=normalized_mode,
     )
     candidates.extend(chart_signature_candidates)
+    if normalized_mode == "candidate_inventory":
+        candidates.extend(
+            _build_v0_6_discovery_candidates(
+                planets=planets,
+                aspects=aspects,
+                natal_graph_compact=natal_graph_compact,
+                locale=locale,
+                existing_candidates=candidates,
+            )
+        )
+        if _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9"):
+            candidates.extend(
+                _build_v0_9_composed_semantic_candidates(
+                    planets=planets,
+                    aspects=aspects,
+                    natal_graph_compact=natal_graph_compact,
+                    metadata=metadata,
+                    meta_info=meta_info,
+                    locale=locale,
+                    existing_candidates=candidates,
+                )
+            )
 
     packets = _merge_candidates(candidates)
     packets = _dedupe_packets(packets, mode=normalized_mode)
@@ -213,6 +340,7 @@ def build_natal_promise_packets_v1(
     # mismatch; we deliberately do NOT rename the id to keep blast radius
     # minimal (cluster plans and tests already key on the existing id).
     _annotate_chart_facts_match(packets, planets=planets, natal_graph_compact=natal_graph_compact)
+    _annotate_packet_source_types(packets)
     return {
         "version": PACKET_VERSION,
         "registry_version": REGISTRY_VERSION,
@@ -340,6 +468,10 @@ def _build_candidate(
         "theme_key": theme_key,
         "domain": domain,
         "promise_type": promise_type,
+        "source_type": _initial_candidate_source_type(
+            packet_id=_candidate_id(domain=domain, matches=matches, seed=seed, variant_suffix=variant_suffix),
+            matches=matches,
+        ),
         "strength": round(max(0.0, min(1.0, strength)), 4),
         "technical_anchors": technical_anchors,
         "source_evidence_ids": source_evidence_ids,
@@ -377,6 +509,10 @@ def _build_candidate(
             "auxiliary": auxiliary,
             "evidence_count": len(evidence_entries),
             "variant_suffix": variant_suffix,
+            "source_type": _initial_candidate_source_type(
+                packet_id=_candidate_id(domain=domain, matches=matches, seed=seed, variant_suffix=variant_suffix),
+                matches=matches,
+            ),
         },
     }
 
@@ -1048,6 +1184,8 @@ def _build_chart_signature_candidates(
         },
     ]
     variants.extend(_v0_5_chart_signature_variants())
+    variants.extend(_v0_7_chart_signature_variants())
+    variants.extend(_v0_8_chart_signature_variants())
     out: list[dict[str, Any]] = []
     for variant in variants:
         match_id = str(variant.get("match_id") or "").strip()
@@ -1103,6 +1241,2249 @@ def _build_chart_signature_candidates(
             meta["match_id"] = match_id
             candidate["meta"] = meta
             out.append(candidate)
+    return out
+
+
+def _build_v0_6_discovery_candidates(
+    *,
+    planets: Sequence[Mapping[str, Any]] | None,
+    aspects: Sequence[Mapping[str, Any]] | None,
+    natal_graph_compact: Mapping[str, Any] | None,
+    locale: str,
+    existing_candidates: Sequence[Mapping[str, Any]] | None,
+) -> list[dict[str, Any]]:
+    planet_map = {
+        str(item.get("planet") or item.get("name") or "").strip().lower(): dict(item)
+        for item in planets or []
+        if isinstance(item, Mapping) and str(item.get("planet") or item.get("name") or "").strip()
+    }
+    if not planet_map:
+        return []
+    house_rulers = (
+        natal_graph_compact.get("house_rulers")
+        if isinstance(natal_graph_compact, Mapping) and isinstance(natal_graph_compact.get("house_rulers"), Mapping)
+        else {}
+    )
+    existing_ids = {
+        str(item.get("id") or "").strip().lower()
+        for item in existing_candidates or []
+        if isinstance(item, Mapping) and str(item.get("id") or "").strip()
+    }
+    exact_chart_ids = {
+        packet_id
+        for packet_id in existing_ids
+        if "chart_exact" in packet_id and not packet_id.startswith("discovery_")
+    }
+    if len(exact_chart_ids) >= 8:
+        return []
+    out: list[dict[str, Any]] = []
+
+    asc_sign = _asc_sign(metadata_like=planet_map, house_rulers=house_rulers)
+    dsc_sign = _house_cusp_sign(house_rulers, 7)
+    mc_sign = _house_cusp_sign(house_rulers, 10)
+    ic_sign = _house_cusp_sign(house_rulers, 4)
+    sun_item = _lookup_planet_entry(planet_map, "sun")
+    moon_item = _lookup_planet_entry(planet_map, "moon")
+    mercury_item = _lookup_planet_entry(planet_map, "mercury")
+    venus_item = _lookup_planet_entry(planet_map, "venus")
+    mars_item = _lookup_planet_entry(planet_map, "mars")
+
+    if (
+        asc_sign
+        and sun_item
+        and not _candidate_ids_contain(
+            existing_ids,
+            "asc_",
+            "chart_ruler",
+            "hidden_value_identity",
+            "warm_visibility_belonging",
+            "self_construction",
+            "collective_identity",
+        )
+    ):
+        chart_ruler = _sign_ruler(asc_sign)
+        ruler_item = _lookup_planet_entry(planet_map, chart_ruler) if chart_ruler else {}
+        if ruler_item:
+            out.append(
+                _build_discovery_packet(
+                    packet_id="discovery_identity_asc_chart_ruler_sun_composed",
+                    domain="identity",
+                    promise_type="identity_style",
+                    strength=0.72 + (0.03 if int(ruler_item.get("house") or 0) in {1, 10, 11} else 0.0),
+                    title="Kimlik hattı aday keşfi",
+                    direct_meaning="Yükselen, yönetici gezegen ve Güneş birlikte temel kimlik hattını taşıyor.",
+                    lived_scene="Kimliğin yalnızca tek bir temadan değil; yükselenin, yöneticin ve Güneş hattının birlikte çalışmasından kuruluyor.",
+                    gift="Kimlik hattının ana omurgasını daha net ayırabilmek.",
+                    shadow="Mevcut registry bu kimlik kombinasyonunu henüz doğrudan sahiplenmiyor olabilir.",
+                    growth="ASC-yönetici-Güneş zincirini daha spesifik arketiplere ayırmak.",
+                    technical_anchors=[
+                        f"ASC {asc_sign.title()}",
+                        _planet_chip(chart_ruler, ruler_item),
+                        _planet_chip("sun", sun_item),
+                    ],
+                    evidence_ids=[
+                        f"discovery:identity:asc:{asc_sign}",
+                        f"discovery:identity:ruler:{chart_ruler}:{int(ruler_item.get('house') or 0)}",
+                        f"discovery:identity:sun:{str(sun_item.get('sign') or '').strip().lower()}:{int(sun_item.get('house') or 0)}",
+                    ],
+                    locale=locale,
+                    discovery_domain="identity",
+                    discovery_kind="composed_candidate",
+                    coverage_topic="identity_route",
+                )
+            )
+
+    relationship_support = 0.0
+    if dsc_sign:
+        relationship_support += 0.34
+    relationship_ruler = _sign_ruler(dsc_sign)
+    relationship_ruler_item = _lookup_planet_entry(planet_map, relationship_ruler) if relationship_ruler else {}
+    if relationship_ruler_item:
+        relationship_support += 0.24
+    if any(int((item or {}).get("house") or 0) in {5, 7, 8, 12} for item in (venus_item, mars_item, moon_item)):
+        relationship_support += 0.18
+    if _has_any_aspect(aspects, [("Moon", "Venus"), ("Venus", "Mars"), ("Moon", "Pluto"), ("Venus", "Pluto"), ("Venus", "Jupiter")]):
+        relationship_support += 0.14
+    if (
+        relationship_support >= 0.58
+        and not _candidate_ids_contain(
+            existing_ids,
+            "dsc_",
+            "trust_",
+            "harmony_wound_depth",
+            "relationship_power_depth",
+            "affection_gift",
+            "private_love",
+            "attraction_signal",
+            "trust_bond",
+            "freedom_responsibility_sensitivity",
+        )
+    ):
+        out.append(
+            _build_discovery_packet(
+                packet_id="discovery_relationship_dsc_ruler_signature_composed",
+                domain="relationship",
+                promise_type="relationship_need",
+                strength=min(0.86, 0.62 + relationship_support * 0.18),
+                title="İlişki hattı aday keşfi",
+                direct_meaning="DSC, yöneticisi ve ilişki imzaları birlikte ayrı bir ilişki hattı kuruyor.",
+                lived_scene="İlişkilerde denge, eşik, yakınlık ve güven dili sadece tek bir Venüs cümlesine indirgenemeyebilir.",
+                gift="İlişki hattını DSC-yönetici-imza kombinasyonuyla daha doğru okumak.",
+                shadow="Mevcut registry bu ilişki kombinasyonunu henüz yeterince ayrıştırmıyor olabilir.",
+                growth="DSC, yönetici gezegen ve ilişki imzalarını ayrı bir packet ailesine dönüştürmek.",
+                technical_anchors=[
+                    f"DSC {dsc_sign.title()}" if dsc_sign else "",
+                    _planet_chip(relationship_ruler, relationship_ruler_item),
+                    _planet_chip("venus", venus_item),
+                    _planet_chip("moon", moon_item),
+                ],
+                evidence_ids=[
+                    f"discovery:relationship:dsc:{dsc_sign}",
+                    f"discovery:relationship:ruler:{relationship_ruler}:{int((relationship_ruler_item or {}).get('house') or 0)}",
+                ]
+                + _relationship_signature_evidence(aspects=aspects, venus_item=venus_item, mars_item=mars_item, moon_item=moon_item),
+                locale=locale,
+                discovery_domain="relationship",
+                discovery_kind="composed_candidate",
+                coverage_topic="relationship_route",
+            )
+        )
+
+    career_support = 0.0
+    if mc_sign:
+        career_support += 0.34
+    career_ruler = _sign_ruler(mc_sign)
+    career_ruler_item = _lookup_planet_entry(planet_map, career_ruler) if career_ruler else {}
+    if career_ruler_item:
+        career_support += 0.24
+    tenth_house_planets = _house_planet_names(planet_map, 10)
+    if tenth_house_planets:
+        career_support += min(0.24, 0.08 * len(tenth_house_planets))
+    if (
+        career_support >= 0.58
+        and not _candidate_ids_contain(
+            existing_ids,
+            "mc_",
+            "public_voice",
+            "public_style",
+            "invisible_preparation",
+            "steady_public_drive",
+            "public_power_roots_tension",
+            "healing_voice",
+        )
+    ):
+        out.append(
+            _build_discovery_packet(
+                packet_id="discovery_career_mc_ruler_tenth_house_composed",
+                domain="career",
+                promise_type="career_signature",
+                strength=min(0.88, 0.62 + career_support * 0.18),
+                title="Kariyer hattı aday keşfi",
+                direct_meaning="MC, yöneticisi ve 10. ev yerleşimleri birlikte kariyer/public rol hattı kuruyor.",
+                lived_scene="Görünür rol, kariyer dili ve dış dünyadaki konum birden fazla teknik imzayla taşınıyor olabilir.",
+                gift="Kariyer hattını MC-yönetici-10. ev birlikte okumak.",
+                shadow="Mevcut registry bu kariyer imzasını henüz tek bir spesifik packet altında toplamıyor olabilir.",
+                growth="MC yöneticisi ve 10. ev yığılmalarını daha spesifik packet ailelerine ayırmak.",
+                technical_anchors=[
+                    f"MC {mc_sign.title()}" if mc_sign else "",
+                    _planet_chip(career_ruler, career_ruler_item),
+                    *[f"{planet.title()} · 10. ev" for planet in tenth_house_planets[:3]],
+                ],
+                evidence_ids=[
+                    f"discovery:career:mc:{mc_sign}",
+                    f"discovery:career:ruler:{career_ruler}:{int((career_ruler_item or {}).get('house') or 0)}",
+                    *[f"discovery:career:10h:{planet}" for planet in tenth_house_planets[:4]],
+                ],
+                locale=locale,
+                discovery_domain="career",
+                discovery_kind="composed_candidate",
+                coverage_topic="career_route",
+            )
+        )
+
+    emotional_anchors = [_planet_chip("moon", moon_item)]
+    emotional_evidence = [
+        f"discovery:emotional:moon:{str((moon_item or {}).get('sign') or '').strip().lower()}:{int((moon_item or {}).get('house') or 0)}"
+    ] if moon_item else []
+    if moon_item and not _candidate_ids_contain(existing_ids, "home_security_roots", "private_emotional", "emotional_routine_sensitivity", "moon_"):
+        moon_house = int(moon_item.get("house") or 0)
+        if moon_house in {3, 4} and ic_sign:
+            emotional_anchors.append(f"IC {ic_sign.title()}")
+            emotional_evidence.append(f"discovery:emotional:ic:{ic_sign}")
+        for aspect_entry in _top_aspect_refs(aspects, planet="Moon", limit=2):
+            emotional_anchors.append(aspect_entry["label"])
+            emotional_evidence.append(aspect_entry["ref"])
+        emotional_domain = "home_family" if moon_house in {3, 4} else "emotional_world"
+        emotional_type = "emotional_home_signature" if emotional_domain == "home_family" else "need"
+        out.append(
+            _build_discovery_packet(
+                packet_id="discovery_emotional_moon_signature_composed",
+                domain=emotional_domain,
+                promise_type=emotional_type,
+                strength=0.7 + (0.05 if moon_house in {3, 4, 5, 8, 12} else 0.0),
+                title="Duygusal ritim aday keşfi",
+                direct_meaning="Ay'ın yerleşimi ve açıları ayrı bir duygusal ritim hattı taşıyor.",
+                lived_scene="Duygusal ritim, yalnızca genel bir ilişki ya da kariyer fallback'i altında kalmaması gereken bağımsız bir eksen olabilir.",
+                gift="Ay imzasını doğrudan aday envantere taşımak.",
+                shadow="Mevcut registry Ay hattını bu kombinasyonda yeterince spesifik işlemiyor olabilir.",
+                growth="Ay burç/ev/açı kombinasyonlarını daha net packet ailelerine ayırmak.",
+                technical_anchors=emotional_anchors,
+                evidence_ids=emotional_evidence,
+                locale=locale,
+                discovery_domain="emotional",
+                discovery_kind="composed_candidate",
+                coverage_topic="moon_signature",
+            )
+        )
+
+    mercury_aspect_refs = _top_aspect_refs(aspects, planet="Mercury", limit=2)
+    mind_support = 0.0
+    if mercury_item:
+        mind_support += 0.34
+        if int(mercury_item.get("house") or 0) in {3, 9}:
+            mind_support += 0.18
+    if any(_planet_in_house(planet_map, name, 3) or _planet_in_house(planet_map, name, 9) for name in ("sun", "mercury", "jupiter", "pluto")):
+        mind_support += 0.14
+    if mercury_aspect_refs:
+        mind_support += 0.16
+    if _planet_has_major_aspect(aspects, "Uranus", "Mercury"):
+        mind_support += 0.08
+    if (
+        mercury_item
+        and mind_support >= 0.56
+        and not _candidate_ids_contain(
+            existing_ids,
+            "mind_",
+            "social_emotional_intelligence",
+            "speech_decision_language",
+            "deep_speech",
+            "social_intuition_mind",
+            "deep_mind_pressure",
+            "big_mind",
+            "public_voice_strategic_mind",
+        )
+    ):
+        out.append(
+            _build_discovery_packet(
+                packet_id="discovery_mind_mercury_axis_composed",
+                domain="mind",
+                promise_type="mind_style",
+                strength=min(0.86, 0.62 + mind_support * 0.18),
+                title="Zihin hattı aday keşfi",
+                direct_meaning="Merkür, 3H/9H ekseni ve baskın açıları birlikte ayrı bir zihin hattı kuruyor.",
+                lived_scene="Zihin tonu, öğrenme biçimi ve karar dili yalnızca genel bir mind fallback'i altında kalmaması gereken kadar belirgin olabilir.",
+                gift="Merkür eksenini bağımsız aday envantere taşımak.",
+                shadow="Mevcut registry bu zihinsel kombinasyonu henüz yeterince spesifik paketlemiyor olabilir.",
+                growth="Merkür-3H/9H-Uranüs/açı kombinasyonlarını daha net packet ailelerine ayırmak.",
+                technical_anchors=[
+                    _planet_chip("mercury", mercury_item),
+                    *[item["label"] for item in mercury_aspect_refs],
+                ],
+                evidence_ids=[
+                    f"discovery:mind:mercury:{str(mercury_item.get('sign') or '').strip().lower()}:{int(mercury_item.get('house') or 0)}",
+                    *[item["ref"] for item in mercury_aspect_refs],
+                ],
+                locale=locale,
+                discovery_domain="mind",
+                discovery_kind="composed_candidate",
+                coverage_topic="mercury_signature",
+            )
+        )
+
+    active_houses = _significant_house_counts(planet_map)
+    if (
+        active_houses.get(4, 0) >= 2
+        and not _candidate_ids_contain(existing_ids, "home_security_roots", "roots_inner_security", "private_emotional")
+    ):
+        out.append(
+            _build_discovery_packet(
+                packet_id="discovery_house_4h_ic_concentration_gap",
+                domain="home_family",
+                promise_type="home_family_signature",
+                strength=0.7 + min(0.1, 0.03 * active_houses.get(4, 0)),
+                title="4H/IC yoğunluğu kapsama boşluğu",
+                direct_meaning="4. ev/IC yoğunluğu var ama buna sahip çıkan yeterince spesifik bir packet görünmüyor.",
+                lived_scene="Ev, kökler ve iç güvenlik hattı bu chartta ayrı bir kapsama isteyebilir.",
+                gift="4. ev/IC yoğunluğunu debug seviyesinde görünür kılmak.",
+                shadow="Bu eksen generic fallback altında eriyebilir.",
+                growth="4H/IC yoğunlukları için daha kaliteli arketip ailesi eklemek.",
+                technical_anchors=[
+                    f"IC {ic_sign.title()}" if ic_sign else "",
+                    *[f"{planet.title()} · 4. ev" for planet in _house_planet_names(planet_map, 4)[:3]],
+                ],
+                evidence_ids=[
+                    f"discovery:house:4:count:{active_houses.get(4, 0)}",
+                    *[f"discovery:house:4:{planet}" for planet in _house_planet_names(planet_map, 4)[:4]],
+                ],
+                locale=locale,
+                discovery_domain="emotional",
+                discovery_kind="coverage_gap",
+                coverage_topic="house_4h_ic",
+            )
+        )
+    if active_houses.get(5, 0) >= 2 and not _candidate_ids_contain(existing_ids, "5h", "structured_imagination", "serious_heart_creative_form"):
+        out.append(
+            _build_discovery_packet(
+                packet_id="discovery_house_5h_concentration_gap",
+                domain="creativity",
+                promise_type="creative_signature",
+                strength=0.68 + min(0.1, 0.03 * active_houses.get(5, 0)),
+                title="5H yoğunluğu kapsama boşluğu",
+                direct_meaning="5. ev yoğunluğu var ama buna sahip çıkan yeterince spesifik bir packet görünmüyor.",
+                lived_scene="Yaratıcılık, romantik ifade ve oyun alanı chartta daha belirgin olabilir.",
+                gift="5. ev yoğunluğunu debug seviyesinde görünür kılmak.",
+                shadow="5H yoğunluğu generic relationship ya da mind fallback'ine dağılabilir.",
+                growth="5H yoğunlukları için daha kaliteli arketip ailesi eklemek.",
+                technical_anchors=[f"{planet.title()} · 5. ev" for planet in _house_planet_names(planet_map, 5)[:4]],
+                evidence_ids=[
+                    f"discovery:house:5:count:{active_houses.get(5, 0)}",
+                    *[f"discovery:house:5:{planet}" for planet in _house_planet_names(planet_map, 5)[:4]],
+                ],
+                locale=locale,
+                discovery_domain="emotional",
+                discovery_kind="coverage_gap",
+                coverage_topic="house_5h",
+            )
+        )
+    if active_houses.get(12, 0) >= 2 and not _candidate_ids_contain(existing_ids, "12h", "private_pressure", "inner_world_saturation", "private_maturity", "hidden_action", "private_will"):
+        out.append(
+            _build_discovery_packet(
+                packet_id="discovery_house_12h_concentration_gap",
+                domain="inner_world",
+                promise_type="need",
+                strength=0.7 + min(0.1, 0.03 * active_houses.get(12, 0)),
+                title="12H yoğunluğu kapsama boşluğu",
+                direct_meaning="12. ev yoğunluğu var ama buna sahip çıkan yeterince spesifik bir packet görünmüyor.",
+                lived_scene="İç dünya, perde arkası hazırlık veya görünmeyen süreçler chartta daha fazla yer tutabilir.",
+                gift="12. ev yoğunluğunu debug seviyesinde görünür kılmak.",
+                shadow="12H içeriği generic shadow ya da career fallback'ine dağılabilir.",
+                growth="12H yoğunlukları için daha kaliteli arketip ailesi eklemek.",
+                technical_anchors=[f"{planet.title()} · 12. ev" for planet in _house_planet_names(planet_map, 12)[:4]],
+                evidence_ids=[
+                    f"discovery:house:12:count:{active_houses.get(12, 0)}",
+                    *[f"discovery:house:12:{planet}" for planet in _house_planet_names(planet_map, 12)[:4]],
+                ],
+                locale=locale,
+                discovery_domain="emotional",
+                discovery_kind="coverage_gap",
+                coverage_topic="house_12h",
+            )
+        )
+    if _axis_support(planet_map, left=2, right=8) >= 1.2:
+        out.append(
+            _build_discovery_packet(
+                packet_id="discovery_axis_2h_8h_gap",
+                domain="money_self_worth",
+                promise_type="need",
+                strength=0.72,
+                title="2H/8H ekseni kapsama boşluğu",
+                direct_meaning="2H/8H ekseni aktif ama buna sahip çıkan yeterince spesifik bir packet görünmüyor.",
+                lived_scene="Değer, paylaşım, kaynak ve derin bağ ekseni chartta bağımsız bir okuma isteyebilir.",
+                gift="2H/8H eksenini debug seviyesinde görünür kılmak.",
+                shadow="Bu eksen generic relationship ya da career fallback'ine dağılabilir.",
+                growth="2H/8H ekseni için daha kaliteli arketip ailesi eklemek.",
+                technical_anchors=[
+                    *[f"{planet.title()} · 2. ev" for planet in _house_planet_names(planet_map, 2)[:2]],
+                    *[f"{planet.title()} · 8. ev" for planet in _house_planet_names(planet_map, 8)[:3]],
+                ],
+                evidence_ids=[
+                    f"discovery:axis:2h8h:left:{active_houses.get(2, 0)}",
+                    f"discovery:axis:2h8h:right:{active_houses.get(8, 0)}",
+                ],
+                locale=locale,
+                discovery_domain="relationship",
+                discovery_kind="coverage_gap",
+                coverage_topic="axis_2h_8h",
+            )
+        )
+    if _axis_support(planet_map, left=3, right=9) >= 1.2:
+        out.append(
+            _build_discovery_packet(
+                packet_id="discovery_axis_3h_9h_gap",
+                domain="mind",
+                promise_type="mind_style",
+                strength=0.72,
+                title="3H/9H ekseni kapsama boşluğu",
+                direct_meaning="3H/9H ekseni aktif ama buna sahip çıkan yeterince spesifik bir packet görünmüyor.",
+                lived_scene="Öğrenme, anlatım, fikir kurma ve perspektif hattı chartta ayrı bir okuma isteyebilir.",
+                gift="3H/9H eksenini debug seviyesinde görünür kılmak.",
+                shadow="Bu eksen generic career ya da relationship fallback'ine dağılabilir.",
+                growth="3H/9H ekseni için daha kaliteli arketip ailesi eklemek.",
+                technical_anchors=[
+                    *[f"{planet.title()} · 3. ev" for planet in _house_planet_names(planet_map, 3)[:2]],
+                    *[f"{planet.title()} · 9. ev" for planet in _house_planet_names(planet_map, 9)[:3]],
+                ],
+                evidence_ids=[
+                    f"discovery:axis:3h9h:left:{active_houses.get(3, 0)}",
+                    f"discovery:axis:3h9h:right:{active_houses.get(9, 0)}",
+                ],
+                locale=locale,
+                discovery_domain="mind",
+                discovery_kind="coverage_gap",
+                coverage_topic="axis_3h_9h",
+            )
+        )
+
+    out.extend(
+        _build_discovery_aspect_candidates(
+            aspects=aspects,
+            existing_ids=existing_ids,
+            locale=locale,
+        )
+    )
+    return [packet for packet in out if packet.get("id")]
+
+
+def _build_discovery_packet(
+    *,
+    packet_id: str,
+    domain: str,
+    promise_type: str,
+    strength: float,
+    title: str,
+    direct_meaning: str,
+    lived_scene: str,
+    gift: str,
+    shadow: str,
+    growth: str,
+    technical_anchors: Sequence[str],
+    evidence_ids: Sequence[str],
+    locale: str,
+    discovery_domain: str,
+    discovery_kind: str,
+    coverage_topic: str,
+) -> dict[str, Any]:
+    return {
+        "id": packet_id,
+        "theme_key": packet_id,
+        "domain": domain,
+        "promise_type": promise_type,
+        "source_type": "discovery_scaffold",
+        "strength": round(max(0.01, min(0.95, strength)), 4),
+        "technical_anchors": [str(item).strip() for item in technical_anchors if str(item).strip()],
+        "source_evidence_ids": [str(item).strip() for item in evidence_ids if str(item).strip()],
+        "direct_meaning": direct_meaning,
+        "lived_scene": lived_scene,
+        "gift": gift,
+        "shadow_or_friction": shadow,
+        "inner_tension": shadow,
+        "growth_direction": growth,
+        "voice_seeds": [direct_meaning],
+        "avoid_phrases": sorted(_BANNED_PHRASES),
+        "source_category_ids": [packet_id],
+        "source_thread_ids": [],
+        "source_section_ids": [packet_id],
+        "projection_hints": {
+            "surfaces": ["debug_only"],
+            "priority": round(max(0.01, min(0.95, strength)), 4),
+            "auxiliary": False,
+            "opening_strategy": "debug_only",
+        },
+        "scoring_breakdown": {
+            "discovery_v0_6": round(max(0.01, min(0.95, strength)), 4),
+            "coverage_gap": 1.0 if discovery_kind == "coverage_gap" else 0.0,
+        },
+        "matched_archetypes": [],
+        "matched_archetype_summaries": [],
+        "meta": {
+            "title": title,
+            "locale": locale,
+            "auxiliary": False,
+            "variant_suffix": "discovery_v0_6",
+            "inventory_variant": "discovery_v0_6",
+            "v0_6_discovery": True,
+            "non_public_discovery": True,
+            "debug_only": True,
+            "source_type": "discovery_scaffold",
+            "discovery_kind": discovery_kind,
+            "discovery_domain": discovery_domain,
+            "coverage_topic": coverage_topic,
+        },
+    }
+
+
+def _build_v0_9_composed_semantic_candidates(
+    *,
+    planets: Sequence[Mapping[str, Any]] | None,
+    aspects: Sequence[Mapping[str, Any]] | None,
+    natal_graph_compact: Mapping[str, Any] | None,
+    metadata: Mapping[str, Any] | None,
+    meta_info: Mapping[str, Any] | None,
+    locale: str,
+    existing_candidates: Sequence[Mapping[str, Any]] | None,
+) -> list[dict[str, Any]]:
+    planet_map = {
+        str(item.get("planet") or item.get("name") or "").strip().lower(): dict(item)
+        for item in planets or []
+        if isinstance(item, Mapping) and str(item.get("planet") or item.get("name") or "").strip()
+    }
+    if not planet_map:
+        return []
+    house_rulers = (
+        natal_graph_compact.get("house_rulers")
+        if isinstance(natal_graph_compact, Mapping) and isinstance(natal_graph_compact.get("house_rulers"), Mapping)
+        else {}
+    )
+    existing_ids = {
+        str(item.get("id") or "").strip().lower()
+        for item in existing_candidates or []
+        if isinstance(item, Mapping) and str(item.get("id") or "").strip()
+    }
+    out: list[dict[str, Any]] = []
+    identity_candidate = _build_identity_route_candidates(
+        planet_map=planet_map,
+        aspects=aspects,
+        house_rulers=house_rulers,
+        locale=locale,
+        existing_ids=existing_ids,
+    )
+    if identity_candidate:
+        out.append(identity_candidate)
+    career_candidate = _build_career_route_candidates(
+        planet_map=planet_map,
+        aspects=aspects,
+        house_rulers=house_rulers,
+        locale=locale,
+        existing_ids=existing_ids,
+    )
+    if career_candidate:
+        out.append(career_candidate)
+    # v0.9b families — each gated by its own master flag (default false).
+    # Both stay strictly debug-only in v0.9b.0; they do not enter any public
+    # surface, do not widen the composed_detail_renderer allowlist, and do
+    # not touch the registry.
+    if _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B"):
+        relationship_candidate = _build_relationship_route_candidates(
+            planet_map=planet_map,
+            aspects=aspects,
+            house_rulers=house_rulers,
+            locale=locale,
+            existing_ids=existing_ids,
+        )
+        if relationship_candidate:
+            out.append(relationship_candidate)
+            existing_ids.add(str(relationship_candidate.get("id") or "").strip().lower())
+    if _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B"):
+        moon_candidate = _build_moon_signature_candidates(
+            planet_map=planet_map,
+            aspects=aspects,
+            house_rulers=house_rulers,
+            locale=locale,
+            existing_ids=existing_ids,
+        )
+        if moon_candidate:
+            out.append(moon_candidate)
+            existing_ids.add(str(moon_candidate.get("id") or "").strip().lower())
+    _apply_v0_9b_cross_family_moon_ownership(out)
+    return out
+
+
+def _apply_v0_9b_cross_family_moon_ownership(candidates: list[dict[str, Any]]) -> None:
+    """v0.9b.0.1 cross-family Moon ownership rule.
+
+    When a ``relationship_route`` candidate consumed Moon evidence (i.e.
+    its subtype is Moon-anchored — ``emotional_need_affection`` or
+    ``intimacy_depth`` — and ``evidence_trace.cross_family_overlap`` is
+    non-empty), AND a ``moon_signature`` candidate also exists on the
+    same chart, compare confidences:
+
+      * if ``moon.confidence >= relationship.confidence + 0.05`` → mark
+        the relationship candidate as Moon-evidence-owned-by-moon. The
+        candidate stays debug-visible in this v0.9b.0.1 pass; the
+        metadata gates **future** renderer / detail eligibility, not the
+        current trace emission.
+      * otherwise → relationship retains ownership.
+
+    The moon candidate always self-owns its evidence (it is the canonical
+    Moon family).
+
+    This is a metadata-only pass. No surface routing, scoring, or
+    eligibility flag is mutated beyond the relationship card's
+    ``public_eligibility.detail_eligible`` (which already defaults to
+    False in v0.9b.0; we extend its ``reason_codes`` and add an explicit
+    ``moon_evidence_owned_elsewhere`` block-tag so v0.9b.1+ renderer
+    gates can refuse promotion).
+    """
+    relationship = next(
+        (p for p in candidates if str(p.get("family") or "") == "relationship_route"),
+        None,
+    )
+    moon = next(
+        (p for p in candidates if str(p.get("family") or "") == "moon_signature"),
+        None,
+    )
+
+    if moon is not None:
+        moon_meta = moon.get("meta") if isinstance(moon.get("meta"), Mapping) else {}
+        moon_meta = dict(moon_meta)
+        moon_meta["moon_evidence_owned_by"] = "moon_signature"
+        moon["meta"] = moon_meta
+
+    if relationship is None:
+        return
+
+    trace = relationship.get("evidence_trace") if isinstance(relationship.get("evidence_trace"), Mapping) else {}
+    overlap = trace.get("cross_family_overlap") if isinstance(trace.get("cross_family_overlap"), Sequence) else []
+    relationship_consumes_moon = bool(overlap)
+    rel_meta = dict(relationship.get("meta") if isinstance(relationship.get("meta"), Mapping) else {})
+
+    if not relationship_consumes_moon:
+        rel_meta["moon_evidence_owned_by"] = "relationship_route"
+        relationship["meta"] = rel_meta
+        return
+
+    if moon is None:
+        # Relationship trace claims Moon overlap but no moon_signature
+        # candidate exists on this chart — relationship keeps ownership.
+        rel_meta["moon_evidence_owned_by"] = "relationship_route"
+        rel_meta["cross_family_moon_ownership_outcome"] = "relationship_solo"
+        relationship["meta"] = rel_meta
+        return
+
+    rel_confidence = _safe_float(relationship.get("confidence"), 0.0)
+    moon_confidence = _safe_float(moon.get("confidence"), 0.0)
+    moon_wins = moon_confidence >= rel_confidence + 0.05
+
+    if moon_wins:
+        rel_meta["moon_evidence_owned_by"] = "moon_signature"
+        rel_meta["cross_family_moon_ownership_outcome"] = "moon_takes_ownership"
+        rel_meta["moon_ownership_confidence_delta"] = round(
+            moon_confidence - rel_confidence, 4
+        )
+        # Future-eligibility block: keep current public_eligibility shape
+        # (already debug-only in v0.9b.0) but mark the candidate so a
+        # later renderer/detail gate can refuse it on this axis.
+        elig = dict(relationship.get("public_eligibility") if isinstance(relationship.get("public_eligibility"), Mapping) else {})
+        reason_codes = list(elig.get("reason_codes") or [])
+        if "moon_evidence_owned_elsewhere" not in reason_codes:
+            reason_codes.append("moon_evidence_owned_elsewhere")
+        elig["reason_codes"] = reason_codes
+        elig["future_renderer_eligibility_blocked"] = True
+        # public_main / public_support / detail eligibility unchanged from
+        # v0.9b.0 defaults — debug-only stays debug-only.
+        elig.setdefault("detail_eligible", False)
+        elig.setdefault("public_support_eligible", False)
+        elig.setdefault("public_main_eligible", False)
+        relationship["public_eligibility"] = elig
+        # Mirror into meta.public_eligibility for the cluster plan ledger
+        # path that reads from meta.
+        meta_elig = dict(rel_meta.get("public_eligibility") or {})
+        meta_elig.update(elig)
+        rel_meta["public_eligibility"] = meta_elig
+    else:
+        rel_meta["moon_evidence_owned_by"] = "relationship_route"
+        rel_meta["cross_family_moon_ownership_outcome"] = "relationship_retains_ownership"
+        rel_meta["moon_ownership_confidence_delta"] = round(
+            moon_confidence - rel_confidence, 4
+        )
+
+    relationship["meta"] = rel_meta
+
+
+def _build_identity_route_candidates(
+    *,
+    planet_map: Mapping[str, Mapping[str, Any]],
+    aspects: Sequence[Mapping[str, Any]] | None,
+    house_rulers: Mapping[str, Any],
+    locale: str,
+    existing_ids: set[str],
+) -> dict[str, Any] | None:
+    packet_id = "composed_identity_route_v0_9a"
+    if packet_id in existing_ids:
+        return None
+    asc_sign = _asc_sign(metadata_like=planet_map, house_rulers=house_rulers)
+    sun_item = _lookup_planet_entry(planet_map, "sun")
+    if not asc_sign or not sun_item:
+        return None
+    chart_ruler = _sign_ruler(asc_sign)
+    ruler_item = _lookup_planet_entry(planet_map, chart_ruler)
+    if not chart_ruler or not ruler_item:
+        return None
+    asc_strength = 0.25 if asc_sign else 0.0
+    ruler_house = int(ruler_item.get("house") or 0)
+    sun_house = int(sun_item.get("house") or 0)
+    ruler_strength = 0.2 + (0.1 if ruler_house in {1, 4, 7, 10, 11} else 0.0)
+    sun_strength = 0.12 + (0.08 if sun_house in {1, 4, 7, 10, 11} else 0.0)
+    first_house_amplification = min(0.1, 0.03 * len(_house_planet_names(planet_map, 1)))
+    coherence_bonus = 0.05 if ruler_house in {1, 10, 11} or sun_house in {1, 10, 11} else 0.0
+    confidence = round(min(0.94, asc_strength + ruler_strength + sun_strength + first_house_amplification + coherence_bonus), 4)
+    if confidence < 0.6:
+        return None
+    if ruler_house in {7} or sun_house in {7}:
+        subtype = "relational_identity_spine"
+        lived_scene = "Kendini ortaya koyarken çoğu zaman tek başına değil, başkalarıyla kurduğun ilişki içinde pozisyon alıyorsun."
+        atoms = [
+            "bir ortama girerken karşı tarafın tonunu da hesaba katman",
+            "kendini anlatırken ilişki dengesini korumaya çalışman",
+        ]
+    elif ruler_house in {4, 12} or sun_house in {4, 12}:
+        subtype = "private_identity_spine"
+        lived_scene = "Kimliğin dışarıya açık bir tavır kadar, içeride nasıl toparlandığın ve kendini nerede güvende hissettiğin üzerinden de kuruluyor."
+        atoms = [
+            "dışarıdan önce içeride toparlanman gereken an",
+            "kendini göstermeden önce geri çekilip yönünü ayarlaman",
+        ]
+    elif ruler_house in {10} or sun_house in {10}:
+        subtype = "controlled_identity_spine"
+        lived_scene = "Kendini gösterme biçimin görünürlük, sorumluluk veya ciddiye alınma ihtiyacıyla birlikte çalışabiliyor."
+        atoms = [
+            "görünür olurken tonunu dikkatle ayarlaman",
+            "kendini anlatırken aynı anda konumunu da koruman",
+        ]
+    elif ruler_house in {1, 5, 11} or sun_house in {1, 5, 11}:
+        subtype = "direct_identity_spine"
+        lived_scene = "Kendini ortaya koyarken yönün daha hızlı belirginleşiyor; tavrın dışarıda daha çabuk okunuyor."
+        atoms = [
+            "ilk tepkiyi verirken kendi tonunun hemen görünmesi",
+            "bir grupta duruşunun hızlıca fark edilmesi",
+        ]
+    else:
+        subtype = "mediated_identity_spine"
+        lived_scene = "Kimlik hattın tek bir dış tavırdan değil, yöneticinin düştüğü hayat sahnesi üzerinden dolaylı biçimde kuruluyor."
+        atoms = [
+            "önce içinde tartıp sonra tavır alman",
+            "kimliğinin doğrudan değil bir hayat alanı üzerinden görünmesi",
+        ]
+    direct_meaning = "ASC, yönetici gezegen ve Güneş birlikte kimlik hattını tek bir genel fallback'ten daha spesifik biçimde taşıyor."
+    gift = "Kimlik çizgisini yalnız burç etiketiyle değil, gerçek yönlendiren rota üzerinden ayırabilmek."
+    inner_tension = "Dışarıda görünen tavrınla, kimliğini gerçekten hangi yaşam sahnesinde kurduğun her zaman aynı yerden çalışmayabilir."
+    growth = "Kimlik hattını yükselen, yönetici gezegen ve Güneş arasında kurulan omurgadan okumak."
+    domain_reason = [
+        "ASC route",
+        "chart ruler route",
+        "Sun identity anchor",
+    ]
+    if _house_planet_names(planet_map, 1):
+        domain_reason.append("1H amplification")
+    technical_anchors = [
+        f"ASC {asc_sign.title()}",
+        _planet_chip(chart_ruler, ruler_item),
+        _planet_chip("sun", sun_item),
+    ]
+    source_evidence_ids = [
+        f"composed:identity:asc:{asc_sign}",
+        f"composed:identity:ruler:{chart_ruler}:{str(ruler_item.get('sign') or '').strip().lower()}:{ruler_house}",
+        f"composed:identity:sun:{str(sun_item.get('sign') or '').strip().lower()}:{sun_house}",
+    ]
+    evidence_trace = {
+        "primitive_facts": {
+            "placements": [
+                {"planet": "Sun", "sign": str(sun_item.get("sign") or ""), "house": sun_house},
+                {"planet": chart_ruler.title(), "sign": str(ruler_item.get("sign") or ""), "house": ruler_house},
+            ],
+            "angles": [{"angle": "ASC", "sign": asc_sign.title()}],
+        },
+        "discovery_routes": ["identity_route"],
+        "family_inputs": ["ASC", "chart_ruler", "Sun"],
+        "subtype_inputs": [subtype],
+    }
+    return _composed_candidate_to_packet(
+        ComposedSemanticCandidateV1(
+            id=packet_id,
+            family="identity_route",
+            subtype=subtype,
+            source_type="composed_semantic",
+            domain="identity",
+            promise_type="identity_style",
+            domain_reason=domain_reason,
+            public_job="debug_only",
+            confidence=confidence,
+            confidence_tier=_confidence_tier(confidence),
+            chart_facts_match=True,
+            technical_anchors=[item for item in technical_anchors if item],
+            source_evidence_ids=source_evidence_ids,
+            evidence_trace=evidence_trace,
+            direct_meaning=direct_meaning,
+            lived_scene=lived_scene,
+            lived_scene_atoms=atoms,
+            gift=gift,
+            inner_tension=inner_tension,
+            growth_direction=growth,
+            avoid_readings=[
+                "Do not reduce identity to ASC sign only.",
+                "Do not let generic identity fallback own this route by default.",
+            ],
+            projection_hints={
+                "surfaces": ["debug_only"],
+                "priority": confidence,
+                "auxiliary": False,
+                "opening_strategy": "debug_only",
+            },
+            scoring_breakdown={
+                "asc_strength": round(asc_strength, 4),
+                "chart_ruler_strength": round(ruler_strength, 4),
+                "sun_alignment_strength": round(sun_strength, 4),
+                "first_house_amplification": round(first_house_amplification, 4),
+                "coherence_bonus": round(coherence_bonus, 4),
+            },
+            matched_archetypes=[],
+            public_eligibility={
+                "debug_eligible": True,
+                "detail_eligible": False,
+                "public_support_eligible": False,
+                "public_main_eligible": False,
+                "reason_codes": ["v0_9a_debug_only", "public_main_flag_required"],
+            },
+            meta={
+                "title": "Kimlik rotası composed semantic adayı",
+                "locale": locale,
+                "auxiliary": False,
+                "inventory_variant": "composed_semantic_v0_9a",
+                "v0_9_composed": True,
+                "v0_9_family": "identity_route",
+                "debug_only": True,
+                "non_public_discovery": True,
+                "source_type": "composed_semantic",
+            },
+        )
+    )
+
+
+def _build_career_route_candidates(
+    *,
+    planet_map: Mapping[str, Mapping[str, Any]],
+    aspects: Sequence[Mapping[str, Any]] | None,
+    house_rulers: Mapping[str, Any],
+    locale: str,
+    existing_ids: set[str],
+) -> dict[str, Any] | None:
+    packet_id = "composed_career_route_v0_9a"
+    if packet_id in existing_ids:
+        return None
+    mc_sign = _house_cusp_sign(house_rulers, 10)
+    if not mc_sign:
+        return None
+    career_ruler = _sign_ruler(mc_sign)
+    ruler_item = _lookup_planet_entry(planet_map, career_ruler)
+    if not career_ruler or not ruler_item:
+        return None
+    tenth_house_planets = _house_planet_names(planet_map, 10)
+    if not tenth_house_planets and int(ruler_item.get("house") or 0) not in {1, 10, 11, 12}:
+        return None
+    mc_strength = 0.25
+    ruler_house = int(ruler_item.get("house") or 0)
+    ruler_strength = 0.18 + (0.12 if ruler_house in {1, 10, 11, 12} else 0.0)
+    tenth_support = min(0.2, 0.08 * len(tenth_house_planets))
+    has_mercury_public_anchor = any(name in tenth_house_planets for name in ("mercury",)) or (
+        career_ruler == "mercury" and ruler_house in {10, 11}
+    )
+    has_saturn_public_anchor = any(name in tenth_house_planets for name in ("saturn",)) or (
+        career_ruler == "saturn" and ruler_house in {10, 11, 12}
+    )
+    has_creative_public_anchor = any(name in tenth_house_planets for name in ("venus", "neptune"))
+    has_action_public_anchor = any(name in tenth_house_planets for name in ("mars",)) or (
+        career_ruler == "mars" and ruler_house in {10, 11}
+    )
+    has_hidden_preparation_signature = ruler_house == 12 or any(
+        _planet_in_house(planet_map, item, 12) for item in ("sun", "venus", "neptune", "saturn")
+    )
+    has_visible_career_anchor = bool(tenth_house_planets) or ruler_house in {10, 11}
+
+    public_planet_support = 0.0
+    subtype_specific_bonus = 0.0
+    subtype_penalty = 0.0
+    if has_mercury_public_anchor:
+        subtype = "public_voice"
+        public_planet_support += 0.14
+        subtype_specific_bonus += 0.06
+        lived_scene = "Dış dünyada yalnız ne yaptığın değil, nasıl konuştuğun ve nasıl konum aldığın da görünür hale geliyor."
+        atoms = [
+            "bir toplantıda söz aldığında tonunun ağırlık taşıması",
+            "ne söylediğinin dışarıdaki rolünü güçlendirmesi",
+        ]
+    elif has_saturn_public_anchor:
+        subtype = "authority_responsibility"
+        public_planet_support += 0.14
+        subtype_specific_bonus += 0.05
+        lived_scene = "Sorumluluk aldığında veya görünür bir rol üstlendiğinde ciddiyetin ve yük taşıma biçimin öne çıkabiliyor."
+        atoms = [
+            "sorumluluk geldiğinde tonunun ciddileşmesi",
+            "görünür olurken ağırlığı da üstlenmen",
+        ]
+    elif has_creative_public_anchor:
+        subtype = "creative_visibility"
+        public_planet_support += 0.14
+        subtype_specific_bonus += 0.05
+        lived_scene = "Görünür rolün yalnız işlevle değil, üslup, estetik ve algı yönetimiyle de kurulabiliyor."
+        atoms = [
+            "bir şeyi nasıl sunduğunun en az içeriği kadar önemli olması",
+            "görünürlüğü biçim ve etkiyle birlikte taşıman",
+        ]
+    elif has_action_public_anchor:
+        subtype = "action_initiative"
+        public_planet_support += 0.14
+        subtype_specific_bonus += 0.05
+        lived_scene = "Kariyer hattında hareket, girişim ve dışarıda pozisyon alma biçimin daha belirgin çalışıyor."
+        atoms = [
+            "işte hamle yaparken görünür olman",
+            "dış dünyada hızla pozisyon alman",
+        ]
+    elif has_hidden_preparation_signature and has_visible_career_anchor:
+        subtype = "invisible_preparation_before_visibility"
+        public_planet_support += 0.12
+        subtype_specific_bonus += 0.06
+        lived_scene = "Görünür rolünden önce uzun bir hazırlık, perde arkası işleme ya da içerde kurma ihtiyacı çalışabiliyor."
+        atoms = [
+            "bir işi göstermeden önce içeride uzun süre hazırlaman",
+            "görünür olmadan önce zemini sessizce kurman",
+        ]
+    else:
+        subtype = "strategic_role"
+        public_planet_support += 0.02
+        subtype_penalty += 0.05
+        lived_scene = "Kariyer hattın yalnız görünürlük değil, nerede ve nasıl konum alacağını stratejik biçimde seçme ihtiyacını da taşıyor."
+        atoms = [
+            "hangi rolde görünmenin daha doğru olacağını tartman",
+            "dışarıdaki konumunu stratejik biçimde kurman",
+        ]
+    coherence_bonus = 0.05 if ruler_house in {10, 11, 12} or len(tenth_house_planets) >= 2 else 0.0
+    confidence = round(
+        min(
+            0.94,
+            max(
+                0.0,
+                mc_strength
+                + ruler_strength
+                + tenth_support
+                + public_planet_support
+                + subtype_specific_bonus
+                + coherence_bonus
+                - subtype_penalty,
+            ),
+        ),
+        4,
+    )
+    if confidence < 0.6:
+        return None
+    public_voice_detail_rollout_enabled = (
+        _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9")
+        and _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT")
+        and _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT")
+    )
+    visible_public_anchor_count = _career_visible_public_anchor_count(
+        career_ruler=career_ruler,
+        ruler_house=ruler_house,
+        tenth_house_planets=tenth_house_planets,
+    )
+    direct_meaning = "MC, yöneticisi ve görünür rol hattı birlikte kariyer temasını generic visibility fallback'ten daha spesifik biçimde taşıyor."
+    gift = "Kariyer/public rol hattını MC ve yöneticisi üzerinden daha net ayırabilmek."
+    inner_tension = "Görünür olmak, sorumluluk almak ve gerçekten hangi rolde görünmek istediğin her zaman aynı hızla çözülmeyebilir."
+    growth = "Kariyer hattını yalnız görünürlük olarak değil, MC-yönetici-10. ev rotası olarak okumak."
+    domain_reason = [
+        "MC route",
+        "MC ruler involved",
+    ]
+    if tenth_house_planets:
+        domain_reason.append("10H planet")
+    technical_anchors = [
+        f"MC {mc_sign.title()}",
+        _planet_chip(career_ruler, ruler_item),
+        *[f"{planet.title()} · 10. ev" for planet in tenth_house_planets[:3]],
+    ]
+    source_evidence_ids = [
+        f"composed:career:mc:{mc_sign}",
+        f"composed:career:ruler:{career_ruler}:{str(ruler_item.get('sign') or '').strip().lower()}:{ruler_house}",
+        *[f"composed:career:10h:{planet}" for planet in tenth_house_planets[:4]],
+    ]
+    evidence_trace = {
+        "primitive_facts": {
+            "placements": [
+                {"planet": career_ruler.title(), "sign": str(ruler_item.get("sign") or ""), "house": ruler_house},
+                *[
+                    {
+                        "planet": planet.title(),
+                        "sign": str((_lookup_planet_entry(planet_map, planet) or {}).get("sign") or ""),
+                        "house": 10,
+                    }
+                    for planet in tenth_house_planets[:4]
+                ],
+            ],
+            "angles": [{"angle": "MC", "sign": mc_sign.title()}],
+        },
+        "discovery_routes": ["career_route"],
+        "family_inputs": ["MC", "MC_ruler", "10H_planets"],
+        "subtype_inputs": [subtype],
+    }
+    public_voice_detail_intrinsic_eligible = _public_voice_detail_intrinsic_eligibility(
+        subtype=subtype,
+        confidence=confidence,
+        confidence_tier=_confidence_tier(confidence),
+        chart_facts_match=True,
+        domain_reason=domain_reason,
+        evidence_trace=evidence_trace,
+        lived_scene=lived_scene,
+        has_mercury_public_anchor=has_mercury_public_anchor,
+        career_ruler=career_ruler,
+        ruler_house=ruler_house,
+        tenth_house_planets=tenth_house_planets,
+        visible_public_anchor_count=visible_public_anchor_count,
+    )
+    public_voice_detail_eligible = (
+        public_voice_detail_rollout_enabled
+        and public_voice_detail_intrinsic_eligible
+    )
+    return _composed_candidate_to_packet(
+        ComposedSemanticCandidateV1(
+            id=packet_id,
+            family="career_route",
+            subtype=subtype,
+            source_type="composed_semantic",
+            domain="career",
+            promise_type="career_signature",
+            domain_reason=domain_reason,
+            public_job="debug_only",
+            confidence=confidence,
+            confidence_tier=_confidence_tier(confidence),
+            chart_facts_match=True,
+            technical_anchors=[item for item in technical_anchors if item],
+            source_evidence_ids=source_evidence_ids,
+            evidence_trace=evidence_trace,
+            direct_meaning=direct_meaning,
+            lived_scene=lived_scene,
+            lived_scene_atoms=atoms,
+            gift=gift,
+            inner_tension=inner_tension,
+            growth_direction=growth,
+            avoid_readings=[
+                "Do not reduce career route to generic visibility.",
+                "Do not let raw career fallback own this route by default.",
+            ],
+            projection_hints={
+                "surfaces": ["debug_only"],
+                "priority": confidence,
+                "auxiliary": False,
+                "opening_strategy": "debug_only",
+            },
+            scoring_breakdown={
+                "mc_route_strength": round(mc_strength, 4),
+                "mc_ruler_strength": round(ruler_strength, 4),
+                "tenth_house_support": round(tenth_support, 4),
+                "public_planet_support": round(public_planet_support, 4),
+                "subtype_specific_bonus": round(subtype_specific_bonus, 4),
+                "subtype_penalty": round(subtype_penalty, 4),
+                "subtype_coherence": round(coherence_bonus, 4),
+            },
+            matched_archetypes=[],
+            public_eligibility={
+                "debug_eligible": True,
+                "detail_eligible": public_voice_detail_eligible,
+                "public_support_eligible": False,
+                "public_main_eligible": False,
+                "reason_codes": [
+                    "v0_9a_debug_only",
+                    "public_main_flag_required",
+                    *(
+                        ["public_voice_detail_rollout_enabled"]
+                        if public_voice_detail_eligible
+                        else ["public_voice_detail_rollout_disabled_or_ineligible"]
+                    ),
+                ],
+            },
+            meta={
+                "title": "Kariyer rotası composed semantic adayı",
+                "locale": locale,
+                "auxiliary": False,
+                "inventory_variant": "composed_semantic_v0_9a",
+                "v0_9_composed": True,
+                "v0_9_family": "career_route",
+                "debug_only": True,
+                "non_public_discovery": True,
+                "source_type": "composed_semantic",
+                "public_voice_detail_rollout_candidate": subtype == "public_voice",
+                "public_voice_detail_intrinsic_eligible": public_voice_detail_intrinsic_eligible,
+                "visible_public_anchor_count": visible_public_anchor_count,
+                "has_mercury_public_anchor": has_mercury_public_anchor,
+            },
+        )
+    )
+
+
+# ---------------------------------------------------------------------------
+# v0.9b composed-semantic families: relationship_route + moon_signature
+# ---------------------------------------------------------------------------
+#
+# Debug-only first cut. Both families:
+#   * are gated by their own master flag (default false),
+#   * always emit ``public_job="debug_only"``,
+#   * always emit ``public_main_eligible=False`` and
+#     ``public_support_eligible=False`` in v0.9b.0,
+#   * never widen the ``composed_detail_renderer`` allowlist —
+#     ``detail_eligible`` is only set to True when the shared
+#     ``ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT`` flag is on,
+#     and even then the renderer's variant signature gate refuses to render
+#     these families (Phase B's allowlist is career-only).
+#
+# Cross-family overlap on Moon evidence is recorded in
+# ``evidence_trace.cross_family_overlap`` so the cluster plan ledger can
+# expose it for audit without changing public output.
+
+_FIRE_SIGNS: frozenset[str] = frozenset({"aries", "leo", "sagittarius"})
+_EARTH_SIGNS: frozenset[str] = frozenset({"taurus", "virgo", "capricorn"})
+_AIR_SIGNS: frozenset[str] = frozenset({"gemini", "libra", "aquarius"})
+_WATER_SIGNS: frozenset[str] = frozenset({"cancer", "scorpio", "pisces"})
+
+_HARD_ASPECT_TYPES: tuple[str, ...] = ("square", "opposition")
+_SOFT_ASPECT_TYPES: tuple[str, ...] = ("trine", "sextile")
+
+
+def _has_any_aspect_type(
+    aspects: Sequence[Mapping[str, Any]] | None,
+    planet1: str,
+    planet2: str,
+    aspect_types: Sequence[str],
+) -> bool:
+    for aspect_type in aspect_types:
+        if _has_aspect(aspects or [], planet1, planet2, aspect_type):
+            return True
+    return False
+
+
+def _build_relationship_route_candidates(
+    *,
+    planet_map: Mapping[str, Mapping[str, Any]],
+    aspects: Sequence[Mapping[str, Any]] | None,
+    house_rulers: Mapping[str, Any],
+    locale: str,
+    existing_ids: set[str],
+) -> dict[str, Any] | None:
+    packet_id = "composed_relationship_route_v0_9b"
+    if packet_id in existing_ids:
+        return None
+
+    dsc_sign = _house_cusp_sign(house_rulers, 7)
+    if not dsc_sign:
+        return None
+    dsc_ruler = _sign_ruler(dsc_sign)
+    dsc_ruler_item = _lookup_planet_entry(planet_map, dsc_ruler) if dsc_ruler else {}
+    if not dsc_ruler or not dsc_ruler_item:
+        return None
+
+    venus_item = _lookup_planet_entry(planet_map, "venus")
+    mars_item = _lookup_planet_entry(planet_map, "mars")
+    moon_item = _lookup_planet_entry(planet_map, "moon")
+    sun_item = _lookup_planet_entry(planet_map, "sun")
+    saturn_item = _lookup_planet_entry(planet_map, "saturn")
+    uranus_item = _lookup_planet_entry(planet_map, "uranus")
+    neptune_item = _lookup_planet_entry(planet_map, "neptune")
+    pluto_item = _lookup_planet_entry(planet_map, "pluto")
+
+    seventh_house_planets = _house_planet_names(planet_map, 7)
+    eighth_house_planets = _house_planet_names(planet_map, 8)
+    fifth_house_planets = _house_planet_names(planet_map, 5)
+    twelfth_house_planets = _house_planet_names(planet_map, 12)
+    eleventh_house_planets = _house_planet_names(planet_map, 11)
+
+    if not seventh_house_planets and int(dsc_ruler_item.get("house") or 0) not in {1, 5, 7, 8, 11, 12}:
+        return None
+
+    dsc_ruler_house = int(dsc_ruler_item.get("house") or 0)
+    dsc_ruler_sign = str(dsc_ruler_item.get("sign") or "").strip().lower()
+    venus_house = int(venus_item.get("house") or 0)
+    venus_sign = str(venus_item.get("sign") or "").strip().lower()
+    mars_house = int(mars_item.get("house") or 0)
+    mars_sign = str(mars_item.get("sign") or "").strip().lower()
+    moon_house = int(moon_item.get("house") or 0)
+    moon_sign = str(moon_item.get("sign") or "").strip().lower()
+
+    # ---- Subtype scoring channels ----
+    subtype_signals: dict[str, float] = {}
+
+    def _bump(subtype: str, amount: float) -> None:
+        subtype_signals[subtype] = subtype_signals.get(subtype, 0.0) + amount
+
+    # trust_steadiness
+    if dsc_ruler_sign in _EARTH_SIGNS:
+        _bump("trust_steadiness", 0.10)
+    if dsc_ruler_house in {4, 10}:
+        _bump("trust_steadiness", 0.08)
+    if "venus" in seventh_house_planets or "saturn" in seventh_house_planets:
+        _bump("trust_steadiness", 0.10)
+    if _has_any_aspect_type(aspects, "venus", "saturn", _SOFT_ASPECT_TYPES):
+        _bump("trust_steadiness", 0.06)
+    if "mercury" in seventh_house_planets:
+        _bump("trust_steadiness", 0.04)
+
+    # attraction_warmth
+    if venus_house in {5, 7}:
+        _bump("attraction_warmth", 0.12)
+    if venus_sign in _FIRE_SIGNS:
+        _bump("attraction_warmth", 0.06)
+    if int(sun_item.get("house") or 0) == 5:
+        _bump("attraction_warmth", 0.06)
+    if _has_any_aspect_type(aspects, "venus", "mars", _SOFT_ASPECT_TYPES):
+        _bump("attraction_warmth", 0.06)
+
+    # boundary_conflict
+    if mars_house in {7, 8}:
+        _bump("boundary_conflict", 0.12)
+    if _has_any_aspect_type(aspects, "mars", "saturn", _HARD_ASPECT_TYPES):
+        _bump("boundary_conflict", 0.10)
+    if _has_any_aspect_type(aspects, dsc_ruler, "mars", _HARD_ASPECT_TYPES):
+        _bump("boundary_conflict", 0.08)
+    if mars_sign in {"aries", "cancer", "libra", "capricorn"} and "mars" in seventh_house_planets:
+        _bump("boundary_conflict", 0.04)
+
+    # intimacy_depth
+    intimacy_8h_planets = [p for p in eighth_house_planets if p in {"venus", "mars", "pluto", "moon"}]
+    if intimacy_8h_planets:
+        _bump("intimacy_depth", 0.06 + 0.04 * min(len(intimacy_8h_planets), 3))
+    if _has_any_aspect_type(aspects, "venus", "pluto", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES):
+        _bump("intimacy_depth", 0.08)
+    if dsc_ruler_house == 8:
+        _bump("intimacy_depth", 0.06)
+    if "moon" in eighth_house_planets:
+        _bump("intimacy_depth", 0.04)
+
+    # emotional_need_affection
+    if moon_house in {7, 8}:
+        _bump("emotional_need_affection", 0.12)
+    if _has_any_aspect_type(aspects, "venus", "moon", _SOFT_ASPECT_TYPES + _HARD_ASPECT_TYPES):
+        _bump("emotional_need_affection", 0.08)
+    if dsc_sign in {"cancer", "pisces"}:
+        _bump("emotional_need_affection", 0.06)
+    if moon_sign in _WATER_SIGNS and seventh_house_planets:
+        _bump("emotional_need_affection", 0.04)
+
+    # hidden_private_love
+    twelfth_significators = [p for p in twelfth_house_planets if p in {"venus", "mars"}]
+    if twelfth_significators:
+        _bump("hidden_private_love", 0.10 + 0.04 * len(twelfth_significators))
+    if dsc_ruler_house == 12:
+        _bump("hidden_private_love", 0.08)
+    if int(neptune_item.get("house") or 0) in {5, 7, 8}:
+        _bump("hidden_private_love", 0.06)
+    if dsc_sign == "pisces":
+        _bump("hidden_private_love", 0.04)
+
+    # freedom_space
+    if int(uranus_item.get("house") or 0) in {7, 8}:
+        _bump("freedom_space", 0.12)
+    if mars_sign in _AIR_SIGNS and seventh_house_planets:
+        _bump("freedom_space", 0.06)
+    if dsc_ruler_house == 11:
+        _bump("freedom_space", 0.08)
+    if int(sun_item.get("house") or 0) == 11 or int(venus_item.get("house") or 0) == 11:
+        _bump("freedom_space", 0.04)
+    if str((_lookup_planet_entry(planet_map, "uranus") or {}).get("sign") or "").strip().lower() == "aquarius":
+        _bump("freedom_space", 0.04)
+
+    # wound_to_gift
+    chiron_item = _lookup_planet_entry(planet_map, "chiron")
+    chiron_house = int(chiron_item.get("house") or 0)
+    if chiron_house in {5, 7, 8}:
+        _bump("wound_to_gift", 0.12)
+    if _has_any_aspect_type(aspects, "saturn", "venus", _HARD_ASPECT_TYPES):
+        _bump("wound_to_gift", 0.08)
+    if _has_any_aspect_type(aspects, "saturn", "moon", _HARD_ASPECT_TYPES):
+        _bump("wound_to_gift", 0.06)
+    if dsc_ruler_house == 12 and _has_any_aspect_type(aspects, dsc_ruler, "saturn", _HARD_ASPECT_TYPES):
+        _bump("wound_to_gift", 0.04)
+
+    # Pick the strongest subtype (margin >= 0.04 over runner-up). Otherwise
+    # default to ``trust_steadiness`` with a fallback penalty.
+    ordered = sorted(subtype_signals.items(), key=lambda kv: kv[1], reverse=True)
+    # v0.9b.0.1 calibration: relationship_route trust_steadiness fallback
+    # previously landed at conf 0.65-0.79 because the base scoring floor
+    # (~0.40) plus the weak 0.06/0.08 penalty left too much room above
+    # the 0.60 publishable threshold. Bumped to 0.12 (margin-fail) and
+    # 0.15 (no signal) to push default-fallback candidates closer to or
+    # below the debug-only floor.
+    #
+    # ``is_subtype_default_fallback_path`` tracks whether the *path*
+    # chosen was the default fallback (not just whether penalty > 0).
+    # The downstream metric uses this flag, not the penalty value —
+    # otherwise the split-evidence penalty below would mislabel genuine
+    # top-scoring trust_steadiness candidates as fallback.
+    is_subtype_default_fallback_path = False
+    if not ordered or ordered[0][1] <= 0.0:
+        subtype = "trust_steadiness"
+        subtype_penalty = 0.15
+        subtype_bonus = 0.0
+        is_subtype_default_fallback_path = True
+    else:
+        top_subtype, top_score = ordered[0]
+        runner_up_score = ordered[1][1] if len(ordered) > 1 else 0.0
+        if top_score - runner_up_score < 0.04:
+            subtype = "trust_steadiness"
+            subtype_penalty = 0.12
+            subtype_bonus = 0.0
+            is_subtype_default_fallback_path = True
+        else:
+            subtype = top_subtype
+            subtype_penalty = 0.0
+            subtype_bonus = min(0.05, top_score / 4.0)
+
+    # ---- Confidence scoring ----
+    dsc_route_strength = 0.25
+    dsc_ruler_strength = 0.14 + (0.06 if dsc_ruler_house in {1, 5, 7, 8, 10, 11} else 0.0)
+    venus_support = 0.0
+    mars_support = 0.0
+    moon_support = 0.0
+    if subtype_signals.get("attraction_warmth", 0.0) >= 0.06 and venus_item:
+        venus_support = min(0.15, subtype_signals.get("attraction_warmth", 0.0))
+    elif venus_house in {5, 7, 8}:
+        venus_support = 0.08
+    if subtype_signals.get("boundary_conflict", 0.0) >= 0.06 and mars_item:
+        mars_support = min(0.15, subtype_signals.get("boundary_conflict", 0.0))
+    elif mars_house in {7, 8}:
+        mars_support = 0.07
+    if subtype_signals.get("emotional_need_affection", 0.0) >= 0.06 and moon_item:
+        moon_support = min(0.10, subtype_signals.get("emotional_need_affection", 0.0))
+    elif moon_house in {7, 8}:
+        moon_support = 0.05
+    house_scene_support = min(
+        0.10,
+        0.03 * len(seventh_house_planets)
+        + 0.02 * len(eighth_house_planets)
+        + 0.01 * len(fifth_house_planets),
+    )
+    contradiction_coherence = 0.0
+    # split-evidence penalty: if Venus / Mars / Moon evidence points at
+    # disjoint subtypes (each > 0.06) the signal is incoherent — apply
+    # an additional penalty.
+    family_signal_subtypes = {
+        "venus": "attraction_warmth" if venus_house in {5, 7} else None,
+        "mars": "boundary_conflict" if mars_house in {7, 8} else None,
+        "moon": "emotional_need_affection" if moon_house in {7, 8} else None,
+    }
+    distinct_directions = {v for v in family_signal_subtypes.values() if v} - {None}
+    if len(distinct_directions) >= 2 and subtype not in distinct_directions:
+        subtype_penalty = max(subtype_penalty, 0.05)
+
+    confidence = round(
+        min(
+            0.94,
+            max(
+                0.0,
+                dsc_route_strength
+                + dsc_ruler_strength
+                + venus_support
+                + mars_support
+                + moon_support
+                + house_scene_support
+                + contradiction_coherence
+                + subtype_bonus
+                - subtype_penalty,
+            ),
+        ),
+        4,
+    )
+    if confidence < 0.6:
+        return None
+
+    # ---- TR copy seeds per subtype ----
+    subtype_copy = {
+        "trust_steadiness": (
+            "İlişki hattında güven, süreklilik ve karşı tarafın istikrarı sende öne çıkıyor.",
+            ["zamanla kurulan güvene yaslanman", "ilişkide istikrar arayışın"],
+        ),
+        "attraction_warmth": (
+            "İlişkide çekim, sıcaklık ve karşılıklı keyif sende daha belirgin çalışıyor.",
+            ["karşı tarafla sıcak temas kurman", "ilişkide oyunculuk ve estetiğin önemi"],
+        ),
+        "boundary_conflict": (
+            "İlişki hattında sınır, çatışma ve istek farklılıkları sende daha görünür biçimde çalışıyor.",
+            ["ilişkide sınır çekmen gereken anlar", "isteğin ve karşı tarafın isteğinin ayrışması"],
+        ),
+        "intimacy_depth": (
+            "İlişkide yüzeyin altındaki derinlik, paylaşım ve dönüşüm sende belirgin biçimde çalışıyor.",
+            ["yüzeyden değil derinlikten temas etmen", "ilişkide karşılıklı dönüşüm yaşanması"],
+        ),
+        "emotional_need_affection": (
+            "İlişki hattında duygusal ihtiyacın, bağlanma ve şefkat arayışın öne çıkıyor.",
+            ["karşı tarafın varlığında güvende hissetme ihtiyacın", "ilişkide şefkat aramanın merkez olması"],
+        ),
+        "hidden_private_love": (
+            "İlişki hattının önemli bir kısmı gizli, özel ya da içeride yaşanan bir alanda kuruluyor.",
+            ["dışarıya açmadığın özel bir bağ alanın", "ilişkinin görünür değil korunan tarafının ağır basması"],
+        ),
+        "freedom_space": (
+            "İlişki hattında özgürlük, alan ve sıradışılık ihtiyacın belirgin biçimde çalışıyor.",
+            ["alan ihtiyacının ilişki kadar önemli olması", "ilişkide alışılmamış biçimlerin sana daha doğal gelmesi"],
+        ),
+        "wound_to_gift": (
+            "İlişki hattında eski bir yara ya da hassas nokta sonradan gerçek bir armağana dönüşebiliyor.",
+            ["bir kez kırılan yerin sonra güçlü bir bağ alanına dönmesi", "ilişkide şifa ve onarımın merkezde olması"],
+        ),
+    }
+    lived_scene, atoms = subtype_copy[subtype]
+
+    direct_meaning = "DSC, yöneticisi ve Venüs/Mars/Ay birlikte ilişki hattını generic ilişki fallback'ten daha spesifik biçimde taşıyor."
+    gift = "İlişki hattını yalnız 'ilişki' etiketiyle değil, DSC-yönetici-Venüs/Mars/Ay rotası üzerinden ayırabilmek."
+    inner_tension = "Karşı tarafla kurduğun bağda nelerin sıcak, nelerin sınır ve nelerin derin olduğu her zaman aynı tonla çalışmayabilir."
+    growth = "İlişki hattını yedi-evi-yönetici-significator rotası olarak okumak."
+
+    domain_reason: list[str] = [
+        "DSC route",
+        "DSC ruler involved",
+    ]
+    if seventh_house_planets:
+        domain_reason.append("7H planet")
+    if subtype == "attraction_warmth" or venus_house in {5, 7}:
+        domain_reason.append("Venus relationship signature")
+    if subtype == "boundary_conflict" or mars_house in {7, 8}:
+        domain_reason.append("Mars boundary/desire signature")
+    if subtype == "emotional_need_affection" or moon_house in {7, 8}:
+        domain_reason.append("Moon attachment signature")
+    if subtype == "intimacy_depth":
+        domain_reason.append("8H intimacy signature")
+    if subtype == "hidden_private_love":
+        domain_reason.append("12H hidden-love signature")
+    if subtype == "freedom_space":
+        domain_reason.append("Uranus freedom signature")
+    if subtype == "wound_to_gift":
+        domain_reason.append("Chiron wound-to-gift signature")
+
+    technical_anchors = [
+        f"DSC {dsc_sign.title()}",
+        _planet_chip(dsc_ruler, dsc_ruler_item),
+        *[_planet_chip(planet, _lookup_planet_entry(planet_map, planet)) for planet in seventh_house_planets[:3]],
+    ]
+    source_evidence_ids = [
+        f"composed:relationship:dsc:{dsc_sign}",
+        f"composed:relationship:ruler:{dsc_ruler}:{dsc_ruler_sign}:{dsc_ruler_house}",
+        *[f"composed:relationship:7h:{planet}" for planet in seventh_house_planets[:4]],
+    ]
+
+    cross_family_overlap: list[str] = []
+    moon_used_by_relationship = (
+        subtype in {"emotional_need_affection", "intimacy_depth"}
+        and bool(moon_item)
+    )
+    if moon_used_by_relationship:
+        cross_family_overlap.append("moon_evidence_shared_with_moon_signature")
+
+    evidence_trace = {
+        "primitive_facts": {
+            "placements": [
+                {"planet": dsc_ruler.title(), "sign": dsc_ruler_sign, "house": dsc_ruler_house},
+                *(
+                    [{"planet": "Venus", "sign": venus_sign, "house": venus_house}]
+                    if venus_item
+                    else []
+                ),
+                *(
+                    [{"planet": "Mars", "sign": mars_sign, "house": mars_house}]
+                    if mars_item
+                    else []
+                ),
+                *(
+                    [{"planet": "Moon", "sign": moon_sign, "house": moon_house}]
+                    if moon_item
+                    else []
+                ),
+            ],
+            "angles": [{"angle": "DSC", "sign": dsc_sign.title()}],
+        },
+        "discovery_routes": ["relationship_route"],
+        "family_inputs": ["DSC", "DSC_ruler", "Venus", "Mars", "Moon", "7H_planets"],
+        "subtype_inputs": [subtype],
+        "subtype_signal_scores": {k: round(v, 4) for k, v in subtype_signals.items()},
+        "cross_family_overlap": cross_family_overlap,
+    }
+
+    detail_support_flag_enabled = (
+        _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT")
+    )
+    detail_eligible = detail_support_flag_enabled and confidence >= 0.7
+
+    return _composed_candidate_to_packet(
+        ComposedSemanticCandidateV1(
+            id=packet_id,
+            family="relationship_route",
+            subtype=subtype,
+            source_type="composed_semantic",
+            domain="relationship",
+            promise_type="relationship_signature",
+            domain_reason=domain_reason,
+            public_job="debug_only",
+            confidence=confidence,
+            confidence_tier=_confidence_tier(confidence),
+            chart_facts_match=True,
+            technical_anchors=[item for item in technical_anchors if item],
+            source_evidence_ids=source_evidence_ids,
+            evidence_trace=evidence_trace,
+            direct_meaning=direct_meaning,
+            lived_scene=lived_scene,
+            lived_scene_atoms=atoms,
+            gift=gift,
+            inner_tension=inner_tension,
+            growth_direction=growth,
+            avoid_readings=[
+                "Do not reduce relationship route to generic 'relationship' label.",
+                "Do not let raw relationship fallback own this route by default.",
+            ],
+            projection_hints={
+                "surfaces": ["debug_only"],
+                "priority": confidence,
+                "auxiliary": False,
+                "opening_strategy": "debug_only",
+            },
+            scoring_breakdown={
+                "dsc_route_strength": round(dsc_route_strength, 4),
+                "dsc_ruler_strength": round(dsc_ruler_strength, 4),
+                "venus_support": round(venus_support, 4),
+                "mars_support": round(mars_support, 4),
+                "moon_support": round(moon_support, 4),
+                "house_scene_support": round(house_scene_support, 4),
+                "contradiction_coherence": round(contradiction_coherence, 4),
+                "subtype_bonus": round(subtype_bonus, 4),
+                "subtype_penalty": round(subtype_penalty, 4),
+            },
+            matched_archetypes=[],
+            public_eligibility={
+                "debug_eligible": True,
+                "detail_eligible": detail_eligible,
+                "public_support_eligible": False,
+                "public_main_eligible": False,
+                "reason_codes": [
+                    "v0_9b_debug_only",
+                    "public_main_flag_required",
+                    *(
+                        ["v0_9b_detail_support_flag_enabled"]
+                        if detail_eligible
+                        else ["v0_9b_detail_support_flag_disabled_or_low_confidence"]
+                    ),
+                ],
+            },
+            meta={
+                "title": "İlişki rotası composed semantic adayı",
+                "locale": locale,
+                "auxiliary": False,
+                "inventory_variant": "composed_semantic_v0_9b",
+                "v0_9_composed": True,
+                "v0_9_family": "relationship_route",
+                "debug_only": True,
+                "non_public_discovery": True,
+                "source_type": "composed_semantic",
+                "subtype_default_fallback": is_subtype_default_fallback_path,
+                "cross_family_overlap": cross_family_overlap,
+            },
+        )
+    )
+
+
+def _build_moon_signature_candidates(
+    *,
+    planet_map: Mapping[str, Mapping[str, Any]],
+    aspects: Sequence[Mapping[str, Any]] | None,
+    house_rulers: Mapping[str, Any],
+    locale: str,
+    existing_ids: set[str],
+) -> dict[str, Any] | None:
+    packet_id = "composed_moon_signature_v0_9b"
+    if packet_id in existing_ids:
+        return None
+
+    moon_item = _lookup_planet_entry(planet_map, "moon")
+    if not moon_item:
+        return None
+    moon_sign = str(moon_item.get("sign") or "").strip().lower()
+    moon_house = int(moon_item.get("house") or 0)
+    if not moon_sign or moon_house <= 0:
+        return None
+
+    moon_ruler = _sign_ruler(moon_sign)
+    moon_ruler_item = _lookup_planet_entry(planet_map, moon_ruler) if moon_ruler else {}
+    if not moon_ruler or not moon_ruler_item:
+        return None
+    moon_ruler_house = int(moon_ruler_item.get("house") or 0)
+
+    ic_sign = _house_cusp_sign(house_rulers, 4)
+    fourth_house_planets = _house_planet_names(planet_map, 4)
+    sixth_house_planets = _house_planet_names(planet_map, 6)
+    eighth_house_planets = _house_planet_names(planet_map, 8)
+    twelfth_house_planets = _house_planet_names(planet_map, 12)
+    fifth_house_planets = _house_planet_names(planet_map, 5)
+
+    # ---- Subtype scoring channels ----
+    subtype_signals: dict[str, float] = {}
+
+    def _bump(subtype: str, amount: float) -> None:
+        subtype_signals[subtype] = subtype_signals.get(subtype, 0.0) + amount
+
+    # home_inner_security
+    if moon_house == 4:
+        _bump("home_inner_security", 0.18)
+    if moon_ruler_house == 4:
+        _bump("home_inner_security", 0.10)
+    if fourth_house_planets:
+        _bump("home_inner_security", 0.04 + 0.02 * min(len(fourth_house_planets), 3))
+    if ic_sign == "cancer":
+        _bump("home_inner_security", 0.04)
+
+    # daily_sensitivity
+    if moon_house == 6:
+        _bump("daily_sensitivity", 0.18)
+    if _has_any_aspect_type(aspects, "moon", "mercury", _SOFT_ASPECT_TYPES + _HARD_ASPECT_TYPES):
+        _bump("daily_sensitivity", 0.06)
+    if "mercury" in sixth_house_planets:
+        _bump("daily_sensitivity", 0.04)
+    if moon_sign == "virgo":
+        _bump("daily_sensitivity", 0.04)
+
+    # creative_emotional_expression
+    if moon_house == 5:
+        _bump("creative_emotional_expression", 0.18)
+    if moon_ruler_house == 5:
+        _bump("creative_emotional_expression", 0.10)
+    if _has_any_aspect_type(aspects, "moon", "venus", _SOFT_ASPECT_TYPES) and fifth_house_planets:
+        _bump("creative_emotional_expression", 0.06)
+    if moon_sign in {"leo", "pisces"} and moon_house == 5:
+        _bump("creative_emotional_expression", 0.04)
+
+    # intimacy_depth (Moon flavor)
+    if moon_house == 8:
+        _bump("intimacy_depth", 0.18)
+    if _has_any_aspect_type(aspects, "moon", "pluto", _SOFT_ASPECT_TYPES + _HARD_ASPECT_TYPES):
+        _bump("intimacy_depth", 0.08)
+    if moon_sign == "scorpio":
+        _bump("intimacy_depth", 0.06)
+    if moon_ruler_house == 8:
+        _bump("intimacy_depth", 0.04)
+
+    # private_emotional_processing
+    if moon_house == 12:
+        _bump("private_emotional_processing", 0.18)
+    if _has_any_aspect_type(aspects, "moon", "neptune", _SOFT_ASPECT_TYPES + _HARD_ASPECT_TYPES):
+        _bump("private_emotional_processing", 0.06)
+    if moon_ruler_house == 12:
+        _bump("private_emotional_processing", 0.06)
+    if moon_sign == "pisces":
+        _bump("private_emotional_processing", 0.04)
+
+    ordered = sorted(subtype_signals.items(), key=lambda kv: kv[1], reverse=True)
+    # v0.9b.0.1 calibration: moon_signature emotional_rhythm fallback
+    # previously landed up to 0.73 (e.g. fix07_aries_libra_nodes). Same
+    # base-scoring floor problem as relationship. Penalty bumped to 0.12
+    # (margin-fail) and 0.15 (no signal).
+    is_subtype_default_fallback_path = False
+    if not ordered or ordered[0][1] <= 0.0:
+        subtype = "emotional_rhythm"
+        subtype_penalty = 0.15
+        subtype_bonus = 0.0
+        is_subtype_default_fallback_path = True
+    else:
+        top_subtype, top_score = ordered[0]
+        runner_up_score = ordered[1][1] if len(ordered) > 1 else 0.0
+        if top_score - runner_up_score < 0.04:
+            subtype = "emotional_rhythm"
+            subtype_penalty = 0.12
+            subtype_bonus = 0.0
+            is_subtype_default_fallback_path = True
+        else:
+            subtype = top_subtype
+            subtype_penalty = 0.0
+            subtype_bonus = min(0.05, top_score / 4.0)
+
+    # ---- Confidence scoring ----
+    moon_sign_strength = 0.10 if moon_sign in (_WATER_SIGNS | {"cancer"}) else 0.07
+    moon_house_scene = 0.12 + (0.06 if moon_house in {1, 4, 5, 6, 7, 8, 10, 12} else 0.0)
+    moon_ruler_route = 0.10 + (0.08 if moon_ruler_house in {1, 4, 5, 6, 7, 8, 10, 12} else 0.0)
+    aspect_support = 0.0
+    for partner in ("sun", "venus", "mars", "saturn", "pluto", "neptune", "uranus"):
+        if _has_any_aspect_type(aspects, "moon", partner, _SOFT_ASPECT_TYPES + _HARD_ASPECT_TYPES):
+            aspect_support += 0.04
+    aspect_support = min(0.20, aspect_support)
+    reinforcement_support = min(
+        0.15,
+        0.03 * len(fourth_house_planets)
+        + 0.02 * len(sixth_house_planets)
+        + 0.02 * len(eighth_house_planets)
+        + 0.02 * len(twelfth_house_planets)
+        + 0.02 * len(fifth_house_planets),
+    )
+    subtype_coherence = min(0.10, max(0.0, ordered[0][1] if ordered else 0.0) / 2.0)
+
+    confidence = round(
+        min(
+            0.94,
+            max(
+                0.0,
+                moon_sign_strength
+                + moon_house_scene
+                + moon_ruler_route
+                + aspect_support
+                + reinforcement_support
+                + subtype_coherence
+                + subtype_bonus
+                - subtype_penalty,
+            ),
+        ),
+        4,
+    )
+    if confidence < 0.6:
+        return None
+
+    subtype_copy = {
+        "emotional_rhythm": (
+            "Duygusal ritmin Ay'ın burcu ve evi üzerinden belirleniyor ve günlük tonun bu hatta yaslanıyor.",
+            ["günlük duygusal ritminin tutarlı bir tona yaslanması", "duyguların sende bir ritim kurarak çalışması"],
+        ),
+        "home_inner_security": (
+            "Duygusal güvenliğin ev, aile, IC ve içeride toparlandığın özel alan üzerinden kuruluyor.",
+            ["içeride sakinleşmeye ihtiyacın", "ev ve aile alanının duygusal omurga olması"],
+        ),
+        "daily_sensitivity": (
+            "Duygusal hattın günlük rutin, beden, iş ve gündelik düzen üzerinden kendini gösteriyor.",
+            ["rutinin değişmesinin duygusal etkisi", "gündelik küçük şeylerin sende büyük yer kaplaması"],
+        ),
+        "creative_emotional_expression": (
+            "Duygusal hattın yaratıcı ifade, oyunculuk ve dışa vurulan kişisel bir alan üzerinden çalışıyor.",
+            ["duyguyu yaratıcı bir biçime dökmen", "kendini ifade etmenin duygusal denge kurması"],
+        ),
+        "intimacy_depth": (
+            "Duygusal hattın yüzeyin altındaki yoğunluk, paylaşım ve dönüşüm üzerinden çalışıyor.",
+            ["yüzeyde değil derinde temas etme ihtiyacın", "duygusal dönüşümlerin sende belirgin olması"],
+        ),
+        "private_emotional_processing": (
+            "Duygusal hattın geri çekilip işleme, sezgi ve özel alan üzerinden çalışıyor.",
+            ["duyguyu yalnız işlemen", "kalabalıktan sonra geri çekilme ihtiyacın"],
+        ),
+    }
+    lived_scene, atoms = subtype_copy[subtype]
+
+    direct_meaning = "Ay'ın burcu, evi, yöneticisi ve aspekt rotası birlikte duygusal hattı generic duygu fallback'ten daha spesifik biçimde taşıyor."
+    gift = "Duygusal hattı yalnız Ay burcuyla değil, Ay'ın gerçek yaşam sahnesi üzerinden ayırabilmek."
+    inner_tension = "Duygusal ritmin, ihtiyaç duyduğun zemin ve seni gerçekten besleyen sahnenin aynı yerden çalışmayabileceği zamanlar var."
+    growth = "Duygusal hattı Ay burcu, evi, yöneticisi ve reinforcement rotaları üzerinden okumak."
+
+    domain_reason: list[str] = ["Moon need signature", "Moon house scene", "Moon ruler route"]
+    if subtype == "home_inner_security":
+        domain_reason.append("IC/4H reinforcement")
+    if subtype == "daily_sensitivity":
+        domain_reason.append("6H daily-rhythm route")
+    if subtype == "intimacy_depth":
+        domain_reason.append("8H intimacy route")
+    if subtype == "private_emotional_processing":
+        domain_reason.append("12H private-processing route")
+    if subtype == "creative_emotional_expression":
+        domain_reason.append("5H creative-emotional route")
+    if _has_any_aspect_type(aspects, "moon", "sun", _SOFT_ASPECT_TYPES + _HARD_ASPECT_TYPES):
+        domain_reason.append("Moon-luminary aspect")
+
+    technical_anchors = [
+        _planet_chip("moon", moon_item),
+        _planet_chip(moon_ruler, moon_ruler_item),
+    ]
+    if ic_sign:
+        technical_anchors.append(f"IC {ic_sign.title()}")
+    technical_anchors.extend(
+        f"{planet.title()} · 4. ev" for planet in fourth_house_planets[:2]
+    )
+
+    source_evidence_ids = [
+        f"composed:moon:sign:{moon_sign}",
+        f"composed:moon:house:{moon_house}",
+        f"composed:moon:ruler:{moon_ruler}:{str(moon_ruler_item.get('sign') or '').strip().lower()}:{moon_ruler_house}",
+    ]
+
+    cross_family_overlap: list[str] = []
+    if subtype in {"intimacy_depth"}:
+        cross_family_overlap.append("moon_evidence_shared_with_relationship_route")
+
+    evidence_trace = {
+        "primitive_facts": {
+            "placements": [
+                {"planet": "Moon", "sign": moon_sign, "house": moon_house},
+                {
+                    "planet": moon_ruler.title(),
+                    "sign": str(moon_ruler_item.get("sign") or ""),
+                    "house": moon_ruler_house,
+                },
+            ],
+            "angles": [{"angle": "IC", "sign": ic_sign.title()}] if ic_sign else [],
+        },
+        "discovery_routes": ["moon_signature"],
+        "family_inputs": ["Moon_sign", "Moon_house", "Moon_ruler", "Moon_aspects", "IC_4H_reinforcement"],
+        "subtype_inputs": [subtype],
+        "subtype_signal_scores": {k: round(v, 4) for k, v in subtype_signals.items()},
+        "cross_family_overlap": cross_family_overlap,
+    }
+
+    detail_support_flag_enabled = _env_enabled(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT"
+    )
+    detail_eligible = detail_support_flag_enabled and confidence >= 0.7
+
+    return _composed_candidate_to_packet(
+        ComposedSemanticCandidateV1(
+            id=packet_id,
+            family="moon_signature",
+            subtype=subtype,
+            source_type="composed_semantic",
+            domain="emotional_world",
+            promise_type="moon_signature",
+            domain_reason=domain_reason,
+            public_job="debug_only",
+            confidence=confidence,
+            confidence_tier=_confidence_tier(confidence),
+            chart_facts_match=True,
+            technical_anchors=[item for item in technical_anchors if item],
+            source_evidence_ids=source_evidence_ids,
+            evidence_trace=evidence_trace,
+            direct_meaning=direct_meaning,
+            lived_scene=lived_scene,
+            lived_scene_atoms=atoms,
+            gift=gift,
+            inner_tension=inner_tension,
+            growth_direction=growth,
+            avoid_readings=[
+                "Do not reduce moon signature to Moon sign only.",
+                "Do not let generic emotional fallback own this route by default.",
+            ],
+            projection_hints={
+                "surfaces": ["debug_only"],
+                "priority": confidence,
+                "auxiliary": False,
+                "opening_strategy": "debug_only",
+            },
+            scoring_breakdown={
+                "moon_sign_strength": round(moon_sign_strength, 4),
+                "moon_house_scene": round(moon_house_scene, 4),
+                "moon_ruler_route": round(moon_ruler_route, 4),
+                "aspect_support": round(aspect_support, 4),
+                "reinforcement_support": round(reinforcement_support, 4),
+                "subtype_coherence": round(subtype_coherence, 4),
+                "subtype_bonus": round(subtype_bonus, 4),
+                "subtype_penalty": round(subtype_penalty, 4),
+            },
+            matched_archetypes=[],
+            public_eligibility={
+                "debug_eligible": True,
+                "detail_eligible": detail_eligible,
+                "public_support_eligible": False,
+                "public_main_eligible": False,
+                "reason_codes": [
+                    "v0_9b_debug_only",
+                    "public_main_flag_required",
+                    *(
+                        ["v0_9b_detail_support_flag_enabled"]
+                        if detail_eligible
+                        else ["v0_9b_detail_support_flag_disabled_or_low_confidence"]
+                    ),
+                ],
+            },
+            meta={
+                "title": "Ay imzası composed semantic adayı",
+                "locale": locale,
+                "auxiliary": False,
+                "inventory_variant": "composed_semantic_v0_9b",
+                "v0_9_composed": True,
+                "v0_9_family": "moon_signature",
+                "debug_only": True,
+                "non_public_discovery": True,
+                "source_type": "composed_semantic",
+                "subtype_default_fallback": is_subtype_default_fallback_path,
+                "cross_family_overlap": cross_family_overlap,
+            },
+        )
+    )
+
+
+def _career_visible_public_anchor_count(
+    *,
+    career_ruler: str,
+    ruler_house: int,
+    tenth_house_planets: Sequence[str],
+) -> int:
+    anchors: set[str] = set()
+    if career_ruler == "mercury" and ruler_house in {10, 11}:
+        anchors.add("mc_ruler_mercury_public")
+    for planet in tenth_house_planets:
+        clean = str(planet).strip().lower()
+        if clean:
+            anchors.add(f"10h_{clean}")
+    return len(anchors)
+
+
+def _public_voice_detail_intrinsic_eligibility(
+    *,
+    subtype: str,
+    confidence: float,
+    confidence_tier: str,
+    chart_facts_match: bool,
+    domain_reason: Sequence[str],
+    evidence_trace: Mapping[str, Any],
+    lived_scene: str,
+    has_mercury_public_anchor: bool,
+    career_ruler: str,
+    ruler_house: int,
+    tenth_house_planets: Sequence[str],
+    visible_public_anchor_count: int,
+) -> bool:
+    if subtype != "public_voice":
+        return False
+    if confidence_tier != "high" or _safe_float(confidence, 0.0) < 0.88:
+        return False
+    if not chart_facts_match:
+        return False
+    required_domain_reason = {"MC route", "MC ruler involved", "10H planet"}
+    if not required_domain_reason.issubset({str(item).strip() for item in domain_reason}):
+        return False
+    family_inputs = {
+        str(item).strip()
+        for item in (
+            evidence_trace.get("family_inputs")
+            if isinstance(evidence_trace.get("family_inputs"), Sequence)
+            else []
+        )
+        if str(item).strip()
+    }
+    if not {"MC", "MC_ruler", "10H_planets"}.issubset(family_inputs):
+        return False
+    if not (
+        has_mercury_public_anchor
+        and (
+            ("mercury" == str(career_ruler).strip().lower() and ruler_house in {10, 11})
+            or any(str(planet).strip().lower() == "mercury" for planet in tenth_house_planets)
+        )
+    ):
+        return False
+    if visible_public_anchor_count < 2:
+        return False
+    lived_scene_lower = str(lived_scene or "").strip().lower()
+    if not any(token in lived_scene_lower for token in ("konuş", "konum", "söz", "dış dünyada", "görünür")):
+        return False
+    if "yalnız görünürlük" in lived_scene_lower and "konuş" not in lived_scene_lower and "konum" not in lived_scene_lower:
+        return False
+    return True
+
+
+def _composed_candidate_to_packet(candidate: ComposedSemanticCandidateV1) -> dict[str, Any]:
+    payload = asdict(candidate)
+    payload["theme_key"] = candidate.id
+    payload["strength"] = round(max(0.01, min(0.95, candidate.confidence)), 4)
+    payload["shadow_or_friction"] = candidate.inner_tension
+    payload["voice_seeds"] = [candidate.direct_meaning]
+    payload["avoid_phrases"] = sorted(_BANNED_PHRASES)
+    payload["source_category_ids"] = [candidate.id]
+    payload["source_thread_ids"] = []
+    payload["source_section_ids"] = [candidate.id]
+    meta = dict(candidate.meta)
+    meta["confidence_tier"] = candidate.confidence_tier
+    meta["public_eligibility"] = dict(candidate.public_eligibility)
+    meta["domain_reason"] = list(candidate.domain_reason)
+    meta["lived_scene_atoms"] = list(candidate.lived_scene_atoms)
+    payload["meta"] = meta
+    payload["matched_archetype_summaries"] = []
+    return payload
+
+
+def _confidence_tier(confidence: float) -> str:
+    score = _safe_float(confidence, 0.0)
+    if score >= 0.8:
+        return "high"
+    if score >= 0.65:
+        return "medium"
+    return "low"
+
+
+def _lookup_planet_entry(
+    planet_map: Mapping[str, Mapping[str, Any]],
+    planet: str | None,
+) -> dict[str, Any]:
+    planet_key = str(planet or "").strip().lower()
+    if not planet_key:
+        return {}
+    aliases = {
+        "north node": ("north node", "northnode", "true node", "mean node", "node", "kuzey ay düğümü"),
+        "south node": ("south node", "southnode", "güney ay düğümü"),
+    }.get(planet_key, (planet_key,))
+    return next((dict(planet_map.get(alias) or {}) for alias in aliases if planet_map.get(alias)), {})
+
+
+def _sign_ruler(sign: str) -> str:
+    return {
+        "aries": "mars",
+        "taurus": "venus",
+        "gemini": "mercury",
+        "cancer": "moon",
+        "leo": "sun",
+        "virgo": "mercury",
+        "libra": "venus",
+        "scorpio": "pluto",
+        "sagittarius": "jupiter",
+        "capricorn": "saturn",
+        "aquarius": "uranus",
+        "pisces": "neptune",
+    }.get(str(sign or "").strip().lower(), "")
+
+
+def _planet_chip(planet: str | None, item: Mapping[str, Any] | None) -> str:
+    if not planet or not isinstance(item, Mapping) or not item:
+        return ""
+    sign = str(item.get("sign") or "").strip()
+    house = int(item.get("house") or 0)
+    return f"{str(planet).title()} · {sign} · {house}. ev"
+
+
+def _candidate_ids_contain(existing_ids: set[str], *needles: str) -> bool:
+    lowered_needles = [str(needle or "").strip().lower() for needle in needles if str(needle or "").strip()]
+    if not lowered_needles:
+        return False
+    return any(any(needle in packet_id for needle in lowered_needles) for packet_id in existing_ids)
+
+
+def _planet_in_house(
+    planet_map: Mapping[str, Mapping[str, Any]],
+    planet: str,
+    house: int,
+) -> bool:
+    item = _lookup_planet_entry(planet_map, planet)
+    return int(item.get("house") or 0) == int(house)
+
+
+def _house_planet_names(
+    planet_map: Mapping[str, Mapping[str, Any]],
+    house: int,
+) -> list[str]:
+    names: list[str] = []
+    for name, item in planet_map.items():
+        if name in {"ascendant", "midheaven", "ic", "descendant", "fortune", "vertex"}:
+            continue
+        if int((item or {}).get("house") or 0) != int(house):
+            continue
+        clean = str(name or "").strip().lower()
+        if clean and clean not in names:
+            names.append(clean)
+    return names
+
+
+def _significant_house_counts(planet_map: Mapping[str, Mapping[str, Any]]) -> dict[int, int]:
+    counts: dict[int, int] = defaultdict(int)
+    keep = {
+        "sun", "moon", "mercury", "venus", "mars", "jupiter", "saturn",
+        "uranus", "neptune", "pluto", "chiron", "north node", "true node", "mean node", "node",
+    }
+    for name, item in planet_map.items():
+        clean = str(name or "").strip().lower()
+        if clean not in keep:
+            continue
+        house = int((item or {}).get("house") or 0)
+        if house > 0:
+            counts[house] += 1
+    return counts
+
+
+def _axis_support(
+    planet_map: Mapping[str, Mapping[str, Any]],
+    *,
+    left: int,
+    right: int,
+) -> float:
+    left_names = _house_planet_names(planet_map, left)
+    right_names = _house_planet_names(planet_map, right)
+    score = 0.2 * len(left_names) + 0.2 * len(right_names)
+    if left_names and right_names:
+        score += 0.6
+    if any(name in {"venus", "jupiter", "pluto", "chiron", "north node", "true node", "mean node", "node"} for name in [*left_names, *right_names]):
+        score += 0.4
+    return score
+
+
+def _top_aspect_refs(
+    aspects: Sequence[Mapping[str, Any]] | None,
+    *,
+    planet: str,
+    limit: int,
+) -> list[dict[str, str]]:
+    target = str(planet or "").strip().lower()
+    out: list[dict[str, str]] = []
+    rows = sorted(
+        [dict(item) for item in aspects or [] if isinstance(item, Mapping)],
+        key=lambda item: (_safe_float(item.get("orb"), 99.0), str(item.get("planet1") or ""), str(item.get("planet2") or "")),
+    )
+    for entry in rows:
+        p1 = str(entry.get("planet1") or "").strip().lower()
+        p2 = str(entry.get("planet2") or "").strip().lower()
+        if target not in {p1, p2}:
+            continue
+        aspect_type = str(entry.get("type") or entry.get("aspect") or "").strip().title()
+        if aspect_type.lower() not in {"conjunction", "opposition", "square", "trine", "sextile"}:
+            continue
+        orb = _safe_float(entry.get("orb"), 99.0)
+        if orb > 5.0:
+            continue
+        other = p2 if p1 == target else p1
+        out.append(
+            {
+                "label": f"{planet.title()} {aspect_type} {other.title()}",
+                "ref": f"{planet.title()}:{other.title()}:{aspect_type.lower()}",
+            }
+        )
+        if len(out) >= limit:
+            break
+    return out
+
+
+def _has_any_aspect(
+    aspects: Sequence[Mapping[str, Any]] | None,
+    pairs: Sequence[tuple[str, str]],
+) -> bool:
+    return any(_planet_has_major_aspect(aspects, left, right) for left, right in pairs)
+
+
+def _planet_has_major_aspect(
+    aspects: Sequence[Mapping[str, Any]] | None,
+    left: str,
+    right: str,
+) -> bool:
+    for entry in aspects or []:
+        if not isinstance(entry, Mapping):
+            continue
+        p1 = str(entry.get("planet1") or "").strip().lower()
+        p2 = str(entry.get("planet2") or "").strip().lower()
+        if {p1, p2} != {str(left).strip().lower(), str(right).strip().lower()}:
+            continue
+        aspect_type = str(entry.get("type") or entry.get("aspect") or "").strip().lower()
+        if aspect_type in {"conjunction", "opposition", "square", "trine", "sextile"}:
+            return True
+    return False
+
+
+def _relationship_signature_evidence(
+    *,
+    aspects: Sequence[Mapping[str, Any]] | None,
+    venus_item: Mapping[str, Any] | None,
+    mars_item: Mapping[str, Any] | None,
+    moon_item: Mapping[str, Any] | None,
+) -> list[str]:
+    out: list[str] = []
+    for planet, item in (("venus", venus_item), ("mars", mars_item), ("moon", moon_item)):
+        if isinstance(item, Mapping) and item:
+            house = int(item.get("house") or 0)
+            if house in {5, 7, 8, 12}:
+                out.append(f"discovery:relationship:{planet}:{house}")
+    for pair in (("Moon", "Venus"), ("Venus", "Mars"), ("Moon", "Pluto"), ("Venus", "Pluto"), ("Venus", "Jupiter")):
+        if _planet_has_major_aspect(aspects, *pair):
+            out.append(f"discovery:relationship:aspect:{pair[0].lower()}:{pair[1].lower()}")
+    return out
+
+
+def _build_discovery_aspect_candidates(
+    *,
+    aspects: Sequence[Mapping[str, Any]] | None,
+    existing_ids: set[str],
+    locale: str,
+) -> list[dict[str, Any]]:
+    out: list[dict[str, Any]] = []
+    rows = sorted(
+        [dict(item) for item in aspects or [] if isinstance(item, Mapping)],
+        key=lambda item: (_safe_float(item.get("orb"), 99.0), str(item.get("planet1") or ""), str(item.get("planet2") or "")),
+    )
+    for entry in rows:
+        p1 = str(entry.get("planet1") or "").strip().lower()
+        p2 = str(entry.get("planet2") or "").strip().lower()
+        aspect_type = str(entry.get("type") or entry.get("aspect") or "").strip().lower()
+        orb = _safe_float(entry.get("orb"), 99.0)
+        if orb > 2.5 or aspect_type not in {"conjunction", "opposition", "square", "trine", "sextile"}:
+            continue
+        if {"moon", "venus"} == {p1, p2} and not _candidate_ids_contain(existing_ids, "moon_trine_venus", "affection_gift"):
+            out.append(
+                _build_discovery_packet(
+                    packet_id=f"discovery_aspect_{p1}_{aspect_type}_{p2}_gap",
+                    domain="relationship",
+                    promise_type="love_style",
+                    strength=0.69,
+                    title="Sıkı ilişki açısı kapsama boşluğu",
+                    direct_meaning="Sıkı bir ilişki açısı var ama buna sahip çıkan yeterince spesifik bir packet görünmüyor.",
+                    lived_scene="Ay-Venüs hattı chartta kendi başına ayrı bir sıcaklık ya da yakınlık dili kurabilir.",
+                    gift="Sıkı ilişki açısını debug seviyesinde görünür kılmak.",
+                    shadow="Bu açı generic ilişki fallback'ine dağılabilir.",
+                    growth="Sıkı Ay-Venüs açısı için daha net bir arketip ailesi eklemek.",
+                    technical_anchors=[f"{p1.title()} {aspect_type.title()} {p2.title()}"],
+                    evidence_ids=[f"discovery:aspect:{p1}:{aspect_type}:{p2}"],
+                    locale=locale,
+                    discovery_domain="relationship",
+                    discovery_kind="coverage_gap",
+                    coverage_topic="tight_aspect_relationship",
+                )
+            )
+        elif {"moon", "pluto"} == {p1, p2} and not _candidate_ids_contain(existing_ids, "moon_opposite_pluto", "deep_mind_pressure"):
+            out.append(
+                _build_discovery_packet(
+                    packet_id=f"discovery_aspect_{p1}_{aspect_type}_{p2}_gap",
+                    domain="emotional_world",
+                    promise_type="need",
+                    strength=0.69,
+                    title="Sıkı duygusal derinlik açısı kapsama boşluğu",
+                    direct_meaning="Sıkı bir Moon-Pluto açısı var ama buna sahip çıkan yeterince spesifik bir packet görünmüyor.",
+                    lived_scene="Ay-Plüton hattı sosyal ya da duygusal derinliği ayrı bir baskı/yoğunluk hattı olarak çalıştırabilir.",
+                    gift="Sıkı Moon-Pluto açısını debug seviyesinde görünür kılmak.",
+                    shadow="Bu açı generic shadow ya da relationship fallback'ine dağılabilir.",
+                    growth="Moon-Pluto sıkı açıları için daha net bir arketip ailesi eklemek.",
+                    technical_anchors=[f"{p1.title()} {aspect_type.title()} {p2.title()}"],
+                    evidence_ids=[f"discovery:aspect:{p1}:{aspect_type}:{p2}"],
+                    locale=locale,
+                    discovery_domain="emotional",
+                    discovery_kind="coverage_gap",
+                    coverage_topic="tight_aspect_emotional_depth",
+                )
+            )
+        elif {"sun", "mercury"} == {p1, p2} and not _candidate_ids_contain(existing_ids, "social_emotional_intelligence", "mind_", "big_mind"):
+            out.append(
+                _build_discovery_packet(
+                    packet_id=f"discovery_aspect_{p1}_{aspect_type}_{p2}_gap",
+                    domain="mind",
+                    promise_type="mind_style",
+                    strength=0.68,
+                    title="Sıkı zihin açısı kapsama boşluğu",
+                    direct_meaning="Sıkı bir Sun-Mercury açısı var ama buna sahip çıkan yeterince spesifik bir packet görünmüyor.",
+                    lived_scene="Kimlik ve zihin hattı birbirine yakın çalışıyor olabilir.",
+                    gift="Sıkı Sun-Mercury açısını debug seviyesinde görünür kılmak.",
+                    shadow="Bu açı generic mind fallback'ine dağılabilir.",
+                    growth="Sıkı Sun-Mercury açıları için daha net bir arketip ailesi eklemek.",
+                    technical_anchors=[f"{p1.title()} {aspect_type.title()} {p2.title()}"],
+                    evidence_ids=[f"discovery:aspect:{p1}:{aspect_type}:{p2}"],
+                    locale=locale,
+                    discovery_domain="mind",
+                    discovery_kind="coverage_gap",
+                    coverage_topic="tight_aspect_mind",
+                )
+            )
+        if len(out) >= 2:
+            break
     return out
 
 
@@ -1530,6 +3911,411 @@ def _v0_5_chart_signature_variants() -> list[dict[str, Any]]:
     ]
 
 
+def _v0_7_chart_signature_variants() -> list[dict[str, Any]]:
+    return [
+        {
+            "match_id": "leo_asc_sun_cancer_11h_warm_visibility_belonging",
+            "forced_domain": "identity",
+            "variant_suffix": "chart_exact",
+            "title": "Kimlikte sıcak görünürlük ve aitlik",
+            "proof_raw": "Yükselen Aslan · Güneş 11. ev Yengeç",
+            "chips": ["Yükselen Aslan", "Güneş · 11. ev · Yengeç", "Aitlik"],
+            "scene": "Kendini en çok ait hissettiğin çevrelerde tam açmak.",
+            "salience": 0.94,
+            "confidence": 0.96,
+            "primary_anchor": _support_anchor("Ascendant Leo", "planet:Ascendant:sign:Leo", 0.95, source_type="angle"),
+            "supporting_combo": [
+                _support_anchor("Sun in Cancer 11H", "planet:Sun:sign:Cancer:house:11", 0.94, source_type="placement"),
+                _support_anchor("Sun trine Jupiter", "Sun:Jupiter:trine", 0.86, source_type="aspect"),
+            ],
+            "repeated_motifs": [_support_motif("warm visibility belonging", "warm_visibility_belonging", 0.88)],
+        },
+        {
+            "match_id": "sun_mercury_cancer_11h_social_emotional_intelligence",
+            "forced_domain": "mind",
+            "variant_suffix": "chart_exact",
+            "title": "Zihinde sosyal-duygusal zeka",
+            "proof_raw": "Güneş-Merkür kavuşumu · 11. ev Yengeç",
+            "chips": ["Güneş-Merkür", "11. ev Yengeç", "Sosyal zeka"],
+            "scene": "Bir çevrede kimin neye ihtiyaç duyduğunu hızlıca sezmek.",
+            "salience": 0.9,
+            "confidence": 0.94,
+            "primary_anchor": _support_anchor("Sun conjunct Mercury", "Sun:Mercury:conjunction", 0.96, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Sun in Cancer 11H", "planet:Sun:sign:Cancer:house:11", 0.9, source_type="placement"),
+                _support_anchor("Mercury in Cancer 11H", "planet:Mercury:sign:Cancer:house:11", 0.9, source_type="placement"),
+                _support_anchor("Mercury trine Jupiter", "Mercury:Jupiter:trine", 0.84, source_type="aspect"),
+            ],
+        },
+        {
+            "match_id": "pluto_node_scorpio_4h_roots_inner_security_transformation",
+            "forced_domain": "home_family",
+            "variant_suffix": "chart_exact",
+            "title": "Köklerde iç güvenliği dönüştüren yoğunluk",
+            "proof_raw": "Plüton + Kuzey Ay Düğümü · 4. ev · Akrep",
+            "chips": ["Plüton 4. ev", "KAD 4. ev", "Akrep kökler"],
+            "scene": "Köklerden gelen yoğunluğu dönüştürerek kendi iç alanını yeniden kurmak.",
+            "salience": 0.96,
+            "confidence": 0.97,
+            "primary_anchor": _support_anchor("Pluto in Scorpio 4H", "planet:Pluto:sign:Scorpio:house:4", 0.96, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("North Node in Scorpio 4H", "planet:North Node:sign:Scorpio:house:4", 0.94, source_type="placement"),
+                _support_anchor("IC Scorpio", "house:4:cusp_sign:Scorpio", 0.9, source_type="angle"),
+                _support_anchor("Mars opposite Pluto", "Mars:Pluto:opposition", 0.88, source_type="aspect"),
+            ],
+            "repeated_motifs": [_support_motif("roots inner security transformation", "roots_inner_security_transformation", 0.92)],
+        },
+        {
+            "match_id": "ic_scorpio_pluto_node_private_emotional_inheritance",
+            "forced_domain": "home_family",
+            "variant_suffix": "chart_exact",
+            "title": "Köklerde özel duygusal miras",
+            "proof_raw": "IC Akrep · Plüton/KAD 4. ev",
+            "chips": ["IC Akrep", "Plüton/KAD 4. ev", "Duygusal miras"],
+            "scene": "Aile içinde söylenmeyenleri bile güçlü hissetmek.",
+            "salience": 0.86,
+            "confidence": 0.92,
+            "primary_anchor": _support_anchor("IC Scorpio", "house:4:cusp_sign:Scorpio", 0.9, source_type="angle"),
+            "supporting_combo": [
+                _support_anchor("Pluto in Scorpio 4H", "planet:Pluto:sign:Scorpio:house:4", 0.9, source_type="placement"),
+                _support_anchor("North Node in Scorpio 4H", "planet:North Node:sign:Scorpio:house:4", 0.88, source_type="placement"),
+            ],
+        },
+        {
+            "match_id": "moon_capricorn_5h_serious_heart_creative_form",
+            "forced_domain": "creativity",
+            "variant_suffix": "chart_exact",
+            "title": "Yaratıcılıkta ciddi kalp ve form ihtiyacı",
+            "proof_raw": "Ay · 5. ev · Oğlak",
+            "chips": ["Ay · 5. ev · Oğlak", "Yaratıcı form", "Ciddi kalp"],
+            "scene": "Kalpten gelen şeyi bile önce yapılandırmak.",
+            "salience": 0.84,
+            "confidence": 0.91,
+            "primary_anchor": _support_anchor("Moon in Capricorn 5H", "planet:Moon:sign:Capricorn:house:5", 0.93, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Moon sextile Pluto", "Moon:Pluto:sextile", 0.82, source_type="aspect"),
+            ],
+        },
+        {
+            "match_id": "moon_uranus_neptune_capricorn_5h_structured_imagination",
+            "forced_domain": "creativity",
+            "variant_suffix": "chart_exact",
+            "title": "Yaratıcılıkta yapı isteyen özgün hayal gücü",
+            "proof_raw": "Ay/Uranüs/Neptün · 5. ev · Oğlak",
+            "chips": ["Ay-Uranüs-Neptün", "5. ev Oğlak", "Yapılı ilham"],
+            "scene": "Hayal gücünü ciddiye alınan bir yapı içinde göstermek istemek.",
+            "salience": 0.94,
+            "confidence": 0.96,
+            "primary_anchor": _support_anchor("Moon in Capricorn 5H", "planet:Moon:sign:Capricorn:house:5", 0.94, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Uranus in Capricorn 5H", "planet:Uranus:sign:Capricorn:house:5", 0.9, source_type="placement"),
+                _support_anchor("Neptune in Capricorn 5H", "planet:Neptune:sign:Capricorn:house:5", 0.9, source_type="placement"),
+                _support_anchor("Moon conjunct Uranus", "Moon:Uranus:conjunction", 0.88, source_type="aspect"),
+            ],
+            "repeated_motifs": [_support_motif("structured imagination", "structured_imagination", 0.9)],
+        },
+        {
+            "match_id": "mc_taurus_mars_10h_steady_public_drive",
+            "forced_domain": "career",
+            "variant_suffix": "chart_exact",
+            "title": "Kariyerde yavaş ama güçlü görünür hareket",
+            "proof_raw": "MC Boğa · Mars 10. ev Boğa",
+            "chips": ["MC Boğa", "Mars · 10. ev · Boğa", "Somut etki"],
+            "scene": "Dış dünyada gücünü sözle değil, yaptığı işle göstermek.",
+            "salience": 0.95,
+            "confidence": 0.97,
+            "primary_anchor": _support_anchor("Mars conjunct Midheaven", "Mars:Midheaven:conjunction", 0.94, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Midheaven Taurus", "house:10:cusp_sign:Taurus", 0.93, source_type="angle"),
+                _support_anchor("Mars in Taurus 10H", "planet:Mars:sign:Taurus:house:10", 0.96, source_type="placement"),
+            ],
+            "repeated_motifs": [_support_motif("steady public drive", "steady_public_drive", 0.9)],
+        },
+        {
+            "match_id": "mars_opposite_pluto_public_power_roots_tension",
+            "forced_domain": "career",
+            "variant_suffix": "chart_exact",
+            "title": "Kariyerde public güç ve kök gerilimi",
+            "proof_raw": "Mars karşıt Plüton · 10H/4H",
+            "chips": ["Mars karşıt Plüton", "10H/4H aksı", "Güç gerilimi"],
+            "scene": "Ev veya iç güvenlik tetiklendiğinde dışarıdaki duruşun sertleşmesi.",
+            "salience": 0.88,
+            "confidence": 0.94,
+            "primary_anchor": _support_anchor("Mars opposite Pluto", "Mars:Pluto:opposition", 0.95, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Mars in Taurus 10H", "planet:Mars:sign:Taurus:house:10", 0.9, source_type="placement"),
+                _support_anchor("Pluto in Scorpio 4H", "planet:Pluto:sign:Scorpio:house:4", 0.9, source_type="placement"),
+            ],
+        },
+        {
+            "match_id": "aquarius_dsc_saturn_pisces_7h_freedom_responsibility_sensitivity",
+            "forced_domain": "relationship",
+            "variant_suffix": "chart_exact",
+            "title": "İlişkide özgürlük, sorumluluk ve hassas sınır",
+            "proof_raw": "DSC Kova · Satürn 7. ev Balık",
+            "chips": ["7. ev Kova", "Satürn · 7. ev · Balık", "Şefkatli sınır"],
+            "scene": "Yakınlıkta hem kendi alanını korumak hem de güvenilir bir bağ aramak.",
+            "salience": 0.9,
+            "confidence": 0.94,
+            "primary_anchor": _support_anchor("7th cusp Aquarius", "house:7:cusp_sign:Aquarius", 0.92, source_type="angle"),
+            "supporting_combo": [
+                _support_anchor("Saturn in Pisces 7H", "planet:Saturn:sign:Pisces:house:7", 0.94, source_type="placement"),
+            ],
+            "repeated_motifs": [_support_motif("freedom responsibility sensitivity", "freedom_responsibility_sensitivity", 0.88)],
+        },
+        {
+            "match_id": "venus_leo_12h_hidden_romantic_pride",
+            "forced_domain": "relationship",
+            "variant_suffix": "chart_exact",
+            "title": "İlişkide içte büyüyen romantik gurur",
+            "proof_raw": "Venüs · 12. ev · Aslan",
+            "chips": ["Venüs · 12. ev · Aslan", "Özel hissetme", "Gizli romantizm"],
+            "scene": "Romantik duyguyu içeride büyütüp dışarıda daha kontrollü göstermek.",
+            "salience": 0.86,
+            "confidence": 0.92,
+            "primary_anchor": _support_anchor("Venus in Leo 12H", "planet:Venus:sign:Leo:house:12", 0.94, source_type="placement"),
+        },
+        {
+            "match_id": "jupiter_scorpio_3h_deep_speech_psychological_learning",
+            "forced_domain": "mind",
+            "variant_suffix": "chart_exact",
+            "title": "Zihinde derin konuşma ve psikolojik öğrenme",
+            "proof_raw": "Jüpiter · 3. ev · Akrep",
+            "chips": ["Jüpiter · 3. ev · Akrep", "Derin konuşma", "Psikolojik öğrenme"],
+            "scene": "Bir cümlenin altında saklı olanı hızlıca sezmek.",
+            "salience": 0.84,
+            "confidence": 0.91,
+            "primary_anchor": _support_anchor("Jupiter in Scorpio 3H", "planet:Jupiter:sign:Scorpio:house:3", 0.93, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Sun trine Jupiter", "Sun:Jupiter:trine", 0.82, source_type="aspect"),
+                _support_anchor("Mercury trine Jupiter", "Mercury:Jupiter:trine", 0.82, source_type="aspect"),
+            ],
+        },
+        {
+            "match_id": "chiron_virgo_1h_visible_sensitivity_self_correction",
+            "forced_domain": "identity",
+            "variant_suffix": "chart_exact",
+            "title": "Kimlikte görünür hassasiyet ve kendini düzeltme",
+            "proof_raw": "Chiron · 1. ev · Başak",
+            "chips": ["Chiron · 1. ev · Başak", "Görünür hassasiyet", "Kendini düzeltme"],
+            "scene": "Kendini göstermeden önce yeterince iyi mi diye düşünmek.",
+            "salience": 0.82,
+            "confidence": 0.9,
+            "primary_anchor": _support_anchor("Chiron in Virgo 1H", "planet:Chiron:sign:Virgo:house:1", 0.92, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Sun sextile Chiron", "Sun:Chiron:sextile", 0.82, source_type="aspect"),
+            ],
+        },
+    ]
+
+
+def _v0_8_chart_signature_variants() -> list[dict[str, Any]]:
+    return [
+        {
+            "match_id": "aries_asc_mars_libra_6h_action_through_balance",
+            "forced_domain": "action",
+            "variant_suffix": "chart_exact",
+            "title": "Eylemde cesaret ve denge",
+            "proof_raw": "Yükselen Koç · Mars 6. ev Terazi",
+            "chips": ["Yükselen Koç", "Mars · 6. ev · Terazi", "Dengeyle hareket"],
+            "scene": "Hızlı tepkiyle adil kalma ihtiyacının aynı anda çalışması.",
+            "salience": 0.96,
+            "confidence": 0.97,
+            "primary_anchor": _support_anchor("Ascendant Aries", "planet:Ascendant:sign:Aries", 0.95, source_type="angle"),
+            "supporting_combo": [
+                _support_anchor("Mars in Libra 6H", "planet:Mars:sign:Libra:house:6", 0.96, source_type="placement"),
+                _support_anchor("1st house ruler route", "house:1->ruler:Mars->house:6", 0.95, source_type="ruler_route"),
+            ],
+            "repeated_motifs": [_support_motif("action through balance", "action_through_balance", 0.9)],
+        },
+        {
+            "match_id": "mars_opposite_saturn_action_restraint_inner_brake",
+            "forced_domain": "action",
+            "variant_suffix": "chart_exact",
+            "title": "Eylemde hız ve iç fren",
+            "proof_raw": "Mars karşıt Satürn",
+            "chips": ["Mars karşıt Satürn", "Hız ve fren", "Kontrollü aksiyon"],
+            "scene": "Bir şeyi hemen yapmak isterken içerden frene basmak.",
+            "salience": 0.9,
+            "confidence": 0.94,
+            "primary_anchor": _support_anchor("Mars opposite Saturn", "Mars:Saturn:opposition", 0.94, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Mars in Libra 6H", "planet:Mars:sign:Libra:house:6", 0.9, source_type="placement"),
+                _support_anchor("Saturn in Aries 12H", "planet:Saturn:sign:Aries:house:12", 0.9, source_type="placement"),
+            ],
+            "repeated_motifs": [_support_motif("action restraint", "action_restraint", 0.88)],
+        },
+        {
+            "match_id": "saturn_aries_12h_private_pressure_hidden_self_control",
+            "forced_domain": "inner_world",
+            "variant_suffix": "chart_exact",
+            "title": "İçte tutulan cesaret ve görünmeyen baskı",
+            "proof_raw": "Satürn · 12. ev · Koç",
+            "chips": ["Satürn · 12. ev · Koç", "Gizli baskı", "İç kontrol"],
+            "scene": "Bazı mücadeleleri dışarıdan görünmeden, kendi içinde vermek.",
+            "salience": 0.9,
+            "confidence": 0.94,
+            "primary_anchor": _support_anchor("Saturn in Aries 12H", "planet:Saturn:sign:Aries:house:12", 0.95, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Mars opposite Saturn", "Mars:Saturn:opposition", 0.9, source_type="aspect"),
+            ],
+            "repeated_motifs": [_support_motif("private pressure", "private_pressure", 0.88)],
+        },
+        {
+            "match_id": "moon_cancer_ic_home_security_roots",
+            "forced_domain": "home_family",
+            "variant_suffix": "chart_exact",
+            "title": "Köklerde iç güvenlik ve duygusal merkez",
+            "proof_raw": "Ay Yengeç · IC Yengeç",
+            "chips": ["Ay · Yengeç", "IC Yengeç", "İç güvenlik"],
+            "scene": "İçeride güvende hissetmediğinde dışarıdaki duruşun da etkilenmesi.",
+            "salience": 0.98,
+            "confidence": 0.98,
+            "primary_anchor": _support_anchor("Moon in Cancer near IC", "planet:Moon:sign:Cancer:house:3", 0.96, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("IC Cancer", "house:4:cusp_sign:Cancer", 0.96, source_type="angle"),
+                _support_anchor("Moon opposite Mercury", "Moon:Mercury:opposition", 0.9, source_type="aspect"),
+            ],
+            "repeated_motifs": [_support_motif("home security roots", "home_security_roots", 0.94)],
+        },
+        {
+            "match_id": "mercury_capricorn_mc_public_voice_strategic_mind",
+            "forced_domain": "career",
+            "variant_suffix": "chart_exact",
+            "title": "Public ses ve stratejik zihin",
+            "proof_raw": "Merkür Oğlak · MC Oğlak",
+            "chips": ["Merkür · 10. ev · Oğlak", "MC Oğlak", "Public voice"],
+            "scene": "İnsanların sadece yaptığın işi değil, onu nasıl anlattığını da fark etmesi.",
+            "salience": 0.98,
+            "confidence": 0.98,
+            "primary_anchor": _support_anchor("Mercury in Capricorn 10H", "planet:Mercury:sign:Capricorn:house:10", 0.96, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Midheaven Capricorn", "house:10:cusp_sign:Capricorn", 0.96, source_type="angle"),
+                _support_anchor("Moon opposite Mercury", "Moon:Mercury:opposition", 0.9, source_type="aspect"),
+            ],
+            "repeated_motifs": [_support_motif("public voice strategic mind", "public_voice_strategic_mind", 0.94)],
+        },
+        {
+            "match_id": "moon_mercury_ic_mc_private_security_public_voice_axis",
+            "forced_domain": "axis_tension",
+            "variant_suffix": "chart_exact",
+            "title": "İç güvenlik ve public söz aksı",
+            "proof_raw": "Ay-IC · Merkür-MC · karşıtlık",
+            "chips": ["Ay-Merkür karşıtlığı", "IC/MC aksı", "Özel alan ve dış rol"],
+            "scene": "İçeride duygusal olarak etkilenmişken dışarıda net konuşmak zorunda kalmak.",
+            "salience": 0.99,
+            "confidence": 0.98,
+            "primary_anchor": _support_anchor("Moon opposite Mercury", "Moon:Mercury:opposition", 0.96, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("IC Cancer", "house:4:cusp_sign:Cancer", 0.94, source_type="angle"),
+                _support_anchor("Midheaven Capricorn", "house:10:cusp_sign:Capricorn", 0.94, source_type="angle"),
+                _support_anchor("Moon in Cancer", "planet:Moon:sign:Cancer", 0.92, source_type="placement"),
+                _support_anchor("Mercury in Capricorn 10H", "planet:Mercury:sign:Capricorn:house:10", 0.92, source_type="placement"),
+            ],
+            "repeated_motifs": [_support_motif("private security public voice axis", "private_security_public_voice_axis", 0.96)],
+        },
+        {
+            "match_id": "sun_aquarius_11h_collective_identity_future_networks",
+            "forced_domain": "community",
+            "variant_suffix": "chart_exact",
+            "title": "Topluluk içinde geleceğe dönük kimlik",
+            "proof_raw": "Güneş · 11. ev · Kova",
+            "chips": ["Güneş · 11. ev · Kova", "Kolektif kimlik", "Gelecek fikri"],
+            "scene": "Bir grup içinde farklı bir fikir veya yeni bir bakış getirmek.",
+            "salience": 0.94,
+            "confidence": 0.96,
+            "primary_anchor": _support_anchor("Sun in Aquarius 11H", "planet:Sun:sign:Aquarius:house:11", 0.96, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Sun conjunct Jupiter", "Sun:Jupiter:conjunction", 0.86, source_type="aspect"),
+                _support_anchor("Sun conjunct Uranus", "Sun:Uranus:conjunction", 0.82, source_type="aspect"),
+            ],
+            "repeated_motifs": [_support_motif("collective identity", "collective_identity", 0.9)],
+        },
+        {
+            "match_id": "aquarius_11h_future_collective_signal",
+            "forced_domain": "community",
+            "variant_suffix": "chart_exact",
+            "title": "Geleceğe dönük kolektif sinyal",
+            "proof_raw": "11. ev Kova vurgusu",
+            "chips": ["11. ev", "Kova", "Kolektif vizyon"],
+            "scene": "Bir fikrin tek başına değil, bir topluluk içinde anlam kazanması.",
+            "salience": 0.86,
+            "confidence": 0.92,
+            "primary_anchor": _support_anchor("Sun in Aquarius 11H", "planet:Sun:sign:Aquarius:house:11", 0.9, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Uranus in Aquarius 11H", "planet:Uranus:sign:Aquarius:house:11", 0.86, source_type="placement"),
+                _support_anchor("11th house ruler route", "house:11->ruler:Saturn->house:12", 0.82, source_type="ruler_route"),
+            ],
+        },
+        {
+            "match_id": "capricorn_10h_mercury_venus_neptune_public_style_responsibility",
+            "forced_domain": "career",
+            "variant_suffix": "chart_exact",
+            "title": "Public rolde söz, üslup ve sorumluluk",
+            "proof_raw": "Merkür/Venüs/Neptün · 10. ev · Oğlak",
+            "chips": ["10. ev Oğlak", "Merkür-Venüs-Neptün", "Public stil"],
+            "scene": "Bir şeyi sunarken hem düzgün, hem güzel, hem de güvenilir görünmesini istemek.",
+            "salience": 0.92,
+            "confidence": 0.95,
+            "primary_anchor": _support_anchor("Mercury in Capricorn 10H", "planet:Mercury:sign:Capricorn:house:10", 0.94, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("Venus in Capricorn 10H", "planet:Venus:sign:Capricorn:house:10", 0.92, source_type="placement"),
+                _support_anchor("Neptune in Capricorn 10H", "planet:Neptune:sign:Capricorn:house:10", 0.9, source_type="placement"),
+                _support_anchor("Midheaven Capricorn", "house:10:cusp_sign:Capricorn", 0.9, source_type="angle"),
+            ],
+            "repeated_motifs": [_support_motif("public style responsibility", "public_style_responsibility", 0.88)],
+        },
+        {
+            "match_id": "libra_dsc_chiron_scorpio_7h_harmony_wound_depth",
+            "forced_domain": "relationship",
+            "variant_suffix": "chart_exact",
+            "title": "İlişkide uyum, yara ve derinlik",
+            "proof_raw": "DSC Terazi · Chiron 7. ev Akrep",
+            "chips": ["7. ev Terazi", "Chiron · 7. ev · Akrep", "Güven ve derinlik"],
+            "scene": "Uyumlu kalmak isterken içeride daha derin bir güven sorusu hissetmek.",
+            "salience": 0.94,
+            "confidence": 0.96,
+            "primary_anchor": _support_anchor("7th cusp Libra", "house:7:cusp_sign:Libra", 0.94, source_type="angle"),
+            "supporting_combo": [
+                _support_anchor("Chiron in Scorpio 7H", "planet:Chiron:sign:Scorpio:house:7", 0.94, source_type="placement"),
+                _support_anchor("7th house ruler route", "house:7->ruler:Venus->house:10", 0.88, source_type="ruler_route"),
+            ],
+            "repeated_motifs": [_support_motif("harmony wound depth", "harmony_wound_depth", 0.9)],
+        },
+        {
+            "match_id": "venus_capricorn_10h_public_love_style_responsibility",
+            "forced_domain": "relationship",
+            "variant_suffix": "chart_exact",
+            "title": "İlişkide public değer ve sorumluluk",
+            "proof_raw": "Venüs · 10. ev · Oğlak",
+            "chips": ["Venüs · 10. ev · Oğlak", "Public değer", "Ciddi sevgi dili"],
+            "scene": "Bir bağın sadece his değil, davranış ve emekle kanıtlanmasını istemek.",
+            "salience": 0.88,
+            "confidence": 0.93,
+            "primary_anchor": _support_anchor("Venus in Capricorn 10H", "planet:Venus:sign:Capricorn:house:10", 0.94, source_type="placement"),
+            "supporting_combo": [
+                _support_anchor("7th house ruler route", "house:7->ruler:Venus->house:10", 0.9, source_type="ruler_route"),
+            ],
+        },
+        {
+            "match_id": "libra_aries_6h_12h_service_action_axis",
+            "forced_domain": "axis_tension",
+            "variant_suffix": "chart_exact",
+            "title": "Günlük denge ve gizli aksiyon baskısı",
+            "proof_raw": "Mars Terazi 6H · Satürn Koç 12H",
+            "chips": ["Mars 6. ev Terazi", "Satürn 12. ev Koç", "6H/12H aksı"],
+            "scene": "Adil ve uyumlu kalırken kendi pozisyonunu da korumak.",
+            "salience": 0.86,
+            "confidence": 0.92,
+            "primary_anchor": _support_anchor("Mars opposite Saturn", "Mars:Saturn:opposition", 0.9, source_type="aspect"),
+            "supporting_combo": [
+                _support_anchor("Mars in Libra 6H", "planet:Mars:sign:Libra:house:6", 0.9, source_type="placement"),
+                _support_anchor("Saturn in Aries 12H", "planet:Saturn:sign:Aries:house:12", 0.9, source_type="placement"),
+            ],
+        },
+    ]
+
+
 def _chart_seed_body(*, match: Mapping[str, Any], variant: Mapping[str, Any]) -> str:
     parts: list[str] = []
     direct = str(match.get("direct_meaning") or "").strip()
@@ -1699,6 +4485,118 @@ def _chart_variant_supported(
             _has_aspect(aspects, "Uranus", "Ascendant", "Square")
             and _has_aspect(aspects, "Venus", "Uranus", "Square")
         )
+    # ---- v0.7 chart-fact guards ----
+    if match_id == "leo_asc_sun_cancer_11h_warm_visibility_belonging":
+        return (
+            _asc_sign(metadata_like=planet_map, house_rulers=house_rulers) == "leo"
+            and _planet_in_sign_house(planet_map, "sun", "Cancer", 11)
+        )
+    if match_id == "sun_mercury_cancer_11h_social_emotional_intelligence":
+        return (
+            _has_aspect(aspects, "Sun", "Mercury", "Conjunction")
+            and _planet_in_sign_house(planet_map, "sun", "Cancer", 11)
+            and _planet_in_sign_house(planet_map, "mercury", "Cancer", 11)
+        )
+    if match_id == "pluto_node_scorpio_4h_roots_inner_security_transformation":
+        return (
+            _planet_in_sign_house(planet_map, "pluto", "Scorpio", 4)
+            and _planet_in_sign_house(planet_map, "north node", "Scorpio", 4)
+        )
+    if match_id == "ic_scorpio_pluto_node_private_emotional_inheritance":
+        return (
+            _house_cusp_sign(house_rulers, 4) == "scorpio"
+            and _planet_in_sign_house(planet_map, "pluto", "Scorpio", 4)
+            and _planet_in_sign_house(planet_map, "north node", "Scorpio", 4)
+        )
+    if match_id == "moon_capricorn_5h_serious_heart_creative_form":
+        return _planet_in_sign_house(planet_map, "moon", "Capricorn", 5)
+    if match_id == "moon_uranus_neptune_capricorn_5h_structured_imagination":
+        return (
+            _planet_in_sign_house(planet_map, "moon", "Capricorn", 5)
+            and _planet_in_sign_house(planet_map, "uranus", "Capricorn", 5)
+            and _planet_in_sign_house(planet_map, "neptune", "Capricorn", 5)
+        )
+    if match_id == "mc_taurus_mars_10h_steady_public_drive":
+        return (
+            _house_cusp_sign(house_rulers, 10) == "taurus"
+            and _planet_in_sign_house(planet_map, "mars", "Taurus", 10)
+            and _has_aspect(aspects, "Mars", "Midheaven", "Conjunction")
+        )
+    if match_id == "mars_opposite_pluto_public_power_roots_tension":
+        return (
+            _has_aspect(aspects, "Mars", "Pluto", "Opposition")
+            and _planet_in_sign_house(planet_map, "mars", "Taurus", 10)
+            and _planet_in_sign_house(planet_map, "pluto", "Scorpio", 4)
+        )
+    if match_id == "aquarius_dsc_saturn_pisces_7h_freedom_responsibility_sensitivity":
+        return (
+            _house_cusp_sign(house_rulers, 7) == "aquarius"
+            and _planet_in_sign_house(planet_map, "saturn", "Pisces", 7)
+        )
+    if match_id == "venus_leo_12h_hidden_romantic_pride":
+        return _planet_in_sign_house(planet_map, "venus", "Leo", 12)
+    if match_id == "jupiter_scorpio_3h_deep_speech_psychological_learning":
+        return _planet_in_sign_house(planet_map, "jupiter", "Scorpio", 3)
+    if match_id == "chiron_virgo_1h_visible_sensitivity_self_correction":
+        return _planet_in_sign_house(planet_map, "chiron", "Virgo", 1)
+    # ---- v0.8 chart-fact guards ----
+    if match_id == "aries_asc_mars_libra_6h_action_through_balance":
+        return (
+            _asc_sign(metadata_like=planet_map, house_rulers=house_rulers) == "aries"
+            and _planet_in_sign_house(planet_map, "mars", "Libra", 6)
+        )
+    if match_id == "mars_opposite_saturn_action_restraint_inner_brake":
+        return (
+            _has_aspect(aspects, "Mars", "Saturn", "Opposition")
+            and _planet_in_sign_house(planet_map, "mars", "Libra", 6)
+            and _planet_in_sign_house(planet_map, "saturn", "Aries", 12)
+        )
+    if match_id == "saturn_aries_12h_private_pressure_hidden_self_control":
+        return _planet_in_sign_house(planet_map, "saturn", "Aries", 12)
+    if match_id == "moon_cancer_ic_home_security_roots":
+        return (
+            _planet_in_sign_house(planet_map, "moon", "Cancer", 3)
+            and _house_cusp_sign(house_rulers, 4) == "cancer"
+        )
+    if match_id == "mercury_capricorn_mc_public_voice_strategic_mind":
+        return (
+            _planet_in_sign_house(planet_map, "mercury", "Capricorn", 10)
+            and _house_cusp_sign(house_rulers, 10) == "capricorn"
+        )
+    if match_id == "moon_mercury_ic_mc_private_security_public_voice_axis":
+        return (
+            _has_aspect(aspects, "Moon", "Mercury", "Opposition")
+            and _planet_in_sign_house(planet_map, "moon", "Cancer", 3)
+            and _planet_in_sign_house(planet_map, "mercury", "Capricorn", 10)
+            and _house_cusp_sign(house_rulers, 4) == "cancer"
+            and _house_cusp_sign(house_rulers, 10) == "capricorn"
+        )
+    if match_id == "sun_aquarius_11h_collective_identity_future_networks":
+        return _planet_in_sign_house(planet_map, "sun", "Aquarius", 11)
+    if match_id == "aquarius_11h_future_collective_signal":
+        return (
+            _planet_in_sign_house(planet_map, "sun", "Aquarius", 11)
+            and _planet_in_sign_house(planet_map, "uranus", "Aquarius", 11)
+        )
+    if match_id == "capricorn_10h_mercury_venus_neptune_public_style_responsibility":
+        return (
+            _planet_in_sign_house(planet_map, "mercury", "Capricorn", 10)
+            and _planet_in_sign_house(planet_map, "venus", "Capricorn", 10)
+            and _planet_in_sign_house(planet_map, "neptune", "Capricorn", 10)
+        )
+    if match_id == "libra_dsc_chiron_scorpio_7h_harmony_wound_depth":
+        return (
+            _house_cusp_sign(house_rulers, 7) == "libra"
+            and _planet_in_sign_house(planet_map, "chiron", "Scorpio", 7)
+        )
+    if match_id == "venus_capricorn_10h_public_love_style_responsibility":
+        return _planet_in_sign_house(planet_map, "venus", "Capricorn", 10)
+    if match_id == "libra_aries_6h_12h_service_action_axis":
+        return (
+            _has_aspect(aspects, "Mars", "Saturn", "Opposition")
+            and _planet_in_sign_house(planet_map, "mars", "Libra", 6)
+            and _planet_in_sign_house(planet_map, "saturn", "Aries", 12)
+        )
     return False
 
 
@@ -1751,6 +4649,22 @@ def _chart_variant_match_score(
         return _aspect_match_score(aspects, "Sun", "Mars", "Conjunction", default=0.93)
     if match_id == "uranus_square_asc_venus_unsettled_outer_signal":
         return _aspect_match_score(aspects, "Uranus", "Ascendant", "Square", default=0.93)
+    # v0.7 aspect-based score lookups.
+    if match_id == "sun_mercury_cancer_11h_social_emotional_intelligence":
+        return _aspect_match_score(aspects, "Sun", "Mercury", "Conjunction", default=0.94)
+    if match_id == "mc_taurus_mars_10h_steady_public_drive":
+        return _aspect_match_score(aspects, "Mars", "Midheaven", "Conjunction", default=0.94)
+    if match_id == "mars_opposite_pluto_public_power_roots_tension":
+        return _aspect_match_score(aspects, "Mars", "Pluto", "Opposition", default=0.93)
+    if match_id == "moon_uranus_neptune_capricorn_5h_structured_imagination":
+        return _aspect_match_score(aspects, "Moon", "Uranus", "Conjunction", default=0.91)
+    # v0.8 aspect-based score lookups.
+    if match_id == "mars_opposite_saturn_action_restraint_inner_brake":
+        return _aspect_match_score(aspects, "Mars", "Saturn", "Opposition", default=0.92)
+    if match_id == "moon_mercury_ic_mc_private_security_public_voice_axis":
+        return _aspect_match_score(aspects, "Moon", "Mercury", "Opposition", default=0.94)
+    if match_id == "libra_aries_6h_12h_service_action_axis":
+        return _aspect_match_score(aspects, "Mars", "Saturn", "Opposition", default=0.9)
     return 0.9
 
 
@@ -1798,7 +4712,12 @@ def _planet_in_sign_house(
     sign: str,
     house: int,
 ) -> bool:
-    item = planet_map.get(planet.lower()) or {}
+    planet_key = planet.lower()
+    aliases = {
+        "north node": ("north node", "northnode", "true node", "mean node", "node", "kuzey ay düğümü"),
+        "south node": ("south node", "southnode", "south node", "güney ay düğümü"),
+    }.get(planet_key, (planet_key,))
+    item = next((planet_map.get(alias) for alias in aliases if planet_map.get(alias)), {}) or {}
     return (
         str(item.get("sign") or "").strip().lower() == sign.lower()
         and int(item.get("house") or 0) == int(house)
@@ -2002,6 +4921,176 @@ _CHART_FACT_VALIDATORS: dict[str, dict[str, Any]] = {
         "planet": "mercury",
         "sign": "pisces",
         "house": 11,
+    },
+    # v0.7 placement-encoded packets.
+    "leo_asc_sun_cancer_11h_warm_visibility_belonging": {
+        "kind": "asc_with_planet_in_sign_house",
+        "asc_sign": "leo",
+        "planet": "sun",
+        "sign": "cancer",
+        "house": 11,
+    },
+    "sun_mercury_cancer_11h_social_emotional_intelligence": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "sun", "sign": "cancer", "house": 11},
+            {"kind": "planet_in_sign_house", "planet": "mercury", "sign": "cancer", "house": 11},
+        ],
+    },
+    "pluto_node_scorpio_4h_roots_inner_security_transformation": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "pluto", "sign": "scorpio", "house": 4},
+            {"kind": "planet_in_sign_house", "planet": "north node", "sign": "scorpio", "house": 4},
+        ],
+    },
+    "ic_scorpio_pluto_node_private_emotional_inheritance": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "house_cusp_sign", "house": 4, "sign": "scorpio"},
+            {"kind": "planet_in_sign_house", "planet": "pluto", "sign": "scorpio", "house": 4},
+            {"kind": "planet_in_sign_house", "planet": "north node", "sign": "scorpio", "house": 4},
+        ],
+    },
+    "moon_capricorn_5h_serious_heart_creative_form": {
+        "kind": "planet_in_sign_house",
+        "planet": "moon",
+        "sign": "capricorn",
+        "house": 5,
+    },
+    "moon_uranus_neptune_capricorn_5h_structured_imagination": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "moon", "sign": "capricorn", "house": 5},
+            {"kind": "planet_in_sign_house", "planet": "uranus", "sign": "capricorn", "house": 5},
+            {"kind": "planet_in_sign_house", "planet": "neptune", "sign": "capricorn", "house": 5},
+        ],
+    },
+    "mc_taurus_mars_10h_steady_public_drive": {
+        "kind": "house_cusp_sign_with_planet_in_sign_house",
+        "house": 10,
+        "cusp_sign": "taurus",
+        "planet": "mars",
+        "sign": "taurus",
+        "planet_house": 10,
+    },
+    "mars_opposite_pluto_public_power_roots_tension": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "mars", "sign": "taurus", "house": 10},
+            {"kind": "planet_in_sign_house", "planet": "pluto", "sign": "scorpio", "house": 4},
+        ],
+    },
+    "aquarius_dsc_saturn_pisces_7h_freedom_responsibility_sensitivity": {
+        "kind": "house_cusp_sign_with_planet_in_sign_house",
+        "house": 7,
+        "cusp_sign": "aquarius",
+        "planet": "saturn",
+        "sign": "pisces",
+        "planet_house": 7,
+    },
+    "venus_leo_12h_hidden_romantic_pride": {
+        "kind": "planet_in_sign_house",
+        "planet": "venus",
+        "sign": "leo",
+        "house": 12,
+    },
+    "jupiter_scorpio_3h_deep_speech_psychological_learning": {
+        "kind": "planet_in_sign_house",
+        "planet": "jupiter",
+        "sign": "scorpio",
+        "house": 3,
+    },
+    "chiron_virgo_1h_visible_sensitivity_self_correction": {
+        "kind": "planet_in_sign_house",
+        "planet": "chiron",
+        "sign": "virgo",
+        "house": 1,
+    },
+    # v0.8 placement-encoded packets.
+    "aries_asc_mars_libra_6h_action_through_balance": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "asc_sign", "asc_sign": "aries"},
+            {"kind": "planet_in_sign_house", "planet": "mars", "sign": "libra", "house": 6},
+        ],
+    },
+    "mars_opposite_saturn_action_restraint_inner_brake": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "mars", "sign": "libra", "house": 6},
+            {"kind": "planet_in_sign_house", "planet": "saturn", "sign": "aries", "house": 12},
+        ],
+    },
+    "saturn_aries_12h_private_pressure_hidden_self_control": {
+        "kind": "planet_in_sign_house",
+        "planet": "saturn",
+        "sign": "aries",
+        "house": 12,
+    },
+    "moon_cancer_ic_home_security_roots": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "moon", "sign": "cancer", "house": 3},
+            {"kind": "house_cusp_sign", "house": 4, "sign": "cancer"},
+        ],
+    },
+    "mercury_capricorn_mc_public_voice_strategic_mind": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "mercury", "sign": "capricorn", "house": 10},
+            {"kind": "house_cusp_sign", "house": 10, "sign": "capricorn"},
+        ],
+    },
+    "moon_mercury_ic_mc_private_security_public_voice_axis": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "moon", "sign": "cancer", "house": 3},
+            {"kind": "planet_in_sign_house", "planet": "mercury", "sign": "capricorn", "house": 10},
+            {"kind": "house_cusp_sign", "house": 4, "sign": "cancer"},
+            {"kind": "house_cusp_sign", "house": 10, "sign": "capricorn"},
+        ],
+    },
+    "sun_aquarius_11h_collective_identity_future_networks": {
+        "kind": "planet_in_sign_house",
+        "planet": "sun",
+        "sign": "aquarius",
+        "house": 11,
+    },
+    "aquarius_11h_future_collective_signal": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "sun", "sign": "aquarius", "house": 11},
+            {"kind": "planet_in_sign_house", "planet": "uranus", "sign": "aquarius", "house": 11},
+        ],
+    },
+    "capricorn_10h_mercury_venus_neptune_public_style_responsibility": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "mercury", "sign": "capricorn", "house": 10},
+            {"kind": "planet_in_sign_house", "planet": "venus", "sign": "capricorn", "house": 10},
+            {"kind": "planet_in_sign_house", "planet": "neptune", "sign": "capricorn", "house": 10},
+        ],
+    },
+    "libra_dsc_chiron_scorpio_7h_harmony_wound_depth": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "house_cusp_sign", "house": 7, "sign": "libra"},
+            {"kind": "planet_in_sign_house", "planet": "chiron", "sign": "scorpio", "house": 7},
+        ],
+    },
+    "venus_capricorn_10h_public_love_style_responsibility": {
+        "kind": "planet_in_sign_house",
+        "planet": "venus",
+        "sign": "capricorn",
+        "house": 10,
+    },
+    "libra_aries_6h_12h_service_action_axis": {
+        "kind": "all_of",
+        "validators": [
+            {"kind": "planet_in_sign_house", "planet": "mars", "sign": "libra", "house": 6},
+            {"kind": "planet_in_sign_house", "planet": "saturn", "sign": "aries", "house": 12},
+        ],
     },
 }
 
@@ -2342,6 +5431,8 @@ _DOMAIN_FAMILY_MAP = {
     "behavior_reflex": "identity",
     "inner_world": "inner_world",
     "spirituality": "inner_world",
+    "home_family": "home_family",
+    "roots": "home_family",
     "relationship": "relationship",
     "love": "relationship",
     "emotional_depth": "relationship",
@@ -2351,10 +5442,13 @@ _DOMAIN_FAMILY_MAP = {
     "emotional_world": "emotional_world",
     "career": "career",
     "visibility": "career",
-    "creativity": "career",
+    "creativity": "creativity",
     "money_self_worth": "identity",
     "self_worth": "identity",
     "community": "community",
+    "learning": "mind",
+    "body": "identity",
+    "service": "identity",
 }
 
 
@@ -3330,6 +6424,50 @@ def _base_packet_id(packet: Mapping[str, Any]) -> str:
     return packet_id
 
 
+def _packet_source_type(packet: Mapping[str, Any]) -> str:
+    explicit = str(packet.get("source_type") or "").strip()
+    if explicit in _PACKET_SOURCE_TYPES:
+        return explicit
+    meta = packet.get("meta") if isinstance(packet.get("meta"), Mapping) else {}
+    meta_explicit = str(meta.get("source_type") or "").strip()
+    if meta_explicit in _PACKET_SOURCE_TYPES:
+        return meta_explicit
+    packet_id = str(packet.get("id") or "").strip()
+    if bool(meta.get("v0_6_discovery")) or bool(meta.get("non_public_discovery")):
+        return "discovery_scaffold"
+    if packet_id in _GENERIC_PACKET_IDS:
+        return "generic_fallback"
+    if str(meta.get("inventory_variant") or "").strip() == "chart_signature":
+        return "exact_registry"
+    if any(str(value).strip() for value in (packet.get("matched_archetypes") or []) if str(value).strip()):
+        return "exact_registry"
+    return "legacy_graph"
+
+
+def _initial_candidate_source_type(
+    *,
+    packet_id: str,
+    matches: Sequence[Mapping[str, Any]],
+) -> str:
+    if str(packet_id or "").strip() in _GENERIC_PACKET_IDS:
+        return "generic_fallback"
+    if any(str(match.get("id") or "").strip() for match in matches if isinstance(match, Mapping)):
+        return "exact_registry"
+    return "legacy_graph"
+
+
+def _annotate_packet_source_types(packets: Sequence[Mapping[str, Any]]) -> None:
+    for packet in packets:
+        if not isinstance(packet, dict):
+            continue
+        source_type = _packet_source_type(packet)
+        packet["source_type"] = source_type
+        meta = packet.get("meta") if isinstance(packet.get("meta"), Mapping) else {}
+        packet_meta = dict(meta)
+        packet_meta["source_type"] = source_type
+        packet["meta"] = packet_meta
+
+
 def _is_chart_signature_packet(packet: Mapping[str, Any]) -> bool:
     meta = packet.get("meta") if isinstance(packet.get("meta"), Mapping) else {}
     if str(meta.get("inventory_variant") or "").strip() == "chart_signature":
@@ -3494,13 +6632,52 @@ def _humanize_contradiction(label: str) -> str:
     return label.strip()
 
 
+_CONTINUATION_LOWERCASE_WORDS: frozenset[str] = frozenset(
+    {
+        # Turkish particles / connectors that are valid lowercase tokens
+        # immediately before a capitalized continuation word. Inserting a
+        # sentence boundary after them would corrupt the sentence
+        # (audit P0: "Bazen de Dışarıda..." → "Bazen de. Dışarıda...").
+        "de",
+        "da",
+        "ki",
+        "ile",
+        "ve",
+        "ya",
+    }
+)
+
+
 def _normalize_packet_field_text(text: str) -> str:
     clean = " ".join(str(text or "").split()).strip()
     if not clean:
         return ""
-    clean = re.sub(r"([a-zçğıöşü])\s+([A-ZİÖÜÇĞŞ])", r"\1. \2", clean)
+
+    def _insert_sentence_boundary(match: "re.Match[str]") -> str:
+        preceding_word = match.group(1)
+        whitespace = match.group(2)
+        next_capital = match.group(3)
+        # Continuation particles (de / da / ki / ile / ve / ya) must not be
+        # treated as sentence enders — the next capitalized word is a noun
+        # the particle attaches to, not a new sentence.
+        if preceding_word.lower() in _CONTINUATION_LOWERCASE_WORDS:
+            return f"{preceding_word}{whitespace}{next_capital}"
+        return f"{preceding_word}.{whitespace}{next_capital}"
+
+    clean = re.sub(
+        r"(\b[a-zçğıöşü]+)(\s+)([A-ZİÖÜÇĞŞ])",
+        _insert_sentence_boundary,
+        clean,
+    )
+    # Drop residual standalone "Bazen de." / "bazen de." fragments that may
+    # have been seeded upstream (e.g. cached `shadow_or_friction` strings
+    # produced before this normalizer learned to skip the connector). The
+    # fragment is removed only when it stands alone as a full sentence; the
+    # connector "Bazen de" followed by real continuation text is preserved.
+    clean = re.sub(r"(?<![A-Za-zÇĞİıÖŞÜçğöşü0-9])[Bb]azen de\.\s*", "", clean)
     clean = re.sub(r"\s+([,;:.!?])", r"\1", clean)
     clean = re.sub(r"([,;:.!?])([^\s])", r"\1 \2", clean)
+    clean = re.sub(r"\s{2,}", " ", clean).strip()
     return _ensure_sentence(clean)
 
 

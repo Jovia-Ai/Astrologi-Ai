@@ -1646,7 +1646,7 @@ def test_smart_clip_never_breaks_mid_word() -> None:
 
 def test_post_colon_capitalization_uses_turkish_i() -> None:
     """Bug 4: the post-period capitalization helper must also fire after
-    `:` and `;`, and use Turkish dotted İ (U+0130), not the decomposed
+    `:`, and use Turkish dotted İ (U+0130), not the decomposed
     `i + combining-dot-above` (U+0307) sequence."""
     from app.meaning.projection_shadow_v1_builder import _localize_public_copy_tr
 
@@ -1664,10 +1664,11 @@ def test_post_colon_capitalization_uses_turkish_i() -> None:
     fixed_decomposed = _localize_public_copy_tr(raw_decomposed)
     assert "burada: İnsanlar" in fixed_decomposed
     assert "i̇" not in fixed_decomposed
-    # Semicolon path.
+    # Semicolon path: preserve lowercase after semicolons so joined clauses do
+    # not turn into awkward `; Ama` / `; Hem` style surfaces.
     raw_semi = "Bir yan duygusu; insanlar burada açık konuşur."
     fixed_semi = _localize_public_copy_tr(raw_semi)
-    assert "; İnsanlar" in fixed_semi
+    assert "; insanlar" in fixed_semi
     # The numbered-abbreviation guard must still hold ("1. ev" never capitalized).
     raw_house = "Bu çizgi 1. ev tarafında belirgin."
     fixed_house = _localize_public_copy_tr(raw_house)

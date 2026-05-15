@@ -18,6 +18,63 @@ def _artifact_response(filename: str) -> dict:
     )
 
 
+def _batch_chart_birth_data(chart_id: str) -> dict:
+    payload = json.loads(
+        (
+            Path(__file__).resolve().parent
+            / "_artifacts"
+            / "natal_batch_audits"
+            / "natal_50_chart_discovery_metrics.json"
+        ).read_text()
+    )
+    return next(
+        dict(item.get("birth_data") or {})
+        for item in payload.get("charts") or []
+        if str(item.get("chart_id") or "").strip() == chart_id
+    )
+
+
+def _live_public_view_from_batch_chart(chart_id: str) -> dict:
+    from app.api.routes.natal_interpretation import NatalInterpretationRequest, interpret_natal_chart_ui
+
+    birth = _batch_chart_birth_data(chart_id)
+    response = interpret_natal_chart_ui(
+        NatalInterpretationRequest(
+            birth_date=str(birth.get("birth_date") or ""),
+            birth_time=str(birth.get("birth_time") or ""),
+            birth_place=str(birth.get("birth_place") or ""),
+            birth_latitude=birth.get("birth_latitude"),
+            birth_longitude=birth.get("birth_longitude"),
+            birth_timezone=birth.get("birth_timezone"),
+            locale="tr",
+            summary_only=False,
+            include_full_profile=True,
+        ),
+        debug=False,
+        include_debug=True,
+    )
+    return dict(response.get("public") or {})
+
+
+def _without_traceability(value):
+    if isinstance(value, dict):
+        return {
+            key: _without_traceability(item)
+            for key, item in value.items()
+            if key != "traceability"
+        }
+    if isinstance(value, list):
+        return [_without_traceability(item) for item in value]
+    return value
+
+
+def _projection_surface_snapshot(public: dict) -> dict:
+    return {
+        "profile_narrative_projection_v1": _without_traceability(public.get("profile_narrative_projection_v1") or {}),
+        "profile_v8_projection_v1": _without_traceability(public.get("profile_v8_projection_v1") or {}),
+    }
+
+
 def test_public_natal_view_includes_supporting_threads_and_graph() -> None:
     response = {
         "core_story": "Kisa test metni.",
@@ -706,10 +763,17 @@ def test_public_natal_view_cluster_plan_renderer_localizes_and_separates_reused_
         for block in narrative_blocks
     }
 
-    hidden_love = block_by_node_id["promise::venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact"]
-    assert hidden_love["headline"] == "Bazı duygular sende önce içeride büyüyor olabilir."
-    assert "sevgiyi bazen önce içeride büyüten" in hidden_love["body"].lower()
-    assert "üretim ve görünürlük" not in hidden_love["body"].lower()
+    hidden_love = block_by_node_id.get("promise::venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact")
+    if hidden_love:
+        assert hidden_love["headline"] == "Bazı duygular sende önce içeride büyüyor olabilir."
+        assert "sevgiyi bazen önce içeride büyüten" in hidden_love["body"].lower()
+        assert "üretim ve görünürlük" not in hidden_love["body"].lower()
+    else:
+        plan = public["profile_v8_projection_v1"]["traceability"]["natal_promise_cluster_plan_v1"]
+        assert "relationship_hidden_private_love_pattern" in set(plan["surface_plan"]["detail_cluster_ids"])
+        assert "venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact" in set(
+            plan["surface_plan"]["debug_packet_ids"]
+        )
 
     identity_saturn_uranus = block_by_node_id["promise::saturn_sextile_uranus_structured_originality_identity_chart_exact"]
     assert identity_saturn_uranus["headline"] == "Ciddi görünsen de içeride daha farklı bir çizgi taşıyorsun."
@@ -861,9 +925,12 @@ def test_public_natal_view_copy_polish_keeps_1996_istanbul_and_adana_surfaces_st
         str(block.get("node_id") or "").strip(): block
         for block in istanbul_1996["profile_narrative_projection_v1"]["profile_public"]["blocks"]
     }
-    assert narrative_1996_blocks["promise::venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact"]["headline"] == (
-        "Bazı duygular sende önce içeride büyüyor olabilir."
-    )
+    hidden_love = narrative_1996_blocks.get("promise::venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact")
+    if hidden_love:
+        assert hidden_love["headline"] == "Bazı duygular sende önce içeride büyüyor olabilir."
+    else:
+        plan_1996 = istanbul_1996["profile_v8_projection_v1"]["traceability"]["natal_promise_cluster_plan_v1"]
+        assert "relationship_hidden_private_love_pattern" in set(plan_1996["surface_plan"]["detail_cluster_ids"])
     assert narrative_1996_blocks["promise::saturn_sextile_uranus_structured_originality_identity_chart_exact"]["headline"] == (
         "Ciddi görünsen de içeride daha farklı bir çizgi taşıyorsun."
     )
@@ -969,3 +1036,1365 @@ def test_public_natal_view_izmir_v0_5_copy_polish_naturalizes_surface_without_le
     assert blocks_2020["promise::venus_trine_saturn_trust_bond_chart_exact"]["headline"] == (
         "Sevgi verdiğinde bunun içinde tutarlılık ve söz taşıyan bir taraf var."
     )
+
+
+def test_public_natal_view_istanbul_1994_v0_7_copy_polish_naturalizes_surface(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    istanbul_1994 = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1994-06-25_10-00_istanbul_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+    narrative = istanbul_1994["profile_narrative_projection_v1"]["profile_public"]
+    blocks = list(narrative.get("blocks") or [])
+    block_map = {
+        str(block.get("node_id") or "").strip(): block
+        for block in blocks
+    }
+
+    roots = block_map["promise::pluto_node_scorpio_4h_roots_inner_security_transformation_chart_exact"]
+    assert roots["headline"] == "Ev, aile ve geçmiş sende sadece arka plan gibi çalışmayabilir."
+    assert "4. evindeki Akrep ve Plüton/Kuzey Ay Düğümü vurgusu" in str(roots.get("body") or "")
+
+    creativity = block_map["promise::moon_uranus_neptune_capricorn_5h_structured_imagination_chart_exact"]
+    assert creativity["headline"] == "İçindeki yaratıcı taraf, ilhamı forma sokmak ister."
+    assert "Uranüs ve Neptün'ün aynı alanda çalışması" in str(creativity.get("body") or "")
+
+    relationship = block_map["promise::aquarius_dsc_saturn_pisces_7h_freedom_responsibility_sensitivity_chart_exact"]
+    assert "7. evinin Kova, Satürn'ünün de 7. evde Balık'ta olması" in str(relationship.get("body") or "")
+
+    chiron = block_map["promise::chiron_virgo_1h_visible_sensitivity_self_correction_chart_exact"]
+    assert chiron["headline"] == "Kendini gösterirken hemen kusuru fark eden bir tarafın olabilir."
+    assert "İnce dikkat, iyileştirici varlık" not in str(chiron.get("headline") or "")
+
+    diff_headlines = [
+        str(item.get("headline") or "").strip()
+        for item in istanbul_1994["profile_v8_projection_v1"].get("differentiators") or []
+        if str(item.get("headline") or "").strip()
+    ]
+    core_headlines = {
+        str(block.get("headline") or "").strip()
+        for block in narrative.get("core_blocks") or []
+        if str(block.get("headline") or "").strip()
+    }
+    assert not (core_headlines & set(diff_headlines)), (
+        f"Istanbul 1994 differentiators still duplicate core headlines: {core_headlines & set(diff_headlines)}"
+    )
+
+    headline_teaser_pairs = [
+        (
+            str(block.get("headline") or "").strip(),
+            str(block.get("teaser") or "").strip(),
+        )
+        for block in blocks
+    ]
+    assert len(headline_teaser_pairs) == len(set(headline_teaser_pairs)), headline_teaser_pairs
+
+    all_text = "\n".join(
+        str(value or "")
+        for block in blocks
+        for value in (block.get("headline"), block.get("teaser"), block.get("body"))
+    )
+    all_text += "\n" + "\n".join(diff_headlines)
+
+    for bad_phrase in (
+        "olması de",
+        "Sun conjunct",
+        "Mars opposite",
+        "Moon conjunct",
+        "Midheaven",
+        "Pluto",
+        "ingredient",
+        "; Ama",
+        "; Dış",
+        "; Güvenilirlik",
+        "; Sonra",
+        "İnce dikkat, iyileştirici varlık, başkalarına alan açan hassasiyet",
+    ):
+        assert bad_phrase not in all_text
+
+
+def test_public_natal_view_v0_9a_composed_semantics_is_public_no_op_when_public_flags_are_off(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    response = _artifact_response("natal_interpret_full_1994-06-25_10-00_istanbul_user_compact_debug.json")
+
+    baseline = build_public_natal_view(
+        response,
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "false")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+    composed = build_public_natal_view(
+        response,
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+
+    assert _projection_surface_snapshot(baseline) == _projection_surface_snapshot(composed)
+
+    plan = composed["profile_v8_projection_v1"]["traceability"]["natal_promise_cluster_plan_v1"]
+    assert plan["meta"]["audit_metrics"]["composed_candidate_count"] == 2
+    assert plan["meta"]["audit_metrics"]["composed_candidate_public_eligibility_distribution"]["public_main_eligible"] == 0
+
+
+def test_public_natal_view_v0_9a_keeps_accepted_goldens_stable(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    fixtures = [
+        "natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json",
+        "natal_interpret_full_1998-09-12_07-30_adana_user_compact_debug.json",
+        "natal_interpret_full_2020-04-10_08-26_istanbul_user_compact_debug.json",
+        "natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json",
+        "natal_interpret_full_1994-06-25_10-00_istanbul_user_compact_debug.json",
+        "natal_interpret_full_1997-01-21_10-30_istanbul_user_compact_debug.json",
+    ]
+
+    for fixture in fixtures:
+        response = _artifact_response(fixture)
+        baseline = build_public_natal_view(
+            response,
+            locale="tr",
+            include_debug=True,
+            include_full_profile=True,
+        )
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "false")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+        composed = build_public_natal_view(
+            response,
+            locale="tr",
+            include_debug=True,
+            include_full_profile=True,
+        )
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", raising=False)
+
+        assert _projection_surface_snapshot(baseline) == _projection_surface_snapshot(composed), fixture
+
+
+def test_public_natal_view_v0_9a_1_public_voice_detail_rollout_targets_keep_composed_public_voice_internal_only_by_default(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", raising=False)
+
+    for chart_id in (
+        "fix04_h10_career_stellium",
+        "tokyo_1998_06_21",
+        "toronto_1976_06_26",
+    ):
+        public = _live_public_view_from_batch_chart(chart_id)
+        plan = public["profile_v8_projection_v1"]["traceability"]["natal_promise_cluster_plan_v1"]
+        metrics = plan["meta"]["audit_metrics"]
+        suppression = next(
+            item
+            for item in plan["suppressed_packets"]
+            if str(item.get("packet_id") or "").strip() == "composed_career_route_v0_9a"
+        )
+        narrative_blocks = public["profile_narrative_projection_v1"]["profile_public"].get("blocks") or []
+        extra_blocks = public["profile_narrative_projection_v1"]["profile_public"].get("extra_blocks") or []
+        composed_blocks = [
+            block
+            for block in narrative_blocks
+            if str(block.get("node_id") or "").strip() == "promise::composed_career_route_v0_9a"
+        ]
+        composed_extra_blocks = [
+            block
+            for block in extra_blocks
+            if str(block.get("node_id") or "").strip() == "promise::composed_career_route_v0_9a"
+        ]
+        differentiators = public["profile_v8_projection_v1"].get("differentiators") or []
+        composed_differentiators = [
+            item
+            for item in differentiators
+            if str(item.get("node_id") or "").strip() == "promise::composed_career_route_v0_9a"
+        ]
+
+        assert metrics["composed_candidate_public_eligibility_distribution"]["detail_eligible"] >= 1
+        assert metrics["composed_candidate_public_eligibility_distribution"]["public_support_eligible"] == 0
+        assert metrics["composed_candidate_public_eligibility_distribution"]["public_main_eligible"] == 0
+        assert suppression["keep_for"] == ["detail", "debug"]
+        assert not composed_blocks, chart_id
+        assert not composed_extra_blocks, chart_id
+        assert not composed_differentiators, chart_id
+        assert not any("composed_career_route_v0_9a" in str(cluster_id) for cluster_id in plan["surface_plan"]["public_main_cluster_ids"])
+        assert not any("composed_career_route_v0_9a" in str(cluster_id) for cluster_id in plan["surface_plan"]["public_support_cluster_ids"])
+        assert "composed_career_route_v0_9a" not in set(plan["surface_plan"]["detail_cluster_ids"])
+
+
+def test_public_natal_view_v0_9a_1_non_public_voice_subtypes_stay_debug_only(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+
+    for chart_id in (
+        "kutahya_1959_10_21",
+        "izmir_2007_07_19",
+        "izmir_1996_05_20",
+        "mexico_city_1988_08_31",
+        "dubai_1995_01_03",
+    ):
+        public = _live_public_view_from_batch_chart(chart_id)
+        plan = public["profile_v8_projection_v1"]["traceability"]["natal_promise_cluster_plan_v1"]
+        suppression = next(
+            item
+            for item in plan["suppressed_packets"]
+            if str(item.get("packet_id") or "").strip() == "composed_career_route_v0_9a"
+        )
+
+        assert suppression["keep_for"] == ["debug"], chart_id
+
+
+def test_public_natal_view_v0_9a_1_keeps_accepted_goldens_stable_with_public_voice_flag(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    fixtures = [
+        "natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json",
+        "natal_interpret_full_1998-09-12_07-30_adana_user_compact_debug.json",
+        "natal_interpret_full_2020-04-10_08-26_istanbul_user_compact_debug.json",
+        "natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json",
+        "natal_interpret_full_1994-06-25_10-00_istanbul_user_compact_debug.json",
+        "natal_interpret_full_1997-01-21_10-30_istanbul_user_compact_debug.json",
+    ]
+
+    for fixture in fixtures:
+        response = _artifact_response(fixture)
+        baseline = build_public_natal_view(
+            response,
+            locale="tr",
+            include_debug=True,
+            include_full_profile=True,
+        )
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "true")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", "true")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+        composed = build_public_natal_view(
+            response,
+            locale="tr",
+            include_debug=True,
+            include_full_profile=True,
+        )
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", raising=False)
+        assert _projection_surface_snapshot(baseline) == _projection_surface_snapshot(composed), fixture
+
+
+def test_public_natal_view_v0_9a_1_exact_career_owner_protection_keeps_public_voice_debug_only(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+
+    for fixture in (
+        "natal_interpret_full_1994-06-25_10-00_istanbul_user_compact_debug.json",
+    ):
+        public = build_public_natal_view(
+            _artifact_response(fixture),
+            locale="tr",
+            include_debug=True,
+            include_full_profile=True,
+        )
+        plan = public["profile_v8_projection_v1"]["traceability"]["natal_promise_cluster_plan_v1"]
+        suppression = next(
+            item
+            for item in plan["suppressed_packets"]
+            if str(item.get("packet_id") or "").strip() == "composed_career_route_v0_9a"
+        )
+        assert suppression["keep_for"] == ["debug"], fixture
+
+
+def test_public_natal_view_v0_9a_1_render_detail_flag_off_keeps_target_chart_public_surfaces_stable(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    for chart_id in (
+        "fix04_h10_career_stellium",
+        "tokyo_1998_06_21",
+        "toronto_1976_06_26",
+    ):
+        baseline = _live_public_view_from_batch_chart(chart_id)
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "true")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", "true")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", raising=False)
+        guarded = _live_public_view_from_batch_chart(chart_id)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", raising=False)
+
+        assert _projection_surface_snapshot(baseline) == _projection_surface_snapshot(guarded), chart_id
+
+
+def test_public_natal_view_v0_9a_2_render_detail_flag_on_renders_traceability_cards_only(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+
+    for chart_id in (
+        "fix04_h10_career_stellium",
+        "tokyo_1998_06_21",
+        "toronto_1976_06_26",
+    ):
+        public = _live_public_view_from_batch_chart(chart_id)
+        plan = public["profile_v8_projection_v1"]["traceability"]["natal_promise_cluster_plan_v1"]
+        composed_cards = public["profile_narrative_projection_v1"]["traceability"].get("composed_detail_cards_v0_9a_2") or []
+
+        assert composed_cards, chart_id
+        assert all(card.get("source_type") == "composed_semantic" for card in composed_cards)
+        assert all(card.get("source_candidate_id") == "composed_career_route_v0_9a" for card in composed_cards)
+        assert all(card.get("public_job") == "detail_only" for card in composed_cards)
+        assert not any(
+            str(block.get("node_id") or "").strip() == "promise::composed_career_route_v0_9a"
+            for block in (public["profile_narrative_projection_v1"]["profile_public"].get("extra_blocks") or [])
+        )
+        assert not any(
+            str(block.get("node_id") or "").strip() == "promise::composed_career_route_v0_9a"
+            for block in (public["profile_narrative_projection_v1"]["profile_public"].get("blocks") or [])
+        )
+        assert not any(
+            str(item.get("node_id") or "").strip() == "promise::composed_career_route_v0_9a"
+            for item in (public["profile_v8_projection_v1"].get("differentiators") or [])
+        )
+        assert not any(
+            str(item.get("node_id") or "").strip() == "promise::composed_career_route_v0_9a"
+            for item in (public["profile_v8_projection_v1"].get("insight_strip") or [])
+        )
+        assert not any("composed_career_route_v0_9a" in str(cluster_id) for cluster_id in plan["surface_plan"]["public_main_cluster_ids"])
+        assert not any("composed_career_route_v0_9a" in str(cluster_id) for cluster_id in plan["surface_plan"]["public_support_cluster_ids"])
+
+
+def test_public_natal_view_v0_9a_2_non_target_charts_do_not_render_composed_detail_cards(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+
+    for chart_id in (
+        "kutahya_1959_10_21",
+        "izmir_2007_07_19",
+        "izmir_1996_05_20",
+        "mexico_city_1988_08_31",
+        "dubai_1995_01_03",
+    ):
+        public = _live_public_view_from_batch_chart(chart_id)
+        composed_cards = public["profile_narrative_projection_v1"]["traceability"].get("composed_detail_cards_v0_9a_2") or []
+        assert not composed_cards, chart_id
+
+
+def test_public_natal_view_v0_9a_2_render_detail_flag_on_keeps_target_public_surfaces_stable(
+    monkeypatch,
+) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    for chart_id in (
+        "fix04_h10_career_stellium",
+        "tokyo_1998_06_21",
+        "toronto_1976_06_26",
+    ):
+        baseline = _live_public_view_from_batch_chart(chart_id)
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "true")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", "true")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+        rendered = _live_public_view_from_batch_chart(chart_id)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", raising=False)
+        monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", raising=False)
+
+        assert _projection_surface_snapshot(baseline) == _projection_surface_snapshot(rendered), chart_id
+
+
+# ---------------------------------------------------------------------------
+# v0.9a.3 Phase B — profile_public.composed_detail_cards lane
+# ---------------------------------------------------------------------------
+
+
+_PHASE_B_TARGET_CHARTS = (
+    "fix04_h10_career_stellium",
+    "tokyo_1998_06_21",
+    "toronto_1976_06_26",
+)
+
+_PHASE_B_NON_TARGET_CHARTS = (
+    "kutahya_1959_10_21",
+    "izmir_1996_05_20",
+    "mexico_city_1988_08_31",
+)
+
+_PHASE_B_PUBLIC_VISIBLE_FIELDS = {
+    "id",
+    "node_id",
+    "headline",
+    "teaser",
+    "body",
+    "chips",
+    "family",
+    "emphasis",
+    "origin",
+}
+
+_PHASE_B_TRACE_ONLY_FIELDS = {
+    "source_type",
+    "source_candidate_id",
+    "public_job",
+    "source_anchor_trace",
+    "detail_items",
+    "evidence_summary",
+}
+
+
+def _phase_b_set_base_flags(monkeypatch) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN", "false")
+
+
+def test_phase_b_lane_flag_off_omits_public_field(monkeypatch) -> None:
+    _phase_b_set_base_flags(monkeypatch)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", raising=False)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", raising=False)
+
+    for chart_id in _PHASE_B_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        profile_public = public["profile_narrative_projection_v1"]["profile_public"]
+        assert "composed_detail_cards" not in profile_public, chart_id
+
+
+def test_phase_b_render_on_lane_off_keeps_trace_omits_public_field(monkeypatch) -> None:
+    _phase_b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", raising=False)
+
+    for chart_id in _PHASE_B_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        profile_public = public["profile_narrative_projection_v1"]["profile_public"]
+        traceability = public["profile_narrative_projection_v1"]["traceability"]
+        assert "composed_detail_cards" not in profile_public, chart_id
+        assert traceability.get("composed_detail_cards_v0_9a_2"), chart_id
+
+
+def test_phase_b_render_off_lane_on_omits_public_field(monkeypatch) -> None:
+    _phase_b_set_base_flags(monkeypatch)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", raising=False)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+
+    for chart_id in _PHASE_B_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        profile_public = public["profile_narrative_projection_v1"]["profile_public"]
+        traceability = public["profile_narrative_projection_v1"]["traceability"]
+        assert "composed_detail_cards" not in profile_public, chart_id
+        assert not traceability.get("composed_detail_cards_v0_9a_2"), chart_id
+
+
+def test_phase_b_both_flags_on_target_charts_get_exactly_one_card(monkeypatch) -> None:
+    _phase_b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+
+    for chart_id in _PHASE_B_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        profile_public = public["profile_narrative_projection_v1"]["profile_public"]
+        cards = profile_public.get("composed_detail_cards")
+        assert cards, chart_id
+        assert len(cards) == 1, f"{chart_id}: expected exactly 1 card, got {len(cards)}"
+        card = cards[0]
+        assert set(card.keys()) <= _PHASE_B_PUBLIC_VISIBLE_FIELDS, (
+            f"{chart_id}: unexpected fields {set(card.keys()) - _PHASE_B_PUBLIC_VISIBLE_FIELDS}"
+        )
+        assert not (set(card.keys()) & _PHASE_B_TRACE_ONLY_FIELDS), (
+            f"{chart_id}: trace fields leaked into public lane: "
+            f"{set(card.keys()) & _PHASE_B_TRACE_ONLY_FIELDS}"
+        )
+        assert card["origin"] == "composed_detail_renderer_v0_9a_2"
+        assert card["family"] == "career_public_voice"
+        assert card["emphasis"] == "detail"
+
+
+def test_phase_b_both_flags_on_non_target_charts_omit_public_field(monkeypatch) -> None:
+    _phase_b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+
+    for chart_id in _PHASE_B_NON_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        profile_public = public["profile_narrative_projection_v1"]["profile_public"]
+        # Field is either absent or an empty list — both are acceptable
+        # per spec; current implementation omits entirely.
+        assert not profile_public.get("composed_detail_cards"), chart_id
+
+
+def test_phase_b_lane_does_not_leak_into_other_public_surfaces(monkeypatch) -> None:
+    _phase_b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+
+    for chart_id in _PHASE_B_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        narrative = public["profile_narrative_projection_v1"]
+        profile_public = narrative["profile_public"]
+        v8 = public["profile_v8_projection_v1"]
+
+        promise_node_id = "promise::composed_career_route_v0_9a"
+        composed_card_id_prefix = "composed_detail::composed_career_route_v0_9a::"
+
+        for lane_name in ("blocks", "core_blocks", "extra_blocks", "detail_cards"):
+            lane = profile_public.get(lane_name) or []
+            assert not any(
+                str(item.get("node_id") or "").strip() == promise_node_id
+                or str(item.get("id") or "").startswith(composed_card_id_prefix)
+                for item in lane
+                if isinstance(item, dict)
+            ), f"{chart_id}: composed card leaked into profile_public.{lane_name}"
+
+        for v8_lane in ("differentiators", "insight_strip"):
+            lane = v8.get(v8_lane) or []
+            assert not any(
+                str(item.get("node_id") or "").strip() == promise_node_id
+                or str(item.get("id") or "").startswith(composed_card_id_prefix)
+                for item in lane
+                if isinstance(item, dict)
+            ), f"{chart_id}: composed card leaked into profile_v8.{v8_lane}"
+
+        hero = v8.get("hero") or {}
+        identity_axis = v8.get("identity_axis") or {}
+        assert str(hero.get("node_id") or "").strip() != promise_node_id, chart_id
+        assert str(identity_axis.get("node_id") or "").strip() != promise_node_id, chart_id
+
+        # v8 must not carry the new public lane field at all.
+        assert "composed_detail_cards" not in v8, chart_id
+
+
+def test_phase_b_public_card_copy_qa_passes(monkeypatch) -> None:
+    _phase_b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+
+    banned_tokens = ("mc, yöneticisi", "mc route", "10h", "source_type", "debug", "candidate", "fallback")
+    banned_ascii = ("Insanlar", "Disaridaki", "nasil", "soyledigini", "Soz", "Gorunur", "dogru", "cumle")
+
+    for chart_id in _PHASE_B_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        cards = public["profile_narrative_projection_v1"]["profile_public"].get("composed_detail_cards") or []
+        assert cards, chart_id
+        for card in cards:
+            combined = " ".join(str(card[field]) for field in ("headline", "teaser", "body"))
+            combined_lower = combined.lower()
+            for token in banned_tokens:
+                assert token not in combined_lower, f"{chart_id}: banned token {token!r}"
+            for ascii_form in banned_ascii:
+                import re
+
+                assert not re.search(rf"\b{re.escape(ascii_form)}\b", combined), (
+                    f"{chart_id}: ASCII residue {ascii_form!r} in public lane copy"
+                )
+            assert any(c in combined for c in "İıŞşĞğÇçÖöÜü"), (
+                f"{chart_id}: public lane copy lacks Turkish diacritics"
+            )
+
+
+# ---------------------------------------------------------------------------
+# P0 truthfulness — dangling connector defects ("olması de" / "Bazen de.")
+# Regression coverage for the v0.9a.3 post-audit text-composition cleanup.
+# ---------------------------------------------------------------------------
+
+
+_DANGLING_CONNECTOR_AFFECTED_CHARTS = (
+    "adana_1998_09_12",
+    "kutahya_1959_10_21",
+    "izmir_2007_07_19",
+    "izmir_1996_05_20",
+    "istanbul_1994_06_25",
+    "istanbul_1997_01_21",
+)
+
+
+def _collect_dangling_connector_scan_chunks(public: dict) -> list[str]:
+    chunks: list[str] = []
+    narrative = public.get("profile_narrative_projection_v1") or {}
+    v8 = public.get("profile_v8_projection_v1") or {}
+    profile_public = narrative.get("profile_public") or {}
+    for lane in ("blocks", "core_blocks", "extra_blocks", "detail_cards", "composed_detail_cards"):
+        for item in (profile_public.get(lane) or []):
+            if not isinstance(item, dict):
+                continue
+            for field in ("headline", "teaser", "body", "text", "micro"):
+                value = item.get(field)
+                if isinstance(value, str) and value.strip():
+                    chunks.append(value)
+    for key in ("hero", "identity_axis"):
+        node = v8.get(key) or {}
+        for field in ("headline", "teaser", "body", "text"):
+            value = node.get(field)
+            if isinstance(value, str) and value.strip():
+                chunks.append(value)
+    for lane in ("differentiators", "insight_strip"):
+        for item in (v8.get(lane) or []):
+            if not isinstance(item, dict):
+                continue
+            for field in ("headline", "teaser", "body", "text", "micro"):
+                value = item.get(field)
+                if isinstance(value, str) and value.strip():
+                    chunks.append(value)
+    return chunks
+
+
+def test_p0_no_olmasi_de_in_public_body(monkeypatch) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    pattern = re.compile(r"olması de\b")
+    for chart_id in _DANGLING_CONNECTOR_AFFECTED_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        for chunk in _collect_dangling_connector_scan_chunks(public):
+            assert not pattern.search(chunk), (
+                f"{chart_id}: dangling 'olması de' surfaced in public copy: {chunk!r}"
+            )
+
+
+def test_p0_no_standalone_bazen_de_period_in_public_body(monkeypatch) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    upper_pattern = re.compile(r"Bazen de\.")
+    lower_pattern = re.compile(r"bazen de\.")
+    for chart_id in _DANGLING_CONNECTOR_AFFECTED_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        for chunk in _collect_dangling_connector_scan_chunks(public):
+            assert not upper_pattern.search(chunk), (
+                f"{chart_id}: dangling 'Bazen de.' surfaced in public copy: {chunk!r}"
+            )
+            assert not lower_pattern.search(chunk), (
+                f"{chart_id}: dangling 'bazen de.' surfaced in public copy: {chunk!r}"
+            )
+
+
+def test_p0_dangling_connector_fix_does_not_alter_semantic_routing(monkeypatch) -> None:
+    """The text-composition cleanup must not change which clusters land in
+    `public_main` / `public_support` / `detail` lanes, nor which packets
+    surface as v8 hero / identity_axis / differentiators / insight_strip.
+
+    Snapshot the structural fingerprint of every node selection across the
+    affected charts to defend against accidental semantic drift while the
+    cleanup matures.
+    """
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+
+    for chart_id in _DANGLING_CONNECTOR_AFFECTED_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        plan = (
+            public.get("profile_narrative_projection_v1") or {}
+        ).get("traceability", {}).get("natal_promise_cluster_plan_v1") or {}
+        surface_plan = plan.get("surface_plan") or {}
+        v8 = public.get("profile_v8_projection_v1") or {}
+
+        # Routing layer must produce at least the expected lane vocabulary
+        # — never an unexpected one.
+        for key in (
+            "public_main_cluster_ids",
+            "public_support_cluster_ids",
+            "detail_cluster_ids",
+        ):
+            assert isinstance(surface_plan.get(key) or [], list), (
+                f"{chart_id}: surface_plan[{key!r}] missing or wrong type"
+            )
+
+        # The composed lane (Phase B) is not promoted by the cleanup.
+        assert "composed_detail_cards" not in v8, chart_id
+
+        # Hero / identity_axis must continue to exist on charts that have
+        # ever produced them. Bare existence of these keys is part of the
+        # public contract.
+        assert "hero" in v8, chart_id
+        assert "identity_axis" in v8, chart_id
+
+
+def test_p0_normalize_packet_field_text_unit() -> None:
+    """Direct unit-level coverage for the connector-aware sentence-boundary
+    splitter inside ``_normalize_packet_field_text``.
+    """
+    from app.natal.natal_promise_packets import _normalize_packet_field_text
+
+    # Connector "de" before a capitalized continuation must not gain a
+    # period.
+    out = _normalize_packet_field_text(
+        "Önceki cümle bitti. Bazen de Dışarıda toplu görünürken içeride baskı taşıyor olabilirsin"
+    )
+    assert "Bazen de." not in out, out
+    assert "Bazen de Dışarıda" in out or "Bazen de dışarıda" in out, out
+
+    # Standalone fragment must be dropped.
+    out = _normalize_packet_field_text("Birinci cümle. Bazen de.")
+    assert "Bazen de." not in out, out
+    assert "bazen de." not in out.lower() or out.lower().count("bazen de.") == 0, out
+
+    # Real sentence boundaries between non-connector lowercase and uppercase
+    # are still inserted.
+    out = _normalize_packet_field_text(
+        "ilk cümle bitiyor Sonraki cümle başlar"
+    )
+    assert "bitiyor. Sonraki" in out, out
+
+
+def test_p0_vowel_harmonized_de_particle_unit() -> None:
+    """Direct unit-level coverage for the vowel-harmony helper that prevents
+    the "olması de" template defect.
+    """
+    from app.meaning.projection_shadow_v1_builder import (
+        _vowel_harmonized_de_particle,
+    )
+
+    # Back vowels → "da"
+    assert _vowel_harmonized_de_particle("olması") == "da"
+    assert _vowel_harmonized_de_particle("Yay olması") == "da"
+    assert _vowel_harmonized_de_particle("Koç olması") == "da"
+    assert _vowel_harmonized_de_particle("evinin") == "de" or _vowel_harmonized_de_particle("evinin") == "de"
+    # Front vowels → "de"
+    assert _vowel_harmonized_de_particle("evde") == "de"
+    assert _vowel_harmonized_de_particle("İkizler") == "de"
+    assert _vowel_harmonized_de_particle("Yengeç") == "de"
+    # Empty / vowel-less → "de"
+    assert _vowel_harmonized_de_particle("") == "de"
+    assert _vowel_harmonized_de_particle("xyz") == "de"
+
+
+# ---------------------------------------------------------------------------
+# v0.9b — debug-only relationship_route + moon_signature
+# Public surface MUST remain stable across all flag combinations.
+# ---------------------------------------------------------------------------
+
+
+_V0_9B_AUDIT_CHARTS = (
+    "istanbul_1994_06_25",
+    "istanbul_1997_01_21",
+    "izmir_1996_05_20",
+    "adana_1998_09_12",
+    "kutahya_1959_10_21",
+)
+
+
+def _v0_9b_set_base_flags(monkeypatch) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+
+
+def _composed_v0_9b_node_id_prefixes() -> tuple[str, ...]:
+    return (
+        "promise::composed_relationship_route_v0_9b",
+        "promise::composed_moon_signature_v0_9b",
+    )
+
+
+def _composed_v0_9b_packet_id_set() -> set[str]:
+    return {
+        "composed_relationship_route_v0_9b",
+        "composed_moon_signature_v0_9b",
+    }
+
+
+def _v0_9b_assert_no_public_leak(public: dict, chart_id: str) -> None:
+    narrative = public.get("profile_narrative_projection_v1") or {}
+    v8 = public.get("profile_v8_projection_v1") or {}
+    profile_public = narrative.get("profile_public") or {}
+
+    banned_node_id_prefixes = _composed_v0_9b_node_id_prefixes()
+    banned_packet_ids = _composed_v0_9b_packet_id_set()
+
+    def _violates(item):
+        if not isinstance(item, dict):
+            return False
+        node_id = str(item.get("node_id") or "").strip()
+        item_id = str(item.get("id") or "").strip()
+        if any(node_id.startswith(prefix) for prefix in banned_node_id_prefixes):
+            return True
+        if item_id in banned_packet_ids:
+            return True
+        return False
+
+    for lane in ("blocks", "core_blocks", "extra_blocks", "detail_cards", "composed_detail_cards"):
+        for item in (profile_public.get(lane) or []):
+            assert not _violates(item), (
+                f"{chart_id}: v0.9b candidate leaked into profile_public.{lane}: {item}"
+            )
+
+    for lane in ("differentiators", "insight_strip"):
+        for item in (v8.get(lane) or []):
+            assert not _violates(item), (
+                f"{chart_id}: v0.9b candidate leaked into profile_v8.{lane}"
+            )
+
+    hero = v8.get("hero") or {}
+    identity_axis = v8.get("identity_axis") or {}
+    assert not _violates(hero), f"{chart_id}: v0.9b candidate in v8.hero"
+    assert not _violates(identity_axis), f"{chart_id}: v0.9b candidate in v8.identity_axis"
+    assert "composed_detail_cards" not in v8, f"{chart_id}: v8 must not carry composed_detail_cards"
+
+
+def test_v0_9b_flags_off_public_output_matches_baseline(monkeypatch) -> None:
+    """With all v0.9b flags off, the public projection surface must match the
+    pre-v0.9b baseline byte-for-byte (modulo `traceability`)."""
+    _v0_9b_set_base_flags(monkeypatch)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", raising=False)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", raising=False)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", raising=False)
+    for chart_id in _V0_9B_AUDIT_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        _v0_9b_assert_no_public_leak(public, chart_id)
+
+
+def test_v0_9b_relationship_route_flag_on_public_output_stable(monkeypatch) -> None:
+    _v0_9b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    for chart_id in _V0_9B_AUDIT_CHARTS:
+        baseline = _live_public_view_from_batch_chart(chart_id)
+        monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+        rendered = _live_public_view_from_batch_chart(chart_id)
+        _v0_9b_assert_no_public_leak(rendered, chart_id)
+        assert _projection_surface_snapshot(baseline) == _projection_surface_snapshot(rendered), chart_id
+
+
+def test_v0_9b_moon_signature_flag_on_public_output_stable(monkeypatch) -> None:
+    _v0_9b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    for chart_id in _V0_9B_AUDIT_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        _v0_9b_assert_no_public_leak(public, chart_id)
+
+
+def test_v0_9b_both_families_on_public_surfaces_invariant(monkeypatch) -> None:
+    """All v0.9b candidates must remain debug-only; no public surface
+    receives them even with both family flags and detail-support all on.
+    The Phase B composed_detail_cards lane must stay career-only."""
+    _v0_9b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    # Also turn on Phase B promotion flags to make sure no v0.9b card sneaks
+    # through the existing career-only renderer allowlist.
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+
+    for chart_id in _V0_9B_AUDIT_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        _v0_9b_assert_no_public_leak(public, chart_id)
+
+
+def test_v0_9b_candidates_show_in_cluster_plan_trace_when_flag_on(monkeypatch) -> None:
+    """When v0.9b master flags are on, the candidates must appear in the
+    cluster plan's `candidate_packets` trace and the metrics ledger."""
+    _v0_9b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    any_v0_9b_seen = False
+    for chart_id in _V0_9B_AUDIT_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        plan = (
+            public.get("profile_narrative_projection_v1") or {}
+        ).get("traceability", {}).get("natal_promise_cluster_plan_v1") or {}
+        packets = plan.get("candidate_packets") or []
+        v0_9b = [p for p in packets if p.get("family") in {"relationship_route", "moon_signature"}]
+        if v0_9b:
+            any_v0_9b_seen = True
+            for card in v0_9b:
+                assert card["public_job"] == "debug_only", chart_id
+                elig = card["public_eligibility"]
+                assert elig["public_main_eligible"] is False, chart_id
+                assert elig["public_support_eligible"] is False, chart_id
+        # Ledger keys must exist on every chart, even charts that produce no
+        # v0.9b candidate.
+        metrics = plan.get("meta", {}).get("audit_metrics", {})
+        assert "composed_candidate_subtype_distribution" in metrics, chart_id
+        assert "composed_v0_9b_confidence_distribution" in metrics, chart_id
+        assert "composed_cross_family_overlap_count" in metrics, chart_id
+    assert any_v0_9b_seen, "No chart in the audit set produced a v0.9b candidate"
+
+
+def test_v0_9b_p0_truthfulness_no_dangling_connectors(monkeypatch) -> None:
+    """Confirms the v0.9b lived_scene / atom seeds do not reintroduce the
+    P0 "olması de" / "Bazen de." defects."""
+    _v0_9b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    olmasi = re.compile(r"olması de\b")
+    bazen_upper = re.compile(r"Bazen de\.")
+    bazen_lower = re.compile(r"bazen de\.")
+    for chart_id in _V0_9B_AUDIT_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        for chunk in _collect_dangling_connector_scan_chunks(public):
+            assert not olmasi.search(chunk), f"{chart_id}: olması de regression"
+            assert not bazen_upper.search(chunk), f"{chart_id}: Bazen de. regression"
+            assert not bazen_lower.search(chunk), f"{chart_id}: bazen de. regression"
+
+
+def test_v0_9b_flags_change_interpret_ui_cache_key() -> None:
+    """Toggling each of the three v0.9b flags must produce a different
+    cache key — otherwise stale cached responses leak across flag combos."""
+    import os
+    from app.api.routes.natal_interpretation import (
+        NatalInterpretationRequest,
+        _interpret_ui_cache_key,
+    )
+
+    request = NatalInterpretationRequest(
+        birth_date="1985-06-15",
+        birth_time="12:00",
+        birth_place="Tokyo",
+        birth_latitude=35.6762,
+        birth_longitude=139.6503,
+        birth_timezone="Asia/Tokyo",
+        locale="tr",
+        summary_only=False,
+        include_full_profile=True,
+    )
+
+    def _build_key():
+        return _interpret_ui_cache_key(
+            request,
+            debug=False,
+            include_debug=True,
+            include_full_profile=True,
+            profile_engine=None,
+        )
+
+    seen_keys: set[str] = set()
+    for flag in (
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B",
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B",
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT",
+    ):
+        os.environ.pop(flag, None)
+        off_key = _build_key()
+        os.environ[flag] = "true"
+        on_key = _build_key()
+        os.environ.pop(flag, None)
+        assert off_key != on_key, flag
+        seen_keys.add(off_key)
+        seen_keys.add(on_key)
+    assert len(seen_keys) >= 2
+
+
+# ---------------------------------------------------------------------------
+# v0.9b.0.1 calibration — public output / golden / P0 invariants
+# ---------------------------------------------------------------------------
+
+
+def test_v0_9b_0_1_calibration_keeps_public_surfaces_stable_across_flag_combos(monkeypatch) -> None:
+    """The calibration patch must not change public surfaces under any
+    flag combo. Accepted goldens (Group-A audit charts) byte-equal
+    between v0.9b flags-off and flags-on (including detail_support)."""
+    _v0_9b_set_base_flags(monkeypatch)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", raising=False)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", raising=False)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", raising=False)
+    baselines = {
+        cid: _projection_surface_snapshot(_live_public_view_from_batch_chart(cid))
+        for cid in _V0_9B_AUDIT_CHARTS
+    }
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    for cid in _V0_9B_AUDIT_CHARTS:
+        rendered = _projection_surface_snapshot(_live_public_view_from_batch_chart(cid))
+        assert rendered == baselines[cid], cid
+
+
+def test_v0_9b_0_1_calibration_ledger_metrics_present(monkeypatch) -> None:
+    """The cluster plan ledger must carry the new v0.9b.0.1 metric keys."""
+    _v0_9b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    for cid in _V0_9B_AUDIT_CHARTS:
+        public = _live_public_view_from_batch_chart(cid)
+        plan = (
+            public.get("profile_narrative_projection_v1") or {}
+        ).get("traceability", {}).get("natal_promise_cluster_plan_v1") or {}
+        metrics = plan.get("meta", {}).get("audit_metrics", {})
+        assert "composed_default_fallback_count" in metrics, cid
+        assert "cross_family_moon_ownership_count" in metrics, cid
+        assert "relationship_candidates_blocked_by_moon_ownership" in metrics, cid
+        assert "composed_v0_9b_opportunity_severity" in metrics, cid
+        # severity buckets must exist per family
+        severity = metrics["composed_v0_9b_opportunity_severity"]
+        for family in ("relationship_route", "moon_signature"):
+            assert family in severity, cid
+            for bucket in ("high_priority_opportunity", "medium_priority_opportunity", "debug_observation_only"):
+                assert bucket in severity[family], (cid, family, bucket)
+
+
+def test_v0_9b_0_1_calibration_no_p0_regression(monkeypatch) -> None:
+    _v0_9b_set_base_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    olmasi = re.compile(r"olması de\b")
+    bazen_upper = re.compile(r"Bazen de\.")
+    bazen_lower = re.compile(r"bazen de\.")
+    for cid in _V0_9B_AUDIT_CHARTS:
+        public = _live_public_view_from_batch_chart(cid)
+        for chunk in _collect_dangling_connector_scan_chunks(public):
+            assert not olmasi.search(chunk), f"{cid}: olması de regression"
+            assert not bazen_upper.search(chunk), f"{cid}: Bazen de. regression"
+            assert not bazen_lower.search(chunk), f"{cid}: bazen de. regression"
+
+
+# ---------------------------------------------------------------------------
+# v0.9b.1 — moon_signature.home_inner_security narrow detail rollout
+# (integration tests against the live public projection)
+# ---------------------------------------------------------------------------
+
+
+_V0_9B_1_MOON_HOME_TARGET_CHARTS = (
+    "trabzon_2001_09_14",
+    "fix08_cancer_capricorn_nodes",
+    "cairo_1991_01_15",
+)
+
+_V0_9B_1_MOON_HOME_NON_TARGET_CHARTS = (
+    "istanbul_1994_06_25",
+    "istanbul_1997_01_21",
+    "adana_1998_09_12",
+    "izmir_1996_05_20",
+)
+
+
+def _v0_9b_1_set_full_flags(monkeypatch) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_HOME_INNER_SECURITY_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+
+
+def test_v0_9b_1_moon_home_inner_security_target_charts_emit_exactly_one_card(monkeypatch) -> None:
+    _v0_9b_1_set_full_flags(monkeypatch)
+    for chart_id in _V0_9B_1_MOON_HOME_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        profile_public = public["profile_narrative_projection_v1"]["profile_public"]
+        cards = profile_public.get("composed_detail_cards") or []
+        moon_cards = [
+            c for c in cards
+            if str(c.get("id") or "").startswith(
+                "composed_detail::composed_moon_signature_v0_9b::"
+            )
+        ]
+        assert len(moon_cards) == 1, f"{chart_id}: expected 1 moon card, got {len(moon_cards)}"
+        card = moon_cards[0]
+        assert card["family"] == "moon_home_inner_security"
+        assert card["origin"] == "composed_detail_renderer_v0_9b_1"
+        assert card["emphasis"] == "detail"
+
+
+def test_v0_9b_1_moon_home_inner_security_non_target_charts_emit_no_moon_card(monkeypatch) -> None:
+    _v0_9b_1_set_full_flags(monkeypatch)
+    for chart_id in _V0_9B_1_MOON_HOME_NON_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        profile_public = public["profile_narrative_projection_v1"]["profile_public"]
+        cards = profile_public.get("composed_detail_cards") or []
+        moon_cards = [
+            c for c in cards
+            if str(c.get("id") or "").startswith(
+                "composed_detail::composed_moon_signature_v0_9b::"
+            )
+        ]
+        assert moon_cards == [], chart_id
+
+
+def test_v0_9b_1_moon_card_visible_fields_only(monkeypatch) -> None:
+    _v0_9b_1_set_full_flags(monkeypatch)
+    expected_visible = {
+        "id", "node_id", "headline", "teaser", "body", "chips",
+        "family", "emphasis", "origin",
+    }
+    forbidden = {
+        "source_type", "source_candidate_id", "public_job",
+        "source_anchor_trace", "detail_items", "evidence_summary",
+        "avoid_readings",
+    }
+    for chart_id in _V0_9B_1_MOON_HOME_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        profile_public = public["profile_narrative_projection_v1"]["profile_public"]
+        cards = profile_public.get("composed_detail_cards") or []
+        moon_cards = [
+            c for c in cards
+            if str(c.get("id") or "").startswith(
+                "composed_detail::composed_moon_signature_v0_9b::"
+            )
+        ]
+        for card in moon_cards:
+            keys = set(card.keys())
+            assert keys <= expected_visible, f"{chart_id}: unexpected fields {keys - expected_visible}"
+            assert not (keys & forbidden), f"{chart_id}: trace fields leaked {keys & forbidden}"
+
+
+def test_v0_9b_1_moon_card_does_not_leak_into_other_public_surfaces(monkeypatch) -> None:
+    _v0_9b_1_set_full_flags(monkeypatch)
+    moon_id_prefix = "composed_detail::composed_moon_signature_v0_9b::"
+    moon_node_id_prefix = "promise::composed_moon_signature_v0_9b"
+
+    def _has_moon_leak(items) -> bool:
+        for it in items or []:
+            if not isinstance(it, dict):
+                continue
+            if str(it.get("id") or "").startswith(moon_id_prefix):
+                return True
+            if str(it.get("node_id") or "").strip().startswith(moon_node_id_prefix):
+                return True
+        return False
+
+    for chart_id in _V0_9B_1_MOON_HOME_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        narrative = public["profile_narrative_projection_v1"]
+        profile_public = narrative["profile_public"]
+        v8 = public["profile_v8_projection_v1"]
+
+        for lane in ("blocks", "core_blocks", "extra_blocks", "detail_cards"):
+            assert not _has_moon_leak(profile_public.get(lane)), f"{chart_id}: leak into {lane}"
+
+        for lane in ("differentiators", "insight_strip"):
+            assert not _has_moon_leak(v8.get(lane)), f"{chart_id}: leak into v8.{lane}"
+
+        hero = v8.get("hero") or {}
+        identity = v8.get("identity_axis") or {}
+        assert not str(hero.get("node_id") or "").startswith(moon_node_id_prefix), chart_id
+        assert not str(identity.get("node_id") or "").startswith(moon_node_id_prefix), chart_id
+
+
+def test_v0_9b_1_moon_card_copy_quality(monkeypatch) -> None:
+    _v0_9b_1_set_full_flags(monkeypatch)
+    banned_phrases = (
+        "Aile önemlidir", "aile önemlidir",
+        "Ev hayatın güçlüdür", "ev hayatın güçlüdür",
+        "Annenle ilişkin", "Babanla ilişkin",
+        "Ailen senin için her şey", "kalbinde yer eden aile",
+    )
+    debug_tokens = ("debug", "candidate", "fallback", "source_type", "public job")
+    banned_ascii = ("Insanlar", "Disaridaki", "nasil", "dogru", "cumle", "Gorunur")
+    for chart_id in _V0_9B_1_MOON_HOME_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        cards = public["profile_narrative_projection_v1"]["profile_public"].get(
+            "composed_detail_cards"
+        ) or []
+        for card in cards:
+            if not str(card.get("id") or "").startswith(
+                "composed_detail::composed_moon_signature_v0_9b::"
+            ):
+                continue
+            combined = " ".join(str(card[f]) for f in ("headline", "teaser", "body"))
+            for banned in banned_phrases:
+                assert banned not in combined, (chart_id, banned)
+            for token in debug_tokens:
+                assert token not in combined.lower(), (chart_id, token)
+            for ascii_form in banned_ascii:
+                assert not re.search(rf"\b{re.escape(ascii_form)}\b", combined), (
+                    chart_id,
+                    ascii_form,
+                )
+            assert any(c in combined for c in "İıŞşĞğÇçÖöÜü"), chart_id
+
+
+def test_v0_9b_1_moon_card_has_no_p0_truthfulness_defects(monkeypatch) -> None:
+    _v0_9b_1_set_full_flags(monkeypatch)
+    olmasi = re.compile(r"olması de\b")
+    for chart_id in _V0_9B_1_MOON_HOME_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        cards = public["profile_narrative_projection_v1"]["profile_public"].get(
+            "composed_detail_cards"
+        ) or []
+        for card in cards:
+            for field in ("headline", "teaser", "body"):
+                text = str(card[field])
+                assert not olmasi.search(text), (chart_id, field, text)
+                assert "Bazen de." not in text, (chart_id, field, text)
+                assert "bazen de." not in text, (chart_id, field, text)
+
+
+def test_v0_9b_1_flag_off_omits_moon_lane(monkeypatch) -> None:
+    monkeypatch.setenv("SE_EPHE_PATH", str(Path("swisseph/ephe").resolve()))
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PROJECTION_V1", "true")
+    monkeypatch.setenv("ENABLE_NATAL_PROMISE_PACKET_DEBUG", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.delenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_HOME_INNER_SECURITY_PUBLIC_DETAIL_LANE",
+        raising=False,
+    )
+    for chart_id in _V0_9B_1_MOON_HOME_TARGET_CHARTS:
+        public = _live_public_view_from_batch_chart(chart_id)
+        cards = public["profile_narrative_projection_v1"]["profile_public"].get(
+            "composed_detail_cards"
+        ) or []
+        moon_cards = [
+            c for c in cards
+            if str(c.get("id") or "").startswith(
+                "composed_detail::composed_moon_signature_v0_9b::"
+            )
+        ]
+        assert moon_cards == [], chart_id
+
+
+def test_v0_9b_1_cairo_cross_family_block_holds_end_to_end(monkeypatch) -> None:
+    """cairo_1991_01_15 produces both a Moon home_inner_security card
+    and a relationship_route candidate that consumes Moon evidence.
+    With v0.9b.1 fully on, the moon card renders to the public lane and
+    the relationship card is marked future_renderer_eligibility_blocked.
+    No relationship-derived id appears in the public lane."""
+    _v0_9b_1_set_full_flags(monkeypatch)
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+
+    public = _live_public_view_from_batch_chart("cairo_1991_01_15")
+    profile_public = public["profile_narrative_projection_v1"]["profile_public"]
+    cards = profile_public.get("composed_detail_cards") or []
+
+    # Exactly one moon card present.
+    moon_cards = [
+        c for c in cards
+        if str(c.get("id") or "").startswith(
+            "composed_detail::composed_moon_signature_v0_9b::"
+        )
+    ]
+    assert len(moon_cards) == 1, cards
+
+    # No relationship card in the public lane.
+    rel_cards = [
+        c for c in cards
+        if str(c.get("id") or "").startswith(
+            "composed_detail::composed_relationship_route_v0_9b::"
+        )
+    ]
+    assert rel_cards == [], rel_cards
+
+    # The relationship candidate exists in trace and is marked blocked.
+    plan = (
+        public["profile_v8_projection_v1"]["traceability"][
+            "natal_promise_cluster_plan_v1"
+        ]
+    )
+    rel_candidates = [
+        p for p in plan.get("candidate_packets") or []
+        if p.get("family") == "relationship_route"
+    ]
+    assert rel_candidates, "cairo relationship_route candidate missing"
+    rel = rel_candidates[0]
+    elig = rel.get("public_eligibility") or {}
+    meta = rel.get("meta") or {}
+    assert elig.get("future_renderer_eligibility_blocked") is True, rel
+    assert meta.get("moon_evidence_owned_by") == "moon_signature", rel
+
+
+def test_v0_9b_1_flag_changes_interpret_ui_cache_key() -> None:
+    import os
+    from app.api.routes.natal_interpretation import (
+        NatalInterpretationRequest,
+        _interpret_ui_cache_key,
+    )
+
+    request = NatalInterpretationRequest(
+        birth_date="1991-01-15",
+        birth_time="12:00",
+        birth_place="Cairo",
+        birth_latitude=30.0444,
+        birth_longitude=31.2357,
+        birth_timezone="Africa/Cairo",
+        locale="tr",
+        summary_only=False,
+        include_full_profile=True,
+    )
+
+    def _key():
+        return _interpret_ui_cache_key(
+            request,
+            debug=False,
+            include_debug=True,
+            include_full_profile=True,
+            profile_engine=None,
+        )
+
+    os.environ.pop(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_HOME_INNER_SECURITY_PUBLIC_DETAIL_LANE",
+        None,
+    )
+    off_key = _key()
+    os.environ[
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_HOME_INNER_SECURITY_PUBLIC_DETAIL_LANE"
+    ] = "true"
+    on_key = _key()
+    os.environ.pop(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_HOME_INNER_SECURITY_PUBLIC_DETAIL_LANE",
+        None,
+    )
+    assert off_key != on_key

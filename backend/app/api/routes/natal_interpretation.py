@@ -449,6 +449,20 @@ def _interpret_ui_cache_key(
     include_full_profile: bool,
     profile_engine: str | None,
 ) -> str:
+    composed_semantic_flag_signature = "|".join(
+        [
+            f"v09:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9', '')).strip().lower()}",
+            f"v09_detail:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_DETAIL_SUPPORT', '')).strip().lower()}",
+            f"v09_main:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_MAIN', '')).strip().lower()}",
+            f"v09_public_voice_detail:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_VOICE_DETAIL_SUPPORT', '')).strip().lower()}",
+            f"v09_render_detail:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL', '')).strip().lower()}",
+            f"v09_public_detail_lane:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE', '')).strip().lower()}",
+            f"v09b_relationship:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B', '')).strip().lower()}",
+            f"v09b_moon:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B', '')).strip().lower()}",
+            f"v09b_detail_support:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT', '')).strip().lower()}",
+            f"v09b_moon_hi_lane:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_HOME_INNER_SECURITY_PUBLIC_DETAIL_LANE', '')).strip().lower()}",
+        ]
+    )
     digest = hashlib.sha1(
         "|".join(
             [
@@ -464,6 +478,7 @@ def _interpret_ui_cache_key(
                 "include_debug" if include_debug else "noinclude_debug",
                 "include_full_profile" if include_full_profile else "no_full_profile",
                 (profile_engine or "").strip().lower(),
+                composed_semantic_flag_signature,
                 _INTERPRET_UI_CACHE_VERSION,
             ]
         ).encode("utf-8")
