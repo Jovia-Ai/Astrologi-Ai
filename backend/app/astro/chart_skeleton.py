@@ -132,6 +132,140 @@ def _tightest_aspect_for(planet_name: str, aspects: Sequence[Any]) -> dict[str, 
     return best
 
 
+# --------------------------------------------------------------------------
+# PR-2a — Half-B salience scaffold (spec §2.2). UNCALIBRATED: starting
+# weights only. 2 charts cannot calibrate, only test directionality.
+# Carried as data flag `_uncalibrated: true` so no consumer mistakes
+# scaffold tiers for truth. Pipeline-untouched; consumed only by scorer.
+# --------------------------------------------------------------------------
+
+_SAL_BASE = {"luminary": 0.30, "chart_ruler": 0.24, "mc_ruler": 0.18,
+             "stellium": 0.20, "angular": 0.16, "plain": 0.10,
+             "aspect": 0.18}
+_SAL_DIGNITY = {"domicile": 0.12, "exaltation": 0.10,
+                "detriment": 0.06, "fall": 0.06, "peregrine": 0.0}
+_SAL_TIGHTNESS = ((1.0, 0.12), (3.0, 0.08), (6.0, 0.04))
+_SAL_TIERS = {"defining": 0.42, "strong": 0.30}
+_ANGULAR_H = {1, 4, 7, 10}
+_SUCCEDENT_H = {2, 5, 8, 11}
+
+
+def _sal_tier(score: float | None) -> str | None:
+    if score is None:
+        return None
+    if score >= _SAL_TIERS["defining"]:
+        return "defining"
+    if score >= _SAL_TIERS["strong"]:
+        return "strong"
+    return "background"
+
+
+def _planet_salience(name: str, skel: Mapping[str, Any]) -> float | None:
+    dt = {_norm(r["planet"]): r for r in skel.get("dignity_table", [])}
+    row = dt.get(_norm(name))
+    if not row:
+        return None
+    house = row.get("house")
+    dignity = _norm(row.get("dignity"))
+    asc = skel.get("asc_ruler_spine", {})
+    mc = skel.get("mc_ruler_spine", {})
+    is_cr = _norm(asc.get("ruler")) == _norm(name)
+    is_mcr = _norm(mc.get("ruler")) == _norm(name)
+    is_lum = _norm(name) in ("sun", "moon")
+    in_stel = [s for s in skel.get("stelliums", [])
+               if _norm(name) in {_norm(p) for p in s.get("planets", [])}]
+    is_ang = isinstance(house, int) and house in _ANGULAR_H
+
+    roles = [_SAL_BASE["plain"]]
+    if is_lum:
+        roles.append(_SAL_BASE["luminary"])
+    if is_cr:
+        roles.append(_SAL_BASE["chart_ruler"])
+    if is_mcr:
+        roles.append(_SAL_BASE["mc_ruler"])
+    if in_stel:
+        roles.append(_SAL_BASE["stellium"])
+    if is_ang:
+        roles.append(_SAL_BASE["angular"])
+    s = max(roles)
+
+    s += _SAL_DIGNITY.get(dignity, 0.0)
+
+    if isinstance(house, int):
+        if house in _ANGULAR_H:
+            s += 0.10
+        elif house in _SUCCEDENT_H:
+            s += 0.04
+
+    if in_stel:
+        big = any(int(st.get("count", 0)) >= 4 for st in in_stel)
+        s += 0.12 if big else 0.08
+
+    orbs = [a["orb"] for a in skel.get("tightest_aspects", [])
+            if _norm(name) in (_norm(a.get("a")), _norm(a.get("b")))]
+    if orbs:
+        mo = min(orbs)
+        for lim, val in _SAL_TIGHTNESS:
+            if mo <= lim:
+                s += val
+                break
+
+    if is_cr:
+        if is_ang and dignity in ("domicile", "exaltation"):
+            s += 0.10
+        elif dignity in ("detriment", "fall"):
+            s += 0.04
+
+    return round(s, 3)
+
+
+def _enrich_with_salience(skel: dict[str, Any]) -> None:
+    """Mutate skel in place: add salience / salience_tier (UNCALIBRATED)."""
+    psal: dict[str, float] = {}
+    for row in skel.get("dignity_table", []):
+        v = _planet_salience(row["planet"], skel)
+        if v is None:
+            continue
+        psal[_norm(row["planet"])] = v
+        row["salience"] = v
+        row["salience_tier"] = _sal_tier(v)
+    for key in ("sun", "moon"):
+        lum = skel.get("luminaries", {}).get(key)
+        if lum is not None:
+            v = psal.get(key)
+            lum["salience"] = v
+            lum["salience_tier"] = _sal_tier(v)
+    for spine_key in ("asc_ruler_spine", "mc_ruler_spine"):
+        sp = skel.get(spine_key, {})
+        v = psal.get(_norm(sp.get("ruler")))
+        sp["ruler_salience"] = v
+        sp["ruler_salience_tier"] = _sal_tier(v)
+    for st in skel.get("stelliums", []):
+        v = round(_SAL_BASE["stellium"]
+                  + (0.12 if int(st.get("count", 0)) >= 4 else 0.08), 3)
+        st["salience"] = v
+        st["salience_tier"] = _sal_tier(v)
+    for a in skel.get("tightest_aspects", []):
+        v = _SAL_BASE["aspect"]
+        orb = a.get("orb")
+        if isinstance(orb, (int, float)):
+            for lim, val in _SAL_TIGHTNESS:
+                if orb <= lim:
+                    v += val
+                    break
+        v = round(v, 3)
+        a["salience"] = v
+        a["salience_tier"] = _sal_tier(v)
+    skel["_salience_meta"] = {
+        "_uncalibrated": True,
+        "note": ("PR-2a scaffold: spec §2.2 starting weights. Two "
+                 "reference charts test directionality only, NOT "
+                 "calibration. Weights/tiers provisional until the "
+                 "stratified corpus calibrates them."),
+        "tiers": dict(_SAL_TIERS),
+    }
+
+
 def build_chart_skeleton(chart_data: Mapping[str, Any]) -> dict[str, Any]:
     """Extract the deterministic chart_skeleton (spec §2.1, Half A).
 
@@ -275,8 +409,8 @@ def build_chart_skeleton(chart_data: Mapping[str, Any]) -> dict[str, Any]:
             "termination_reason": chain.get("termination_reason"),
         })
 
-    return {
-        "schema": "arc_chart_skeleton_v0_1_half_a",
+    skel = {
+        "schema": "arc_chart_skeleton_v0_1",
         "meta": {
             "element_distribution": elem,
             "modality_distribution": modal,
@@ -294,7 +428,9 @@ def build_chart_skeleton(chart_data: Mapping[str, Any]) -> dict[str, Any]:
         "stelliums": stelliums,
         "dispositor_chains": dispositor_chains,
         "_deferred": [
-            "salience_scoring (PR-2, corpus-blocked)",
+            "salience CALIBRATION (corpus-blocked; weights UNCALIBRATED)",
             "chart_shape (non-trivial; not half-implemented)",
         ],
     }
+    _enrich_with_salience(skel)  # PR-2a Half-B (UNCALIBRATED scaffold)
+    return skel

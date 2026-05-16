@@ -27,13 +27,42 @@ def _dignity(skel, planet):
     return None
 
 
-def test_skeleton_schema_and_no_salience_leak():
+def _skeleton(date, time, place, lat, lon, tz):
+    return build_chart_skeleton(compute_natal_chart(
+        date, time, place,
+        birth_latitude=lat, birth_longitude=lon, birth_timezone=tz))
+
+
+def _nairobi():
+    return _skeleton("1962-01-07", "10:30", "Nairobi, KE",
+                     -1.2921, 36.8219, "Africa/Nairobi")
+
+
+def _helsinki():
+    return _skeleton("1993-03-09", "08:50", "Helsinki, FI",
+                     60.1699, 24.9384, "Europe/Helsinki")
+
+
+def _dig(skel, planet):
+    for r in skel["dignity_table"]:
+        if r["planet"] == planet:
+            return r
+    return None
+
+
+def test_pr2a_salience_scaffold_present_and_uncalibrated():
     skel = _skeleton_2019()
-    assert skel["schema"] == "arc_chart_skeleton_v0_1_half_a"
-    # Half B (salience) must NOT be present in PR-1.
+    assert skel["schema"] == "arc_chart_skeleton_v0_1"
+    # Half-B now present on every dignity_table row.
     for row in skel["dignity_table"]:
-        assert "salience" not in row
-    assert "salience_scoring (PR-2, corpus-blocked)" in skel["_deferred"]
+        assert "salience" in row and isinstance(row["salience"], float)
+        assert row["salience_tier"] in ("defining", "strong", "background")
+    # The data itself must flag it as scaffold, not truth.
+    assert skel["_salience_meta"]["_uncalibrated"] is True
+    # Calibration (not the scaffold) is what stays corpus-blocked.
+    joined = " ".join(skel["_deferred"])
+    assert "salience CALIBRATION" in joined
+    assert "salience_scoring" not in joined
 
 
 def test_luminaries_sun_scorpio_4th_moon_aquarius_6th():
@@ -139,11 +168,52 @@ def test_dispositor_chains_present_and_well_formed():
     assert isinstance(saturn["primary_chain"], list)
 
 
-def test_deferred_now_only_salience_and_chart_shape():
+def test_deferred_now_only_salience_calibration_and_chart_shape():
     skel = _skeleton_2019()
     deferred_joined = " ".join(skel["_deferred"])
-    assert "salience_scoring" in deferred_joined
+    # PR-2a shipped the scaffold; only CALIBRATION stays corpus-blocked.
+    assert "salience CALIBRATION" in deferred_joined
     assert "chart_shape" in deferred_joined
-    # dispositor_chains / aspect direction no longer deferred.
     assert "dispositor_chains" not in deferred_joined
     assert skel["dispositor_chains"], "dispositor_chains must be populated"
+
+
+# --- PR-2a directional structural tests (UNCALIBRATED scaffold) ----------
+# These do NOT assert calibrated correctness. They test whether the
+# spec §2.2 formula's *direction* honours the locked "debilitated = loud"
+# principle — and they document where it does NOT yet (the first
+# calibration target, found structurally on 2 charts, by design).
+
+def test_debilitated_but_role_supported_is_loud():
+    """Nairobi Moon (Capricorn detriment) is a luminary in a 5-planet
+    stellium → must NOT fall to background. Gold ranks it #2."""
+    moon = _dig(_nairobi(), "Moon")
+    assert moon["dignity"] == "detriment"
+    assert moon["salience_tier"] == "defining", (
+        f"Moon detriment should stay loud via luminary+stellium, "
+        f"got {moon['salience_tier']} ({moon['salience']})")
+
+
+def test_debilitated_chart_ruler_is_loud():
+    """Helsinki Mercury (Pisces 12 detriment) is the chart ruler fused
+    to the Sun → must read as defining. Gold ranks it #1."""
+    merc = _dig(_helsinki(), "Mercury")
+    assert merc["dignity"] == "detriment"
+    assert merc["salience_tier"] == "defining", (
+        f"debilitated chart ruler should be defining, got "
+        f"{merc['salience_tier']} ({merc['salience']})")
+
+
+def test_documented_gap_isolated_debilitated_planet_falls_to_background():
+    """KNOWN UNCALIBRATED GAP (first calibration target): Helsinki Mars
+    (Cancer fall) has no other role/stellium, so the §2.2 formula scores
+    it 'background' — even though the gold ranks the Mercury/Venus/Mars
+    debilitation cluster as the chart's #2 defining struggle. This is
+    NOT a bug; it is the structural finding the 2-chart scaffold test was
+    designed to surface: an isolated debilitated planet is not yet
+    'loud'. Calibration (corpus) must add an affliction term."""
+    mars = _dig(_helsinki(), "Mars")
+    assert mars["dignity"] == "fall"
+    assert mars["salience_tier"] == "background", (
+        "if this no longer holds, the formula or weights changed — "
+        "revisit the documented affliction-loudness gap")
