@@ -11,12 +11,12 @@ Scope (PR-1, deliberately narrow — see
 * Produces ONLY the deterministic half (spec §2.1) of ``chart_skeleton``.
 * Salience scoring (spec §2.2, Half B) is intentionally NOT here — it is
   PR-2 and is corpus-blocked.
-* ``dispositor_chains`` and aspect applying/separating direction are
-  intentionally DEFERRED (their producing functions —
+* ``dispositor_chains`` and aspect applying/separating are now
+  implemented (PR-1b) by delegating to the existing, fully-read
   ``dispositor_engine.build_dispositor_chain`` and
-  ``aspect_direction.compute_direction`` — must be read in full before
-  being called; guessing their contract is rejected by repo policy).
-  They are emitted as empty with an explicit ``_deferred`` marker.
+  ``aspect_direction.compute_direction`` — no contract guessing.
+* ``chart_shape`` remains intentionally out of scope (non-trivial;
+  not half-implemented).
 
 This module mutates no global state and is not wired into any pipeline.
 Wiring into ``_prepare_payload_from_chart`` is PR-3 (contract plumbing).
@@ -25,7 +25,9 @@ from __future__ import annotations
 
 from typing import Any, Mapping, Sequence
 
+from app.astro.aspect_direction import compute_direction
 from app.astro.dignity import RULERSHIPS, essential_dignity
+from app.natal.dispositor_engine import build_dispositor_chain
 
 # Classical + modern planets carried in the dignity table. Points
 # (North Node / Lilith / Vertex / Fortune) are excluded from dignity to
@@ -207,17 +209,28 @@ def build_chart_skeleton(chart_data: Mapping[str, Any]) -> dict[str, Any]:
         if isinstance(a, Mapping) and isinstance(a.get("orb"), (int, float))
     ]
     sortable.sort(key=lambda a: float(a["orb"]))
-    tightest_aspects = [
-        {
-            "a": a.get("planet1"),
-            "b": a.get("planet2"),
-            "type": a.get("aspect") or a.get("type"),
+    tightest_aspects: list[dict[str, Any]] = []
+    for a in sortable[:_TIGHTEST_ASPECT_COUNT]:
+        a_name, b_name = a.get("planet1"), a.get("planet2")
+        a_p = _planet_lookup(planets, a_name)
+        b_p = _planet_lookup(planets, b_name)
+        atype = a.get("aspect") or a.get("type")
+        # "direction" holds the richer aspect_direction enum
+        # ("applying" | "separating" | "exact" | None) rather than a bool.
+        direction = compute_direction(
+            str(atype or ""),
+            a_p.get("longitude"),
+            b_p.get("longitude"),
+            a_p.get("speed"),
+            b_p.get("speed"),
+        )
+        tightest_aspects.append({
+            "a": a_name,
+            "b": b_name,
+            "type": atype,
             "orb": round(float(a["orb"]), 2),
-            # applying/separating DEFERRED — see module docstring.
-            "applying": None,
-        }
-        for a in sortable[:_TIGHTEST_ASPECT_COUNT]
-    ]
+            "direction": direction,
+        })
 
     # --- stelliums (>=3 by sign or by house) --------------------------
     by_sign: dict[str, list[str]] = {}
@@ -240,6 +253,19 @@ def build_chart_skeleton(chart_data: Mapping[str, Any]) -> dict[str, Any]:
             stelliums.append({"by": "house", "key": str(house),
                               "planets": members, "count": len(members)})
 
+    # --- dispositor chains (delegated to dispositor_engine) -----------
+    dispositor_chains: list[dict[str, Any]] = []
+    for name in _DIGNITY_PLANETS:
+        if not _planet_lookup(planets, name):
+            continue
+        chain = build_dispositor_chain(name, chart_data)
+        dispositor_chains.append({
+            "planet": name,
+            "start_sign": chain.get("start_sign"),
+            "primary_chain": chain.get("primary_chain", []),
+            "termination_reason": chain.get("termination_reason"),
+        })
+
     return {
         "schema": "arc_chart_skeleton_v0_1_half_a",
         "meta": {
@@ -257,11 +283,9 @@ def build_chart_skeleton(chart_data: Mapping[str, Any]) -> dict[str, Any]:
         "dignity_table": dignity_table,
         "tightest_aspects": tightest_aspects,
         "stelliums": stelliums,
-        "dispositor_chains": [],  # DEFERRED — see module docstring
+        "dispositor_chains": dispositor_chains,
         "_deferred": [
             "salience_scoring (PR-2, corpus-blocked)",
-            "dispositor_chains (needs full read of build_dispositor_chain)",
-            "aspect applying/separating (needs full read of compute_direction)",
             "chart_shape (non-trivial; not half-implemented)",
         ],
     }

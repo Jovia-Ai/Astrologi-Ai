@@ -105,11 +105,36 @@ def test_sixth_house_stellium_detected():
     assert {"Moon", "Saturn", "Pluto"}.issubset(members)
 
 
-def test_tightest_aspects_sorted_and_applying_deferred():
+def test_tightest_aspects_sorted_with_direction():
     skel = _skeleton_2019()
     aspects = skel["tightest_aspects"]
     assert aspects, "expected at least one aspect"
     orbs = [a["orb"] for a in aspects]
     assert orbs == sorted(orbs)
-    # applying/separating intentionally deferred in PR-1.
-    assert all(a["applying"] is None for a in aspects)
+    # PR-1b: direction is the aspect_direction enum, not deferred.
+    allowed = {"applying", "separating", "exact", None}
+    assert all(a["direction"] in allowed for a in aspects)
+
+
+def test_dispositor_chains_present_and_well_formed():
+    skel = _skeleton_2019()
+    chains = {c["planet"]: c for c in skel["dispositor_chains"]}
+    # Every classical planet present in the chart gets a chain entry.
+    assert "Sun" in chains and "Saturn" in chains
+    saturn = chains["Saturn"]
+    # Saturn is in Capricorn (its own domicile) -> chain terminates fast.
+    assert saturn["start_sign"] == "Capricorn"
+    assert saturn["termination_reason"] in {
+        "domicile", "loop_detected", "max_hops", "missing_data",
+    }
+    assert isinstance(saturn["primary_chain"], list)
+
+
+def test_deferred_now_only_salience_and_chart_shape():
+    skel = _skeleton_2019()
+    deferred_joined = " ".join(skel["_deferred"])
+    assert "salience_scoring" in deferred_joined
+    assert "chart_shape" in deferred_joined
+    # dispositor_chains / aspect direction no longer deferred.
+    assert "dispositor_chains" not in deferred_joined
+    assert skel["dispositor_chains"], "dispositor_chains must be populated"
