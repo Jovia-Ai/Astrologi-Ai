@@ -114,6 +114,15 @@ def test_tightest_aspects_sorted_with_direction():
     # PR-1b: direction is the aspect_direction enum, not deferred.
     allowed = {"applying", "separating", "exact", None}
     assert all(a["direction"] in allowed for a in aspects)
+    # Corpus-caught fix: only true planet-planet aspects — no angle-axis
+    # self-pairs (Asc/Desc, MC/IC) or derived points (Vertex/Node).
+    planets = {
+        "sun", "moon", "mercury", "venus", "mars", "jupiter",
+        "saturn", "uranus", "neptune", "pluto",
+    }
+    for a in aspects:
+        assert str(a["a"]).lower() in planets
+        assert str(a["b"]).lower() in planets
 
 
 def test_dispositor_chains_present_and_well_formed():

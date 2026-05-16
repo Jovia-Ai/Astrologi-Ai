@@ -204,9 +204,18 @@ def build_chart_skeleton(chart_data: Mapping[str, Any]) -> dict[str, Any]:
         })
 
     # --- tightest aspects (global top-N by orb) -----------------------
+    # Only true planet-planet aspects. Excludes angle-axis self-pairs
+    # (Asc↔Desc, MC↔IC are structurally always 0°/180°) and derived
+    # points (Vertex/Fortune/Node — this engine duplicates Vertex onto
+    # Venus's longitude). An astrologer never calls Asc-Desc a "tight
+    # aspect"; surfaced by the ARC corpus on day one.
+    _planet_set = {p.lower() for p in _DIGNITY_PLANETS}
     sortable = [
         a for a in aspects
-        if isinstance(a, Mapping) and isinstance(a.get("orb"), (int, float))
+        if isinstance(a, Mapping)
+        and isinstance(a.get("orb"), (int, float))
+        and _norm(a.get("planet1")) in _planet_set
+        and _norm(a.get("planet2")) in _planet_set
     ]
     sortable.sort(key=lambda a: float(a["orb"]))
     tightest_aspects: list[dict[str, Any]] = []
