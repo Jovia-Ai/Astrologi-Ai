@@ -358,7 +358,55 @@ def test_natal_promise_cluster_plan_v0_9a_career_raw_generic_owner_is_high_prior
     assert opportunities[0]["packet_id"] == "composed_career_route_v0_9a"
     assert opportunities[0]["severity"] == "high_priority_opportunity"
     assert opportunities[0]["current_owner_quality"] == ["raw_generic_fallback"]
-    assert "career_visibility" in " ".join(opportunities[0]["target_generic_cluster_ids"]).lower() or opportunities[0]["target_main_packet_ids"] == ["career_career_visibility"]
+
+
+def test_natal_promise_cluster_plan_tracks_mercury_signature_as_debug_only_composed_candidate() -> None:
+    plan = build_natal_promise_cluster_plan_v1(
+        [
+            _packet(
+                packet_id="career_career_visibility",
+                domain="career",
+                promise_type="career_signature",
+                strength=0.86,
+                direct="Kariyer görünürlüğü sende çalışıyor.",
+                scene="İşin görünür olmasını önemsiyorsun.",
+                gift="Dışarıda görünmek.",
+                anchors=["MC Oğlak"],
+                evidence_ids=["house:10:cusp_sign:Capricorn"],
+                source_type="generic_fallback",
+            ),
+            _composed_packet(
+                packet_id="composed_mercury_signature_v0_9c",
+                family="mercury_signature",
+                domain="mind",
+                confidence=0.78,
+                confidence_tier="medium",
+                lived_scene="Zihnin cümleyi kurarken hem yapı hem de ani bağlantı değişimi taşıyor.",
+                domain_reason=["Mercury thought/speech route", "Saturn structure on mind route", "Uranus disruption on mind route"],
+            ),
+        ],
+        locale="tr",
+    )
+    metrics = plan["meta"]["audit_metrics"]
+    packet_lookup = {
+        str(packet.get("id") or "").strip(): packet
+        for packet in plan["candidate_packets"]
+    }
+    suppressed_lookup = {
+        str(item.get("packet_id") or "").strip(): item
+        for item in plan["suppressed_packets"]
+    }
+
+    mercury = packet_lookup["composed_mercury_signature_v0_9c"]
+    assert mercury["source_type"] == "composed_semantic"
+    assert mercury["family"] == "mercury_signature"
+    assert mercury["public_eligibility"]["public_main_eligible"] is False
+    assert mercury["public_eligibility"]["public_support_eligible"] is False
+    assert set(suppressed_lookup["composed_mercury_signature_v0_9c"]["keep_for"]) == {"debug"}
+    assert metrics["candidate_source_type_distribution"]["composed_semantic"] == 1
+    assert metrics["composed_candidate_family_distribution"]["mercury_signature"] == 1
+    assert metrics["public_main_source_type_distribution"]["composed_semantic"] == 0
+    assert "composed_mercury_signature_v0_9c" in set(plan["surface_plan"]["debug_packet_ids"])
 
 
 def test_natal_promise_cluster_plan_v0_9a_identity_chart_specific_owner_stays_debug_observation() -> None:

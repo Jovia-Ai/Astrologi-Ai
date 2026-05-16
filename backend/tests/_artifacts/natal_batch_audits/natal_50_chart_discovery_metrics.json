@@ -1,5 +1,5 @@
 {
-  "version": "natal_50_chart_discovery_coverage_audit_v1",
+  "version": "v0_10_audit_expansion_100chart",
   "source_prompt_section": "natal_compositional_semantic_grammar_plan.md#16",
   "charts": [
     {
@@ -4744,6 +4744,1106 @@
       "detail_cluster_ids": [
         "relationship_gift_like_mercury_conjunct_venus_refined_relational_language"
       ]
+    },
+    {
+      "chart_id": "v010_a01_pluto_2h_scorpio",
+      "label": "Plüton 2. evde Akrep — değer dönüşümü",
+      "birth_data": {
+        "birth_date": "1985-11-15",
+        "birth_time": "06:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Istanbul, TR",
+        "birth_latitude": 41.0082,
+        "birth_longitude": 28.9784,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "value_transformation",
+        "reason": "Pluto in Scorpio (1983-95) + early-morning ASC ~ Libra → Pluto in 2H Scorpio. Stresses value_transformation."
+      }
+    },
+    {
+      "chart_id": "v010_a02_pluto_8h_sag",
+      "label": "Plüton 8. evde Yay — derin dönüşüm",
+      "birth_data": {
+        "birth_date": "2000-08-20",
+        "birth_time": "09:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Ankara, TR",
+        "birth_latitude": 39.9334,
+        "birth_longitude": 32.8597,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "value_transformation",
+        "reason": "Pluto in Sagittarius + ASC ~ Taurus → Pluto in 8H Sag. Stresses value_transformation via 8H."
+      }
+    },
+    {
+      "chart_id": "v010_a03_saturn_2h_cap",
+      "label": "Satürn 2. evde Oğlak — kaynak sınırı",
+      "birth_data": {
+        "birth_date": "1989-04-15",
+        "birth_time": "06:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "Izmir, TR",
+        "birth_latitude": 38.4192,
+        "birth_longitude": 27.1287,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "resource_boundary",
+        "reason": "Saturn in Capricorn (1988-91) + ASC ~ Sagittarius → Saturn in 2H Cap. Stresses resource_boundary."
+      }
+    },
+    {
+      "chart_id": "v010_a04_saturn_8h_aqua",
+      "label": "Satürn 8. evde Kova — paylaşımda yapı",
+      "birth_data": {
+        "birth_date": "1992-06-15",
+        "birth_time": "14:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Adana, TR",
+        "birth_latitude": 37.0,
+        "birth_longitude": 35.3213,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "resource_boundary",
+        "reason": "Saturn in Aquarius (1991-93) + ASC ~ Cancer → Saturn in 8H Aqua. Stresses resource_boundary via 8H."
+      }
+    },
+    {
+      "chart_id": "v010_a05_venus_8h_scorpio",
+      "label": "Venüs 8. evde Akrep — yakınlık-kaynak füzyonu",
+      "birth_data": {
+        "birth_date": "1996-11-08",
+        "birth_time": "08:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Bursa, TR",
+        "birth_latitude": 40.1828,
+        "birth_longitude": 29.0665,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "intimacy_resource_fusion",
+        "reason": "Venus in Scorpio + ASC ~ Aries → Venus in 8H Scorpio. Stresses intimacy_resource_fusion."
+      }
+    },
+    {
+      "chart_id": "v010_a06_mars_8h_aries",
+      "label": "Mars 8. evde Koç — istek/paylaşım gerilimi",
+      "birth_data": {
+        "birth_date": "2003-04-25",
+        "birth_time": "12:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Antalya, TR",
+        "birth_latitude": 36.8969,
+        "birth_longitude": 30.7133,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "intimacy_resource_fusion",
+        "reason": "Mars in Aries + ASC ~ Virgo → Mars in 8H Aries. Stresses intimacy_resource_fusion via Mars 8H."
+      }
+    },
+    {
+      "chart_id": "v010_a07_moon_8h_cancer",
+      "label": "Ay 8. evde Yengeç — duygusal birleşme",
+      "birth_data": {
+        "birth_date": "1985-07-22",
+        "birth_time": "18:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Trabzon, TR",
+        "birth_latitude": 41.0015,
+        "birth_longitude": 39.7178,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "intimacy_resource_fusion",
+        "reason": "Moon Cancer + ASC ~ Sagittarius → Moon in 8H Cancer. Stresses Moon-on-axis intimacy."
+      }
+    },
+    {
+      "chart_id": "v010_a08_2h_stellium_no_8h",
+      "label": "2. ev stellium, 8. ev boş — kendi zemin",
+      "birth_data": {
+        "birth_date": "1987-04-25",
+        "birth_time": "05:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Ankara, TR",
+        "birth_latitude": 39.9334,
+        "birth_longitude": 32.8597,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "self_worth_foundation",
+        "reason": "Multiple Taurus planets early morning + ASC Aries → 2H Taurus stellium, 8H empty. Stresses self_worth_foundation."
+      }
+    },
+    {
+      "chart_id": "v010_a09_8h_stellium_node_2h",
+      "label": "8. ev Başak stellium + Düğüm 2H — bağımlılık/otonomi",
+      "birth_data": {
+        "birth_date": "1998-09-22",
+        "birth_time": "03:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Istanbul, TR",
+        "birth_latitude": 41.0082,
+        "birth_longitude": 28.9784,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "dependency_autonomy_tension",
+        "reason": "Virgo 8H stellium pattern + Node likely 2H. Stresses dependency_autonomy_tension."
+      }
+    },
+    {
+      "chart_id": "v010_a10_2h_ruler_in_8h",
+      "label": "2. ev yöneticisi 8. evde — paylaşım rotası",
+      "birth_data": {
+        "birth_date": "1990-10-20",
+        "birth_time": "06:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Izmir, TR",
+        "birth_latitude": 38.4192,
+        "birth_longitude": 27.1287,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "shared_trust_exchange",
+        "reason": "ASC ~ Libra → 2H ruler Pluto in 8H Scorpio. Stresses shared_trust_exchange via ruler route."
+      }
+    },
+    {
+      "chart_id": "v010_a11_8h_ruler_in_2h",
+      "label": "8. ev yöneticisi 2. evde — değer ekseni",
+      "birth_data": {
+        "birth_date": "1994-04-10",
+        "birth_time": "06:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Adana, TR",
+        "birth_latitude": 37.0,
+        "birth_longitude": 35.3213,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "value_transformation",
+        "reason": "ASC ~ Aries → 8H Scorpio → Pluto in 2H Taurus. Stresses value_transformation via ruler swap."
+      }
+    },
+    {
+      "chart_id": "v010_a12_taurus_2h_embodied",
+      "label": "2. ev Boğa — bedenli güven",
+      "birth_data": {
+        "birth_date": "1986-05-15",
+        "birth_time": "04:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "Bursa, TR",
+        "birth_latitude": 40.1828,
+        "birth_longitude": 29.0665,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "embodied_security",
+        "reason": "Sun/Mercury/Venus Taurus + ASC Aries → 2H Taurus with earth planets. Stresses embodied_security."
+      }
+    },
+    {
+      "chart_id": "v010_a13_node_8h_heavy_2h",
+      "label": "Düğüm 8H + 2. ev ağır — gelişim 2H'ye çekiyor",
+      "birth_data": {
+        "birth_date": "1995-02-10",
+        "birth_time": "07:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Mersin, TR",
+        "birth_latitude": 36.8121,
+        "birth_longitude": 34.6415,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "dependency_autonomy_tension",
+        "reason": "Node likely 8H + Sun/Mercury 2H. Stresses inverse of 1998-03-05 pattern."
+      }
+    },
+    {
+      "chart_id": "v010_a14_pluto_sun_axis",
+      "label": "Plüton-Güneş 2H ekseninde",
+      "birth_data": {
+        "birth_date": "1985-11-20",
+        "birth_time": "07:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Trabzon, TR",
+        "birth_latitude": 41.0015,
+        "birth_longitude": 39.7178,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "value_transformation",
+        "reason": "Sun in 2H Scorpio + Pluto on axis. Stresses value_transformation through Sun-Pluto axis."
+      }
+    },
+    {
+      "chart_id": "v010_a15_saturn_rules_8h",
+      "label": "Satürn 8H yöneticisi — yapısal güven hattı",
+      "birth_data": {
+        "birth_date": "1985-02-25",
+        "birth_time": "08:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Kayseri, TR",
+        "birth_latitude": 38.7322,
+        "birth_longitude": 35.4853,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "resource_boundary",
+        "reason": "ASC ~ Cancer → 8H Aquarius → ruler Saturn. Stresses resource_boundary via 8H ruler identity."
+      }
+    },
+    {
+      "chart_id": "v010_b01_hidden_love_12h_venus",
+      "label": "Venüs 12. evde + Balık DSC — gizli sevgi",
+      "birth_data": {
+        "birth_date": "1989-09-15",
+        "birth_time": "18:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Istanbul, TR",
+        "birth_latitude": 41.0082,
+        "birth_longitude": 28.9784,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "hidden_private_love",
+        "reason": "DSC Pisces + Venus in 12H. Stresses hidden_private_love."
+      }
+    },
+    {
+      "chart_id": "v010_b02_neptune_7h_pisces",
+      "label": "Neptün 7. evde + Balık etkisi",
+      "birth_data": {
+        "birth_date": "1996-03-20",
+        "birth_time": "12:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Ankara, TR",
+        "birth_latitude": 39.9334,
+        "birth_longitude": 32.8597,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "hidden_private_love",
+        "reason": "Neptune in 7H + Pisces DSC. Stresses hidden_private_love idealization."
+      }
+    },
+    {
+      "chart_id": "v010_b03_chiron_7h_wound",
+      "label": "Şiron 7. evde — yara armağana",
+      "birth_data": {
+        "birth_date": "1985-04-22",
+        "birth_time": "10:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Izmir, TR",
+        "birth_latitude": 38.4192,
+        "birth_longitude": 27.1287,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "wound_to_gift",
+        "reason": "Chiron in 7H pattern + Saturn-Venus hard aspect. Stresses wound_to_gift."
+      }
+    },
+    {
+      "chart_id": "v010_b04_chiron_5h_saturn_moon",
+      "label": "Şiron 5H + Satürn-Ay sert açı",
+      "birth_data": {
+        "birth_date": "1990-07-12",
+        "birth_time": "08:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Konya, TR",
+        "birth_latitude": 37.8746,
+        "birth_longitude": 32.4932,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "wound_to_gift",
+        "reason": "Chiron 5H + Saturn-Moon hard. Stresses wound_to_gift through romance/creativity wound."
+      }
+    },
+    {
+      "chart_id": "v010_b05_venus_sun_5h_fire",
+      "label": "Venüs ve Güneş 5. evde Aslan — sıcak çekim",
+      "birth_data": {
+        "birth_date": "2001-08-15",
+        "birth_time": "06:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Antalya, TR",
+        "birth_latitude": 36.8969,
+        "birth_longitude": 30.7133,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "attraction_warmth",
+        "reason": "Venus & Sun in Leo 5H (fire) + ASC Aries. Stresses attraction_warmth."
+      }
+    },
+    {
+      "chart_id": "v010_b06_venus_7h_libra",
+      "label": "Venüs 7. evde Terazi — klasik cazibe",
+      "birth_data": {
+        "birth_date": "1979-09-25",
+        "birth_time": "12:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Bursa, TR",
+        "birth_latitude": 40.1828,
+        "birth_longitude": 29.0665,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "attraction_warmth",
+        "reason": "Venus in Libra 7H + ASC Aries. Stresses attraction_warmth via natural significator."
+      }
+    },
+    {
+      "chart_id": "v010_b07_mars_7h_cancer",
+      "label": "Mars 7. evde Yengeç — sınır gerilimi",
+      "birth_data": {
+        "birth_date": "1973-06-18",
+        "birth_time": "16:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Eskişehir, TR",
+        "birth_latitude": 39.7766,
+        "birth_longitude": 30.5206,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "boundary_conflict",
+        "reason": "Mars in Cancer 7H + ASC Cap. Stresses boundary_conflict."
+      }
+    },
+    {
+      "chart_id": "v010_b08_mars_saturn_hard",
+      "label": "Mars-Satürn sert açı + 7H Mars",
+      "birth_data": {
+        "birth_date": "1968-11-10",
+        "birth_time": "14:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Diyarbakır, TR",
+        "birth_latitude": 37.9144,
+        "birth_longitude": 40.2306,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "boundary_conflict",
+        "reason": "Mars-Saturn opposition era + Mars in 7H. Stresses boundary_conflict via aspect."
+      }
+    },
+    {
+      "chart_id": "v010_b09_aries_dsc_mars_active",
+      "label": "Şanlıurfa kalibrasyon — direkt ilişkisel aktivasyon",
+      "birth_data": {
+        "birth_date": "1988-10-10",
+        "birth_time": "05:30",
+        "birth_time_confidence": "exact",
+        "birth_place": "Şanlıurfa, TR",
+        "birth_latitude": 37.1591,
+        "birth_longitude": 38.7969,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "direct_relational_activation",
+        "reason": "Sanliurfa addendum chart: DSC Aries + Mars Aries 6H retrograde + Mars hard to Saturn/Uranus/Neptune."
+      }
+    },
+    {
+      "chart_id": "v010_b10_aries_dsc_mars_retro",
+      "label": "Koç DSC + Mars aktif gece haritası",
+      "birth_data": {
+        "birth_date": "1986-11-25",
+        "birth_time": "22:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Gaziantep, TR",
+        "birth_latitude": 37.0662,
+        "birth_longitude": 37.3833,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "direct_relational_activation",
+        "reason": "ASC Libra → DSC Aries + Mars active. Stresses direct_relational_activation."
+      }
+    },
+    {
+      "chart_id": "v010_b11_uranus_7h_aqua",
+      "label": "Uranüs 7. evde Kova — özgürlük gerilimi",
+      "birth_data": {
+        "birth_date": "1996-03-15",
+        "birth_time": "10:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Mardin, TR",
+        "birth_latitude": 37.3122,
+        "birth_longitude": 40.735,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "freedom_space",
+        "reason": "Uranus in Aquarius + ASC Leo → 7H Aquarius. Stresses freedom_space."
+      }
+    },
+    {
+      "chart_id": "v010_b12_dsc_aqua_uranus_11h",
+      "label": "Kova DSC + Uranüs 11H — sıradışı ilişki",
+      "birth_data": {
+        "birth_date": "1994-07-20",
+        "birth_time": "06:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Hatay, TR",
+        "birth_latitude": 36.4018,
+        "birth_longitude": 36.3498,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "freedom_space",
+        "reason": "ASC Leo → DSC Aqua + Uranus 11H. Stresses freedom_space via friend-lover axis."
+      }
+    },
+    {
+      "chart_id": "v010_c01_moon_5h_sag",
+      "label": "Ay 5. evde Yay — yaratıcı duygusal ifade",
+      "birth_data": {
+        "birth_date": "1992-12-08",
+        "birth_time": "10:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Istanbul, TR",
+        "birth_latitude": 41.0082,
+        "birth_longitude": 28.9784,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "creative_emotional_expression",
+        "reason": "Moon in Sagittarius 5H + ASC Leo. Stresses creative_emotional_expression."
+      }
+    },
+    {
+      "chart_id": "v010_c02_moon_5h_leo",
+      "label": "Ay 5. evde Aslan — sahne duygusu",
+      "birth_data": {
+        "birth_date": "1986-08-22",
+        "birth_time": "06:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Izmir, TR",
+        "birth_latitude": 38.4192,
+        "birth_longitude": 27.1287,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "creative_emotional_expression",
+        "reason": "Moon Leo 5H + ASC Aries. Stresses creative_emotional_expression via Leo."
+      }
+    },
+    {
+      "chart_id": "v010_c03_moon_12h_neptune",
+      "label": "Ay 12. evde + Neptün açı — özel işleme",
+      "birth_data": {
+        "birth_date": "1991-04-12",
+        "birth_time": "14:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Ankara, TR",
+        "birth_latitude": 39.9334,
+        "birth_longitude": 32.8597,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "private_emotional_processing",
+        "reason": "Moon in 12H + Moon-Neptune aspect. Stresses private_emotional_processing."
+      }
+    },
+    {
+      "chart_id": "v010_c04_moon_pisces_12h",
+      "label": "Ay Balık 12. evde — sezgi rotası",
+      "birth_data": {
+        "birth_date": "1995-03-10",
+        "birth_time": "11:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Adana, TR",
+        "birth_latitude": 37.0,
+        "birth_longitude": 35.3213,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "private_emotional_processing",
+        "reason": "Moon Pisces 12H + ASC Aries. Stresses private_emotional_processing via sign+house."
+      }
+    },
+    {
+      "chart_id": "v010_c05_moon_6h_virgo",
+      "label": "Ay 6. evde Başak — gündelik hassasiyet",
+      "birth_data": {
+        "birth_date": "1994-09-12",
+        "birth_time": "16:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Antalya, TR",
+        "birth_latitude": 36.8969,
+        "birth_longitude": 30.7133,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "daily_sensitivity",
+        "reason": "Moon Virgo 6H + ASC Aries. Stresses daily_sensitivity."
+      }
+    },
+    {
+      "chart_id": "v010_c06_moon_8h_scorpio",
+      "label": "Ay 8. evde Akrep — yoğunluk",
+      "birth_data": {
+        "birth_date": "1990-11-08",
+        "birth_time": "08:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Bursa, TR",
+        "birth_latitude": 40.1828,
+        "birth_longitude": 29.0665,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "intimacy_depth",
+        "reason": "Moon Scorpio 8H + ASC Aries. Stresses moon_signature.intimacy_depth."
+      }
+    },
+    {
+      "chart_id": "v010_c07_moon_8h_pluto",
+      "label": "Ay 8. evde + Plüton açı",
+      "birth_data": {
+        "birth_date": "1989-10-18",
+        "birth_time": "12:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Mersin, TR",
+        "birth_latitude": 36.8121,
+        "birth_longitude": 34.6415,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "intimacy_depth",
+        "reason": "Moon 8H + Moon-Pluto aspect. Stresses intimacy_depth via aspect."
+      }
+    },
+    {
+      "chart_id": "v010_c08_moon_4h_cancer",
+      "label": "Ay 4. evde Yengeç + IC Yengeç",
+      "birth_data": {
+        "birth_date": "1982-07-08",
+        "birth_time": "14:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Trabzon, TR",
+        "birth_latitude": 41.0015,
+        "birth_longitude": 39.7178,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "home_inner_security",
+        "reason": "Moon Cancer 4H + IC Cancer + ASC Aries. Stresses home_inner_security."
+      }
+    },
+    {
+      "chart_id": "v010_c09_moon_4h_planets",
+      "label": "Ay 4H + 4H stellium",
+      "birth_data": {
+        "birth_date": "1976-11-15",
+        "birth_time": "09:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Samsun, TR",
+        "birth_latitude": 41.2867,
+        "birth_longitude": 36.33,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "home_inner_security",
+        "reason": "Moon 4H with additional 4H planets. Stresses home_inner_security via stellium."
+      }
+    },
+    {
+      "chart_id": "v010_c10_moon_neutral_rhythm",
+      "label": "Ay nötr ton — varsayılan ritm",
+      "birth_data": {
+        "birth_date": "1971-10-20",
+        "birth_time": "20:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Eskişehir, TR",
+        "birth_latitude": 39.7766,
+        "birth_longitude": 30.5206,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "emotional_rhythm",
+        "reason": "No specific Moon subtype lock — tests whether the calibrated penalty correctly filters this to debug-only or below floor."
+      }
+    },
+    {
+      "chart_id": "v010_d01_3h_stellium",
+      "label": "3. ev stellium — zihinsel kimlik",
+      "birth_data": {
+        "birth_date": "1983-08-25",
+        "birth_time": "08:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Istanbul, TR",
+        "birth_latitude": 41.0082,
+        "birth_longitude": 28.9784,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "identity_route",
+        "target_subtype": "mediated_identity_spine",
+        "reason": "3H stellium chart. Tests identity_route routing for mind-heavy chart."
+      }
+    },
+    {
+      "chart_id": "v010_d02_9h_stellium",
+      "label": "9. ev stellium — inanç/eğitim",
+      "birth_data": {
+        "birth_date": "1992-11-15",
+        "birth_time": "14:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Ankara, TR",
+        "birth_latitude": 39.9334,
+        "birth_longitude": 32.8597,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "career_route",
+        "target_subtype": "creative_visibility",
+        "reason": "9H stellium. Tests how career_route handles non-10H public direction."
+      }
+    },
+    {
+      "chart_id": "v010_d03_mercury_3h_9h",
+      "label": "Merkür 3H/9H ekseninde",
+      "birth_data": {
+        "birth_date": "1988-12-18",
+        "birth_time": "10:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Izmir, TR",
+        "birth_latitude": 38.4192,
+        "birth_longitude": 27.1287,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "identity_route",
+        "target_subtype": "direct_identity_spine",
+        "reason": "Mercury on 3H/9H axis. Tests mind-route identity surface."
+      }
+    },
+    {
+      "chart_id": "v010_d04_4h_stellium_no_moon",
+      "label": "4. ev stellium, Ay başka yerde",
+      "birth_data": {
+        "birth_date": "1988-12-20",
+        "birth_time": "04:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Adana, TR",
+        "birth_latitude": 37.0,
+        "birth_longitude": 35.3213,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "home_inner_security",
+        "reason": "Multiple 4H planets but Moon elsewhere. Tests whether home_inner_security still fires."
+      }
+    },
+    {
+      "chart_id": "v010_d05_5h_stellium",
+      "label": "5. ev stellium — yaratıcılık merkezi",
+      "birth_data": {
+        "birth_date": "1995-08-12",
+        "birth_time": "11:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Antalya, TR",
+        "birth_latitude": 36.8969,
+        "birth_longitude": 30.7133,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "creative_emotional_expression",
+        "reason": "5H stellium. Tests creative routing across families."
+      }
+    },
+    {
+      "chart_id": "v010_d06_venus_sun_5h",
+      "label": "Venüs + Güneş 5. evde",
+      "birth_data": {
+        "birth_date": "1990-06-28",
+        "birth_time": "07:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Bursa, TR",
+        "birth_latitude": 40.1828,
+        "birth_longitude": 29.0665,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "relationship_route",
+        "target_subtype": "attraction_warmth",
+        "reason": "Venus + Sun in 5H. Tests attraction_warmth secondary path."
+      }
+    },
+    {
+      "chart_id": "v010_d07_12h_stellium",
+      "label": "12. ev stellium — perde arkası",
+      "birth_data": {
+        "birth_date": "1991-03-02",
+        "birth_time": "03:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Konya, TR",
+        "birth_latitude": 37.8746,
+        "birth_longitude": 32.4932,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "private_emotional_processing",
+        "reason": "12H stellium. Tests private_emotional_processing + identity_route private_spine."
+      }
+    },
+    {
+      "chart_id": "v010_d08_mars_saturn_12h",
+      "label": "Mars + Satürn 12. evde",
+      "birth_data": {
+        "birth_date": "1985-12-22",
+        "birth_time": "22:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Kayseri, TR",
+        "birth_latitude": 38.7322,
+        "birth_longitude": 35.4853,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "moon_signature",
+        "target_subtype": "private_emotional_processing",
+        "reason": "Mars + Saturn 12H. Tests heavy 12H tension routing."
+      }
+    },
+    {
+      "chart_id": "v010_d09_mixed_no_dom",
+      "label": "Karışık — net dominans yok",
+      "birth_data": {
+        "birth_date": "1993-05-18",
+        "birth_time": "09:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Eskişehir, TR",
+        "birth_latitude": 39.7766,
+        "birth_longitude": 30.5206,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "identity_route",
+        "target_subtype": "mediated_identity_spine",
+        "reason": "No clear angular dominance. Tests mediated/fallback paths."
+      }
+    },
+    {
+      "chart_id": "v010_d10_mixed_no_dom_2",
+      "label": "Karışık — orta yoğunluk",
+      "birth_data": {
+        "birth_date": "1987-10-12",
+        "birth_time": "13:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Hatay, TR",
+        "birth_latitude": 36.4018,
+        "birth_longitude": 36.3498,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "identity_route",
+        "target_subtype": "mediated_identity_spine",
+        "reason": "No clear pole. Stress-tests gate thresholds."
+      }
+    },
+    {
+      "chart_id": "v010_d11_even_house_spread",
+      "label": "Eşit ev dağılımı",
+      "birth_data": {
+        "birth_date": "1980-03-18",
+        "birth_time": "06:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Diyarbakır, TR",
+        "birth_latitude": 37.9144,
+        "birth_longitude": 40.2306,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "identity_route",
+        "target_subtype": "mediated_identity_spine",
+        "reason": "Planets evenly spread. Tests identity_route mediated subtype."
+      }
+    },
+    {
+      "chart_id": "v010_d12_air_emphasis",
+      "label": "Hava ağırlıklı — zihin/iletişim",
+      "birth_data": {
+        "birth_date": "1991-06-15",
+        "birth_time": "12:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Gaziantep, TR",
+        "birth_latitude": 37.0662,
+        "birth_longitude": 37.3833,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "identity_route",
+        "target_subtype": "direct_identity_spine",
+        "reason": "Air sign emphasis (Gemini/Libra/Aqua). Tests identity routing for cerebral charts."
+      }
+    },
+    {
+      "chart_id": "v010_d13_earth_emphasis",
+      "label": "Toprak ağırlıklı — bedenli güven",
+      "birth_data": {
+        "birth_date": "1985-05-10",
+        "birth_time": "15:00",
+        "birth_time_confidence": "exact",
+        "birth_place": "Trabzon, TR",
+        "birth_latitude": 41.0015,
+        "birth_longitude": 39.7178,
+        "birth_timezone": "Europe/Istanbul"
+      },
+      "origin": [
+        "v0_10_audit_expansion"
+      ],
+      "raw_signature": "",
+      "audit_expansion_meta": {
+        "target_family": "axis_2h_8h",
+        "target_subtype": "embodied_security",
+        "reason": "Earth sign emphasis (Taurus/Virgo/Cap). Tests embodied_security via earth weight."
+      }
     }
   ],
   "aggregate": {

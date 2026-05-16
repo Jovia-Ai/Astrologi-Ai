@@ -1814,6 +1814,30 @@ def _build_v0_9_composed_semantic_candidates(
         if moon_candidate:
             out.append(moon_candidate)
             existing_ids.add(str(moon_candidate.get("id") or "").strip().lower())
+    if _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_MERCURY_SIGNATURE_V0_9C"):
+        mercury_candidate = _build_mercury_signature_candidates(
+            planet_map=planet_map,
+            aspects=aspects,
+            house_rulers=house_rulers,
+            locale=locale,
+            existing_ids=existing_ids,
+            career_candidate=career_candidate,
+        )
+        if mercury_candidate:
+            out.append(mercury_candidate)
+            existing_ids.add(str(mercury_candidate.get("id") or "").strip().lower())
+    # v0.10 axis_2h_8h — flag-gated, debug-only first cut.
+    if _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_AXIS_2H_8H_V0_10"):
+        axis_candidate = _build_axis_2h_8h_candidates(
+            planet_map=planet_map,
+            aspects=aspects,
+            house_rulers=house_rulers,
+            locale=locale,
+            existing_ids=existing_ids,
+        )
+        if axis_candidate:
+            out.append(axis_candidate)
+            existing_ids.add(str(axis_candidate.get("id") or "").strip().lower())
     _apply_v0_9b_cross_family_moon_ownership(out)
     return out
 
@@ -2413,17 +2437,37 @@ def _build_relationship_route_candidates(
     twelfth_house_planets = _house_planet_names(planet_map, 12)
     eleventh_house_planets = _house_planet_names(planet_map, 11)
 
-    if not seventh_house_planets and int(dsc_ruler_item.get("house") or 0) not in {1, 5, 7, 8, 11, 12}:
+    mars_house = int(mars_item.get("house") or 0)
+    mars_sign = str(mars_item.get("sign") or "").strip().lower()
+    relationship_route_is_mars_led = dsc_sign in {"aries", "scorpio"} or dsc_ruler == "mars"
+    mars_activation_gate = bool(
+        relationship_route_is_mars_led
+        and mars_item
+        and mars_house in {1, 6, 10, 12}
+    )
+
+    if (
+        not seventh_house_planets
+        and int(dsc_ruler_item.get("house") or 0) not in {1, 5, 7, 8, 11, 12}
+        and not mars_activation_gate
+    ):
         return None
 
     dsc_ruler_house = int(dsc_ruler_item.get("house") or 0)
     dsc_ruler_sign = str(dsc_ruler_item.get("sign") or "").strip().lower()
     venus_house = int(venus_item.get("house") or 0)
     venus_sign = str(venus_item.get("sign") or "").strip().lower()
-    mars_house = int(mars_item.get("house") or 0)
-    mars_sign = str(mars_item.get("sign") or "").strip().lower()
+    mars_retrograde = bool(mars_item.get("retrograde"))
     moon_house = int(moon_item.get("house") or 0)
     moon_sign = str(moon_item.get("sign") or "").strip().lower()
+    chiron_item = _lookup_planet_entry(planet_map, "chiron")
+    chiron_house = int(chiron_item.get("house") or 0)
+    mars_direct_activation_partners = [
+        partner
+        for partner in ("saturn", "uranus", "neptune", "chiron")
+        if _has_any_aspect_type(aspects, "mars", partner, _HARD_ASPECT_TYPES)
+    ]
+    mars_direct_activation_hard_count = len(mars_direct_activation_partners)
 
     # ---- Subtype scoring channels ----
     subtype_signals: dict[str, float] = {}
@@ -2462,6 +2506,30 @@ def _build_relationship_route_candidates(
         _bump("boundary_conflict", 0.08)
     if mars_sign in {"aries", "cancer", "libra", "capricorn"} and "mars" in seventh_house_planets:
         _bump("boundary_conflict", 0.04)
+
+    # direct_relational_activation
+    if (
+        relationship_route_is_mars_led
+        and mars_item
+        and mars_direct_activation_hard_count > 0
+        and (mars_house in {1, 6, 10, 12} or mars_sign in {"aries", "scorpio"})
+    ):
+        if dsc_ruler == "mars":
+            _bump("direct_relational_activation", 0.08)
+        if mars_sign in {"aries", "scorpio"}:
+            _bump("direct_relational_activation", 0.08)
+        if mars_house in {1, 6, 10, 12}:
+            _bump("direct_relational_activation", 0.06)
+        if mars_house == 6:
+            _bump("direct_relational_activation", 0.06)
+        elif mars_house in {1, 10, 12}:
+            _bump("direct_relational_activation", 0.03)
+        _bump(
+            "direct_relational_activation",
+            min(0.15, 0.06 + (0.03 * max(0, mars_direct_activation_hard_count - 1))),
+        )
+        if mars_retrograde:
+            _bump("direct_relational_activation", 0.02)
 
     # intimacy_depth
     intimacy_8h_planets = [p for p in eighth_house_planets if p in {"venus", "mars", "pluto", "moon"}]
@@ -2508,8 +2576,6 @@ def _build_relationship_route_candidates(
         _bump("freedom_space", 0.04)
 
     # wound_to_gift
-    chiron_item = _lookup_planet_entry(planet_map, "chiron")
-    chiron_house = int(chiron_item.get("house") or 0)
     if chiron_house in {5, 7, 8}:
         _bump("wound_to_gift", 0.12)
     if _has_any_aspect_type(aspects, "saturn", "venus", _HARD_ASPECT_TYPES):
@@ -2558,12 +2624,21 @@ def _build_relationship_route_candidates(
     dsc_ruler_strength = 0.14 + (0.06 if dsc_ruler_house in {1, 5, 7, 8, 10, 11} else 0.0)
     venus_support = 0.0
     mars_support = 0.0
+    mars_activation_support = 0.0
     moon_support = 0.0
     if subtype_signals.get("attraction_warmth", 0.0) >= 0.06 and venus_item:
         venus_support = min(0.15, subtype_signals.get("attraction_warmth", 0.0))
     elif venus_house in {5, 7, 8}:
         venus_support = 0.08
-    if subtype_signals.get("boundary_conflict", 0.0) >= 0.06 and mars_item:
+    if subtype == "direct_relational_activation" and mars_item:
+        mars_support = min(0.12, subtype_signals.get("direct_relational_activation", 0.0) * 0.24)
+        mars_activation_support = min(
+            0.10,
+            (0.04 if mars_house in {1, 6, 10, 12} else 0.0)
+            + (0.03 if mars_house == 6 else 0.0)
+            + min(0.03, 0.01 * mars_direct_activation_hard_count),
+        )
+    elif subtype_signals.get("boundary_conflict", 0.0) >= 0.06 and mars_item:
         mars_support = min(0.15, subtype_signals.get("boundary_conflict", 0.0))
     elif mars_house in {7, 8}:
         mars_support = 0.07
@@ -2583,7 +2658,13 @@ def _build_relationship_route_candidates(
     # an additional penalty.
     family_signal_subtypes = {
         "venus": "attraction_warmth" if venus_house in {5, 7} else None,
-        "mars": "boundary_conflict" if mars_house in {7, 8} else None,
+        "mars": (
+            "direct_relational_activation"
+            if relationship_route_is_mars_led
+            and mars_house in {1, 6, 10, 12}
+            and mars_direct_activation_hard_count > 0
+            else "boundary_conflict" if mars_house in {7, 8} else None
+        ),
         "moon": "emotional_need_affection" if moon_house in {7, 8} else None,
     }
     distinct_directions = {v for v in family_signal_subtypes.values() if v} - {None}
@@ -2599,6 +2680,7 @@ def _build_relationship_route_candidates(
                 + dsc_ruler_strength
                 + venus_support
                 + mars_support
+                + mars_activation_support
                 + moon_support
                 + house_scene_support
                 + contradiction_coherence
@@ -2616,6 +2698,13 @@ def _build_relationship_route_candidates(
         "trust_steadiness": (
             "İlişki hattında güven, süreklilik ve karşı tarafın istikrarı sende öne çıkıyor.",
             ["zamanla kurulan güvene yaslanman", "ilişkide istikrar arayışın"],
+        ),
+        "direct_relational_activation": (
+            "Birine yaklaştığında, belirsizliği uzun süre taşımak sana kolay gelmeyebilir.",
+            [
+                "ilişkide içindeki cevabı daha açık göstermeye ihtiyaç duyabilirsin",
+                "yakınlık arttığında nerede durduğunu daha görünür kılmak isteyebilirsin",
+            ],
         ),
         "attraction_warmth": (
             "İlişkide çekim, sıcaklık ve karşılıklı keyif sende daha belirgin çalışıyor.",
@@ -2652,6 +2741,11 @@ def _build_relationship_route_candidates(
     gift = "İlişki hattını yalnız 'ilişki' etiketiyle değil, DSC-yönetici-Venüs/Mars/Ay rotası üzerinden ayırabilmek."
     inner_tension = "Karşı tarafla kurduğun bağda nelerin sıcak, nelerin sınır ve nelerin derin olduğu her zaman aynı tonla çalışmayabilir."
     growth = "İlişki hattını yedi-evi-yönetici-significator rotası olarak okumak."
+    if subtype == "direct_relational_activation":
+        direct_meaning = "Yakınlık sende bazen beklemeyi değil, içindeki cevabı daha açık göstermeyi ister."
+        gift = "Bir bağın içinde kendini saklamadan, ne istediğini daha dürüst ve zamanında gösterebilmek."
+        inner_tension = "Bir yanın ortamı bozmamak isterken, başka bir yanın içinden geçen şeyi daha fazla saklamak istemeyebilir."
+        growth = "İçinden geçeni bastırmadan, ama bağı da aceleye sıkıştırmadan daha açık söyleyebilmek."
 
     domain_reason: list[str] = [
         "DSC route",
@@ -2659,9 +2753,11 @@ def _build_relationship_route_candidates(
     ]
     if seventh_house_planets:
         domain_reason.append("7H planet")
+    if subtype == "direct_relational_activation" and mars_house == 6:
+        domain_reason.append("6H daily/action route")
     if subtype == "attraction_warmth" or venus_house in {5, 7}:
         domain_reason.append("Venus relationship signature")
-    if subtype == "boundary_conflict" or mars_house in {7, 8}:
+    if subtype in {"boundary_conflict", "direct_relational_activation"} or mars_house in {7, 8}:
         domain_reason.append("Mars boundary/desire signature")
     if subtype == "emotional_need_affection" or moon_house in {7, 8}:
         domain_reason.append("Moon attachment signature")
@@ -2674,16 +2770,27 @@ def _build_relationship_route_candidates(
     if subtype == "wound_to_gift":
         domain_reason.append("Chiron wound-to-gift signature")
 
-    technical_anchors = [
-        f"DSC {dsc_sign.title()}",
-        _planet_chip(dsc_ruler, dsc_ruler_item),
-        *[_planet_chip(planet, _lookup_planet_entry(planet_map, planet)) for planet in seventh_house_planets[:3]],
-    ]
+    technical_anchors = [f"DSC {dsc_sign.title()}"]
+    if subtype == "direct_relational_activation" and mars_item:
+        mars_anchor = f"Mars {mars_sign.title()} {mars_house}H"
+        if mars_retrograde:
+            mars_anchor += " Rx"
+        technical_anchors.append(mars_anchor)
+        technical_anchors.extend(f"Mars square {partner.title()}" for partner in mars_direct_activation_partners)
+    else:
+        technical_anchors.append(_planet_chip(dsc_ruler, dsc_ruler_item))
+    technical_anchors.extend(
+        [_planet_chip(planet, _lookup_planet_entry(planet_map, planet)) for planet in seventh_house_planets[:3]]
+    )
     source_evidence_ids = [
         f"composed:relationship:dsc:{dsc_sign}",
         f"composed:relationship:ruler:{dsc_ruler}:{dsc_ruler_sign}:{dsc_ruler_house}",
         *[f"composed:relationship:7h:{planet}" for planet in seventh_house_planets[:4]],
     ]
+    if subtype == "direct_relational_activation":
+        source_evidence_ids.extend(
+            [f"composed:relationship:mars_hard_aspect:{partner}" for partner in mars_direct_activation_partners]
+        )
 
     cross_family_overlap: list[str] = []
     moon_used_by_relationship = (
@@ -2703,7 +2810,7 @@ def _build_relationship_route_candidates(
                     else []
                 ),
                 *(
-                    [{"planet": "Mars", "sign": mars_sign, "house": mars_house}]
+                    [{"planet": "Mars", "sign": mars_sign, "house": mars_house, "retrograde": mars_retrograde}]
                     if mars_item
                     else []
                 ),
@@ -2714,6 +2821,10 @@ def _build_relationship_route_candidates(
                 ),
             ],
             "angles": [{"angle": "DSC", "sign": dsc_sign.title()}],
+            "aspects": [
+                {"planet1": "Mars", "planet2": partner.title(), "type": "square"}
+                for partner in mars_direct_activation_partners
+            ],
         },
         "discovery_routes": ["relationship_route"],
         "family_inputs": ["DSC", "DSC_ruler", "Venus", "Mars", "Moon", "7H_planets"],
@@ -2764,6 +2875,7 @@ def _build_relationship_route_candidates(
                 "dsc_ruler_strength": round(dsc_ruler_strength, 4),
                 "venus_support": round(venus_support, 4),
                 "mars_support": round(mars_support, 4),
+                "mars_activation_support": round(mars_activation_support, 4),
                 "moon_support": round(moon_support, 4),
                 "house_scene_support": round(house_scene_support, 4),
                 "contradiction_coherence": round(contradiction_coherence, 4),
@@ -3116,6 +3228,1061 @@ def _build_moon_signature_candidates(
                 "source_type": "composed_semantic",
                 "subtype_default_fallback": is_subtype_default_fallback_path,
                 "cross_family_overlap": cross_family_overlap,
+            },
+        )
+    )
+
+
+# ---------------------------------------------------------------------------
+# v0.9c composed-semantic family: mercury_signature
+#
+# Debug-only first cut with two subtypes:
+#   * speech_identity_spine
+#   * structured_disruptive_mind
+#
+# Constraints:
+#   * emit at most one Mercury candidate per chart
+#   * no generic Mercury fallback subtype
+#   * runner-up subtype metadata is captured when the lead margin is < 0.04
+#   * public_job stays debug_only; no detail/public lane in v0.9c.0
+# ---------------------------------------------------------------------------
+
+
+def _build_mercury_signature_candidates(
+    *,
+    planet_map: Mapping[str, Mapping[str, Any]],
+    aspects: Sequence[Mapping[str, Any]] | None,
+    house_rulers: Mapping[str, Any],
+    locale: str,
+    existing_ids: set[str],
+    career_candidate: Mapping[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    packet_id = "composed_mercury_signature_v0_9c"
+    if packet_id in existing_ids:
+        return None
+
+    mercury_item = _lookup_planet_entry(planet_map, "mercury")
+    if not mercury_item:
+        return None
+    mercury_sign = str(mercury_item.get("sign") or "").strip().lower()
+    mercury_house = int(mercury_item.get("house") or 0)
+    if not mercury_sign or mercury_house <= 0:
+        return None
+
+    sun_item = _lookup_planet_entry(planet_map, "sun")
+    saturn_item = _lookup_planet_entry(planet_map, "saturn")
+    uranus_item = _lookup_planet_entry(planet_map, "uranus")
+    asc_sign = _asc_sign(metadata_like=planet_map, house_rulers=house_rulers)
+    mc_sign = _house_cusp_sign(house_rulers, 10)
+    third_sign = _house_cusp_sign(house_rulers, 3)
+    ninth_sign = _house_cusp_sign(house_rulers, 9)
+    chart_ruler = _sign_ruler(asc_sign) if asc_sign else ""
+    third_ruler = _sign_ruler(third_sign) if third_sign else ""
+    ninth_ruler = _sign_ruler(ninth_sign) if ninth_sign else ""
+    career_ruler = _sign_ruler(mc_sign) if mc_sign else ""
+
+    third_ruler_item = _lookup_planet_entry(planet_map, third_ruler) if third_ruler else {}
+    ninth_ruler_item = _lookup_planet_entry(planet_map, ninth_ruler) if ninth_ruler else {}
+    career_ruler_item = _lookup_planet_entry(planet_map, career_ruler) if career_ruler else {}
+
+    sun_house = int(sun_item.get("house") or 0)
+    saturn_house = int(saturn_item.get("house") or 0)
+    uranus_house = int(uranus_item.get("house") or 0)
+    saturn_sign = str(saturn_item.get("sign") or "").strip().lower()
+    uranus_sign = str(uranus_item.get("sign") or "").strip().lower()
+    third_ruler_house = int(third_ruler_item.get("house") or 0)
+    ninth_ruler_house = int(ninth_ruler_item.get("house") or 0)
+    career_ruler_house = int(career_ruler_item.get("house") or 0)
+
+    third_house_planets = _house_planet_names(planet_map, 3)
+    ninth_house_planets = _house_planet_names(planet_map, 9)
+    eleventh_house_planets = _house_planet_names(planet_map, 11)
+    tenth_house_planets = _house_planet_names(planet_map, 10)
+    mercury_aspect_refs = _top_aspect_refs(aspects, planet="Mercury", limit=4)
+
+    mercury_sun_conjunction = _has_aspect(aspects or [], "Mercury", "Sun", "Conjunction")
+    mercury_asc_conjunction = _has_aspect(aspects or [], "Mercury", "Ascendant", "Conjunction")
+    mercury_saturn_aspect = _has_any_aspect_type(aspects, "Mercury", "Saturn", _SOFT_ASPECT_TYPES + _HARD_ASPECT_TYPES)
+    mercury_uranus_aspect = _has_any_aspect_type(aspects, "Mercury", "Uranus", _SOFT_ASPECT_TYPES + _HARD_ASPECT_TYPES)
+    mercury_midheaven_aspect = _has_any_aspect_type(aspects, "Mercury", "Midheaven", _SOFT_ASPECT_TYPES + _HARD_ASPECT_TYPES)
+    mercury_chart_ruler = chart_ruler == "mercury"
+    mercury_mind_house = mercury_house in {3, 9, 11}
+    mercury_on_identity_spine = mercury_house == 1 or mercury_sun_conjunction or mercury_asc_conjunction or mercury_chart_ruler
+
+    third_route_is_mercurial = third_ruler == "mercury"
+    ninth_route_is_mercurial = ninth_ruler == "mercury"
+    saturn_on_mind_route = saturn_house in {3, 9} or third_sign == "capricorn" or ninth_sign == "capricorn"
+    uranus_on_mind_route = uranus_house in {3, 9} or third_sign == "aquarius" or ninth_sign == "aquarius"
+    saturn_route_owner_active = third_ruler == "saturn" or ninth_ruler == "saturn"
+    uranus_route_owner_active = third_ruler == "uranus" or ninth_ruler == "uranus"
+    mind_route_support_present = (
+        mercury_mind_house
+        or third_route_is_mercurial
+        or ninth_route_is_mercurial
+        or bool(third_house_planets)
+        or bool(ninth_house_planets)
+    )
+
+    subtype_signals: dict[str, float] = {}
+
+    def _bump(subtype: str, amount: float) -> None:
+        subtype_signals[subtype] = subtype_signals.get(subtype, 0.0) + amount
+
+    speech_self_link_strength = 0.0
+    if mercury_house == 1:
+        speech_self_link_strength += 0.14
+    if mercury_sun_conjunction:
+        speech_self_link_strength += 0.12
+    if mercury_asc_conjunction:
+        speech_self_link_strength += 0.12
+    if mercury_chart_ruler:
+        speech_self_link_strength += 0.10
+
+    speech_mind_route_strength = 0.0
+    if mercury_house in {3, 9}:
+        speech_mind_route_strength += 0.10
+    elif mercury_house == 11:
+        speech_mind_route_strength += 0.06
+    if third_route_is_mercurial:
+        speech_mind_route_strength += 0.08
+    if ninth_route_is_mercurial:
+        speech_mind_route_strength += 0.08
+    if len(mercury_aspect_refs) >= 1:
+        speech_mind_route_strength += 0.04
+
+    if speech_self_link_strength > 0.0 and speech_mind_route_strength > 0.0:
+        _bump("speech_identity_spine", speech_self_link_strength + speech_mind_route_strength)
+        if mercury_sun_conjunction and mercury_asc_conjunction:
+            _bump("speech_identity_spine", 0.04)
+    speech_combined_bonus = 0.0
+    if speech_self_link_strength >= 0.22 and speech_mind_route_strength >= 0.12:
+        speech_combined_bonus = 0.06
+    elif speech_self_link_strength >= 0.12 and speech_mind_route_strength >= 0.18:
+        speech_combined_bonus = 0.04
+
+    structural_signal = 0.0
+    if mercury_saturn_aspect:
+        structural_signal += 0.12
+    if mercury_sign == "capricorn":
+        structural_signal += 0.10
+    if saturn_house in {3, 9}:
+        structural_signal += 0.12
+    if saturn_route_owner_active:
+        structural_signal += 0.08
+    if third_sign == "capricorn" or ninth_sign == "capricorn":
+        structural_signal += 0.08
+    if saturn_sign == "capricorn" and (saturn_house in {3, 9} or mercury_saturn_aspect):
+        structural_signal += 0.04
+
+    disruptive_signal = 0.0
+    if mercury_uranus_aspect:
+        disruptive_signal += 0.12
+    if mercury_sign == "aquarius":
+        disruptive_signal += 0.10
+    if uranus_house in {3, 9}:
+        disruptive_signal += 0.12
+    if uranus_route_owner_active:
+        disruptive_signal += 0.08
+    if third_sign == "aquarius" or ninth_sign == "aquarius":
+        disruptive_signal += 0.08
+    if uranus_sign == "aquarius" and (uranus_house in {3, 9} or mercury_uranus_aspect):
+        disruptive_signal += 0.04
+
+    if structural_signal > 0.0 and disruptive_signal > 0.0:
+        _bump("structured_disruptive_mind", structural_signal + disruptive_signal)
+        if saturn_house in {3, 9} and uranus_house in {3, 9}:
+            _bump("structured_disruptive_mind", 0.26)
+        if third_sign in {"capricorn", "aquarius"} and ninth_sign in {"capricorn", "aquarius"}:
+            _bump("structured_disruptive_mind", 0.08)
+        if mercury_on_identity_spine:
+            _bump("structured_disruptive_mind", 0.06)
+
+    ordered = sorted(subtype_signals.items(), key=lambda kv: (-kv[1], kv[0]))
+    if not ordered or ordered[0][1] <= 0.0:
+        return None
+
+    subtype, top_score = ordered[0]
+    runner_up_subtype = ordered[1][0] if len(ordered) > 1 else ""
+    runner_up_score = ordered[1][1] if len(ordered) > 1 else 0.0
+    runner_up_score_delta = round(top_score - runner_up_score, 4) if runner_up_subtype else 0.0
+
+    public_anchor_count = 0
+    if mercury_house == 10:
+        public_anchor_count += 1
+    if "mercury" in tenth_house_planets:
+        public_anchor_count += 1
+    if mercury_midheaven_aspect:
+        public_anchor_count += 1
+    if career_ruler == "mercury" and career_ruler_house in {10, 11}:
+        public_anchor_count += 1
+
+    independent_mind_support_count = 0
+    if mercury_on_identity_spine:
+        independent_mind_support_count += 1
+    if mercury_mind_house:
+        independent_mind_support_count += 1
+    if third_route_is_mercurial or ninth_route_is_mercurial:
+        independent_mind_support_count += 1
+    if saturn_on_mind_route:
+        independent_mind_support_count += 1
+    if uranus_on_mind_route:
+        independent_mind_support_count += 1
+    if len(mercury_aspect_refs) >= 1:
+        independent_mind_support_count += 1
+
+    career_overlap_penalty = 0.0
+    career_overlap_guard = ""
+    career_subtype = str((career_candidate or {}).get("subtype") or "").strip().lower()
+    career_confidence = _safe_float((career_candidate or {}).get("confidence"), 0.0)
+    public_voice_overlap_delta = 0.0
+    if career_subtype == "public_voice" and public_anchor_count >= 1:
+        public_voice_overlap_delta = round(career_confidence, 4)
+
+    mercury_presence = 0.20
+    self_link_support = min(0.18, speech_self_link_strength)
+    mind_route_support = min(
+        0.18,
+        speech_mind_route_strength
+        + (0.03 if saturn_on_mind_route else 0.0)
+        + (0.03 if uranus_on_mind_route else 0.0),
+    )
+    aspect_support = min(0.10, 0.03 * len(mercury_aspect_refs))
+    subtype_coherence = min(0.16, top_score / 3.0)
+    speech_stack_support = 0.0
+    if subtype == "speech_identity_spine":
+        speech_stack_support = min(0.08, speech_combined_bonus)
+    structure_disruption_support = 0.0
+    if subtype == "structured_disruptive_mind":
+        structure_disruption_support = min(0.12, (structural_signal + disruptive_signal) / 4.0)
+    base_confidence = (
+        mercury_presence
+        + self_link_support
+        + mind_route_support
+        + aspect_support
+        + subtype_coherence
+        + speech_stack_support
+        + structure_disruption_support
+    )
+    if (
+        career_subtype == "public_voice"
+        and public_anchor_count >= 1
+        and independent_mind_support_count <= 3
+        and career_confidence >= (base_confidence + 0.18)
+    ):
+        career_overlap_penalty = 0.02
+        career_overlap_guard = "career_route_primary"
+
+    confidence = round(
+        min(
+            0.94,
+            max(
+                0.0,
+                base_confidence
+                - career_overlap_penalty,
+            ),
+        ),
+        4,
+    )
+    if confidence < 0.6:
+        return None
+
+    if subtype == "speech_identity_spine":
+        lived_scene = "Kendini çoğu zaman ne söylediğin kadar, o cümleyi hangi tonla kurduğun üzerinden de gösterirsin."
+        atoms = [
+            "bir cümleyi kurarken tonunu özellikle seçmen",
+            "ne söyleyeceğini kadar nasıl söyleyeceğini de tartman",
+        ]
+        direct_meaning = "Merkür, kimlik hattına değen düşünce ve konuşma biçimini generic mind fallback'ten daha spesifik taşıyor."
+        gift = "Düşünce ve konuşma biçiminin kimlikte nasıl görünür olduğunu ayırabilmek."
+        inner_tension = "Kendini anlatma biçimin, doğrudan kimlik ifadesiyle düşünceyi düzenleme ihtiyacını aynı anda taşıyabilir."
+        growth = "Merkür'ün söz, ton ve karar dili üzerinden kurduğu omurgayı daha bilinçli kullanmak."
+        domain_reason = [
+            "Mercury thought/speech route",
+            "Mercury self-link",
+        ]
+        if mercury_house in {3, 9, 11}:
+            domain_reason.append("3H/9H/11H mind-route support")
+        if third_route_is_mercurial or ninth_route_is_mercurial:
+            domain_reason.append("Mercury-owned 3H/9H route")
+    else:
+        lived_scene = "Zihnin bir yandan cümleyi doğru yere oturtmak isterken, başka bir yandan alışılmış bağlantıyı bir anda kırabilir."
+        atoms = [
+            "bir fikri önce iskelete oturtup sonra beklenmedik bir açıyla çevirmen",
+            "cümleyi kurarken hem düzeni hem sıçramayı aynı anda taşıman",
+        ]
+        direct_meaning = "Merkür hattı, yapı kuran ve bağlantıyı beklenmedik biçimde kıran zihinsel işleyişi tek bir generic mind etiketinden daha net taşıyor."
+        gift = "Yapı ile sıçrama arasındaki zihinsel ritmi ayırabilmek."
+        inner_tension = "Zihnin bir yanıyla düzen kurmak isterken, başka bir yanıyla eski bağlantıyı kırıp yeni bir hat açabilir."
+        growth = "Satürnce yapı ile Uranüsçe kopuşun aynı zihinsel hatta nasıl birlikte çalıştığını görmek."
+        domain_reason = [
+            "Mercury thought/speech route",
+            "Saturn structure on mind route",
+            "Uranus disruption on mind route",
+        ]
+        if mercury_on_identity_spine:
+            domain_reason.append("speech-identity spillover stays mind-owned")
+
+    technical_anchors = [_planet_chip("mercury", mercury_item)]
+    if subtype == "speech_identity_spine":
+        if mercury_sun_conjunction:
+            technical_anchors.append("Mercury conjunction Sun")
+        if mercury_asc_conjunction:
+            technical_anchors.append("Mercury conjunction Ascendant")
+        if mercury_chart_ruler:
+            technical_anchors.append("Mercury chart ruler")
+    else:
+        if saturn_house in {3, 9}:
+            technical_anchors.append(_planet_chip("saturn", saturn_item))
+        if uranus_house in {3, 9}:
+            technical_anchors.append(_planet_chip("uranus", uranus_item))
+        if mercury_saturn_aspect:
+            technical_anchors.append("Mercury major aspect Saturn")
+        if mercury_uranus_aspect:
+            technical_anchors.append("Mercury major aspect Uranus")
+    technical_anchors.extend(item["label"] for item in mercury_aspect_refs[:2])
+    technical_anchors = [item for item in technical_anchors if item]
+
+    source_evidence_ids = [
+        f"composed:mercury:sign:{mercury_sign}",
+        f"composed:mercury:house:{mercury_house}",
+    ]
+    if third_sign:
+        source_evidence_ids.append(f"composed:mercury:3h_cusp:{third_sign}")
+    if ninth_sign:
+        source_evidence_ids.append(f"composed:mercury:9h_cusp:{ninth_sign}")
+    if mercury_sun_conjunction:
+        source_evidence_ids.append("composed:mercury:self_link:sun_conjunction")
+    if mercury_asc_conjunction:
+        source_evidence_ids.append("composed:mercury:self_link:asc_conjunction")
+    if saturn_on_mind_route:
+        source_evidence_ids.append("composed:mercury:structure:saturn_route")
+    if uranus_on_mind_route:
+        source_evidence_ids.append("composed:mercury:disruption:uranus_route")
+
+    evidence_trace = {
+        "primitive_facts": {
+            "placements": [
+                {"planet": "Mercury", "sign": mercury_sign, "house": mercury_house, "retrograde": bool(mercury_item.get("retrograde"))},
+                *(
+                    [{"planet": "Sun", "sign": str(sun_item.get("sign") or "").strip().lower(), "house": sun_house}]
+                    if sun_item
+                    else []
+                ),
+                *(
+                    [{"planet": "Saturn", "sign": saturn_sign, "house": saturn_house}]
+                    if saturn_item
+                    else []
+                ),
+                *(
+                    [{"planet": "Uranus", "sign": uranus_sign, "house": uranus_house}]
+                    if uranus_item
+                    else []
+                ),
+            ],
+            "angles": [
+                *([{"angle": "ASC", "sign": asc_sign.title()}] if asc_sign else []),
+                *([{"angle": "MC", "sign": mc_sign.title()}] if mc_sign else []),
+            ],
+        },
+        "discovery_routes": ["mercury_signature"],
+        "family_inputs": ["Mercury", "3H_9H_route", "Mercury_self_link", "Saturn_structure", "Uranus_disruption"],
+        "subtype_inputs": [subtype],
+        "subtype_signal_scores": {k: round(v, 4) for k, v in subtype_signals.items()},
+        "career_overlap_guard": career_overlap_guard,
+        "career_subtype_at_overlap_check": career_subtype or "",
+        "cross_family_overlap": [],
+    }
+
+    meta = {
+        "title": "Merkür imzası composed semantic adayı",
+        "locale": locale,
+        "auxiliary": False,
+        "inventory_variant": "composed_semantic_v0_9c",
+        "v0_9_composed": True,
+        "v0_9_family": "mercury_signature",
+        "v0_9c_composed": True,
+        "debug_only": True,
+        "non_public_discovery": True,
+        "source_type": "composed_semantic",
+        "career_overlap_guard": career_overlap_guard or "none",
+        "public_anchor_count": public_anchor_count,
+        "independent_mind_support_count": independent_mind_support_count,
+    }
+    if runner_up_subtype and runner_up_score_delta < 0.04:
+        meta["runner_up_subtype"] = runner_up_subtype
+        meta["runner_up_score"] = round(runner_up_score, 4)
+        meta["runner_up_score_delta"] = runner_up_score_delta
+
+    return _composed_candidate_to_packet(
+        ComposedSemanticCandidateV1(
+            id=packet_id,
+            family="mercury_signature",
+            subtype=subtype,
+            source_type="composed_semantic",
+            domain="mind",
+            promise_type="mind_style",
+            domain_reason=domain_reason,
+            public_job="debug_only",
+            confidence=confidence,
+            confidence_tier=_confidence_tier(confidence),
+            chart_facts_match=True,
+            technical_anchors=technical_anchors,
+            source_evidence_ids=source_evidence_ids,
+            evidence_trace=evidence_trace,
+            direct_meaning=direct_meaning,
+            lived_scene=lived_scene,
+            lived_scene_atoms=atoms,
+            gift=gift,
+            inner_tension=inner_tension,
+            growth_direction=growth,
+            avoid_readings=[
+                "Do not reduce mercury signature to generic intelligence.",
+                "Do not let career/public-role meaning take ownership of this route.",
+                "Do not solve MC-Cancer public voice or 9H belief sensitivity here.",
+            ],
+            projection_hints={
+                "surfaces": ["debug_only"],
+                "priority": confidence,
+                "auxiliary": False,
+                "opening_strategy": "debug_only",
+            },
+            scoring_breakdown={
+                "speech_self_link_strength": round(speech_self_link_strength, 4),
+                "speech_mind_route_strength": round(speech_mind_route_strength, 4),
+                "structural_signal": round(structural_signal, 4),
+                "disruptive_signal": round(disruptive_signal, 4),
+                "public_anchor_count": round(float(public_anchor_count), 4),
+                "independent_mind_support_count": round(float(independent_mind_support_count), 4),
+                "speech_combined_bonus": round(speech_combined_bonus, 4),
+                "speech_stack_support": round(speech_stack_support, 4),
+                "career_overlap_penalty": round(career_overlap_penalty, 4),
+                "career_public_voice_confidence": round(career_confidence, 4),
+                "career_public_voice_overlap_delta": round(max(0.0, career_confidence - base_confidence), 4),
+                "subtype_coherence": round(subtype_coherence, 4),
+                "structure_disruption_support": round(structure_disruption_support, 4),
+            },
+            matched_archetypes=[],
+            public_eligibility={
+                "debug_eligible": True,
+                "detail_eligible": False,
+                "public_support_eligible": False,
+                "public_main_eligible": False,
+                "reason_codes": [
+                    "v0_9c_debug_only",
+                    "public_main_flag_required",
+                    "detail_rollout_not_enabled_in_v0_9c",
+                ],
+            },
+            meta=meta,
+        )
+    )
+
+
+# ---------------------------------------------------------------------------
+# v0.10 composed-semantic family: axis_2h_8h
+#
+# Debug-only first cut. Turns the previously discovery-only
+# `discovery_axis_2h_8h_gap` signal into a properly-typed composed
+# candidate with seven subtypes:
+#
+#   self_worth_foundation
+#   shared_trust_exchange
+#   dependency_autonomy_tension
+#   intimacy_resource_fusion
+#   value_transformation
+#   resource_boundary
+#   embodied_security
+#
+# Gates are identical in shape to v0.9b families:
+#   * master flag default-false (ENABLE_NATAL_COMPOSED_SEMANTICS_AXIS_2H_8H_V0_10)
+#   * always emits public_job="debug_only"
+#   * always emits public_main_eligible=False / public_support_eligible=False
+#   * detail_eligible flips True only when the shared detail-support flag
+#     (ENABLE_NATAL_COMPOSED_SEMANTICS_AXIS_2H_8H_DETAIL_SUPPORT) is also on
+#   * confidence floor 0.60, cap 0.94
+#   * fallback subtype `self_worth_foundation` carries the calibrated
+#     default-fallback penalty (0.12 margin-fail / 0.15 no-signal)
+# ---------------------------------------------------------------------------
+
+
+def _build_axis_2h_8h_candidates(
+    *,
+    planet_map: Mapping[str, Mapping[str, Any]],
+    aspects: Sequence[Mapping[str, Any]] | None,
+    house_rulers: Mapping[str, Any],
+    locale: str,
+    existing_ids: set[str],
+) -> dict[str, Any] | None:
+    packet_id = "composed_axis_2h_8h_v0_10"
+    if packet_id in existing_ids:
+        return None
+
+    two_h_cusp_sign = _house_cusp_sign(house_rulers, 2)
+    eight_h_cusp_sign = _house_cusp_sign(house_rulers, 8)
+    if not two_h_cusp_sign and not eight_h_cusp_sign:
+        return None
+
+    two_h_ruler = _sign_ruler(two_h_cusp_sign) if two_h_cusp_sign else ""
+    eight_h_ruler = _sign_ruler(eight_h_cusp_sign) if eight_h_cusp_sign else ""
+    two_h_ruler_item = _lookup_planet_entry(planet_map, two_h_ruler) if two_h_ruler else {}
+    eight_h_ruler_item = _lookup_planet_entry(planet_map, eight_h_ruler) if eight_h_ruler else {}
+    two_h_ruler_house = int(two_h_ruler_item.get("house") or 0) if two_h_ruler_item else 0
+    eight_h_ruler_house = int(eight_h_ruler_item.get("house") or 0) if eight_h_ruler_item else 0
+    two_h_ruler_sign = str(two_h_ruler_item.get("sign") or "").strip().lower() if two_h_ruler_item else ""
+
+    two_h_planets = _house_planet_names(planet_map, 2)
+    eight_h_planets = _house_planet_names(planet_map, 8)
+
+    north_node_item = _lookup_planet_entry(planet_map, "north node")
+    north_node_house = int(north_node_item.get("house") or 0) if north_node_item else 0
+    south_node_house = ((north_node_house - 1 + 6) % 12) + 1 if north_node_house else 0
+
+    sun_item = _lookup_planet_entry(planet_map, "sun")
+    moon_item = _lookup_planet_entry(planet_map, "moon")
+    sun_house = int(sun_item.get("house") or 0) if sun_item else 0
+    moon_house = int(moon_item.get("house") or 0) if moon_item else 0
+
+    two_h_activated = (
+        bool(two_h_planets)
+        or north_node_house == 2
+        or south_node_house == 2
+        or eight_h_ruler_house == 2
+    )
+    eight_h_activated = (
+        bool(eight_h_planets)
+        or north_node_house == 8
+        or south_node_house == 8
+        or two_h_ruler_house == 8
+    )
+    if not (two_h_activated or eight_h_activated):
+        return None
+
+    # ---- Supporting-signal tally (gate: >= 2 unless Sun/Moon/Node on axis) ----
+    supporting_signals: list[str] = []
+    if two_h_planets:
+        supporting_signals.append("2h_planet")
+    if eight_h_planets:
+        supporting_signals.append("8h_planet")
+    if north_node_house in {2, 8}:
+        supporting_signals.append("node_on_axis")
+    if two_h_ruler_house == 8 and two_h_ruler:
+        supporting_signals.append("2h_ruler_in_8h")
+    if eight_h_ruler_house == 2 and eight_h_ruler:
+        supporting_signals.append("8h_ruler_in_2h")
+    if sun_house in {2, 8}:
+        supporting_signals.append("luminary_on_axis_sun")
+    if moon_house in {2, 8}:
+        supporting_signals.append("luminary_on_axis_moon")
+    if two_h_ruler and _has_any_aspect_type(
+        aspects, two_h_ruler, "pluto", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        supporting_signals.append("2h_ruler_pluto_aspect")
+    if eight_h_ruler and _has_any_aspect_type(
+        aspects, eight_h_ruler, "pluto", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        supporting_signals.append("8h_ruler_pluto_aspect")
+
+    # v0.10.0.1: extend "load-bearing planet on axis" gate to include
+    # Pluto and Saturn — these planets ARE the axis's primary
+    # transformation / boundary significators, so their presence on the
+    # axis should single-handedly satisfy the supporting-signal gate.
+    luminary_or_node_on_axis = (
+        sun_house in {2, 8}
+        or moon_house in {2, 8}
+        or north_node_house in {2, 8}
+        or "pluto" in two_h_planets
+        or "pluto" in eight_h_planets
+        or "saturn" in two_h_planets
+        or "saturn" in eight_h_planets
+    )
+    if len(supporting_signals) < 2 and not luminary_or_node_on_axis:
+        return None
+
+    # ---- Subtype scoring channels ----
+    subtype_signals: dict[str, float] = {}
+
+    def _bump(subtype: str, amount: float) -> None:
+        subtype_signals[subtype] = subtype_signals.get(subtype, 0.0) + amount
+
+    # self_worth_foundation — own ground, own value.
+    # v0.10.0.1: relax the "8H empty" requirement to "2H heavier than 8H"
+    # so charts with any 8H content still qualify when 2H is the
+    # dominant pole. Multi-planet 2H stelliums get an explicit bonus.
+    if two_h_planets and len(two_h_planets) > len(eight_h_planets):
+        _bump("self_worth_foundation", 0.12)
+    if two_h_planets and not eight_h_planets:
+        _bump("self_worth_foundation", 0.08)
+    if len(two_h_planets) >= 2:
+        _bump("self_worth_foundation", 0.06)
+    for sig in ("sun", "moon", "venus", "jupiter", "saturn"):
+        if sig in two_h_planets:
+            _bump("self_worth_foundation", 0.04)
+            break
+    if two_h_ruler_house in {1, 2, 4, 10, 11}:
+        _bump("self_worth_foundation", 0.06)
+    if north_node_house == 2:
+        _bump("self_worth_foundation", 0.04)
+
+    # shared_trust_exchange — BOTH sides activated by direct planets,
+    # balanced. v0.10.0.1: reduced the Node-on-axis bonus from 0.10 to
+    # 0.04 (Node + heavy opposite pole is primarily the
+    # dependency_autonomy_tension signal; shared_trust still picks up a
+    # small Node sensitivity for charts where the Node isn't carrying
+    # the dependency reading).
+    if two_h_planets and eight_h_planets:
+        _bump("shared_trust_exchange", 0.14)
+    elif two_h_activated and eight_h_activated:
+        _bump("shared_trust_exchange", 0.08)
+    if north_node_house in {2, 8}:
+        _bump("shared_trust_exchange", 0.04)
+    if two_h_ruler_house == 8 or eight_h_ruler_house == 2:
+        _bump("shared_trust_exchange", 0.08)
+
+    # dependency_autonomy_tension — Node on one pole, weight on the other.
+    # v0.10.0.1: stronger weight when Node + opposite-pole significator
+    # (Venus / Mars / Saturn / Pluto / Jupiter) is present — previously
+    # the channel was overtaken by shared_trust_exchange on these charts.
+    eight_h_planet_count = len(eight_h_planets)
+    two_h_planet_count = len(two_h_planets)
+    if north_node_house == 2 and (eight_h_planet_count >= 2 or sun_house == 8 or moon_house == 8):
+        _bump("dependency_autonomy_tension", 0.20)
+    if north_node_house == 2 and any(p in eight_h_planets for p in ("venus", "mars", "saturn", "pluto", "jupiter")):
+        _bump("dependency_autonomy_tension", 0.08)
+    if north_node_house == 8 and (two_h_planet_count >= 2 or sun_house == 2 or moon_house == 2):
+        _bump("dependency_autonomy_tension", 0.18)
+    if north_node_house == 8 and any(p in two_h_planets for p in ("venus", "mars", "saturn", "pluto", "jupiter")):
+        _bump("dependency_autonomy_tension", 0.08)
+    if _has_aspect(aspects or [], "sun", "north node", "opposition") and sun_house in {2, 8}:
+        _bump("dependency_autonomy_tension", 0.06)
+    if _has_aspect(aspects or [], "moon", "north node", "opposition") and moon_house in {2, 8}:
+        _bump("dependency_autonomy_tension", 0.04)
+
+    # intimacy_resource_fusion — 8H planets, esp. Venus/Mars/Moon/Pluto;
+    # water on axis; Venus/Mars/Moon-Pluto contacts; aspects to 8H ruler.
+    # v0.10.0.1: base bump raised from 0.06 to 0.10, and Mars-Pluto /
+    # Moon-Pluto contacts now contribute (previously only Venus-Pluto).
+    intimacy_8h = [p for p in eight_h_planets if p in {"venus", "mars", "moon", "pluto"}]
+    if intimacy_8h:
+        _bump(
+            "intimacy_resource_fusion",
+            0.10 + 0.04 * min(len(intimacy_8h), 3),
+        )
+    if _has_any_aspect_type(
+        aspects, "venus", "pluto", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("intimacy_resource_fusion", 0.06)
+    if _has_any_aspect_type(
+        aspects, "mars", "pluto", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("intimacy_resource_fusion", 0.04)
+    if _has_any_aspect_type(
+        aspects, "moon", "pluto", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("intimacy_resource_fusion", 0.04)
+    if eight_h_ruler and any(
+        _has_any_aspect_type(
+            aspects, sig, eight_h_ruler, _SOFT_ASPECT_TYPES + _HARD_ASPECT_TYPES
+        )
+        for sig in ("venus", "mars", "moon")
+    ):
+        _bump("intimacy_resource_fusion", 0.04)
+    if eight_h_cusp_sign in _WATER_SIGNS:
+        _bump("intimacy_resource_fusion", 0.04)
+
+    # value_transformation — Pluto on axis or ruling the axis; aspects
+    # to axis ruler / luminary; Scorpio on 2H/8H cusp.
+    # v0.10.0.1: expanded detection — Pluto ruling 2H/8H now contributes
+    # explicitly; Pluto-ruler / Pluto-luminary contacts no longer require
+    # a hard aspect; Scorpio cusp now contributes a small bump.
+    pluto_item = _lookup_planet_entry(planet_map, "pluto")
+    pluto_house = int(pluto_item.get("house") or 0) if pluto_item else 0
+    if "pluto" in two_h_planets or "pluto" in eight_h_planets:
+        _bump("value_transformation", 0.16)
+    if two_h_ruler == "pluto" or eight_h_ruler == "pluto":
+        _bump("value_transformation", 0.10)
+        if pluto_house in {1, 4, 7, 8, 10, 11}:
+            _bump("value_transformation", 0.04)
+    if two_h_ruler and _has_any_aspect_type(
+        aspects, two_h_ruler, "pluto", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("value_transformation", 0.08)
+    if eight_h_ruler and _has_any_aspect_type(
+        aspects, eight_h_ruler, "pluto", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("value_transformation", 0.08)
+    if sun_house in {2, 8} and _has_any_aspect_type(
+        aspects, "sun", "pluto", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("value_transformation", 0.06)
+    if moon_house in {2, 8} and _has_any_aspect_type(
+        aspects, "moon", "pluto", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("value_transformation", 0.06)
+    if two_h_cusp_sign == "scorpio" or eight_h_cusp_sign == "scorpio":
+        _bump("value_transformation", 0.06)
+    if _has_aspect(aspects or [], "jupiter", "pluto", "square") and (
+        sun_house in {2, 8} or "jupiter" in eight_h_planets or "jupiter" in two_h_planets
+    ):
+        _bump("value_transformation", 0.04)
+
+    # resource_boundary — Saturn on axis; Saturn rules 2H/8H; Saturn
+    # aspects to axis ruler; Saturn-Venus/Saturn-Moon in 2H/8H context.
+    # v0.10.0.1: explicit aspect-to-axis-ruler bumps; Capricorn/Aquarius
+    # cusp + Saturn-on-axis combo gets an additional small bump.
+    if "saturn" in two_h_planets or "saturn" in eight_h_planets:
+        _bump("resource_boundary", 0.16)
+    if two_h_ruler == "saturn" or eight_h_ruler == "saturn":
+        _bump("resource_boundary", 0.08)
+    if two_h_ruler and two_h_ruler != "saturn" and _has_any_aspect_type(
+        aspects, "saturn", two_h_ruler, _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("resource_boundary", 0.06)
+    if eight_h_ruler and eight_h_ruler != "saturn" and _has_any_aspect_type(
+        aspects, "saturn", eight_h_ruler, _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("resource_boundary", 0.06)
+    if ("venus" in two_h_planets or "venus" in eight_h_planets) and _has_any_aspect_type(
+        aspects, "saturn", "venus", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("resource_boundary", 0.06)
+    if ("moon" in two_h_planets or "moon" in eight_h_planets) and _has_any_aspect_type(
+        aspects, "saturn", "moon", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("resource_boundary", 0.06)
+    if ("saturn" in two_h_planets or "saturn" in eight_h_planets) and (
+        two_h_cusp_sign in {"capricorn", "aquarius"}
+        or eight_h_cusp_sign in {"capricorn", "aquarius"}
+    ):
+        _bump("resource_boundary", 0.04)
+    # Generic Saturn-Venus / Saturn-Moon contact (lower weight, kept for
+    # backward compatibility with charts where the contact is present but
+    # neither planet sits on the axis).
+    if _has_any_aspect_type(
+        aspects, "saturn", "venus", _HARD_ASPECT_TYPES + _SOFT_ASPECT_TYPES
+    ):
+        _bump("resource_boundary", 0.02)
+    if _has_any_aspect_type(aspects, "saturn", "moon", _HARD_ASPECT_TYPES):
+        _bump("resource_boundary", 0.02)
+
+    # embodied_security — earth on 2H, earth ruler, body/material
+    # support from Venus/Moon/Saturn in 2H. No Pluto-crisis ingredient on
+    # the axis, no 8H heat.
+    # v0.10.0.1: explicit Venus/Moon/Saturn-in-2H bumps + 2H-ruler-in-
+    # stable-earth-house bump.
+    if two_h_cusp_sign in _EARTH_SIGNS:
+        _bump("embodied_security", 0.12)
+    if two_h_cusp_sign == "taurus":
+        _bump("embodied_security", 0.06)
+    if two_h_ruler_sign in _EARTH_SIGNS:
+        _bump("embodied_security", 0.06)
+    for sig in ("venus", "moon", "saturn"):
+        if sig in two_h_planets:
+            _bump("embodied_security", 0.04)
+    if two_h_ruler_sign in _EARTH_SIGNS and two_h_ruler_house in {2, 4, 10}:
+        _bump("embodied_security", 0.04)
+    if not eight_h_planets and "pluto" not in two_h_planets and two_h_planets:
+        _bump("embodied_security", 0.04)
+
+    # ---- Subtype selection (margin >= 0.04 vs runner-up) ----
+    # v0.10.0.1: margin-fail fallback only fires when the top subtype's
+    # signal is weak (< 0.15). When the top score is genuinely high but
+    # the runner-up is close, we trust the winning subtype — otherwise
+    # legitimate close-call winners (e.g. fix04's self_worth path with
+    # signal ~0.26) were being misclassified as "default fallback" with
+    # the penalty applied.
+    ordered = sorted(subtype_signals.items(), key=lambda kv: kv[1], reverse=True)
+    is_subtype_default_fallback_path = False
+    if not ordered or ordered[0][1] <= 0.0:
+        subtype = "self_worth_foundation"
+        subtype_penalty = 0.15
+        subtype_bonus = 0.0
+        is_subtype_default_fallback_path = True
+    else:
+        top_subtype, top_score = ordered[0]
+        runner_up_score = ordered[1][1] if len(ordered) > 1 else 0.0
+        if top_score - runner_up_score < 0.04 and top_score < 0.15:
+            subtype = "self_worth_foundation"
+            subtype_penalty = 0.12
+            subtype_bonus = 0.0
+            is_subtype_default_fallback_path = True
+        else:
+            subtype = top_subtype
+            subtype_penalty = 0.0
+            subtype_bonus = min(0.05, top_score / 4.0)
+
+    # ---- Confidence scoring ----
+    two_h_activation_score = 0.05 if two_h_activated else 0.0
+    if two_h_planets:
+        two_h_activation_score += min(0.10, 0.04 * len(two_h_planets))
+    eight_h_activation_score = 0.05 if eight_h_activated else 0.0
+    if eight_h_planets:
+        eight_h_activation_score += min(0.15, 0.05 * len(eight_h_planets))
+    node_on_axis_score = 0.20 if north_node_house in {2, 8} else 0.0
+    luminary_on_axis_score = 0.0
+    if sun_house in {2, 8}:
+        luminary_on_axis_score += 0.10
+    if moon_house in {2, 8}:
+        luminary_on_axis_score += 0.06
+    luminary_on_axis_score = min(0.15, luminary_on_axis_score)
+    significator_on_axis_score = 0.0
+    for sig in ("venus", "mars", "saturn", "pluto", "jupiter"):
+        if sig in two_h_planets or sig in eight_h_planets:
+            significator_on_axis_score += 0.04
+    significator_on_axis_score = min(0.15, significator_on_axis_score)
+    ruler_route_score = 0.0
+    if two_h_ruler_house == 8:
+        ruler_route_score += 0.06
+    if eight_h_ruler_house == 2:
+        ruler_route_score += 0.06
+    ruler_route_score = min(0.10, ruler_route_score)
+    hard_aspect_to_axis_score = 0.0
+    for ruler in (two_h_ruler, eight_h_ruler):
+        if ruler and _has_any_aspect_type(aspects, ruler, "pluto", _HARD_ASPECT_TYPES):
+            hard_aspect_to_axis_score += 0.04
+        if ruler and _has_any_aspect_type(aspects, ruler, "saturn", _HARD_ASPECT_TYPES):
+            hard_aspect_to_axis_score += 0.03
+    hard_aspect_to_axis_score = min(0.10, hard_aspect_to_axis_score)
+    subtype_coherence = min(0.05, (ordered[0][1] if ordered else 0.0) / 4.0)
+
+    confidence = round(
+        min(
+            0.94,
+            max(
+                0.0,
+                two_h_activation_score
+                + eight_h_activation_score
+                + node_on_axis_score
+                + luminary_on_axis_score
+                + significator_on_axis_score
+                + ruler_route_score
+                + hard_aspect_to_axis_score
+                + subtype_coherence
+                + subtype_bonus
+                - subtype_penalty,
+            ),
+        ),
+        4,
+    )
+    if confidence < 0.6:
+        return None
+
+    # ---- TR copy seeds (debug-only; never reaches a public surface) ----
+    subtype_copy = {
+        "self_worth_foundation": (
+            "Kendi değerin ve kaynakların bu hattın merkezinde yer alıyor; sahip olduğun zeminden taşınan bir güven biçimi var.",
+            ["kendi ihtiyaçlarını net tanıman", "değer hissini içeride kurman"],
+        ),
+        "shared_trust_exchange": (
+            "Derin bağlar ve ortak alanlar seni güçlü biçimde etkileyebilir; ama gelişim yönün bu yoğunluğun içinde kendi değerini ve zeminini koruyabilmekten geçer.",
+            ["paylaşırken kendini kaybetmemen", "güven ve yakınlık alanında kendi ihtiyacını ayırman"],
+        ),
+        "dependency_autonomy_tension": (
+            "Bir yanın derin bağ kurmak isterken, başka bir yanın kendi değerini ve sınırını daha net tutmaya çalışabilir.",
+            ["başkasının duygusuna karışırken kendi ihtiyacını ayırman", "ortak alanda kendi zeminini koruman"],
+        ),
+        "intimacy_resource_fusion": (
+            "Yakınlık ve ortak kaynaklar bu hatta birbirine bağlı çalışıyor; bir bağ derinleştiğinde paylaşılan alan da hareketleniyor.",
+            ["yakınlık ve paylaşımın birlikte yoğunlaşması", "güveni açtığında ortak alanın da derinleşmesi"],
+        ),
+        "value_transformation": (
+            "Kendi değerin sabit bir nokta değil; kriz, paylaşım veya derin bağ deneyimleriyle dönüşerek netleşiyor.",
+            ["değer hissinin deneyimle yeniden kurulması", "yoğun bağdan sonra kendi zeminini yeniden tanıman"],
+        ),
+        "resource_boundary": (
+            "Bu hat sana nerede verip, nerede aldığını ve neyin senin neyin ortak olduğunu daha net ayırmayı öğretiyor.",
+            ["paylaşım sınırını net çekmen", "verirken ve alırken ölçüyü koruyabilmen"],
+        ),
+        "embodied_security": (
+            "Güven duygusu sende bedenle, sağlam zeminle ve tutarlı bir maddi/duygusal alanla birlikte çalışıyor.",
+            ["istikrarın güven kaynağı olması", "değeri somut zemin üzerinden hissetmen"],
+        ),
+    }
+    lived_scene, atoms = subtype_copy[subtype]
+
+    direct_meaning = "İkinci ve sekizinci ev rotaları birlikte kendi değer, paylaşım ve güven hattını generic 'para/kaynak' okumasından daha spesifik biçimde taşıyor."
+    gift = "Derin bağ ve ortak alan içinde kendi zeminini koruyabilme kapasitesi; paylaşımı kaybolmadan yapabilmek."
+    inner_tension = "Bir yanın derinleşmek ve paylaşmak isterken, başka bir yanın kendi değerini ve sınırını daha net taşımaya çağırabilir."
+    growth = "Paylaşırken kendini kaybetmeden, güven ve yakınlığı kendi zemininle birlikte kurmak."
+
+    domain_reason: list[str] = []
+    if two_h_planets or north_node_house == 2 or eight_h_ruler_house == 2:
+        domain_reason.append("2H activation")
+    if eight_h_planets or north_node_house == 8 or two_h_ruler_house == 8:
+        domain_reason.append("8H activation")
+    if north_node_house in {2, 8}:
+        domain_reason.append("Node on 2H/8H axis")
+    if two_h_ruler_house == 8:
+        domain_reason.append("2H ruler in 8H")
+    if eight_h_ruler_house == 2:
+        domain_reason.append("8H ruler in 2H")
+    if sun_house in {2, 8}:
+        domain_reason.append("Sun on 2H/8H axis")
+    if "pluto" in two_h_planets or "pluto" in eight_h_planets:
+        domain_reason.append("Pluto on 2H/8H axis")
+    if "saturn" in two_h_planets or "saturn" in eight_h_planets:
+        domain_reason.append("Saturn on 2H/8H axis")
+
+    technical_anchors: list[str] = []
+    if two_h_cusp_sign:
+        technical_anchors.append(f"2H cusp {two_h_cusp_sign.title()}")
+    if eight_h_cusp_sign:
+        technical_anchors.append(f"8H cusp {eight_h_cusp_sign.title()}")
+    if two_h_ruler and two_h_ruler_item:
+        technical_anchors.append(_planet_chip(two_h_ruler, two_h_ruler_item))
+    if eight_h_ruler and eight_h_ruler_item:
+        technical_anchors.append(_planet_chip(eight_h_ruler, eight_h_ruler_item))
+    for planet in two_h_planets[:3]:
+        technical_anchors.append(f"{planet.title()} · 2. ev")
+    for planet in eight_h_planets[:3]:
+        technical_anchors.append(f"{planet.title()} · 8. ev")
+    if north_node_house in {2, 8} and north_node_item:
+        technical_anchors.append(_planet_chip("north node", north_node_item))
+
+    source_evidence_ids = [
+        f"composed:axis_2h_8h:2h_cusp:{two_h_cusp_sign}",
+        f"composed:axis_2h_8h:8h_cusp:{eight_h_cusp_sign}",
+        *[f"composed:axis_2h_8h:2h:{planet}" for planet in two_h_planets[:4]],
+        *[f"composed:axis_2h_8h:8h:{planet}" for planet in eight_h_planets[:4]],
+    ]
+
+    evidence_trace = {
+        "primitive_facts": {
+            "placements": [
+                *(
+                    [
+                        {
+                            "planet": planet.title(),
+                            "sign": str(
+                                (_lookup_planet_entry(planet_map, planet) or {}).get("sign") or ""
+                            ),
+                            "house": 2,
+                        }
+                        for planet in two_h_planets[:4]
+                    ]
+                ),
+                *(
+                    [
+                        {
+                            "planet": planet.title(),
+                            "sign": str(
+                                (_lookup_planet_entry(planet_map, planet) or {}).get("sign") or ""
+                            ),
+                            "house": 8,
+                        }
+                        for planet in eight_h_planets[:4]
+                    ]
+                ),
+                *(
+                    [
+                        {
+                            "planet": "North Node",
+                            "sign": str(north_node_item.get("sign") or ""),
+                            "house": north_node_house,
+                        }
+                    ]
+                    if north_node_house in {2, 8} and north_node_item
+                    else []
+                ),
+            ],
+            "angles": [],
+        },
+        "discovery_routes": ["axis_2h_8h"],
+        "family_inputs": [
+            "2H_cusp",
+            "8H_cusp",
+            "2H_ruler",
+            "8H_ruler",
+            "2H_planets",
+            "8H_planets",
+            "Node_axis",
+            "luminary_on_axis",
+        ],
+        "subtype_inputs": [subtype],
+        "subtype_signal_scores": {k: round(v, 4) for k, v in subtype_signals.items()},
+        "supporting_signals": supporting_signals,
+        "cross_family_overlap": [],
+    }
+
+    detail_support_flag_enabled = _env_enabled(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_AXIS_2H_8H_DETAIL_SUPPORT"
+    )
+    detail_eligible = detail_support_flag_enabled and confidence >= 0.75
+
+    return _composed_candidate_to_packet(
+        ComposedSemanticCandidateV1(
+            id=packet_id,
+            family="axis_2h_8h",
+            subtype=subtype,
+            source_type="composed_semantic",
+            domain="value_resource_axis",
+            promise_type="axis_2h_8h_signature",
+            domain_reason=domain_reason,
+            public_job="debug_only",
+            confidence=confidence,
+            confidence_tier=_confidence_tier(confidence),
+            chart_facts_match=True,
+            technical_anchors=[item for item in technical_anchors if item],
+            source_evidence_ids=source_evidence_ids,
+            evidence_trace=evidence_trace,
+            direct_meaning=direct_meaning,
+            lived_scene=lived_scene,
+            lived_scene_atoms=atoms,
+            gift=gift,
+            inner_tension=inner_tension,
+            growth_direction=growth,
+            avoid_readings=[
+                "Do not collapse this axis into 'para sorunu' / 'maddi kriz' readings.",
+                "Do not assert dependency or trauma without exact chart evidence.",
+                "Do not let generic 'özdeğerin önemlidir' copy own this axis.",
+                "Do not reduce 2H/8H meaning to relationship-only framing.",
+            ],
+            projection_hints={
+                "surfaces": ["debug_only"],
+                "priority": confidence,
+                "auxiliary": False,
+                "opening_strategy": "debug_only",
+            },
+            scoring_breakdown={
+                "two_h_activation": round(two_h_activation_score, 4),
+                "eight_h_activation": round(eight_h_activation_score, 4),
+                "node_on_axis": round(node_on_axis_score, 4),
+                "luminary_on_axis": round(luminary_on_axis_score, 4),
+                "significator_on_axis": round(significator_on_axis_score, 4),
+                "ruler_route": round(ruler_route_score, 4),
+                "hard_aspect_to_axis": round(hard_aspect_to_axis_score, 4),
+                "subtype_coherence": round(subtype_coherence, 4),
+                "subtype_bonus": round(subtype_bonus, 4),
+                "subtype_penalty": round(subtype_penalty, 4),
+            },
+            matched_archetypes=[],
+            public_eligibility={
+                "debug_eligible": True,
+                "detail_eligible": detail_eligible,
+                "public_support_eligible": False,
+                "public_main_eligible": False,
+                "reason_codes": [
+                    "v0_10_debug_only",
+                    "public_main_flag_required",
+                    *(
+                        ["v0_10_axis_2h_8h_detail_support_flag_enabled"]
+                        if detail_eligible
+                        else ["v0_10_axis_2h_8h_detail_support_flag_disabled_or_low_confidence"]
+                    ),
+                ],
+            },
+            meta={
+                "title": "2.ev / 8.ev ekseni composed semantic adayı",
+                "locale": locale,
+                "auxiliary": False,
+                "inventory_variant": "composed_semantic_v0_10",
+                "v0_9_composed": True,
+                "v0_9_family": "axis_2h_8h",
+                "v0_10_composed": True,
+                "debug_only": True,
+                "non_public_discovery": True,
+                "source_type": "composed_semantic",
+                "subtype_default_fallback": is_subtype_default_fallback_path,
+                "supporting_signal_count": len(supporting_signals),
             },
         )
     )

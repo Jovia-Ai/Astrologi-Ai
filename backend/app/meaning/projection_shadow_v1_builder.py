@@ -4,6 +4,7 @@ import copy
 import hashlib
 import os
 import re
+import unicodedata
 from typing import Any, Dict, List, Mapping, MutableMapping, Sequence
 
 from app.narrative.editorial_render_policy import (
@@ -14,6 +15,7 @@ from app.narrative.editorial_render_policy import (
 )
 from app.meaning.composed_detail_renderer import (
     project_composed_detail_cards_to_public_lane,
+    project_relationship_hidden_private_love_to_public_lane,
     project_moon_home_inner_security_to_public_lane,
     render_composed_detail_card_v0_9a_2,
 )
@@ -240,6 +242,16 @@ def build_profile_narrative_projection_v1(
     if moon_home_inner_security_cards:
         public_composed_detail_cards = (
             list(public_composed_detail_cards) + moon_home_inner_security_cards
+        )
+    relationship_hidden_private_love_cards = project_relationship_hidden_private_love_to_public_lane(
+        cluster_payload.get("candidate_packets")
+        if isinstance(cluster_payload.get("candidate_packets"), Sequence)
+        else [],
+        cluster_payload=cluster_payload,
+    )
+    if relationship_hidden_private_love_cards:
+        public_composed_detail_cards = (
+            list(public_composed_detail_cards) + relationship_hidden_private_love_cards
         )
     packet_nodes = _packet_projection_nodes(packet_payload)
     packet_count = len(packet_nodes)
@@ -3238,6 +3250,8 @@ def _hero_from_node(*, node: Mapping[str, Any]) -> Dict[str, Any]:
         pattern_salt="hero",
         max_chars=420,
     )
+    title = _localize_public_copy_tr(title)
+    summary = _localize_public_copy_tr(summary)
     return {
         "headline": title,
         "summary": summary,
@@ -3276,6 +3290,8 @@ def _section_from_node(
         pattern_salt="identity_axis",
         max_chars=520,
     )
+    title = _localize_public_copy_tr(title)
+    summary = _localize_public_copy_tr(summary)
     return {
         "eyebrow": eyebrow,
         "headline": title,
@@ -3308,10 +3324,12 @@ def _insight_cell_from_node(
     summary_line = _split_sentences(summary, max_sentences=1)
     layer = str(node.get("primary_layer") or "").strip()
     domain = str(node.get("domain") or "").strip()
+    title = _localize_public_copy_tr(title)
+    subtitle = _localize_public_copy_tr(summary_line[0] if summary_line else summary)
     return {
         "label": _packet_label(packet) if packet else (layer.title() if layer else "Layer"),
         "title": _smart_clip(title, 84),
-        "subtitle": _smart_clip(summary_line[0] if summary_line else summary, 140),
+        "subtitle": _smart_clip(subtitle, 140),
         "meta": {
             "domain": domain,
             "primary_layer": layer,
@@ -3356,6 +3374,8 @@ def _differentiator_from_node(
         diff_override = str(override.get("differentiator_headline") or "").strip()
         if diff_override:
             diff_title = _clip_to_headline(diff_override) or diff_title
+    diff_title = _localize_public_copy_tr(diff_title)
+    summary = _localize_public_copy_tr(summary)
     return {
         "headline": diff_title,
         "body": _smart_clip(summary, 320),
@@ -4998,6 +5018,10 @@ def _localize_public_copy_tr(text: str) -> str:
     clean = str(text or "")
     if not clean:
         return clean
+    clean = unicodedata.normalize("NFC", clean)
+    # Repair the decomposed dotted-i artifact up front so downstream
+    # capitalization/localization logic works with stable Unicode tokens.
+    clean = clean.replace("İ\u0307", "İ").replace("i\u0307", "i")
     for src, dst in _PUBLIC_COPY_TR_REPLACEMENTS:
         if src and src in clean:
             clean = clean.replace(src, dst)
@@ -5039,7 +5063,7 @@ def _localize_public_copy_tr(text: str) -> str:
     # Defensive: undo any accidental "1. Ev" capitalization left behind by
     # earlier passes in the pipeline.
     clean = re.sub(r"(\d+\.\s+)Ev\b", r"\1ev", clean)
-    return clean
+    return unicodedata.normalize("NFC", clean)
 
 
 # Stable canonical signature used to de-duplicate anchors that describe the

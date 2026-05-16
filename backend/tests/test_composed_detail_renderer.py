@@ -2,7 +2,9 @@ import copy
 
 from app.meaning.composed_detail_renderer import (
     project_composed_detail_cards_to_public_lane,
+    project_relationship_hidden_private_love_to_public_lane,
     render_composed_detail_card_v0_9a_2,
+    render_relationship_hidden_private_love_card_v0_10_phase2,
 )
 
 
@@ -170,6 +172,44 @@ _TRACE_ONLY_FIELDS = {
 }
 
 
+def _relationship_hidden_private_love_source(*, source_kind: str) -> dict:
+    base = {
+        "id": (
+            "composed_relationship_route_v0_9b"
+            if source_kind == "composed_semantic"
+            else "venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact"
+        ),
+        "family": "relationship_route" if source_kind == "composed_semantic" else "",
+        "subtype": "hidden_private_love" if source_kind == "composed_semantic" else "",
+        "source_type": "composed_semantic" if source_kind == "composed_semantic" else "chart_exact",
+        "chart_facts_match": True,
+        "domain_reason": ["12H hidden-love signature"],
+        "technical_anchors": ["Venüs 12. ev", "Yay", "relationship_hidden_private_love_pattern"],
+        "public_eligibility": {
+            "debug_eligible": True,
+            "detail_eligible": True,
+            "public_support_eligible": False,
+            "public_main_eligible": False,
+        },
+        "evidence_trace": {
+            "primitive_facts": {
+                "placements": [
+                    {"planet": "Venus", "sign": "Sagittarius", "house": 12},
+                    {"planet": "Moon", "sign": "Leo", "house": 8},
+                    {"planet": "Sun", "sign": "Capricorn", "house": 1},
+                    {"planet": "Mercury", "sign": "Capricorn", "house": 1},
+                ],
+                "angles": [
+                    {"angle": "ASC", "sign": "Capricorn"},
+                    {"angle": "MC", "sign": "Libra"},
+                ],
+            },
+        },
+        "meta": {},
+    }
+    return base
+
+
 def _rendered_cards_for_all_variants(monkeypatch) -> list[dict]:
     monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
     cards: list[dict] = []
@@ -257,6 +297,184 @@ def test_project_public_lane_copy_quality_preserved(monkeypatch) -> None:
         # public copy — sanity check that promotion did not down-fold text.
         combined = " ".join((visible["headline"], visible["teaser"], visible["body"]))
         assert any(c in combined for c in "İıŞşĞğÇçÖöÜü"), combined
+
+
+def test_render_relationship_hidden_private_love_card_v0_10_phase2_flag_off_returns_none(monkeypatch) -> None:
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", raising=False)
+    monkeypatch.delenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", raising=False)
+    monkeypatch.delenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        raising=False,
+    )
+    source = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+    assert render_relationship_hidden_private_love_card_v0_10_phase2(
+        source, source_kind="composed_semantic"
+    ) is None
+
+
+def test_render_relationship_hidden_private_love_card_v0_10_phase2_accepts_composed_and_exact_sources(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    composed = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+    exact = _relationship_hidden_private_love_source(source_kind="exact_owner")
+
+    rendered_composed = render_relationship_hidden_private_love_card_v0_10_phase2(
+        composed, source_kind="composed_semantic"
+    )
+    rendered_exact = render_relationship_hidden_private_love_card_v0_10_phase2(
+        exact, source_kind="exact_owner"
+    )
+
+    assert rendered_composed is not None
+    assert rendered_exact is not None
+    assert (
+        rendered_composed["slides"][0]["id"]
+        == "slide::composed_relationship_route_v0_9b::private_scene"
+    )
+    assert (
+        rendered_exact["slides"][0]["id"]
+        == "slide::venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact::private_scene"
+    )
+    assert rendered_composed["slides"][0]["title"] == "Hemen göstermiyorsun"
+    assert (
+        rendered_composed["slides"][0]["body"]
+        == "Birine karşı bir şey hissettiğinde, bunu hemen dışarıya açmak istemeyebilirsin. Önce kendi içinde anlamak, emin olmak ve biraz da korumak istersin. Bu yüzden dışarıdan sakin ya da mesafeli görünebilirsin. Ama bu, az hissettiğin anlamına gelmez; sadece duygularını herkes gibi açık yaşamıyorsun."
+    )
+    assert len(rendered_composed["slides"]) == 5
+    assert all(set(slide.keys()) == {"id", "title", "body"} for slide in rendered_composed["slides"])
+    assert rendered_composed["why_this_exists"]["title"] == "Nereden geliyor?"
+    assert rendered_exact["source_candidate_id"] == "venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact"
+
+
+def test_render_relationship_hidden_private_love_card_v0_10_phase2_rejects_non_target_signature(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    source = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+    source["evidence_trace"]["primitive_facts"]["placements"][1] = {
+        "planet": "Moon",
+        "sign": "Libra",
+        "house": 10,
+    }
+    assert render_relationship_hidden_private_love_card_v0_10_phase2(
+        source, source_kind="composed_semantic"
+    ) is None
+
+
+def test_project_relationship_hidden_private_love_to_public_lane_promotes_one_public_card(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    exact = _relationship_hidden_private_love_source(source_kind="exact_owner")
+    promoted = project_relationship_hidden_private_love_to_public_lane(
+        [exact],
+        cluster_payload={
+            "surface_plan": {"detail_cluster_ids": ["relationship_hidden_private_love_pattern"]},
+            "clusters": [
+                {
+                    "id": "relationship_hidden_private_love_pattern",
+                    "main_packet_id": "venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact",
+                }
+            ],
+        },
+    )
+    assert len(promoted) == 1
+    card = promoted[0]
+    assert set(card.keys()) == {
+        "id",
+        "node_id",
+        "headline",
+        "teaser",
+        "body",
+        "chips",
+        "family",
+        "emphasis",
+        "origin",
+        "slides",
+        "why_this_exists",
+    }
+    assert len(card["slides"]) == 5
+    assert all(set(slide.keys()) == {"id", "title", "body"} for slide in card["slides"])
+    assert (
+        card["slides"][0]["id"]
+        == "slide::venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact::private_scene"
+    )
+
+
+def test_project_relationship_hidden_private_love_to_public_lane_cluster_fallback_uses_composed_candidate(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    composed = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+    promoted = project_relationship_hidden_private_love_to_public_lane(
+        [composed],
+        cluster_payload={
+            "surface_plan": {"detail_cluster_ids": ["relationship_hidden_private_love_pattern"]},
+            "clusters": [
+                {
+                    "id": "relationship_hidden_private_love_pattern",
+                    "main_packet_id": "venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact",
+                }
+            ],
+        },
+    )
+    assert len(promoted) == 1
+    card = promoted[0]
+    assert card["id"] == "composed_detail::composed_relationship_route_v0_9b::istanbul_1996_12_28_hidden_private_love"
+    assert (
+        card["slides"][0]["id"]
+        == "slide::composed_relationship_route_v0_9b::private_scene"
+    )
+
+
+def test_project_relationship_hidden_private_love_to_public_lane_exact_owner_precedence_wins_over_cluster_fallback(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    exact = _relationship_hidden_private_love_source(source_kind="exact_owner")
+    composed = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+    promoted = project_relationship_hidden_private_love_to_public_lane(
+        [composed, exact],
+        cluster_payload={
+            "surface_plan": {"detail_cluster_ids": ["relationship_hidden_private_love_pattern"]},
+            "clusters": [
+                {
+                    "id": "relationship_hidden_private_love_pattern",
+                    "main_packet_id": "venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact",
+                }
+            ],
+        },
+    )
+    assert len(promoted) == 1
+    card = promoted[0]
+    assert (
+        card["id"]
+        == "composed_detail::venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact::istanbul_1996_12_28_hidden_private_love"
+    )
 
 
 # ---------------------------------------------------------------------------

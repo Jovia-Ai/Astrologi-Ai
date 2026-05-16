@@ -117,7 +117,7 @@ fallback (`trust_steadiness`) carries the neutral-anchor penalty so
 under-evidenced charts do not promote anything beyond
 `debug_only` even if rollout flags are enabled.
 
-### 1.3.1 Sanliurfa 1988 Calibration Addendum
+### 1.3.1 Sanliurfa 1988 + Mexico City 1988 Calibration Addendum
 
 The chart `1988-10-10 05:30 Sanliurfa, TR` should join the next
 v0.9b calibration set as a normal/mixed relationship-route stress
@@ -141,6 +141,8 @@ trust-only read:
 - `DSC Aries`
 - `DSC ruler Mars in Aries 6H retrograde`
 - `Mars` hard aspects to `Saturn / Uranus / Neptune`
+- `Moon Libra 12H + Moon square Neptune` already correctly owned by
+  `moon_signature`
 - strong daily-action / immediate-response tone in the relationship
   signature
 
@@ -167,21 +169,192 @@ a wider reading of relationship conflict/stance activation.
 
 Meaning:
 
-- relationship activates direct response
-- quick positioning
-- daily-action rhythm
-- the need to take a clear stance
+- relationship activates response, positioning, and visible action
+- closeness makes it harder to stay vague, imply, or wait too long
+- daily interaction can trigger clarification or a more explicit
+  stance
+- conflict can happen, but it is not the semantic owner
 
-This option is preferable if the next calibration slice shows that the
-pattern is not primarily "conflict" but "immediate relational
-mobilization" across multiple charts.
+This option is the safer planning direction. Widening
+`boundary_conflict` is likely to over-pull Mars-led relationship cases
+into a harsher subtype than the chart actually wants. Sanliurfa does
+not primarily read as "conflict"; it reads as relationship activating
+clearer positioning, quicker response, and visible movement inside the
+bond. That semantic is narrower and more truthful under a dedicated
+subtype than under an enlarged conflict bucket.
+
+#### Recommendation
+
+- prefer **Option B** for the next calibration pass
+- keep **Option A** only as a fallback if later chart review shows the
+  pattern is genuinely conflict-owned rather than activation-owned
+- do **not** widen `boundary_conflict` in the same patch that first
+  captures Sanliurfa
+
+#### Detection rules for Option B
+
+Primary gate:
+
+- `DSC` sign is `Aries` or `Scorpio`
+  **or**
+- DSC ruler is materially Mars-led
+
+Mars relevance gate:
+
+- `Mars` is the DSC ruler
+  **or**
+- `Mars` is strong by sign (`Aries` / `Scorpio`)
+  **or**
+- `Mars` sits in `1H / 6H / 10H / 12H` with clear relationship-route
+  relevance
+
+Support factors:
+
+- `Mars` in `6H` adds a daily/action route signal
+- `Mars` in `1H` adds an identity/reaction route signal
+- `Mars` in `10H` adds a visible-action route signal
+- `Mars` in `12H` adds a hidden-action / indirect-response route
+  signal
+- hard aspects from `Mars` to `Saturn / Uranus / Neptune / Chiron`
+  strengthen the subtype
+- `Mars retrograde` is only a small support modifier and must never
+  create the subtype by itself
+
+Do not trigger when:
+
+- Mars is strong but unrelated to the relationship route
+- the chart is clearly better owned by `intimacy_depth`
+- the chart is clearly better owned by `hidden_private_love`
+- the chart is clearly better owned by `freedom_space`
+- the chart is clearly better owned by `wound_to_gift`
+- the emotional meaning is primarily Moon-owned, in which case
+  `moon_signature` should keep ownership of that part
+
+#### Confidence scoring changes
+
+Keep the first-pass target at `medium`, not `high`.
+
+Suggested calibration buckets:
+
+- keep `dsc_route_strength` unchanged
+- keep `dsc_ruler_strength` unchanged as the base route signal
+- add a new `mars_activation_support` bucket
+- add explicit `6H daily/action support`
+- treat hard Mars aspects as a strengthening layer, not a subtype by
+  themselves
+- keep `Mars retrograde` as a small modifier only
+
+Sanliurfa target after calibration:
+
+- `subtype = direct_relational_activation`
+- `confidence_target = medium`
+- `public_job = debug_only`
+
+#### False-positive risks
+
+The main risk of **Option A** is semantic overreach:
+
+- assertive Mars-led charts get misread as conflict-owned
+- daily-action relationship charts get pulled into unnecessary
+  friction language
+- Uranus-led freedom cases drift away from `freedom_space`
+- Chiron-led sensitivity cases drift away from `wound_to_gift`
+- Scorpio/12H or 8H charts get flattened instead of staying under
+  `hidden_private_love` or `intimacy_depth`
+
+Option B has narrower risks:
+
+- over-triggering on any `Aries DSC` chart
+- mistaking fast response for relationship meaning
+- double-counting Moon permeability already owned by
+  `moon_signature`
+
+These risks are easier to contain because Option B can require both a
+Mars-led DSC route **and** real hard-aspect / action-house support.
+
+#### Interaction with existing subtypes
+
+- `boundary_conflict`
+  remains the owner when the chart is genuinely about friction,
+  threshold, or sustained boundary pressure; it should not absorb
+  every Mars-led relationship chart
+- `freedom_space`
+  stays primary when Uranian space/independence is the semantic owner,
+  even if Mars is present
+- `intimacy_depth`
+  stays primary when 8H / Pluto / deep-merging symbolism is stronger
+- `hidden_private_love`
+  stays primary when 12H secrecy/private-containment is the center of
+  gravity
+- `wound_to_gift`
+  stays primary when Chiron/Saturn vulnerability and repair are the
+  actual owners
+- `emotional_need_affection`
+  stays primary when Moon attachment / care-seeking is stronger than
+  the Mars action pattern
+
+#### Moon evidence ownership
+
+Sanliurfa is the clearest example of why the Mars-led relationship
+subtype must not consume Moon ownership:
+
+- `Moon Libra 12H + Moon square Neptune` is already correctly handled
+  by `moon_signature.private_emotional_processing`
+- the relationship fix should only add the missing Mars-led response /
+  stance / clarification meaning
+- the emotional permeability, hidden feeling, and blurred-boundary
+  material should remain owned by `moon_signature`
+- if a future chart shows both signals, Moon ownership should still
+  stay with `moon_signature` whenever Moon is the stronger semantic
+  owner
+
+#### Test plan
+
+Positive:
+
+- Sanliurfa 1988 should emit a debug-only relationship candidate once
+  the subtype is implemented
+- `moon_signature` must still emit
+  `private_emotional_processing`
+- `mexico_city_1988_08_31` should stay in the calibration review set
+  as a mixed-case chart where
+  `relationship_route.direct_relational_activation` coexists with a
+  possible Moon-attachment reading
+- public output must remain unchanged
+
+Negative:
+
+- `Aries DSC` + strong `Mars` but no hard aspects and no
+  daily/action-route support should not auto-fire
+- Mars hard aspects without a Mars-led relationship route should not
+  auto-fire
+- charts better captured by `intimacy_depth`,
+  `hidden_private_love`, `freedom_space`, or `wound_to_gift` must
+  remain there
+- existing `boundary_conflict` and `trust_steadiness` cases must stay
+  stable
+
+Regression:
+
+- accepted goldens stay byte-identical
+- no `public_main` / `public_support` movement
+- no renderer or public-surface change
+
+#### Rollout recommendation
+
+- keep this future subtype `debug_only` first
+- review it on the 50-chart batch plus Sanliurfa and
+  `mexico_city_1988_08_31` before any renderer or public-lane
+  planning
+- add it to the v0.9b plan as a future calibration subtype, not as an
+  immediate rollout target
 
 Expected debug-only candidate shape for Sanliurfa 1988 after
 calibration:
 
 ```yaml
 family: relationship_route
-subtype: direct_relational_activation | boundary_conflict
+subtype: direct_relational_activation
 domain: relationship
 domain_reason:
   - DSC route
@@ -190,16 +363,61 @@ domain_reason:
   - 6H daily/action route
 confidence_target: medium
 public_job: debug_only
-lived_scene: Yakınlık sende bazen hemen tepki verme, pozisyon alma veya günlük ritimde açıkça hareket etme ihtiyacını uyandırabilir.
+lived_scene: Birine yaklaştığında, belirsizliği uzun süre taşımak sana kolay gelmeyebilir.
 ```
 
 Recommendation for planning:
 
-- keep both options open in v0.9b.0.x calibration
-- prefer **Option B** if 3-5 additional mixed charts show the same
-  Aries/Scorpio DSC + Mars-led daily-activation pattern
-- prefer **Option A** if the broader Mars-led cases still read best
-  under a single "boundary/conflict" semantic family
+- record `direct_relational_activation` as a future calibration
+  subtype in the v0.9b plan
+- treat Sanliurfa 1988 as the lead stress case for that subtype
+- track `mexico_city_1988_08_31` as the immediate follow-up
+  calibration chart for mixed Mars-led + Moon-attachment ownership
+- keep runtime and public behavior unchanged until the subtype is
+  batch-validated
+
+#### Follow-up calibration chart: `mexico_city_1988_08_31`
+
+The chart `mexico_city_1988_08_31` should now be tracked alongside
+Sanliurfa as a second debug-only calibration fixture for
+`direct_relational_activation`.
+
+Observed debug-only read after the first Mars-led calibration pass:
+
+- `relationship_route.direct_relational_activation` fires at
+  `medium` confidence
+- the chart also carries a plausible Moon-attachment edge case via
+  `Moon Taurus 7H`
+- public output remains unchanged
+
+Why this chart matters:
+
+- Sanliurfa is the cleaner split case:
+  `direct_relational_activation` +
+  `moon_signature.private_emotional_processing`
+- Mexico City is the mixed-ownership case:
+  Mars-led relationship activation is real, but Moon-in-7H may also
+  support `emotional_need_affection`
+- this makes Mexico City the right chart to answer the next ownership
+  question before any broader relationship calibration continues
+
+Future calibration question for this pair:
+
+- when `Moon` is in `7H` and Mars-led relationship activation also
+  exists, should ownership split as:
+  `relationship_route.direct_relational_activation` owning
+  action/stance/clarification and Moon-led routing owning emotional
+  need/attachment
+- or should one subtype suppress the other when the signals are too
+  overlapping
+
+Current planning direction:
+
+- keep both Sanliurfa and Mexico City `debug_only`
+- do not suppress either family automatically without a batch review
+- treat Mexico City as the lead edge case for deciding whether the
+  system should support split ownership or single-owner suppression in
+  mixed Moon-attachment + Mars-activation charts
 
 ### 1.4 Confidence Scoring
 
@@ -674,15 +892,28 @@ debug-only review slice with these expectations:
 - `moon_signature` fires as
   `private_emotional_processing` at medium confidence and stays
   `debug_only`
-- `relationship_route` is currently a known miss and should become a
-  calibration assertion once Option A or Option B from §1.3.1 is
-  implemented
+- `relationship_route` is currently a known miss and should become the
+  lead calibration assertion for the future
+  `direct_relational_activation` subtype from §1.3.1
 - `identity_route` remains a confirming side-signal for
   `Libra ASC + Sun/Mercury 1H`
 - `mind` is logged as a future grammar gap (`Mercury 1H` +
   `Saturn/Uranus 3H`)
 - `career_route` is logged as a future subtype-mismatch note, not as
   evidence that the chart is already well covered
+- public surfaces remain unchanged across all v0.9b debug-only flag
+  combinations
+
+Add `mexico_city_1988_08_31` to the same debug-only review slice with
+these expectations:
+
+- `relationship_route.direct_relational_activation` remains present as
+  a debug-only candidate
+- `Moon Taurus 7H` is explicitly tracked as a possible
+  `emotional_need_affection` ownership edge case rather than ignored
+- the chart is used to answer whether mixed Moon-attachment +
+  Mars-activation charts should split ownership or suppress to a
+  single owner
 - public surfaces remain unchanged across all v0.9b debug-only flag
   combinations
 
@@ -765,8 +996,7 @@ expected to move from:
 to:
 
 - `moon_signature.private_emotional_processing`
-- `relationship_route.boundary_conflict` or
-  `relationship_route.direct_relational_activation`
+- `relationship_route.direct_relational_activation`
 
 with both candidates remaining `debug_only` in the immediate v0.9b
 phase.
@@ -776,9 +1006,35 @@ Acceptance target for this specific chart:
 - relationship candidate confidence reaches `medium`
 - `domain_reason` includes `DSC route`, `DSC ruler involved`, and a
   Mars-led relationship anchor
+- Moon-owned emotional material remains with
+  `moon_signature.private_emotional_processing`
 - public output remains unchanged
 - the chart joins the ongoing calibration set rather than any public
   rollout allowlist
+
+### 10.7 Mexico City 1988 — Ownership edge case to keep in calibration
+
+`mexico_city_1988_08_31` should remain in the v0.9b calibration set
+as a mixed ownership chart:
+
+- `relationship_route.direct_relational_activation` is a valid
+  Mars-led read
+- `Moon Taurus 7H` may also support
+  `relationship_route.emotional_need_affection` or a Moon-family
+  emotional-need owner, depending on later Moon/relationship
+  calibration decisions
+- public output must remain unchanged while this is unresolved
+
+This chart is not a public-rollout candidate. It is a calibration
+question-holder:
+
+- should action/stance ownership and emotional-need ownership split
+  across two families or subtypes
+- or should one owner suppress the other when overlap is high
+
+Until that question is answered in a later calibration pass, Mexico
+City stays debug-only and is reviewed together with Sanliurfa in the
+next relationship batch.
 
 ---
 
@@ -846,6 +1102,9 @@ relationship/moon calibration chart: Moon already resolves in the
 expected `private_emotional_processing` direction, while the
 relationship family currently misses a Mars-led Aries-DSC activation
 signature that should inform the next subtype/rule adjustment.
+`mexico_city_1988_08_31` is retained alongside it as the mixed
+Moon-attachment + Mars-activation edge case for the next ownership
+calibration pass, still under debug-only constraints.
 
 Phase C mobile work and renderer allowlist widening explicitly remain
 out of scope. v0.9b.1 (renderer allowlist) and v0.9b.2 (public_support

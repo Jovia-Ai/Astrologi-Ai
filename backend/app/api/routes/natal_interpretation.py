@@ -459,8 +459,12 @@ def _interpret_ui_cache_key(
             f"v09_public_detail_lane:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE', '')).strip().lower()}",
             f"v09b_relationship:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B', '')).strip().lower()}",
             f"v09b_moon:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B', '')).strip().lower()}",
+            f"v09c_mercury:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_MERCURY_SIGNATURE_V0_9C', '')).strip().lower()}",
             f"v09b_detail_support:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT', '')).strip().lower()}",
             f"v09b_moon_hi_lane:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_HOME_INNER_SECURITY_PUBLIC_DETAIL_LANE', '')).strip().lower()}",
+            f"v010_rel_hidden_private_lane:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE', '')).strip().lower()}",
+            f"v010_axis_2h_8h:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_AXIS_2H_8H_V0_10', '')).strip().lower()}",
+            f"v010_axis_2h_8h_detail:{str(os.getenv('ENABLE_NATAL_COMPOSED_SEMANTICS_AXIS_2H_8H_DETAIL_SUPPORT', '')).strip().lower()}",
         ]
     )
     digest = hashlib.sha1(
