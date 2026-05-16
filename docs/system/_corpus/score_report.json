@@ -1,5 +1,5 @@
 {
-  "n_scored": 1,
+  "n_scored": 2,
   "mean_rank_weighted_coverage": 1.0,
   "worst_rank_weighted_coverage": 1.0,
   "provisional_pass": true,
@@ -52,6 +52,54 @@
           "supported": 2,
           "matched": 2,
           "unsupported": 1
+        }
+      ],
+      "must_not_verdict": "pending_pr2 (salience-tier aware)"
+    },
+    {
+      "chart_id": "1993-03-09_08-50_helsinki",
+      "strata": {
+        "A": "water-led",
+        "B": "cardinal-led",
+        "C": "cadent-heavy",
+        "D": "stellium",
+        "E": "debilitated",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0
+        },
+        {
+          "rank": 4,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0
         }
       ],
       "must_not_verdict": "pending_pr2 (salience-tier aware)"

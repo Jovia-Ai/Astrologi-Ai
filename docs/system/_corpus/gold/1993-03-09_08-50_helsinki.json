@@ -1,0 +1,109 @@
+{
+  "chart_id": "1993-03-09_08-50_helsinki",
+  "_reference_example": true,
+  "_note": "second reference: the 'engine could mis-lead' case. Surface Gemini Asc but chart ruler Mercury Pisces-12 detriment fused to Sun.",
+  "defining_signatures": [
+    {
+      "what": "Submerged & debilitated identity-helm: Sun conjunct Mercury 0.23° in Pisces 12th, Mercury (chart ruler) in detriment",
+      "why": "self and the chart's steering planet are fused, hidden and weakened — identity works behind the veil, not through clear direct expression",
+      "anchors": [
+        {"type": "luminary", "planet": "Sun", "sign": "Pisces", "house": 12},
+        {"type": "chart_ruler", "planet": "Mercury", "sign": "Pisces", "house": 12, "dignity": "detriment"},
+        {"type": "tight_aspect", "a": "Sun", "b": "Mercury", "aspect": "conjunction", "max_orb": 0.5},
+        {"type": "house_concentration", "house": 12, "min_count": 3}
+      ],
+      "rank": 1
+    },
+    {
+      "what": "Strained personal apparatus: Mercury detriment + Venus Aries 12th detriment + Mars Cancer fall",
+      "why": "communication, desire/values and assertion are all structurally weakened; the chart's struggle lives here — loud, not absent",
+      "anchors": [
+        {"type": "dignity", "planet": "Mercury", "dignity": "detriment"},
+        {"type": "planet_placement", "planet": "Venus", "sign": "Aries", "house": 12, "dignity": "detriment"},
+        {"type": "dignity", "planet": "Mars", "dignity": "fall"}
+      ],
+      "rank": 2
+    },
+    {
+      "what": "Real strength is impersonal and structural: Saturn domicile as MC ruler, Pluto Scorpio 6th, with Saturn square Pluto 1.3°",
+      "why": "capacity lives in endurance, system-building and transformative work/service; but the strength source is not clean — it is internally pressured",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Saturn", "sign": "Aquarius", "house": 11, "dignity": "domicile"},
+        {"type": "mc_ruler", "planet": "Saturn", "sign": "Aquarius", "house": 11},
+        {"type": "planet_placement", "planet": "Pluto", "sign": "Scorpio", "house": 6, "dignity": "domicile"},
+        {"type": "tight_aspect", "a": "Saturn", "b": "Pluto", "aspect": "square", "max_orb": 1.5}
+      ],
+      "rank": 3
+    },
+    {
+      "what": "12th/6th double stellium: life runs in the unseen and through transformative daily work",
+      "why": "two arenas — hidden interior (12th) and regenerative service/craft (6th)",
+      "anchors": [
+        {"type": "house_concentration", "house": 12, "min_count": 3},
+        {"type": "house_concentration", "house": 6, "min_count": 3}
+      ],
+      "rank": 4
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "Gemini-rising persona promising quick / communicative agility",
+      "its actual helm submerged & debilitated: Mercury Pisces 12th detriment, fused to the Sun"
+    ],
+    "anchors": [
+      {"type": "ascendant", "sign": "Gemini"},
+      {"type": "chart_ruler", "planet": "Mercury", "sign": "Pisces", "house": 12, "dignity": "detriment"},
+      {"type": "tight_aspect", "a": "Sun", "b": "Mercury", "aspect": "conjunction", "max_orb": 0.5}
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "weakened personal apparatus (Mercury/Venus detriment, Mars fall)",
+        "impersonal structural power (Saturn & Pluto domicile) — which itself squares"
+      ],
+      "anchors": [
+        {"type": "planet_placement", "planet": "Saturn", "sign": "Aquarius", "house": 11, "dignity": "domicile"},
+        {"type": "planet_placement", "planet": "Pluto", "sign": "Scorpio", "house": 6, "dignity": "domicile"},
+        {"type": "tight_aspect", "a": "Saturn", "b": "Pluto", "aspect": "square", "max_orb": 1.5}
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Gemini Ascendant as chatty quick social Gemini",
+      "reason": "persona is Gemini but its ruler is Pisces-12 detriment; real cognition is submerged/foggy, not breezy",
+      "anchors": [
+        {"type": "ascendant", "sign": "Gemini"},
+        {"type": "chart_ruler", "planet": "Mercury", "sign": "Pisces", "house": 12, "dignity": "detriment"}
+      ]
+    },
+    {
+      "claim": "Uranus conjunct Neptune Capricorn 9th as a personal headline",
+      "reason": "generational (~1990-93), not personal spine",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Uranus", "sign": "Capricorn", "house": 9},
+        {"type": "planet_placement", "planet": "Neptune", "sign": "Capricorn", "house": 9}
+      ]
+    },
+    {
+      "claim": "Saturn/Pluto domicile as clean personal power",
+      "reason": "they square (not clean) and are impersonal/outer, not the personal self",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Saturn", "sign": "Aquarius", "house": 11, "dignity": "domicile"},
+        {"type": "planet_placement", "planet": "Pluto", "sign": "Scorpio", "house": 6, "dignity": "domicile"},
+        {"type": "tight_aspect", "a": "Saturn", "b": "Pluto", "aspect": "square", "max_orb": 1.5}
+      ]
+    },
+    {
+      "claim": "12th house as psychic-gift / old-soul cliché",
+      "reason": "the 12th here carries detriment Mercury + detriment Venus — as much strain / retreat as transcendence",
+      "anchors": [
+        {"type": "house_concentration", "house": 12, "min_count": 3},
+        {"type": "dignity", "planet": "Mercury", "dignity": "detriment"}
+      ]
+    }
+  ],
+  "one_line_person": "Quick on the surface, but inwardly steered by a submerged and weakened Mercury: this chart thinks, loves and acts through fog, retreat and private processing, while its real endurance comes from impersonal structural strength."
+}
