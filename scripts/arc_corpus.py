@@ -213,14 +213,19 @@ def cmd_generate(_: argparse.Namespace) -> None:
 # worksheets
 # --------------------------------------------------------------------------
 
+# Human fields: what / why / between / claim / reason / one_line_person
+# Machine fields: anchors (tool-proposed from the placements above,
+# astrologer only approves/corrects). Scorer matches anchors, not prose.
 GOLD_TEMPLATE = {
     "chart_id": "",
     "defining_signatures": [
-        {"what": "", "why": "", "rank": 1},
+        {"what": "", "why": "", "anchors": [], "rank": 1},
     ],
-    "core_tension": {"between": ["", ""], "is_central": True},
+    "core_tension": {"between": ["", ""], "anchors": [], "is_central": True},
     "secondary_tensions": [],
-    "must_not_lead_with": [],
+    "must_not_lead_with": [
+        {"claim": "", "reason": "", "anchors": []},
+    ],
     "one_line_person": "",
 }
 
@@ -275,11 +280,24 @@ def cmd_worksheets(_: argparse.Namespace) -> None:
 Birth: {r['birth']['date']} {r['birth']['time']} · {r['birth']['place']}
 Strata: {json.dumps(r['strata'], ensure_ascii=False)}
 
-> Apply the known reading method (luminaries → angles → dignity →
-> tightest aspects → synthesis). Fill the JSON at the bottom and save it
-> to `docs/system/_corpus/gold/{cid}.json`. This is the answer key —
-> what a correct reading LEADS WITH, ranked, plus what it must NOT lead
-> with. Not personal taste: the method.
+> The answer key — what a correct reading LEADS WITH (ranked), plus what
+> it must NOT lead with. Not personal taste: the method. Reference
+> example: `docs/system/_corpus/gold/1962-01-07_10-30_nairobi.json`.
+>
+> Method (apply in order):
+> 1. luminaries  2. angles + chart ruler  3. dignity
+> 4. tightest aspects  5. stellium / final dispositor  6. synthesis
+> 7. ranked defining_signatures  8. core_tension
+> 9. must_not_lead_with  10. one_line_person
+>
+> Human fields: write `what`/`why`/`between`/`claim`/`reason`/
+> `one_line_person` prose applying the method. Machine fields: `anchors`
+> are derived from the placements table above (planet/sign/house/dignity,
+> stellium, tight_aspect, ascendant, mc) — fill or let the tool propose,
+> you only approve/correct. The scorer matches anchors, never prose.
+>
+> Fill the JSON below and save it to
+> `docs/system/_corpus/gold/{cid}.json`.
 
 ## Placements (engine-extracted, for reference)
 
@@ -304,44 +322,126 @@ def _norm(s: Any) -> str:
     return str(s or "").strip().lower()
 
 
-def _skeleton_tokens(skel: Mapping[str, Any]) -> set[str]:
-    """Tokens the engine surfaced: 'planet|sign|house' + roles."""
-    toks: set[str] = set()
-    for r in skel.get("dignity_table", []):
-        toks.add(f"{_norm(r['planet'])}|{_norm(r['sign'])}|{r.get('house')}")
-        toks.add(_norm(r["planet"]))
-    for a in skel.get("angular_planets", []):
-        toks.add(f"{_norm(a['planet'])}|{_norm(a['sign'])}|{a.get('house')}")
-    for s in skel.get("stelliums", []):
-        for p in s.get("planets", []):
-            toks.add(_norm(p))
-    for key in ("sun", "moon"):
-        l = skel.get("luminaries", {}).get(key, {})
-        toks.add(f"{key}|{_norm(l.get('sign'))}|{l.get('house')}")
-    asc = skel.get("asc_ruler_spine", {})
-    toks.add(f"asc|{_norm(asc.get('sign'))}")
-    return toks
+# v0 anchor types the scorer can deterministically check against the
+# shipped chart_skeleton. Anything else is reported as 'unsupported' and
+# NEVER counted as an engine failure (the central scorer invariant).
+SUPPORTED_ANCHORS = {
+    "planet_placement", "luminary", "ascendant", "mc", "chart_ruler",
+    "mc_ruler", "angular_planet", "dignity", "stellium", "tight_aspect",
+    "house_concentration",
+}
+UNSUPPORTED_ANCHORS = {"final_dispositor", "dispositor_chain", "axis_emphasis"}
+RANK_WEIGHT = {1: 1.0, 2: 0.8, 3: 0.65, 4: 0.5}
 
 
-def _matches(gold_what: str, toks: set[str]) -> bool:
-    """Tolerant match: every alpha/num word of the gold phrase that names
-    a planet/sign/house should be reflected in the skeleton tokens."""
-    w = _norm(gold_what)
-    parts = [p for p in w.replace("(", " ").replace(")", " ").split() if p]
-    planet = next((p for p in parts if p in {
-        "sun","moon","mercury","venus","mars","jupiter","saturn",
-        "uranus","neptune","pluto"}), None)
-    if not planet:
+def _dignity_index(skel: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
+    return {_norm(r["planet"]): r for r in skel.get("dignity_table", [])}
+
+
+def _placement_match(row: Mapping[str, Any] | None, anchor: Mapping[str, Any]) -> bool:
+    if not row:
         return False
-    if planet not in toks and not any(t.startswith(planet + "|") for t in toks):
+    if "sign" in anchor and _norm(row.get("sign")) != _norm(anchor["sign"]):
         return False
-    sign = next((p for p in parts if p in {
-        "aries","taurus","gemini","cancer","leo","virgo","libra",
-        "scorpio","sagittarius","capricorn","aquarius","pisces"}), None)
-    if sign:
-        return any(t.startswith(f"{planet}|{sign}") for t in toks) or \
-               any(planet in t and sign in t for t in toks)
+    if "house" in anchor and row.get("house") != anchor["house"]:
+        return False
+    if "dignity" in anchor and _norm(row.get("dignity")) != _norm(anchor["dignity"]):
+        return False
     return True
+
+
+def _match_anchor(anchor: Mapping[str, Any], skel: Mapping[str, Any]) -> str:
+    """Return 'matched' | 'unmatched' | 'unsupported'.
+
+    Never conflates 'scorer cannot check this yet' (unsupported) with
+    'engine failed to surface it' (unmatched). This 3-state invariant is
+    what keeps the falsification harness from lying to us.
+    """
+    t = _norm(anchor.get("type"))
+    if t in UNSUPPORTED_ANCHORS or t not in SUPPORTED_ANCHORS:
+        return "unsupported"
+
+    if t in ("planet_placement", "dignity"):
+        row = _dignity_index(skel).get(_norm(anchor.get("planet")))
+        return "matched" if _placement_match(row, anchor) else "unmatched"
+
+    if t == "luminary":
+        l = skel.get("luminaries", {}).get(_norm(anchor.get("planet")))
+        return "matched" if _placement_match(l, anchor) else "unmatched"
+
+    if t == "ascendant":
+        return "matched" if _norm(skel.get("asc_ruler_spine", {}).get("sign")) \
+            == _norm(anchor.get("sign")) else "unmatched"
+
+    if t == "mc":
+        return "matched" if _norm(skel.get("mc_ruler_spine", {}).get("sign")) \
+            == _norm(anchor.get("sign")) else "unmatched"
+
+    if t in ("chart_ruler", "mc_ruler"):
+        spine = skel.get(
+            "asc_ruler_spine" if t == "chart_ruler" else "mc_ruler_spine", {})
+        if _norm(spine.get("ruler")) != _norm(anchor.get("planet")):
+            return "unmatched"
+        row = {"sign": spine.get("ruler_sign"),
+               "house": spine.get("ruler_house"),
+               "dignity": spine.get("ruler_dignity")}
+        return "matched" if _placement_match(row, anchor) else "unmatched"
+
+    if t == "angular_planet":
+        ang = {_norm(a["planet"]): a for a in skel.get("angular_planets", [])}
+        row = ang.get(_norm(anchor.get("planet")))
+        if not row:
+            return "unmatched"
+        if "house" in anchor and row.get("house") != anchor["house"]:
+            return "unmatched"
+        return "matched"
+
+    if t in ("stellium", "house_concentration"):
+        by = "house" if t == "house_concentration" else _norm(anchor.get("by"))
+        key = str(anchor.get("house") if t == "house_concentration"
+                  else anchor.get("key"))
+        need = int(anchor.get("min_count", 3))
+        for s in skel.get("stelliums", []):
+            if (_norm(s.get("by")) == by and str(s.get("key")) == key
+                    and int(s.get("count", 0)) >= need):
+                return "matched"
+        return "unmatched"
+
+    if t == "tight_aspect":
+        pair = {_norm(anchor.get("a")), _norm(anchor.get("b"))}
+        asp = _norm(anchor.get("aspect"))
+        mx = float(anchor.get("max_orb", 2.0))
+        for ta in skel.get("tightest_aspects", []):
+            if ({_norm(ta.get("a")), _norm(ta.get("b"))} == pair
+                    and _norm(ta.get("type")).startswith(asp)
+                    and float(ta.get("orb", 99)) <= mx):
+                return "matched"
+        return "unmatched"
+
+    return "unsupported"
+
+
+def _score_anchor_block(anchors: Any, skel: Mapping[str, Any]):
+    """-> (coverage|None, supported, matched, unsupported,
+            dignity_total, dignity_matched)."""
+    matched = unmatched = unsupported = 0
+    dig_t = dig_m = 0
+    for a in anchors or []:
+        r = _match_anchor(a, skel)
+        if r == "unsupported":
+            unsupported += 1
+            continue
+        if "dignity" in a:
+            dig_t += 1
+            if r == "matched":
+                dig_m += 1
+        if r == "matched":
+            matched += 1
+        else:
+            unmatched += 1
+    supported = matched + unmatched
+    cov = (matched / supported) if supported else None
+    return cov, supported, matched, unsupported, dig_t, dig_m
 
 
 def cmd_score(_: argparse.Namespace) -> None:
@@ -352,6 +452,7 @@ def cmd_score(_: argparse.Namespace) -> None:
         raise SystemExit("no gold reads yet — run `worksheets`, then fill them")
 
     per_chart = []
+    unsupported_types: set[str] = set()
     for gf in sorted(GOLD_DIR.glob("*.json")):
         gold = json.loads(gf.read_text())
         cid = gold.get("chart_id") or gf.stem
@@ -359,43 +460,70 @@ def cmd_score(_: argparse.Namespace) -> None:
         if not rec:
             print(f"  gold {cid}: no matching corpus record, skipped")
             continue
-        toks = _skeleton_tokens(rec["engine_skeleton"])
-        defs = gold.get("defining_signatures", []) or []
-        covered = sum(1 for d in defs if _matches(d.get("what", ""), toks))
-        coverage = covered / len(defs) if defs else 0.0
-        mnl = gold.get("must_not_lead_with", []) or []
-        false_emph = sum(1 for m in mnl if _matches(str(m), toks))
+        skel = rec["engine_skeleton"]
+
+        sig_rows = []
+        wsum = wtot = 0.0
+        dt_all = dm_all = 0
+        for d in gold.get("defining_signatures", []) or []:
+            for a in d.get("anchors", []):
+                if _norm(a.get("type")) in UNSUPPORTED_ANCHORS:
+                    unsupported_types.add(_norm(a["type"]))
+            cov, sup, mat, uns, dt, dm = _score_anchor_block(
+                d.get("anchors"), skel)
+            dt_all += dt
+            dm_all += dm
+            rank = int(d.get("rank", 4))
+            w = RANK_WEIGHT.get(rank, 0.4)
+            sig_rows.append({"rank": rank, "coverage": cov,
+                             "supported": sup, "matched": mat,
+                             "unsupported": uns})
+            if cov is not None:
+                wsum += cov * w
+                wtot += w
+
+        ct = gold.get("core_tension", {}) or {}
+        ct_cov = _score_anchor_block(ct.get("anchors"), skel)[0]
+
         per_chart.append({
             "chart_id": cid,
             "strata": rec["strata"],
-            "spine_coverage": round(coverage, 3),
-            "false_emphasis_raw": false_emph,  # salience-tier aware = post PR-2
-            "defining_total": len(defs),
-            "defining_covered": covered,
+            "rank_weighted_coverage": round(wsum / wtot, 3) if wtot else None,
+            "core_tension_coverage": (
+                round(ct_cov, 3) if ct_cov is not None else None),
+            "dignity_accuracy": (
+                round(dm_all / dt_all, 3) if dt_all else None),
+            "signatures": sig_rows,
+            "must_not_verdict": "pending_pr2 (salience-tier aware)",
         })
 
     if not per_chart:
         raise SystemExit("no scored charts (fill gold JSONs first)")
 
-    mean_cov = sum(c["spine_coverage"] for c in per_chart) / len(per_chart)
-    worst = min(c["spine_coverage"] for c in per_chart)
-    # axis-I generalization criterion (spec §7): not_covered vs covered.
-    # All synthetic are not_covered_assumed for now → reported, not gated.
+    scored = [c for c in per_chart
+              if c["rank_weighted_coverage"] is not None]
+    mean_cov = sum(c["rank_weighted_coverage"] for c in scored) / len(scored)
+    worst = min(c["rank_weighted_coverage"] for c in scored)
     report = {
         "n_scored": len(per_chart),
-        "mean_spine_coverage": round(mean_cov, 3),
-        "worst_spine_coverage": round(worst, 3),
+        "mean_rank_weighted_coverage": round(mean_cov, 3),
+        "worst_rank_weighted_coverage": round(worst, 3),
         "provisional_pass": mean_cov >= 0.85 and worst >= 0.70,
-        "note": ("false_emphasis & axis-I criterion are salience-tier "
-                 "aware → meaningful only after PR-2; thresholds §7 are "
-                 "provisional until first joint calibration pass"),
+        "unsupported_anchor_types_seen": sorted(unsupported_types),
+        "invariant": ("unsupported anchors are reported, never counted "
+                      "as engine failure; must_not is salience-aware → "
+                      "pending PR-2; §7 thresholds provisional until "
+                      "first joint calibration pass"),
         "per_chart": per_chart,
     }
     SCORE_FILE.write_text(json.dumps(report, ensure_ascii=False, indent=2))
-    print(f"scored {len(per_chart)} charts | mean coverage "
-          f"{report['mean_spine_coverage']} | worst "
-          f"{report['worst_spine_coverage']} | provisional_pass="
-          f"{report['provisional_pass']}")
+    print(f"scored {len(per_chart)} | mean rank-weighted coverage "
+          f"{report['mean_rank_weighted_coverage']} | worst "
+          f"{report['worst_rank_weighted_coverage']} | "
+          f"provisional_pass={report['provisional_pass']}")
+    if unsupported_types:
+        print(f"  unsupported anchor types (reported, NOT failed): "
+              f"{sorted(unsupported_types)}")
     print(f"written -> {SCORE_FILE.relative_to(REPO)}")
 
 
