@@ -525,25 +525,40 @@ def _rank_meets(rank: int, tier: str | None) -> bool | None:
 
 
 def _salience_align(anchors: Any, skel: Mapping[str, Any], rank: int):
-    """-> (alignment|None, assessable, met, misses[])."""
+    """-> (alignment|None, assessable, met, misses[], supporting_notes[]).
+
+    Anchor `role` (PR-2c): 'primary_anchor' (default) carries the rank
+    expectation and is scored. 'supporting_route'/'context' is the route
+    not the light — a tier mismatch is recorded as an informational note,
+    NOT a hard salience miss, and excluded from the alignment ratio. This
+    keeps a peregrine chart-ruler from being scored as a rank-1 failure
+    when the gold itself says it only supports the route."""
     assessable = met = 0
     misses = []
+    supporting_notes = []
     for a in anchors or []:
         tier = _anchor_tier(a, skel)
         ok = _rank_meets(rank, tier)
         if ok is None:
+            continue
+        role = _norm(a.get("role")) or "primary_anchor"
+        ref = (a.get("planet") or a.get("key")
+               or a.get("house") or a.get("a"))
+        if role != "primary_anchor":
+            if ok is False:
+                supporting_notes.append({
+                    "anchor": a.get("type"), "ref": ref,
+                    "engine_tier": tier, "role": role, "rank": rank})
             continue
         assessable += 1
         if ok:
             met += 1
         else:
             misses.append({
-                "anchor": a.get("type"),
-                "ref": (a.get("planet") or a.get("key")
-                        or a.get("house") or a.get("a")),
+                "anchor": a.get("type"), "ref": ref,
                 "engine_tier": tier, "rank": rank})
     return ((met / assessable) if assessable else None,
-            assessable, met, misses)
+            assessable, met, misses, supporting_notes)
 
 
 def _must_not_eval(must_not: Any, skel: Mapping[str, Any]):
@@ -613,7 +628,7 @@ def cmd_score(_: argparse.Namespace) -> None:
             dm_all += dm
             rank = int(d.get("rank", 4))
             w = RANK_WEIGHT.get(rank, 0.4)
-            sal, _ass, _met, s_miss = _salience_align(
+            sal, _ass, _met, s_miss, s_sup = _salience_align(
                 d.get("anchors"), skel, rank)
             sig_rows.append({
                 "rank": rank, "coverage": cov,
@@ -621,6 +636,7 @@ def cmd_score(_: argparse.Namespace) -> None:
                 "salience_alignment": (
                     round(sal, 3) if sal is not None else None),
                 "salience_misses": s_miss,
+                "supporting_notes": s_sup,
             })
             if cov is not None:
                 wsum += cov * w

@@ -1,15 +1,15 @@
 {
-  "n_scored": 2,
+  "n_scored": 3,
   "extraction": {
     "mean_rank_weighted_coverage": 1.0,
     "worst_rank_weighted_coverage": 1.0,
     "provisional_pass": true
   },
   "salience_provisional": {
-    "mean_alignment": 0.955,
+    "mean_alignment": 0.97,
     "worst_alignment": 0.91,
     "false_emphasis_total": 0,
-    "framing_must_not_deferred_to_voice_gate": 6,
+    "framing_must_not_deferred_to_voice_gate": 8,
     "gating": false,
     "uncalibrated": true
   },
@@ -50,7 +50,8 @@
           "matched": 2,
           "unsupported": 1,
           "salience_alignment": 1.0,
-          "salience_misses": []
+          "salience_misses": [],
+          "supporting_notes": []
         },
         {
           "rank": 2,
@@ -59,7 +60,8 @@
           "matched": 2,
           "unsupported": 0,
           "salience_alignment": 1.0,
-          "salience_misses": []
+          "salience_misses": [],
+          "supporting_notes": []
         },
         {
           "rank": 3,
@@ -68,7 +70,8 @@
           "matched": 4,
           "unsupported": 0,
           "salience_alignment": 1.0,
-          "salience_misses": []
+          "salience_misses": [],
+          "supporting_notes": []
         },
         {
           "rank": 4,
@@ -77,7 +80,72 @@
           "matched": 2,
           "unsupported": 1,
           "salience_alignment": 1.0,
-          "salience_misses": []
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1973-08-05_01-20_istanbul",
+      "strata": {
+        "A": "fire-led",
+        "B": "cardinal-led",
+        "C": "balanced",
+        "D": "scattered",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "night",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Leo Sun as a generic look-at-me showman",
+        "a single dominant spine"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": [
+            {
+              "anchor": "chart_ruler",
+              "ref": "Mercury",
+              "engine_tier": "strong",
+              "role": "supporting_route",
+              "rank": 1
+            }
+          ]
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 1,
+          "matched": 1,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
         }
       ]
     },
@@ -113,7 +181,8 @@
           "matched": 4,
           "unsupported": 0,
           "salience_alignment": 1.0,
-          "salience_misses": []
+          "salience_misses": [],
+          "supporting_notes": []
         },
         {
           "rank": 2,
@@ -129,7 +198,8 @@
               "engine_tier": "background",
               "rank": 2
             }
-          ]
+          ],
+          "supporting_notes": []
         },
         {
           "rank": 3,
@@ -138,7 +208,8 @@
           "matched": 4,
           "unsupported": 0,
           "salience_alignment": 1.0,
-          "salience_misses": []
+          "salience_misses": [],
+          "supporting_notes": []
         },
         {
           "rank": 4,
@@ -147,7 +218,8 @@
           "matched": 2,
           "unsupported": 0,
           "salience_alignment": 1.0,
-          "salience_misses": []
+          "salience_misses": [],
+          "supporting_notes": []
         }
       ]
     }

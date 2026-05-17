@@ -1,0 +1,87 @@
+{
+  "chart_id": "1973-08-05_01-20_istanbul",
+  "_reference_example": true,
+  "_note": "Third reference: the NO-DOMINANT / multi-centered case. Ranks are intentionally close — this chart has ~3 co-equal centres, not a single spine. That closeness is the data, not indecision.",
+  "defining_signatures": [
+    {
+      "what": "Expressive identity through communication: Sun Leo 3rd as primary, chart ruler Mercury Cancer 3rd as route/context",
+      "why": "the self shines through voice, mind and connection; Mercury supports the route but should not outrank the domiciled Sun in salience",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Sun", "sign": "Leo", "house": 3, "dignity": "domicile", "role": "primary_anchor"},
+        {"type": "chart_ruler", "planet": "Mercury", "sign": "Cancer", "house": 3, "role": "supporting_route"}
+      ],
+      "rank": 1
+    },
+    {
+      "what": "Self-built emotional-structural resilience: Moon Scorpio 6th (fall) trine Saturn Cancer 1st (detriment, angular, MC ruler) 0.58°",
+      "why": "feeling and safety are not given but constructed through duty/endurance, and it is prominent (Saturn angular 1st) not hidden",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Moon", "sign": "Scorpio", "house": 6, "dignity": "fall", "role": "primary_anchor"},
+        {"type": "planet_placement", "planet": "Saturn", "sign": "Cancer", "house": 1, "dignity": "detriment", "role": "primary_anchor"},
+        {"type": "mc_ruler", "planet": "Saturn", "sign": "Cancer", "house": 1, "role": "supporting_route"},
+        {"type": "tight_aspect", "a": "Moon", "b": "Saturn", "aspect": "trine", "max_orb": 1.0, "role": "primary_anchor"}
+      ],
+      "rank": 2
+    },
+    {
+      "what": "Hidden dignified drive: Mars Aries 12th (domicile), dispositor terminus",
+      "why": "real assertive power that operates behind the scenes rather than openly shown",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Mars", "sign": "Aries", "house": 12, "dignity": "domicile", "role": "primary_anchor"}
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "confident, expressive outward identity (Sun Leo 3, Mercury route)",
+      "a strained, self-constructed inner emotional/safety base (Moon fall trine Saturn detriment)"
+    ],
+    "anchors": [
+      {"type": "planet_placement", "planet": "Sun", "sign": "Leo", "house": 3, "dignity": "domicile", "role": "primary_anchor"},
+      {"type": "planet_placement", "planet": "Moon", "sign": "Scorpio", "house": 6, "dignity": "fall", "role": "primary_anchor"},
+      {"type": "tight_aspect", "a": "Moon", "b": "Saturn", "aspect": "trine", "max_orb": 1.0, "role": "primary_anchor"}
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "protective Cancer mind (Mercury, chart ruler)",
+        "blunt direct drive (Mars Aries domicile)"
+      ],
+      "anchors": [
+        {"type": "chart_ruler", "planet": "Mercury", "sign": "Cancer", "house": 3, "role": "supporting_route"},
+        {"type": "planet_placement", "planet": "Mars", "sign": "Aries", "house": 12, "dignity": "domicile", "role": "primary_anchor"},
+        {"type": "tight_aspect", "a": "Mercury", "b": "Mars", "aspect": "square", "max_orb": 3.0, "role": "primary_anchor"}
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Leo Sun as a generic look-at-me showman",
+      "kind": "framing",
+      "reason": "Sun is in the 3rd (communicative) and sits over a strained emotional core; the showman cliché flattens it",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Sun", "sign": "Leo", "house": 3, "dignity": "domicile"}
+      ]
+    },
+    {
+      "claim": "Uranus/Pluto Libra 5 + Neptune Sagittarius 6 as a personal headline",
+      "kind": "salience",
+      "reason": "peregrine, generational; must stay background, not a spine card",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Uranus", "sign": "Libra", "house": 5},
+        {"type": "planet_placement", "planet": "Pluto", "sign": "Libra", "house": 5},
+        {"type": "planet_placement", "planet": "Neptune", "sign": "Sagittarius", "house": 6}
+      ]
+    },
+    {
+      "claim": "a single dominant spine",
+      "kind": "framing",
+      "reason": "this chart is genuinely multi-centered; forcing one theme misreads it. Voice/Surface Governance must not collapse it to 'you are essentially X'.",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "Outwardly bright and verbally strong (Leo Sun, 3rd house, Mercury route) over a hard-won, self-built emotional resilience (fallen Moon trine a strained, prominent Saturn), with a powerful but hidden engine of drive."
+}
