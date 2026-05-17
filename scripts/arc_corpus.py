@@ -224,7 +224,8 @@ GOLD_TEMPLATE = {
     "core_tension": {"between": ["", ""], "anchors": [], "is_central": True},
     "secondary_tensions": [],
     "must_not_lead_with": [
-        {"claim": "", "reason": "", "anchors": []},
+        {"claim": "", "kind": "salience|framing", "reason": "",
+         "anchors": []},
     ],
     "one_line_person": "",
 }
@@ -295,6 +296,11 @@ Strata: {json.dumps(r['strata'], ensure_ascii=False)}
 > are derived from the placements table above (planet/sign/house/dignity,
 > stellium, tight_aspect, ascendant, mc) — fill or let the tool propose,
 > you only approve/correct. The scorer matches anchors, never prose.
+>
+> Each must_not_lead_with needs `kind`: `salience` = "don't make this
+> minor/generational thing the spine" (scored: its anchor must NOT be
+> 'defining'); `framing` = "don't render this genuinely-salient feature
+> clichely" (a Voice-Gate concern, recorded but NOT scored here).
 >
 > Fill the JSON below and save it to
 > `docs/system/_corpus/gold/{cid}.json`.
@@ -540,12 +546,26 @@ def _salience_align(anchors: Any, skel: Mapping[str, Any], rank: int):
             assessable, met, misses)
 
 
-def _must_not_false_emphasis(must_not: Any, skel: Mapping[str, Any]):
-    """A must_not anchor the engine elevated to 'defining' = false
-    emphasis. This is what makes must_not measurable (no longer
-    pending PR-2)."""
-    hits = []
+def _must_not_eval(must_not: Any, skel: Mapping[str, Any]):
+    """must_not_lead_with has two kinds (PR-2b finding):
+
+    - kind='salience': "don't make this minor/generational thing the
+      spine". Measurable now: its anchored subject must NOT be
+      'defining'. Counted as false emphasis if it is.
+    - kind='framing': "don't render this genuinely-salient feature
+      clichely". The anchored thing IS legitimately salient; this is a
+      Voice-Gate (renderable_public) concern, NOT salience-tier
+      measurable. Recorded as deferred, NEVER scored as a failure.
+
+    Missing kind defaults to 'framing' (conservative: never false-flag a
+    genuinely-salient spine element)."""
+    fe_hits = []
+    framing_deferred = []
     for m in must_not or []:
+        kind = _norm(m.get("kind")) or "framing"
+        if kind != "salience":
+            framing_deferred.append(m.get("claim"))
+            continue
         elevated = []
         for a in m.get("anchors", []):
             if _anchor_tier(a, skel) == "defining":
@@ -554,8 +574,8 @@ def _must_not_false_emphasis(must_not: Any, skel: Mapping[str, Any]):
                     "ref": (a.get("planet") or a.get("key")
                             or a.get("house") or a.get("a"))})
         if elevated:
-            hits.append({"claim": m.get("claim"), "elevated": elevated})
-    return hits
+            fe_hits.append({"claim": m.get("claim"), "elevated": elevated})
+    return fe_hits, framing_deferred
 
 
 def cmd_score(_: argparse.Namespace) -> None:
@@ -568,6 +588,7 @@ def cmd_score(_: argparse.Namespace) -> None:
     per_chart = []
     unsupported_types: set[str] = set()
     fe_total = 0
+    fr_total = 0
     for gf in sorted(GOLD_DIR.glob("*.json")):
         gold = json.loads(gf.read_text())
         cid = gold.get("chart_id") or gf.stem
@@ -611,9 +632,10 @@ def cmd_score(_: argparse.Namespace) -> None:
         ct = gold.get("core_tension", {}) or {}
         ct_cov = _score_anchor_block(ct.get("anchors"), skel)[0]
 
-        fe_hits = _must_not_false_emphasis(
+        fe_hits, fr_def = _must_not_eval(
             gold.get("must_not_lead_with"), skel)
         fe_total += sum(len(h["elevated"]) for h in fe_hits)
+        fr_total += len(fr_def)
 
         per_chart.append({
             "chart_id": cid,
@@ -626,6 +648,7 @@ def cmd_score(_: argparse.Namespace) -> None:
             "dignity_accuracy": (
                 round(dm_all / dt_all, 3) if dt_all else None),
             "false_emphasis": fe_hits,
+            "framing_deferred_to_voice_gate": fr_def,
             "salience_uncalibrated": uncal,
             "signatures": sig_rows,
         })
@@ -652,6 +675,7 @@ def cmd_score(_: argparse.Namespace) -> None:
             "mean_alignment": mean_sal,
             "worst_alignment": worst_sal,
             "false_emphasis_total": fe_total,
+            "framing_must_not_deferred_to_voice_gate": fr_total,
             "gating": False,
             "uncalibrated": True,
         },
@@ -670,7 +694,8 @@ def cmd_score(_: argparse.Namespace) -> None:
           f"worst {report['extraction']['worst_rank_weighted_coverage']} "
           f"pass={report['extraction']['provisional_pass']}")
     print(f"  salience(provisional, NOT gating): mean {mean_sal} "
-          f"worst {worst_sal} | false_emphasis {fe_total}")
+          f"worst {worst_sal} | false_emphasis(salience-kind) {fe_total} "
+          f"| framing must_not deferred->voice_gate {fr_total}")
     if unsupported_types:
         print(f"  unsupported anchor types (reported, NOT failed): "
               f"{sorted(unsupported_types)}")

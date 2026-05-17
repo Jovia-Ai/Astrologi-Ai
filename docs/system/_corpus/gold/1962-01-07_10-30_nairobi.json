@@ -78,6 +78,7 @@
   "must_not_lead_with": [
     {
       "claim": "Pisces Ascendant as generic dreamy compassionate Pisces",
+      "kind": "framing",
       "reason": "Pisces ASC is the surface, not the chart spine",
       "anchors": [
         {"type": "ascendant", "sign": "Pisces"},
@@ -86,6 +87,7 @@
     },
     {
       "claim": "11th house as lots of friends / social butterfly",
+      "kind": "framing",
       "reason": "here the 11th is Saturn-governed collective structure, not casual sociability",
       "anchors": [
         {"type": "house_concentration", "house": 11, "min_count": 3},
@@ -94,6 +96,7 @@
     },
     {
       "claim": "Uranus/Pluto Virgo 6th as a personal headline",
+      "kind": "salience",
       "reason": "generational and not the main spine unless tightly personalized elsewhere",
       "anchors": [
         {"type": "planet_placement", "planet": "Uranus", "sign": "Virgo", "house": 6},
@@ -102,6 +105,7 @@
     },
     {
       "claim": "Capricorn stellium as generic ambition/workaholism only",
+      "kind": "framing",
       "reason": "this is whole-chart Saturn routing, not just career drive",
       "anchors": [
         {"type": "stellium", "by": "sign", "key": "Capricorn", "min_count": 3},

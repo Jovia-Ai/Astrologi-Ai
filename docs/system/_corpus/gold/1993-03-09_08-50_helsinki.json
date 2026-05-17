@@ -73,6 +73,7 @@
   "must_not_lead_with": [
     {
       "claim": "Gemini Ascendant as chatty quick social Gemini",
+      "kind": "framing",
       "reason": "persona is Gemini but its ruler is Pisces-12 detriment; real cognition is submerged/foggy, not breezy",
       "anchors": [
         {"type": "ascendant", "sign": "Gemini"},
@@ -81,6 +82,7 @@
     },
     {
       "claim": "Uranus conjunct Neptune Capricorn 9th as a personal headline",
+      "kind": "salience",
       "reason": "generational (~1990-93), not personal spine",
       "anchors": [
         {"type": "planet_placement", "planet": "Uranus", "sign": "Capricorn", "house": 9},
@@ -89,6 +91,7 @@
     },
     {
       "claim": "Saturn/Pluto domicile as clean personal power",
+      "kind": "framing",
       "reason": "they square (not clean) and are impersonal/outer, not the personal self",
       "anchors": [
         {"type": "planet_placement", "planet": "Saturn", "sign": "Aquarius", "house": 11, "dignity": "domicile"},
@@ -98,6 +101,7 @@
     },
     {
       "claim": "12th house as psychic-gift / old-soul cliché",
+      "kind": "framing",
       "reason": "the 12th here carries detriment Mercury + detriment Venus — as much strain / retreat as transcendence",
       "anchors": [
         {"type": "house_concentration", "house": 12, "min_count": 3},
