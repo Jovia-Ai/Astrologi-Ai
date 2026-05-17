@@ -111,19 +111,59 @@ test?"** Don't add charts that test nothing new. Planned type sequence
 T-square-heavy is high-value: likely surfaces a tightness-cluster /
 hard-aspect-loudness question (the aspect analogue of calibration Q1).
 
+## Blind-batch discipline (volume phase — PROCEDURAL, not intent)
+
+The hypothesis-building phase used iterative read→reveal→verify and that
+was correct. The volume phase MUST NOT: iterative per-gold scoring lets
+the author (even unconsciously) tune the next gold to the last reveal,
+which quietly makes the corpus circular and destroys the statistical
+generalization evidence. Therefore:
+
+1. Author a whole batch (e.g. relationship + 12H + gift + T-square)
+   blind to engine salience, reading only the placement table.
+2. Each gold carries a pre-registered `_audit_note` (below), written
+   and committed BEFORE any score run, IMMUTABLE afterwards.
+3. Commit the whole batch.
+4. Run `scripts/arc_corpus.py score` **once** over the batch.
+5. Only then interpret, against pre-registered `_audit_note`s and
+   `arc_v0_1_salience_calibration_questions.md`.
+
+A genuinely ambiguous chart may be escalated to a collaborative read —
+but still authored blind and pre-registered before any reveal.
+
+### `_audit_note` (REQUIRED, pre-registration, immutable)
+
+```json
+"_audit_note": {
+  "tests_behavior": "what salience behaviour this chart probes",
+  "main_risk": "the specific over/under-promotion this chart could expose",
+  "expected_failure_if_bad": "what a bad engine would do here",
+  "calibration_question_link": "Q1 | Q2 | Q3 | new"
+}
+```
+
+Written before the score reveal; never edited after. It is
+pre-registration (the discipline that made the 1972 test trustworthy),
+not post-hoc rationalisation.
+
 ## Workflow
 
 1. Pick a chart by the selection rule (a type not yet covered).
 2. Open its worksheet; read placements; apply the 10-step method
    BEFORE looking at any engine salience.
 3. Fill human fields; let the tool propose anchors; approve/correct;
-   set `role` and `kind`.
-4. Save to `_corpus/gold/<chart_id>.json`.
-5. Batch-fill independently; escalate genuinely ambiguous charts to a
-   collaborative read.
-6. After ~8–12 scored: run `scripts/arc_corpus.py score` and do the
-   first statistical salience evaluation against
+   set `role` and `kind`; write the pre-registered `_audit_note`.
+4. Save to `_corpus/gold/<chart_id>.json`; commit (still blind).
+5. Repeat for the whole batch; escalate genuinely ambiguous charts to a
+   collaborative read (still blind + pre-registered).
+6. After the batch (~8–12 scored): run `scripts/arc_corpus.py score`
+   ONCE and do the first statistical salience evaluation against
    `arc_v0_1_salience_calibration_questions.md`.
+
+First batch target (selected blind, extraction-only):
+`1985-06-20_15-50_istanbul` — Venus Taurus 7th domicile; tests whether
+the engine over-promotes a textbook relationship significator into a
+fake whole-identity spine.
 
 Pass shape per chart: extraction 1.0; salience misses only where a
 calibration question predicts them; generational stays background;
