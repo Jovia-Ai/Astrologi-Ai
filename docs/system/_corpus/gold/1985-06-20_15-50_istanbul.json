@@ -1,0 +1,91 @@
+{
+  "chart_id": "1985-06-20_15-50_istanbul",
+  "_reference_example": true,
+  "_audit_note": {
+    "tests_behavior": "relationship-heavy (Venus Taurus 7 domicile): does the engine over-promote a textbook relationship significator into a fake whole-identity spine while ALSO keeping the genuine non-relationship centres (Moon Cancer 9 domicile + Scorpio/Pluto-1 persona) defining? Secondary probe: a generational tightest aspect (Neptune-Pluto 0.27) — does it wrongly inflate Neptune?",
+    "main_risk": "Venus-7-domicile monopolizes -> relationship becomes whole identity, Moon/Pluto centres demoted; OR Neptune inflated by being the chart's tightest aspect",
+    "expected_failure_if_bad": "engine reads 'relationship is everything', backgrounds Moon Cancer 9 domicile and the Pluto-1/Scorpio persona; or Neptune Cap 2 becomes defining",
+    "calibration_question_link": "monopolization (new) + Q2 (tightness vs generational/dignity)"
+  },
+  "defining_signatures": [
+    {
+      "what": "Well-resourced emotional/meaning core and chart anchor: Moon Cancer 9 (domicile) trine Saturn 0.68, the chart's final dispositor",
+      "why": "the Moon in its own sign, structurally supported, with the whole chart resolving into it — the chart's deepest stabilizing and meaning-making anchor; emotionally resilient, meaning-oriented",
+      "anchors": [
+        {"type": "luminary", "planet": "Moon", "sign": "Cancer", "house": 9, "dignity": "domicile", "role": "primary_anchor"},
+        {"type": "tight_aspect", "a": "Moon", "b": "Saturn", "aspect": "trine", "max_orb": 1.0, "role": "primary_anchor"}
+      ],
+      "rank": 1
+    },
+    {
+      "what": "Intense transformative persona over a weakened raw drive: Scorpio Asc + Pluto Scorpio 1 (domicile, angular), traditional ruler Mars Cancer 9 in fall",
+      "why": "the self presents deep, magnetic, controlled (Pluto-1) but the assertive engine (Mars) is debilitated and emotionally reactive — appears more forceful than the raw drive is",
+      "anchors": [
+        {"type": "ascendant", "sign": "Scorpio", "role": "primary_anchor"},
+        {"type": "planet_placement", "planet": "Pluto", "sign": "Scorpio", "house": 1, "dignity": "domicile", "role": "primary_anchor"},
+        {"type": "chart_ruler", "planet": "Mars", "sign": "Cancer", "house": 9, "dignity": "fall", "role": "supporting_route"}
+      ],
+      "rank": 2
+    },
+    {
+      "what": "Strong well-resourced relating: Venus Taurus 7 (domicile), Mercury sextile Venus 0.30",
+      "why": "the relating/values function is a genuine asset — steady, loyal, aesthetically and relationally intelligent. Defining, but ONE centre, not the whole identity",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Venus", "sign": "Taurus", "house": 7, "dignity": "domicile", "role": "primary_anchor"},
+        {"type": "tight_aspect", "a": "Mercury", "b": "Venus", "aspect": "sextile", "max_orb": 0.5, "role": "primary_anchor"}
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "an intense, powerful-seeming, self-controlled persona (Scorpio Asc, Pluto 1 domicile)",
+      "an emotionally well-resourced, protective and relationally steady core — not raw drive (Moon Cancer domicile, Venus Taurus domicile; Mars in fall)"
+    ],
+    "anchors": [
+      {"type": "ascendant", "sign": "Scorpio", "role": "primary_anchor"},
+      {"type": "planet_placement", "planet": "Pluto", "sign": "Scorpio", "house": 1, "dignity": "domicile", "role": "primary_anchor"},
+      {"type": "luminary", "planet": "Moon", "sign": "Cancer", "house": 9, "dignity": "domicile", "role": "primary_anchor"}
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "powerful self-presentation (Pluto 1)",
+        "weakened assertive drive (chart ruler Mars fall)"
+      ],
+      "anchors": [
+        {"type": "planet_placement", "planet": "Pluto", "sign": "Scorpio", "house": 1, "dignity": "domicile", "role": "primary_anchor"},
+        {"type": "chart_ruler", "planet": "Mars", "sign": "Cancer", "house": 9, "dignity": "fall", "role": "supporting_route"}
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Venus Taurus 7 as the only defining spine / relationship as the whole identity",
+      "kind": "framing",
+      "reason": "Venus Taurus 7 domicile is strong but must not erase the Moon-domicile core or the Pluto/Scorpio persona",
+      "anchors": [{"type": "planet_placement", "planet": "Venus", "sign": "Taurus", "house": 7, "dignity": "domicile"}]
+    },
+    {
+      "claim": "Scorpio Asc + Pluto 1 as a dark / dangerous / menacing person",
+      "kind": "framing",
+      "reason": "intense yes, but the core is the well-resourced domiciled Moon; the menacing-Scorpio cliché misreads it",
+      "anchors": [{"type": "ascendant", "sign": "Scorpio"}, {"type": "planet_placement", "planet": "Pluto", "sign": "Scorpio", "house": 1, "dignity": "domicile"}]
+    },
+    {
+      "claim": "Neptune Capricorn 2 as a personal headline",
+      "kind": "salience",
+      "reason": "peregrine generational; being in the chart's TIGHTEST aspect (Neptune-Pluto 0.27) must not promote it to defining",
+      "anchors": [{"type": "planet_placement", "planet": "Neptune", "sign": "Capricorn", "house": 2}, {"type": "tight_aspect", "a": "Neptune", "b": "Pluto", "aspect": "sextile", "max_orb": 0.5}]
+    },
+    {
+      "claim": "a single dominant spine / relationship-is-everything",
+      "kind": "framing",
+      "reason": "multi-centred: emotional core + persona + relating; not one spine",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "Presents as intense, deep and self-controlled through Scorpio rising and Pluto in the 1st, but the real stabilizing strength is a well-resourced emotional and relational core: Moon in Cancer and Venus in Taurus, both in their own signs. The raw assertive drive is less direct and less reliably resourced than the persona first suggests."
+}
