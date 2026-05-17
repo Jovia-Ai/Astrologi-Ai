@@ -1,0 +1,217 @@
+{
+  "chart_id": "1982-07-07_21-30_nairobi",
+  "_audit_note": {
+    "tests_behavior": "hard-aspect / pressure-cluster: does the engine correctly lead with the chart-ruler structure (Aquarius Asc -> Saturn Libra 8 exaltation) under real pressure (Mars conjunct Saturn, Sun square both), rather than over-promoting the chart's soft exact aspect (Moon sextile Uranus 0.21) or collapsing the 8H/Libra concentration into a generic relationship-depth cliche?",
+    "main_risk": "the exact Moon-Uranus sextile gets inflated into the chart's headline; OR the 8th-house pressure spine gets softened into generic Libra/relationship language; OR Mercury domicile 4 is over-promoted into a safe mind/home spine",
+    "expected_failure_if_bad": "engine reads 'quirky intuitive Moon-Uranus' or 'smart private Mercury/Gemini' first, while backgrounding the exalted Saturn 8th pressure apparatus and the Sun-Mars-Saturn hard structure",
+    "calibration_question_link": "Q2 (tightness vs structural centrality) + pressure-cluster containment"
+  },
+  "defining_signatures": [
+    {
+      "what": "Controlled depth under pressure: Aquarius Asc ruled by Saturn Libra 8 (exaltation), fused to Mars Libra 8 in detriment and squared by the Sun",
+      "why": "the chart's steering planet is strong but placed in the 8th and immediately tied to pressure, conflict and control. This is not a light air-sign chart at the core; the real apparatus is intense, strategic and load-bearing",
+      "anchors": [
+        {
+          "type": "ascendant",
+          "sign": "Aquarius",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "chart_ruler",
+          "planet": "Saturn",
+          "sign": "Libra",
+          "house": 8,
+          "dignity": "exaltation",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Mars",
+          "b": "Saturn",
+          "aspect": "conjunction",
+          "max_orb": 0.5,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Sun",
+          "b": "Saturn",
+          "aspect": "square",
+          "max_orb": 1.0,
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "what": "Private, quick and observant inner mind: Mercury Gemini 4 (domicile) with Venus also in Gemini 4",
+      "why": "there is a real mental gift in the chart, but it is rooted inwardly: language, thought and perception work close to home, memory, interior processing and private observation rather than as the whole public identity",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Mercury",
+          "sign": "Gemini",
+          "house": 4,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Venus",
+          "sign": "Gemini",
+          "house": 4,
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "what": "8th-house concentration as life terrain, not just a mood: Mars, Jupiter, Saturn and Pluto all in the 8th, with MC ruler Jupiter there too",
+      "why": "themes of depth, entanglement, risk, trust, shared stakes and transformation are not peripheral. The chart keeps routing major functions into the 8th, so the life field itself becomes more intense and consequential",
+      "anchors": [
+        {
+          "type": "house_concentration",
+          "house": 8,
+          "min_count": 3,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "mc_ruler",
+          "planet": "Jupiter",
+          "sign": "Scorpio",
+          "house": 8,
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "a warm, expressive, personal Sun in Cancer 5 that wants life, heart and spontaneity",
+      "an 8th-house pressure apparatus built from exalted Saturn, weakened Mars and hard Sun contact, which forces control, consequence and intensity"
+    ],
+    "anchors": [
+      {
+        "type": "luminary",
+        "planet": "Sun",
+        "sign": "Cancer",
+        "house": 5,
+        "role": "primary_anchor"
+      },
+      {
+        "type": "chart_ruler",
+        "planet": "Saturn",
+        "sign": "Libra",
+        "house": 8,
+        "dignity": "exaltation",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "tight_aspect",
+        "a": "Sun",
+        "b": "Mars",
+        "aspect": "square",
+        "max_orb": 1.0,
+        "role": "primary_anchor"
+      },
+      {
+        "type": "tight_aspect",
+        "a": "Sun",
+        "b": "Saturn",
+        "aspect": "square",
+        "max_orb": 1.0,
+        "role": "primary_anchor"
+      }
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "exact intuitive-detached release or perspective shift (Moon sextile Uranus)",
+        "the chart's heavier 8th-house burden and control structure"
+      ],
+      "anchors": [
+        {
+          "type": "tight_aspect",
+          "a": "Moon",
+          "b": "Uranus",
+          "aspect": "sextile",
+          "max_orb": 0.5,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "house_concentration",
+          "house": 8,
+          "min_count": 3,
+          "role": "supporting_route"
+        }
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Moon sextile Uranus as the chart's main headline",
+      "kind": "salience",
+      "reason": "it is the tightest aspect, but it is not the central structural engine of the chart; the Saturn-Mars-Sun pressure pattern is",
+      "anchors": [
+        {
+          "type": "tight_aspect",
+          "a": "Moon",
+          "b": "Uranus",
+          "aspect": "sextile",
+          "max_orb": 0.5
+        }
+      ]
+    },
+    {
+      "claim": "Libra / air emphasis as a charming, easy relational chart",
+      "kind": "framing",
+      "reason": "the Libra concentration lives in the 8th and is tied to Saturn exalted plus Mars detriment; this is not light social ease but controlled depth under pressure",
+      "anchors": [
+        {
+          "type": "chart_ruler",
+          "planet": "Saturn",
+          "sign": "Libra",
+          "house": 8,
+          "dignity": "exaltation"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Mars",
+          "sign": "Libra",
+          "house": 8,
+          "dignity": "detriment"
+        }
+      ]
+    },
+    {
+      "claim": "Mercury Gemini 4 as the only defining spine",
+      "kind": "framing",
+      "reason": "the private mind is real and strong, but it must not eclipse the harder chart-ruler and 8th-house structure that actually carries more weight",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Mercury",
+          "sign": "Gemini",
+          "house": 4,
+          "dignity": "domicile"
+        }
+      ]
+    },
+    {
+      "claim": "8th-house concentration as generic trauma / darkness / danger language",
+      "kind": "framing",
+      "reason": "the 8th is absolutely central, but it should be read as pressure, consequence, entanglement and control structure — not sensationalized fatalism",
+      "anchors": [
+        {
+          "type": "house_concentration",
+          "house": 8,
+          "min_count": 3
+        }
+      ]
+    }
+  ],
+  "one_line_person": "Under the chart's air-sign surface sits a far more pressurized engine: an exalted Saturn in the 8th rules the whole chart, fused to a weakened Mars and squared by the Sun, so warmth and play keep meeting consequence, control and depth. The quick private mind is real, but it is not the main load-bearing spine."
+}

@@ -1,0 +1,236 @@
+{
+  "chart_id": "2009-06-15_11-40_nairobi",
+  "_audit_note": {
+    "tests_behavior": "gift-heavy / dignified: does the engine keep two genuine gift centres visible (Mercury Gemini 9 domicile as chart+MC ruler, and Venus Taurus 8 domicile) without collapsing the chart into a fake single spine? Secondary probe: the tightest aspect is generational (Jupiter-Neptune 0.62) — does tightness wrongly inflate diffuse idealism or service-mysticism?",
+    "main_risk": "Mercury double-ruler monopolizes and erases Venus-8 / Moon-7 depth; OR Jupiter-Neptune becomes a false headline because it is the tightest aspect; OR soft Pisces/Virgo cliches override the actual structure",
+    "expected_failure_if_bad": "engine reads only 'smart/public Mercury person' or 'dreamy spiritual helper', while backgrounding the Venus Taurus 8 centre and the Moon-Saturn relational boundary tension",
+    "calibration_question_link": "dual-gift balance + Q2 (tightness vs generational)"
+  },
+  "defining_signatures": [
+    {
+      "what": "Articulate meaning-and-direction spine: Mercury Gemini 9 (domicile) steering both chart and vocation, with Sun Gemini 10 making the Mercurial line visible",
+      "why": "both the Ascendant and Midheaven resolve through one strong Mercury in its own sign, so mind, perspective, language and orientation are not secondary traits here but the chart's main steering apparatus",
+      "anchors": [
+        {
+          "type": "chart_ruler",
+          "planet": "Mercury",
+          "sign": "Gemini",
+          "house": 9,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "mc_ruler",
+          "planet": "Mercury",
+          "sign": "Gemini",
+          "house": 9,
+          "role": "supporting_route"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Sun",
+          "sign": "Gemini",
+          "house": 10,
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "what": "Deep, steady values-and-intimacy centre: Venus Taurus 8 (domicile) conjunct Mars Taurus 8 in detriment",
+      "why": "the value and attachment function is strong, grounded and deep-running; closeness, trust, desire and shared emotional-material stakes carry real weight here, while the raw push beside it is less cleanly resourced than the value function itself",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Venus",
+          "sign": "Taurus",
+          "house": 8,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Venus",
+          "b": "Mars",
+          "aspect": "conjunction",
+          "max_orb": 2.0,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Mars",
+          "sign": "Taurus",
+          "house": 8,
+          "dignity": "detriment",
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "what": "Permeable relational sensitivity negotiating with a controlled outer frame: Moon Pisces 7 opposite Saturn Virgo 1",
+      "why": "there is real softness, receptivity and relational permeability in the chart, but it does not float freely; it is constantly meeting a more measured, self-controlled and reality-checking outer apparatus",
+      "anchors": [
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Pisces",
+          "house": 7,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Saturn",
+          "sign": "Virgo",
+          "house": 1,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Moon",
+          "b": "Saturn",
+          "aspect": "opposition",
+          "max_orb": 2.5,
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "a fast, articulate, public meaning-and-direction spine (Mercury Gemini 9 domicile; Sun Gemini 10)",
+      "a deeper, softer and more binding relational-value field that is always negotiating with self-control and boundaries (Venus Taurus 8; Moon Pisces 7 opposite Saturn 1)"
+    ],
+    "anchors": [
+      {
+        "type": "chart_ruler",
+        "planet": "Mercury",
+        "sign": "Gemini",
+        "house": 9,
+        "dignity": "domicile",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "planet_placement",
+        "planet": "Venus",
+        "sign": "Taurus",
+        "house": 8,
+        "dignity": "domicile",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "tight_aspect",
+        "a": "Moon",
+        "b": "Saturn",
+        "aspect": "opposition",
+        "max_orb": 2.5,
+        "role": "primary_anchor"
+      }
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "a strong steady value-and-attachment function",
+        "a weaker, slower or more frustrated raw push in the same field"
+      ],
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Venus",
+          "sign": "Taurus",
+          "house": 8,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Mars",
+          "sign": "Taurus",
+          "house": 8,
+          "dignity": "detriment",
+          "role": "supporting_route"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Venus",
+          "b": "Mars",
+          "aspect": "conjunction",
+          "max_orb": 2.0,
+          "role": "primary_anchor"
+        }
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Jupiter conjunct Neptune in Aquarius 6 as the personal headline or spiritual-helper essence",
+      "kind": "salience",
+      "reason": "it is the tightest aspect, but it is generational and must not outrank the chart's actual personal steering and dignity structure",
+      "anchors": [
+        {
+          "type": "tight_aspect",
+          "a": "Jupiter",
+          "b": "Neptune",
+          "aspect": "conjunction",
+          "max_orb": 1.0
+        }
+      ]
+    },
+    {
+      "claim": "Mercury Gemini 9 as the only defining spine",
+      "kind": "framing",
+      "reason": "Mercury is the main steering line, but it must not erase the equally real Venus-8 centre or the Moon-Saturn relational boundary field",
+      "anchors": [
+        {
+          "type": "chart_ruler",
+          "planet": "Mercury",
+          "sign": "Gemini",
+          "house": 9,
+          "dignity": "domicile"
+        }
+      ]
+    },
+    {
+      "claim": "Virgo Ascendant as a rigid perfectionist / all-control chart",
+      "kind": "framing",
+      "reason": "the Virgo Ascendant is real, but its ruler is a strong Mercury in Gemini 9; the chart is more perspective-led, mobile and articulate than the narrow Virgo-cliche render",
+      "anchors": [
+        {
+          "type": "ascendant",
+          "sign": "Virgo"
+        },
+        {
+          "type": "chart_ruler",
+          "planet": "Mercury",
+          "sign": "Gemini",
+          "house": 9,
+          "dignity": "domicile"
+        }
+      ]
+    },
+    {
+      "claim": "Moon Pisces 7 as a dreamy romantic victim",
+      "kind": "framing",
+      "reason": "the relational sensitivity is real, but it is counterweighted by Saturn rising and by the chart's strong Mercurial steering; softness here is not the whole story",
+      "anchors": [
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Pisces",
+          "house": 7
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Moon",
+          "b": "Saturn",
+          "aspect": "opposition",
+          "max_orb": 2.5
+        }
+      ]
+    }
+  ],
+  "one_line_person": "Steered first by a fast, articulate Mercury in its own sign and made public by the Gemini Sun at the top of the chart, yet anchored just as much in a deep, steady value-and-intimacy field: Venus in Taurus in the 8th is stronger than the raw push beside it, and the soft relational Moon is always negotiating with a more controlled outer frame."
+}
