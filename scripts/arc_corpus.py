@@ -515,11 +515,13 @@ def _anchor_tier(anchor: Mapping[str, Any], skel: Mapping[str, Any]) -> str | No
 
 
 def _rank_meets(rank: int, tier: str | None) -> bool | None:
-    """UNCALIBRATED policy guess: rank 1-2 -> expect 'defining';
-    rank 3-4 -> 'defining' or 'strong'. None tier = not assessable."""
+    """UNCALIBRATED policy (calibration hypothesis): only the #1
+    signature must be the single loudest ('defining'); a #2 signature
+    being a 'strong' contributor is astrologically acceptable; rank 3-4
+    likewise. None tier = not assessable."""
     if tier is None:
         return None
-    if rank <= 2:
+    if rank == 1:
         return tier == "defining"
     return tier in ("defining", "strong")
 

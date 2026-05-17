@@ -204,16 +204,29 @@ def test_debilitated_chart_ruler_is_loud():
         f"{merc['salience_tier']} ({merc['salience']})")
 
 
-def test_documented_gap_isolated_debilitated_planet_falls_to_background():
-    """KNOWN UNCALIBRATED GAP (first calibration target): Helsinki Mars
-    (Cancer fall) has no other role/stellium, so the §2.2 formula scores
-    it 'background' — even though the gold ranks the Mercury/Venus/Mars
-    debilitation cluster as the chart's #2 defining struggle. This is
-    NOT a bug; it is the structural finding the 2-chart scaffold test was
-    designed to surface: an isolated debilitated planet is not yet
-    'loud'. Calibration (corpus) must add an affliction term."""
-    mars = _dig(_helsinki(), "Mars")
+def test_affliction_cluster_hypothesis_lifts_clustered_debility():
+    """UNCALIBRATED directional hypothesis (was the documented gap):
+    Helsinki has 3 debilitated personal planets (Mercury detriment,
+    Venus detriment, Mars fall) — a systemic-strain cluster. The
+    affliction-cluster term lifts the previously-isolated-looking Mars
+    from 'background' to at least 'strong' contributor, WITHOUT making
+    an isolated single debility loud. NOT final calibration; a
+    principled directional test on 3 references."""
+    h = _helsinki()
+    debil_personal = [
+        r["planet"] for r in h["dignity_table"]
+        if r["planet"].lower() in {"sun", "moon", "mercury", "venus", "mars"}
+        and r["dignity"] in ("detriment", "fall")]
+    assert set(debil_personal) >= {"Mercury", "Venus", "Mars"}, debil_personal
+    mars = _dig(h, "Mars")
     assert mars["dignity"] == "fall"
-    assert mars["salience_tier"] == "background", (
-        "if this no longer holds, the formula or weights changed — "
-        "revisit the documented affliction-loudness gap")
+    assert mars["salience_tier"] in ("strong", "defining"), (
+        f"clustered Mars should clear background, got "
+        f"{mars['salience_tier']} ({mars['salience']})")
+    # Nairobi has only ONE debilitated personal (Moon) -> no cluster,
+    # so the bonus must NOT fire there (no regression / no over-boost).
+    n = _nairobi()
+    nd = [r["planet"] for r in n["dignity_table"]
+          if r["planet"].lower() in {"sun", "moon", "mercury", "venus", "mars"}
+          and r["dignity"] in ("detriment", "fall")]
+    assert nd == ["Moon"], nd  # single debility, no cluster

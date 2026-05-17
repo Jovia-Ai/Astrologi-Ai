@@ -149,6 +149,14 @@ _SAL_TIERS = {"defining": 0.42, "strong": 0.30}
 _ANGULAR_H = {1, 4, 7, 10}
 _SUCCEDENT_H = {2, 5, 8, 11}
 
+# UNCALIBRATED directional hypothesis (calibration target #1): an
+# isolated debilitated planet is not loud, but a CLUSTER of debilitated
+# personal planets is a systemic strain in the personal apparatus and
+# becomes loud in context. Bonus scales with cluster size; a single
+# debility gets nothing (n>=2 required). Principled, not Helsinki-fit.
+_PERSONAL_PLANETS = {"sun", "moon", "mercury", "venus", "mars"}
+_AFFLICTION_CLUSTER_K = 0.04
+
 
 def _sal_tier(score: float | None) -> str | None:
     if score is None:
@@ -215,6 +223,19 @@ def _planet_salience(name: str, skel: Mapping[str, Any]) -> float | None:
             s += 0.10
         elif dignity in ("detriment", "fall"):
             s += 0.04
+
+    # affliction-cluster (UNCALIBRATED hypothesis): if THIS planet is a
+    # debilitated personal planet AND >=2 personal planets are
+    # debilitated, the cluster lifts each member by (n-1)*k. Isolated
+    # single debility → no cluster → no bonus.
+    if (_norm(name) in _PERSONAL_PLANETS
+            and dignity in ("detriment", "fall")):
+        n_debil = sum(
+            1 for r in skel.get("dignity_table", [])
+            if _norm(r.get("planet")) in _PERSONAL_PLANETS
+            and _norm(r.get("dignity")) in ("detriment", "fall"))
+        if n_debil >= 2:
+            s += (n_debil - 1) * _AFFLICTION_CLUSTER_K
 
     return round(s, 3)
 

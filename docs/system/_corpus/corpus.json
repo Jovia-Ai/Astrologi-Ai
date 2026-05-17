@@ -63,7 +63,7 @@
             "type": "Sextile",
             "orb": 2.79
           },
-          "salience": 0.48,
+          "salience": 0.56,
           "salience_tier": "defining"
         }
       },
@@ -125,7 +125,7 @@
           "sign": "Capricorn",
           "house": 11,
           "dignity": "detriment",
-          "salience": 0.48,
+          "salience": 0.56,
           "salience_tier": "defining"
         },
         {
@@ -133,7 +133,7 @@
           "sign": "Sagittarius",
           "house": 9,
           "dignity": "detriment",
-          "salience": 0.46,
+          "salience": 0.54,
           "salience_tier": "defining"
         },
         {
@@ -141,8 +141,8 @@
           "sign": "Scorpio",
           "house": 8,
           "dignity": "detriment",
-          "salience": 0.28,
-          "salience_tier": "background"
+          "salience": 0.36,
+          "salience_tier": "strong"
         },
         {
           "planet": "Mars",
@@ -1927,7 +1927,7 @@
         "ruler_sign": "Sagittarius",
         "ruler_house": 1,
         "ruler_dignity": "detriment",
-        "ruler_salience": 0.34,
+        "ruler_salience": 0.38,
         "ruler_salience_tier": "strong"
       },
       "angular_planets": [
@@ -1978,7 +1978,7 @@
           "sign": "Sagittarius",
           "house": 1,
           "dignity": "detriment",
-          "salience": 0.34,
+          "salience": 0.38,
           "salience_tier": "strong"
         },
         {
@@ -1986,7 +1986,7 @@
           "sign": "Scorpio",
           "house": 12,
           "dignity": "detriment",
-          "salience": 0.24,
+          "salience": 0.28,
           "salience_tier": "background"
         },
         {
@@ -3046,7 +3046,7 @@
             "type": "Square",
             "orb": 2.04
           },
-          "salience": 0.56,
+          "salience": 0.6,
           "salience_tier": "defining"
         }
       },
@@ -3096,7 +3096,7 @@
           "sign": "Scorpio",
           "house": 6,
           "dignity": "fall",
-          "salience": 0.56,
+          "salience": 0.6,
           "salience_tier": "defining"
         },
         {
@@ -3120,7 +3120,7 @@
           "sign": "Libra",
           "house": 5,
           "dignity": "detriment",
-          "salience": 0.46,
+          "salience": 0.5,
           "salience_tier": "defining"
         },
         {
@@ -4168,7 +4168,7 @@
             "type": "Conjunction",
             "orb": 0.57
           },
-          "salience": 0.64,
+          "salience": 0.72,
           "salience_tier": "defining"
         },
         "moon": {
@@ -4247,7 +4247,7 @@
           "sign": "Libra",
           "house": 8,
           "dignity": "fall",
-          "salience": 0.64,
+          "salience": 0.72,
           "salience_tier": "defining"
         },
         {
@@ -4271,7 +4271,7 @@
           "sign": "Virgo",
           "house": 7,
           "dignity": "fall",
-          "salience": 0.44,
+          "salience": 0.52,
           "salience_tier": "defining"
         },
         {
@@ -4279,7 +4279,7 @@
           "sign": "Libra",
           "house": 7,
           "dignity": "detriment",
-          "salience": 0.48,
+          "salience": 0.56,
           "salience_tier": "defining"
         },
         {
@@ -4605,7 +4605,7 @@
             "type": "Trine",
             "orb": 0.58
           },
-          "salience": 0.48,
+          "salience": 0.52,
           "salience_tier": "defining"
         }
       },
@@ -4655,7 +4655,7 @@
           "sign": "Scorpio",
           "house": 6,
           "dignity": "fall",
-          "salience": 0.48,
+          "salience": 0.52,
           "salience_tier": "defining"
         },
         {
@@ -4671,7 +4671,7 @@
           "sign": "Virgo",
           "house": 4,
           "dignity": "fall",
-          "salience": 0.32,
+          "salience": 0.36,
           "salience_tier": "strong"
         },
         {
@@ -4957,7 +4957,7 @@
         "ruler_sign": "Pisces",
         "ruler_house": 12,
         "ruler_dignity": "detriment",
-        "ruler_salience": 0.54,
+        "ruler_salience": 0.62,
         "ruler_salience_tier": "defining"
       },
       "mc_ruler_spine": {
@@ -4992,7 +4992,7 @@
           "sign": "Pisces",
           "house": 12,
           "dignity": "detriment",
-          "salience": 0.54,
+          "salience": 0.62,
           "salience_tier": "defining"
         },
         {
@@ -5000,7 +5000,7 @@
           "sign": "Aries",
           "house": 12,
           "dignity": "detriment",
-          "salience": 0.46,
+          "salience": 0.54,
           "salience_tier": "defining"
         },
         {
@@ -5008,8 +5008,8 @@
           "sign": "Cancer",
           "house": 3,
           "dignity": "fall",
-          "salience": 0.24,
-          "salience_tier": "background"
+          "salience": 0.32,
+          "salience_tier": "strong"
         },
         {
           "planet": "Jupiter",
@@ -5381,7 +5381,7 @@
           "sign": "Scorpio",
           "house": 6,
           "dignity": "detriment",
-          "salience": 0.5,
+          "salience": 0.54,
           "salience_tier": "defining"
         },
         {
@@ -5389,7 +5389,7 @@
           "sign": "Cancer",
           "house": 4,
           "dignity": "fall",
-          "salience": 0.44,
+          "salience": 0.48,
           "salience_tier": "defining"
         },
         {
@@ -6065,7 +6065,7 @@
             "type": "Conjunction",
             "orb": 1.45
           },
-          "salience": 0.54,
+          "salience": 0.58,
           "salience_tier": "defining"
         },
         "moon": {
@@ -6132,7 +6132,7 @@
           "sign": "Libra",
           "house": 7,
           "dignity": "fall",
-          "salience": 0.54,
+          "salience": 0.58,
           "salience_tier": "defining"
         },
         {
@@ -6156,7 +6156,7 @@
           "sign": "Scorpio",
           "house": 7,
           "dignity": "detriment",
-          "salience": 0.44,
+          "salience": 0.48,
           "salience_tier": "defining"
         },
         {
@@ -6852,7 +6852,7 @@
         "ruler_sign": "Pisces",
         "ruler_house": 7,
         "ruler_dignity": "detriment",
-        "ruler_salience": 0.64,
+        "ruler_salience": 0.68,
         "ruler_salience_tier": "defining"
       },
       "mc_ruler_spine": {
@@ -6861,7 +6861,7 @@
         "ruler_sign": "Pisces",
         "ruler_house": 7,
         "ruler_dignity": "detriment",
-        "ruler_salience": 0.64,
+        "ruler_salience": 0.68,
         "ruler_salience_tier": "defining"
       },
       "angular_planets": [
@@ -6930,7 +6930,7 @@
           "sign": "Pisces",
           "house": 7,
           "dignity": "detriment",
-          "salience": 0.64,
+          "salience": 0.68,
           "salience_tier": "defining"
         },
         {
@@ -6938,7 +6938,7 @@
           "sign": "Aries",
           "house": 8,
           "dignity": "detriment",
-          "salience": 0.32,
+          "salience": 0.36,
           "salience_tier": "strong"
         },
         {
@@ -7228,8 +7228,8 @@
             "type": "Sextile",
             "orb": 0.69
           },
-          "salience": 0.4,
-          "salience_tier": "strong"
+          "salience": 0.44,
+          "salience_tier": "defining"
         },
         "moon": {
           "sign": "Gemini",
@@ -7251,7 +7251,7 @@
         "ruler_sign": "Pisces",
         "ruler_house": 8,
         "ruler_dignity": "detriment",
-        "ruler_salience": 0.5,
+        "ruler_salience": 0.54,
         "ruler_salience_tier": "defining"
       },
       "mc_ruler_spine": {
@@ -7277,8 +7277,8 @@
           "sign": "Aquarius",
           "house": 8,
           "dignity": "detriment",
-          "salience": 0.4,
-          "salience_tier": "strong"
+          "salience": 0.44,
+          "salience_tier": "defining"
         },
         {
           "planet": "Moon",
@@ -7293,7 +7293,7 @@
           "sign": "Pisces",
           "house": 8,
           "dignity": "detriment",
-          "salience": 0.5,
+          "salience": 0.54,
           "salience_tier": "defining"
         },
         {
@@ -7588,7 +7588,7 @@
             "type": "Sextile",
             "orb": 1.15
           },
-          "salience": 0.54,
+          "salience": 0.58,
           "salience_tier": "defining"
         },
         "moon": {
@@ -7620,7 +7620,7 @@
         "ruler_sign": "Cancer",
         "ruler_house": 1,
         "ruler_dignity": "fall",
-        "ruler_salience": 0.46,
+        "ruler_salience": 0.5,
         "ruler_salience_tier": "defining"
       },
       "angular_planets": [
@@ -7655,7 +7655,7 @@
           "sign": "Libra",
           "house": 4,
           "dignity": "fall",
-          "salience": 0.54,
+          "salience": 0.58,
           "salience_tier": "defining"
         },
         {
@@ -7687,7 +7687,7 @@
           "sign": "Cancer",
           "house": 1,
           "dignity": "fall",
-          "salience": 0.46,
+          "salience": 0.5,
           "salience_tier": "defining"
         },
         {
@@ -7986,7 +7986,7 @@
         "ruler_sign": "Libra",
         "ruler_house": 12,
         "ruler_dignity": "detriment",
-        "ruler_salience": 0.54,
+        "ruler_salience": 0.58,
         "ruler_salience_tier": "defining"
       },
       "mc_ruler_spine": {
@@ -8048,7 +8048,7 @@
           "sign": "Scorpio",
           "house": 12,
           "dignity": "detriment",
-          "salience": 0.46,
+          "salience": 0.5,
           "salience_tier": "defining"
         },
         {
@@ -8056,7 +8056,7 @@
           "sign": "Libra",
           "house": 12,
           "dignity": "detriment",
-          "salience": 0.54,
+          "salience": 0.58,
           "salience_tier": "defining"
         },
         {
@@ -8756,7 +8756,7 @@
             "type": "Opposition",
             "orb": 0.37
           },
-          "salience": 0.64,
+          "salience": 0.68,
           "salience_tier": "defining"
         }
       },
@@ -8806,7 +8806,7 @@
           "sign": "Scorpio",
           "house": 11,
           "dignity": "fall",
-          "salience": 0.64,
+          "salience": 0.68,
           "salience_tier": "defining"
         },
         {
@@ -8822,8 +8822,8 @@
           "sign": "Aries",
           "house": 4,
           "dignity": "detriment",
-          "salience": 0.4,
-          "salience_tier": "strong"
+          "salience": 0.44,
+          "salience_tier": "defining"
         },
         {
           "planet": "Mars",
@@ -9115,7 +9115,7 @@
             "type": "Conjunction",
             "orb": 0.67
           },
-          "salience": 0.52,
+          "salience": 0.56,
           "salience_tier": "defining"
         }
       },
@@ -9134,7 +9134,7 @@
         "ruler_sign": "Scorpio",
         "ruler_house": 2,
         "ruler_dignity": "fall",
-        "ruler_salience": 0.52,
+        "ruler_salience": 0.56,
         "ruler_salience_tier": "defining"
       },
       "angular_planets": [
@@ -9159,7 +9159,7 @@
           "sign": "Scorpio",
           "house": 2,
           "dignity": "fall",
-          "salience": 0.52,
+          "salience": 0.56,
           "salience_tier": "defining"
         },
         {
@@ -9183,8 +9183,8 @@
           "sign": "Cancer",
           "house": 9,
           "dignity": "fall",
-          "salience": 0.38,
-          "salience_tier": "strong"
+          "salience": 0.42,
+          "salience_tier": "defining"
         },
         {
           "planet": "Jupiter",
@@ -11343,7 +11343,7 @@
             "type": "Trine",
             "orb": 1.08
           },
-          "salience": 0.62,
+          "salience": 0.66,
           "salience_tier": "defining"
         }
       },
@@ -11411,7 +11411,7 @@
           "sign": "Capricorn",
           "house": 1,
           "dignity": "detriment",
-          "salience": 0.62,
+          "salience": 0.66,
           "salience_tier": "defining"
         },
         {
@@ -11435,7 +11435,7 @@
           "sign": "Libra",
           "house": 10,
           "dignity": "detriment",
-          "salience": 0.32,
+          "salience": 0.36,
           "salience_tier": "strong"
         },
         {
@@ -13921,7 +13921,7 @@
             "type": "Sextile",
             "orb": 0.09
           },
-          "salience": 0.6,
+          "salience": 0.68,
           "salience_tier": "defining"
         },
         "moon": {
@@ -13934,7 +13934,7 @@
             "type": "Square",
             "orb": 0.27
           },
-          "salience": 0.52,
+          "salience": 0.6,
           "salience_tier": "defining"
         }
       },
@@ -13944,7 +13944,7 @@
         "ruler_sign": "Virgo",
         "ruler_house": 5,
         "ruler_dignity": "fall",
-        "ruler_salience": 0.54,
+        "ruler_salience": 0.62,
         "ruler_salience_tier": "defining"
       },
       "mc_ruler_spine": {
@@ -13976,7 +13976,7 @@
           "sign": "Libra",
           "house": 5,
           "dignity": "fall",
-          "salience": 0.6,
+          "salience": 0.68,
           "salience_tier": "defining"
         },
         {
@@ -13984,7 +13984,7 @@
           "sign": "Capricorn",
           "house": 8,
           "dignity": "detriment",
-          "salience": 0.52,
+          "salience": 0.6,
           "salience_tier": "defining"
         },
         {
@@ -14000,7 +14000,7 @@
           "sign": "Virgo",
           "house": 5,
           "dignity": "fall",
-          "salience": 0.54,
+          "salience": 0.62,
           "salience_tier": "defining"
         },
         {
@@ -14628,7 +14628,7 @@
             "type": "Opposition",
             "orb": 0.99
           },
-          "salience": 0.52,
+          "salience": 0.56,
           "salience_tier": "defining"
         },
         "moon": {
@@ -14651,7 +14651,7 @@
         "ruler_sign": "Libra",
         "ruler_house": 3,
         "ruler_dignity": "fall",
-        "ruler_salience": 0.52,
+        "ruler_salience": 0.56,
         "ruler_salience_tier": "defining"
       },
       "mc_ruler_spine": {
@@ -14660,8 +14660,8 @@
         "ruler_sign": "Virgo",
         "ruler_house": 2,
         "ruler_dignity": "fall",
-        "ruler_salience": 0.28,
-        "ruler_salience_tier": "background"
+        "ruler_salience": 0.32,
+        "ruler_salience_tier": "strong"
       },
       "angular_planets": [
         {
@@ -14695,7 +14695,7 @@
           "sign": "Libra",
           "house": 3,
           "dignity": "fall",
-          "salience": 0.52,
+          "salience": 0.56,
           "salience_tier": "defining"
         },
         {
@@ -14719,8 +14719,8 @@
           "sign": "Virgo",
           "house": 2,
           "dignity": "fall",
-          "salience": 0.28,
-          "salience_tier": "background"
+          "salience": 0.32,
+          "salience_tier": "strong"
         },
         {
           "planet": "Mars",

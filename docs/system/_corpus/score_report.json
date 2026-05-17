@@ -6,8 +6,8 @@
     "provisional_pass": true
   },
   "salience_provisional": {
-    "mean_alignment": 0.97,
-    "worst_alignment": 0.91,
+    "mean_alignment": 1.0,
+    "worst_alignment": 1.0,
     "false_emphasis_total": 0,
     "framing_must_not_deferred_to_voice_gate": 8,
     "gating": false,
@@ -163,7 +163,7 @@
         "I": "not_covered_assumed"
       },
       "rank_weighted_coverage": 1.0,
-      "salience_alignment_provisional": 0.91,
+      "salience_alignment_provisional": 1.0,
       "core_tension_coverage": 1.0,
       "dignity_accuracy": 1.0,
       "false_emphasis": [],
@@ -190,15 +190,8 @@
           "supported": 3,
           "matched": 3,
           "unsupported": 0,
-          "salience_alignment": 0.667,
-          "salience_misses": [
-            {
-              "anchor": "dignity",
-              "ref": "Mars",
-              "engine_tier": "background",
-              "rank": 2
-            }
-          ],
+          "salience_alignment": 1.0,
+          "salience_misses": [],
           "supporting_notes": []
         },
         {
