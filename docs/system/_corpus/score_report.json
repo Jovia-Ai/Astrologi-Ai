@@ -1,15 +1,15 @@
 {
-  "n_scored": 8,
+  "n_scored": 12,
   "extraction": {
     "mean_rank_weighted_coverage": 1.0,
     "worst_rank_weighted_coverage": 1.0,
     "provisional_pass": true
   },
   "salience_provisional": {
-    "mean_alignment": 0.949,
+    "mean_alignment": 0.928,
     "worst_alignment": 0.592,
-    "false_emphasis_total": 3,
-    "framing_must_not_deferred_to_voice_gate": 23,
+    "false_emphasis_total": 6,
+    "framing_must_not_deferred_to_voice_gate": 35,
     "gating": false,
     "uncalibrated": true
   },
@@ -79,6 +79,78 @@
           "supported": 2,
           "matched": 2,
           "unsupported": 1,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1968-02-09_16-40_buenosaires",
+      "strata": {
+        "A": "earth-led",
+        "B": "mutable-led",
+        "C": "cadent-heavy",
+        "D": "stellium",
+        "E": "debilitated",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 0.837,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Mercury-Jupiter opposition as a clean bright thinker/teacher headline",
+        "a mystical or intuitive flow-chart that simply 'goes with feeling'",
+        "a tidy stable chart because one angular planet looks composed"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 0.5,
+          "salience_misses": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Saturn",
+              "engine_tier": "background",
+              "rank": 2
+            }
+          ],
+          "supporting_notes": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Mars",
+              "engine_tier": "background",
+              "role": "supporting_route",
+              "rank": 2
+            }
+          ]
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 1,
+          "matched": 1,
+          "unsupported": 0,
           "salience_alignment": 1.0,
           "salience_misses": [],
           "supporting_notes": []
@@ -199,6 +271,145 @@
           "coverage": 1.0,
           "supported": 1,
           "matched": 1,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1975-01-27_13-20_helsinki",
+      "strata": {
+        "A": "air-led",
+        "B": "fixed-led",
+        "C": "balanced",
+        "D": "stellium",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "day",
+        "H": "mixed",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 0.704,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Mercury Aquarius 10 as the only defining spine",
+        "Saturn Cancer 1 as the whole identity",
+        "Jupiter Pisces 11 as a spiritual-savior whole identity",
+        "a single dominant spine"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 0.5,
+          "salience_misses": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Mars",
+              "engine_tier": "background",
+              "rank": 2
+            }
+          ],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 0.5,
+          "salience_misses": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Jupiter",
+              "engine_tier": "background",
+              "rank": 3
+            }
+          ],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1980-12-10_11-30_tokyo",
+      "strata": {
+        "A": "fire-led",
+        "B": "cardinal-led",
+        "C": "angular-heavy",
+        "D": "stellium",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [
+        {
+          "claim": "Neptune Sagittarius 10 as the chart's public headline",
+          "elevated": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Neptune"
+            }
+          ]
+        }
+      ],
+      "framing_deferred_to_voice_gate": [
+        "career/public visibility as generic ambition or workaholism only",
+        "Pisces Ascendant as a soft dreamy personality detached from consequence",
+        "a lone heroic public spine with no relational route underneath it"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
           "unsupported": 0,
           "salience_alignment": 1.0,
           "salience_misses": [],
@@ -408,6 +619,89 @@
           "coverage": 1.0,
           "supported": 2,
           "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "2002-08-02_03-00_helsinki",
+      "strata": {
+        "A": "fire-led",
+        "B": "fixed-led",
+        "C": "cadent-heavy",
+        "D": "stellium",
+        "E": "dignified",
+        "F": "both_dignified",
+        "G": "night",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [
+        {
+          "claim": "Sun-Neptune exact opposition as the whole identity",
+          "elevated": [
+            {
+              "anchor": "tight_aspect",
+              "ref": "Sun"
+            }
+          ]
+        },
+        {
+          "claim": "Venus Virgo 4 fall as the chart's main wound and headline",
+          "elevated": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Venus"
+            }
+          ]
+        }
+      ],
+      "framing_deferred_to_voice_gate": [
+        "Leo here as generic ego or performance cliche",
+        "a chart that needs angular loudness to count as strong"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": [
+            {
+              "anchor": "mc_ruler",
+              "ref": "Jupiter",
+              "engine_tier": "strong",
+              "role": "supporting_route",
+              "rank": 1
+            }
+          ]
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 1,
+          "matched": 1,
           "unsupported": 0,
           "salience_alignment": 1.0,
           "salience_misses": [],

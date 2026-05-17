@@ -242,3 +242,104 @@ Batch-1 does **not** authorize:
 Any answer to the new questions above must be validated jointly against
 the existing 4 canonical references plus subsequent batch types
 (`career/MC-heavy`, `dignity-heavy-low-angular`, `debility-heavy-no-angular`, `2nd no-dominant`).
+
+---
+
+## Batch-2 reveal additions
+
+Batch-2 extended the scored set from 8 to 12 charts. It again did NOT
+challenge extraction: full-scored-set extraction remained mean `1.000`,
+worst `1.000`. It refined the salience question set in four concrete
+directions, all of which remain calibration questions rather than patch
+instructions.
+
+### Candidate question cluster D — public / MC generational inflation
+
+1980 Tokyo showed that public-domain charts can still false-emphasize a
+generational 10H participant even when the actual career spine is
+elsewhere.
+
+- **real public/career spine present**  
+  Sun in the 10th plus the Jupiter-Saturn route carried the actual
+  vocational structure.
+- **false emphasis still surfaced**  
+  Neptune in the 10th was elevated as a public headline anyway.
+
+Open calibration question:
+- in a genuinely MC-heavy chart, when does 10H generational
+  participation stay contextual rather than inheriting headline
+  loudness?
+
+### Candidate question cluster E — exact friction + lone angular debility pressure
+
+2002 Helsinki showed that a dignity-led, relatively low-angular chart
+can still be pressured by two separate loudness mechanisms:
+
+- **exact friction / permeability pressure**  
+  Sun-Neptune exactness tried to read like the whole identity.
+- **lone angular debility pressure**  
+  Venus fall as the lone angular wound-point also surfaced as false
+  emphasis.
+
+This suggests a combined calibration question rather than two isolated
+ones: dignity-led charts may need protection from both exactness and a
+single angular debility stealing the reading.
+
+Open calibration question:
+- when a chart's real strength is dignity-led and only lightly angular,
+  how should the scorer keep exact pressure and lone angular debility
+  from overpowering the true centre?
+
+### Candidate question cluster F — debility-heavy no-angular secondary strain
+
+1968 Buenos Aires did not collapse into a false clean headline, but it
+did show a different issue:
+
+- the primary debility-heavy structure held
+- a secondary debilitated strain owner (`Saturn` at rank 2) stayed too
+  low without angular support
+
+So the question is not only "can clustered debility become loud?" It is
+also whether secondary debility nodes inside that same system can remain
+visible without needing angular reinforcement.
+
+Open calibration question:
+- in debility-heavy, low-angular charts, what keeps secondary strain
+  anchors from sinking to `background` once one primary debility route is
+  already recognized?
+
+### Candidate question cluster G — no-dominant secondary visibility
+
+1975 Helsinki passed the main Q3 guard:
+
+- **no false spine was fabricated**
+
+But it surfaced a subtler issue:
+
+- real secondary centres (`Mars`, `Jupiter`) became too dim while the
+  chart remained distributed
+
+So Q3 is no longer only an anti-false-spine problem. It also has a
+visibility side: how to preserve a distributed chart without letting the
+secondary real centres vanish.
+
+Open calibration question:
+- in no-dominant charts, what preserves truthful secondary visibility
+  without sliding back into a relative-threshold scheme that manufactures
+  a single dominant owner?
+
+### Batch-2 interpretation rule
+
+These additions are **joint-calibration candidates**, not patch
+instructions. Batch-2 does **not** authorize:
+
+- scorer logic edits
+- salience formula changes
+- coefficient tweaks
+- per-chart corrective exceptions
+
+Any answer to clusters D–G must be validated jointly against:
+
+- the 4 canonical references
+- Batch-1's tightness / outer / dual-gift questions
+- subsequent blind batches authored before reveal
