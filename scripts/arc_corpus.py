@@ -444,6 +444,120 @@ def _score_anchor_block(anchors: Any, skel: Mapping[str, Any]):
     return cov, supported, matched, unsupported, dig_t, dig_m
 
 
+# --- PR-2b: salience-alignment (SEPARATE, PROVISIONAL, never gates) ------
+_TIER_ORDER = {"background": 0, "strong": 1, "defining": 2}
+
+
+def _planet_tier(skel: Mapping[str, Any], planet: Any) -> str | None:
+    for r in skel.get("dignity_table", []):
+        if _norm(r["planet"]) == _norm(planet):
+            return r.get("salience_tier")
+    return None
+
+
+def _anchor_tier(anchor: Mapping[str, Any], skel: Mapping[str, Any]) -> str | None:
+    """Engine salience tier the anchor resolves to, or None if it has no
+    salience-bearing element (ascendant/mc) or is unsupported. None means
+    'not assessable for salience' — excluded, never a miss."""
+    t = _norm(anchor.get("type"))
+    if t in UNSUPPORTED_ANCHORS or t not in SUPPORTED_ANCHORS:
+        return None
+    if t in ("planet_placement", "dignity", "luminary", "angular_planet"):
+        return _planet_tier(skel, anchor.get("planet"))
+    if t in ("chart_ruler", "mc_ruler"):
+        sp = skel.get("asc_ruler_spine" if t == "chart_ruler"
+                      else "mc_ruler_spine", {})
+        return sp.get("ruler_salience_tier")
+    if t in ("stellium", "house_concentration"):
+        by = "house" if t == "house_concentration" else _norm(anchor.get("by"))
+        key = str(anchor.get("house") if t == "house_concentration"
+                  else anchor.get("key"))
+        need = int(anchor.get("min_count", 3))
+        for s in skel.get("stelliums", []):
+            if (_norm(s.get("by")) == by and str(s.get("key")) == key
+                    and int(s.get("count", 0)) >= need):
+                # member-max: a stellium is as loud as its loudest planet
+                best = None
+                for p in s.get("planets", []):
+                    pt = _planet_tier(skel, p)
+                    if pt and (best is None
+                               or _TIER_ORDER[pt] > _TIER_ORDER[best]):
+                        best = pt
+                return best
+        return None
+    if t == "tight_aspect":
+        pair = {_norm(anchor.get("a")), _norm(anchor.get("b"))}
+        asp = _norm(anchor.get("aspect"))
+        mx = float(anchor.get("max_orb", 2.0))
+        for ta in skel.get("tightest_aspects", []):
+            if ({_norm(ta.get("a")), _norm(ta.get("b"))} == pair
+                    and _norm(ta.get("type")).startswith(asp)
+                    and float(ta.get("orb", 99)) <= mx):
+                # member-max (consistent with stellium): an exact aspect
+                # is as loud as its loudest endpoint planet — avoids the
+                # aspect-element base (0.18) artificially capping at strong
+                ta_t = ta.get("salience_tier")
+                best = ta_t
+                for p in (anchor.get("a"), anchor.get("b")):
+                    pt = _planet_tier(skel, p)
+                    if pt and (best is None
+                               or _TIER_ORDER[pt] > _TIER_ORDER.get(best, -1)):
+                        best = pt
+                return best
+        return None
+    return None  # ascendant / mc — no salience-bearing element
+
+
+def _rank_meets(rank: int, tier: str | None) -> bool | None:
+    """UNCALIBRATED policy guess: rank 1-2 -> expect 'defining';
+    rank 3-4 -> 'defining' or 'strong'. None tier = not assessable."""
+    if tier is None:
+        return None
+    if rank <= 2:
+        return tier == "defining"
+    return tier in ("defining", "strong")
+
+
+def _salience_align(anchors: Any, skel: Mapping[str, Any], rank: int):
+    """-> (alignment|None, assessable, met, misses[])."""
+    assessable = met = 0
+    misses = []
+    for a in anchors or []:
+        tier = _anchor_tier(a, skel)
+        ok = _rank_meets(rank, tier)
+        if ok is None:
+            continue
+        assessable += 1
+        if ok:
+            met += 1
+        else:
+            misses.append({
+                "anchor": a.get("type"),
+                "ref": (a.get("planet") or a.get("key")
+                        or a.get("house") or a.get("a")),
+                "engine_tier": tier, "rank": rank})
+    return ((met / assessable) if assessable else None,
+            assessable, met, misses)
+
+
+def _must_not_false_emphasis(must_not: Any, skel: Mapping[str, Any]):
+    """A must_not anchor the engine elevated to 'defining' = false
+    emphasis. This is what makes must_not measurable (no longer
+    pending PR-2)."""
+    hits = []
+    for m in must_not or []:
+        elevated = []
+        for a in m.get("anchors", []):
+            if _anchor_tier(a, skel) == "defining":
+                elevated.append({
+                    "anchor": a.get("type"),
+                    "ref": (a.get("planet") or a.get("key")
+                            or a.get("house") or a.get("a"))})
+        if elevated:
+            hits.append({"claim": m.get("claim"), "elevated": elevated})
+    return hits
+
+
 def cmd_score(_: argparse.Namespace) -> None:
     if not CORPUS_FILE.exists():
         raise SystemExit("run `generate` first")
@@ -453,6 +567,7 @@ def cmd_score(_: argparse.Namespace) -> None:
 
     per_chart = []
     unsupported_types: set[str] = set()
+    fe_total = 0
     for gf in sorted(GOLD_DIR.glob("*.json")):
         gold = json.loads(gf.read_text())
         cid = gold.get("chart_id") or gf.stem
@@ -461,9 +576,11 @@ def cmd_score(_: argparse.Namespace) -> None:
             print(f"  gold {cid}: no matching corpus record, skipped")
             continue
         skel = rec["engine_skeleton"]
+        uncal = bool(skel.get("_salience_meta", {}).get("_uncalibrated"))
 
         sig_rows = []
-        wsum = wtot = 0.0
+        wsum = wtot = 0.0      # extraction coverage (stable, gating)
+        swsum = swtot = 0.0    # salience alignment (provisional, NOT gating)
         dt_all = dm_all = 0
         for d in gold.get("defining_signatures", []) or []:
             for a in d.get("anchors", []):
@@ -475,26 +592,42 @@ def cmd_score(_: argparse.Namespace) -> None:
             dm_all += dm
             rank = int(d.get("rank", 4))
             w = RANK_WEIGHT.get(rank, 0.4)
-            sig_rows.append({"rank": rank, "coverage": cov,
-                             "supported": sup, "matched": mat,
-                             "unsupported": uns})
+            sal, _ass, _met, s_miss = _salience_align(
+                d.get("anchors"), skel, rank)
+            sig_rows.append({
+                "rank": rank, "coverage": cov,
+                "supported": sup, "matched": mat, "unsupported": uns,
+                "salience_alignment": (
+                    round(sal, 3) if sal is not None else None),
+                "salience_misses": s_miss,
+            })
             if cov is not None:
                 wsum += cov * w
                 wtot += w
+            if sal is not None:
+                swsum += sal * w
+                swtot += w
 
         ct = gold.get("core_tension", {}) or {}
         ct_cov = _score_anchor_block(ct.get("anchors"), skel)[0]
+
+        fe_hits = _must_not_false_emphasis(
+            gold.get("must_not_lead_with"), skel)
+        fe_total += sum(len(h["elevated"]) for h in fe_hits)
 
         per_chart.append({
             "chart_id": cid,
             "strata": rec["strata"],
             "rank_weighted_coverage": round(wsum / wtot, 3) if wtot else None,
+            "salience_alignment_provisional": (
+                round(swsum / swtot, 3) if swtot else None),
             "core_tension_coverage": (
                 round(ct_cov, 3) if ct_cov is not None else None),
             "dignity_accuracy": (
                 round(dm_all / dt_all, 3) if dt_all else None),
+            "false_emphasis": fe_hits,
+            "salience_uncalibrated": uncal,
             "signatures": sig_rows,
-            "must_not_verdict": "pending_pr2 (salience-tier aware)",
         })
 
     if not per_chart:
@@ -504,23 +637,40 @@ def cmd_score(_: argparse.Namespace) -> None:
               if c["rank_weighted_coverage"] is not None]
     mean_cov = sum(c["rank_weighted_coverage"] for c in scored) / len(scored)
     worst = min(c["rank_weighted_coverage"] for c in scored)
+    sal_vals = [c["salience_alignment_provisional"] for c in per_chart
+                if c["salience_alignment_provisional"] is not None]
+    mean_sal = round(sum(sal_vals) / len(sal_vals), 3) if sal_vals else None
+    worst_sal = round(min(sal_vals), 3) if sal_vals else None
     report = {
         "n_scored": len(per_chart),
-        "mean_rank_weighted_coverage": round(mean_cov, 3),
-        "worst_rank_weighted_coverage": round(worst, 3),
-        "provisional_pass": mean_cov >= 0.85 and worst >= 0.70,
+        "extraction": {
+            "mean_rank_weighted_coverage": round(mean_cov, 3),
+            "worst_rank_weighted_coverage": round(worst, 3),
+            "provisional_pass": mean_cov >= 0.85 and worst >= 0.70,
+        },
+        "salience_provisional": {
+            "mean_alignment": mean_sal,
+            "worst_alignment": worst_sal,
+            "false_emphasis_total": fe_total,
+            "gating": False,
+            "uncalibrated": True,
+        },
         "unsupported_anchor_types_seen": sorted(unsupported_types),
-        "invariant": ("unsupported anchors are reported, never counted "
-                      "as engine failure; must_not is salience-aware → "
-                      "pending PR-2; §7 thresholds provisional until "
-                      "first joint calibration pass"),
+        "invariant": ("extraction coverage is the stable GATING metric. "
+                      "salience_alignment is SEPARATE, PROVISIONAL, "
+                      "UNCALIBRATED and NEVER gates: rank->tier is a "
+                      "policy guess; misses are calibration targets, not "
+                      "failures. unsupported anchors never counted as "
+                      "engine failure."),
         "per_chart": per_chart,
     }
     SCORE_FILE.write_text(json.dumps(report, ensure_ascii=False, indent=2))
-    print(f"scored {len(per_chart)} | mean rank-weighted coverage "
-          f"{report['mean_rank_weighted_coverage']} | worst "
-          f"{report['worst_rank_weighted_coverage']} | "
-          f"provisional_pass={report['provisional_pass']}")
+    print(f"scored {len(per_chart)} | extraction mean "
+          f"{report['extraction']['mean_rank_weighted_coverage']} "
+          f"worst {report['extraction']['worst_rank_weighted_coverage']} "
+          f"pass={report['extraction']['provisional_pass']}")
+    print(f"  salience(provisional, NOT gating): mean {mean_sal} "
+          f"worst {worst_sal} | false_emphasis {fe_total}")
     if unsupported_types:
         print(f"  unsupported anchor types (reported, NOT failed): "
               f"{sorted(unsupported_types)}")
