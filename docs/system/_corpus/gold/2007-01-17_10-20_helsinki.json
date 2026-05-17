@@ -1,0 +1,93 @@
+{
+  "chart_id": "2007-01-17_10-20_helsinki",
+  "_reference_example": true,
+  "_audit_note": {
+    "tests_behavior": "12H-heavy (5-planet 12th stellium incl. Sun): does the engine over-promote the hidden/12th signature into a fake 'mystic/escapist/victim' whole-identity spine while keeping the genuine non-12H strength (Jupiter Sag 8 domicile = chart+MC ruler + final dispositor; Mars Cap 10 exalted) defining? Also: do generational 12th-stellium members (Uranus/Neptune) get wrongly promoted by stellium membership?",
+    "main_risk": "12H stellium monopolizes -> 'hidden mystic' whole identity, Jupiter-8-domicile / Mars-10-exalted demoted; OR Uranus/Neptune inflated via 12th-stellium membership",
+    "expected_failure_if_bad": "engine reads 'you are a hidden/dissolved 12th-house mystic', backgrounds the strong double-ruler Jupiter and exalted Mars; or generational Uranus/Neptune become defining via the big 12th stellium",
+    "calibration_question_link": "monopolization (new) + Q1-adjacent (stellium membership inflating generational outers)"
+  },
+  "defining_signatures": [
+    {
+      "what": "Strong meaning/steering anchor doing depth-work: Jupiter Sagittarius 8 (domicile), both chart ruler AND MC ruler, the chart's final dispositor; Jupiter square Uranus 0.77",
+      "why": "persona and vocation both steer through one strong domiciled Jupiter in the 8th — meaning/faith applied to depth/transformation, in tight tension with Uranus (rupture); the chart's structural spine",
+      "anchors": [
+        {"type": "chart_ruler", "planet": "Jupiter", "sign": "Sagittarius", "house": 8, "dignity": "domicile", "role": "primary_anchor"},
+        {"type": "mc_ruler", "planet": "Jupiter", "sign": "Sagittarius", "house": 8, "role": "supporting_route"},
+        {"type": "tight_aspect", "a": "Jupiter", "b": "Uranus", "aspect": "square", "max_orb": 1.0, "role": "primary_anchor"}
+      ],
+      "rank": 1
+    },
+    {
+      "what": "Exalted, disciplined public drive: Mars Capricorn 10 (exaltation) conj Pluto, in a 10th complex with a debilitated Moon",
+      "why": "strong strategic executive force in the public arena — paired with an emotionally-strained Moon (detriment 10th): publicly effective, emotionally reserved in that same sphere",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Mars", "sign": "Capricorn", "house": 10, "dignity": "exaltation", "role": "primary_anchor"},
+        {"type": "tight_aspect", "a": "Mars", "b": "Pluto", "aspect": "conjunction", "max_orb": 3.0, "role": "primary_anchor"},
+        {"type": "planet_placement", "planet": "Moon", "sign": "Capricorn", "house": 10, "dignity": "detriment", "role": "supporting_route"}
+      ],
+      "rank": 2
+    },
+    {
+      "what": "Submerged identity & relating (the 12H signature — real but NOT the whole person): 5-planet 12th stellium (Sun, Mercury, Venus, Uranus, Neptune), Venus conj Neptune",
+      "why": "identity, mind and love operate behind the veil — hidden, abstract, idealized, dissolved. Defining as a texture, but the chart's strength/resolution is Jupiter+Mars, not this",
+      "anchors": [
+        {"type": "house_concentration", "house": 12, "min_count": 3, "role": "primary_anchor"},
+        {"type": "planet_placement", "planet": "Sun", "sign": "Capricorn", "house": 12, "role": "primary_anchor"},
+        {"type": "tight_aspect", "a": "Venus", "b": "Neptune", "aspect": "conjunction", "max_orb": 3.0, "role": "primary_anchor"}
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "a hidden/submerged identity-and-relating (Sun 12th, 5-planet 12th stellium, Venus-Neptune dissolved)",
+      "a strong publicly-effective steering+drive (Jupiter domicile 8th double-ruler / Mars exalted 10th)"
+    ],
+    "anchors": [
+      {"type": "house_concentration", "house": 12, "min_count": 3, "role": "primary_anchor"},
+      {"type": "chart_ruler", "planet": "Jupiter", "sign": "Sagittarius", "house": 8, "dignity": "domicile", "role": "primary_anchor"},
+      {"type": "planet_placement", "planet": "Mars", "sign": "Capricorn", "house": 10, "dignity": "exaltation", "role": "primary_anchor"}
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "strong meaning/structure (Jupiter domicile, double-ruler)",
+        "sudden rupture/individuation (Uranus)"
+      ],
+      "anchors": [
+        {"type": "chart_ruler", "planet": "Jupiter", "sign": "Sagittarius", "house": 8, "dignity": "domicile", "role": "primary_anchor"},
+        {"type": "tight_aspect", "a": "Jupiter", "b": "Uranus", "aspect": "square", "max_orb": 1.0, "role": "primary_anchor"}
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "12th-house stellium as 'you are a spiritual mystic / escapist / victim / self-undoing' whole identity",
+      "kind": "framing",
+      "reason": "the 12H IS salient but must not become a fatalistic-mystic whole-identity cliché; the real strength is Jupiter+Mars",
+      "anchors": [{"type": "house_concentration", "house": 12, "min_count": 3}]
+    },
+    {
+      "claim": "Uranus Pisces 12 + Neptune Aquarius 12 as personal headlines",
+      "kind": "salience",
+      "reason": "peregrine generational; being inside the big 12th stellium must not promote them to defining",
+      "anchors": [{"type": "planet_placement", "planet": "Uranus", "sign": "Pisces", "house": 12}, {"type": "planet_placement", "planet": "Neptune", "sign": "Aquarius", "house": 12}]
+    },
+    {
+      "claim": "Pisces Asc as a dreamy compassionate Pisces",
+      "kind": "framing",
+      "reason": "Pisces Asc but its ruler is a STRONG domiciled Jupiter; the dreamy-Pisces cliché misreads a chart steered by it",
+      "anchors": [{"type": "ascendant", "sign": "Pisces"}, {"type": "chart_ruler", "planet": "Jupiter", "sign": "Sagittarius", "house": 8, "dignity": "domicile"}]
+    },
+    {
+      "claim": "a single dominant spine / 'you are essentially a hidden 12th-house person'",
+      "kind": "framing",
+      "reason": "multi-centred: 12H texture + Jupiter steering + Mars public drive",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "Run from the unseen — identity, mind and love submerged in a five-planet 12th house — yet steered and resolved by one strong meaning-engine (Jupiter in its own sign, doing depth-work) and carried by an exalted, disciplined public drive; the strength is real but routed through the hidden."
+}
