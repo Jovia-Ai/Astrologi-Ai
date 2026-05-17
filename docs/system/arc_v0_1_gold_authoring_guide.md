@@ -165,6 +165,43 @@ First batch target (selected blind, extraction-only):
 the engine over-promotes a textbook relationship significator into a
 fake whole-identity spine.
 
+## Domain-monopolization guard (relationship-heavy, and any domain-heavy)
+
+A domain-heavy chart (relationship-, career-, 12H-heavy …) is selected
+to probe ONE risk: **does the engine let that domain's signals become
+the whole-identity spine, erasing the rest of the chart?**
+
+This is NOT cleanly a `salience` or `framing` must_not — the domain
+signature (e.g. Venus domicile 7th) IS legitimately defining; the
+failure is *monopolization* (it becomes the ONLY defining centre →
+false single spine). Do NOT add a new `kind` for this — it is already
+measurable through the existing mechanism, conditionally:
+
+- If the chart has a genuine NON-domain centre: the gold MUST include
+  it as a defining_signature. Then monopolization shows up as an
+  extraction/salience MISS on that non-domain signature — measured, no
+  new schema.
+- If the chart is genuinely domain-monocentric: the gold says so; the
+  test inverts to non-fabrication ("did the engine invent a false other
+  centre?").
+
+The `_audit_note` MUST pre-register which case this chart is, so the
+probed failure mode is locked before any reveal. Never force a
+non-domain signature into a gold that the chart does not support — a
+gold that lies about the chart defeats the test.
+
+Every domain-heavy gold also carries the Voice-Gate reminder:
+
+```json
+{ "claim": "<domain> as the whole identity",
+  "kind": "framing",
+  "reason": "<domain> signatures are strong but must not erase the rest
+             of the chart", "anchors": [] }
+```
+
+This is recorded/deferred (not scored — it is framing); the actual
+monopolization test is the non-domain defining_signature above.
+
 Pass shape per chart: extraction 1.0; salience misses only where a
 calibration question predicts them; generational stays background;
 false_emphasis(salience-kind)=0; multi-loaded charts not collapsed to a
