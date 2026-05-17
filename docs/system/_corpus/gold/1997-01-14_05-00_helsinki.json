@@ -1,0 +1,205 @@
+{
+  "chart_id": "1997-01-14_05-00_helsinki",
+  "_audit_note": {
+    "tests_behavior": "debility-heavy secondary strain without angular rescue: does the engine keep multiple strain nodes visible in a cadent-heavy debility chart, instead of recognizing only one owner and letting the rest sink away?",
+    "main_risk": "the chart-ruler Mars detriment is recognized but the secondary strain system around Saturn fall and Jupiter fall becomes too dim; OR the Capricorn 2H concentration gets over-cleaned into competence/control and hides the burdened structure",
+    "expected_failure_if_bad": "engine reads one main struggle or one clean Capricorn/Scorpio competence spine, while backgrounding the other real debilitated anchors that make the chart structurally strained",
+    "expected_success_if_good": "engine keeps the 2H pressure concentration primary while still preserving Mars, Saturn and Jupiter as distinct real burden-carrying centres inside the same chart",
+    "calibration_question_link": "debility-heavy secondary strain without angular rescue",
+    "must_remain_blind_until_batch_score": true
+  },
+  "defining_signatures": [
+    {
+      "what": "A loaded self-resource and survival apparatus: massive Capricorn 2H concentration with Sun, Mercury, Venus, Jupiter and Neptune, plus Uranus in the 2nd",
+      "why": "this chart lives heavily through value, survival, self-resource, worth and the pressure of building a functioning base. But the concentration is not smooth or serene. It is loaded, burdened and overdetermined, carrying both control and instability at once.",
+      "anchors": [
+        {
+          "type": "house_concentration",
+          "house": 2,
+          "min_count": 6,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "stellium",
+          "by": "sign",
+          "key": "Capricorn",
+          "min_count": 5,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Jupiter",
+          "sign": "Capricorn",
+          "house": 2,
+          "dignity": "fall",
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "what": "A strained directional and decision system: Scorpio Asc ruled by Mars Libra 9 in detriment under pressure from Moon and Saturn in Aries 3",
+      "why": "the chart's steering function does not move in a simple or clean way. The ruler is debilitated in the realm of direction and belief, while the emotional and structural response system in Aries keeps opposing and weighing on it. This is a core strain route, not a footnote.",
+      "anchors": [
+        {
+          "type": "ascendant",
+          "sign": "Scorpio",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "chart_ruler",
+          "planet": "Mars",
+          "sign": "Libra",
+          "house": 9,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Moon",
+          "b": "Mars",
+          "aspect": "opposition",
+          "max_orb": 1.0,
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "what": "A secondary structural burden that must stay visible: Saturn Aries 3 in fall conjunct Moon and opposing Mars",
+      "why": "the strain here is not only emotional or motivational. There is also a burdened structural voice that sits in the immediate mental/communicative field and has to carry conflict, impatience and pressure. If this disappears, the chart becomes too simplified.",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Saturn",
+          "sign": "Aries",
+          "house": 3,
+          "dignity": "fall",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Moon",
+          "b": "Saturn",
+          "aspect": "conjunction",
+          "max_orb": 0.1,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Mars",
+          "b": "Saturn",
+          "aspect": "opposition",
+          "max_orb": 1.0,
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "a chart trying to secure control, value and survival through an overloaded 2H apparatus",
+      "a strained directional system that keeps throwing conflict, urgency and burden into that effort"
+    ],
+    "anchors": [
+      {
+        "type": "house_concentration",
+        "house": 2,
+        "min_count": 6,
+        "role": "primary_anchor"
+      },
+      {
+        "type": "chart_ruler",
+        "planet": "Mars",
+        "sign": "Libra",
+        "house": 9,
+        "dignity": "detriment",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "planet_placement",
+        "planet": "Saturn",
+        "sign": "Aries",
+        "house": 3,
+        "dignity": "fall",
+        "role": "primary_anchor"
+      }
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "a push toward competence, structure and self-control",
+        "a more destabilizing, breakaway value signature inside the same resource field"
+      ],
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Uranus",
+          "sign": "Aquarius",
+          "house": 2,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Jupiter",
+          "sign": "Capricorn",
+          "house": 2,
+          "dignity": "fall",
+          "role": "primary_anchor"
+        }
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Capricorn 2H concentration as simple competence, control or material discipline only",
+      "kind": "framing",
+      "reason": "the concentration is real, but it carries burden, fall and instability inside it; a clean competence reading would erase the chart's actual strain",
+      "anchors": [
+        {
+          "type": "house_concentration",
+          "house": 2,
+          "min_count": 6
+        }
+      ]
+    },
+    {
+      "claim": "Uranus Aquarius 2 as the clean headline that solves the chart",
+      "kind": "salience",
+      "reason": "Uranus is important, but it must not wipe out the burdened Mars, Saturn and Jupiter nodes that make this chart structurally strained",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Uranus",
+          "sign": "Aquarius",
+          "house": 2,
+          "dignity": "domicile"
+        }
+      ]
+    },
+    {
+      "claim": "one main struggle only",
+      "kind": "framing",
+      "reason": "this fixture exists to test whether multiple strain owners can remain visible together without angular rescue",
+      "anchors": []
+    },
+    {
+      "claim": "Pluto in the 1st as the whole chart's defining intensity",
+      "kind": "framing",
+      "reason": "the outer shell has force, but it should not erase the more important distributed strain system underneath",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Pluto",
+          "sign": "Sagittarius",
+          "house": 1
+        }
+      ]
+    }
+  ],
+  "one_line_person": "A chart that carries heavy pressure through worth, survival and self-resource, while several different strain lines compete inside it rather than collapsing into one simple owner."
+}

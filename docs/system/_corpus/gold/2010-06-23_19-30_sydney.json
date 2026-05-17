@@ -1,0 +1,193 @@
+{
+  "chart_id": "2010-06-23_19-30_sydney",
+  "_audit_note": {
+    "tests_behavior": "distributed chart secondary visibility / no false single spine: does the engine keep a genuinely multi-centred chart distributed while still preserving its real secondary centres, rather than inventing one dominant owner or dimming the rest too much?",
+    "main_risk": "the chart gets compressed into a single expressive Sun/Mercury owner, or a single Moon-10 visibility owner, or a single disruptive Jupiter-Uranus owner, while the other real centres lose visibility",
+    "expected_failure_if_bad": "engine reads one clean defining spine and backgrounds the chart's other real centres, or keeps no false spine but lets the secondary centres become too dim to matter",
+    "expected_success_if_good": "engine preserves a distributed reading: expressive heart/mind, visible emotional-public field, and independent/disruptive horizon all remain present without one being falsely crowned as sole owner",
+    "calibration_question_link": "distributed chart secondary visibility / no false single spine",
+    "must_remain_blind_until_batch_score": true
+  },
+  "defining_signatures": [
+    {
+      "what": "An expressive, personal creative center: Sun Cancer 5 with Mercury Gemini 5 in domicile",
+      "why": "the chart clearly has a vivid personal and expressive line. It thinks, plays, feels and creates close to itself; it is alive through articulation, experimentation and personal signal. But this is not the only center the chart has.",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Sun",
+          "sign": "Cancer",
+          "house": 5,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Mercury",
+          "sign": "Gemini",
+          "house": 5,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "what": "A visible emotional-social field with real vulnerability: Moon Scorpio 10 in fall and Venus Leo 7",
+      "why": "this chart is not only inwardly expressive. It is also publicly felt and relationally exposed. The Moon in the 10th gives visibility and public emotion, but in Scorpio and fall it does so with intensity, defensiveness and difficulty rather than ease.",
+      "anchors": [
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Scorpio",
+          "house": 10,
+          "dignity": "fall",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Venus",
+          "sign": "Leo",
+          "house": 7,
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "what": "An independent and unstable horizon line: Aquarius Ascendant ruled by Saturn Virgo 9, with Jupiter-Uranus in Aries 3 pushing disruption and thought-speed",
+      "why": "there is also a real line of independence, argument, movement and horizon-challenge in the chart. It keeps the system from settling into either pure feeling or pure performance; it adds restlessness, initiative and mental rupture to the picture.",
+      "anchors": [
+        {
+          "type": "ascendant",
+          "sign": "Aquarius",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "chart_ruler",
+          "planet": "Saturn",
+          "sign": "Virgo",
+          "house": 9,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Jupiter",
+          "b": "Uranus",
+          "aspect": "conjunction",
+          "max_orb": 1.5,
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "a personal expressive center that wants play, articulation and self-signal",
+      "a more exposed public-relational field that feels watched, pressured or emotionally loaded"
+    ],
+    "anchors": [
+      {
+        "type": "planet_placement",
+        "planet": "Sun",
+        "sign": "Cancer",
+        "house": 5,
+        "role": "primary_anchor"
+      },
+      {
+        "type": "planet_placement",
+        "planet": "Mercury",
+        "sign": "Gemini",
+        "house": 5,
+        "dignity": "domicile",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "luminary",
+        "planet": "Moon",
+        "sign": "Scorpio",
+        "house": 10,
+        "dignity": "fall",
+        "role": "primary_anchor"
+      }
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "a need to feel and create personally",
+        "a disruptive mental-horizon line that keeps breaking continuity"
+      ],
+      "anchors": [
+        {
+          "type": "tight_aspect",
+          "a": "Sun",
+          "b": "Jupiter",
+          "aspect": "square",
+          "max_orb": 0.2,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Sun",
+          "b": "Uranus",
+          "aspect": "square",
+          "max_orb": 1.5,
+          "role": "primary_anchor"
+        }
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Mercury Gemini 5 as the only defining spine",
+      "kind": "framing",
+      "reason": "the expressive mind is real, but this is a distributed chart and it should not erase the public-emotional or horizon-disruptive centres",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Mercury",
+          "sign": "Gemini",
+          "house": 5,
+          "dignity": "domicile"
+        }
+      ]
+    },
+    {
+      "claim": "Moon Scorpio 10 as the whole chart's main crisis identity",
+      "kind": "framing",
+      "reason": "the visible Moon matters, but it is one center among several and should not monopolize the reading either",
+      "anchors": [
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Scorpio",
+          "house": 10,
+          "dignity": "fall"
+        }
+      ]
+    },
+    {
+      "claim": "Jupiter-Uranus disruption as the single headline",
+      "kind": "salience",
+      "reason": "the disruptive horizon is real, but it should not replace the chart's other centers in a no-false-spine fixture",
+      "anchors": [
+        {
+          "type": "tight_aspect",
+          "a": "Jupiter",
+          "b": "Uranus",
+          "aspect": "conjunction",
+          "max_orb": 1.5
+        }
+      ]
+    },
+    {
+      "claim": "a single dominant spine",
+      "kind": "framing",
+      "reason": "this fixture explicitly tests secondary visibility inside a distributed chart; the reading should remain multi-centred",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "A genuinely distributed chart: expressive and articulate at the center, visibly emotionally loaded in public and relationship space, and also pushed by an independent, disruptive horizon that keeps any single spine from owning the whole picture."
+}

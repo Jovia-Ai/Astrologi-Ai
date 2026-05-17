@@ -1,0 +1,192 @@
+{
+  "chart_id": "1989-06-22_03-20_istanbul",
+  "_audit_note": {
+    "tests_behavior": "public / MC generational inflation: does the engine keep the real public-vocational structure primary when the chart has a strong MC route through Saturn Capricorn 9 in domicile and Moon Aquarius 10, without letting the exact Saturn-Neptune conjunction turn the whole chart into a visionary/generational public headline?",
+    "main_risk": "Neptune in the exact Saturn-Neptune public-route conjunction steals the headline; OR the chart gets flattened into generic Aquarius-public language while the Mercury-1 and Cancer value base are backgrounded",
+    "expected_failure_if_bad": "engine reads an idealist/visionary public figure first, or a generic cool public Aquarius profile, while under-reading the actual Saturn-led public structure and the Mercury-in-1 articulation line",
+    "expected_success_if_good": "engine keeps the Saturn-led MC route and Moon-10 visibility primary, while Neptune remains a modifier of that public line rather than the owner of it",
+    "calibration_question_link": "public / MC generational inflation",
+    "must_remain_blind_until_batch_score": true
+  },
+  "defining_signatures": [
+    {
+      "what": "A disciplined public-intellectual route: Aquarius MC ruled by Saturn Capricorn 9 in domicile, with Moon Aquarius 10 making the chart visibly public",
+      "why": "the chart is genuinely oriented toward public role, idea, audience and contribution. But it is not airy in a weightless way. The real public route is built through a strong Saturn in its own sign in the 9th, with the Moon in the 10th making that line visible and lived.",
+      "anchors": [
+        {
+          "type": "mc_ruler",
+          "planet": "Saturn",
+          "sign": "Capricorn",
+          "house": 9,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Aquarius",
+          "house": 10,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Saturn",
+          "sign": "Capricorn",
+          "house": 9,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "what": "A quick, self-present and verbally capable front edge: Mercury Gemini 1 in domicile",
+      "why": "whatever the public role becomes, it comes through a nimble, articulate and mentally active front edge. This chart does not only carry structure; it also presents with quickness, adaptability and interpretive intelligence close to the surface.",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Mercury",
+          "sign": "Gemini",
+          "house": 1,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "what": "A softer private-value base under the public shell: Sun Cancer 2 with Venus Cancer 3",
+      "why": "beneath the public function and mental agility there is a more protective, personal and value-based center. Care, memory, loyalty and felt belonging are not the public headline, but they stabilize the chart from underneath.",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Sun",
+          "sign": "Cancer",
+          "house": 2,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Venus",
+          "sign": "Cancer",
+          "house": 3,
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "a cool, disciplined, socially-visible public role",
+      "a more private, protective and emotionally-invested value core"
+    ],
+    "anchors": [
+      {
+        "type": "mc_ruler",
+        "planet": "Saturn",
+        "sign": "Capricorn",
+        "house": 9,
+        "dignity": "domicile",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "luminary",
+        "planet": "Moon",
+        "sign": "Aquarius",
+        "house": 10,
+        "role": "primary_anchor"
+      },
+      {
+        "type": "planet_placement",
+        "planet": "Sun",
+        "sign": "Cancer",
+        "house": 2,
+        "role": "primary_anchor"
+      }
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "a real public structure built through discipline and long-form meaning",
+        "the temptation for that same route to dissolve into idealization, projection or diffuse vision"
+      ],
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Saturn",
+          "sign": "Capricorn",
+          "house": 9,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Saturn",
+          "b": "Neptune",
+          "aspect": "conjunction",
+          "max_orb": 0.2,
+          "role": "primary_anchor"
+        }
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Neptune in the Saturn-Neptune conjunction as the chart's public owner",
+      "kind": "salience",
+      "reason": "Neptune modifies the public route, but the actual owner of the MC line is Saturn in domicile with Moon-10 visibility",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Neptune",
+          "sign": "Capricorn",
+          "house": 9
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Saturn",
+          "b": "Neptune",
+          "aspect": "conjunction",
+          "max_orb": 0.2
+        }
+      ]
+    },
+    {
+      "claim": "Aquarius public visibility as generic detached-humanitarian coolness",
+      "kind": "framing",
+      "reason": "the public line is real, but it is carried through Saturnian discipline and consequence, not a vague Aquarius stereotype",
+      "anchors": [
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Aquarius",
+          "house": 10
+        }
+      ]
+    },
+    {
+      "claim": "Mercury Gemini 1 as the whole identity",
+      "kind": "framing",
+      "reason": "the quick mind is a real center, but it should not erase the stronger public-vocational route or the Cancer value base",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Mercury",
+          "sign": "Gemini",
+          "house": 1,
+          "dignity": "domicile"
+        }
+      ]
+    },
+    {
+      "claim": "a visionary public chart with no softer private base underneath",
+      "kind": "framing",
+      "reason": "the chart is not only public and cerebral; the Sun in Cancer 2 matters to what is being protected and valued",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "A chart built for visible contribution through disciplined thought and public role, but steadied by a much softer private value core and a quick, articulate personal front edge."
+}

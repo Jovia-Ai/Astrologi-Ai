@@ -1,0 +1,206 @@
+{
+  "chart_id": "1994-09-17_20-50_helsinki",
+  "_audit_note": {
+    "tests_behavior": "exact pressure + lone angular debility: does the engine keep the real 6H service-intensity and processing structure primary, while preventing exact pressure lines and the angular Mars-in-fall point from stealing the reading?",
+    "main_risk": "Mars Cancer 4 in fall becomes the whole chart's wound/spine; OR Mars-Neptune and Mercury-Mars pressure become the headline while the 6H-Scorpio structure is backgrounded; OR Uranus/Neptune 10H turn it into a generic public-disruption chart",
+    "expected_failure_if_bad": "engine reads a reactive wounded-home Mars chart or a pressure/fog chart first, while under-reading the actual 6H concentration and Pluto-backed service intensity",
+    "expected_success_if_good": "engine keeps the 6H structure primary, with exact pressure and angular debility treated as important tensions inside it rather than as the chart's sole owner",
+    "calibration_question_link": "exact pressure + lone angular debility",
+    "must_remain_blind_until_batch_score": true
+  },
+  "defining_signatures": [
+    {
+      "what": "An intense service-and-processing core: Sun Virgo 6 with Mercury Libra 6 and a Scorpio 6 cluster anchored by Pluto in domicile",
+      "why": "the chart is fundamentally built around work, processing, refinement, consequence and living inside the demands of the everyday system. The 6th house is not minor here; it is the central field, and Pluto in Scorpio there gives that field depth, control, intensity and high stakes.",
+      "anchors": [
+        {
+          "type": "house_concentration",
+          "house": 6,
+          "min_count": 5,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Sun",
+          "sign": "Virgo",
+          "house": 6,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Pluto",
+          "sign": "Scorpio",
+          "house": 6,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "what": "A mind-body pressure system that has to function under strain: Mercury square Mars, Mercury square Neptune, Mars opposite Neptune",
+      "why": "this chart does not simply process quietly. The operating system is under real pressure: thought, reaction, drive and perception keep crossing and distorting one another. That strain matters, but it should be read as part of the service-intensity apparatus, not instead of it.",
+      "anchors": [
+        {
+          "type": "tight_aspect",
+          "a": "Mercury",
+          "b": "Mars",
+          "aspect": "square",
+          "max_orb": 1.0,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Mars",
+          "b": "Neptune",
+          "aspect": "opposition",
+          "max_orb": 1.0,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Mercury",
+          "b": "Neptune",
+          "aspect": "square",
+          "max_orb": 1.5,
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "what": "A permeable and partly hidden emotional field: Moon Pisces 11 with Saturn Pisces 12 behind it",
+      "why": "beneath the service/control apparatus there is a much more porous, feeling-based and partially withdrawn emotional underlayer. This softens and complicates the chart; it adds concern, impressionability and internal burden, even when the outer life is busy and exacting.",
+      "anchors": [
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Pisces",
+          "house": 11,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Saturn",
+          "sign": "Pisces",
+          "house": 12,
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "a chart built to process, serve and manage intensity through work and function",
+      "a more reactive, fog-prone and emotionally permeable pressure field that keeps destabilizing that function"
+    ],
+    "anchors": [
+      {
+        "type": "house_concentration",
+        "house": 6,
+        "min_count": 5,
+        "role": "primary_anchor"
+      },
+      {
+        "type": "planet_placement",
+        "planet": "Mars",
+        "sign": "Cancer",
+        "house": 4,
+        "dignity": "fall",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "tight_aspect",
+        "a": "Mars",
+        "b": "Neptune",
+        "aspect": "opposition",
+        "max_orb": 1.0,
+        "role": "primary_anchor"
+      }
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "a need to be useful, exact and competent",
+        "a tendency for the value/attachment layer to carry discomfort, depth or difficulty"
+      ],
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Venus",
+          "sign": "Scorpio",
+          "house": 6,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Venus",
+          "b": "Saturn",
+          "aspect": "trine",
+          "max_orb": 0.1,
+          "role": "primary_anchor"
+        }
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Mars Cancer 4 in fall as the whole chart's main wound or identity",
+      "kind": "salience",
+      "reason": "Mars is an important pressure point, but the chart's real center is the 6H service-intensity system rather than this lone angular debility by itself",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Mars",
+          "sign": "Cancer",
+          "house": 4,
+          "dignity": "fall"
+        }
+      ]
+    },
+    {
+      "claim": "Mars-Neptune or Mercury-Mars pressure as the whole chart's headline",
+      "kind": "salience",
+      "reason": "the exact pressure matters, but it should remain pressure inside the system rather than replacing the true 6H owner",
+      "anchors": [
+        {
+          "type": "tight_aspect",
+          "a": "Mars",
+          "b": "Neptune",
+          "aspect": "opposition",
+          "max_orb": 1.0
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Mercury",
+          "b": "Mars",
+          "aspect": "square",
+          "max_orb": 1.0
+        }
+      ]
+    },
+    {
+      "claim": "Virgo / 6th house as generic helpfulness, neatness or admin personality",
+      "kind": "framing",
+      "reason": "the 6H field is real, but it is not light or cute; Pluto in Scorpio there makes it much more intense, consequential and psychologically loaded",
+      "anchors": [
+        {
+          "type": "house_concentration",
+          "house": 6,
+          "min_count": 5
+        }
+      ]
+    },
+    {
+      "claim": "a public-disruption chart because Uranus and Neptune sit in the 10th",
+      "kind": "framing",
+      "reason": "those planets color the chart, but the actual structure is service/process intensity, not a generic disruption brand",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "A chart built around intense service, processing and consequence, with exact pressure and a reactive wound-point constantly testing that function but not replacing it."
+}
