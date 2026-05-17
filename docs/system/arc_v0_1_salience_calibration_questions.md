@@ -153,3 +153,92 @@ surface a tightness-cluster / hard-aspect-loudness question (analogue of
 Q1 for aspects rather than dignities). This document is appended, not
 frozen, as the corpus grows. Final calibration is a single JOINT pass
 over the completed corpus, not per-question patching.
+
+---
+
+## Batch-1 reveal additions
+
+Batch-1 was the first blind-batch -> commit -> score-once reveal after
+the 4 canonical references. The reveal did NOT challenge extraction:
+full-scored-set extraction remained mean `1.000`, worst `1.000`. It did
+surface three concentrated salience pressure zones from the new batch,
+without motivating any immediate patch.
+
+### Candidate question cluster A — Q2 refinement: tightness inflation is not one problem
+
+Batch-1 suggests Q2 should be split analytically into at least three
+sub-cases:
+
+- **exact generational aspect inflation**  
+  1985: `Neptune-Pluto 0.27` probe surfaced as false emphasis even
+  though the chart's actual leading centres held.
+- **exact soft-aspect inflation under stronger structure**  
+  1982: `Moon-Uranus 0.21` surfaced as false emphasis even while the
+  Saturn-8 pressure spine remained intact.
+- **tightness overpowering personal relevance**  
+  shared pattern: an exact aspect can become loud enough to read like a
+  headline even when astrologer judgment says it is secondary to a more
+  structural owner.
+
+Open calibration question:
+- should exactness be modulated by personal relevance, aspect type,
+  structural ownership, or some combination, rather than treated as one
+  undifferentiated loudness term?
+
+### Candidate question cluster B — outer participation caps
+
+Batch-1 surfaced two related outer-planet elevation patterns:
+
+- **outer in exact generational aspect**  
+  1985 false emphasis on Neptune via exact aspect membership.
+- **outer as stellium member**  
+  2007 false emphasis on Uranus inside a real 12H concentration.
+
+This suggests a candidate calibration question around when an outer
+planet may inherit `defining` from membership versus when it should
+remain subordinate unless it also has a stronger personal route.
+
+Open calibration question:
+- should generational outers require an additional promotion condition
+  (angle, luminary tie, chart-ruler tie, or tight personal contact)
+  before a stellium/aspect can make them read as `defining`?
+
+### Candidate question cluster C — gift / soft-strength visibility
+
+2009 surfaced a different pattern: not false emphasis, but a rank-1
+under-promotion.
+
+- **dual-gift / multi-centred dignified chart**  
+  Mercury as chart ruler + MC ruler in domicile anchored rank 1, but the
+  scorer left it at `strong`, not `defining`.
+- The feared bad behavior did NOT happen: Mercury did not monopolize the
+  chart and the generational tightness probe did not false-fire.
+
+This creates a new candidate question about whether the current rank-1
+expectation is too strict for gift-heavy charts whose loudness is real
+but not pressure-shaped.
+
+Open calibration question:
+- in a genuinely multi-centred dignified chart, should a rank-1 steering
+  spine always have to be `defining`, or can `strong` be astrologically
+  acceptable without counting as a provisional miss?
+
+### Batch-1 interpretation rule
+
+These additions are **joint-calibration candidates**, not patch
+instructions. Batch-1 supports:
+
+- extraction stability
+- the existing separation of extraction vs provisional salience
+- the need for more corpus volume before coefficient decisions
+
+Batch-1 does **not** authorize:
+
+- formula edits
+- tightness coefficient changes
+- outer-planet penalties/caps
+- threshold rewrites
+
+Any answer to the new questions above must be validated jointly against
+the existing 4 canonical references plus subsequent batch types
+(`career/MC-heavy`, `dignity-heavy-low-angular`, `debility-heavy-no-angular`, `2nd no-dominant`).
