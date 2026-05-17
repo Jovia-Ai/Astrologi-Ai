@@ -1,0 +1,89 @@
+{
+  "chart_id": "1972-10-12_15-20_istanbul",
+  "_reference_example": true,
+  "_note": "Fourth reference: GENERALIZATION TEST for the affliction-cluster hypothesis. Angular-heavy + 3-personal-debility cluster INCLUDING a fallen Sun, no dignified planet anywhere, 6 angular planets none dignified. Read blind to engine salience. Rank 1 and rank 2 are close; this chart has two heavily loaded centres — transformed identity and afflicted relational drive — but the Sun is the identity light and carries the tightest personal disruption signature, so it is rank 1.",
+  "defining_signatures": [
+    {
+      "what": "Identity transformed through intense 8th-house entanglement: Sun Libra 8 (fall) conjunct Uranus 0.57",
+      "why": "the self is not self-asserted but forged and disrupted through depth, crisis and the other; the fallen Sun is electrified",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Sun", "sign": "Libra", "house": 8, "dignity": "fall", "role": "primary_anchor"},
+        {"type": "tight_aspect", "a": "Sun", "b": "Uranus", "aspect": "conjunction", "max_orb": 1.0, "role": "primary_anchor"},
+        {"type": "house_concentration", "house": 8, "min_count": 3, "role": "primary_anchor"}
+      ],
+      "rank": 1
+    },
+    {
+      "what": "Afflicted relational-drive field: Venus Virgo 7 (fall) + Mars Libra 7 (detriment) + Pluto, inside a Libra stellium",
+      "why": "partnership is the chart's loaded centre; relating and asserting are both debilitated, fused with Pluto intensity — the personal-debility cluster concentrates here. Very close to rank 1, amplifies it rather than replaces it",
+      "anchors": [
+        {"type": "planet_placement", "planet": "Venus", "sign": "Virgo", "house": 7, "dignity": "fall", "role": "primary_anchor"},
+        {"type": "planet_placement", "planet": "Mars", "sign": "Libra", "house": 7, "dignity": "detriment", "role": "primary_anchor"},
+        {"type": "house_concentration", "house": 7, "min_count": 3, "role": "primary_anchor"},
+        {"type": "stellium", "by": "sign", "key": "Libra", "min_count": 3, "role": "primary_anchor"}
+      ],
+      "rank": 2
+    },
+    {
+      "what": "Under-resourced steering redeemed through roots: chart ruler Saturn Gemini 4 + MC ruler Jupiter Cap 10 (fall), but Sun trine Saturn 1.2",
+      "why": "direction is steered by under-resourced planets, yet the fallen Sun finds structural grounding through the inner base",
+      "anchors": [
+        {"type": "chart_ruler", "planet": "Saturn", "sign": "Gemini", "house": 4, "role": "supporting_route"},
+        {"type": "mc_ruler", "planet": "Jupiter", "sign": "Capricorn", "house": 10, "dignity": "fall", "role": "supporting_route"},
+        {"type": "tight_aspect", "a": "Sun", "b": "Saturn", "aspect": "trine", "max_orb": 1.5, "role": "primary_anchor"}
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "outwardly expansive public meaning-seeking surface (Moon Sag 10, MC Sag)",
+      "deeply afflicted transformational relationally-entangled core (Sun fall 8 conj Uranus + Venus/Mars debilitated 7th + Libra stellium)"
+    ],
+    "anchors": [
+      {"type": "planet_placement", "planet": "Sun", "sign": "Libra", "house": 8, "dignity": "fall", "role": "primary_anchor"},
+      {"type": "planet_placement", "planet": "Moon", "sign": "Sagittarius", "house": 10, "role": "primary_anchor"},
+      {"type": "house_concentration", "house": 7, "min_count": 3, "role": "primary_anchor"}
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "public expansion/meaning (MC ruler Jupiter)",
+        "deep power/compulsion (Pluto)"
+      ],
+      "anchors": [
+        {"type": "mc_ruler", "planet": "Jupiter", "sign": "Capricorn", "house": 10, "dignity": "fall", "role": "supporting_route"},
+        {"type": "tight_aspect", "a": "Jupiter", "b": "Pluto", "aspect": "square", "max_orb": 1.0, "role": "primary_anchor"}
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Libra Sun as charming diplomatic balanced Libra",
+      "kind": "framing",
+      "reason": "Sun is in FALL and in the 8th conj Uranus; the charming-Libra cliché catastrophically misreads a fallen, electrified, crisis-transformed identity",
+      "anchors": [{"type": "planet_placement", "planet": "Sun", "sign": "Libra", "house": 8, "dignity": "fall"}]
+    },
+    {
+      "claim": "Moon Sagittarius 10 as a carefree happy optimist",
+      "kind": "framing",
+      "reason": "it is the expansive surface over an afflicted core; leading with it misframes the chart",
+      "anchors": [{"type": "planet_placement", "planet": "Moon", "sign": "Sagittarius", "house": 10}]
+    },
+    {
+      "claim": "Neptune Sagittarius 9 as a personal headline",
+      "kind": "salience",
+      "reason": "peregrine, generational; must stay background, not a spine card",
+      "anchors": [{"type": "planet_placement", "planet": "Neptune", "sign": "Sagittarius", "house": 9}]
+    },
+    {
+      "claim": "a single clean dominant spine",
+      "kind": "framing",
+      "reason": "this is a multi-loaded chart; forcing one theme or 'you are essentially X' misreads it",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "Behind an expansive, public, meaning-seeking surface lives a fallen, electrified identity that rebuilds itself only through intense relational and transformational depth — steered by under-resourced planets, redeemed through quiet roots."
+}

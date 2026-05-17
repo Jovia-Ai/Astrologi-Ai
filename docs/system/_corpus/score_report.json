@@ -1,5 +1,5 @@
 {
-  "n_scored": 3,
+  "n_scored": 4,
   "extraction": {
     "mean_rank_weighted_coverage": 1.0,
     "worst_rank_weighted_coverage": 1.0,
@@ -9,7 +9,7 @@
     "mean_alignment": 1.0,
     "worst_alignment": 1.0,
     "false_emphasis_total": 0,
-    "framing_must_not_deferred_to_voice_gate": 8,
+    "framing_must_not_deferred_to_voice_gate": 11,
     "gating": false,
     "uncalibrated": true
   },
@@ -79,6 +79,63 @@
           "supported": 2,
           "matched": 2,
           "unsupported": 1,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1972-10-12_15-20_istanbul",
+      "strata": {
+        "A": "air-led",
+        "B": "cardinal-led",
+        "C": "angular-heavy",
+        "D": "stellium",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Libra Sun as charming diplomatic balanced Libra",
+        "Moon Sagittarius 10 as a carefree happy optimist",
+        "a single clean dominant spine"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
           "salience_alignment": 1.0,
           "salience_misses": [],
           "supporting_notes": []
