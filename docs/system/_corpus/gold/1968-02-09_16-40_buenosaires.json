@@ -1,0 +1,190 @@
+{
+  "chart_id": "1968-02-09_16-40_buenosaires",
+  "_audit_note": {
+    "tests_behavior": "debility-heavy, no-angular: does the engine recognize systemic strain and interpretive overload when the loudness comes from clustered debility and cadent/8H-9H routing rather than angular force? Secondary probe: does the lone angular Venus-7 or the exact Mercury-Jupiter opposition get over-cleaned into a false headline?",
+    "main_risk": "the chart gets falsely stabilized around Venus 7 because it is the lone angular placement; OR Mercury-Jupiter exactness is read as a clean intellectual gift instead of a strained axis; OR the multi-debility structure is under-read because it is not angle-stacked",
+    "expected_failure_if_bad": "engine reads a composed relationship/value identity or a sharp thinker/teacher headline, while backgrounding the debility-heavy chart-ruler and 8H/9H pressure structure",
+    "calibration_question_link": "debility-without-angularity + Q1/Q2 interaction"
+  },
+  "defining_signatures": [
+    {
+      "what": "A strained interpretive self-apparatus: Gemini Ascendant ruled by Mercury Pisces 8 in detriment, with Sun Aquarius 8 in detriment beside it",
+      "why": "the chart's self-steering is porous, over-absorbing and under-cleanly-held. The chart ruler is weakened in the 8th and the Sun is also in detriment there, so identity and interpretation are not working from a simple stable platform; they are pulled into consequence, ambiguity and pressure.",
+      "anchors": [
+        {
+          "type": "ascendant",
+          "sign": "Gemini",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "chart_ruler",
+          "planet": "Mercury",
+          "sign": "Pisces",
+          "house": 8,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Sun",
+          "sign": "Aquarius",
+          "house": 8,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "what": "Systemic strain across value, belief and direction: Jupiter Virgo 2 in detriment and Saturn Aries 9 in fall, with Mars Pisces 9 diffusing the drive line",
+      "why": "the chart does not contain just one weak point. It distributes pressure across value, worldview, confidence and decision-direction. Even the action line is not sharply resourced, so the strain is structural rather than incidental.",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Jupiter",
+          "sign": "Virgo",
+          "house": 2,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Saturn",
+          "sign": "Aries",
+          "house": 9,
+          "dignity": "fall",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Mars",
+          "sign": "Pisces",
+          "house": 9,
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "what": "A hidden, restless observational back-channel: Moon Gemini 12",
+      "why": "emotion and response do not sit calmly in the open. The Moon works from behind the visible self, processing, tracking and scattering in ways that make the chart more watchful and mentally alive than the outside may show.",
+      "anchors": [
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Gemini",
+          "house": 12,
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "a diffuse, overloaded and consequence-drawn interpretive apparatus",
+      "a more composed outer relational veneer that can look steadier than the core actually feels"
+    ],
+    "anchors": [
+      {
+        "type": "chart_ruler",
+        "planet": "Mercury",
+        "sign": "Pisces",
+        "house": 8,
+        "dignity": "detriment",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "planet_placement",
+        "planet": "Sun",
+        "sign": "Aquarius",
+        "house": 8,
+        "dignity": "detriment",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "planet_placement",
+        "planet": "Venus",
+        "sign": "Capricorn",
+        "house": 7,
+        "role": "primary_anchor"
+      }
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "a desire to make sense and form a worldview",
+        "contradictory value and judgment pressures that keep that sense-making strained"
+      ],
+      "anchors": [
+        {
+          "type": "tight_aspect",
+          "a": "Mercury",
+          "b": "Jupiter",
+          "aspect": "opposition",
+          "max_orb": 1.0,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Jupiter",
+          "sign": "Virgo",
+          "house": 2,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        }
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Venus Capricorn 7 as the chart's clean relational identity",
+      "kind": "salience",
+      "reason": "Venus is the lone angular polish point, but it is not the chart's actual owner; the core structure is much more strained and debility-heavy",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Venus",
+          "sign": "Capricorn",
+          "house": 7
+        }
+      ]
+    },
+    {
+      "claim": "Mercury-Jupiter opposition as a clean bright thinker/teacher headline",
+      "kind": "framing",
+      "reason": "the aspect is real, but the planets involved are under strain; it should not be rendered as a simple polished gift",
+      "anchors": [
+        {
+          "type": "tight_aspect",
+          "a": "Mercury",
+          "b": "Jupiter",
+          "aspect": "opposition",
+          "max_orb": 1.0
+        }
+      ]
+    },
+    {
+      "claim": "a mystical or intuitive flow-chart that simply 'goes with feeling'",
+      "kind": "framing",
+      "reason": "Pisces and the 8th are present, but the lived structure is pressured, conflicted and interpretively overloaded rather than serenely mystical",
+      "anchors": [
+        {
+          "type": "chart_ruler",
+          "planet": "Mercury",
+          "sign": "Pisces",
+          "house": 8
+        }
+      ]
+    },
+    {
+      "claim": "a tidy stable chart because one angular planet looks composed",
+      "kind": "framing",
+      "reason": "this fixture exists to test whether systemic debility can remain loud without angular support",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "A chart whose center is not clean force but strained interpretation: porous, consequence-drawn, mentally alive and structurally burdened, with only a thin outer layer of composure keeping the system from looking as pressured as it really is."
+}

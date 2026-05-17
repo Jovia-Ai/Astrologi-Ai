@@ -1,0 +1,192 @@
+{
+  "chart_id": "2002-08-02_03-00_helsinki",
+  "_audit_note": {
+    "tests_behavior": "dignity-heavy, low-angular: does the engine keep non-angular dignity and steering loud when the chart's strength lives in the lights and rulers rather than angle-stacking? Secondary probe: do exact friction or the lone angular Venus-fall overtake the real dignity-led centres?",
+    "main_risk": "Sun-Neptune exactness becomes the whole identity; OR Venus fall in the 4th monopolizes because it is the lone angular pressure point; OR the chart's dignity-led centres are under-read because they are not heavily angular",
+    "expected_failure_if_bad": "engine reads a dreamy/porous Sun-Neptune person or a Venus-wound chart first, while backgrounding the Leo-2 spine and the exalted Moon steering line",
+    "calibration_question_link": "dignity-without-angularity + Q2/Q4 candidate (exactness or lone-angular pressure overpowering dignified centres)"
+  },
+  "defining_signatures": [
+    {
+      "what": "Strong self-substance and resource spine: Sun Leo 2 in domicile with Mars and Jupiter also in Leo 2",
+      "why": "this chart's strength is not primarily angular or public; it is internally sourced. The Sun is in its own sign, the 2H is concentrated, and the chart's self-definition grows out of substance, value, confidence and the ability to stand on its own inner resource base.",
+      "anchors": [
+        {
+          "type": "luminary",
+          "planet": "Sun",
+          "sign": "Leo",
+          "house": 2,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "house_concentration",
+          "house": 2,
+          "min_count": 3,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "mc_ruler",
+          "planet": "Jupiter",
+          "sign": "Leo",
+          "house": 2,
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "what": "Steady emotional-social steering: Cancer Ascendant with Moon Taurus 11 in exaltation",
+      "why": "the chart ruler is exceptionally well resourced and routes the personality through steadiness, loyalty and grounded feeling. This does not shout in an angular way, but it is foundational to how the person stabilizes, belongs and steers themselves through groups and friendships.",
+      "anchors": [
+        {
+          "type": "ascendant",
+          "sign": "Cancer",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "chart_ruler",
+          "planet": "Moon",
+          "sign": "Taurus",
+          "house": 11,
+          "dignity": "exaltation",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Taurus",
+          "house": 11,
+          "dignity": "exaltation",
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "what": "Independent horizon and nonconforming intelligence: Uranus Aquarius 9 in domicile",
+      "why": "beyond the warm central Leo substance, there is a real need for altitude, independent perspective and freedom of mind. This gives the chart a horizon that is less conventional and keeps the dignity-heavy core from becoming merely self-contained or static.",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Uranus",
+          "sign": "Aquarius",
+          "house": 9,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "strong internally-resourced dignity and steadiness",
+      "exact permeability and realism strain that can blur or burden that strength"
+    ],
+    "anchors": [
+      {
+        "type": "luminary",
+        "planet": "Sun",
+        "sign": "Leo",
+        "house": 2,
+        "dignity": "domicile",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "chart_ruler",
+        "planet": "Moon",
+        "sign": "Taurus",
+        "house": 11,
+        "dignity": "exaltation",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "tight_aspect",
+        "a": "Sun",
+        "b": "Neptune",
+        "aspect": "opposition",
+        "max_orb": 0.1,
+        "role": "primary_anchor"
+      }
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "a real center of dignity and inner substance",
+        "a wound around ease, taste, belonging or affection becoming overly corrective"
+      ],
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Venus",
+          "sign": "Virgo",
+          "house": 4,
+          "dignity": "fall",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Venus",
+          "b": "Saturn",
+          "aspect": "square",
+          "max_orb": 1.0,
+          "role": "primary_anchor"
+        }
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Sun-Neptune exact opposition as the whole identity",
+      "kind": "salience",
+      "reason": "the exactness is real, but it must not replace the dignity-led core as the defining owner of the chart",
+      "anchors": [
+        {
+          "type": "tight_aspect",
+          "a": "Sun",
+          "b": "Neptune",
+          "aspect": "opposition",
+          "max_orb": 0.1
+        }
+      ]
+    },
+    {
+      "claim": "Venus Virgo 4 fall as the chart's main wound and headline",
+      "kind": "salience",
+      "reason": "the Venus-Saturn strain matters, but this is not fundamentally a Venus-fall chart; the real center is carried by dignified Sun and Moon routes",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Venus",
+          "sign": "Virgo",
+          "house": 4,
+          "dignity": "fall"
+        }
+      ]
+    },
+    {
+      "claim": "Leo here as generic ego or performance cliche",
+      "kind": "framing",
+      "reason": "the Leo emphasis is real, but it expresses as substance, self-resource and inner centrality rather than a simple attention-seeking stereotype",
+      "anchors": [
+        {
+          "type": "luminary",
+          "planet": "Sun",
+          "sign": "Leo",
+          "house": 2,
+          "dignity": "domicile"
+        }
+      ]
+    },
+    {
+      "claim": "a chart that needs angular loudness to count as strong",
+      "kind": "framing",
+      "reason": "this fixture exists to test the opposite: dignity and steering can be defining without being angle-stacked",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "A chart whose real strength is internally sourced: dignified lights, a steady exalted Moon steering line and a deep self-resource core carry more weight than the exact friction or the lone angular wound-point."
+}

@@ -1,0 +1,214 @@
+{
+  "chart_id": "1980-12-10_11-30_tokyo",
+  "_audit_note": {
+    "tests_behavior": "career / MC-heavy: does the engine correctly lead with a genuinely public-vocational chart (Sun in the 10th, Sagittarius MC) while keeping the actual route clear: career/public direction is carried through Jupiter-in-Libra 7 conjunct exalted Saturn, not through generic ambition cliches or a lone Neptune-10 fantasy headline?",
+    "main_risk": "the chart gets flattened into generic ambition/workaholism; OR Neptune Sagittarius 10 gets inflated into the public headline; OR the real 7H social-contract route behind the career spine is backgrounded",
+    "expected_failure_if_bad": "engine reads a generic visible achiever or visionary-dreamy public figure, while under-reading the Jupiter-Saturn-in-7 route and the chart's more private 8H depth",
+    "calibration_question_link": "career-domain routing + Q2-adjacent (public/generational inflation inside a real MC-heavy chart)"
+  },
+  "defining_signatures": [
+    {
+      "what": "Public direction carried through alliance and structure: Sun Sagittarius 10 with a Sagittarius MC routed through Jupiter Libra 7 conjunct exalted Saturn",
+      "why": "this chart is genuinely public-facing, but not as a lone hero or pure ambition machine. The visible direction is real, yet it is steered through relationship, agreement, audience and social contract: Jupiter rules both Ascendant and Midheaven, and it is fused to an exalted Saturn in Libra.",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Sun",
+          "sign": "Sagittarius",
+          "house": 10,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "mc_ruler",
+          "planet": "Jupiter",
+          "sign": "Libra",
+          "house": 7,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Jupiter",
+          "b": "Saturn",
+          "aspect": "conjunction",
+          "max_orb": 1.5,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "chart_ruler",
+          "planet": "Jupiter",
+          "sign": "Libra",
+          "house": 7,
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "what": "Private depth and relational seriousness under the visible surface: Venus Scorpio 8 with Pluto Libra 8",
+      "why": "the chart is not only public and outward. Beneath the visible mission sits a more consequential layer around trust, depth, power, stakes and emotional seriousness. That hidden 8H density keeps the public line from being simple or purely celebratory.",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Venus",
+          "sign": "Scorpio",
+          "house": 8,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Pluto",
+          "sign": "Libra",
+          "house": 8,
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "what": "A worldview that has to be articulated and brokered: Mercury Sagittarius 9 exact-sextile Jupiter, then Saturn",
+      "why": "the public/vocational path is mentally and rhetorically carried. The chart has to explain, translate and negotiate its meaning-field; Mercury in the 9th is not neat or placid, but it is tightly wired into the same Jupiter-Saturn route that carries the public role.",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Mercury",
+          "sign": "Sagittarius",
+          "house": 9,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Mercury",
+          "b": "Jupiter",
+          "aspect": "sextile",
+          "max_orb": 1.0,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "tight_aspect",
+          "a": "Mercury",
+          "b": "Saturn",
+          "aspect": "sextile",
+          "max_orb": 2.0,
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "a genuinely visible public-vocational line that wants to take a role in the world",
+      "a more private, intense and consequential underlayer around trust, control, depth and emotional stakes"
+    ],
+    "anchors": [
+      {
+        "type": "planet_placement",
+        "planet": "Sun",
+        "sign": "Sagittarius",
+        "house": 10,
+        "role": "primary_anchor"
+      },
+      {
+        "type": "mc_ruler",
+        "planet": "Jupiter",
+        "sign": "Libra",
+        "house": 7,
+        "role": "primary_anchor"
+      },
+      {
+        "type": "planet_placement",
+        "planet": "Venus",
+        "sign": "Scorpio",
+        "house": 8,
+        "dignity": "detriment",
+        "role": "primary_anchor"
+      }
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "public direction that sounds expansive and visionary",
+        "the need to carry it through structure, agreement and consequence rather than fantasy"
+      ],
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Sun",
+          "sign": "Sagittarius",
+          "house": 10,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Saturn",
+          "sign": "Libra",
+          "house": 7,
+          "dignity": "exaltation",
+          "role": "primary_anchor"
+        }
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "career/public visibility as generic ambition or workaholism only",
+      "kind": "framing",
+      "reason": "the chart is public-facing, but the route is relational, contractual and meaning-laden; flattening it into generic striving loses the actual structure",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Sun",
+          "sign": "Sagittarius",
+          "house": 10
+        },
+        {
+          "type": "mc_ruler",
+          "planet": "Jupiter",
+          "sign": "Libra",
+          "house": 7
+        }
+      ]
+    },
+    {
+      "claim": "Neptune Sagittarius 10 as the chart's public headline",
+      "kind": "salience",
+      "reason": "Neptune participates in the public field, but it must not replace the Sun plus Jupiter-Saturn route as the defining career owner",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Neptune",
+          "sign": "Sagittarius",
+          "house": 10
+        }
+      ]
+    },
+    {
+      "claim": "Pisces Ascendant as a soft dreamy personality detached from consequence",
+      "kind": "framing",
+      "reason": "the Ascendant is routed through Jupiter in Libra conjunct exalted Saturn; the personality field is more socially strategic and consequential than this cliche suggests",
+      "anchors": [
+        {
+          "type": "ascendant",
+          "sign": "Pisces"
+        },
+        {
+          "type": "chart_ruler",
+          "planet": "Jupiter",
+          "sign": "Libra",
+          "house": 7
+        }
+      ]
+    },
+    {
+      "claim": "a lone heroic public spine with no relational route underneath it",
+      "kind": "framing",
+      "reason": "this is a public chart, but not a solitary one; the 7H route is central to how the vocation actually works",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "A genuinely public-facing chart whose visible direction is carried through agreement, partnership and social structure rather than lone-force ambition, with a deeper private seriousness underneath that keeps the public role consequential."
+}

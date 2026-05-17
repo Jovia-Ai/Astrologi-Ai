@@ -1,0 +1,197 @@
+{
+  "chart_id": "1975-01-27_13-20_helsinki",
+  "_audit_note": {
+    "tests_behavior": "second no-dominant: does the engine preserve a genuinely distributed, multi-centred chart without fabricating a single dominant spine from the Aquarius public cluster, the Saturn-in-1/MC route, or Jupiter domicile 11? This is a Q3 guard fixture, not a domain-heavy chart.",
+    "main_risk": "the engine invents a false sole owner out of Mercury/Venus Aquarius 10, Saturn Cancer 1, or Jupiter Pisces 11 and compresses the chart into one axis instead of holding several real centres close together",
+    "expected_failure_if_bad": "engine reads a single public-intellectual spine or a single insecurity/protection spine, while backgrounding the other real centres that make the chart genuinely distributed",
+    "calibration_question_link": "Q3 guard (second no-dominant / anti-false-spine)"
+  },
+  "defining_signatures": [
+    {
+      "what": "Public-conceptual expression that matters, but is not the whole chart: Sun Aquarius 9 with Mercury and Venus Aquarius 10",
+      "why": "the chart clearly has an idea-bearing, public-facing and expressive dimension. It wants to think outwardly, frame things conceptually and be seen through a certain kind of voice or social position. But this is one center among others, not the uncontested owner.",
+      "anchors": [
+        {
+          "type": "stellium",
+          "by": "sign",
+          "key": "Aquarius",
+          "min_count": 3,
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Sun",
+          "sign": "Aquarius",
+          "house": 9,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Mercury",
+          "sign": "Aquarius",
+          "house": 10,
+          "role": "supporting_route"
+        }
+      ],
+      "rank": 1
+    },
+    {
+      "what": "An exposed protective self meeting disciplined function: Cancer Ascendant with Saturn Cancer 1 in detriment and Mars Capricorn 6 in exaltation",
+      "why": "the personality field is not cleanly armored. It is sensitive and defended at once, and it compensates through competence, function and disciplined action. This is a real center of the chart, but again not its only one.",
+      "anchors": [
+        {
+          "type": "ascendant",
+          "sign": "Cancer",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Saturn",
+          "sign": "Cancer",
+          "house": 1,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "planet_placement",
+          "planet": "Mars",
+          "sign": "Capricorn",
+          "house": 6,
+          "dignity": "exaltation",
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 2
+    },
+    {
+      "what": "A softer collective and relational field: Jupiter Pisces 11 in domicile with Moon Leo 3 personalizing expression",
+      "why": "there is also a sincere social and affiliative dimension that neither collapses into pure detachment nor into pure defensiveness. It gives the chart a more human, connective and idealistic center that must stay visible if the reading is to remain truthful.",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Jupiter",
+          "sign": "Pisces",
+          "house": 11,
+          "dignity": "domicile",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Leo",
+          "house": 3,
+          "role": "primary_anchor"
+        }
+      ],
+      "rank": 3
+    }
+  ],
+  "core_tension": {
+    "between": [
+      "an impersonal/public conceptual and social-expression line",
+      "a much more exposed, defended and compensating personal shell"
+    ],
+    "anchors": [
+      {
+        "type": "stellium",
+        "by": "sign",
+        "key": "Aquarius",
+        "min_count": 3,
+        "role": "primary_anchor"
+      },
+      {
+        "type": "planet_placement",
+        "planet": "Saturn",
+        "sign": "Cancer",
+        "house": 1,
+        "dignity": "detriment",
+        "role": "primary_anchor"
+      },
+      {
+        "type": "planet_placement",
+        "planet": "Mars",
+        "sign": "Capricorn",
+        "house": 6,
+        "dignity": "exaltation",
+        "role": "primary_anchor"
+      }
+    ],
+    "is_central": true
+  },
+  "secondary_tensions": [
+    {
+      "between": [
+        "conceptual/public detachment",
+        "a real need for warmth, recognition and human response"
+      ],
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Sun",
+          "sign": "Aquarius",
+          "house": 9,
+          "dignity": "detriment",
+          "role": "primary_anchor"
+        },
+        {
+          "type": "luminary",
+          "planet": "Moon",
+          "sign": "Leo",
+          "house": 3,
+          "role": "primary_anchor"
+        }
+      ]
+    }
+  ],
+  "must_not_lead_with": [
+    {
+      "claim": "Mercury Aquarius 10 as the only defining spine",
+      "kind": "framing",
+      "reason": "the chart does have a public-intellectual center, but this fixture exists to guard against compressing a genuinely distributed chart into one owner",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Mercury",
+          "sign": "Aquarius",
+          "house": 10
+        }
+      ]
+    },
+    {
+      "claim": "Saturn Cancer 1 as the whole identity",
+      "kind": "framing",
+      "reason": "the defended self is real, but it must not erase the public-conceptual and affiliative centres that are also structurally present",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Saturn",
+          "sign": "Cancer",
+          "house": 1,
+          "dignity": "detriment"
+        }
+      ]
+    },
+    {
+      "claim": "Jupiter Pisces 11 as a spiritual-savior whole identity",
+      "kind": "framing",
+      "reason": "the chart has a soft collective center, but it is one center among several and should not become the sole narrative either",
+      "anchors": [
+        {
+          "type": "planet_placement",
+          "planet": "Jupiter",
+          "sign": "Pisces",
+          "house": 11,
+          "dignity": "domicile"
+        }
+      ]
+    },
+    {
+      "claim": "a single dominant spine",
+      "kind": "framing",
+      "reason": "this is the second explicit no-dominant guard fixture; the chart should remain distributed in the gold",
+      "anchors": []
+    }
+  ],
+  "one_line_person": "A genuinely distributed chart: public-conceptual expression, exposed self-protection, functional discipline and affiliative warmth all matter, and the reading becomes false the moment one of them is promoted into the whole identity."
+}
