@@ -1,0 +1,1104 @@
+{
+  "experiment": "dryrun_a2_outer_endpoint_gate",
+  "n_scored": 16,
+  "extraction": {
+    "mean_rank_weighted_coverage": 1.0,
+    "worst_rank_weighted_coverage": 1.0,
+    "provisional_pass": true
+  },
+  "salience_provisional": {
+    "mean_alignment": 0.906,
+    "worst_alignment": 0.5,
+    "false_emphasis_total": 4,
+    "framing_must_not_deferred_to_voice_gate": 46,
+    "gating": false,
+    "uncalibrated": true
+  },
+  "unsupported_anchor_types_seen": [
+    "final_dispositor"
+  ],
+  "invariant": "extraction coverage is the stable GATING metric. salience_alignment is SEPARATE, PROVISIONAL, UNCALIBRATED and NEVER gates: rank->tier is a policy guess; misses are calibration targets, not failures. unsupported anchors never counted as engine failure.",
+  "per_chart": [
+    {
+      "chart_id": "1962-01-07_10-30_nairobi",
+      "strata": {
+        "A": "earth-led",
+        "B": "cardinal-led",
+        "C": "balanced",
+        "D": "stellium",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Pisces Ascendant as generic dreamy compassionate Pisces",
+        "11th house as lots of friends / social butterfly",
+        "Capricorn stellium as generic ambition/workaholism only"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 1,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 4,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 1,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1968-02-09_16-40_buenosaires",
+      "strata": {
+        "A": "earth-led",
+        "B": "mutable-led",
+        "C": "cadent-heavy",
+        "D": "stellium",
+        "E": "debilitated",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 0.837,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Mercury-Jupiter opposition as a clean bright thinker/teacher headline",
+        "a mystical or intuitive flow-chart that simply 'goes with feeling'",
+        "a tidy stable chart because one angular planet looks composed"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 0.5,
+          "salience_misses": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Saturn",
+              "engine_tier": "background",
+              "rank": 2
+            }
+          ],
+          "supporting_notes": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Mars",
+              "engine_tier": "background",
+              "role": "supporting_route",
+              "rank": 2
+            }
+          ]
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 1,
+          "matched": 1,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1972-10-12_15-20_istanbul",
+      "strata": {
+        "A": "air-led",
+        "B": "cardinal-led",
+        "C": "angular-heavy",
+        "D": "stellium",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Libra Sun as charming diplomatic balanced Libra",
+        "Moon Sagittarius 10 as a carefree happy optimist",
+        "a single clean dominant spine"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1973-08-05_01-20_istanbul",
+      "strata": {
+        "A": "fire-led",
+        "B": "cardinal-led",
+        "C": "balanced",
+        "D": "scattered",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "night",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Leo Sun as a generic look-at-me showman",
+        "a single dominant spine"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": [
+            {
+              "anchor": "chart_ruler",
+              "ref": "Mercury",
+              "engine_tier": "strong",
+              "role": "supporting_route",
+              "rank": 1
+            }
+          ]
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 1,
+          "matched": 1,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1975-01-27_13-20_helsinki",
+      "strata": {
+        "A": "air-led",
+        "B": "fixed-led",
+        "C": "balanced",
+        "D": "stellium",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "day",
+        "H": "mixed",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 0.704,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Mercury Aquarius 10 as the only defining spine",
+        "Saturn Cancer 1 as the whole identity",
+        "Jupiter Pisces 11 as a spiritual-savior whole identity",
+        "a single dominant spine"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 0.5,
+          "salience_misses": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Mars",
+              "engine_tier": "background",
+              "rank": 2
+            }
+          ],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 0.5,
+          "salience_misses": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Jupiter",
+              "engine_tier": "background",
+              "rank": 3
+            }
+          ],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1980-12-10_11-30_tokyo",
+      "strata": {
+        "A": "fire-led",
+        "B": "cardinal-led",
+        "C": "angular-heavy",
+        "D": "stellium",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "career/public visibility as generic ambition or workaholism only",
+        "Pisces Ascendant as a soft dreamy personality detached from consequence",
+        "a lone heroic public spine with no relational route underneath it"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1982-07-07_21-30_nairobi",
+      "strata": {
+        "A": "air-led",
+        "B": "cardinal-led",
+        "C": "balanced",
+        "D": "stellium",
+        "E": "dignified",
+        "F": "mixed",
+        "G": "night",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Libra / air emphasis as a charming, easy relational chart",
+        "Mercury Gemini 4 as the only defining spine",
+        "8th-house concentration as generic trauma / darkness / danger language"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Venus",
+              "engine_tier": "background",
+              "role": "supporting_route",
+              "rank": 2
+            }
+          ]
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1985-06-20_15-50_istanbul",
+      "strata": {
+        "A": "water-led",
+        "B": "cardinal-led",
+        "C": "angular-heavy",
+        "D": "stellium",
+        "E": "debilitated",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [
+        {
+          "claim": "Neptune Capricorn 2 as a personal headline",
+          "elevated": [
+            {
+              "anchor": "tight_aspect",
+              "ref": "Neptune"
+            }
+          ]
+        }
+      ],
+      "framing_deferred_to_voice_gate": [
+        "Venus Taurus 7 as the only defining spine / relationship as the whole identity",
+        "Scorpio Asc + Pluto 1 as a dark / dangerous / menacing person",
+        "a single dominant spine / relationship-is-everything"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1989-06-22_03-20_istanbul",
+      "strata": {
+        "A": "earth-led",
+        "B": "cardinal-led",
+        "C": "balanced",
+        "D": "stellium",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "night",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Aquarius public visibility as generic detached-humanitarian coolness",
+        "Mercury Gemini 1 as the whole identity",
+        "a visionary public chart with no softer private base underneath"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 1,
+          "matched": 1,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Venus",
+              "engine_tier": "background",
+              "role": "supporting_route",
+              "rank": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "chart_id": "1993-03-09_08-50_helsinki",
+      "strata": {
+        "A": "water-led",
+        "B": "cardinal-led",
+        "C": "cadent-heavy",
+        "D": "stellium",
+        "E": "debilitated",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Gemini Ascendant as chatty quick social Gemini",
+        "Saturn/Pluto domicile as clean personal power",
+        "12th house as psychic-gift / old-soul cliché"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 4,
+          "matched": 4,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 4,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1994-09-17_20-50_helsinki",
+      "strata": {
+        "A": "water-led",
+        "B": "cardinal-led",
+        "C": "balanced",
+        "D": "stellium",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "night",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [
+        {
+          "claim": "Mars Cancer 4 in fall as the whole chart's main wound or identity",
+          "elevated": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Mars"
+            }
+          ]
+        },
+        {
+          "claim": "Mars-Neptune or Mercury-Mars pressure as the whole chart's headline",
+          "elevated": [
+            {
+              "anchor": "tight_aspect",
+              "ref": "Mercury"
+            }
+          ]
+        }
+      ],
+      "framing_deferred_to_voice_gate": [
+        "Virgo / 6th house as generic helpfulness, neatness or admin personality",
+        "a public-disruption chart because Uranus and Neptune sit in the 10th"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "1997-01-14_05-00_helsinki",
+      "strata": {
+        "A": "earth-led",
+        "B": "cardinal-led",
+        "C": "cadent-heavy",
+        "D": "stellium",
+        "E": "debilitated",
+        "F": "mixed",
+        "G": "night",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 0.867,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Capricorn 2H concentration as simple competence, control or material discipline only",
+        "one main struggle only",
+        "Pluto in the 1st as the whole chart's defining intensity"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 0.5,
+          "salience_misses": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Saturn",
+              "engine_tier": "background",
+              "rank": 3
+            }
+          ],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "2002-08-02_03-00_helsinki",
+      "strata": {
+        "A": "fire-led",
+        "B": "fixed-led",
+        "C": "cadent-heavy",
+        "D": "stellium",
+        "E": "dignified",
+        "F": "both_dignified",
+        "G": "night",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [
+        {
+          "claim": "Venus Virgo 4 fall as the chart's main wound and headline",
+          "elevated": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Venus"
+            }
+          ]
+        }
+      ],
+      "framing_deferred_to_voice_gate": [
+        "Leo here as generic ego or performance cliche",
+        "a chart that needs angular loudness to count as strong"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": [
+            {
+              "anchor": "mc_ruler",
+              "ref": "Jupiter",
+              "engine_tier": "strong",
+              "role": "supporting_route",
+              "rank": 1
+            }
+          ]
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 1,
+          "matched": 1,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "2007-01-17_10-20_helsinki",
+      "strata": {
+        "A": "fire-led",
+        "B": "fixed-led",
+        "C": "balanced",
+        "D": "stellium",
+        "E": "dignified",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 1.0,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "12th-house stellium as 'you are a spiritual mystic / escapist / victim / self-undoing' whole identity",
+        "Pisces Asc as a dreamy compassionate Pisces",
+        "a single dominant spine / 'you are essentially a hidden 12th-house person'"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "2009-06-15_11-40_nairobi",
+      "strata": {
+        "A": "earth-led",
+        "B": "mutable-led",
+        "C": "angular-heavy",
+        "D": "scattered",
+        "E": "dignified",
+        "F": "mixed",
+        "G": "day",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 0.592,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Mercury Gemini 9 as the only defining spine",
+        "Virgo Ascendant as a rigid perfectionist / all-control chart",
+        "Moon Pisces 7 as a dreamy romantic victim"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 0.0,
+          "salience_misses": [
+            {
+              "anchor": "chart_ruler",
+              "ref": "Mercury",
+              "engine_tier": "strong",
+              "rank": 1
+            }
+          ],
+          "supporting_notes": [
+            {
+              "anchor": "mc_ruler",
+              "ref": "Mercury",
+              "engine_tier": "strong",
+              "role": "supporting_route",
+              "rank": 1
+            }
+          ]
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Mars",
+              "engine_tier": "background",
+              "role": "supporting_route",
+              "rank": 2
+            }
+          ]
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 1.0,
+          "salience_misses": [],
+          "supporting_notes": []
+        }
+      ]
+    },
+    {
+      "chart_id": "2010-06-23_19-30_sydney",
+      "strata": {
+        "A": "fire-led",
+        "B": "cardinal-led",
+        "C": "balanced",
+        "D": "scattered",
+        "E": "peregrine",
+        "F": "mixed",
+        "G": "night",
+        "H": "tight-dominant",
+        "I": "not_covered_assumed"
+      },
+      "rank_weighted_coverage": 1.0,
+      "salience_alignment_provisional": 0.5,
+      "core_tension_coverage": 1.0,
+      "dignity_accuracy": 1.0,
+      "false_emphasis": [],
+      "framing_deferred_to_voice_gate": [
+        "Mercury Gemini 5 as the only defining spine",
+        "Moon Scorpio 10 as the whole chart's main crisis identity",
+        "a single dominant spine"
+      ],
+      "salience_uncalibrated": true,
+      "signatures": [
+        {
+          "rank": 1,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 0.5,
+          "salience_misses": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Mercury",
+              "engine_tier": "background",
+              "rank": 1
+            }
+          ],
+          "supporting_notes": []
+        },
+        {
+          "rank": 2,
+          "coverage": 1.0,
+          "supported": 2,
+          "matched": 2,
+          "unsupported": 0,
+          "salience_alignment": 0.5,
+          "salience_misses": [
+            {
+              "anchor": "planet_placement",
+              "ref": "Venus",
+              "engine_tier": "background",
+              "rank": 2
+            }
+          ],
+          "supporting_notes": []
+        },
+        {
+          "rank": 3,
+          "coverage": 1.0,
+          "supported": 3,
+          "matched": 3,
+          "unsupported": 0,
+          "salience_alignment": 0.5,
+          "salience_misses": [
+            {
+              "anchor": "tight_aspect",
+              "ref": "Jupiter",
+              "engine_tier": "background",
+              "rank": 3
+            }
+          ],
+          "supporting_notes": []
+        }
+      ]
+    }
+  ]
+}

@@ -338,6 +338,43 @@ SUPPORTED_ANCHORS = {
 }
 UNSUPPORTED_ANCHORS = {"final_dispositor", "dispositor_chain", "axis_emphasis"}
 RANK_WEIGHT = {1: 1.0, 2: 0.8, 3: 0.65, 4: 0.5}
+OUTER_PLANETS = {"uranus", "neptune", "pluto"}
+PERSONAL_PLANETS = {"sun", "moon", "mercury", "venus", "mars"}
+
+# Pass-1 dry-run stacking (frozen prereg arc_v0_1_pass1_dryrun_prereg.md).
+# Non-production score-time experiments; never touch the committed
+# salience formula or public output. pass1 variants INHERIT A2 logic.
+_A2_EXPERIMENTS = {
+    "dryrun_a2_outer_endpoint_gate", "pass1_a2_l2", "pass1_a2_l2_l3"}
+_L2_EXPERIMENTS = {"pass1_a2_l2", "pass1_a2_l2_l3"}
+_L3_EXPERIMENTS = {"pass1_a2_l2_l3"}
+
+
+def _a2_on(e: str | None) -> bool:
+    return e in _A2_EXPERIMENTS
+
+
+def _l2_on(e: str | None) -> bool:
+    return e in _L2_EXPERIMENTS
+
+
+def _l3_on(e: str | None) -> bool:
+    return e in _L3_EXPERIMENTS
+
+
+def _endpoint_structural(skel: Mapping[str, Any], planet: Any) -> bool:
+    """L2: an aspect endpoint is structurally personal if it is a
+    luminary, angular, or the chart/MC ruler. Frozen prereg L2."""
+    pn = _norm(planet)
+    if pn in {"sun", "moon"}:
+        return True
+    if any(_norm(a.get("planet")) == pn
+           for a in skel.get("angular_planets", [])):
+        return True
+    if pn in {_norm(skel.get("asc_ruler_spine", {}).get("ruler")),
+              _norm(skel.get("mc_ruler_spine", {}).get("ruler"))}:
+        return True
+    return False
 
 
 def _dignity_index(skel: Mapping[str, Any]) -> dict[str, Mapping[str, Any]]:
@@ -454,14 +491,125 @@ def _score_anchor_block(anchors: Any, skel: Mapping[str, Any]):
 _TIER_ORDER = {"background": 0, "strong": 1, "defining": 2}
 
 
-def _planet_tier(skel: Mapping[str, Any], planet: Any) -> str | None:
+def _tight_aspect_rows(skel: Mapping[str, Any], planet: Any) -> list[Mapping[str, Any]]:
+    pn = _norm(planet)
+    out = []
+    for ta in skel.get("tightest_aspects", []):
+        pair = {_norm(ta.get("a")), _norm(ta.get("b"))}
+        if pn in pair:
+            out.append(ta)
+    return out
+
+
+def _outer_personalization_signals(skel: Mapping[str, Any], planet: Any) -> set[str]:
+    pn = _norm(planet)
+    if pn not in OUTER_PLANETS:
+        return set()
+
+    signals: set[str] = set()
+    row = _dignity_index(skel).get(pn) or {}
+    if _norm(row.get("dignity")) in {"domicile", "exaltation"}:
+        signals.add("dignity")
+
+    if any(_norm(a.get("planet")) == pn for a in skel.get("angular_planets", [])):
+        signals.add("angular")
+
+    asc_ruler = _norm(skel.get("asc_ruler_spine", {}).get("ruler"))
+    mc_ruler = _norm(skel.get("mc_ruler_spine", {}).get("ruler"))
+    for ta in _tight_aspect_rows(skel, pn):
+        other = (_norm(ta.get("a")) if _norm(ta.get("b")) == pn
+                 else _norm(ta.get("b")))
+        if other in PERSONAL_PLANETS:
+            signals.add("tight_personal")
+        if other in {asc_ruler, mc_ruler}:
+            signals.add("owner_tie")
+        if other in {"sun", "moon"}:
+            signals.add("luminary_tie")
+    return signals
+
+
+def _outer_is_personalized(skel: Mapping[str, Any], planet: Any) -> bool:
+    return len(_outer_personalization_signals(skel, planet)) >= 2
+
+
+def _planet_tier(skel: Mapping[str, Any], planet: Any,
+                 experiment: str | None = None) -> str | None:
     for r in skel.get("dignity_table", []):
         if _norm(r["planet"]) == _norm(planet):
-            return r.get("salience_tier")
+            tier = r.get("salience_tier")
+            if experiment == "dryrun_a_outer_gate" or _a2_on(experiment):
+                pn = _norm(planet)
+                if pn in OUTER_PLANETS and tier == "defining":
+                    # Dry-run A only: an outer should not inherit headline
+                    # loudness from participation alone unless it is
+                    # meaningfully personalized in the chart.
+                    if not _outer_is_personalized(skel, planet):
+                        return "strong"
+            return tier
     return None
 
 
-def _anchor_tier(anchor: Mapping[str, Any], skel: Mapping[str, Any]) -> str | None:
+def _tight_aspect_tier(anchor: Mapping[str, Any], skel: Mapping[str, Any],
+                       experiment: str | None = None,
+                       outer_focus: bool = False) -> str | None:
+    pair = {_norm(anchor.get("a")), _norm(anchor.get("b"))}
+    asp = _norm(anchor.get("aspect"))
+    mx = float(anchor.get("max_orb", 2.0))
+    for ta in skel.get("tightest_aspects", []):
+        if ({_norm(ta.get("a")), _norm(ta.get("b"))} == pair
+                and _norm(ta.get("type")).startswith(asp)
+                and float(ta.get("orb", 99)) <= mx):
+            pts = [anchor.get("a"), anchor.get("b")]
+            has_outer = any(_norm(p) in OUTER_PLANETS for p in pts)
+            if experiment == "dryrun_a_outer_gate" and has_outer:
+                pts = [p for p in pts if _norm(p) in OUTER_PLANETS]
+            elif _a2_on(experiment) and has_outer:
+                if outer_focus:
+                    pts = [
+                        p for p in pts
+                        if _norm(p) in OUTER_PLANETS and _outer_is_personalized(skel, p)
+                    ]
+                else:
+                    pts = [
+                        p for p in pts
+                        if _norm(p) not in OUTER_PLANETS or _outer_is_personalized(skel, p)
+                    ]
+
+            # For outer-gate experiments, do not let the undifferentiated
+            # aspect tier itself outrank the endpoint-aware filter.
+            ta_t = ta.get("salience_tier") if not (
+                (experiment == "dryrun_a_outer_gate" or _a2_on(experiment))
+                and has_outer
+            ) else None
+            best = ta_t
+            for p in pts:
+                pt = _planet_tier(skel, p, experiment)
+                if pt and (best is None
+                           or _TIER_ORDER[pt] > _TIER_ORDER.get(best, -1)):
+                    best = pt
+
+            # Lever 2 (pass1, frozen prereg §2): a tight aspect whose
+            # BOTH endpoints are outer/generational and where NEITHER
+            # endpoint is structurally personal (luminary / angular /
+            # chart-or-MC ruler) is a generational signature, not a
+            # personal headline -> tier capped at 'strong' regardless
+            # of orb. Does NOT touch aspects with a personalised
+            # endpoint (condition fails -> no cap).
+            if (_l2_on(experiment) and best == "defining"):
+                a_p, b_p = anchor.get("a"), anchor.get("b")
+                both_outer = (_norm(a_p) in OUTER_PLANETS
+                              and _norm(b_p) in OUTER_PLANETS)
+                if both_outer and not (
+                        _endpoint_structural(skel, a_p)
+                        or _endpoint_structural(skel, b_p)):
+                    best = "strong"
+            return best
+    return None
+
+
+def _anchor_tier(anchor: Mapping[str, Any], skel: Mapping[str, Any],
+                 experiment: str | None = None,
+                 outer_focus: bool = False) -> str | None:
     """Engine salience tier the anchor resolves to, or None if it has no
     salience-bearing element (ascendant/mc) or is unsupported. None means
     'not assessable for salience' — excluded, never a miss."""
@@ -469,7 +617,7 @@ def _anchor_tier(anchor: Mapping[str, Any], skel: Mapping[str, Any]) -> str | No
     if t in UNSUPPORTED_ANCHORS or t not in SUPPORTED_ANCHORS:
         return None
     if t in ("planet_placement", "dignity", "luminary", "angular_planet"):
-        return _planet_tier(skel, anchor.get("planet"))
+        return _planet_tier(skel, anchor.get("planet"), experiment)
     if t in ("chart_ruler", "mc_ruler"):
         sp = skel.get("asc_ruler_spine" if t == "chart_ruler"
                       else "mc_ruler_spine", {})
@@ -485,32 +633,14 @@ def _anchor_tier(anchor: Mapping[str, Any], skel: Mapping[str, Any]) -> str | No
                 # member-max: a stellium is as loud as its loudest planet
                 best = None
                 for p in s.get("planets", []):
-                    pt = _planet_tier(skel, p)
+                    pt = _planet_tier(skel, p, experiment)
                     if pt and (best is None
                                or _TIER_ORDER[pt] > _TIER_ORDER[best]):
                         best = pt
                 return best
         return None
     if t == "tight_aspect":
-        pair = {_norm(anchor.get("a")), _norm(anchor.get("b"))}
-        asp = _norm(anchor.get("aspect"))
-        mx = float(anchor.get("max_orb", 2.0))
-        for ta in skel.get("tightest_aspects", []):
-            if ({_norm(ta.get("a")), _norm(ta.get("b"))} == pair
-                    and _norm(ta.get("type")).startswith(asp)
-                    and float(ta.get("orb", 99)) <= mx):
-                # member-max (consistent with stellium): an exact aspect
-                # is as loud as its loudest endpoint planet — avoids the
-                # aspect-element base (0.18) artificially capping at strong
-                ta_t = ta.get("salience_tier")
-                best = ta_t
-                for p in (anchor.get("a"), anchor.get("b")):
-                    pt = _planet_tier(skel, p)
-                    if pt and (best is None
-                               or _TIER_ORDER[pt] > _TIER_ORDER.get(best, -1)):
-                        best = pt
-                return best
-        return None
+        return _tight_aspect_tier(anchor, skel, experiment, outer_focus)
     return None  # ascendant / mc — no salience-bearing element
 
 
@@ -526,7 +656,8 @@ def _rank_meets(rank: int, tier: str | None) -> bool | None:
     return tier in ("defining", "strong")
 
 
-def _salience_align(anchors: Any, skel: Mapping[str, Any], rank: int):
+def _salience_align(anchors: Any, skel: Mapping[str, Any], rank: int,
+                    experiment: str | None = None):
     """-> (alignment|None, assessable, met, misses[], supporting_notes[]).
 
     Anchor `role` (PR-2c): 'primary_anchor' (default) carries the rank
@@ -539,7 +670,7 @@ def _salience_align(anchors: Any, skel: Mapping[str, Any], rank: int):
     misses = []
     supporting_notes = []
     for a in anchors or []:
-        tier = _anchor_tier(a, skel)
+        tier = _anchor_tier(a, skel, experiment)
         ok = _rank_meets(rank, tier)
         if ok is None:
             continue
@@ -563,7 +694,73 @@ def _salience_align(anchors: Any, skel: Mapping[str, Any], rank: int):
             assessable, met, misses, supporting_notes)
 
 
-def _must_not_eval(must_not: Any, skel: Mapping[str, Any]):
+_OWNER_ANCHOR_TYPES = {
+    "chart_ruler", "mc_ruler", "luminary", "house_concentration"}
+_LOUD_ONLY_VIA = {"tight_aspect", "house_concentration"}
+
+
+def _is_owner_type_element(skel: Mapping[str, Any], a: Mapping[str, Any]) -> bool:
+    """L3 condition 3: the flagged element is itself owner-type if it is
+    the chart/MC ruler, a luminary, angular, or sits in the rank-1
+    owner-anchor set. Conservative: any owner-link => NOT suppressible."""
+    t = _norm(a.get("type"))
+    if t in ("chart_ruler", "mc_ruler", "luminary", "ascendant", "mc"):
+        return True
+    pl = _norm(a.get("planet") or a.get("a") or a.get("b"))
+    if pl in {"sun", "moon"}:
+        return True
+    if pl and any(_norm(x.get("planet")) == pl
+                  for x in skel.get("angular_planets", [])):
+        return True
+    if pl and pl in {_norm(skel.get("asc_ruler_spine", {}).get("ruler")),
+                     _norm(skel.get("mc_ruler_spine", {}).get("ruler"))}:
+        return True
+    return False
+
+
+def _l3_owner_spine(defining_sigs: Any, skel: Mapping[str, Any],
+                    experiment: str | None) -> bool:
+    """L3 condition 1: chart has >=1 rank-1 defining_signature whose
+    PRIMARY anchors are owner-type and ALL resolve at 'defining'."""
+    for d in defining_sigs or []:
+        if int(d.get("rank", 4)) != 1:
+            continue
+        prim = [a for a in d.get("anchors", [])
+                if (_norm(a.get("role")) or "primary_anchor")
+                == "primary_anchor"]
+        if not prim:
+            continue
+        if not all(_norm(a.get("type")) in _OWNER_ANCHOR_TYPES
+                   for a in prim):
+            continue
+        if all(_anchor_tier(a, skel, experiment) == "defining"
+               for a in prim):
+            return True
+    return False
+
+
+def _l3_suppresses(m: Mapping[str, Any], a: Mapping[str, Any],
+                   skel: Mapping[str, Any], defining_sigs: Any,
+                   experiment: str | None) -> bool:
+    """Lever 3 (frozen prereg §2): suppress a salience false_emphasis
+    flag for a purely-secondary exact participant when a denser
+    structural owner is already established. ALL three conditions."""
+    # (1) an established owner-type rank-1 defining spine exists
+    if not _l3_owner_spine(defining_sigs, skel, experiment):
+        return False
+    # (2) the flagged element is loud ONLY via tight_aspect /
+    #     house_concentration membership / exactness
+    if _norm(a.get("type")) not in _LOUD_ONLY_VIA:
+        return False
+    # (3) the flagged element is NOT itself owner-type
+    if _is_owner_type_element(skel, a):
+        return False
+    return True
+
+
+def _must_not_eval(must_not: Any, skel: Mapping[str, Any],
+                   experiment: str | None = None,
+                   defining_sigs: Any = None):
     """must_not_lead_with has two kinds (PR-2b finding):
 
     - kind='salience': "don't make this minor/generational thing the
@@ -585,7 +782,17 @@ def _must_not_eval(must_not: Any, skel: Mapping[str, Any]):
             continue
         elevated = []
         for a in m.get("anchors", []):
-            if _anchor_tier(a, skel) == "defining":
+            outer_focus = (
+                _a2_on(experiment)
+                and _norm(a.get("type")) == "tight_aspect"
+                and any(_norm(a.get(k)) in OUTER_PLANETS for k in ("a", "b"))
+            )
+            tier_here = _anchor_tier(a, skel, experiment,
+                                     outer_focus=outer_focus)
+            if _l3_on(experiment) and tier_here == "defining":
+                if _l3_suppresses(m, a, skel, defining_sigs, experiment):
+                    continue
+            if tier_here == "defining":
                 elevated.append({
                     "anchor": a.get("type"),
                     "ref": (a.get("planet") or a.get("key")
@@ -595,7 +802,7 @@ def _must_not_eval(must_not: Any, skel: Mapping[str, Any]):
     return fe_hits, framing_deferred
 
 
-def cmd_score(_: argparse.Namespace) -> None:
+def cmd_score(args: argparse.Namespace) -> None:
     if not CORPUS_FILE.exists():
         raise SystemExit("run `generate` first")
     records = {r["chart_id"]: r for r in json.loads(CORPUS_FILE.read_text())}
@@ -606,6 +813,7 @@ def cmd_score(_: argparse.Namespace) -> None:
     unsupported_types: set[str] = set()
     fe_total = 0
     fr_total = 0
+    experiment = getattr(args, "experiment", None)
     for gf in sorted(GOLD_DIR.glob("*.json")):
         gold = json.loads(gf.read_text())
         cid = gold.get("chart_id") or gf.stem
@@ -631,7 +839,7 @@ def cmd_score(_: argparse.Namespace) -> None:
             rank = int(d.get("rank", 4))
             w = RANK_WEIGHT.get(rank, 0.4)
             sal, _ass, _met, s_miss, s_sup = _salience_align(
-                d.get("anchors"), skel, rank)
+                d.get("anchors"), skel, rank, experiment)
             sig_rows.append({
                 "rank": rank, "coverage": cov,
                 "supported": sup, "matched": mat, "unsupported": uns,
@@ -651,7 +859,8 @@ def cmd_score(_: argparse.Namespace) -> None:
         ct_cov = _score_anchor_block(ct.get("anchors"), skel)[0]
 
         fe_hits, fr_def = _must_not_eval(
-            gold.get("must_not_lead_with"), skel)
+            gold.get("must_not_lead_with"), skel, experiment,
+            gold.get("defining_signatures"))
         fe_total += sum(len(h["elevated"]) for h in fe_hits)
         fr_total += len(fr_def)
 
@@ -683,6 +892,7 @@ def cmd_score(_: argparse.Namespace) -> None:
     mean_sal = round(sum(sal_vals) / len(sal_vals), 3) if sal_vals else None
     worst_sal = round(min(sal_vals), 3) if sal_vals else None
     report = {
+        "experiment": experiment,
         "n_scored": len(per_chart),
         "extraction": {
             "mean_rank_weighted_coverage": round(mean_cov, 3),
@@ -706,7 +916,10 @@ def cmd_score(_: argparse.Namespace) -> None:
                       "engine failure."),
         "per_chart": per_chart,
     }
-    SCORE_FILE.write_text(json.dumps(report, ensure_ascii=False, indent=2))
+    out_file = Path(getattr(args, "output", "") or SCORE_FILE)
+    if not out_file.is_absolute():
+        out_file = REPO / out_file
+    out_file.write_text(json.dumps(report, ensure_ascii=False, indent=2))
     print(f"scored {len(per_chart)} | extraction mean "
           f"{report['extraction']['mean_rank_weighted_coverage']} "
           f"worst {report['extraction']['worst_rank_weighted_coverage']} "
@@ -717,7 +930,7 @@ def cmd_score(_: argparse.Namespace) -> None:
     if unsupported_types:
         print(f"  unsupported anchor types (reported, NOT failed): "
               f"{sorted(unsupported_types)}")
-    print(f"written -> {SCORE_FILE.relative_to(REPO)}")
+    print(f"written -> {out_file.relative_to(REPO)}")
 
 
 def main() -> None:
@@ -725,7 +938,20 @@ def main() -> None:
     sub = p.add_subparsers(dest="cmd", required=True)
     sub.add_parser("generate").set_defaults(fn=cmd_generate)
     sub.add_parser("worksheets").set_defaults(fn=cmd_worksheets)
-    sub.add_parser("score").set_defaults(fn=cmd_score)
+    score_p = sub.add_parser("score")
+    score_p.add_argument(
+        "--experiment",
+        choices=["dryrun_a_outer_gate", "dryrun_a2_outer_endpoint_gate",
+                 "pass1_a2_l2", "pass1_a2_l2_l3"],
+        default=None,
+        help="Run an explicit non-production dry-run salience experiment.",
+    )
+    score_p.add_argument(
+        "--output",
+        default=None,
+        help="Optional output path for score JSON. Defaults to the canonical report only when no output is supplied.",
+    )
+    score_p.set_defaults(fn=cmd_score)
     args = p.parse_args()
     args.fn(args)
 
