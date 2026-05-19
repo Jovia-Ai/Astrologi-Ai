@@ -211,7 +211,7 @@ for different user states.
 | thesis | stated **exactly once** (final synthesis slide + share line); intermediate slides must each open a *new face*, never restate the thesis |
 | astro terms | permitted in body, but **every term cashed to lived experience in the same breath**; a bare mechanism clause (term + "devreye giriyor/güçlü çalışıyor") is forbidden (tone_aware §8) |
 | lived-scene (Rule 3) | every slide carries ≥1 concrete behavioral **scene** (a recognizable moment the person *does/experiences*), not only abstract category nouns; the recurrence carrier must be scenes, not an abstract word-family ("görünmeyen / iç dünya / anlam / güç"); multi-centre charts render centres as a **sequence of entering characters with contrasting tempo**, never a catalogue list |
-| shape-variation (Rule 4) | slides must NOT all share the explainer shape ("Sende X var → bu Y demek → harita izi"). Each slide answers a *different* question type — **where lived / how misread / what happens inside / when it changes / what it gives** — never "what does this astro structure mean". Rhythm may vary (staccato beats allowed, not uniform 3-sentence paragraphs). Compress slide count to what the content needs (no padding) |
+| rhythm-modulation (Rule 4, CORRECTED) | explanatory **depth is preserved** — long, immersive, explaining slides are good and are NOT the defect. The single variable is **rhythm**, and rhythm is set by the *emotional nature of that slide's content*, varying slide-to-slide and even within a paragraph: inward→calm/unhurried; depth→slow/weighty; discipline→firm/grounded/short clauses; rupture→a sharp short pivot; gift→warm/expansive; shadow→quiet/honest/no drama; synthesis→settling. This is the committed tone_aware §6/§7 strategy matrix + the user's theme-family voice-mode design applied **per slide**. NOT compression, NOT uniform punchline, NOT staccato-everywhere. (v3 over-corrected into compression; rescinded.) |
 | map_trace / deselected_trace | unchanged; still separate layers |
 
 ### 9.2 Why these two rules survive the length concession
@@ -252,15 +252,21 @@ shrinking and more precisely named each cycle (structure → lived-scene
 → rhythm/shape). This is convergence, but it must not become infinite
 hand-polish on 2 charts.
 
-**v3 is the rule-lock candidate. Binding rule:**
-- v3 PASS (both cards) → Rules 1–4 **freeze** as the `deep_read`
-  contract; proceed to §13.2 authoring packets + code (tone_aware §16
-  Phase 3+). **No v4.**
-- v3 REVISE → this is the signal the residual is **not reliably
-  expressible as hand-applied prose rules by the builder**. Do NOT
-  produce v4/v5 by hand. Escalate: encode Rules 1–4 as testable
-  automated checks + decide a different validation mode. One more hand
-  cycle maximum, then escalate regardless.
+v3 over-corrected (compression/punchline) — builder error: the
+diagnosis ("uniform rhythm") was right but the prescription wrongly
+discarded the explanatory depth, which was never the defect. Rule 4 is
+corrected to **rhythm-modulation, not compression**. v3 is consumed as
+the "one more hand cycle maximum".
+
+**v4 is the FINAL hand cycle and the rule-lock. Binding:**
+- v4 = the user's preferred long explanatory structure WITH per-slide
+  rhythm modulation (corrected Rule 4). Rules 1–4 are now **frozen** as
+  the `deep_read` contract regardless of v4's verdict.
+- v4 PASS (both) → proceed to §13.2 authoring packets + code
+  (tone_aware §16 Phase 3+).
+- v4 REVISE → do NOT hand-write v5. The frozen Rules 1–4 are encoded
+  as testable automated checks; validation moves to that encoded mode.
+  No further hand-polish of these 2 reference cards.
 
 This binds the voice loop the same way §10 / Pass-1 bound the salience
 loop.
