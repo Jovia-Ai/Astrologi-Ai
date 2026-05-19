@@ -211,6 +211,7 @@ for different user states.
 | thesis | stated **exactly once** (final synthesis slide + share line); intermediate slides must each open a *new face*, never restate the thesis |
 | astro terms | permitted in body, but **every term cashed to lived experience in the same breath**; a bare mechanism clause (term + "devreye giriyor/güçlü çalışıyor") is forbidden (tone_aware §8) |
 | lived-scene (Rule 3) | every slide carries ≥1 concrete behavioral **scene** (a recognizable moment the person *does/experiences*), not only abstract category nouns; the recurrence carrier must be scenes, not an abstract word-family ("görünmeyen / iç dünya / anlam / güç"); multi-centre charts render centres as a **sequence of entering characters with contrasting tempo**, never a catalogue list |
+| shape-variation (Rule 4) | slides must NOT all share the explainer shape ("Sende X var → bu Y demek → harita izi"). Each slide answers a *different* question type — **where lived / how misread / what happens inside / when it changes / what it gives** — never "what does this astro structure mean". Rhythm may vary (staccato beats allowed, not uniform 3-sentence paragraphs). Compress slide count to what the content needs (no padding) |
 | map_trace / deselected_trace | unchanged; still separate layers |
 
 ### 9.2 Why these two rules survive the length concession
@@ -243,6 +244,26 @@ vs lived-scene). Rule 3 is the extraction of that axis. Bounded
 expectation: one–two more REVISE→blind cycles close it; this is
 zeroing-in, not goalpost drift (§10 / tone_aware §16 discipline
 intact).
+
+### 9.5 Stopping condition (anti-treadmill, binding)
+
+Iteration count on the 2 reference cards: v1→v2→v3. Residual is
+shrinking and more precisely named each cycle (structure → lived-scene
+→ rhythm/shape). This is convergence, but it must not become infinite
+hand-polish on 2 charts.
+
+**v3 is the rule-lock candidate. Binding rule:**
+- v3 PASS (both cards) → Rules 1–4 **freeze** as the `deep_read`
+  contract; proceed to §13.2 authoring packets + code (tone_aware §16
+  Phase 3+). **No v4.**
+- v3 REVISE → this is the signal the residual is **not reliably
+  expressible as hand-applied prose rules by the builder**. Do NOT
+  produce v4/v5 by hand. Escalate: encode Rules 1–4 as testable
+  automated checks + decide a different validation mode. One more hand
+  cycle maximum, then escalate regardless.
+
+This binds the voice loop the same way §10 / Pass-1 bound the salience
+loop.
 
 ## 10. Blind re-anchor (methodology integrity)
 
