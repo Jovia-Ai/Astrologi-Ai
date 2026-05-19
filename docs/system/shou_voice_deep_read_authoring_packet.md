@@ -119,9 +119,36 @@ deselected_trace + map_trace + deep_evidence: unchanged from v4.
   + thesis-once + rhythm-variation tests; same-family read across
   charts; **feels-seen vs feels-presumed** human check on origin_hint.
 
-## 9. Status
+## 9. Status — LOCK PASS (blind-confirmed)
 
-Design frozen. One final blind confirmation of §7 (sheet:
-`shou_voice_deep_read_lock_BLIND.md`), then §13.2 review → code
-(tone_aware §16 Phase 3+). No further hand vN. No code/taxonomy/merge/
-production change in this packet.
+Final blind confirmation of §7 consolidated Card A: **PASS**. The
+deep_read voice contract (Rules 1–4 + origin_hint + gift +
+pattern_to_gift) is **frozen and validated on the canonical worked
+example**. Design phase of the voice layer is closed.
+
+**Validated:** the deep_read voice/render contract, on Card A (2007),
+via the blind loop (1985 scannable → 2007/1975 deep_read → v1..v4 →
+LOCK).
+
+**NOT yet done (honest — does not ship on this PASS):**
+- tone_aware §13.2 *human code review* of the new constraint families
+  (this packet is the input to that review, not a substitute).
+- tone_aware §13.3 *side-by-side multi-chart family read* QA gate
+  (only the canonical example is blind-confirmed; Card B consolidated
+  + more charts still owed before public rollout).
+- The earlier PROPOSED items still pending §13.2: `identity_polarity`
+  / `held_plurality` / `pattern_to_gift` profiles; themes.yaml
+  "emotional_base" question; "slide_profile must be ARC-owner-driven"
+  finding (2007); no-dominant profile (1975).
+- The scannable-card surface (original §10.3 path) — separate from
+  this deep_read lock.
+- **The ARC scorer / A2 merge question is untouched and still
+  unauthorized** (Pass-1 closed negative; A2 best candidate; its own
+  §10.3 still owed). The voice LOCK does not merge or validate A2.
+- Zero code. tone_aware §16 Phase 3 (slides[] contract) is real
+  backend/renderer work → CLAUDE.md approval-gated, needs its own
+  bounded plan.
+
+Next: §13.2 review + a tightly-scoped Phase-3 plan for ONE pilot card
+family (no broad build, no production change until reviewed +
+approved).
