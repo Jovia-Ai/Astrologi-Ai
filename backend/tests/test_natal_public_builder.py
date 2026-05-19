@@ -2926,6 +2926,30 @@ def test_v0_10_phase2_card_does_not_leak_into_other_public_surfaces(monkeypatch)
     assert "composed_detail_cards" not in v8
 
 
+def test_v0_10_phase3_internal_metadata_flag_is_public_noop_for_hidden_private_pilot(monkeypatch) -> None:
+    _v0_10_phase2_set_flags(monkeypatch)
+    baseline = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA",
+        "true",
+    )
+    rendered = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+
+    assert _projection_surface_snapshot(rendered) == _projection_surface_snapshot(baseline)
+    assert rendered["profile_narrative_projection_v1"]["profile_public"] == baseline["profile_narrative_projection_v1"]["profile_public"]
+
+
 def test_v0_10_phase2_flag_changes_interpret_ui_cache_key() -> None:
     import os
     from app.api.routes.natal_interpretation import (

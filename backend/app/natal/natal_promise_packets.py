@@ -190,6 +190,122 @@ def _env_enabled(name: str, default: str = "false") -> bool:
     return os.getenv(name, default).strip().lower() in _ENABLED_VALUES
 
 
+_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_ORIGIN_HINT_DENYLIST: tuple[str, ...] = (
+    "neutral_or_gift_only_signature",
+    "generic_fallback_packet",
+    "debug_only_family",
+    "exactness_only_without_owner_route",
+    "non_owner_broad_category_summary",
+    "generic_relationship_friction_without_trust_owner",
+    "weak_global_or_generational_only_anchor",
+)
+
+
+def _relationship_hidden_private_love_phase3_internal_metadata_enabled() -> bool:
+    return _env_enabled(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA"
+    )
+
+
+def _relationship_hidden_private_love_origin_hint_assessment(
+    *,
+    subtype: str,
+    source_type: str,
+    domain_reason: Sequence[str],
+    technical_anchors: Sequence[str],
+    subtype_default_fallback: bool,
+    non_public_discovery: bool,
+) -> dict[str, Any]:
+    reasons_lower = {str(item or "").strip().lower() for item in domain_reason if str(item or "").strip()}
+    anchors_lower = [str(item or "").strip().lower() for item in technical_anchors if str(item or "").strip()]
+    has_personal_or_angle_anchor = any(
+        marker in anchor
+        for anchor in anchors_lower
+        for marker in ("venüs", "venus", "moon", "sun", "asc", "dsc", "yükselen")
+    )
+    has_owner_route = "12h hidden-love signature" in reasons_lower and has_personal_or_angle_anchor
+
+    deny_reasons: list[str] = []
+    if subtype != "hidden_private_love":
+        deny_reasons.append("non_owner_broad_category_summary")
+    if source_type == "generic_fallback" or subtype_default_fallback:
+        deny_reasons.append("generic_fallback_packet")
+    if source_type == "discovery_scaffold":
+        deny_reasons.append("debug_only_family")
+    if not has_owner_route:
+        deny_reasons.append("exactness_only_without_owner_route")
+    if not has_personal_or_angle_anchor:
+        deny_reasons.append("weak_global_or_generational_only_anchor")
+
+    allow_reasons: list[str] = []
+    if subtype == "hidden_private_love":
+        allow_reasons.append("hidden_private_signature")
+    if has_owner_route:
+        allow_reasons.append("owner_hidden_private_route")
+    if has_personal_or_angle_anchor:
+        allow_reasons.append("personalized_anchor_present")
+
+    return {
+        "eligible": bool(allow_reasons) and not deny_reasons,
+        "allow_reasons": allow_reasons,
+        "deny_reasons": deny_reasons,
+        "deny_catalog": list(_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_ORIGIN_HINT_DENYLIST),
+    }
+
+
+def _build_relationship_hidden_private_love_phase3_internal_metadata(
+    *,
+    source_type: str,
+    domain_reason: Sequence[str],
+    technical_anchors: Sequence[str],
+    subtype_default_fallback: bool,
+    non_public_discovery: bool,
+) -> dict[str, Any]:
+    origin_hint = _relationship_hidden_private_love_origin_hint_assessment(
+        subtype="hidden_private_love",
+        source_type=source_type,
+        domain_reason=domain_reason,
+        technical_anchors=technical_anchors,
+        subtype_default_fallback=subtype_default_fallback,
+        non_public_discovery=non_public_discovery,
+    )
+    return {
+        "pilot_family": "hidden_private_deep_read",
+        "slide_profile": "pattern_to_gift",
+        "status": "pilot_scoped_approval_pending_section_13_2",
+        "phase_boundary": "internal_metadata_only",
+        "role_bindings": {
+            "origin_hint": {
+                "surface_role": "hidden_mechanism",
+                "eligible": origin_hint["eligible"],
+                "allow_reasons": list(origin_hint["allow_reasons"]),
+                "deny_reasons": list(origin_hint["deny_reasons"]),
+            },
+            "gift": {"surface_role": "gift_in_silence", "source_field": "gift"},
+            "shadow": {"surface_role": "protective_pattern", "source_field": "shadow_or_friction"},
+            "integration": {"surface_role": "safe_visibility", "source_field": "growth_direction"},
+        },
+        "map_trace": [
+            "private_scene<=lived_scene",
+            "hidden_mechanism<=origin_hint",
+            "protective_pattern<=shadow_or_friction",
+            "gift_in_silence<=gift",
+            "safe_visibility<=growth_direction",
+        ],
+        "deselected_trace": [
+            "identity_polarity=pending",
+            "held_plurality=pending",
+            "emotional_base=pending",
+            "phase4_renderer=not_enabled",
+        ],
+        "scope_guards": [
+            "pilot_only_hidden_private",
+            "no_public_output_change",
+            "no_global_taxonomy_promotion",
+        ],
+    }
+
+
 def build_natal_promise_packets_v1(
     *,
     sections_v2: Sequence[Mapping[str, Any]] | None,
@@ -2837,6 +2953,18 @@ def _build_relationship_route_candidates(
         _env_enabled("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT")
     )
     detail_eligible = detail_support_flag_enabled and confidence >= 0.7
+    phase3_internal_meta = None
+    if (
+        subtype == "hidden_private_love"
+        and _relationship_hidden_private_love_phase3_internal_metadata_enabled()
+    ):
+        phase3_internal_meta = _build_relationship_hidden_private_love_phase3_internal_metadata(
+            source_type="composed_semantic",
+            domain_reason=domain_reason,
+            technical_anchors=technical_anchors,
+            subtype_default_fallback=is_subtype_default_fallback_path,
+            non_public_discovery=True,
+        )
 
     return _composed_candidate_to_packet(
         ComposedSemanticCandidateV1(
@@ -2910,6 +3038,11 @@ def _build_relationship_route_candidates(
                 "source_type": "composed_semantic",
                 "subtype_default_fallback": is_subtype_default_fallback_path,
                 "cross_family_overlap": cross_family_overlap,
+                **(
+                    {"deep_read_phase3": phase3_internal_meta}
+                    if phase3_internal_meta is not None
+                    else {}
+                ),
             },
         )
     )

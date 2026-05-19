@@ -706,6 +706,90 @@ def test_v0_9b_relationship_route_flag_on_emits_debug_only_candidate(monkeypatch
         assert card.get(key), f"missing required field: {key}"
 
 
+def test_v0_9b_relationship_hidden_private_love_phase3_internal_metadata_flag_on_attaches_meta(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA",
+        "true",
+    )
+    planets = [
+        {"planet": "Sun", "sign": "Capricorn", "house": 1},
+        {"planet": "Mercury", "sign": "Capricorn", "house": 1},
+        {"planet": "Moon", "sign": "Leo", "house": 8},
+        {"planet": "Venus", "sign": "Sagittarius", "house": 12},
+        {"planet": "Mars", "sign": "Libra", "house": 9},
+        {"planet": "Jupiter", "sign": "Capricorn", "house": 1},
+        {"planet": "Saturn", "sign": "Aries", "house": 4},
+        {"planet": "Uranus", "sign": "Aquarius", "house": 2},
+        {"planet": "Neptune", "sign": "Leo", "house": 8},
+        {"planet": "Pluto", "sign": "Scorpio", "house": 10},
+    ]
+    ngc = {
+        "house_rulers": {
+            "1": {"cusp_sign": "Capricorn"},
+            "4": {"cusp_sign": "Aries"},
+            "7": {"cusp_sign": "Pisces"},
+            "10": {"cusp_sign": "Libra"},
+        }
+    }
+
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    candidates = _v0_9b_packets(payload, family="relationship_route")
+    hidden_private = next(
+        (card for card in candidates if str(card.get("subtype") or "").strip() == "hidden_private_love"),
+        None,
+    )
+
+    assert hidden_private is not None, candidates
+    phase3 = ((hidden_private.get("meta") or {}).get("deep_read_phase3") or {})
+    assert phase3["slide_profile"] == "pattern_to_gift"
+    assert phase3["status"] == "pilot_scoped_approval_pending_section_13_2"
+    assert phase3["phase_boundary"] == "internal_metadata_only"
+    assert phase3["role_bindings"]["origin_hint"]["eligible"] is True
+    assert phase3["role_bindings"]["gift"]["surface_role"] == "gift_in_silence"
+    assert "phase4_renderer=not_enabled" in phase3["deselected_trace"]
+
+
+def test_v0_9b_relationship_hidden_private_love_phase3_internal_metadata_flag_off_keeps_meta_absent(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.delenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA",
+        raising=False,
+    )
+    planets = [
+        {"planet": "Sun", "sign": "Capricorn", "house": 1},
+        {"planet": "Mercury", "sign": "Capricorn", "house": 1},
+        {"planet": "Moon", "sign": "Leo", "house": 8},
+        {"planet": "Venus", "sign": "Sagittarius", "house": 12},
+        {"planet": "Mars", "sign": "Libra", "house": 9},
+        {"planet": "Jupiter", "sign": "Capricorn", "house": 1},
+        {"planet": "Saturn", "sign": "Aries", "house": 4},
+        {"planet": "Uranus", "sign": "Aquarius", "house": 2},
+        {"planet": "Neptune", "sign": "Leo", "house": 8},
+        {"planet": "Pluto", "sign": "Scorpio", "house": 10},
+    ]
+    ngc = {
+        "house_rulers": {
+            "1": {"cusp_sign": "Capricorn"},
+            "4": {"cusp_sign": "Aries"},
+            "7": {"cusp_sign": "Pisces"},
+            "10": {"cusp_sign": "Libra"},
+        }
+    }
+
+    payload = _run_promise_builder(planets=planets, natal_graph_compact=ngc)
+    candidates = _v0_9b_packets(payload, family="relationship_route")
+    hidden_private = next(
+        (card for card in candidates if str(card.get("subtype") or "").strip() == "hidden_private_love"),
+        None,
+    )
+
+    assert hidden_private is not None, candidates
+    assert "deep_read_phase3" not in (hidden_private.get("meta") or {})
+
+
 def test_v0_9b_moon_signature_flag_on_emits_debug_only_candidate(monkeypatch) -> None:
     monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9", "true")
     monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_MOON_SIGNATURE_V0_9B", "true")

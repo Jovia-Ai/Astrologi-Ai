@@ -169,6 +169,7 @@ _TRACE_ONLY_FIELDS = {
     "source_anchor_trace",
     "detail_items",
     "evidence_summary",
+    "deep_read_phase3",
 }
 
 
@@ -350,6 +351,58 @@ def test_render_relationship_hidden_private_love_card_v0_10_phase2_accepts_compo
     assert all(set(slide.keys()) == {"id", "title", "body"} for slide in rendered_composed["slides"])
     assert rendered_composed["why_this_exists"]["title"] == "Nereden geliyor?"
     assert rendered_exact["source_candidate_id"] == "venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact"
+    assert "deep_read_phase3" not in rendered_composed
+    assert "deep_read_phase3" not in rendered_exact
+
+
+def test_render_relationship_hidden_private_love_card_v0_10_phase2_phase3_internal_metadata_stays_internal(monkeypatch) -> None:
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA",
+        "true",
+    )
+    composed = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+
+    rendered = render_relationship_hidden_private_love_card_v0_10_phase2(
+        composed,
+        source_kind="composed_semantic",
+    )
+
+    assert rendered is not None
+    phase3 = rendered.get("deep_read_phase3")
+    assert isinstance(phase3, dict)
+    assert phase3["slide_profile"] == "pattern_to_gift"
+    assert phase3["status"] == "pilot_scoped_approval_pending_section_13_2"
+    assert phase3["phase_boundary"] == "internal_metadata_only"
+    assert phase3["source_kind"] == "composed_semantic"
+    assert phase3["role_bindings"]["origin_hint"]["eligible"] is True
+    assert phase3["role_bindings"]["gift"]["source_field"] == "gift"
+    assert phase3["role_bindings"]["shadow"]["source_field"] == "shadow_or_friction"
+    assert phase3["role_bindings"]["integration"]["source_field"] == "growth_direction"
+    assert "private_scene<=lived_scene" in phase3["map_trace"]
+    assert "identity_polarity=pending" in phase3["deselected_trace"]
+
+    promoted = project_relationship_hidden_private_love_to_public_lane(
+        [composed],
+        cluster_payload={
+            "surface_plan": {"detail_cluster_ids": ["relationship_hidden_private_love_pattern"]},
+            "clusters": [
+                {
+                    "id": "relationship_hidden_private_love_pattern",
+                    "main_packet_id": "venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact",
+                }
+            ],
+        },
+    )
+    assert len(promoted) == 1
+    assert "deep_read_phase3" not in promoted[0]
 
 
 def test_render_relationship_hidden_private_love_card_v0_10_phase2_rejects_non_target_signature(monkeypatch) -> None:

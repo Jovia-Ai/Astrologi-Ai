@@ -470,6 +470,136 @@ def relationship_hidden_private_love_public_detail_lane_enabled() -> bool:
     )
 
 
+_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_ORIGIN_HINT_DENYLIST: tuple[str, ...] = (
+    "neutral_or_gift_only_signature",
+    "generic_fallback_packet",
+    "debug_only_family",
+    "exactness_only_without_owner_route",
+    "non_owner_broad_category_summary",
+    "generic_relationship_friction_without_trust_owner",
+    "weak_global_or_generational_only_anchor",
+)
+
+
+def relationship_hidden_private_love_phase3_internal_metadata_enabled() -> bool:
+    return _env_enabled(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA"
+    )
+
+
+def _relationship_hidden_private_love_origin_hint_assessment(
+    source: Mapping[str, Any],
+) -> dict[str, Any]:
+    domain_reason = (
+        source.get("domain_reason")
+        if isinstance(source.get("domain_reason"), Sequence) and not isinstance(source.get("domain_reason"), (str, bytes))
+        else []
+    )
+    technical_anchors = (
+        source.get("technical_anchors")
+        if isinstance(source.get("technical_anchors"), Sequence) and not isinstance(source.get("technical_anchors"), (str, bytes))
+        else []
+    )
+    meta = source.get("meta") if isinstance(source.get("meta"), Mapping) else {}
+    reasons_lower = {str(item or "").strip().lower() for item in domain_reason if str(item or "").strip()}
+    anchors_lower = [str(item or "").strip().lower() for item in technical_anchors if str(item or "").strip()]
+    has_personal_or_angle_anchor = any(
+        marker in anchor
+        for anchor in anchors_lower
+        for marker in ("venüs", "venus", "moon", "sun", "asc", "dsc", "yükselen")
+    )
+    has_owner_route = "12h hidden-love signature" in reasons_lower and has_personal_or_angle_anchor
+
+    deny_reasons: list[str] = []
+    if str(source.get("subtype") or "").strip() not in {"", "hidden_private_love"}:
+        deny_reasons.append("non_owner_broad_category_summary")
+    if str(source.get("source_type") or "").strip() == "generic_fallback" or bool(meta.get("subtype_default_fallback")):
+        deny_reasons.append("generic_fallback_packet")
+    if str(source.get("source_type") or "").strip() == "discovery_scaffold":
+        deny_reasons.append("debug_only_family")
+    if not has_owner_route:
+        deny_reasons.append("exactness_only_without_owner_route")
+    if not has_personal_or_angle_anchor:
+        deny_reasons.append("weak_global_or_generational_only_anchor")
+
+    allow_reasons: list[str] = []
+    if str(source.get("subtype") or "").strip() in {"", "hidden_private_love"}:
+        allow_reasons.append("hidden_private_signature")
+    if has_owner_route:
+        allow_reasons.append("owner_hidden_private_route")
+    if has_personal_or_angle_anchor:
+        allow_reasons.append("personalized_anchor_present")
+    return {
+        "eligible": bool(allow_reasons) and not deny_reasons,
+        "allow_reasons": allow_reasons,
+        "deny_reasons": deny_reasons,
+        "deny_catalog": list(_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_ORIGIN_HINT_DENYLIST),
+    }
+
+
+def _build_relationship_hidden_private_love_phase3_internal_metadata(
+    source: Mapping[str, Any],
+    *,
+    source_kind: str,
+) -> dict[str, Any]:
+    source_meta = source.get("meta") if isinstance(source.get("meta"), Mapping) else {}
+    inherited = (
+        dict(source_meta.get("deep_read_phase3") or {})
+        if isinstance(source_meta.get("deep_read_phase3"), Mapping)
+        else {}
+    )
+    origin_hint = _relationship_hidden_private_love_origin_hint_assessment(source)
+    payload = {
+        "pilot_family": "hidden_private_deep_read",
+        "slide_profile": "pattern_to_gift",
+        "status": "pilot_scoped_approval_pending_section_13_2",
+        "phase_boundary": "internal_metadata_only",
+        "source_kind": source_kind,
+        "source_candidate_id": str(source.get("id") or "").strip(),
+        "role_bindings": {
+            "origin_hint": {
+                "surface_role": "hidden_mechanism",
+                "eligible": origin_hint["eligible"],
+                "allow_reasons": list(origin_hint["allow_reasons"]),
+                "deny_reasons": list(origin_hint["deny_reasons"]),
+            },
+            "gift": {"surface_role": "gift_in_silence", "source_field": "gift"},
+            "shadow": {"surface_role": "protective_pattern", "source_field": "shadow_or_friction"},
+            "integration": {"surface_role": "safe_visibility", "source_field": "growth_direction"},
+        },
+        "map_trace": [
+            "private_scene<=lived_scene",
+            "hidden_mechanism<=origin_hint",
+            "protective_pattern<=shadow_or_friction",
+            "gift_in_silence<=gift",
+            "safe_visibility<=growth_direction",
+        ],
+        "deselected_trace": [
+            "identity_polarity=pending",
+            "held_plurality=pending",
+            "emotional_base=pending",
+            "phase4_renderer=not_enabled",
+        ],
+        "scope_guards": [
+            "pilot_only_hidden_private",
+            "no_public_output_change",
+            "no_global_taxonomy_promotion",
+        ],
+    }
+    if inherited:
+        payload.update({k: v for k, v in inherited.items() if k not in {"source_kind", "source_candidate_id"}})
+        payload["source_kind"] = source_kind
+        payload["source_candidate_id"] = str(source.get("id") or "").strip()
+        payload["role_bindings"] = payload.get("role_bindings") or {}
+        payload["role_bindings"]["origin_hint"] = {
+            **dict((payload["role_bindings"].get("origin_hint") or {})),
+            "eligible": origin_hint["eligible"],
+            "allow_reasons": list(origin_hint["allow_reasons"]),
+            "deny_reasons": list(origin_hint["deny_reasons"]),
+        }
+    return payload
+
+
 def _is_istanbul_1996_hidden_private_love_signature(
     source: Mapping[str, Any],
 ) -> bool:
@@ -704,6 +834,11 @@ def render_relationship_hidden_private_love_card_v0_10_phase2(
         "source_anchor_trace": source_trace,
         "source_refs": source_refs,
     }
+    if relationship_hidden_private_love_phase3_internal_metadata_enabled():
+        card["deep_read_phase3"] = _build_relationship_hidden_private_love_phase3_internal_metadata(
+            source,
+            source_kind=source_kind,
+        )
     if not _meets_relationship_hidden_private_love_public_quality(card):
         return None
     return card
