@@ -271,6 +271,60 @@ the "one more hand cycle maximum".
 This binds the voice loop the same way §10 / Pass-1 bound the salience
 loop.
 
+### 9.6 `origin_hint` — bound to committed `cause_voice` (NEW role, reconciled)
+
+Not a new role: `shou_semantic_role_and_voice_mode_map.md` §2 already
+lists `emerging_existing | Cause / Past Layer | cause_voice` (sparse,
+not yet a formal contract field). `origin_hint` is its `deep_read`
+realization. Promote to `missing_needed` like `deselected_trace`.
+
+Purpose: add the "bu sende neden böyle kurulmuş olabilir" layer — the
+learned-reflex / inner-history dimension — *without* deterministic past
+claims.
+
+Contract:
+
+```json
+{
+  "slide_role": "origin_hint",
+  "binds_to": "cause_voice / Cause-Past-Layer (semantic_role_map §2)",
+  "voice_mode": "softened_interpretive",
+  "certainty": "low_to_medium",
+  "default_surface": "expandable sub-layer titled \"Nereden geliyor olabilir?\" (opt-in by tap; NOT inline by default)",
+  "eligibility": "only on defended / compensatory / withheld signatures (e.g. Saturn 1, 12H carrying, guarded warmth). NOT on neutral or purely-gift signatures. Sparse by design (matches cause_voice = emerging/sparse).",
+  "anchor_rule": "MUST attach to the SAME astro signal already anchored in the main reading. It is a register on an existing anchor, never a free-floating psychological story or a new claim.",
+  "allowed_language": [
+    "öğrenmiş olabilirsin",
+    "zamanla böyle kurmuş olabilirsin",
+    "erken dönemde ... hissetmiş olabilirsin",
+    "bu yüzden bugün ...",
+    "herkes için böyle olmak zorunda değil"
+  ],
+  "forbidden_language": [
+    "çocukluğunda kesin ... oldu",
+    "ailen / annen / baban sana ... yaptı",
+    "travman şudur",
+    "bu yüzden böylesin",
+    "klinik / tanı sözlüğü"
+  ],
+  "reversibility_rule": "every origin_hint passage must contain at least one opt-out clause (it MAY be so, not it IS so)."
+}
+```
+
+This is genuinely on-brand: the user gets "aa ben bunu neden böyle
+yapıyorum" — but the consent-by-expansion + probabilistic + anchored
+guardrails prevent the single biggest risk (an invasive or fabricated
+past-story). It enters the SAME bounded blind discipline; the critical
+blind question is *feels-seen vs feels-presumed*.
+
+### 9.7 v4 lexical fix + §9.5 classification
+
+- "silik" (parent) replaced — see v4.1 reference (it carried a
+  faded/lesser connotation the user rejected).
+- Per §9.5: §9.6 + the lexical fix are **not** a treadmill v5 (not
+  re-polishing the locked rhythm axis). Rules 1–4 stay frozen.
+  `origin_hint` is additive reconciled scope under its own blind check.
+
 ## 10. Blind re-anchor (methodology integrity)
 
 The pending 5-slide Card A/B blind verdicts
