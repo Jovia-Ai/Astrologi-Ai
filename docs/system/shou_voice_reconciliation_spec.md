@@ -291,7 +291,7 @@ Contract:
   "voice_mode": "softened_interpretive",
   "certainty": "low_to_medium",
   "default_surface": "expandable sub-layer titled \"Nereden geliyor olabilir?\" (opt-in by tap; NOT inline by default)",
-  "eligibility": "only on defended / compensatory / withheld signatures (e.g. Saturn 1, 12H carrying, guarded warmth). NOT on neutral or purely-gift signatures. Sparse by design (matches cause_voice = emerging/sparse).",
+  "eligibility": "ONLY on defended/compensatory/withheld signatures: 12H / hidden field, Moon-Saturn, Moon-Pluto, Saturn 1/4/7/10, Chiron, Pluto density, Venus 12, Saturn 3, Cancer-Asc+Saturn-1, relationship trust/threshold themes. NOT on neutral or purely-gift signatures. Sparse by design (cause_voice = emerging/sparse).",
   "anchor_rule": "MUST attach to the SAME astro signal already anchored in the main reading. It is a register on an existing anchor, never a free-floating psychological story or a new claim.",
   "allowed_language": [
     "öğrenmiş olabilirsin",
@@ -324,6 +324,59 @@ blind question is *feels-seen vs feels-presumed*.
 - Per §9.5: §9.6 + the lexical fix are **not** a treadmill v5 (not
   re-polishing the locked rhythm axis). Rules 1–4 stay frozen.
   `origin_hint` is additive reconciled scope under its own blind check.
+
+### 9.8 `gift` role — bound to committed `potential_voice` (reconciled)
+
+Not new: semantic_role_map §2 `confirmed_existing | Potential Narrative
+| potential_voice` + tone_aware §9.1 `gift` card family. The user's
+`gift` slide_role is its deep_read realization.
+
+```json
+{
+  "slide_role": "gift",
+  "binds_to": "potential_voice / Potential Narrative (semantic_role_map §2, confirmed) + tone_aware §9.1 gift family",
+  "voice_mode": "grounded_gift",
+  "certainty": "high",
+  "rule": "observational power, NOT motivational speech",
+  "allowed_language": ["Bu sana ... verir.", "Bu yer sende ... kapasitesi yaratır.", "Doğru çalıştığında ... dönüşür.", "Bu sayede ..."],
+  "forbidden_language": ["Her şeyi başarırsın.", "Kesinlikle şunu yaşarsın.", "Bu seni özel yapar.", "Kadersel olarak ..."]
+}
+```
+
+### 9.9 `pattern_to_gift` slide_profile — PROPOSED (tone_aware §9, pending §13.2)
+
+The user's standard 7-beat flow, named and bound into tone_aware §9.1
+vocabulary (like the earlier `identity_polarity` / `held_plurality`
+proposals — not silently committed):
+
+```
+current_behavior → how_seen → what_inside → origin_hint
+→ shadow → gift → integration
+```
+
+5–7 beats by theme (not fixed 7). origin_hint at beat 4 only if the
+signature is §9.6-eligible; otherwise skipped (sparse rule holds).
+
+### 9.10 LOCK declaration — design is complete; next is §13.2, not v6
+
+Everything requested now has a committed home:
+deep_read surface (§9) · Rules 1–4 frozen · origin_hint→cause_voice
+(§9.6) · gift→potential_voice (§9.8) · pattern_to_gift profile (§9.9).
+**There is no architecturally-unknown piece left to hand-explore.**
+
+Per §9.5 / §10 anti-treadmill: producing further hand-written vN
+reference cards is now the exact voice-layer treadmill. **Binding:**
+- The deep_read contract is **frozen** as of here.
+- Next deliverable = the **tone_aware §13.2 authoring packet**
+  (`shou_voice_deep_read_authoring_packet.md`): rationale, good/bad
+  examples (the user's hand-written origin/gift copy IS the good
+  example set — integrated, not re-authored), affected roles/families,
+  banned phrases, QA notes, eligibility. This is the committed
+  mechanism that turns the design into something codeable.
+- ONE consolidated frozen Card A reference is produced inside the
+  packet as its required worked example, then ONE final blind
+  confirmation. After that: §13.2 review → code (tone_aware §16
+  Phase 3+). No further hand iteration loop.
 
 ## 10. Blind re-anchor (methodology integrity)
 
