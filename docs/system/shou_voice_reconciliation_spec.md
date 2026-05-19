@@ -189,3 +189,59 @@ explicitly NON-BLIND and is not the verdict.
    (tone_aware §16 Phase 3+). No code before that.
 4. No new taxonomy. No merge. No production change. Pass-1/§10
    discipline unchanged.
+
+## 9. Surface model: `deep_read` (NEW — added per product UX)
+
+§5 rendered a *scannable* card under tone_aware §4.2 parent budget.
+Product clarification: in the app the **glanceable surface is a TITLE
+only**; tapping opens a **right-swipe slide flow**. So the long
+immersive body is NOT the parent-card surface — it is the tapped,
+reflective, high-attention band (tone_aware §4.1). This is a legitimate
+distinct surface (`deep_read`), on-benchmark with Chani/Sanctuary-style
+immersive reads. It does not replace the scannable model; both exist
+for different user states.
+
+### 9.1 `deep_read` contract
+
+| Element | Rule |
+|---|---|
+| glanceable title | governed by tone_aware §4.2 title budget (≤52–56c); the ONLY thing shown before tap |
+| body | swipe slide flow, N slides (not fixed 5); §4.2 *parent/body char budget does NOT apply here* — own budget below |
+| slide budget | depth allowed; **one spine per swipe** is the hard rule, not char count |
+| thesis | stated **exactly once** (final synthesis slide + share line); intermediate slides must each open a *new face*, never restate the thesis |
+| astro terms | permitted in body, but **every term cashed to lived experience in the same breath**; a bare mechanism clause (term + "devreye giriyor/güçlü çalışıyor") is forbidden (tone_aware §8) |
+| map_trace / deselected_trace | unchanged; still separate layers |
+
+### 9.2 Why these two rules survive the length concession
+
+The §4.2 char budget objection is **withdrawn** (surface clarified).
+Two rules are length-independent and still binding:
+- **one spine per swipe** — this is the real intent of §4.2 "one
+  semantic move per slide": a physical swipe must map to one
+  retainable idea, regardless of length.
+- **thesis once** — in a swipe UX, restating the thesis across slides
+  is *worse* (user physically re-encounters the same idea); §15
+  "no restate parent on every slide" applies harder here.
+
+### 9.3 Quality reference
+
+The cleaned 2007 deep_read render (A+B applied, Jupiter correctly
+8th-house, thesis-once, terms cashed) is the `deep_read` quality
+reference, analogous to tone_aware §2's Venus-12H reference — it sets
+the depth ceiling. See `shou_voice_deep_read_reference_2007.md`.
+
+## 10. Blind re-anchor (methodology integrity)
+
+The pending 5-slide Card A/B blind verdicts
+(`shou_voice_reconciliation_gen_BLIND.md`) targeted the *scannable*
+surface. The design has evolved to `deep_read`. Those 5-slide verdicts
+are therefore **superseded by surface change**, not failed. The blind
+gate now re-anchors to the `deep_read` surface:
+
+1. Blind verdict on the cleaned 2007 deep_read reference
+   (`shou_voice_deep_read_2007_BLIND.md`).
+2. Next bounded step: re-render 1975 (no-dominant) on the **same**
+   `deep_read` contract + committed §7 strategies (generalization of
+   the deep_read profile, not per-chart tuning), blind-verify.
+3. Then §13.2 packets + code (tone_aware §16 Phase 3+). No code first.
+4. No new taxonomy. No merge. No production change.
