@@ -210,6 +210,7 @@ for different user states.
 | slide budget | depth allowed; **one spine per swipe** is the hard rule, not char count |
 | thesis | stated **exactly once** (final synthesis slide + share line); intermediate slides must each open a *new face*, never restate the thesis |
 | astro terms | permitted in body, but **every term cashed to lived experience in the same breath**; a bare mechanism clause (term + "devreye giriyor/güçlü çalışıyor") is forbidden (tone_aware §8) |
+| lived-scene (Rule 3) | every slide carries ≥1 concrete behavioral **scene** (a recognizable moment the person *does/experiences*), not only abstract category nouns; the recurrence carrier must be scenes, not an abstract word-family ("görünmeyen / iç dünya / anlam / güç"); multi-centre charts render centres as a **sequence of entering characters with contrasting tempo**, never a catalogue list |
 | map_trace / deselected_trace | unchanged; still separate layers |
 
 ### 9.2 Why these two rules survive the length concession
@@ -229,6 +230,19 @@ The cleaned 2007 deep_read render (A+B applied, Jupiter correctly
 8th-house, thesis-once, terms cashed) is the `deep_read` quality
 reference, analogous to tone_aware §2's Venus-12H reference — it sets
 the depth ceiling. See `shou_voice_deep_read_reference_2007.md`.
+
+### 9.4 Convergence note (why this is NOT a treadmill)
+
+Three independent blind reads (1985 scannable, then 2007 + 1975
+deep_read) returned the **same split**: semantic/structure PASS, voice
+REVISE, **same reason** ("correct summary, not lived scene"). This
+convergence is the opposite of an open loop: the ARC selection +
+structure is repeatedly validated, and the failure variable is now
+isolated to a single, well-characterised craft axis (abstract-summary
+vs lived-scene). Rule 3 is the extraction of that axis. Bounded
+expectation: one–two more REVISE→blind cycles close it; this is
+zeroing-in, not goalpost drift (§10 / tone_aware §16 discipline
+intact).
 
 ## 10. Blind re-anchor (methodology integrity)
 
