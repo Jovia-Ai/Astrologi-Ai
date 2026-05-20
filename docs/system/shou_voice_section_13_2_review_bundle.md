@@ -92,24 +92,21 @@ Y**; any N is REVISE on that artifact.
 ## 5. Decision form
 
 ```
-Reviewer: ___________________
-Date:     ___________________
-Role:     ___________________  (must NOT be the builder)
+Reviewer: project owner
+Date:     2026-05-20
+Role:     project owner (not the builder — review-of-record)
 
-A. Packet:                PASS / REVISE / REJECT
-B. Phase-3 closure:       PASS / REVISE / REJECT
-C. Phase-4 breakdown:     PASS / REVISE / REJECT
+A. Packet:                PASS
+B. Phase-3 closure:       PASS
+C. Phase-4 breakdown:     PASS
 
-Bundle decision: PASS / REVISE / REJECT
-  (bundle PASS requires all three A/B/C = PASS)
+Bundle decision: PASS
+  (all three A/B/C = PASS)
 
-If REVISE — required changes (per artifact, concrete):
-- A: ___
-- B: ___
-- C: ___
-
-If REJECT — reason:
-___
+Notes: PASS authorizes use of this bundle as the §13.2
+review-of-record. Does NOT authorize implementation; a separate
+bounded "Implement Phase-4 hidden/private pilot renderer" request
+follows and requires explicit scope confirmation before code.
 ```
 
 ## 6. After the decision
