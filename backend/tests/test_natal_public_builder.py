@@ -2981,6 +2981,36 @@ def test_v0_10_phase4_deep_read_renderer_flag_is_public_noop_for_hidden_private_
     assert rendered["profile_narrative_projection_v1"]["profile_public"] == baseline["profile_narrative_projection_v1"]["profile_public"]
 
 
+def test_v0_10_phase4_internal_marker_does_not_appear_anywhere_in_public_payload(monkeypatch) -> None:
+    """B3 leakage guard: with both flags on, the internal
+    `deep_read_phase4_render_path` marker must not appear anywhere in
+    the rendered public payload (cards, traces, evidence,
+    composed_detail_cards lane, or v8 projection). Whole-payload
+    substring scan catches any path the allowlist might miss.
+    """
+    import json as _json
+
+    _v0_10_phase2_set_flags(monkeypatch)
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA",
+        "true",
+    )
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_DEEP_READ_RENDERER",
+        "true",
+    )
+    rendered = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+    payload_text = _json.dumps(rendered, ensure_ascii=False)
+    assert "deep_read_phase4_render_path" not in payload_text
+    # Phase-3 internal metadata also must not leak (regression).
+    assert "deep_read_phase3" not in payload_text
+
+
 def test_v0_10_phase4_deep_read_renderer_flag_with_phase3_metadata_changes_hidden_private_card_content_only(monkeypatch) -> None:
     """Phase-4 B2 engagement at the public boundary.
 

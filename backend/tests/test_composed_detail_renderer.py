@@ -570,6 +570,167 @@ def test_render_relationship_hidden_private_love_card_v0_10_phase4_does_not_inli
     assert "deny_reasons" in origin
 
 
+def _v0_10_phase4_render_with_all_flags(monkeypatch) -> dict:
+    """B3 helper: render the canonical hidden/private composed
+    candidate with all pilot flags on (Phase-3 metadata + Phase-4
+    renderer). Returns the rendered card. Centralises the env setup
+    so each protective test stays focused on its own assertion.
+    """
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA",
+        "true",
+    )
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_DEEP_READ_RENDERER",
+        "true",
+    )
+    composed = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+    rendered = render_relationship_hidden_private_love_card_v0_10_phase2(
+        composed,
+        source_kind="composed_semantic",
+    )
+    assert rendered is not None
+    return rendered
+
+
+def test_render_relationship_hidden_private_love_card_v0_10_phase4_gift_slide_avoids_motivational_drift(monkeypatch) -> None:
+    """B3: gift slide carries observational power, not coaching /
+    motivational uplift. Forbidden phrases drawn from authoring
+    packet §6 bad examples for the `gift` role.
+    """
+    rendered = _v0_10_phase4_render_with_all_flags(monkeypatch)
+    gift_slides = [s for s in rendered["slides"] if s["id"].endswith("::gift_in_silence")]
+    assert len(gift_slides) == 1
+    gift = gift_slides[0]
+    forbidden_gift_phrases = (
+        "bu seni özel yapar",
+        "her şeyi başarırsın",
+        "kesinlikle şunu yaşarsın",
+        "kadersel olarak",
+        "ışıklı olursun",
+        "kendinin en iyi versiyonu",
+        "korkularını bırak",
+        "daha güçlü ve",
+    )
+    body_lower = gift["body"].lower()
+    title_lower = gift["title"].lower()
+    for needle in forbidden_gift_phrases:
+        assert needle not in body_lower, ("gift_in_silence body motivational drift", needle)
+        assert needle not in title_lower, ("gift_in_silence title motivational drift", needle)
+
+
+def test_render_relationship_hidden_private_love_card_v0_10_phase4_slides_avoid_banned_phrases(monkeypatch) -> None:
+    """B3: every Phase-4 slide must clear the tone_aware §8 banned
+    pattern list and the packet §6 forbidden categories (clinical,
+    blame, determinist, soft-coercion, translation drift, faded /
+    'silik' framing).
+    """
+    rendered = _v0_10_phase4_render_with_all_flags(monkeypatch)
+    banned_phrases = (
+        # tone_aware §8 forbidden patterns
+        "mesele sadece",
+        "otomatik olarak",
+        "bu çizgi çalışır",
+        "potansiyel birlikte çalışır",
+        # packet §6 bad-example tokens (categorical fails)
+        "silik",
+        "bağlanma bozukluğu",
+        "terk edilme travma",
+        "tema aktive eder",
+        "süreç işlenir",
+        # determinist / blame
+        "ailen sana",
+        "annen seni",
+        "babanın",
+        "o yüzden böylesin",
+        # forbidden gift / integration tokens already covered, but
+        # double-guard the most quotable failure tokens
+        "her şeyi başarırsın",
+        "kendinin en iyi versiyonu",
+    )
+    for slide in rendered["slides"]:
+        text = f"{slide.get('title', '')}\n{slide.get('body', '')}".lower()
+        for needle in banned_phrases:
+            assert needle not in text, (slide["id"], needle)
+
+
+def test_render_relationship_hidden_private_love_card_v0_10_phase4_slides_do_not_leak_trace_surface_tokens(monkeypatch) -> None:
+    """B3: map_trace and deselected_trace are internal in this first
+    pass (request §2 + breakdown §6.6). Their token shapes
+    (`<=` mapping arrows, `=pending` / `=deferred` markers) must not
+    appear in any inline slide body or title.
+    """
+    rendered = _v0_10_phase4_render_with_all_flags(monkeypatch)
+    trace_tokens = (
+        "<=",
+        "=pending",
+        "=deferred",
+        "lived_scene",
+        "shadow_or_friction",
+        "growth_direction",
+        "private_scene",
+        "hidden_mechanism",
+        "protective_pattern",
+        "gift_in_silence",
+        "safe_visibility",
+        "identity_polarity",
+        "held_plurality",
+        "emotional_base",
+        "pattern_to_gift",
+        "deep_read_phase3",
+        "deep_read_phase4",
+    )
+    for slide in rendered["slides"]:
+        text = f"{slide.get('title', '')}\n{slide.get('body', '')}".lower()
+        for needle in trace_tokens:
+            assert needle not in text, (slide["id"], needle)
+
+
+def test_render_relationship_hidden_private_love_card_v0_10_phase4_does_not_engage_for_non_pilot_signature(monkeypatch) -> None:
+    """B3 overreach guard (breakdown §7 1975-class case at the gate
+    layer): when both flags are on but the candidate does NOT match
+    the hidden/private pilot signature, the Phase-2 allowlist gate
+    rejects upstream and Phase-4 never engages. The gate is in
+    front of the routing, not behind it.
+    """
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA",
+        "true",
+    )
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_DEEP_READ_RENDERER",
+        "true",
+    )
+    # Same mutation the Phase-2 reject test uses (Moon Libra 10
+    # breaks the hidden/private signature). The Phase-2 allowlist
+    # gate must reject; Phase-4 must NOT bypass it.
+    source = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+    source["evidence_trace"]["primitive_facts"]["placements"][1] = {
+        "planet": "Moon",
+        "sign": "Libra",
+        "house": 10,
+    }
+    assert render_relationship_hidden_private_love_card_v0_10_phase2(
+        source, source_kind="composed_semantic"
+    ) is None
+
+
 def test_render_relationship_hidden_private_love_card_v0_10_phase4_does_not_attach_without_phase3_metadata(monkeypatch) -> None:
     """Phase-4 flag on but Phase-3 metadata absent (Phase-3 flag off):
     Phase-4 routing must NOT engage. The eligibility chain
