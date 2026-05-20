@@ -3132,3 +3132,120 @@ def test_v0_10_phase2_flag_changes_interpret_ui_cache_key() -> None:
         None,
     )
     assert off_key != on_key
+
+
+# -------- S2.1.1 V26 LIVE branch — pre-migration snapshot coverage --------
+#
+# These tests lock the V26 LIVE branch
+# (build_core_story_plan + render_core_story) output contract so the
+# consolidation migration (matrix §7.2a → CONSOLIDATE-with-contract-
+# preservation, per audit `docs/system/audits/v26_core_story_downstream
+# _consumer_audit.md`) does not silently change downstream behavior.
+#
+# Coverage targets (audit §"Risk 1 · Coverage gap"):
+#   - public["core_story"] type + non-emptiness + stable content anchor
+#   - response["core_story_plan"] schema (downstream of: core_story_ui
+#     builder + data_quality payload)
+#   - profile_v8.identity_axis_body silent fallback (audit §"Risk 3")
+#
+# First pass uses the canonical 1996-12-28 Istanbul fixture (also the
+# Phase-4 pilot reference). Extension to other fixtures is a separate
+# follow-on if needed.
+
+
+def test_v26_live_public_core_story_baseline_for_1996_istanbul() -> None:
+    """Lock public['core_story'] type + non-emptiness + a stable
+    content anchor for the canonical natal fixture. Migration must
+    preserve these invariants."""
+    public = build_public_natal_view(
+        _artifact_response(
+            "natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"
+        ),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+    cs = public.get("core_story")
+    assert isinstance(cs, str), (
+        f"public['core_story'] must be str, got {type(cs).__name__}"
+    )
+    assert len(cs.strip()) > 100, (
+        f"public['core_story'] suspiciously short: len={len(cs)}"
+    )
+    # Stable opener phrase — identifies this chart's V26-produced
+    # text. If migration changes the rendering substantively, this
+    # substring check will catch it as a content-shift signal.
+    assert "kimliğinin merkezindedir" in cs, (
+        "stable opener fragment missing — possible V26 rendering shift"
+    )
+
+
+def test_v26_live_core_story_plan_schema_baseline_for_1996_istanbul() -> None:
+    """Lock response['core_story_plan'] schema for the canonical
+    natal fixture. Two downstream builders depend on this shape:
+      - build_core_story_ui (natal_interpretation.py:2591)
+      - _build_data_quality_payload (natal_interpretation.py:2645)
+    """
+    response = _artifact_response(
+        "natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"
+    )
+    plan = response.get("core_story_plan")
+    assert isinstance(plan, dict), (
+        f"core_story_plan must be dict, got {type(plan).__name__}"
+    )
+    # Lock the stable top-level keys downstream consumers rely on.
+    required_keys = {
+        "engine_version",
+        "schema_version",
+        "sections",
+        "tone_profile",
+        "upper_meaning",
+    }
+    actual_keys = set(plan.keys())
+    missing = required_keys - actual_keys
+    assert not missing, f"core_story_plan missing required keys: {missing}"
+    # Lock contract markers.
+    assert plan.get("schema_version") == "narrative_plan.v1", (
+        f"unexpected schema_version: {plan.get('schema_version')}"
+    )
+    assert plan.get("engine_version") == "core_story.v1", (
+        f"unexpected engine_version: {plan.get('engine_version')}"
+    )
+    # sections is a non-empty list (downstream builders iterate it).
+    sections = plan.get("sections")
+    assert isinstance(sections, list), (
+        f"sections must be list, got {type(sections).__name__}"
+    )
+    assert len(sections) > 0, "core_story_plan.sections must be non-empty"
+
+
+def test_v26_live_profile_v8_identity_axis_body_filled_for_1996_istanbul() -> None:
+    """Lock the profile_v8.identity_axis.body field — audit Risk 3.
+    The body is filled by core_story_ui.text OR (silent fallback)
+    V26's core_story. Migration must not break either source path
+    such that this surface ends up empty.
+    """
+    public = build_public_natal_view(
+        _artifact_response(
+            "natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"
+        ),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+    profile_v8 = public.get("profile_v8")
+    assert isinstance(profile_v8, dict), (
+        "profile_v8 must be present with include_full_profile=True"
+    )
+    identity_axis = profile_v8.get("identity_axis")
+    assert isinstance(identity_axis, dict), (
+        f"identity_axis must be a dict, got {type(identity_axis).__name__}"
+    )
+    body = identity_axis.get("body")
+    assert isinstance(body, str), (
+        f"identity_axis.body must be str, got {type(body).__name__}"
+    )
+    assert len(body.strip()) > 0, (
+        "identity_axis.body must be non-empty "
+        "(fed by core_story_ui.text or V26 core_story fallback)"
+    )
