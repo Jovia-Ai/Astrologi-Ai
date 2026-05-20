@@ -11,74 +11,18 @@ from app.engine.tone_apply import apply_tone
 from app.engine.tone_profile import ToneProfile
 from app.helpers.domain_normalizer import canon_domain
 from app.helpers.normalize import normalize_node_alias, normalize_planet_key
-from app.builders.narrative_renderer_v26 import build_domain_narrative_v26
 from app.builders.phrase_mapper import Claim, build_claim, default_phrase_map_config
 from app.narrative.style_packs.tr_v26 import STYLE_PACK_TR_V26, pick_identity_plan_tokens
-from app.style.style_pack_v26_tr import StylePackV26TR
 
-
-def build_narrative(
-    meta: Mapping[str, Any],
-    focus_composites: Sequence[Mapping[str, Any]],
-    phase2_slots: Mapping[str, Mapping[str, Any]],
-    upper_meaning_selected: Mapping[str, Any] | None,
-    tone_profile: Mapping[str, Any] | ToneProfile | None,
-    meta_info: Mapping[str, Any] | None = None,
-    axis_activation: Mapping[str, Any] | None = None,
-) -> Dict[str, Any]:
-    domains = _domain_order(meta, phase2_slots)
-    tone = _resolve_tone_profile(tone_profile, meta, meta_info)
-    upper_content = (upper_meaning_selected or {}).get("content") if upper_meaning_selected else None
-    primary_domain = domains[0] if domains else "identity"
-    meta_info = meta_info or {}
-    axis_activation = axis_activation or {}
-
-    payload: Dict[str, Any] = {"domains": {}}
-    for domain in domains:
-        slots = _domain_slots(phase2_slots, domain)
-        selected, suppressed = _dedup_slots(domain, slots, meta_info, axis_activation)
-        title = _domain_title_from_focus(domain, focus_composites)
-        cfg = default_phrase_map_config()
-        claims = [
-            build_claim(
-                item,
-                domain=domain,
-                slot=item.get("slot") or "",
-                salience=item.get("salience_score") or 0.0,
-                cfg=cfg,
-            )
-            for item in selected
-        ]
-        ctx = _build_style_context(meta, axis_activation, domain)
-        upper = upper_meaning_selected if domain == primary_domain else None
-        rendered = build_domain_narrative_v26(ctx, focus_composites, claims, upper)
-        sections = [_apply_section_tone(section, tone) for section in rendered.sections]
-        sections, dropped = _drop_forbidden_sections(sections)
-        sections = _normalize_sections([section for section in sections if section["text"]])
-        text = "\n\n".join(section["text"] for section in sections)
-        payload["domains"][domain] = {
-            "title": rendered.title or title,
-            "text": text,
-            "sections": sections,
-            "debug": {
-                "selected": selected,
-                "suppressed": suppressed,
-                "needs_rewrite": dropped,
-                "ratios": _slot_ratios(selected),
-                "tone_profile": tone.to_dict(),
-                "claims": [
-                    {
-                        "meaning_key": claim.meaning_key,
-                        "theme_tags": claim.theme_tags,
-                        "salience": claim.salience,
-                        "signature": claim.signature,
-                    }
-                    for claim in claims
-                ],
-            },
-        }
-
-    return payload
+# V26 dead branch removed 2026-05-20 per matrix §7.2b + S2.2 trace
+# audit. `build_narrative`, the `build_domain_narrative_v26` import,
+# and the `StylePackV26TR` import were unused at runtime (no callsites
+# repo-wide; verified in `docs/system/audits/v26_trace_audit.md`).
+# The LIVE V26 symbols (`build_core_story_plan` here, `render_core_story`
+# in `narrative_renderer_v26.py`) remain — they are on the canonical
+# natal `/interpret` runtime path and are consumed via
+# `PublicNatalView.core_story`, `profile_v8.identity_axis_body`
+# fallback, and the `core_story_ui` + `data_quality` builders.
 
 
 CORE_STORY_SECTIONS = [

@@ -7,55 +7,13 @@ from typing import Any, Iterable, Mapping, Sequence
 from app.builders.phrase_mapper import Claim
 from app.engine.tone_apply import apply_tone
 from app.engine.tone_profile import ToneProfile
-from app.style.style_pack_v26_tr import StylePackV26TR
 
-
-@dataclass(frozen=True)
-class NarrativeDomainOutput:
-    title: str
-    sections: list[dict]
-    text: str
-
-
-def build_domain_narrative_v26(
-    ctx: dict[str, Any],
-    focus_composites: Sequence[Mapping[str, Any]],
-    selected_claims: Sequence[Claim],
-    upper: Mapping[str, Any] | None,
-) -> NarrativeDomainOutput:
-    domain = str(ctx.get("domain") or "identity")
-    style = StylePackV26TR()
-
-    focus_claims = _select_focus_claims(selected_claims)
-    exp_claims = [claim for claim in selected_claims if claim.slot in {"mechanism", "cause"}]
-    pot_claims = [claim for claim in selected_claims if claim.slot in {"effect", "potential"}]
-    shd_claims = [claim for claim in selected_claims if claim.slot == "shadow"]
-
-    signature = focus_claims[0].signature if focus_claims else domain
-    meta_summary = str(ctx.get("meta_summary_text") or "")
-
-    recognition = style.recognition(domain, focus_claims, meta_summary, signature=signature)
-    experienced = style.experienced(domain, exp_claims, signature=signature)
-    potential = style.potential(domain, pot_claims, signature=signature)
-    shadow = style.shadow(domain, shd_claims, signature=signature)
-    upper_paras: list[str] = []
-    if upper and upper.get("enabled"):
-        upper_paras = style.render_upper(ctx, upper.get("content"))
-
-    sections: list[dict] = []
-    sections.extend(_section("recognition", recognition))
-    sections.extend(_section("experienced", experienced))
-    sections.extend(_section("potential", potential))
-    sections.extend(_section("shadow", shadow))
-    sections.extend(_section("upper_meaning", upper_paras))
-
-    text = _join_sections(sections)
-
-    return NarrativeDomainOutput(
-        title=style.title(domain),
-        sections=sections,
-        text=text,
-    )
+# V26 dead branch removed 2026-05-20 per matrix §7.2b + S2.2 trace
+# audit. `NarrativeDomainOutput`, `build_domain_narrative_v26`, and
+# the `StylePackV26TR` import were unused at runtime (only callers
+# were inside `narrative_binding.build_narrative`, which was itself
+# unused). `render_core_story` below remains — it is on the
+# canonical natal `/interpret` runtime path.
 
 
 CORE_STORY_SLOT_ORDER = ["cause", "mechanism", "effect", "shadow", "potential"]
