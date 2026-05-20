@@ -899,90 +899,37 @@ def _build_relationship_hidden_private_love_phase4_deep_read_slides(
 ) -> list[dict[str, str]]:
     """Phase-4 hidden/private pilot deep_read slides.
 
-    TR-primary template set. Same 5-surface-role structure as Phase-2
-    (private_scene → hidden_mechanism → protective_pattern →
-    gift_in_silence → safe_visibility) so the public slide contract is
-    preserved. Per Rule 4 each slide carries its own cadence; per
-    Rule 3 each opens on a lived behavior, not an abstract category;
-    per Rule 2 the thesis lands once (final slide) and is not
-    pre-stated; per Rule 1 each slide carries one spine.
+    Thin adapter: prose constants live in
+    `app.natal.narrative.phrase_lib_tr_deep_read.HIDDEN_PRIVATE_DEEP_READ_SLIDES_TR`
+    (canonical home, S4a per matrix §5.2 + audit
+    `docs/system/audits/phase4_to_phrase_lib_migration_pre_audit.md`).
+    This function only formats slide ids and emits the slide list in
+    the canonical surface-role order. Output is byte-identical to the
+    pre-migration inline implementation.
+
+    Per Rule 4 each slide carries its own cadence; per Rule 3 each
+    opens on a lived behavior, not an abstract category; per Rule 2
+    the thesis lands once (final slide) and is not pre-stated; per
+    Rule 1 each slide carries one spine.
 
     No inline origin_hint / past-claim language in this first pass
     (see render_relationship_hidden_private_love_card_v0_10_phase2
-    routing block for rationale).
+    routing block for rationale). S4b (deferred) will introduce a
+    render_slide_flow(...) helper and variant pool per slide.
     """
+    from app.natal.narrative.phrase_lib_tr_deep_read import (
+        HIDDEN_PRIVATE_DEEP_READ_SLIDES_TR,
+        HIDDEN_PRIVATE_DEEP_READ_SLIDE_ORDER,
+    )
+
     sid = source_id or "relationship_hidden_private_love_pattern"
     return [
         {
-            # private_scene · [ritim: sakin, içe dönük, yere basan]
-            "id": f"slide::{sid}::private_scene",
-            "title": "Hemen göstermiyorsun",
-            "body": (
-                "Sen birine karşı bir şey hissettiğinde onu hemen "
-                "gösterebilen yapıda değilsin. Önce içinde onun anlamını "
-                "düşünür, senin için ne ifade ettiğini anlamaya "
-                "çalışırsın. Bir şeyleri diğerlerine göre daha hassas "
-                "ve derinden işlediğin için, düşünmeden söylediğinde "
-                "karşı tarafın anlamayacağından ya da o hissin senin "
-                "içindeki anlamının bozulacağından çekiniyor "
-                "olabilirsin."
-            ),
-        },
-        {
-            # hidden_mechanism · [ritim: kontrast — dış bakıştan içe + placement entegre]
-            "id": f"slide::{sid}::hidden_mechanism",
-            "title": "Sessizliğin boşluk değil",
-            "body": (
-                "Bu yüzden dışarıdan biri seni bazen olduğundan sakin "
-                "ya da biraz uzak bulabilir. Oysa içinde sakinlik "
-                "değil, sürekli bir hareket var: sezgin, hayal gücün, "
-                "bağlanma biçimin orada güçlü çalıştığı için bazen "
-                "susarsın. Sezgilerinin \"şimdi\" dediği zamanı "
-                "beklersin. 12. evinin Yay'da olması bu beklemeye "
-                "bir yön daha katıyor — bir his sende anlam kazanmadan, "
-                "daha büyük bir bütüne nasıl bağlandığını hissetmeden "
-                "dışarı vermeyebilirsin."
-            ),
-        },
-        {
-            # protective_pattern · [ritim: sessiz, dürüst, dramsız — konuşan ton]
-            "id": f"slide::{sid}::protective_pattern",
-            "title": "Saklamak her zaman kaçmak değil",
-            "body": (
-                "Aslında senin yaptığın korkmak ya da kaçmak değil; "
-                "bir şeyi koruma biçimindir. Onu başkasının sözüyle "
-                "bozdurmadan, kendi içinde sahip çıkmak istersin. "
-                "Doğru şekilde dışarı çıkmasını, karşı tarafın da "
-                "onu öyle hissetmesini önemsersin. Yine de bir "
-                "bedeli olabilir: her duyguyu tek başına taşımak yorar."
-            ),
-        },
-        {
-            # gift_in_silence · [ritim: sıcak, açılan, cömert + light placement]
-            "id": f"slide::{sid}::gift_in_silence",
-            "title": "İçten bağlılık sende güçlü çalışır",
-            "body": (
-                "Sevgi sende hemen tüketilmek istemez. Venüs'ün "
-                "Yay'da işlemesi sevgine anlam arayan bir karakter "
-                "veriyor: sevdiğin şeye dair sessiz ama derin bir "
-                "bağlılık taşırsın. Güven oluştuğunda bu sıcaklık "
-                "cömert, anlamlı ve uzun süre yaşayan bir bağa "
-                "dönüşebilir — kolay söylenmeyen ama varlığı "
-                "hissedilen bir şey."
-            ),
-        },
-        {
-            # safe_visibility · [ritim: yatışan, eşik — imza bir kez]
-            "id": f"slide::{sid}::safe_visibility",
-            "title": "İçeride taşımak ile gösterebilmek arasında",
-            "body": (
-                "Her şeyi hemen açmak zorunda değilsin. Ama içeride "
-                "büyüttüğün şeyi güvendiğin bir yerde gerçek temasla "
-                "buluşturabildiğinde, bu sende hem koruyan hem "
-                "ilişkini daha gerçek kılan bir denge kurar. Sevgi "
-                "sadece içeride taşınmaya devam etmek zorunda değil."
-            ),
-        },
+            "id": f"slide::{sid}::{role}",
+            "title": HIDDEN_PRIVATE_DEEP_READ_SLIDES_TR[role]["title"],
+            "body": HIDDEN_PRIVATE_DEEP_READ_SLIDES_TR[role]["body"],
+        }
+        for role in HIDDEN_PRIVATE_DEEP_READ_SLIDE_ORDER
     ]
 
 

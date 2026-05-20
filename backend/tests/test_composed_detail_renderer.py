@@ -1138,3 +1138,39 @@ def test_v0_9b_1_card_copy_has_no_p0_truthfulness_defects(monkeypatch) -> None:
             assert not _re.search(r"olması de\b", text), (key, field, text)
             assert "Bazen de." not in text, (key, field, text)
             assert "bazen de." not in text, (key, field, text)
+
+
+def test_hidden_private_deep_read_slides_constant_shape() -> None:
+    """S4a guard: the canonical prose constant in
+    phrase_lib_tr_deep_read has exactly the expected 5 surface_role
+    entries, each with non-empty title + body strings, in the
+    canonical order. Catches accidental drift, additions, or
+    structural changes that would silently break the Phase-4
+    builder adapter.
+
+    Adding new entries (e.g. an inline origin_hint surface) is OUT
+    OF SCOPE for S4a and would regress the Phase-4 authoring packet §4
+    opt-in-expandable contract.
+    """
+    from app.natal.narrative.phrase_lib_tr_deep_read import (
+        HIDDEN_PRIVATE_DEEP_READ_SLIDES_TR,
+        HIDDEN_PRIVATE_DEEP_READ_SLIDE_ORDER,
+    )
+
+    expected_roles = (
+        "private_scene",
+        "hidden_mechanism",
+        "protective_pattern",
+        "gift_in_silence",
+        "safe_visibility",
+    )
+    assert HIDDEN_PRIVATE_DEEP_READ_SLIDE_ORDER == expected_roles
+    assert set(HIDDEN_PRIVATE_DEEP_READ_SLIDES_TR.keys()) == set(expected_roles)
+    assert len(HIDDEN_PRIVATE_DEEP_READ_SLIDES_TR) == 5
+    for role, entry in HIDDEN_PRIVATE_DEEP_READ_SLIDES_TR.items():
+        assert set(entry.keys()) == {"title", "body"}, role
+        assert isinstance(entry["title"], str) and entry["title"].strip(), role
+        assert isinstance(entry["body"], str) and entry["body"].strip(), role
+        # length sanity: titles short, bodies substantial (>100 chars)
+        assert len(entry["title"]) < 80, (role, len(entry["title"]))
+        assert len(entry["body"]) > 100, (role, len(entry["body"]))
