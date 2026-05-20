@@ -41,103 +41,16 @@ def build_core_story_plan(
     dynamic_insights: Mapping[str, Any] | None = None,
     composite_meanings: Mapping[str, Any] | None = None,
 ) -> Dict[str, Any]:
-    sections: list[Dict[str, Any]] = []
-    missing_slots: list[str] = []
-    fallback_used: list[str] = []
-    blocked_sections: list[str] = []
-    slot_empty_reasons: Dict[str, str] = {}
-    fallback_sources: Dict[str, str] = {}
-    by_domain_slot, by_domain = _index_phase2_accepted(phase2_snapshot)
-    accepted_domains = sorted(by_domain.keys()) if by_domain else sorted(phase2_snapshot.keys())
+    from app.natal.narrative.core_story import build_core_story_plan as _build_core_story_plan
 
-    headline_ref = _headline_ref(composite_meanings)
-    spine_refs = _paragraph_spine_refs(dynamic_insights)
-
-    for section_id, domain in CORE_STORY_SECTIONS:
-        slots: Dict[str, Any] = {}
-        if by_domain_slot:
-            for slot_name in ("cause", "mechanism", "effect", "shadow", "potential"):
-                frag = by_domain_slot.get((domain, slot_name))
-                if isinstance(frag, Mapping):
-                    slots[slot_name] = frag
-        else:
-            domain_entry = phase2_snapshot.get(domain) or {}
-            slots = domain_entry.get("slots") or {}
-            if not isinstance(slots, Mapping):
-                slots = {}
-        filled, used_fallback, missing, reasons, sources = _fill_section_slots(slots, domain)
-        sentence_target = _sentence_target(section_id)
-        sentences = _build_section_sentences(
-            domain,
-            slots,
-            by_domain.get(domain) or [],
-            target_count=sentence_target,
-        )
-        if missing:
-            missing_slots.extend([f"{domain}.{slot}" for slot in missing])
-        if used_fallback:
-            fallback_used.extend([f"{domain}.{slot}" for slot in used_fallback])
-        for slot, reason in reasons.items():
-            slot_empty_reasons[f"{domain}.{slot}"] = reason
-        for slot, source in sources.items():
-            fallback_sources[f"{domain}.{slot}"] = source
-        if not filled:
-            blocked_sections.append(section_id)
-        sections.append(
-            {
-                "id": section_id,
-                "section_id": section_id,
-                "domain": domain,
-                "required": True,
-                "slots": filled,
-                "headline": headline_ref if section_id == "inner_core" else None,
-                "spine": spine_refs.get(section_id),
-                "sentences": sentences,
-                "fallback_used": bool(used_fallback),
-                "missing_slots": missing,
-            }
-        )
-
-    upper_enabled = bool((upper_meaning_gate or {}).get("enabled"))
-    upper_payload = {
-        "enabled": upper_enabled,
-        "reasons": (upper_meaning_gate or {}).get("reasons") or [],
-        "fragment_ids": [],
-    }
-    engine_version = "core_story.v1"
-
-    spines = _build_core_story_spines(dynamic_insights)
-    selected_spines = _spines_by_section(spines)
-    spine_debug = _spine_debug(dynamic_insights, spines)
-    composite_selected = _select_composite_meanings(composite_meanings)
-    used_fragments = _collect_used_fragments(sections)
-    plan = {
-        "schema_version": "narrative_plan.v1",
-        "plan_id": _core_story_plan_id(sections, upper_payload, engine_version, composite_selected),
-        "sections": sections,
-        "upper_meaning": upper_payload,
-        "spines": spines,
-        "composite_meanings": {"selected": composite_selected},
-        "tone_profile": tone_profile if isinstance(tone_profile, Mapping) else None,
-        "data_quality": {
-            "fallback_used": fallback_used,
-            "missing_slots": missing_slots,
-            "blocked_sections": blocked_sections,
-        },
-        "engine_version": engine_version,
-        "debug": {
-            "slot_empty_reasons": slot_empty_reasons,
-            "fallback_sources": fallback_sources,
-            "upper_meaning_reasons": upper_payload["reasons"],
-            "phase2_domains": accepted_domains,
-            "max_domains": 3,
-            "selected_spines": selected_spines,
-            "spine_scores": spine_debug,
-            "composite_meanings": composite_selected,
-            "used_fragments": used_fragments,
-        },
-    }
-    return plan
+    return _build_core_story_plan(
+        phase2_snapshot,
+        meta_info,
+        tone_profile,
+        upper_meaning_gate,
+        dynamic_insights=dynamic_insights,
+        composite_meanings=composite_meanings,
+    )
 
 
 def _build_core_story_spines(dynamic_insights: Mapping[str, Any] | None) -> list[Dict[str, Any]]:

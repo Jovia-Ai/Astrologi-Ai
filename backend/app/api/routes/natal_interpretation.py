@@ -26,8 +26,7 @@ from app.builders.composite_guidance import build_guidance
 from app.builders.composite_interpreter import CompositeInterpretationBuilder
 from app.builders.composite_regulator import build_composite_regulation
 from app.builders.meta_binding import build_meta_summary
-from app.builders.narrative_binding import build_core_story_plan
-from app.builders.narrative_renderer_v26 import render_core_story
+from app.natal.narrative.core_story import build_core_story_plan, render_core_story
 from app.builders.narrative_builder import JoviaSemanticNarrativeBuilder, SLOT_NAMES
 from app.builders.output_compactor import build_user_compact
 from app.builders.phase2_selector import select_phase2_fragments

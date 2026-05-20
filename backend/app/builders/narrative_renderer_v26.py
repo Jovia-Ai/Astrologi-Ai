@@ -30,163 +30,18 @@ def render_core_story(
     debug: bool = False,
     debug_payload: dict[str, Any] | None = None,
 ) -> str:
-    tone = _resolve_tone_profile(tone_profile)
-    frag_index = _build_fragment_index(phase2_snapshot)
-    meaning_index = _build_meaning_index(composite_meanings)
+    from app.natal.narrative.core_story import render_core_story as _render_core_story
 
-    paragraph_debug: Dict[str, Any] = {
-        "sentence_counts": {},
-        "connector_counts": {},
-        "used_fragment_ids": {},
-        "used_slots": {},
-        "shadow_linked": {},
-        "micro_lived_added": {},
-    }
-
-    headline_text = ""
-    master_ref = _headline_ref(core_story_plan)
-    if master_ref:
-        master = meaning_index.get((master_ref["meaning_id"], master_ref["instance_id"]))
-        if master:
-            narrative = master.get("narrative") or {}
-            headline_text = str(narrative.get("headline") or master.get("headline") or "").strip()
-
-    inner_entries = _section_entries(core_story_plan, "inner_core")
-    emotions_entries = _section_entries(core_story_plan, "emotions")
-    mind_entries = _section_entries(core_story_plan, "mind")
-    relationships_entries = _section_entries(core_story_plan, "relationships")
-
-    global_connector_budget = 2
-    p1_payload = _synthesize_paragraph(
-        anchor=_first_text(_slot_texts(inner_entries, "cause", frag_index)),
-        mechanisms=_slot_texts(inner_entries, "mechanism", frag_index),
-        effects=_slot_texts(inner_entries, "effect", frag_index),
-        potentials=_slot_texts(inner_entries, "potential", frag_index),
-        shadows=_slot_texts(inner_entries, "shadow", frag_index),
-        softener=headline_text or None,
-        budget_sentences=6,
-        max_connectors=1,
+    return _render_core_story(
+        phase2_snapshot,
+        core_story_plan,
+        tone_profile,
+        dynamic_insights=dynamic_insights,
+        composite_meanings=composite_meanings,
+        upper_meaning_selected=upper_meaning_selected,
+        debug=debug,
+        debug_payload=debug_payload,
     )
-    p1_payload = _ensure_min_sentences_payload(p1_payload, phase2_snapshot, min_count=3)
-    global_connector_budget = max(0, global_connector_budget - int(p1_payload.get("connector_count") or 0))
-
-    psychology_texts = (
-        _slot_texts(emotions_entries, "cause", frag_index)
-        + _slot_texts(emotions_entries, "mechanism", frag_index)
-        + _slot_texts(emotions_entries, "effect", frag_index)
-        + _slot_texts(emotions_entries, "potential", frag_index)
-        + _slot_texts(emotions_entries, "shadow", frag_index)
-    )
-    micro_lived = (
-        "Bazen içeride çok şey varken dışarıya daha azı çıkıyor gibi hissediyor olabilirsin."
-        if len(psychology_texts) >= 2
-        else ""
-    )
-    p2_payload = _synthesize_paragraph(
-        anchor=_first_text(_slot_texts(emotions_entries, "cause", frag_index)),
-        mechanisms=_slot_texts(emotions_entries, "mechanism", frag_index)
-        + _slot_texts(mind_entries, "mechanism", frag_index),
-        effects=_slot_texts(emotions_entries, "effect", frag_index) or _slot_texts(mind_entries, "effect", frag_index),
-        potentials=_slot_texts(emotions_entries, "potential", frag_index),
-        shadows=_slot_texts(emotions_entries, "shadow", frag_index),
-        extras=[micro_lived] if micro_lived else None,
-        softener=None,
-        budget_sentences=6,
-        max_connectors=1 if global_connector_budget > 0 else 0,
-    )
-    p2_payload = _ensure_min_sentences_payload(p2_payload, phase2_snapshot, min_count=3)
-    global_connector_budget = max(0, global_connector_budget - int(p2_payload.get("connector_count") or 0))
-
-    p3_payload = _synthesize_paragraph(
-        anchor=_first_text(_slot_texts(relationships_entries, "cause", frag_index)),
-        mechanisms=_slot_texts(relationships_entries, "mechanism", frag_index),
-        effects=_slot_texts(relationships_entries, "effect", frag_index)
-        + _slot_texts(inner_entries, "effect", frag_index),
-        potentials=_slot_texts(relationships_entries, "potential", frag_index),
-        shadows=_slot_texts(relationships_entries, "shadow", frag_index),
-        softener=None,
-        budget_sentences=6,
-        max_connectors=1 if global_connector_budget > 0 else 0,
-    )
-    p3_payload = _ensure_min_sentences_payload(p3_payload, phase2_snapshot, min_count=3)
-
-    paragraphs = []
-    for label, payload in (("p1", p1_payload), ("p2", p2_payload), ("p3", p3_payload)):
-        sentences = list(payload.get("sentences") or [])
-        if sentences and len(sentences) < 2:
-            accepted = ((phase2_snapshot.get("slots") or {}).get("accepted") or [])
-            used_keys = {_sentence_key(sentence) for sentence in sentences}
-            if isinstance(accepted, list):
-                for frag in accepted:
-                    if len(sentences) >= 2:
-                        break
-                    if not isinstance(frag, Mapping):
-                        continue
-                    raw = frag.get("original_text") or frag.get("normalized_text") or ""
-                    if not raw:
-                        continue
-                    for piece in _split_sentences(raw):
-                        normalized = _normalize_sentence(piece)
-                        key = _sentence_key(normalized)
-                        if not key or key in used_keys:
-                            continue
-                        sentences.append(normalized)
-                        used_keys.add(key)
-                        break
-            payload["sentences"] = sentences
-            payload["sentence_count"] = len(sentences)
-            payload["text"] = " ".join(sentences).strip()
-        if debug_payload is not None:
-            paragraph_debug["sentence_counts"][label] = payload.get("sentence_count", 0)
-            paragraph_debug["connector_counts"][label] = payload.get("connector_count", 0)
-            paragraph_debug["used_fragment_ids"][label] = payload.get("used_fragment_ids", [])
-            paragraph_debug["used_slots"][label] = payload.get("used_slots", [])
-            paragraph_debug["shadow_linked"][label] = payload.get("shadow_linked", False)
-            paragraph_debug["micro_lived_added"][label] = payload.get("micro_lived_added", False)
-        text = payload.get("text") or ""
-        if text:
-            text = _collapse_repeated_leads(text)
-            text = _polish_core_story_paragraph(text)
-            payload["text"] = text
-        if text:
-            paragraphs.append(text)
-
-    upper_paragraph = _render_upper_meaning(upper_meaning_selected)
-    if upper_paragraph and paragraphs:
-        paragraphs[-1] = _collapse_repeated_leads(_normalize_sentence(f"{paragraphs[-1]} {upper_paragraph}"))
-    elif upper_paragraph:
-        paragraphs.append(upper_paragraph)
-
-    if not paragraphs:
-        fallback: list[str] = []
-        accepted = ((phase2_snapshot.get("slots") or {}).get("accepted") or [])
-        for frag in accepted[:3]:
-            if not isinstance(frag, Mapping):
-                continue
-            t = frag.get("original_text") or frag.get("normalized_text") or ""
-            t = str(t).strip()
-            if t:
-                fallback.append(_normalize_sentence(t))
-        paragraphs = [p for p in fallback if p]
-
-    paragraphs = [_polish_core_story_paragraph(_apply_tone_safe(p, tone, "core_story")) for p in paragraphs if p]
-    text = "\n\n".join([para.strip() for para in paragraphs if para and para.strip()])
-
-    if debug_payload is not None:
-        paragraph_debug["upper_meaning"] = {"included": bool(upper_paragraph)}
-        debug_payload["core_story_synthesis"] = {
-            "p1": {
-                "used_slots": paragraph_debug["used_slots"].get("p1", []),
-                "shadow_linked": paragraph_debug["shadow_linked"].get("p1", False),
-            },
-            "p2": {
-                "micro_lived_added": paragraph_debug["micro_lived_added"].get("p2", False),
-            },
-            "upper_meaning": {"included": bool(upper_paragraph)},
-        }
-    elif debug:
-        print("DEBUG core_story:", paragraph_debug)
-    return text
 
 
 def _select_focus_claims(claims: Sequence[Claim], *, limit: int = 2) -> list[Claim]:
