@@ -7,6 +7,24 @@
 > (free = pattern grammar, premium = LLM compose) that both consume
 > the same committed Plan layer.
 
+> **POST-AUDIT AMENDMENT (2026-05-20).** Original §3 (pattern grammar)
+> was written greenfield, as if no comparable infrastructure
+> existed. The narrative-layer audit
+> (`shou_narrative_layer_inventory.md`) corrects this:
+> `phrase_lib_tr_profile.py` + `render_block_template()` +
+> `editorial_render_policy.py` + `humanize_tr.py` already form
+> ~70% of the proposed free-path stack across 4–5 dispersed layers
+> totalling ~5,700+ lines. The remaining work is **consolidation +
+> extension**, NOT greenfield invention. §3 conclusions still
+> describe the desired *shape*, but the path to that shape is via
+> the existing layers, not from scratch. §6 feasibility prototype
+> proposal needs revising to build on the existing stack, not parallel
+> to it. The LLM premium path (§4), Guard layer (§5.2), and TR
+> morphology design call (§3.5) remain valid as written. The decision
+> matrix step suggested by the audit (rescue / consolidate / freeze /
+> delete) is the natural next artifact and supersedes the bare §6
+> prototype proposal.
+
 ## 1. Problem
 
 Phase-4 first-pass shipped one family (hidden/private deep_read) with
