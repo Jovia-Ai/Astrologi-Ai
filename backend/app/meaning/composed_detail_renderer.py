@@ -860,24 +860,122 @@ def render_relationship_hidden_private_love_card_v0_10_phase2(
         relationship_hidden_private_love_deep_read_renderer_enabled()
         and "deep_read_phase3" in card
     ):
-        # Phase-4 routing skeleton (B1 stub). Records that the Phase-4
-        # render path was traversed for this candidate. Content
-        # (title / body / slides) is intentionally unchanged from
-        # Phase-2 so the public byte-identical invariant
-        # (implementation request §4 invariant 1) holds. Actual
-        # content composition lands in B2 against the same routing.
-        # Gated on `deep_read_phase3 in card` so Phase-4 cannot
-        # activate without the Phase-3 eligibility chain having
-        # already passed (allowlist + origin-hint assessment).
-        # Stripped on promotion to the public lane like deep_read_phase3.
+        # Phase-4 B2 — actual content composition. Replaces the
+        # Phase-2 static slides with the deep_read voice per the
+        # frozen authoring packet (Rules 1–4) for the hidden/private
+        # pilot. Slide IDs / surface roles / shape are preserved
+        # (5 slides, each {id, title, body}) so the public contract
+        # stays stable (implementation request §4 invariant 2:
+        # no public schema widening in first pass).
+        #
+        # Inline origin / past-claim language is INTENTIONALLY NOT
+        # added in this first pass: authoring packet §4 mandates
+        # origin_hint default = opt-in expandable (not inline), and
+        # the implementation request §2 defers auxiliary surfaces.
+        # The origin_hint role_binding telemetry remains intact in
+        # `deep_read_phase3` for a later opt-in surface decision.
+        #
+        # Gated on `deep_read_phase3 in card` so the Phase-3
+        # eligibility chain (allowlist + origin-hint assessment) is
+        # required. Marker is stripped on promotion by the
+        # _strip_to_public_visible allowlist.
+        card["slides"] = _build_relationship_hidden_private_love_phase4_deep_read_slides(
+            source_id=source_id,
+        )
         card["deep_read_phase4_render_path"] = {
-            "version": "v0_10_phase4_skeleton",
+            "version": "v0_10_phase4_minimal",
             "source_kind": str(source_kind),
-            "stub": True,
+            "stub": False,
+            "slide_count": len(card["slides"]),
+            "inline_origin_hint": False,
         }
     if not _meets_relationship_hidden_private_love_public_quality(card):
         return None
     return card
+
+
+def _build_relationship_hidden_private_love_phase4_deep_read_slides(
+    *, source_id: str,
+) -> list[dict[str, str]]:
+    """Phase-4 hidden/private pilot deep_read slides.
+
+    TR-primary template set. Same 5-surface-role structure as Phase-2
+    (private_scene → hidden_mechanism → protective_pattern →
+    gift_in_silence → safe_visibility) so the public slide contract is
+    preserved. Per Rule 4 each slide carries its own cadence; per
+    Rule 3 each opens on a lived behavior, not an abstract category;
+    per Rule 2 the thesis lands once (final slide) and is not
+    pre-stated; per Rule 1 each slide carries one spine.
+
+    No inline origin_hint / past-claim language in this first pass
+    (see render_relationship_hidden_private_love_card_v0_10_phase2
+    routing block for rationale).
+    """
+    sid = source_id or "relationship_hidden_private_love_pattern"
+    return [
+        {
+            # private_scene · [ritim: sakin, içe dönük, sarmalayıcı]
+            "id": f"slide::{sid}::private_scene",
+            "title": "Hemen göstermiyorsun",
+            "body": (
+                "Birine karşı bir şey hissettiğinde onu hemen dışarı "
+                "vermeyebilirsin. Önce içinde gezdirir, tartar, "
+                "olgunlaştırırsın. Erken açığa çıkarsa anlaşılmayacak "
+                "ya da bozulacakmış gibi gelir — bu yüzden duygun "
+                "çoğu zaman önce sessiz bir yerde şekillenir."
+            ),
+        },
+        {
+            # hidden_mechanism · [ritim: kontrast — dış bakıştan içe dönüş]
+            "id": f"slide::{sid}::hidden_mechanism",
+            "title": "Sessizliğin boşluk değil",
+            "body": (
+                "Dışarıdan biri sana baktığında sakin, hatta biraz uzak "
+                "bulabilir. Oysa içeride boşluk yok; sürekli bir "
+                "hareket var: sezgin, hayal gücün, bağlanma biçimin "
+                "orada güçlü çalışır. O alan bir bekleme odası değil "
+                "— bir hazırlık odası. Bir şey orada olgunlaşır, ve "
+                "ancak zamanı gelince dışarı çıkar."
+            ),
+        },
+        {
+            # protective_pattern · [ritim: sessiz, dürüst, yumuşak — dramsız]
+            "id": f"slide::{sid}::protective_pattern",
+            "title": "Saklamak her zaman kaçmak değil",
+            "body": (
+                "İçindeki şeyi hemen söylemediğinde bunu bazen kaçmak "
+                "gibi okuyabilirsin. Ama her zaman kaçmak değildir. "
+                "Bazen bir şeyi koruma biçimindir — onu başkasının "
+                "sözüyle bozdurmadan, kendi içinde sahip çıkmak. Yine "
+                "de bir bedeli olabilir: her duyguyu tek başına "
+                "taşımak yorar."
+            ),
+        },
+        {
+            # gift_in_silence · [ritim: sıcak, açılan, cömert]
+            "id": f"slide::{sid}::gift_in_silence",
+            "title": "İçten bağlılık sende güçlü çalışır",
+            "body": (
+                "Sevgi sende hemen tüketilmek istemez. Sevdiğin şeye "
+                "dair sessiz ama derin bir bağlılık taşırsın. Güven "
+                "oluştuğunda bu sıcaklık cömert, anlamlı ve uzun süre "
+                "yaşayan bir bağa dönüşebilir — kolay söylenmeyen ama "
+                "varlığı hissedilen bir şey."
+            ),
+        },
+        {
+            # safe_visibility · [ritim: yatışan, eşik — imza bir kez]
+            "id": f"slide::{sid}::safe_visibility",
+            "title": "İçeride taşımak ile gösterebilmek arasında",
+            "body": (
+                "Her şeyi hemen açmak zorunda değilsin. Ama içeride "
+                "büyüttüğün şeyi güvendiğin bir yerde gerçek temasla "
+                "buluşturabildiğinde, bu sende hem koruyan hem "
+                "ilişkini daha gerçek kılan bir denge kurar. Sevgi "
+                "sadece içeride taşınmaya devam etmek zorunda değil."
+            ),
+        },
+    ]
 
 
 def project_relationship_hidden_private_love_to_public_lane(

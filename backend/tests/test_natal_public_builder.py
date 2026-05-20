@@ -2981,10 +2981,15 @@ def test_v0_10_phase4_deep_read_renderer_flag_is_public_noop_for_hidden_private_
     assert rendered["profile_narrative_projection_v1"]["profile_public"] == baseline["profile_narrative_projection_v1"]["profile_public"]
 
 
-def test_v0_10_phase4_deep_read_renderer_flag_with_phase3_metadata_flag_is_public_noop(monkeypatch) -> None:
-    """Phase-4 flags are independent (request §3): Phase-3 metadata
-    flag on AND Phase-4 renderer flag on together must still be a
-    public no-op until renderer behavior is added.
+def test_v0_10_phase4_deep_read_renderer_flag_with_phase3_metadata_changes_hidden_private_card_content_only(monkeypatch) -> None:
+    """Phase-4 B2 engagement at the public boundary.
+
+    With Phase-3 metadata flag AND Phase-4 renderer flag both on, the
+    hidden/private pilot card's slide content must change (deep_read
+    voice replaces the Phase-2 static templates). The public PAYLOAD
+    SHAPE must remain identical — no new top-level keys, no widening
+    (implementation request §4 invariant 2). Other charts / surfaces
+    are untouched (no leakage).
     """
     _v0_10_phase2_set_flags(monkeypatch)
     monkeypatch.setenv(
@@ -3009,8 +3014,50 @@ def test_v0_10_phase4_deep_read_renderer_flag_with_phase3_metadata_flag_is_publi
         include_full_profile=True,
     )
 
-    assert _projection_surface_snapshot(rendered) == _projection_surface_snapshot(baseline)
-    assert rendered["profile_narrative_projection_v1"]["profile_public"] == baseline["profile_narrative_projection_v1"]["profile_public"]
+    # No public schema widening: top-level keys identical on both
+    # `profile_public` and the parent projection container.
+    baseline_pp = baseline["profile_narrative_projection_v1"]["profile_public"]
+    rendered_pp = rendered["profile_narrative_projection_v1"]["profile_public"]
+    assert set(rendered_pp.keys()) == set(baseline_pp.keys())
+    assert set(rendered["profile_narrative_projection_v1"].keys()) == set(
+        baseline["profile_narrative_projection_v1"].keys()
+    )
+
+    # Hidden/private composed_detail_cards content actually changed.
+    baseline_cards = baseline_pp.get("composed_detail_cards") or []
+    rendered_cards = rendered_pp.get("composed_detail_cards") or []
+    assert baseline_cards, "baseline must include the hidden/private card"
+    assert len(rendered_cards) == len(baseline_cards)
+
+    def _hidden_private(cards):
+        for card in cards:
+            if "hidden_private_love" in str(card.get("id") or "").lower() or (
+                "relationship_hidden_private_love_pattern" in str(card.get("source_candidate_id") or "")
+            ):
+                return card
+        return None
+
+    baseline_hp = _hidden_private(baseline_cards) or baseline_cards[0]
+    rendered_hp = _hidden_private(rendered_cards) or rendered_cards[0]
+
+    # Same card shape (no new fields on the card itself).
+    assert set(rendered_hp.keys()) == set(baseline_hp.keys())
+    # Slide structure preserved: 5 slides, same surface-role suffixes,
+    # same {id, title, body} keys.
+    assert len(rendered_hp["slides"]) == len(baseline_hp["slides"]) == 5
+    for r_slide, b_slide in zip(rendered_hp["slides"], baseline_hp["slides"]):
+        assert set(r_slide.keys()) == set(b_slide.keys()) == {"id", "title", "body"}
+        assert r_slide["id"] == b_slide["id"]
+    # Slide CONTENT differs (deep_read voice).
+    rendered_titles = [s["title"] for s in rendered_hp["slides"]]
+    baseline_titles = [s["title"] for s in baseline_hp["slides"]]
+    rendered_bodies = [s["body"] for s in rendered_hp["slides"]]
+    baseline_bodies = [s["body"] for s in baseline_hp["slides"]]
+    assert (rendered_titles, rendered_bodies) != (baseline_titles, baseline_bodies)
+
+    # No internal markers leaked.
+    assert "deep_read_phase3" not in rendered_hp
+    assert "deep_read_phase4_render_path" not in rendered_hp
 
 
 def test_v0_10_phase2_flag_changes_interpret_ui_cache_key() -> None:

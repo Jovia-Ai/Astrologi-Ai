@@ -405,12 +405,14 @@ def test_render_relationship_hidden_private_love_card_v0_10_phase2_phase3_intern
     assert "deep_read_phase3" not in promoted[0]
 
 
-def test_render_relationship_hidden_private_love_card_v0_10_phase4_routing_skeleton_attaches_internal_marker(monkeypatch) -> None:
-    """Phase-4 B1 routing: when Phase-4 flag is on AND Phase-3
-    metadata is present, the renderer attaches an internal
-    `deep_read_phase4_render_path` marker. Slides / title / body are
-    byte-identical to the Phase-3-only baseline (stub does not change
-    content; B2 will replace it with actual composition).
+def test_render_relationship_hidden_private_love_card_v0_10_phase4_renders_deep_read_slides(monkeypatch) -> None:
+    """Phase-4 B2 — actual composition. When Phase-4 flag is on AND
+    Phase-3 metadata is present, the renderer replaces the Phase-2
+    static slide set with the deep_read voice templates while
+    preserving the public slide contract (5 slides, surface roles,
+    {id, title, body} shape). Marker indicates real composition
+    (stub=False, version=v0_10_phase4_minimal). Inline origin/past
+    language is intentionally absent in this first pass.
     """
     monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
     monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
@@ -445,13 +447,33 @@ def test_render_relationship_hidden_private_love_card_v0_10_phase4_routing_skele
     assert rendered is not None
     marker = rendered.get("deep_read_phase4_render_path")
     assert isinstance(marker, dict)
-    assert marker["version"] == "v0_10_phase4_skeleton"
+    assert marker["version"] == "v0_10_phase4_minimal"
     assert marker["source_kind"] == "composed_semantic"
-    assert marker["stub"] is True
+    assert marker["stub"] is False
+    assert marker["slide_count"] == 5
+    assert marker["inline_origin_hint"] is False
 
-    # Public-facing content is byte-identical to the Phase-3-only
-    # baseline (stub does not change slides/title/body/why).
-    assert rendered["slides"] == baseline["slides"]
+    # Content actually changed: at least one slide differs from
+    # Phase-3-only baseline in title or body.
+    assert rendered["slides"] != baseline["slides"]
+    # All five surface_role slides are still present, same order,
+    # same id suffixes (public contract stable).
+    expected_suffixes = [
+        "private_scene",
+        "hidden_mechanism",
+        "protective_pattern",
+        "gift_in_silence",
+        "safe_visibility",
+    ]
+    assert len(rendered["slides"]) == 5
+    for slide, expected_suffix in zip(rendered["slides"], expected_suffixes):
+        assert set(slide.keys()) == {"id", "title", "body"}
+        assert slide["id"].endswith(f"::{expected_suffix}")
+        assert slide["title"].strip()
+        assert slide["body"].strip()
+
+    # Non-slide top-level fields unchanged from Phase-2 (no public
+    # schema widening; why_this_exists deferred to a later pass).
     assert rendered["why_this_exists"] == baseline["why_this_exists"]
     for key in (
         "id",
@@ -481,10 +503,71 @@ def test_render_relationship_hidden_private_love_card_v0_10_phase4_routing_skele
         },
     )
     assert len(promoted) == 1
-    # Internal marker must be stripped from the public-visible card by
-    # the _strip_to_public_visible allowlist.
+    # Internal markers stripped from the public card.
     assert "deep_read_phase4_render_path" not in promoted[0]
     assert "deep_read_phase3" not in promoted[0]
+    # Public slides carry the deep_read content.
+    public_titles = [s["title"] for s in promoted[0]["slides"]]
+    baseline_titles = [s["title"] for s in baseline["slides"]]
+    assert public_titles != baseline_titles
+
+
+def test_render_relationship_hidden_private_love_card_v0_10_phase4_does_not_inline_origin_or_past_claims(monkeypatch) -> None:
+    """First-pass scope (request §2 + authoring packet §4): the
+    inline 5-slide flow must NOT carry origin/past-claim language.
+    origin_hint is opt-in expandable by design; surfacing it inline
+    is deferred to a later authorized step. Phase-3 telemetry on the
+    role_binding remains intact for that later step.
+    """
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA",
+        "true",
+    )
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_DEEP_READ_RENDERER",
+        "true",
+    )
+    composed = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+    rendered = render_relationship_hidden_private_love_card_v0_10_phase2(
+        composed,
+        source_kind="composed_semantic",
+    )
+    assert rendered is not None
+    # Origin / past-claim language must not leak into inline slides.
+    forbidden_substrings = (
+        "öğrenmiş olabilirsin",
+        "zamanla böyle kurmuş",
+        "erken dönemde",
+        "çocukluğunda",
+        "ailen",
+        "annen",
+        "babam",
+        "babanın",
+        "travma",
+        "küçükken",
+    )
+    for slide in rendered["slides"]:
+        body_lower = slide["body"].lower()
+        title_lower = slide["title"].lower()
+        for needle in forbidden_substrings:
+            assert needle.lower() not in body_lower, (slide["id"], needle)
+            assert needle.lower() not in title_lower, (slide["id"], needle)
+    # Phase-3 origin_hint telemetry remains intact for a later
+    # opt-in surface decision.
+    phase3 = rendered.get("deep_read_phase3") or {}
+    role_bindings = phase3.get("role_bindings") or {}
+    origin = role_bindings.get("origin_hint") or {}
+    assert "eligible" in origin
+    assert "allow_reasons" in origin
+    assert "deny_reasons" in origin
 
 
 def test_render_relationship_hidden_private_love_card_v0_10_phase4_does_not_attach_without_phase3_metadata(monkeypatch) -> None:
