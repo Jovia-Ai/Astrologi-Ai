@@ -2950,6 +2950,69 @@ def test_v0_10_phase3_internal_metadata_flag_is_public_noop_for_hidden_private_p
     assert rendered["profile_narrative_projection_v1"]["profile_public"] == baseline["profile_narrative_projection_v1"]["profile_public"]
 
 
+def test_v0_10_phase4_deep_read_renderer_flag_is_public_noop_for_hidden_private_pilot(monkeypatch) -> None:
+    """Phase-4 implementation request §4 invariant 1: flag-off byte-identical.
+
+    Scaffolding chunk — the Phase-4 flag is not yet wired to any
+    rendering behavior, so toggling it on must produce a public
+    snapshot identical to the flag-off baseline. This locks the
+    invariant before any renderer branch is added.
+    """
+    _v0_10_phase2_set_flags(monkeypatch)
+    baseline = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_DEEP_READ_RENDERER",
+        "true",
+    )
+    rendered = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+
+    assert _projection_surface_snapshot(rendered) == _projection_surface_snapshot(baseline)
+    assert rendered["profile_narrative_projection_v1"]["profile_public"] == baseline["profile_narrative_projection_v1"]["profile_public"]
+
+
+def test_v0_10_phase4_deep_read_renderer_flag_with_phase3_metadata_flag_is_public_noop(monkeypatch) -> None:
+    """Phase-4 flags are independent (request §3): Phase-3 metadata
+    flag on AND Phase-4 renderer flag on together must still be a
+    public no-op until renderer behavior is added.
+    """
+    _v0_10_phase2_set_flags(monkeypatch)
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA",
+        "true",
+    )
+    baseline = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_DEEP_READ_RENDERER",
+        "true",
+    )
+    rendered = build_public_natal_view(
+        _artifact_response("natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json"),
+        locale="tr",
+        include_debug=True,
+        include_full_profile=True,
+    )
+
+    assert _projection_surface_snapshot(rendered) == _projection_surface_snapshot(baseline)
+    assert rendered["profile_narrative_projection_v1"]["profile_public"] == baseline["profile_narrative_projection_v1"]["profile_public"]
+
+
 def test_v0_10_phase2_flag_changes_interpret_ui_cache_key() -> None:
     import os
     from app.api.routes.natal_interpretation import (

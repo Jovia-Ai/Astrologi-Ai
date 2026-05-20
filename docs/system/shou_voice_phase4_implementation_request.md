@@ -182,22 +182,26 @@ signed off. Sign-off form:
 ```
 Owner confirmation
 ==================
-Date:        ___________________
-Owner:       ___________________
+Date:        2026-05-20
+Owner:       Sahra Deniz / project owner
 
-Confirmed scope (§2):              YES / NO
-Confirmed Phase-4 flag name (§3):  YES / NO  (if NO, name to use: ___)
-Confirmed allowed files (§5):      YES / NO
-Confirmed invariants (§4):         YES / NO
-Confirmed acceptance (§6):         YES / NO
-Confirmed stop-and-ask list (§7):  YES / NO
-Confirmed §10 grants/limits:       YES / NO
+Confirmed scope (§2):              YES
+Confirmed Phase-4 flag name (§3):  YES
+Confirmed allowed files (§5):      YES
+Confirmed invariants (§4):         YES
+Confirmed acceptance (§6):         YES
+Confirmed stop-and-ask list (§7):  YES
+Confirmed §10 grants/limits:       YES
 
-Overall: GO / NO-GO
+Overall: GO
 
 Notes:
-___
+Approved for Phase-4 hidden/private pilot implementation only.
+Scope limited to the existing parent/slides public contract.
+share_line / map_trace / deselected_trace remain internal or deferred.
+No endpoint, mobile, config, taxonomy, ARC/A2, or public schema
+widening is authorized.
 ```
 
 GO requires all rows YES. Any NO halts the request pending a revised
-scope. No code starts under a NO-GO.
+scope. No code starts under a NO-GO. **GO RECORDED 2026-05-20.**

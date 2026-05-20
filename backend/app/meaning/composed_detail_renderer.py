@@ -487,6 +487,23 @@ def relationship_hidden_private_love_phase3_internal_metadata_enabled() -> bool:
     )
 
 
+def relationship_hidden_private_love_deep_read_renderer_enabled() -> bool:
+    """Phase-4 hidden/private pilot deep_read renderer flag (default off).
+
+    Scaffolding only at this point. The flag is intentionally not wired
+    to any rendering behavior yet — it is introduced first so the
+    "flag-off no-op" invariant (Phase-4 implementation request §4.1)
+    can be locked by test before any renderer branch is added.
+
+    Per request §3 / §4: independent from the Phase-3
+    INTERNAL_METADATA flag; Phase-4 user-visible behavior must never
+    activate through the Phase-3 flag alone.
+    """
+    return _env_enabled(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_DEEP_READ_RENDERER"
+    )
+
+
 def _relationship_hidden_private_love_origin_hint_assessment(
     source: Mapping[str, Any],
 ) -> dict[str, Any]:
