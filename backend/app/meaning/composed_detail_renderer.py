@@ -914,53 +914,61 @@ def _build_relationship_hidden_private_love_phase4_deep_read_slides(
     sid = source_id or "relationship_hidden_private_love_pattern"
     return [
         {
-            # private_scene · [ritim: sakin, içe dönük, sarmalayıcı]
+            # private_scene · [ritim: sakin, içe dönük, yere basan]
             "id": f"slide::{sid}::private_scene",
             "title": "Hemen göstermiyorsun",
             "body": (
-                "Birine karşı bir şey hissettiğinde onu hemen dışarı "
-                "vermeyebilirsin. Önce içinde gezdirir, tartar, "
-                "olgunlaştırırsın. Erken açığa çıkarsa anlaşılmayacak "
-                "ya da bozulacakmış gibi gelir — bu yüzden duygun "
-                "çoğu zaman önce sessiz bir yerde şekillenir."
+                "Sen birine karşı bir şey hissettiğinde onu hemen "
+                "gösterebilen yapıda değilsin. Önce içinde onun anlamını "
+                "düşünür, senin için ne ifade ettiğini anlamaya "
+                "çalışırsın. Bir şeyleri diğerlerine göre daha hassas "
+                "ve derinden işlediğin için, düşünmeden söylediğinde "
+                "karşı tarafın anlamayacağından ya da o hissin senin "
+                "içindeki anlamının bozulacağından çekiniyor "
+                "olabilirsin."
             ),
         },
         {
-            # hidden_mechanism · [ritim: kontrast — dış bakıştan içe dönüş]
+            # hidden_mechanism · [ritim: kontrast — dış bakıştan içe + placement entegre]
             "id": f"slide::{sid}::hidden_mechanism",
             "title": "Sessizliğin boşluk değil",
             "body": (
-                "Dışarıdan biri sana baktığında sakin, hatta biraz uzak "
-                "bulabilir. Oysa içeride boşluk yok; sürekli bir "
-                "hareket var: sezgin, hayal gücün, bağlanma biçimin "
-                "orada güçlü çalışır. O alan bir bekleme odası değil "
-                "— bir hazırlık odası. Bir şey orada olgunlaşır, ve "
-                "ancak zamanı gelince dışarı çıkar."
+                "Bu yüzden dışarıdan biri seni bazen olduğundan sakin "
+                "ya da biraz uzak bulabilir. Oysa içinde sakinlik "
+                "değil, sürekli bir hareket var: sezgin, hayal gücün, "
+                "bağlanma biçimin orada güçlü çalıştığı için bazen "
+                "susarsın. Sezgilerinin \"şimdi\" dediği zamanı "
+                "beklersin. 12. evinin Yay'da olması bu beklemeye "
+                "bir yön daha katıyor — bir his sende anlam kazanmadan, "
+                "daha büyük bir bütüne nasıl bağlandığını hissetmeden "
+                "dışarı vermeyebilirsin."
             ),
         },
         {
-            # protective_pattern · [ritim: sessiz, dürüst, yumuşak — dramsız]
+            # protective_pattern · [ritim: sessiz, dürüst, dramsız — konuşan ton]
             "id": f"slide::{sid}::protective_pattern",
             "title": "Saklamak her zaman kaçmak değil",
             "body": (
-                "İçindeki şeyi hemen söylemediğinde bunu bazen kaçmak "
-                "gibi okuyabilirsin. Ama her zaman kaçmak değildir. "
-                "Bazen bir şeyi koruma biçimindir — onu başkasının "
-                "sözüyle bozdurmadan, kendi içinde sahip çıkmak. Yine "
-                "de bir bedeli olabilir: her duyguyu tek başına "
-                "taşımak yorar."
+                "Aslında senin yaptığın korkmak ya da kaçmak değil; "
+                "bir şeyi koruma biçimindir. Onu başkasının sözüyle "
+                "bozdurmadan, kendi içinde sahip çıkmak istersin. "
+                "Doğru şekilde dışarı çıkmasını, karşı tarafın da "
+                "onu öyle hissetmesini önemsersin. Yine de bir "
+                "bedeli olabilir: her duyguyu tek başına taşımak yorar."
             ),
         },
         {
-            # gift_in_silence · [ritim: sıcak, açılan, cömert]
+            # gift_in_silence · [ritim: sıcak, açılan, cömert + light placement]
             "id": f"slide::{sid}::gift_in_silence",
             "title": "İçten bağlılık sende güçlü çalışır",
             "body": (
-                "Sevgi sende hemen tüketilmek istemez. Sevdiğin şeye "
-                "dair sessiz ama derin bir bağlılık taşırsın. Güven "
-                "oluştuğunda bu sıcaklık cömert, anlamlı ve uzun süre "
-                "yaşayan bir bağa dönüşebilir — kolay söylenmeyen ama "
-                "varlığı hissedilen bir şey."
+                "Sevgi sende hemen tüketilmek istemez. Venüs'ün "
+                "Yay'da işlemesi sevgine anlam arayan bir karakter "
+                "veriyor: sevdiğin şeye dair sessiz ama derin bir "
+                "bağlılık taşırsın. Güven oluştuğunda bu sıcaklık "
+                "cömert, anlamlı ve uzun süre yaşayan bir bağa "
+                "dönüşebilir — kolay söylenmeyen ama varlığı "
+                "hissedilen bir şey."
             ),
         },
         {
