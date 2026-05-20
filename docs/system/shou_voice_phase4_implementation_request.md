@@ -205,3 +205,64 @@ widening is authorized.
 
 GO requires all rows YES. Any NO halts the request pending a revised
 scope. No code starts under a NO-GO. **GO RECORDED 2026-05-20.**
+
+---
+
+## 12. Phase-4 first-pass completion record
+
+**Status: COMPLETE (2026-05-20).** All §6 acceptance criteria met
+under the §2–§9 constraints. Phase-4 flag remains **default off** —
+nothing user-visible has changed in production. Public-rollout /
+enablement is a separate later gate not granted by this completion.
+
+### 12.1 Bounded chunks (all committed)
+
+| Chunk | Commit | What |
+|---|---|---|
+| B0 flag scaffolding | `f78e7e4` | Phase-4 flag helper (inert) + flag-off public no-op tests |
+| B1 routing skeleton | `8f7132b` | Eligibility-gated routing + internal marker (stub) |
+| B2 deep_read composition | `54fcdfb` | 5 TR slide templates per Rules 1–4 + per-slide rhythm |
+| B3 protective tests | `da54715` | Gift drift / banned phrase / trace leak / overreach / payload leak guards |
+| B5 manual-QA revision | `67c72bc` | Owner blind-read feedback applied: slide 1/3 reworded + placement woven into slides 2 and 4 |
+
+### 12.2 Acceptance criteria (§6) — verified
+
+- ✅ Flag-off byte-identical public output (snapshot tests)
+- ✅ Flag-on pilot renderer composes deep_read content
+- ✅ origin_hint telemetry assertions
+  (`allow_reasons`/`deny_reasons`)
+- ✅ Gift motivational-drift scan
+- ✅ Trace-surface containment
+- ✅ Regression: no other family adopts Phase-4 path; Phase-2
+  exact-owner precedence intact; no Phase-4-only fields leak
+- ✅ Phase-4 flag default off; no enablement decision made
+- Final test run: **117/117 passed** on touched files
+  (`test_composed_detail_renderer.py` + `test_natal_public_builder.py`)
+
+### 12.3 Manual QA gate (request §8 / breakdown §7)
+
+| Chart | Role | Result |
+|---|---|---|
+| `2007` | felt-experience quality bar (LOCK reference) | PASS — recorded in `shou_voice_deep_read_lock_BLIND.md` |
+| `1996-12-28 07:10 Istanbul` | code-seam compatibility + rendered-output blind read | **PASS (2026-05-20)** — owner blind verdict on actual Phase-4 render |
+| `1975-class no-dominant` | overreach contrast | PASS — automated guard `phase4_does_not_engage_for_non_pilot_signature` (signature gate is upstream of routing; no manual content read needed because Phase-4 never engages on non-pilot signatures) |
+
+### 12.4 What completion grants vs does NOT (§10 reminder)
+
+**Grants:**
+- The Phase-4 first-pass implementation as committed (B0–B5) is the
+  accepted shape of the hidden/private deep_read renderer.
+- The bounded request is closed.
+
+**Does NOT grant:**
+- Enablement / public rollout (separate gate; product/business
+  decision to flip the Phase-4 flag on in production)
+- B6+ work: real per-chart upstream packet field consumption
+  (`gift`/`shadow_or_friction`/`growth_direction`/`lived_scene`
+  text). Current Phase-4 templates are pilot-generic, not chart-
+  specific. Truly chart-specific output requires its own design +
+  approval.
+- Other deep_read families (Moon-Saturn, Saturn-1, etc.)
+- Phase-3-style metadata for any other family
+- ARC/A2 merge (the original §10.3 question is still owed)
+- Mobile / endpoint / config / taxonomy / public schema changes
