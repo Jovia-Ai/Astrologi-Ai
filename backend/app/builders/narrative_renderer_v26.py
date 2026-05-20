@@ -1,8 +1,7 @@
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Mapping, Sequence
 
 from app.builders.phrase_mapper import Claim
 from app.engine.tone_apply import apply_tone
@@ -63,18 +62,6 @@ def _apply_tone_safe(text: str, tone: ToneProfile, section: str) -> str:
     if not text:
         return text
     return apply_tone(text, tone, section=section)
-
-
-def _build_fragment_index(
-    phase2_snapshot: Mapping[str, Any]
-) -> dict[str, Mapping[str, Mapping[str, Any]]]:
-    index: dict[str, Mapping[str, Mapping[str, Any]]] = {}
-    for domain, entry in phase2_snapshot.items():
-        slots = entry.get("slots") if isinstance(entry, Mapping) else None
-        if not isinstance(slots, Mapping):
-            continue
-        index[domain] = slots
-    return index
 
 
 def _build_fragment_id_map(

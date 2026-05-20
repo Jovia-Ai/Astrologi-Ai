@@ -11,7 +11,7 @@ from app.engine.tone_apply import apply_tone
 from app.engine.tone_profile import ToneProfile
 from app.helpers.domain_normalizer import canon_domain
 from app.helpers.normalize import normalize_node_alias, normalize_planet_key
-from app.builders.phrase_mapper import Claim, build_claim, default_phrase_map_config
+from app.builders.phrase_mapper import Claim
 from app.narrative.style_packs.tr_v26 import STYLE_PACK_TR_V26, pick_identity_plan_tokens
 
 # V26 dead branch removed 2026-05-20 per matrix §7.2b + S2.2 trace
@@ -23,12 +23,6 @@ from app.narrative.style_packs.tr_v26 import STYLE_PACK_TR_V26, pick_identity_pl
 # intentionally for deferred orphan-helper cleanup only.
 
 
-CORE_STORY_SECTIONS = [
-    ("inner_core", "identity"),
-    ("emotions", "psychology"),
-    ("mind", "mind"),
-    ("relationships", "relationships"),
-]
 def _build_core_story_spines(dynamic_insights: Mapping[str, Any] | None) -> list[Dict[str, Any]]:
     if not dynamic_insights:
         return []
@@ -1596,99 +1590,3 @@ def _pick_top_intents(mapped_items: List[Dict[str, Any]]) -> Tuple[str, str]:
             return (intents[0], "authenticity")
         return (intents[0], "control")
     return (intents[0], intents[1])
-
-
-# -----------------------------
-# v2.6 identity renderer
-# -----------------------------
-
-
-def render_identity_v26(
-    *,
-    meta_summary: Dict[str, Any],
-    axis_activation: Optional[Dict[str, Any]] = None,
-    mapped_items: Optional[List[Dict[str, Any]]] = None,
-) -> Dict[str, Any]:
-    pack = STYLE_PACK_TR_V26["identity"]
-
-    pressure = float((meta_summary or {}).get("pressure_index") or 0.5)
-    support = float((meta_summary or {}).get("support_index") or 0.5)
-
-    axis = None
-    axis = (meta_summary or {}).get("dominant_axis") or None
-    if not axis and axis_activation:
-        axis = axis_activation.get("dominant_axis") or axis_activation.get("axis") or None
-
-    primary_intent, secondary_intent = _pick_top_intents(mapped_items or [])
-
-    tokens = pick_identity_plan_tokens(
-        pressure_index=pressure,
-        support_index=support,
-        primary_intent=primary_intent,
-        secondary_intent=secondary_intent,
-        axis=axis,
-    )
-
-    rec_templates = pack["recognition_templates"]
-    rec_para_1 = _join_sentences([t.format(**tokens) for t in rec_templates[0]])
-    rec_para_2 = _join_sentences([t.format(**tokens) for t in rec_templates[1]])
-
-    rec_para_1 = _cap_sentences(rec_para_1, 3)
-    rec_para_2 = _cap_sentences(rec_para_2, 3)
-
-    exp_templates = pack["experienced_templates"]
-    exp_paras: List[str] = []
-    for block in exp_templates:
-        p = _join_sentences([t.format(**tokens) for t in block])
-        p = _cap_sentences(p, 3)
-        if p:
-            exp_paras.append(p)
-    exp_paras = exp_paras[:3]
-
-    pot_templates = pack["potential_templates"]
-    pot_para = _join_sentences([t.format(**tokens) for t in pot_templates[0]])
-    pot_para = _cap_sentences(pot_para, 3)
-
-    shadow_para = ""
-    if pressure >= 0.35:
-        sh_templates = pack["shadow_templates"]
-        shadow_para = _join_sentences([t.format(**tokens) for t in sh_templates[0]])
-        shadow_para = _cap_sentences(shadow_para, 2)
-
-    um_templates = pack["upper_meaning_templates"]
-    upper_para = _join_sentences([t.format(**tokens) for t in um_templates[0]])
-    upper_para = _cap_sentences(upper_para, 3)
-
-    sections: Dict[str, List[str]] = {
-        "Recognition": [rec_para_1, rec_para_2],
-        "Experienced": exp_paras,
-        "Potential": [pot_para],
-    }
-    if shadow_para:
-        sections["Shadow"] = [shadow_para]
-    else:
-        sections["Shadow"] = []
-
-    sections["Upper Meaning"] = []
-
-    blocks: List[str] = []
-    blocks.extend([p for p in sections["Recognition"] if p])
-    blocks.extend([p for p in sections["Experienced"] if p])
-    blocks.extend([p for p in sections["Potential"] if p])
-    blocks.extend([p for p in sections.get("Shadow", []) if p])
-
-    full_text = "\n\n".join([b for b in blocks if b]).strip()
-
-    return {
-        "title": pack["title"],
-        "sections": sections,
-        "text": full_text,
-        "debug": {
-            "primary_intent": primary_intent,
-            "secondary_intent": secondary_intent,
-            "axis_used": axis,
-            "pressure_index": pressure,
-            "support_index": support,
-        },
-        "_upper_meaning_preview": upper_para,
-    }
