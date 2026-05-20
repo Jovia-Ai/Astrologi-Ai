@@ -856,6 +856,25 @@ def render_relationship_hidden_private_love_card_v0_10_phase2(
             source,
             source_kind=source_kind,
         )
+    if (
+        relationship_hidden_private_love_deep_read_renderer_enabled()
+        and "deep_read_phase3" in card
+    ):
+        # Phase-4 routing skeleton (B1 stub). Records that the Phase-4
+        # render path was traversed for this candidate. Content
+        # (title / body / slides) is intentionally unchanged from
+        # Phase-2 so the public byte-identical invariant
+        # (implementation request §4 invariant 1) holds. Actual
+        # content composition lands in B2 against the same routing.
+        # Gated on `deep_read_phase3 in card` so Phase-4 cannot
+        # activate without the Phase-3 eligibility chain having
+        # already passed (allowlist + origin-hint assessment).
+        # Stripped on promotion to the public lane like deep_read_phase3.
+        card["deep_read_phase4_render_path"] = {
+            "version": "v0_10_phase4_skeleton",
+            "source_kind": str(source_kind),
+            "stub": True,
+        }
     if not _meets_relationship_hidden_private_love_public_quality(card):
         return None
     return card

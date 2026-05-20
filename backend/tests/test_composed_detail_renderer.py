@@ -405,6 +405,119 @@ def test_render_relationship_hidden_private_love_card_v0_10_phase2_phase3_intern
     assert "deep_read_phase3" not in promoted[0]
 
 
+def test_render_relationship_hidden_private_love_card_v0_10_phase4_routing_skeleton_attaches_internal_marker(monkeypatch) -> None:
+    """Phase-4 B1 routing: when Phase-4 flag is on AND Phase-3
+    metadata is present, the renderer attaches an internal
+    `deep_read_phase4_render_path` marker. Slides / title / body are
+    byte-identical to the Phase-3-only baseline (stub does not change
+    content; B2 will replace it with actual composition).
+    """
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PHASE3_INTERNAL_METADATA",
+        "true",
+    )
+    composed = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+
+    baseline = render_relationship_hidden_private_love_card_v0_10_phase2(
+        composed,
+        source_kind="composed_semantic",
+    )
+    assert baseline is not None
+    assert "deep_read_phase4_render_path" not in baseline
+
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_DEEP_READ_RENDERER",
+        "true",
+    )
+    rendered = render_relationship_hidden_private_love_card_v0_10_phase2(
+        composed,
+        source_kind="composed_semantic",
+    )
+
+    assert rendered is not None
+    marker = rendered.get("deep_read_phase4_render_path")
+    assert isinstance(marker, dict)
+    assert marker["version"] == "v0_10_phase4_skeleton"
+    assert marker["source_kind"] == "composed_semantic"
+    assert marker["stub"] is True
+
+    # Public-facing content is byte-identical to the Phase-3-only
+    # baseline (stub does not change slides/title/body/why).
+    assert rendered["slides"] == baseline["slides"]
+    assert rendered["why_this_exists"] == baseline["why_this_exists"]
+    for key in (
+        "id",
+        "title",
+        "teaser",
+        "body",
+        "family",
+        "emphasis",
+        "origin",
+        "source_type",
+        "source_candidate_id",
+        "public_job",
+    ):
+        if key in baseline:
+            assert rendered.get(key) == baseline.get(key), key
+
+    promoted = project_relationship_hidden_private_love_to_public_lane(
+        [composed],
+        cluster_payload={
+            "surface_plan": {"detail_cluster_ids": ["relationship_hidden_private_love_pattern"]},
+            "clusters": [
+                {
+                    "id": "relationship_hidden_private_love_pattern",
+                    "main_packet_id": "venus_sagittarius_12h_hidden_expansive_love_relationship_chart_exact",
+                }
+            ],
+        },
+    )
+    assert len(promoted) == 1
+    # Internal marker must be stripped from the public-visible card by
+    # the _strip_to_public_visible allowlist.
+    assert "deep_read_phase4_render_path" not in promoted[0]
+    assert "deep_read_phase3" not in promoted[0]
+
+
+def test_render_relationship_hidden_private_love_card_v0_10_phase4_does_not_attach_without_phase3_metadata(monkeypatch) -> None:
+    """Phase-4 flag on but Phase-3 metadata absent (Phase-3 flag off):
+    Phase-4 routing must NOT engage. The eligibility chain
+    (allowlist + origin-hint assessment via Phase-3) is the gate;
+    Phase-4 cannot bypass it.
+    """
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_ROUTE_V0_9B", "true")
+    monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_V0_9B_DETAIL_SUPPORT", "true")
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_PUBLIC_DETAIL_LANE",
+        "true",
+    )
+    # Phase-3 flag intentionally NOT set.
+    monkeypatch.setenv(
+        "ENABLE_NATAL_COMPOSED_SEMANTICS_RELATIONSHIP_HIDDEN_PRIVATE_LOVE_DEEP_READ_RENDERER",
+        "true",
+    )
+    composed = _relationship_hidden_private_love_source(source_kind="composed_semantic")
+
+    rendered = render_relationship_hidden_private_love_card_v0_10_phase2(
+        composed,
+        source_kind="composed_semantic",
+    )
+
+    assert rendered is not None
+    assert "deep_read_phase3" not in rendered
+    assert "deep_read_phase4_render_path" not in rendered
+
+
 def test_render_relationship_hidden_private_love_card_v0_10_phase2_rejects_non_target_signature(monkeypatch) -> None:
     monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_RENDER_DETAIL", "true")
     monkeypatch.setenv("ENABLE_NATAL_COMPOSED_SEMANTICS_PUBLIC_DETAIL_LANE", "true")
