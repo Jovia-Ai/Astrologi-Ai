@@ -18,11 +18,9 @@ from app.narrative.style_packs.tr_v26 import STYLE_PACK_TR_V26, pick_identity_pl
 # audit. `build_narrative`, the `build_domain_narrative_v26` import,
 # and the `StylePackV26TR` import were unused at runtime (no callsites
 # repo-wide; verified in `docs/system/audits/v26_trace_audit.md`).
-# The LIVE V26 symbols (`build_core_story_plan` here, `render_core_story`
-# in `narrative_renderer_v26.py`) remain — they are on the canonical
-# natal `/interpret` runtime path and are consumed via
-# `PublicNatalView.core_story`, `profile_v8.identity_axis_body`
-# fallback, and the `core_story_ui` + `data_quality` builders.
+# The live `core_story` path was migrated to
+# `app.natal.narrative.core_story.plan_builder`; residue below is kept
+# intentionally for deferred orphan-helper cleanup only.
 
 
 CORE_STORY_SECTIONS = [
@@ -31,28 +29,6 @@ CORE_STORY_SECTIONS = [
     ("mind", "mind"),
     ("relationships", "relationships"),
 ]
-
-
-def build_core_story_plan(
-    phase2_snapshot: Mapping[str, Any],
-    meta_info: Mapping[str, Any],
-    tone_profile: Mapping[str, Any] | ToneProfile | None,
-    upper_meaning_gate: Mapping[str, Any] | None,
-    dynamic_insights: Mapping[str, Any] | None = None,
-    composite_meanings: Mapping[str, Any] | None = None,
-) -> Dict[str, Any]:
-    from app.natal.narrative.core_story import build_core_story_plan as _build_core_story_plan
-
-    return _build_core_story_plan(
-        phase2_snapshot,
-        meta_info,
-        tone_profile,
-        upper_meaning_gate,
-        dynamic_insights=dynamic_insights,
-        composite_meanings=composite_meanings,
-    )
-
-
 def _build_core_story_spines(dynamic_insights: Mapping[str, Any] | None) -> list[Dict[str, Any]]:
     if not dynamic_insights:
         return []

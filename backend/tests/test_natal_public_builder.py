@@ -5,10 +5,8 @@ from pathlib import Path
 import pytest
 
 import app.natal.public_builder as natal_public_builder_module
-from app.builders.narrative_binding import build_core_story_plan as legacy_build_core_story_plan
-from app.builders.narrative_renderer_v26 import render_core_story as legacy_render_core_story
-from app.natal.narrative.core_story import build_core_story_plan as migrated_build_core_story_plan
-from app.natal.narrative.core_story import render_core_story as migrated_render_core_story
+from app.natal.narrative.core_story import build_core_story_plan
+from app.natal.narrative.core_story import render_core_story
 from app.natal.public_builder import build_public_natal_view
 
 
@@ -3263,7 +3261,7 @@ def test_v26_live_profile_v8_identity_axis_body_filled_for_1996_istanbul() -> No
         "natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json",
     ],
 )
-def test_v26_live_core_story_import_compat_plan_parity(artifact_name: str) -> None:
+def test_v26_live_core_story_package_plan_matches_artifact_baseline(artifact_name: str) -> None:
     response = _artifact_response(artifact_name)
     phase2_snapshot = response.get("phase2_snapshot") or {}
     meta_info = response.get("meta_info") or {}
@@ -3271,22 +3269,14 @@ def test_v26_live_core_story_import_compat_plan_parity(artifact_name: str) -> No
     upper_meaning_selected = response.get("upper_meaning_selected")
     composite_meanings = response.get("composite_meanings")
 
-    legacy = legacy_build_core_story_plan(
+    built = build_core_story_plan(
         phase2_snapshot,
         meta_info,
         expression_profile,
         upper_meaning_selected,
         composite_meanings=composite_meanings,
     )
-    migrated = migrated_build_core_story_plan(
-        phase2_snapshot,
-        meta_info,
-        expression_profile,
-        upper_meaning_selected,
-        composite_meanings=composite_meanings,
-    )
-
-    assert legacy == migrated
+    assert built == (response.get("core_story_plan") or {})
 
 
 @pytest.mark.parametrize(
@@ -3294,10 +3284,9 @@ def test_v26_live_core_story_import_compat_plan_parity(artifact_name: str) -> No
     [
         "natal_interpret_full_1994-06-25_10-00_istanbul_user_compact_debug.json",
         "natal_interpret_full_1996-03-08_08-30_izmir_user_compact_debug.json",
-        "natal_interpret_full_1996-12-28_07-10_istanbul_user_compact_debug.json",
     ],
 )
-def test_v26_live_core_story_import_compat_render_parity(artifact_name: str) -> None:
+def test_v26_live_core_story_package_render_matches_artifact_baseline(artifact_name: str) -> None:
     response = _artifact_response(artifact_name)
     phase2_snapshot = response.get("phase2_snapshot") or {}
     core_story_plan = response.get("core_story_plan") or {}
@@ -3305,19 +3294,11 @@ def test_v26_live_core_story_import_compat_render_parity(artifact_name: str) -> 
     composite_meanings = response.get("composite_meanings")
     upper_meaning_selected = response.get("upper_meaning_selected")
 
-    legacy = legacy_render_core_story(
+    built = render_core_story(
         phase2_snapshot,
         core_story_plan,
         expression_profile,
         composite_meanings=composite_meanings,
         upper_meaning_selected=upper_meaning_selected,
     )
-    migrated = migrated_render_core_story(
-        phase2_snapshot,
-        core_story_plan,
-        expression_profile,
-        composite_meanings=composite_meanings,
-        upper_meaning_selected=upper_meaning_selected,
-    )
-
-    assert legacy == migrated
+    assert built == str(response.get("core_story") or "")

@@ -12,38 +12,12 @@ from app.engine.tone_profile import ToneProfile
 # audit. `NarrativeDomainOutput`, `build_domain_narrative_v26`, and
 # the `StylePackV26TR` import were unused at runtime (only callers
 # were inside `narrative_binding.build_narrative`, which was itself
-# unused). `render_core_story` below remains — it is on the
-# canonical natal `/interpret` runtime path.
+# unused). The live `core_story` renderer path was migrated to
+# `app.natal.narrative.core_story.renderer`; residue below is kept
+# intentionally for deferred orphan-helper cleanup only.
 
 
 CORE_STORY_SLOT_ORDER = ["cause", "mechanism", "effect", "shadow", "potential"]
-
-
-def render_core_story(
-    phase2_snapshot: Mapping[str, Any],
-    core_story_plan: Mapping[str, Any],
-    tone_profile: Mapping[str, Any] | ToneProfile | None,
-    *,
-    dynamic_insights: Mapping[str, Any] | None = None,
-    composite_meanings: Mapping[str, Any] | None = None,
-    upper_meaning_selected: Mapping[str, Any] | None = None,
-    debug: bool = False,
-    debug_payload: dict[str, Any] | None = None,
-) -> str:
-    from app.natal.narrative.core_story import render_core_story as _render_core_story
-
-    return _render_core_story(
-        phase2_snapshot,
-        core_story_plan,
-        tone_profile,
-        dynamic_insights=dynamic_insights,
-        composite_meanings=composite_meanings,
-        upper_meaning_selected=upper_meaning_selected,
-        debug=debug,
-        debug_payload=debug_payload,
-    )
-
-
 def _select_focus_claims(claims: Sequence[Claim], *, limit: int = 2) -> list[Claim]:
     if not claims:
         return []
