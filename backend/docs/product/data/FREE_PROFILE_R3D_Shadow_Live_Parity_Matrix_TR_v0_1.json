@@ -1,0 +1,660 @@
+{
+  "audit_id": "FREE_PROFILE_R3D",
+  "starting_commit": "91be84ee51a384bccf3eb66a7e61e4e1e9cb86f1",
+  "trace_method": "source-chain code trace + R3C shadow projection; live runtime body hashes NOT captured (public snapshot suite red on base; mobile not executed)",
+  "measurement_guard": {
+    "registry_family_count": 25,
+    "canonical_owner_count": 9,
+    "unique_content_hash_count": 9,
+    "unique_projected_card_count": 174,
+    "aliases": [
+      {
+        "registry_asset_id": "editorial.personality_imprint_library_tr_v1.tr.v1",
+        "canonical_owner": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY_HOUSES_V1",
+        "representative_key": "jupiter_house_1",
+        "appears_in_visible_output": "yes_as_aspect_and_house_cards"
+      },
+      {
+        "registry_asset_id": "editorial.personality_imprint_library_tr_v2.tr.v1",
+        "canonical_owner": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY_HOUSES_V1",
+        "representative_key": "jupiter_house_1",
+        "appears_in_visible_output": "yes_as_house_cards"
+      }
+    ]
+  },
+  "shadow_rows": [
+    {
+      "fixture": "A",
+      "surface": "identity",
+      "expected_primary_key": "sun_house_4",
+      "expected_asset_id": "editorial.sun.house_4.tr.v1",
+      "expected_source_hash": "04542e87b824f1e618b4e4e3bf44f326bd0f632877d4405ec643c3c8c19b9501",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_SUPPORT_HOUSES_V1",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension",
+        "capacity"
+      ],
+      "live_card_id": "live.house_placement.sun_house_4",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY/SUPPORT_HOUSES_V1",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries+_rerank_candidates",
+      "payload_path": "profile_v8_payload.entries/extra_entries -> public payload",
+      "mobile_selection": "ProfileV8Adapter (_dedupeCards / chipCandidates / proofRaw)",
+      "merge_fallback_fn": "profile_v8_payload_builder pick_* fallback=by_domain[*]",
+      "rendered_component": "ProfileV8SectionsView + ProfileDetailSheet",
+      "live_body_hash": null,
+      "parity_status": "TEXT_MATCH_OWNER_UNKNOWN",
+      "merge_events": [
+        "pick_* fallback=by_domain[*] cross-domain"
+      ],
+      "fallback_events": [
+        "by_domain conversation/effect/shadow"
+      ],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "A",
+      "surface": "mind",
+      "expected_primary_key": "moon_gemini",
+      "expected_asset_id": "editorial.moon.gemini.tr.v1",
+      "expected_source_hash": "deb1ffea401b386682ab83f94445768ee5b229a99beee083ce6b3973d806c70a",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.moon_signs",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension"
+      ],
+      "live_card_id": "live.sign_placement.moon_gemini",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_V3/V4.*_signs",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries (dominant rank)",
+      "payload_path": "profile_v8 entries (only if selected dominant)",
+      "mobile_selection": "ProfileV8Adapter",
+      "merge_fallback_fn": "as above",
+      "rendered_component": "placement cards (conditional)",
+      "live_body_hash": null,
+      "parity_status": "SHADOW_ASSET_NOT_RENDERED",
+      "merge_events": [],
+      "fallback_events": [],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "A",
+      "surface": "mind",
+      "expected_primary_key": "mercury_virgo",
+      "expected_asset_id": "editorial.mercury.virgo.tr.v1",
+      "expected_source_hash": "a75439522fa683bb4f6f227f55606bc9a716812beefde943715678e02115585e",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.mercury_signs",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension"
+      ],
+      "live_card_id": "live.sign_placement.mercury_virgo",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_V3/V4.*_signs",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries (dominant rank)",
+      "payload_path": "profile_v8 entries (only if selected dominant)",
+      "mobile_selection": "ProfileV8Adapter",
+      "merge_fallback_fn": "as above",
+      "rendered_component": "placement cards (conditional)",
+      "live_body_hash": null,
+      "parity_status": "SHADOW_ASSET_NOT_RENDERED",
+      "merge_events": [],
+      "fallback_events": [],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "A",
+      "surface": "relationship",
+      "expected_primary_key": "venus_virgo",
+      "expected_asset_id": "editorial.venus.virgo.tr.v1",
+      "expected_source_hash": "6e1cc86bc8ba99047549228095e1250f36cf9e98202f66701a9d6a2ce8537169",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.venus_signs",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension"
+      ],
+      "live_card_id": "live.sign_placement.venus_virgo",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_V3/V4.*_signs",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries (dominant rank)",
+      "payload_path": "profile_v8 entries (only if selected dominant)",
+      "mobile_selection": "ProfileV8Adapter",
+      "merge_fallback_fn": "as above",
+      "rendered_component": "placement cards (conditional)",
+      "live_body_hash": null,
+      "parity_status": "SHADOW_ASSET_NOT_RENDERED",
+      "merge_events": [],
+      "fallback_events": [],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "A",
+      "surface": "action",
+      "expected_primary_key": "mars_sagittarius",
+      "expected_asset_id": "editorial.mars.sagittarius.tr.v1",
+      "expected_source_hash": "dc66af124f8e33e70cf35a2fcc811825fd3a01124d9a952b6dab44ab86ed241f",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.mars_signs",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension"
+      ],
+      "live_card_id": "live.sign_placement.mars_sagittarius",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_V3/V4.*_signs",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries (dominant rank)",
+      "payload_path": "profile_v8 entries (only if selected dominant)",
+      "mobile_selection": "ProfileV8Adapter",
+      "merge_fallback_fn": "as above",
+      "rendered_component": "placement cards (conditional)",
+      "live_body_hash": null,
+      "parity_status": "SHADOW_ASSET_NOT_RENDERED",
+      "merge_events": [],
+      "fallback_events": [],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "B",
+      "surface": "identity",
+      "expected_primary_key": "sun_house_1",
+      "expected_asset_id": "editorial.sun.house_1.tr.v1",
+      "expected_source_hash": "f3969289d2a9202cfe1211d3d852ceaeb658b87365698ceaf2f9362e759e89c6",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY_HOUSES_V1",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension",
+        "capacity"
+      ],
+      "live_card_id": "live.house_placement.sun_house_1",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY/SUPPORT_HOUSES_V1",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries+_rerank_candidates",
+      "payload_path": "profile_v8_payload.entries/extra_entries -> public payload",
+      "mobile_selection": "ProfileV8Adapter (_dedupeCards / chipCandidates / proofRaw)",
+      "merge_fallback_fn": "profile_v8_payload_builder pick_* fallback=by_domain[*]",
+      "rendered_component": "ProfileV8SectionsView + ProfileDetailSheet",
+      "live_body_hash": null,
+      "parity_status": "TEXT_MATCH_OWNER_UNKNOWN",
+      "merge_events": [
+        "pick_* fallback=by_domain[*] cross-domain"
+      ],
+      "fallback_events": [
+        "by_domain conversation/effect/shadow"
+      ],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "B",
+      "surface": "identity",
+      "expected_primary_key": "sun_capricorn",
+      "expected_asset_id": "editorial.sun.capricorn.tr.v1",
+      "expected_source_hash": "fdbf7a6510aba7e333731203fb66f7534359093ff1796ac73f8d50a49ebd2558",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_V4.sun_signs",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension"
+      ],
+      "live_card_id": "live.sign_placement.sun_capricorn",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_V3/V4.*_signs",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries (dominant rank)",
+      "payload_path": "profile_v8 entries (only if selected dominant)",
+      "mobile_selection": "ProfileV8Adapter",
+      "merge_fallback_fn": "as above",
+      "rendered_component": "placement cards (conditional)",
+      "live_body_hash": null,
+      "parity_status": "SHADOW_ASSET_NOT_RENDERED",
+      "merge_events": [],
+      "fallback_events": [],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "B",
+      "surface": "emotion",
+      "expected_primary_key": "moon_leo",
+      "expected_asset_id": "editorial.moon.leo.tr.v1",
+      "expected_source_hash": "deb1ffea401b386682ab83f94445768ee5b229a99beee083ce6b3973d806c70a",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.moon_signs",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension"
+      ],
+      "live_card_id": "live.sign_placement.moon_leo",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_V3/V4.*_signs",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries (dominant rank)",
+      "payload_path": "profile_v8 entries (only if selected dominant)",
+      "mobile_selection": "ProfileV8Adapter",
+      "merge_fallback_fn": "as above",
+      "rendered_component": "placement cards (conditional)",
+      "live_body_hash": null,
+      "parity_status": "SHADOW_ASSET_NOT_RENDERED",
+      "merge_events": [],
+      "fallback_events": [],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "B",
+      "surface": "emotion",
+      "expected_primary_key": "moon_house_8",
+      "expected_asset_id": "editorial.moon.house_8.tr.v1",
+      "expected_source_hash": "f3969289d2a9202cfe1211d3d852ceaeb658b87365698ceaf2f9362e759e89c6",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY_HOUSES_V1",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension",
+        "capacity",
+        "origin"
+      ],
+      "live_card_id": "live.house_placement.moon_house_8",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY/SUPPORT_HOUSES_V1",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries+_rerank_candidates",
+      "payload_path": "profile_v8_payload.entries/extra_entries -> public payload",
+      "mobile_selection": "ProfileV8Adapter (_dedupeCards / chipCandidates / proofRaw)",
+      "merge_fallback_fn": "profile_v8_payload_builder pick_* fallback=by_domain[*]",
+      "rendered_component": "ProfileV8SectionsView + ProfileDetailSheet",
+      "live_body_hash": null,
+      "parity_status": "TEXT_MATCH_OWNER_UNKNOWN",
+      "merge_events": [
+        "pick_* fallback=by_domain[*] cross-domain"
+      ],
+      "fallback_events": [
+        "by_domain conversation/effect/shadow"
+      ],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "B",
+      "surface": "mind",
+      "expected_primary_key": "mercury_capricorn",
+      "expected_asset_id": "editorial.mercury.capricorn.tr.v1",
+      "expected_source_hash": "a75439522fa683bb4f6f227f55606bc9a716812beefde943715678e02115585e",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.mercury_signs",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension"
+      ],
+      "live_card_id": "live.sign_placement.mercury_capricorn",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_V3/V4.*_signs",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries (dominant rank)",
+      "payload_path": "profile_v8 entries (only if selected dominant)",
+      "mobile_selection": "ProfileV8Adapter",
+      "merge_fallback_fn": "as above",
+      "rendered_component": "placement cards (conditional)",
+      "live_body_hash": null,
+      "parity_status": "SHADOW_ASSET_NOT_RENDERED",
+      "merge_events": [],
+      "fallback_events": [],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "B",
+      "surface": "mind",
+      "expected_primary_key": "mercury_house_1",
+      "expected_asset_id": "editorial.mercury.house_1.tr.v1",
+      "expected_source_hash": "f3969289d2a9202cfe1211d3d852ceaeb658b87365698ceaf2f9362e759e89c6",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY_HOUSES_V1",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension",
+        "capacity"
+      ],
+      "live_card_id": "live.house_placement.mercury_house_1",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY/SUPPORT_HOUSES_V1",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries+_rerank_candidates",
+      "payload_path": "profile_v8_payload.entries/extra_entries -> public payload",
+      "mobile_selection": "ProfileV8Adapter (_dedupeCards / chipCandidates / proofRaw)",
+      "merge_fallback_fn": "profile_v8_payload_builder pick_* fallback=by_domain[*]",
+      "rendered_component": "ProfileV8SectionsView + ProfileDetailSheet",
+      "live_body_hash": null,
+      "parity_status": "TEXT_MATCH_OWNER_UNKNOWN",
+      "merge_events": [
+        "pick_* fallback=by_domain[*] cross-domain"
+      ],
+      "fallback_events": [
+        "by_domain conversation/effect/shadow"
+      ],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "B",
+      "surface": "relationship",
+      "expected_primary_key": "venus_sagittarius",
+      "expected_asset_id": "editorial.venus.sagittarius.tr.v1",
+      "expected_source_hash": "6e1cc86bc8ba99047549228095e1250f36cf9e98202f66701a9d6a2ce8537169",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.venus_signs",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension"
+      ],
+      "live_card_id": "live.sign_placement.venus_sagittarius",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_V3/V4.*_signs",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries (dominant rank)",
+      "payload_path": "profile_v8 entries (only if selected dominant)",
+      "mobile_selection": "ProfileV8Adapter",
+      "merge_fallback_fn": "as above",
+      "rendered_component": "placement cards (conditional)",
+      "live_body_hash": null,
+      "parity_status": "SHADOW_ASSET_NOT_RENDERED",
+      "merge_events": [],
+      "fallback_events": [],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "B",
+      "surface": "relationship",
+      "expected_primary_key": "venus_house_12",
+      "expected_asset_id": "editorial.venus.house_12.tr.v1",
+      "expected_source_hash": "f3969289d2a9202cfe1211d3d852ceaeb658b87365698ceaf2f9362e759e89c6",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY_HOUSES_V1",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension",
+        "capacity",
+        "origin"
+      ],
+      "live_card_id": "live.house_placement.venus_house_12",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY/SUPPORT_HOUSES_V1",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries+_rerank_candidates",
+      "payload_path": "profile_v8_payload.entries/extra_entries -> public payload",
+      "mobile_selection": "ProfileV8Adapter (_dedupeCards / chipCandidates / proofRaw)",
+      "merge_fallback_fn": "profile_v8_payload_builder pick_* fallback=by_domain[*]",
+      "rendered_component": "ProfileV8SectionsView + ProfileDetailSheet",
+      "live_body_hash": null,
+      "parity_status": "TEXT_MATCH_OWNER_UNKNOWN",
+      "merge_events": [
+        "pick_* fallback=by_domain[*] cross-domain"
+      ],
+      "fallback_events": [
+        "by_domain conversation/effect/shadow"
+      ],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "B",
+      "surface": "action",
+      "expected_primary_key": "mars_virgo",
+      "expected_asset_id": "editorial.mars.virgo.tr.v1",
+      "expected_source_hash": "dc66af124f8e33e70cf35a2fcc811825fd3a01124d9a952b6dab44ab86ed241f",
+      "expected_owner_symbol": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.mars_signs",
+      "shadow_block_roles": [
+        "recognition",
+        "mechanism",
+        "tension"
+      ],
+      "live_card_id": "live.sign_placement.mars_virgo",
+      "live_title_source": "personality_imprint entry label_tr (same family) [runtime hash not captured]",
+      "actual_body_source": "PERSONALITY_IMPRINT_LIBRARY_TR_V3/V4.*_signs",
+      "actual_chip_sources": [
+        "mobile chipCandidates (cross-card)",
+        "backend hardcoded chip template"
+      ],
+      "actual_proof_sources": [
+        "thread.proof_raw"
+      ],
+      "backend_selection": "select_personality_imprint_entries (dominant rank)",
+      "payload_path": "profile_v8 entries (only if selected dominant)",
+      "mobile_selection": "ProfileV8Adapter",
+      "merge_fallback_fn": "as above",
+      "rendered_component": "placement cards (conditional)",
+      "live_body_hash": null,
+      "parity_status": "SHADOW_ASSET_NOT_RENDERED",
+      "merge_events": [],
+      "fallback_events": [],
+      "duplicate_surfaces": [],
+      "secondary_diagnostics": [
+        "CHIP_OWNER_MISMATCH",
+        "STATE_OR_SELECTION_LEAK"
+      ],
+      "trace_confidence": "source_chain_traced_runtime_value_not_captured"
+    },
+    {
+      "fixture": "B",
+      "surface": "action",
+      "expected_primary_key": "mars_house_9",
+      "expected_asset_id": null,
+      "expected_source_hash": null,
+      "live_body_hash": null,
+      "parity_status": "MISSING_EDITORIAL_COVERAGE",
+      "failure_reason": "ASSET_NOT_FOUND",
+      "merge_events": [],
+      "fallback_events": [],
+      "duplicate_surfaces": [],
+      "note": "no substitute / no production pin"
+    }
+  ],
+  "live_only_cards": [
+    {
+      "fixture": "A",
+      "surface": "identity/insight",
+      "live_card_id": "live.aspect.sun_trine_jupiter",
+      "live_title": "Güneş Üçgen Jüpiter",
+      "actual_body_source": "contracts.py sun_trine_jupiter (kind=aspect)",
+      "expected_primary_key": null,
+      "parity_status": "LIVE_CARD_HAS_NO_FREE_OWNER",
+      "note": "aspect entry; covered only by non-canonical alias #1 (_V1)",
+      "case": "Case 1"
+    },
+    {
+      "fixture": "A",
+      "surface": "identity",
+      "live_card_id": "live.placement.sun_house_4#dup",
+      "live_title": "Güneş 4. Ev",
+      "parity_status": "BODY_OWNER_MISMATCH",
+      "merge_events": [
+        "pick_* fallback=by_domain['conversation'/'effect']"
+      ],
+      "fallback_events": [
+        "relationship/effect text under identity title"
+      ],
+      "case": "Case 2"
+    },
+    {
+      "fixture": "A",
+      "surface": "mind",
+      "live_card_id": "live.placement.mercury_house_5",
+      "live_title": "Merkür 5. Ev",
+      "parity_status": "CHIP_OWNER_MISMATCH",
+      "actual_chip_sources": [
+        "Yükselen Boğa / Venüs 5. ev = cross-card chipCandidates"
+      ],
+      "case": "Case 3"
+    },
+    {
+      "fixture": "A",
+      "surface": "multiple",
+      "live_card_id": "live.placement.sun_house_4",
+      "live_title": "Güneş 4. Ev (repeated)",
+      "parity_status": "DUPLICATE_SURFACE_ASSIGNMENT",
+      "duplicate_surfaces": [
+        "lead identity",
+        "placement card",
+        "aura badge / selected-placement"
+      ],
+      "case": "Case 4"
+    },
+    {
+      "fixture": "A",
+      "surface": "aura badge",
+      "live_card_id": "live.aura.protective",
+      "live_title": "Koruyucu dalga",
+      "parity_status": "STATE_OR_SELECTION_LEAK",
+      "actual_body_source": "mobile jovia_aura.dart JoviaAuraSemanticFamily.protective (component label)",
+      "case": "Case 5"
+    }
+  ]
+}

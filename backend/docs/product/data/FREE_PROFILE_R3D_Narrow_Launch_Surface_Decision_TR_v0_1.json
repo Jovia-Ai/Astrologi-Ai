@@ -1,0 +1,78 @@
+{
+  "audit_id": "FREE_PROFILE_R3D",
+  "starting_commit": "91be84ee51a384bccf3eb66a7e61e4e1e9cb86f1",
+  "decision_basis": "measured source-chain trace; runtime body hashes not captured (documented limitation)",
+  "candidate_launch_domains": ["identity", "emotion", "mind", "relationship", "action"],
+  "surface_classification": {
+    "insight_strip": "HIDE_FROM_NARROW_FREE",
+    "lead_identity_unique_block": "KEEP_AFTER_BINDING_REPAIR",
+    "first_impression": "KEEP_AFTER_BINDING_REPAIR",
+    "talents": "HIDE_FROM_NARROW_FREE",
+    "conversation": "HIDE_FROM_NARROW_FREE",
+    "effect": "HIDE_FROM_NARROW_FREE",
+    "defense": "HIDE_FROM_NARROW_FREE",
+    "first_felt": "KEEP_AFTER_BINDING_REPAIR",
+    "intimacy": "KEEP_AFTER_BINDING_REPAIR",
+    "mind": "KEEP_AFTER_BINDING_REPAIR",
+    "supporting_threads": "REMOVE_FALLBACK",
+    "narrative_cards": "PREMIUM_ONLY",
+    "placement_cards": "KEEP_AFTER_BINDING_REPAIR",
+    "aura_selected_placement_badge": "INTERNAL_ONLY",
+    "profile_detail_story_modal": "KEEP_AFTER_BINDING_REPAIR",
+    "relationship_preview": "PREMIUM_ONLY"
+  },
+  "domains": {
+    "identity": {
+      "visible_component_retained": "lead identity / placement card (ProfileV8SectionsView)",
+      "primary_card_keys_allowed": ["sun_house_*", "asc_*", "sun_<sign>"],
+      "max_card_count": 1,
+      "fallback_policy": "no cross-domain fallback; omit if no FREE_MODULAR_READY owner",
+      "surfaces_hidden": ["insight_strip", "aspect cards (no Free owner)"],
+      "detail_opening_enabled": true,
+      "presentation_currently_safe": "single_card"
+    },
+    "emotion": {
+      "visible_component_retained": "placement card (moon)",
+      "primary_card_keys_allowed": ["moon_<sign>", "moon_house_*"],
+      "max_card_count": 1,
+      "fallback_policy": "no cross-domain fallback",
+      "surfaces_hidden": ["first_felt fallback chain"],
+      "detail_opening_enabled": true,
+      "presentation_currently_safe": "single_card"
+    },
+    "mind": {
+      "visible_component_retained": "placement card (mercury)",
+      "primary_card_keys_allowed": ["mercury_<sign>", "mercury_house_*"],
+      "max_card_count": 1,
+      "fallback_policy": "no fallback=by_domain['mechanism']; omit on miss",
+      "surfaces_hidden": ["cross-card chip merge"],
+      "detail_opening_enabled": true,
+      "presentation_currently_safe": "single_card"
+    },
+    "relationship": {
+      "visible_component_retained": "placement card (venus); relationship_preview hidden for Free",
+      "primary_card_keys_allowed": ["venus_<sign>", "venus_house_*"],
+      "max_card_count": 1,
+      "fallback_policy": "no fallback; relationship narrative is PREMIUM_ONLY",
+      "surfaces_hidden": ["relationship_preview long-read", "intimacy fallback=by_domain['effect']"],
+      "detail_opening_enabled": false,
+      "presentation_currently_safe": "single_card"
+    },
+    "action": {
+      "visible_component_retained": "placement card (mars)",
+      "primary_card_keys_allowed": ["mars_<sign>", "mars_house_*"],
+      "max_card_count": 1,
+      "fallback_policy": "no fallback; on missing coverage (e.g. mars_house_9) omit the card, do not substitute",
+      "surfaces_hidden": ["mars_house_9 has no editorial coverage"],
+      "detail_opening_enabled": true,
+      "presentation_currently_safe": "single_card"
+    }
+  },
+  "global_rules": {
+    "presentation": "single_card only; multi_slide NOT yet safe (detail sheet splits one body per-sentence, not per-role-block)",
+    "fallback": "remove all cross-domain by_domain[*] fallback from Free surfaces",
+    "aspects_and_dominants": "no FREE_MODULAR_READY owner -> hide or PREMIUM_ONLY",
+    "aura_badge": "INTERNAL_ONLY; 'Koruyucu dalga' is a mobile component label, not an editorial owner",
+    "dedup": "one canonical owner per surface; suppress repeated placement across lead/card/badge"
+  }
+}
