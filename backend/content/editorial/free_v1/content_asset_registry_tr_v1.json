@@ -1,0 +1,1198 @@
+{
+  "assets": [
+    {
+      "allowed_surfaces": [
+        "supporting"
+      ],
+      "allowed_tiers": [
+        "free",
+        "premium"
+      ],
+      "asset_id": "editorial.humanization_and_projection_wrappers.tr.v1",
+      "authority": {
+        "expression_authority": "supporting_copy",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "SUPPORTING_COPY_ONLY",
+      "content_kind": "supporting_copy",
+      "domain": "presentation",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=projection_wrapper",
+        "r2_runtime_consumer=public natal view projection",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "context"
+        ],
+        "max_slides": 3,
+        "min_slides": 2,
+        "mode": "multi_slide"
+      },
+      "primary_key": "public_humanize_layer",
+      "prohibited_surfaces": [
+        "identity",
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/public_builder.py",
+        "symbol_or_family": "humanization and projection wrappers"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [],
+      "allowed_tiers": [],
+      "asset_id": "editorial.legacy_poster_copy.tr.v1",
+      "authority": {
+        "expression_authority": "none",
+        "meaning_authority": "none",
+        "presentation_authority": "none"
+      },
+      "classification": "MISSING_OWNER",
+      "content_kind": "mobile_fallback",
+      "domain": "presentation",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=mobile_copy_fallback",
+        "r2_runtime_consumer=profile page legacy poster and fallback content",
+        "r2_quality_status=mixed"
+      ],
+      "presentation": {
+        "allowed_roles": [],
+        "max_slides": 3,
+        "min_slides": 2,
+        "mode": "multi_slide"
+      },
+      "primary_key": "poster_lead_and_feature_copy",
+      "prohibited_surfaces": [],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "mobile/lib/app/tabs/profile_page.dart",
+        "symbol_or_family": "legacy poster copy"
+      },
+      "status": "unresolved",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "supporting"
+      ],
+      "allowed_tiers": [
+        "free",
+        "premium"
+      ],
+      "asset_id": "editorial.mind_career_micros_primitive_chip_table.tr.v1",
+      "authority": {
+        "expression_authority": "supporting_copy",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "SUPPORTING_COPY_ONLY",
+      "content_kind": "supporting_copy",
+      "domain": "presentation",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=microcopy_bank",
+        "r2_runtime_consumer=supporting_threads_builder and profile detail editorial",
+        "r2_quality_status=mixed"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "context"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "microcopy_and_chip_normalization",
+      "prohibited_surfaces": [
+        "identity",
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/supporting_threads_builder.py",
+        "symbol_or_family": "MIND / CAREER MICROS + PRIMITIVE CHIP TABLE"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "origin"
+      ],
+      "allowed_tiers": [
+        "premium"
+      ],
+      "asset_id": "editorial.past_layer_triggers.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "PREMIUM_SYNTHESIS_ONLY",
+      "content_kind": "synthesis_narrative",
+      "domain": "presentation",
+      "is_primary_owner": true,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=trigger_bundle",
+        "r2_runtime_consumer=public_builder -> profile_narrative_v3 -> profile_v8",
+        "r2_quality_status=mixed"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern",
+          "context"
+        ],
+        "max_slides": 3,
+        "min_slides": 2,
+        "mode": "multi_slide"
+      },
+      "primary_key": "past_teaser_and_detail",
+      "prohibited_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/profile_v8_payload_builder.py",
+        "symbol_or_family": "PAST_LAYER_TRIGGERS"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_priority_houses_v1.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_house",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "priority_house_bank",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/contracts.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY_HOUSES_V1"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_support_houses_v1.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_house",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "support_house_bank",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/contracts.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_SUPPORT_HOUSES_V1"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_v1.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_house",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "house_placements_and_aspects",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/contracts.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V1"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_v2.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_house",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "priority_house_bank",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/contracts.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V2"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v2"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_v3_mars_signs.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_sign",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=sign_placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "mars_sign_placements",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/sign_support_library.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.mars_signs"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v3"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_v3_mercury_signs.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_sign",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=sign_placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "mercury_sign_placements",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/sign_support_library.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.mercury_signs"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v3"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_v3_moon_signs.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_sign",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=sign_placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "moon_sign_placements",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/sign_support_library.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.moon_signs"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v3"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_v3_venus_signs.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_sign",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=sign_placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "venus_sign_placements",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/sign_support_library.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.venus_signs"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v3"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_v4_jupiter_signs.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_sign",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=sign_placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "jupiter_sign_placements",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/tone_support_library.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V4.jupiter_signs"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v4"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_v4_saturn_signs.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_sign",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=sign_placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "saturn_sign_placements",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/tone_support_library.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V4.saturn_signs"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v4"
+    },
+    {
+      "allowed_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.personality_imprint_library_tr_v4_sun_signs.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_READY",
+      "content_kind": "planet_sign",
+      "domain": "identity",
+      "is_primary_owner": true,
+      "launch_eligible": true,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=sign_placement_library",
+        "r2_runtime_consumer=personality imprint builder, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "sun_sign_placements",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/personality_imprint/tone_support_library.py",
+        "symbol_or_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V4.sun_signs"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v4"
+    },
+    {
+      "allowed_surfaces": [
+        "origin"
+      ],
+      "allowed_tiers": [
+        "premium"
+      ],
+      "asset_id": "editorial.profile_narrative_v3_synthesis.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "PREMIUM_SYNTHESIS_ONLY",
+      "content_kind": "synthesis_narrative",
+      "domain": "presentation",
+      "is_primary_owner": true,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=synthesis_projection",
+        "r2_runtime_consumer=public natal view projection",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "context",
+          "mechanism",
+          "tension",
+          "capacity",
+          "origin",
+          "proof"
+        ],
+        "max_slides": 8,
+        "min_slides": 4,
+        "mode": "long_read"
+      },
+      "primary_key": "detail_cards_and_extra_blocks",
+      "prohibited_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/public_builder.py",
+        "symbol_or_family": "profile_narrative_v3 synthesis"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v3"
+    },
+    {
+      "allowed_surfaces": [
+        "origin"
+      ],
+      "allowed_tiers": [
+        "premium"
+      ],
+      "asset_id": "editorial.relationship_openings_balances.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "PREMIUM_SYNTHESIS_ONLY",
+      "content_kind": "synthesis_narrative",
+      "domain": "relationship",
+      "is_primary_owner": true,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=relationship_copy_bank",
+        "r2_runtime_consumer=supporting_threads_builder and relationship preview",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "context",
+          "mechanism",
+          "tension",
+          "capacity",
+          "origin",
+          "proof"
+        ],
+        "max_slides": 8,
+        "min_slides": 4,
+        "mode": "long_read"
+      },
+      "primary_key": "relationship_narrative_lines",
+      "prohibited_surfaces": [
+        "identity",
+        "first_felt"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/supporting_threads_builder.py",
+        "symbol_or_family": "RELATIONSHIP_OPENINGS + BALANCES"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "supporting"
+      ],
+      "allowed_tiers": [
+        "free",
+        "premium"
+      ],
+      "asset_id": "editorial.relationship_preview_copy.tr.v1",
+      "authority": {
+        "expression_authority": "supporting_copy",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "SUPPORTING_COPY_ONLY",
+      "content_kind": "supporting_copy",
+      "domain": "relationship",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=presentation_copy",
+        "r2_runtime_consumer=relationship preview panel",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "context"
+        ],
+        "max_slides": 8,
+        "min_slides": 4,
+        "mode": "long_read"
+      },
+      "primary_key": "relationship_narrative_sections",
+      "prohibited_surfaces": [
+        "identity",
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "mobile/lib/app/tabs/profile_relationship_preview.dart",
+        "symbol_or_family": "relationship preview copy"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "identity"
+      ],
+      "allowed_tiers": [
+        "free"
+      ],
+      "asset_id": "editorial.sign_house_reference_tables.tr.v1",
+      "authority": {
+        "expression_authority": "editorial_library",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "FREE_MODULAR_NEEDS_EDIT",
+      "content_kind": "supporting_copy",
+      "domain": "presentation",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=reference_tables",
+        "r2_runtime_consumer=supporting_threads_builder and profile detail editors",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "recognition",
+          "lived_pattern"
+        ],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "sign_house_reference_bank",
+      "prohibited_surfaces": [
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/supporting_threads_builder.py",
+        "symbol_or_family": "SIGN / HOUSE REFERENCE TABLES"
+      },
+      "status": "needs_edit",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "supporting"
+      ],
+      "allowed_tiers": [
+        "free",
+        "premium"
+      ],
+      "asset_id": "editorial.slide_labels_and_modal_copy.tr.v1",
+      "authority": {
+        "expression_authority": "supporting_copy",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "SUPPORTING_COPY_ONLY",
+      "content_kind": "supporting_copy",
+      "domain": "presentation",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=slide_contract_copy",
+        "r2_runtime_consumer=detail sheet PageView",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "context"
+        ],
+        "max_slides": 3,
+        "min_slides": 2,
+        "mode": "multi_slide"
+      },
+      "primary_key": "hero_body_mechanism_shadow_growth_context",
+      "prohibited_surfaces": [
+        "identity",
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "mobile/lib/app/profile/profile_detail_sheet.dart",
+        "symbol_or_family": "slide labels and modal copy"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [],
+      "allowed_tiers": [],
+      "asset_id": "editorial.soft_astro_hints_tr_default_public_chips_tr_chip_replacements_tr.tr.v1",
+      "authority": {
+        "expression_authority": "superseded",
+        "meaning_authority": "none",
+        "presentation_authority": "none"
+      },
+      "classification": "DUPLICATE_OR_SUPERSEDED",
+      "content_kind": "supporting_copy",
+      "domain": "presentation",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=fallback_and_normalization_bank",
+        "r2_runtime_consumer=profile narrative and chip humanization",
+        "r2_quality_status=mixed"
+      ],
+      "presentation": {
+        "allowed_roles": [],
+        "max_slides": 1,
+        "min_slides": 1,
+        "mode": "single_card"
+      },
+      "primary_key": "soft_public_hints_and_chip_rewrites",
+      "prohibited_surfaces": [],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/narrative/phrase_lib_tr_profile.py",
+        "symbol_or_family": "SOFT_ASTRO_HINTS_TR + DEFAULT_PUBLIC_CHIPS_TR + CHIP_REPLACEMENTS_TR"
+      },
+      "status": "superseded",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "supporting"
+      ],
+      "allowed_tiers": [
+        "free",
+        "premium"
+      ],
+      "asset_id": "editorial.talent_rules_mission_rules_archetype_labels.tr.v1",
+      "authority": {
+        "expression_authority": "supporting_copy",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "SUPPORTING_COPY_ONLY",
+      "content_kind": "supporting_copy",
+      "domain": "presentation",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=section_rule_bank",
+        "r2_runtime_consumer=public_builder -> profile_narrative_v3",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "context"
+        ],
+        "max_slides": 3,
+        "min_slides": 2,
+        "mode": "multi_slide"
+      },
+      "primary_key": "talent_and_mission_sections",
+      "prohibited_surfaces": [
+        "identity",
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/profile_v8_payload_builder.py",
+        "symbol_or_family": "TALENT_RULES + MISSION_RULES + ARCHETYPE_LABELS"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [],
+      "allowed_tiers": [],
+      "asset_id": "editorial.tam_okuma_mock_copy.tr.v1",
+      "authority": {
+        "expression_authority": "none",
+        "meaning_authority": "none",
+        "presentation_authority": "none"
+      },
+      "classification": "UNSAFE_OR_UNSUPPORTED",
+      "content_kind": "mobile_fallback",
+      "domain": "presentation",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=placeholder_copy",
+        "r2_runtime_consumer=Tam Okuma gallery when real data is absent",
+        "r2_quality_status=placeholder"
+      ],
+      "presentation": {
+        "allowed_roles": [],
+        "max_slides": 8,
+        "min_slides": 4,
+        "mode": "long_read"
+      },
+      "primary_key": "axis_mock_cards",
+      "prohibited_surfaces": [],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "mobile/lib/app/profile/tam_okuma_view.dart",
+        "symbol_or_family": "Tam Okuma mock copy"
+      },
+      "status": "blocked",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "supporting"
+      ],
+      "allowed_tiers": [
+        "free",
+        "premium"
+      ],
+      "asset_id": "editorial.title_families_tr_body_templates_tr.tr.v1",
+      "authority": {
+        "expression_authority": "supporting_copy",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "SUPPORTING_COPY_ONLY",
+      "content_kind": "supporting_copy",
+      "domain": "presentation",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=editorial_template_bank",
+        "r2_runtime_consumer=profile narrative renderers, public_builder, profile_page",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "context"
+        ],
+        "max_slides": 3,
+        "min_slides": 2,
+        "mode": "multi_slide"
+      },
+      "primary_key": "profile_editorial_titles_and_templates",
+      "prohibited_surfaces": [
+        "identity",
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "backend/app/natal/narrative/phrase_lib_tr_profile.py",
+        "symbol_or_family": "TITLE_FAMILIES_TR + BODY_TEMPLATES_TR"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    },
+    {
+      "allowed_surfaces": [
+        "supporting"
+      ],
+      "allowed_tiers": [
+        "free",
+        "premium"
+      ],
+      "asset_id": "editorial.v8_teaser_and_detail_sheet_copy.tr.v1",
+      "authority": {
+        "expression_authority": "supporting_copy",
+        "meaning_authority": "none",
+        "presentation_authority": "asset_contract"
+      },
+      "classification": "SUPPORTING_COPY_ONLY",
+      "content_kind": "supporting_copy",
+      "domain": "presentation",
+      "is_primary_owner": false,
+      "launch_eligible": false,
+      "locale": "tr-TR",
+      "notes": [
+        "r2_content_kind=presentation_copy",
+        "r2_runtime_consumer=V8 sections view and slide modal",
+        "r2_quality_status=good"
+      ],
+      "presentation": {
+        "allowed_roles": [
+          "context"
+        ],
+        "max_slides": 3,
+        "min_slides": 2,
+        "mode": "multi_slide"
+      },
+      "primary_key": "teaser_to_slide_bridge",
+      "prohibited_surfaces": [
+        "identity",
+        "origin"
+      ],
+      "registry_version": "free_profile_asset_registry_v1",
+      "source": {
+        "content_hash": null,
+        "path": "mobile/lib/app/profile/profile_v8_sections.dart",
+        "symbol_or_family": "V8 teaser and detail-sheet copy"
+      },
+      "status": "reviewed",
+      "supersedes": [],
+      "version": "v1"
+    }
+  ],
+  "classified_asset_count": 25,
+  "content_source_count": 16,
+  "derived_from_commit": "c12473a70f027ecda0d5454de4ea21a76ce84a50",
+  "free_ready_asset_count": 11,
+  "locale": "tr-TR",
+  "premium_only_asset_count": 3,
+  "registry_id": "free_profile_asset_registry_v1",
+  "registry_version": "free_profile_asset_registry_v1",
+  "slide_mode_distribution": {
+    "long_read": 4,
+    "multi_slide": 7,
+    "single_card": 14
+  },
+  "source_audit": "FREE_PROFILE_R2",
+  "source_audit_inventory": "backend/docs/product/data/FREE_PROFILE_R2_Content_Asset_Inventory_TR_v0_1.json",
+  "unknown_unowned_asset_count": 1
+}
