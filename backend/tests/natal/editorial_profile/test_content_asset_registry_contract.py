@@ -174,12 +174,17 @@ def test_serialization_stable_across_two_clean_processes():
     assert len(json.loads(out1.stdout)) == 25
 
 
-def test_registry_json_is_dormant_no_runtime_importer():
-    """No runtime production module *imports* the editorial_profile package (R3A).
+def test_registry_only_sanctioned_r4_runtime_importer():
+    """The editorial_profile package may be imported by exactly one runtime file:
+    the FREE-PROFILE-R4 default-off flag-gated attachment in public_builder.py.
 
+    R3A established dormancy; R4 is the authorized scope that binds the package to
+    the public payload behind ``FREE_EDITORIAL_PROFILE_ENABLED`` (default off).
+    Any other runtime importer (and any mobile importer) is still forbidden.
     Uses AST import analysis (not a bare substring) so unrelated identifiers such
     as public_builder._editorial_profile_title do not count.
     """
+    sanctioned = {"backend/app/natal/public_builder.py"}
     app_dir = os.path.join(_BACKEND_ROOT, "app")
     hits = []
     for root, _dirs, files in os.walk(app_dir):
@@ -210,4 +215,8 @@ def test_registry_json_is_dormant_no_runtime_importer():
                     for n in node.names:
                         if "editorial_profile" in n.name.split("."):
                             hits.append(os.path.relpath(p, _REPO_ROOT))
-    assert hits == [], f"editorial_profile imported by runtime files: {hits}"
+    unsanctioned = sorted(set(hits) - sanctioned)
+    assert unsanctioned == [], f"editorial_profile imported by unsanctioned files: {unsanctioned}"
+    # the R4 binding must be present and flag-gated
+    pb = open(os.path.join(_BACKEND_ROOT, "app", "natal", "public_builder.py"), encoding="utf-8").read()
+    assert "FREE_EDITORIAL_PROFILE_ENABLED" in pb
