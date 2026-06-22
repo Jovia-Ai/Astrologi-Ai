@@ -21,6 +21,9 @@ import 'package:mobile/app/profile/haritam_view.dart';
 import 'package:mobile/app/profile/layered_kart_detail_page.dart';
 import 'package:mobile/app/profile/profile_v9_provider.dart';
 import 'package:mobile/app/profile/tam_okuma_view.dart';
+import 'package:mobile/app/profile/free_editorial_profile_adapter.dart';
+import 'package:mobile/app/profile/free_editorial_profile_host.dart';
+import 'package:mobile/app/profile/free_editorial_profile_view.dart';
 import 'package:mobile/app/profile/profile_repository.dart';
 import 'package:mobile/app/profile/profile_v8_adapter.dart';
 import 'package:mobile/app/profile/profile_v8_sections.dart';
@@ -1090,6 +1093,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 final legacyContentView = posterPalette.isDark
                     ? buildDarkContentView()
                     : buildLightContentView();
+                // FREE-PROFILE-R4C: default-off narrow editorial surface. Shown
+                // only when the flag is on AND a valid editorial_profile payload
+                // is present; otherwise the legacy Profile path is unchanged.
+                final freeEditorialDecision = decideFreeEditorialHost(
+                  flagEnabled: kFreeEditorialProfileEnabled,
+                  payload: _activeProfilePayload,
+                );
                 final profileContentView = !_hasBirthData(profile)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1100,7 +1110,11 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       )
                     : (_segmentIndex == 0
-                          ? (profileV8Data.hasRenderableContent ||
+                          ? (freeEditorialDecision.showNarrow
+                              ? FreeEditorialProfileView(
+                                  profile: freeEditorialDecision.model,
+                                )
+                              : profileV8Data.hasRenderableContent ||
                                     _isNatalLoading ||
                                     (_natalError ?? '').trim().isNotEmpty
                                 ? ProfileV8SectionsView(

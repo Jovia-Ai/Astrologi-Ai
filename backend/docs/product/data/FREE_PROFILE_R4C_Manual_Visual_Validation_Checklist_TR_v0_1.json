@@ -1,0 +1,128 @@
+{
+  "audit_id": "FREE_PROFILE_R4C",
+  "starting_commit": "a9f8fc1246d0bd9914f329e2a40d905034142c8b",
+  "runtime_required": true,
+  "environment": {
+    "backend_flag": "FREE_EDITORIAL_PROFILE_ENABLED=1",
+    "mobile_flag": "--dart-define=FREE_EDITORIAL_PROFILE_ENABLED=true"
+  },
+  "global_acceptance_checks": [
+    "correct signed-in profile",
+    "correct chart facts",
+    "exact card count",
+    "sign card precedes house card",
+    "no unrelated chips",
+    "no duplicate owner across domains",
+    "no Koruyucu dalga",
+    "no legacy poster component mixed in",
+    "no empty slide cover",
+    "no 01/02 or 02/02 heuristic paging",
+    "no long unstructured text wall",
+    "no Tam Okuma / mock content",
+    "consistent spacing and readable typography"
+  ],
+  "captures": [
+    {
+      "capture_id": "fixture_a_profile_overview",
+      "status": "DEFERRED_REQUIRES_FULL_APP_RUNTIME",
+      "fixture": "A",
+      "expected_keys": ["sun_leo", "sun_house_4", "moon_gemini", "moon_house_1", "mercury_virgo", "mercury_house_5", "venus_virgo", "venus_house_5", "mars_sagittarius", "mars_house_7"],
+      "actual_keys": [],
+      "acceptance_checks": {},
+      "screenshot_path": null,
+      "notes": []
+    },
+    {
+      "capture_id": "fixture_a_identity",
+      "status": "DEFERRED_REQUIRES_FULL_APP_RUNTIME",
+      "fixture": "A",
+      "expected_keys": ["sun_leo", "sun_house_4"],
+      "actual_keys": [],
+      "acceptance_checks": {},
+      "screenshot_path": null,
+      "notes": []
+    },
+    {
+      "capture_id": "fixture_a_emotion",
+      "status": "DEFERRED_REQUIRES_FULL_APP_RUNTIME",
+      "fixture": "A",
+      "expected_keys": ["moon_gemini", "moon_house_1"],
+      "actual_keys": [],
+      "acceptance_checks": {},
+      "screenshot_path": null,
+      "notes": []
+    },
+    {
+      "capture_id": "fixture_a_mind",
+      "status": "DEFERRED_REQUIRES_FULL_APP_RUNTIME",
+      "fixture": "A",
+      "expected_keys": ["mercury_virgo", "mercury_house_5"],
+      "actual_keys": [],
+      "acceptance_checks": {},
+      "screenshot_path": null,
+      "notes": []
+    },
+    {
+      "capture_id": "fixture_a_relationship",
+      "status": "DEFERRED_REQUIRES_FULL_APP_RUNTIME",
+      "fixture": "A",
+      "expected_keys": ["venus_virgo", "venus_house_5"],
+      "actual_keys": [],
+      "acceptance_checks": {},
+      "screenshot_path": null,
+      "notes": []
+    },
+    {
+      "capture_id": "fixture_a_action",
+      "status": "DEFERRED_REQUIRES_FULL_APP_RUNTIME",
+      "fixture": "A",
+      "expected_keys": ["mars_sagittarius", "mars_house_7"],
+      "actual_keys": [],
+      "acceptance_checks": {},
+      "screenshot_path": null,
+      "notes": []
+    },
+    {
+      "capture_id": "fixture_a_sign_detail",
+      "status": "DEFERRED_REQUIRES_FULL_APP_RUNTIME",
+      "fixture": "A",
+      "expected_keys": ["sun_leo"],
+      "actual_keys": [],
+      "acceptance_checks": {},
+      "screenshot_path": null,
+      "notes": ["blocks recognition->mechanism->tension, no page counter"]
+    },
+    {
+      "capture_id": "fixture_a_house_detail",
+      "status": "DEFERRED_REQUIRES_FULL_APP_RUNTIME",
+      "fixture": "A",
+      "expected_keys": ["sun_house_4"],
+      "actual_keys": [],
+      "acceptance_checks": {},
+      "screenshot_path": null,
+      "notes": ["4 blocks incl. capacity, no 01/02 cover"]
+    },
+    {
+      "capture_id": "fixture_b_action_missing_house",
+      "status": "DEFERRED_REQUIRES_FULL_APP_RUNTIME",
+      "fixture": "B",
+      "expected_keys": ["mars_virgo"],
+      "omitted_keys": [{"primary_key": "mars_house_9", "reason": "ASSET_NOT_FOUND"}],
+      "actual_keys": [],
+      "acceptance_checks": {},
+      "screenshot_path": null,
+      "notes": ["action domain shows only Mars Başak; no substitute house card"]
+    }
+  ],
+  "capture_filenames": [
+    "r4c_fixture_a_profile_overview.png",
+    "r4c_fixture_a_identity.png",
+    "r4c_fixture_a_emotion.png",
+    "r4c_fixture_a_mind.png",
+    "r4c_fixture_a_relationship.png",
+    "r4c_fixture_a_action.png",
+    "r4c_fixture_a_sign_detail.png",
+    "r4c_fixture_a_house_detail.png",
+    "r4c_fixture_b_action_missing_house.png"
+  ]
+}
