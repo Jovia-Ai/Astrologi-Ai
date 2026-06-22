@@ -1,0 +1,534 @@
+{
+  "audit_id": "FREE_PROFILE_R2",
+  "starting_commit": "c12473a70f027ecda0d5454de4ea21a76ce84a50",
+  "branch": "codex/free-profile-r2-audit-wt",
+  "worktree_path": "/Users/sahradenizozdogan/.codex/worktrees/free-profile-r2-audit",
+  "content_source_count": 16,
+  "classified_asset_count": 25,
+  "free_ready_asset_count": 11,
+  "premium_only_asset_count": 3,
+  "unknown_unowned_asset_count": 1,
+  "slide_mode_distribution": {
+    "single_card": 14,
+    "multi_slide": 7,
+    "long_read": 4
+  },
+  "assets": [
+    {
+      "source_path": "backend/app/natal/personality_imprint/contracts.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V1",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "house_placements_and_aspects",
+      "content_kind": "placement_library",
+      "approx_length": "20 entries",
+      "structure": "one placement or aspect per entry",
+      "claims": [
+        "recognition",
+        "mechanism",
+        "shadow",
+        "gift"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/personality_imprint/contracts.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V2",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "priority_house_bank",
+      "content_kind": "placement_library",
+      "approx_length": "32 entries",
+      "structure": "one placement or aspect per entry",
+      "claims": [
+        "recognition",
+        "mechanism",
+        "shadow",
+        "gift"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/personality_imprint/contracts.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_PRIORITY_HOUSES_V1",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "priority_house_bank",
+      "content_kind": "placement_library",
+      "approx_length": "50 entries",
+      "structure": "one placement or aspect per entry",
+      "claims": [
+        "recognition",
+        "mechanism",
+        "shadow",
+        "gift"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/personality_imprint/contracts.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_SUPPORT_HOUSES_V1",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "support_house_bank",
+      "content_kind": "placement_library",
+      "approx_length": "40 entries",
+      "structure": "one placement or aspect per entry",
+      "claims": [
+        "recognition",
+        "mechanism",
+        "shadow",
+        "gift"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/personality_imprint/sign_support_library.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.moon_signs",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "moon_sign_placements",
+      "content_kind": "sign_placement_library",
+      "approx_length": "12 entries",
+      "structure": "one sign placement per entry",
+      "claims": [
+        "aura",
+        "trait",
+        "drive",
+        "shadow"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/personality_imprint/sign_support_library.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.mercury_signs",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "mercury_sign_placements",
+      "content_kind": "sign_placement_library",
+      "approx_length": "12 entries",
+      "structure": "one sign placement per entry",
+      "claims": [
+        "aura",
+        "trait",
+        "drive",
+        "shadow"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/personality_imprint/sign_support_library.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.venus_signs",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "venus_sign_placements",
+      "content_kind": "sign_placement_library",
+      "approx_length": "12 entries",
+      "structure": "one sign placement per entry",
+      "claims": [
+        "aura",
+        "trait",
+        "drive",
+        "shadow"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/personality_imprint/sign_support_library.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V3.mars_signs",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "mars_sign_placements",
+      "content_kind": "sign_placement_library",
+      "approx_length": "12 entries",
+      "structure": "one sign placement per entry",
+      "claims": [
+        "aura",
+        "trait",
+        "drive",
+        "shadow"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/personality_imprint/tone_support_library.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V4.sun_signs",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "sun_sign_placements",
+      "content_kind": "sign_placement_library",
+      "approx_length": "12 entries",
+      "structure": "one sign placement per entry",
+      "claims": [
+        "aura",
+        "trait",
+        "drive",
+        "shadow"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/personality_imprint/tone_support_library.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V4.jupiter_signs",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "jupiter_sign_placements",
+      "content_kind": "sign_placement_library",
+      "approx_length": "12 entries",
+      "structure": "one sign placement per entry",
+      "claims": [
+        "aura",
+        "trait",
+        "drive",
+        "shadow"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/personality_imprint/tone_support_library.py",
+      "asset_family": "PERSONALITY_IMPRINT_LIBRARY_TR_V4.saturn_signs",
+      "current_runtime_consumer": "personality imprint builder, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "saturn_sign_placements",
+      "content_kind": "sign_placement_library",
+      "approx_length": "12 entries",
+      "structure": "one sign placement per entry",
+      "claims": [
+        "aura",
+        "trait",
+        "drive",
+        "shadow"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "profile modular card and detail sheet",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_READY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/profile_v8_payload_builder.py",
+      "asset_family": "PAST_LAYER_TRIGGERS",
+      "current_runtime_consumer": "public_builder -> profile_narrative_v3 -> profile_v8",
+      "primary_semantic_or_placement_key": "past_teaser_and_detail",
+      "content_kind": "trigger_bundle",
+      "approx_length": "4 entries",
+      "structure": "trigger headline + highlight + chips + text",
+      "claims": [
+        "past_experience",
+        "origin",
+        "intimacy",
+        "mission"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "premium",
+      "current_visual_surface": "profile V8 origin/past section",
+      "quality_status": "mixed",
+      "classification": "PREMIUM_SYNTHESIS_ONLY",
+      "presentation_mode": "multi_slide"
+    },
+    {
+      "source_path": "backend/app/natal/profile_v8_payload_builder.py",
+      "asset_family": "TALENT_RULES + MISSION_RULES + ARCHETYPE_LABELS",
+      "current_runtime_consumer": "public_builder -> profile_narrative_v3",
+      "primary_semantic_or_placement_key": "talent_and_mission_sections",
+      "content_kind": "section_rule_bank",
+      "approx_length": "8 rules",
+      "structure": "headline + body + chips",
+      "claims": [
+        "talent",
+        "mission",
+        "identity"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "support",
+      "current_visual_surface": "profile V8 talents and mission hints",
+      "quality_status": "good",
+      "classification": "SUPPORTING_COPY_ONLY",
+      "presentation_mode": "multi_slide"
+    },
+    {
+      "source_path": "backend/app/natal/narrative/phrase_lib_tr_profile.py",
+      "asset_family": "TITLE_FAMILIES_TR + BODY_TEMPLATES_TR",
+      "current_runtime_consumer": "profile narrative renderers, public_builder, profile_page",
+      "primary_semantic_or_placement_key": "profile_editorial_titles_and_templates",
+      "content_kind": "editorial_template_bank",
+      "approx_length": "7 title families",
+      "structure": "title family + mode-specific body template",
+      "claims": [
+        "recognition",
+        "mechanism",
+        "shadow",
+        "gift"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "support",
+      "current_visual_surface": "profile narrative cards and fallbacks",
+      "quality_status": "good",
+      "classification": "SUPPORTING_COPY_ONLY",
+      "presentation_mode": "multi_slide"
+    },
+    {
+      "source_path": "backend/app/natal/narrative/phrase_lib_tr_profile.py",
+      "asset_family": "SOFT_ASTRO_HINTS_TR + DEFAULT_PUBLIC_CHIPS_TR + CHIP_REPLACEMENTS_TR",
+      "current_runtime_consumer": "profile narrative and chip humanization",
+      "primary_semantic_or_placement_key": "soft_public_hints_and_chip_rewrites",
+      "content_kind": "fallback_and_normalization_bank",
+      "approx_length": "7 hint families + 19 chip rewrites",
+      "structure": "hints and chip normalizers",
+      "claims": [
+        "hint",
+        "surface",
+        "chip",
+        "fallback"
+      ],
+      "duplicate_or_superseded": "yes",
+      "free_premium_suitability": "support",
+      "current_visual_surface": "public chips and template fallbacks",
+      "quality_status": "mixed",
+      "classification": "DUPLICATE_OR_SUPERSEDED",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/supporting_threads_builder.py",
+      "asset_family": "SIGN / HOUSE REFERENCE TABLES",
+      "current_runtime_consumer": "supporting_threads_builder and profile detail editors",
+      "primary_semantic_or_placement_key": "sign_house_reference_bank",
+      "content_kind": "reference_tables",
+      "approx_length": "12 sign tables + 12 house tables",
+      "structure": "lookup tables for sign, house, planet and arena lines",
+      "claims": [
+        "scene",
+        "recognition",
+        "mechanism"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "free",
+      "current_visual_surface": "supporting threads and profile cards",
+      "quality_status": "good",
+      "classification": "FREE_MODULAR_NEEDS_EDIT",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/supporting_threads_builder.py",
+      "asset_family": "RELATIONSHIP_OPENINGS + BALANCES",
+      "current_runtime_consumer": "supporting_threads_builder and relationship preview",
+      "primary_semantic_or_placement_key": "relationship_narrative_lines",
+      "content_kind": "relationship_copy_bank",
+      "approx_length": "12 opening lines + 12 balance lines",
+      "structure": "need + gift + shadow lines",
+      "claims": [
+        "relationship",
+        "need",
+        "gift",
+        "shadow"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "premium",
+      "current_visual_surface": "relationship preview and supporting threads",
+      "quality_status": "good",
+      "classification": "PREMIUM_SYNTHESIS_ONLY",
+      "presentation_mode": "long_read"
+    },
+    {
+      "source_path": "backend/app/natal/supporting_threads_builder.py",
+      "asset_family": "MIND / CAREER MICROS + PRIMITIVE CHIP TABLE",
+      "current_runtime_consumer": "supporting_threads_builder and profile detail editorial",
+      "primary_semantic_or_placement_key": "microcopy_and_chip_normalization",
+      "content_kind": "microcopy_bank",
+      "approx_length": "3 micro sets + 24 primitive chips",
+      "structure": "short micro sentences and chip mappings",
+      "claims": [
+        "micro",
+        "chip",
+        "support"
+      ],
+      "duplicate_or_superseded": "partly",
+      "free_premium_suitability": "support",
+      "current_visual_surface": "supporting copy and chip labels",
+      "quality_status": "mixed",
+      "classification": "SUPPORTING_COPY_ONLY",
+      "presentation_mode": "single_card"
+    },
+    {
+      "source_path": "backend/app/natal/public_builder.py",
+      "asset_family": "profile_narrative_v3 synthesis",
+      "current_runtime_consumer": "public natal view projection",
+      "primary_semantic_or_placement_key": "detail_cards_and_extra_blocks",
+      "content_kind": "synthesis_projection",
+      "approx_length": "core + extra + detail cards",
+      "structure": "card synthesis from profile blocks, bundles, threads and imprint entries",
+      "claims": [
+        "synthesis",
+        "detail",
+        "support",
+        "origin"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "premium",
+      "current_visual_surface": "profile narrative public v3",
+      "quality_status": "good",
+      "classification": "PREMIUM_SYNTHESIS_ONLY",
+      "presentation_mode": "long_read"
+    },
+    {
+      "source_path": "backend/app/natal/public_builder.py",
+      "asset_family": "humanization and projection wrappers",
+      "current_runtime_consumer": "public natal view projection",
+      "primary_semantic_or_placement_key": "public_humanize_layer",
+      "content_kind": "projection_wrapper",
+      "approx_length": "multiple humanizers",
+      "structure": "payload normalization and humanization",
+      "claims": [
+        "projection",
+        "normalization",
+        "surface"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "support",
+      "current_visual_surface": "all public profile surfaces",
+      "quality_status": "good",
+      "classification": "SUPPORTING_COPY_ONLY",
+      "presentation_mode": "multi_slide"
+    },
+    {
+      "source_path": "mobile/lib/app/tabs/profile_page.dart",
+      "asset_family": "legacy poster copy",
+      "current_runtime_consumer": "profile page legacy poster and fallback content",
+      "primary_semantic_or_placement_key": "poster_lead_and_feature_copy",
+      "content_kind": "mobile_copy_fallback",
+      "approx_length": "multiple helper strings",
+      "structure": "headline, editorial statement, chips and CTA copy",
+      "claims": [
+        "lead",
+        "teaser",
+        "fallback"
+      ],
+      "duplicate_or_superseded": "yes",
+      "free_premium_suitability": "support",
+      "current_visual_surface": "profile hero and poster rail",
+      "quality_status": "mixed",
+      "classification": "MISSING_OWNER",
+      "presentation_mode": "multi_slide"
+    },
+    {
+      "source_path": "mobile/lib/app/profile/profile_v8_sections.dart",
+      "asset_family": "V8 teaser and detail-sheet copy",
+      "current_runtime_consumer": "V8 sections view and slide modal",
+      "primary_semantic_or_placement_key": "teaser_to_slide_bridge",
+      "content_kind": "presentation_copy",
+      "approx_length": "multiple section labels and defaults",
+      "structure": "teaser card + slide handoff",
+      "claims": [
+        "teaser",
+        "slide",
+        "detail"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "support",
+      "current_visual_surface": "profile V8 teaser cards",
+      "quality_status": "good",
+      "classification": "SUPPORTING_COPY_ONLY",
+      "presentation_mode": "multi_slide"
+    },
+    {
+      "source_path": "mobile/lib/app/profile/profile_detail_sheet.dart",
+      "asset_family": "slide labels and modal copy",
+      "current_runtime_consumer": "detail sheet PageView",
+      "primary_semantic_or_placement_key": "hero_body_mechanism_shadow_growth_context",
+      "content_kind": "slide_contract_copy",
+      "approx_length": "6 slide labels plus fallback text",
+      "structure": "hero, body, mechanism, layer, shadow, growth, context",
+      "claims": [
+        "story",
+        "slide",
+        "context"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "support",
+      "current_visual_surface": "detail sheet modal",
+      "quality_status": "good",
+      "classification": "SUPPORTING_COPY_ONLY",
+      "presentation_mode": "multi_slide"
+    },
+    {
+      "source_path": "mobile/lib/app/profile/tam_okuma_view.dart",
+      "asset_family": "Tam Okuma mock copy",
+      "current_runtime_consumer": "Tam Okuma gallery when real data is absent",
+      "primary_semantic_or_placement_key": "axis_mock_cards",
+      "content_kind": "placeholder_copy",
+      "approx_length": "4 axis intros + 17 mock cards",
+      "structure": "axis intro plus mock card deck",
+      "claims": [
+        "mock",
+        "placeholder",
+        "internal"
+      ],
+      "duplicate_or_superseded": "yes",
+      "free_premium_suitability": "internal",
+      "current_visual_surface": "Tam Okuma axes",
+      "quality_status": "placeholder",
+      "classification": "UNSAFE_OR_UNSUPPORTED",
+      "presentation_mode": "long_read"
+    },
+    {
+      "source_path": "mobile/lib/app/tabs/profile_relationship_preview.dart",
+      "asset_family": "relationship preview copy",
+      "current_runtime_consumer": "relationship preview panel",
+      "primary_semantic_or_placement_key": "relationship_narrative_sections",
+      "content_kind": "presentation_copy",
+      "approx_length": "multiple section labels and fallbacks",
+      "structure": "hero, drivers, backdrop, upper meaning, evidence",
+      "claims": [
+        "relationship",
+        "evidence",
+        "fallback"
+      ],
+      "duplicate_or_superseded": "no",
+      "free_premium_suitability": "support",
+      "current_visual_surface": "relationship preview panel",
+      "quality_status": "good",
+      "classification": "SUPPORTING_COPY_ONLY",
+      "presentation_mode": "long_read"
+    }
+  ]
+}
