@@ -1,0 +1,85 @@
+{
+  "audit_id": "FREE_PROFILE_R2",
+  "starting_commit": "c12473a70f027ecda0d5454de4ea21a76ce84a50",
+  "branch": "codex/free-profile-r2-audit-wt",
+  "worktree_path": "/Users/sahradenizozdogan/.codex/worktrees/free-profile-r2-audit",
+  "components": [
+    {
+      "component_family": "ProfilePage legacy poster stack",
+      "current_component": "ProfilePage + poster widgets + feature rail",
+      "classification": "RESTRUCTURE_CONTENT",
+      "reason": "Multiple semantic roles share one surface and the hero/teaser hierarchy is overloaded",
+      "recommended_action": "Keep only launch-safe free placement surfaces and push the rest behind explicit detail navigation"
+    },
+    {
+      "component_family": "ProfileV8SectionsView teaser cards",
+      "current_component": "ProfileV8SectionsView + _V8CenterQuote + _V8SectionCard",
+      "classification": "KEEP_WITH_BINDING_REPAIR",
+      "reason": "Teaser-first cards are viable, but the card-to-detail ownership link is still implicit",
+      "recommended_action": "Attach source and primary-owner metadata to each card before launch"
+    },
+    {
+      "component_family": "ProfileDetailSheet modal",
+      "current_component": "ProfileDetailSheet PageView",
+      "classification": "KEEP_WITH_BINDING_REPAIR",
+      "reason": "The modal has the right concept, but the split rules need a formal slide contract",
+      "recommended_action": "Replace heuristic body splitting with explicit slide payloads"
+    },
+    {
+      "component_family": "ProfileRelationshipPreview",
+      "current_component": "ProfileRelationshipPreview",
+      "classification": "KEEP_WITH_BINDING_REPAIR",
+      "reason": "Readable and stable, but still mixes narrative blocks, evidence and fallback notices",
+      "recommended_action": "Keep as a bounded detail surface after the free launch scope is narrowed"
+    },
+    {
+      "component_family": "TamOkumaView",
+      "current_component": "TamOkumaView + mock axis cards",
+      "classification": "REMOVE_FROM_LAUNCH",
+      "reason": "The mock deck is internal scaffolding, not launch truth",
+      "recommended_action": "Keep internal only until the real data contract is ready"
+    },
+    {
+      "component_family": "LayeredKartDetailPage",
+      "current_component": "LayeredKartDetailPage",
+      "classification": "KEEP_AS_IS",
+      "reason": "The three-layer detail page is coherent enough for now",
+      "recommended_action": "Use it only where the source card is already well-formed"
+    },
+    {
+      "component_family": "JoviaReadingPanel and empty/error states",
+      "current_component": "JoviaReadingPanel / empty-axis notes",
+      "classification": "KEEP_AS_IS",
+      "reason": "These are acceptable fallback primitives",
+      "recommended_action": "Retain as neutral error and empty-state surfaces"
+    },
+    {
+      "component_family": "ProfilePosterLeadSection and poster rails",
+      "current_component": "ProfilePosterLeadSection / feature rail / placements strip / thread section",
+      "classification": "RESTRUCTURE_CONTENT",
+      "reason": "The legacy poster layout still over-combines lead story, teaser cards and side themes",
+      "recommended_action": "Split into a narrow free profile launch lane and an internal side-theme lane"
+    },
+    {
+      "component_family": "ProfileV8InsightStrip",
+      "current_component": "ProfileV8InsightStrip",
+      "classification": "KEEP_AS_IS",
+      "reason": "Small, legible and bounded",
+      "recommended_action": "Leave the strip in place while binding is repaired elsewhere"
+    },
+    {
+      "component_family": "ProfileV8 section cards",
+      "current_component": "UniqueMetricSlab / PastTeaserCard / FirstImpressionCard / DefenseCard / FirstFeltCard",
+      "classification": "KEEP_WITH_BINDING_REPAIR",
+      "reason": "The cards themselves are fine, but their source resolution is not explicit enough",
+      "recommended_action": "Bind each card to one primary source and one fallback source only"
+    },
+    {
+      "component_family": "ProfileDetailFlowPage pagers",
+      "current_component": "ProfileDetailFlowPage PageView stacks",
+      "classification": "RESTRUCTURE_CONTENT",
+      "reason": "A stronger engine than the poster, but it still mixes several semantic layers",
+      "recommended_action": "Use as the long-read engine only after the slide contract is explicit"
+    }
+  ]
+}

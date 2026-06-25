@@ -440,6 +440,50 @@ def _profile_fast_cache_key(request: NatalInterpretationRequest) -> str:
     return f"profile_fast:v2:{digest}"
 
 
+def _free_editorial_profile_cache_variant() -> str:
+    disabled = os.getenv("FREE_EDITORIAL_PROFILE_DISABLED", "").strip().lower() in _ENABLED_ENV_VALUES
+    return "free_editorial_profile_v1:disabled" if disabled else "free_editorial_profile_v1:enabled"
+
+
+def _free_editorial_profile_diagnostics(payload: Mapping[str, Any], *, cache_variant: str) -> Dict[str, Any]:
+    public = payload.get("public")
+    if not isinstance(public, Mapping):
+        public = payload
+    raw = public.get("editorial_profile") if isinstance(public, Mapping) else None
+    attached = isinstance(raw, Mapping)
+    cards = raw.get("cards") if isinstance(raw, Mapping) else None
+    diagnostics = raw.get("diagnostics") if isinstance(raw, Mapping) else None
+    missing = diagnostics.get("missing_keys") if isinstance(diagnostics, Mapping) else []
+    missing_keys = [
+        str(item.get("primary_key", ""))
+        for item in missing
+        if isinstance(item, Mapping) and str(item.get("primary_key", "")).strip()
+    ]
+    return {
+        "attached": attached,
+        "cards": len(cards) if isinstance(cards, Sequence) else 0,
+        "missing_keys": missing_keys,
+        "cache_variant": cache_variant,
+    }
+
+
+def _log_free_editorial_profile_diagnostic(payload: Mapping[str, Any], *, cache_variant: str) -> None:
+    if not (
+        os.getenv("FREE_EDITORIAL_PROFILE_DIAGNOSTICS", "").strip().lower() in _ENABLED_ENV_VALUES
+        or os.getenv("ENVIRONMENT", "").strip().lower() in {"dev", "development", "local", "staging"}
+        or os.getenv("APP_ENV", "").strip().lower() in {"dev", "development", "local", "staging"}
+    ):
+        return
+    diagnostic = _free_editorial_profile_diagnostics(payload, cache_variant=cache_variant)
+    logger.info(
+        "FREE_EDITORIAL_PROFILE attached=%s cards=%s missing_keys=%s cache_variant=%s",
+        diagnostic["attached"],
+        diagnostic["cards"],
+        diagnostic["missing_keys"],
+        diagnostic["cache_variant"],
+    )
+
+
 def _interpret_ui_cache_key(
     request: NatalInterpretationRequest,
     *,
@@ -482,6 +526,7 @@ def _interpret_ui_cache_key(
                 "include_full_profile" if include_full_profile else "no_full_profile",
                 (profile_engine or "").strip().lower(),
                 composed_semantic_flag_signature,
+                _free_editorial_profile_cache_variant(),
                 _INTERPRET_UI_CACHE_VERSION,
             ]
         ).encode("utf-8")
@@ -1286,6 +1331,7 @@ def interpret_natal_chart_ui(
     started = perf_counter()
     request_id = _resolve_request_id(x_request_id)
     timer = TimingRecorder()
+    free_editorial_cache_variant = _free_editorial_profile_cache_variant()
     cache_key = _interpret_ui_cache_key(
         request,
         debug=debug,
@@ -1317,6 +1363,10 @@ def interpret_natal_chart_ui(
                     payload = copy.deepcopy(lookup.entry.value)
                     with timer.stage("response_finalize"):
                         _natal_payload_shape(payload)
+                        _log_free_editorial_profile_diagnostic(
+                            payload,
+                            cache_variant=free_editorial_cache_variant,
+                        )
                     if debug:
                         payload["_debug_timing"] = {
                             "endpoint": "/interpret/ui",
@@ -1358,6 +1408,10 @@ def interpret_natal_chart_ui(
                 payload, summary_timing = _build_summary_only_public_payload(request)
             with timer.stage("response_finalize"):
                 _natal_payload_shape(payload)
+                _log_free_editorial_profile_diagnostic(
+                    payload,
+                    cache_variant=free_editorial_cache_variant,
+                )
         else:
             with timer.stage("chart_payload_preparation"):
                 base_payload = _prepare_payload(
@@ -1386,6 +1440,10 @@ def interpret_natal_chart_ui(
             with timer.stage("response_finalize"):
                 payload = {"public": public}
                 _natal_payload_shape(payload)
+                _log_free_editorial_profile_diagnostic(
+                    payload,
+                    cache_variant=free_editorial_cache_variant,
+                )
         with timer.stage("cache_write"):
             try:
                 default_cache_store.set(

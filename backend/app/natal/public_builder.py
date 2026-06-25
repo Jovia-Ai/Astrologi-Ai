@@ -216,7 +216,20 @@ def build_public_natal_view(
             premium_mode=bool(response.get("premium_mode")),
         ),
     )
-    return public.model_dump()
+    out = public.model_dump()
+    # FREE-PROFILE-R4E: additive primary Free profile attachment.
+    # Only the emergency kill-switch disables it; malformed/missing cards remain
+    # absent so legacy clients keep their existing fallback path.
+    if not _env_enabled("FREE_EDITORIAL_PROFILE_DISABLED"):
+        from app.natal.editorial_profile.free_profile_payload_builder import (
+            build_free_editorial_profile_public,
+        )
+        editorial_profile = build_free_editorial_profile_public(
+            response.get("planets"), locale="tr-TR"
+        )
+        if editorial_profile is not None:
+            out["editorial_profile"] = editorial_profile
+    return out
 
 
 def _humanize_user_compact(value: Any) -> Dict[str, Any] | None:
