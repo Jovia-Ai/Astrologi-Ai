@@ -176,10 +176,10 @@ def test_serialization_stable_across_two_clean_processes():
 
 def test_registry_only_sanctioned_r4_runtime_importer():
     """The editorial_profile package may be imported by exactly one runtime file:
-    the FREE-PROFILE-R4 default-off flag-gated attachment in public_builder.py.
+    the FREE-PROFILE-R4E default-on attachment in public_builder.py.
 
     R3A established dormancy; R4 is the authorized scope that binds the package to
-    the public payload behind ``FREE_EDITORIAL_PROFILE_ENABLED`` (default off).
+    the public payload behind ``FREE_EDITORIAL_PROFILE_DISABLED`` emergency kill-switch.
     Any other runtime importer (and any mobile importer) is still forbidden.
     Uses AST import analysis (not a bare substring) so unrelated identifiers such
     as public_builder._editorial_profile_title do not count.
@@ -217,6 +217,7 @@ def test_registry_only_sanctioned_r4_runtime_importer():
                             hits.append(os.path.relpath(p, _REPO_ROOT))
     unsanctioned = sorted(set(hits) - sanctioned)
     assert unsanctioned == [], f"editorial_profile imported by unsanctioned files: {unsanctioned}"
-    # the R4 binding must be present and flag-gated
+    # the R4E binding must be present and emergency-kill-switch gated
     pb = open(os.path.join(_BACKEND_ROOT, "app", "natal", "public_builder.py"), encoding="utf-8").read()
-    assert "FREE_EDITORIAL_PROFILE_ENABLED" in pb
+    assert "FREE_EDITORIAL_PROFILE_DISABLED" in pb
+    assert "FREE_EDITORIAL_PROFILE_ENABLED" not in pb

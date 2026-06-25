@@ -1,7 +1,7 @@
 // FREE-PROFILE-R4B — internal narrow Free editorial Profile surface.
 //
-// Default-off (kFreeEditorialProfileEnabled). Renders the five fixed domains in
-// order; per domain at most two cards (sign first, house second). It does NOT
+// Renders the five fixed domains in order; per domain at most two cards (sign
+// first, house second). It does NOT
 // route through the legacy poster selection system, shows no origin/defense/
 // proof/aura badge ("Koruyucu dalga")/aspect labels/dominant chips, and the
 // detail view renders structured role blocks in order (no _splitBodyIntoSlides,
@@ -35,10 +35,12 @@ class FreeEditorialProfileView extends StatelessWidget {
     for (final domain in kFreeEditorialDomainOrder) {
       final cards = profile.cardsForDomain(domain);
       if (cards.isEmpty) continue;
-      domains.add(_DomainSection(
-        domainTitle: _kDomainEyebrowTr[domain] ?? domain,
-        cards: cards,
-      ));
+      domains.add(
+        _DomainSection(
+          domainTitle: _kDomainEyebrowTr[domain] ?? domain,
+          cards: cards,
+        ),
+      );
     }
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
@@ -138,7 +140,8 @@ class FreeEditorialCardTile extends StatelessWidget {
               spacing: 6,
               runSpacing: 6,
               children: <Widget>[
-                for (final chip in card.chips) _PlacementChip(label: chip.label),
+                for (final chip in card.chips)
+                  _PlacementChip(label: chip.label),
               ],
             ),
           ],

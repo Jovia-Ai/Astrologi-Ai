@@ -125,37 +125,42 @@ def _minimal_response(planets):
     return {"planets": planets}
 
 
-def test_11_feature_flag_default_off():
+def test_11_default_attaches_editorial_profile():
     from app.natal.public_builder import build_public_natal_view
-    os.environ.pop("FREE_EDITORIAL_PROFILE_ENABLED", None)
+    os.environ.pop("FREE_EDITORIAL_PROFILE_DISABLED", None)
     out = build_public_natal_view(_minimal_response(_FA))
-    assert "editorial_profile" not in out
+    assert "editorial_profile" in out
+    assert out["editorial_profile"]["version"] == "free_editorial_profile_v1"
+    assert len(out["editorial_profile"]["cards"]) == 10
 
 
-def test_12_disabled_payload_byte_parity():
+def test_12_emergency_disabled_payload_byte_parity():
     from app.natal.public_builder import build_public_natal_view
-    os.environ.pop("FREE_EDITORIAL_PROFILE_ENABLED", None)
+    os.environ["FREE_EDITORIAL_PROFILE_DISABLED"] = "1"
     a = build_public_natal_view(_minimal_response(_FA))
     b = build_public_natal_view(_minimal_response(_FA))
-    assert json.dumps(a, sort_keys=True, default=str) == json.dumps(b, sort_keys=True, default=str)
-    assert "editorial_profile" not in a
-
-
-def test_13_enabled_payload_additive_compatibility():
-    from app.natal.public_builder import build_public_natal_view
-    os.environ.pop("FREE_EDITORIAL_PROFILE_ENABLED", None)
-    baseline = build_public_natal_view(_minimal_response(_FA))
-    os.environ["FREE_EDITORIAL_PROFILE_ENABLED"] = "true"
     try:
-        enabled = build_public_natal_view(_minimal_response(_FA))
+        assert json.dumps(a, sort_keys=True, default=str) == json.dumps(b, sort_keys=True, default=str)
+        assert "editorial_profile" not in a
     finally:
-        os.environ.pop("FREE_EDITORIAL_PROFILE_ENABLED", None)
-    assert "editorial_profile" in enabled
+        os.environ.pop("FREE_EDITORIAL_PROFILE_DISABLED", None)
+
+
+def test_13_payload_additive_compatibility():
+    from app.natal.public_builder import build_public_natal_view
+    os.environ["FREE_EDITORIAL_PROFILE_DISABLED"] = "1"
+    baseline = build_public_natal_view(_minimal_response(_FA))
+    os.environ.pop("FREE_EDITORIAL_PROFILE_DISABLED", None)
+    try:
+        attached = build_public_natal_view(_minimal_response(_FA))
+    finally:
+        os.environ.pop("FREE_EDITORIAL_PROFILE_DISABLED", None)
+    assert "editorial_profile" in attached
     # every baseline key unchanged
     for k, v in baseline.items():
-        assert json.dumps(enabled[k], sort_keys=True, default=str) == json.dumps(v, sort_keys=True, default=str)
-    assert enabled["editorial_profile"]["version"] == "free_editorial_profile_v1"
-    assert len(enabled["editorial_profile"]["cards"]) == 10
+        assert json.dumps(attached[k], sort_keys=True, default=str) == json.dumps(v, sort_keys=True, default=str)
+    assert attached["editorial_profile"]["version"] == "free_editorial_profile_v1"
+    assert len(attached["editorial_profile"]["cards"]) == 10
 
 
 def test_14_fixture_a():
@@ -171,6 +176,17 @@ def test_14_fixture_a():
 def test_15_fixture_b():
     p = build_free_editorial_profile(_FB)
     assert len(p.cards) == 9
+    assert [c.primary_key for c in p.cards] == [
+        "sun_capricorn",
+        "sun_house_1",
+        "moon_leo",
+        "moon_house_8",
+        "mercury_capricorn",
+        "mercury_house_1",
+        "venus_sagittarius",
+        "venus_house_12",
+        "mars_virgo",
+    ]
     assert [o.primary_key for o in p.diagnostics.missing_keys] == ["mars_house_9"]
 
 
@@ -196,3 +212,42 @@ def test_17_no_shou_or_premium_import():
             for m in mods:
                 for bad in forbidden:
                     assert bad not in m.lower(), f"{fname} imports {m!r}"
+
+
+def test_18_interpret_ui_cache_key_splits_emergency_disabled_variant(monkeypatch):
+    monkeypatch.setenv("SUPABASE_URL", "http://localhost:54321")
+    monkeypatch.setenv("SUPABASE_ANON_KEY", "test-anon-key")
+    monkeypatch.setenv("SUPABASE_SERVICE_ROLE_KEY", "test-service-role-key")
+    from app.api.routes.natal_interpretation import (
+        NatalInterpretationRequest,
+        _free_editorial_profile_cache_variant,
+        _interpret_ui_cache_key,
+    )
+
+    request = NatalInterpretationRequest(
+        birth_date="1990-01-01",
+        birth_time="12:00",
+        birth_place="Istanbul",
+        locale="tr",
+    )
+    monkeypatch.delenv("FREE_EDITORIAL_PROFILE_DISABLED", raising=False)
+    enabled_variant = _free_editorial_profile_cache_variant()
+    enabled_key = _interpret_ui_cache_key(
+        request,
+        debug=False,
+        include_debug=False,
+        include_full_profile=False,
+        profile_engine=None,
+    )
+    monkeypatch.setenv("FREE_EDITORIAL_PROFILE_DISABLED", "1")
+    disabled_variant = _free_editorial_profile_cache_variant()
+    disabled_key = _interpret_ui_cache_key(
+        request,
+        debug=False,
+        include_debug=False,
+        include_full_profile=False,
+        profile_engine=None,
+    )
+    assert enabled_variant == "free_editorial_profile_v1:enabled"
+    assert disabled_variant == "free_editorial_profile_v1:disabled"
+    assert enabled_key != disabled_key

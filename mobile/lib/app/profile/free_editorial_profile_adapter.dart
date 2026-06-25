@@ -2,12 +2,8 @@
 //
 // Parses ONLY the additive `editorial_profile` payload field. It never searches
 // profile_v8, sections_v2, supporting threads or mock cards for missing data,
-// never merges chips across cards, and never synthesizes a title. Default-off:
-// the narrow surface is gated by `kFreeEditorialProfileEnabled`.
-
-/// Compile-time default-off flag (dart-define). Production default: false.
-const bool kFreeEditorialProfileEnabled =
-    bool.fromEnvironment('FREE_EDITORIAL_PROFILE_ENABLED', defaultValue: false);
+// never merges chips across cards, and never synthesizes a title. Host selection
+// is driven only by whether this payload contains valid cards.
 
 /// Fixed Free V1 domain order.
 const List<String> kFreeEditorialDomainOrder = <String>[
@@ -154,10 +150,12 @@ class FreeEditorialProfileAdapter {
     if (diag is Map && diag['missing_keys'] is List) {
       for (final m in diag['missing_keys'] as List) {
         if (m is Map) {
-          missing.add(FreeEditorialOmission(
-            primaryKey: '${m['primary_key'] ?? ''}',
-            reason: '${m['reason'] ?? ''}',
-          ));
+          missing.add(
+            FreeEditorialOmission(
+              primaryKey: '${m['primary_key'] ?? ''}',
+              reason: '${m['reason'] ?? ''}',
+            ),
+          );
         }
       }
     }
@@ -181,11 +179,13 @@ class FreeEditorialProfileAdapter {
     if (blocksRaw is List) {
       for (final b in blocksRaw) {
         if (b is Map) {
-          blocks.add(FreeEditorialBlock(
-            role: '${b['role'] ?? ''}',
-            text: '${b['text'] ?? ''}',
-            sourceField: '${b['source_field'] ?? ''}',
-          ));
+          blocks.add(
+            FreeEditorialBlock(
+              role: '${b['role'] ?? ''}',
+              text: '${b['text'] ?? ''}',
+              sourceField: '${b['source_field'] ?? ''}',
+            ),
+          );
         }
       }
     }
@@ -196,19 +196,23 @@ class FreeEditorialProfileAdapter {
     if (chipsRaw is List) {
       for (final c in chipsRaw) {
         if (c is Map) {
-          chips.add(FreeEditorialChip(
-            label: '${c['label'] ?? ''}',
-            source: '${c['source'] ?? ''}',
-          ));
+          chips.add(
+            FreeEditorialChip(
+              label: '${c['label'] ?? ''}',
+              source: '${c['source'] ?? ''}',
+            ),
+          );
         }
       }
     }
 
     final ownership = item['ownership'];
-    final meaningOwner =
-        ownership is Map ? '${ownership['meaning_owner'] ?? ''}' : '';
-    final expressionOwner =
-        ownership is Map ? '${ownership['expression_owner'] ?? ''}' : '';
+    final meaningOwner = ownership is Map
+        ? '${ownership['meaning_owner'] ?? ''}'
+        : '';
+    final expressionOwner = ownership is Map
+        ? '${ownership['expression_owner'] ?? ''}'
+        : '';
     final status = ownership is Map ? '${ownership['status'] ?? ''}' : '';
 
     return FreeEditorialCardModel(

@@ -1093,11 +1093,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 final legacyContentView = posterPalette.isDark
                     ? buildDarkContentView()
                     : buildLightContentView();
-                // FREE-PROFILE-R4C: default-off narrow editorial surface. Shown
-                // only when the flag is on AND a valid editorial_profile payload
-                // is present; otherwise the legacy Profile path is unchanged.
+                // FREE-PROFILE-R4E: show the narrow editorial surface only when a
+                // valid editorial_profile payload is present; otherwise the legacy
+                // Profile path is unchanged.
                 final freeEditorialDecision = decideFreeEditorialHost(
-                  flagEnabled: kFreeEditorialProfileEnabled,
                   payload: _activeProfilePayload,
                 );
                 final profileContentView = !_hasBirthData(profile)
@@ -11472,4 +11471,3 @@ class _ProfileOuterTabStrip extends StatelessWidget {
     );
   }
 }
-
