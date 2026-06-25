@@ -21,7 +21,6 @@ import 'package:mobile/app/profile/haritam_view.dart';
 import 'package:mobile/app/profile/layered_kart_detail_page.dart';
 import 'package:mobile/app/profile/profile_v9_provider.dart';
 import 'package:mobile/app/profile/tam_okuma_view.dart';
-import 'package:mobile/app/profile/free_editorial_profile_adapter.dart';
 import 'package:mobile/app/profile/free_editorial_profile_host.dart';
 import 'package:mobile/app/profile/free_editorial_profile_view.dart';
 import 'package:mobile/app/profile/profile_repository.dart';
