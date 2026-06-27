@@ -77,6 +77,53 @@ def test_interpret_ui_cache_key_changes_with_full_profile_toggle() -> None:
     assert key_lazy != key_full
 
 
+def test_interpret_ui_cache_key_uses_editorial_profile_schema_version() -> None:
+    key = natal_interpretation._interpret_ui_cache_key(
+        _request(summary_only=False),
+        debug=False,
+        include_debug=False,
+        include_full_profile=False,
+        profile_engine=None,
+    )
+
+    assert key.startswith("interpret_ui:v2:")
+    assert not key.startswith("interpret_ui:v1:")
+
+
+def test_free_editorial_profile_diagnostics_are_safe_and_structured() -> None:
+    diagnostic = natal_interpretation._free_editorial_profile_diagnostics(
+        {
+            "public": {
+                "editorial_profile": {
+                    "cards": [{"primary_key": "sun_capricorn"}],
+                    "diagnostics": {
+                        "requested_keys": ["sun_capricorn", "mars_house_9"],
+                        "resolved_keys": ["sun_capricorn"],
+                        "missing_keys": [
+                            {"primary_key": "mars_house_9", "reason": "ASSET_NOT_FOUND"}
+                        ],
+                    },
+                },
+                "core_story": "not logged",
+            }
+        },
+        cache_status="hit",
+        cache_variant="free_editorial_profile_v1:enabled",
+    )
+
+    assert diagnostic == {
+        "enabled": True,
+        "cache_status": "hit",
+        "cache_variant": "free_editorial_profile_v1:enabled",
+        "attached": True,
+        "requested_cards": 2,
+        "resolved_cards": 1,
+        "missing_keys": ["mars_house_9"],
+    }
+    assert "not logged" not in str(diagnostic)
+    assert "birth" not in str(diagnostic).lower()
+
+
 def test_interpret_ui_repeat_summary_only_request_hits_cache(monkeypatch) -> None:
     monkeypatch.setattr(
         natal_interpretation,

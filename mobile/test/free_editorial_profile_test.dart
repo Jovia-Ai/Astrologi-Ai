@@ -143,6 +143,13 @@ void main() {
     ]);
   });
 
+  test('1b. adapter accepts /interpret/ui public envelope', () {
+    final m = _adapter.parse(<String, dynamic>{'public': _fixtureBAction()});
+    expect(m.isValid, true);
+    expect(m.cards.single.primaryKey, 'mars_virgo');
+    expect(m.missingKeys.map((o) => o.primaryKey).toList(), ['mars_house_9']);
+  });
+
   test('2. adapter does not consult legacy fallback fields', () {
     // payload has NO profile_v8 / sections_v2 / supporting_threads
     final m = _adapter.parse(_fixtureA());

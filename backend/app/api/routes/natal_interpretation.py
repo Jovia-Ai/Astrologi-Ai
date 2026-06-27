@@ -199,7 +199,7 @@ def _log_natal_stage_timing(
 
 router = APIRouter(tags=["natal"])
 rule_engine = RuleEngine()
-_INTERPRET_UI_CACHE_VERSION = "v1"
+_INTERPRET_UI_CACHE_VERSION = "v2"
 _INTERPRET_UI_CACHE_TTL_SECONDS = 12 * 60 * 60
 _INTERPRET_UI_CACHE_STALE_TTL_SECONDS = 12 * 60 * 60
 
@@ -445,7 +445,16 @@ def _free_editorial_profile_cache_variant() -> str:
     return "free_editorial_profile_v1:disabled" if disabled else "free_editorial_profile_v1:enabled"
 
 
-def _free_editorial_profile_diagnostics(payload: Mapping[str, Any], *, cache_variant: str) -> Dict[str, Any]:
+def _free_editorial_profile_enabled() -> bool:
+    return os.getenv("FREE_EDITORIAL_PROFILE_DISABLED", "").strip().lower() not in _ENABLED_ENV_VALUES
+
+
+def _free_editorial_profile_diagnostics(
+    payload: Mapping[str, Any],
+    *,
+    cache_status: str,
+    cache_variant: str,
+) -> Dict[str, Any]:
     public = payload.get("public")
     if not isinstance(public, Mapping):
         public = payload
@@ -453,6 +462,8 @@ def _free_editorial_profile_diagnostics(payload: Mapping[str, Any], *, cache_var
     attached = isinstance(raw, Mapping)
     cards = raw.get("cards") if isinstance(raw, Mapping) else None
     diagnostics = raw.get("diagnostics") if isinstance(raw, Mapping) else None
+    requested = diagnostics.get("requested_keys") if isinstance(diagnostics, Mapping) else []
+    resolved = diagnostics.get("resolved_keys") if isinstance(diagnostics, Mapping) else []
     missing = diagnostics.get("missing_keys") if isinstance(diagnostics, Mapping) else []
     missing_keys = [
         str(item.get("primary_key", ""))
@@ -460,27 +471,49 @@ def _free_editorial_profile_diagnostics(payload: Mapping[str, Any], *, cache_var
         if isinstance(item, Mapping) and str(item.get("primary_key", "")).strip()
     ]
     return {
-        "attached": attached,
-        "cards": len(cards) if isinstance(cards, Sequence) else 0,
-        "missing_keys": missing_keys,
+        "enabled": _free_editorial_profile_enabled(),
+        "cache_status": cache_status,
         "cache_variant": cache_variant,
+        "attached": attached,
+        "requested_cards": len(requested) if isinstance(requested, Sequence) else 0,
+        "resolved_cards": (
+            len(resolved)
+            if isinstance(resolved, Sequence)
+            else len(cards)
+            if isinstance(cards, Sequence)
+            else 0
+        ),
+        "missing_keys": missing_keys,
     }
 
 
-def _log_free_editorial_profile_diagnostic(payload: Mapping[str, Any], *, cache_variant: str) -> None:
+def _log_free_editorial_profile_diagnostic(
+    payload: Mapping[str, Any],
+    *,
+    cache_status: str,
+    cache_variant: str,
+) -> None:
     if not (
         os.getenv("FREE_EDITORIAL_PROFILE_DIAGNOSTICS", "").strip().lower() in _ENABLED_ENV_VALUES
         or os.getenv("ENVIRONMENT", "").strip().lower() in {"dev", "development", "local", "staging"}
         or os.getenv("APP_ENV", "").strip().lower() in {"dev", "development", "local", "staging"}
     ):
         return
-    diagnostic = _free_editorial_profile_diagnostics(payload, cache_variant=cache_variant)
+    diagnostic = _free_editorial_profile_diagnostics(
+        payload,
+        cache_status=cache_status,
+        cache_variant=cache_variant,
+    )
     logger.info(
-        "FREE_EDITORIAL_PROFILE attached=%s cards=%s missing_keys=%s cache_variant=%s",
-        diagnostic["attached"],
-        diagnostic["cards"],
-        diagnostic["missing_keys"],
+        "FREE_EDITORIAL_PROFILE enabled=%s cache_status=%s cache_variant=%s "
+        "attached=%s requested_cards=%s resolved_cards=%s missing_keys=%s",
+        str(diagnostic["enabled"]).lower(),
+        diagnostic["cache_status"],
         diagnostic["cache_variant"],
+        str(diagnostic["attached"]).lower(),
+        diagnostic["requested_cards"],
+        diagnostic["resolved_cards"],
+        diagnostic["missing_keys"],
     )
 
 
@@ -1365,6 +1398,7 @@ def interpret_natal_chart_ui(
                         _natal_payload_shape(payload)
                         _log_free_editorial_profile_diagnostic(
                             payload,
+                            cache_status=cache_status,
                             cache_variant=free_editorial_cache_variant,
                         )
                     if debug:
@@ -1410,6 +1444,7 @@ def interpret_natal_chart_ui(
                 _natal_payload_shape(payload)
                 _log_free_editorial_profile_diagnostic(
                     payload,
+                    cache_status=cache_status,
                     cache_variant=free_editorial_cache_variant,
                 )
         else:
@@ -1442,6 +1477,7 @@ def interpret_natal_chart_ui(
                 _natal_payload_shape(payload)
                 _log_free_editorial_profile_diagnostic(
                     payload,
+                    cache_status=cache_status,
                     cache_variant=free_editorial_cache_variant,
                 )
         with timer.stage("cache_write"):

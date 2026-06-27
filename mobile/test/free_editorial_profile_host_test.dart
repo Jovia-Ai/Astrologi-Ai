@@ -83,6 +83,10 @@ Map<String, dynamic> _payloadB() => <String, dynamic>{
   },
 };
 
+Map<String, dynamic> _interpretUiEnvelope() => <String, dynamic>{
+  'public': _payloadB(),
+};
+
 String _codeOf(String path) => File(
   path,
 ).readAsLinesSync().where((l) => !l.trimLeft().startsWith('//')).join('\n');
@@ -196,11 +200,14 @@ void main() {
         );
       }
     }
-    // decision reads only editorial_profile
+    // decision reads only editorial_profile through the dedicated adapter helper
     expect(
       _codeOf(
-        'lib/app/profile/free_editorial_profile_host.dart',
-      ).contains("'editorial_profile'"),
+            'lib/app/profile/free_editorial_profile_adapter.dart',
+          ).contains("'editorial_profile'") &&
+          _codeOf(
+            'lib/app/profile/free_editorial_profile_host.dart',
+          ).contains('editorialProfileRaw'),
       true,
     );
   });
@@ -225,5 +232,38 @@ void main() {
     expect(src.contains('FREE_EDITORIAL_PROFILE_ENABLED'), false);
     expect(src.contains('kFreeEditorialProfileEnabled'), false);
     expect(src.contains('flagEnabled'), false);
+  });
+
+  test('12. /interpret/ui public envelope selects narrow', () {
+    final d = decideFreeEditorialHost(payload: _interpretUiEnvelope());
+    expect(d.showNarrow, true);
+    expect(d.reason.code, 'EDITORIAL_SHOW');
+    expect(d.model.cards.single.primaryKey, 'sun_capricorn');
+    expect(d.payloadPresent, true);
+    expect(d.editorialFieldPresent, true);
+    expect(d.cardCount, 1);
+    expect(
+      d.diagnosticLine,
+      'FREE_EDITORIAL_HOST payload_present=true editorial_field_present=true '
+      'card_count=1 decision=narrow reason=null',
+    );
+  });
+
+  test('13. profile fast cannot overwrite active editorial payload', () {
+    final host = _codeOf('lib/app/tabs/profile_page.dart');
+    expect(host.contains("_activeProfilePayload = activeMap"), true);
+    expect(host.contains("_activeProfilePayload = fastMap"), false);
+    expect(host.contains("_applyFastProfileSnapshot(result.data)"), true);
+    expect(host.contains("'/interpret/ui'"), true);
+    expect(host.contains("'/profile/fast'"), true);
+  });
+
+  test('14. diagnostics expose no birth data or card copy', () {
+    final d = decideFreeEditorialHost(payload: _interpretUiEnvelope());
+    final line = d.diagnosticLine.toLowerCase();
+    expect(line.contains('birth'), false);
+    expect(line.contains('güneş'), false);
+    expect(line.contains('sun_capricorn'), false);
+    expect(line.contains('decision=narrow'), true);
   });
 }

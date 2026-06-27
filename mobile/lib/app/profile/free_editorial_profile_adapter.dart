@@ -128,12 +128,25 @@ class FreeEditorialProfileModel {
 class FreeEditorialProfileAdapter {
   const FreeEditorialProfileAdapter();
 
+  /// Return the additive `editorial_profile` field from either the direct public
+  /// payload map or the `/interpret/ui` response envelope (`{"public": ...}`).
+  Map<dynamic, dynamic>? editorialProfileRaw(Map<String, dynamic>? payload) {
+    if (payload == null) return null;
+    final direct = payload['editorial_profile'];
+    if (direct is Map) return direct;
+    final public = payload['public'];
+    if (public is Map) {
+      final nested = public['editorial_profile'];
+      if (nested is Map) return nested;
+    }
+    return null;
+  }
+
   /// Parse the additive `editorial_profile` field from a public payload map.
   /// Returns a typed invalid/empty model when the field is absent or malformed.
   FreeEditorialProfileModel parse(Map<String, dynamic>? payload) {
-    if (payload == null) return FreeEditorialProfileModel.empty;
-    final raw = payload['editorial_profile'];
-    if (raw is! Map) return FreeEditorialProfileModel.empty;
+    final raw = editorialProfileRaw(payload);
+    if (raw == null) return FreeEditorialProfileModel.empty;
     final cardsRaw = raw['cards'];
     if (cardsRaw is! List) return FreeEditorialProfileModel.empty;
 

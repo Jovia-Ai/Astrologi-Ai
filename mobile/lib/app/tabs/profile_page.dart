@@ -1098,6 +1098,21 @@ class _ProfilePageState extends State<ProfilePage> {
                 final freeEditorialDecision = decideFreeEditorialHost(
                   payload: _activeProfilePayload,
                 );
+                assert(() {
+                  debugPrint(freeEditorialDecision.diagnosticLine);
+                  return true;
+                }());
+                PerfTelemetry.logPoint(
+                  'free_editorial_host_decision',
+                  data: <String, Object?>{
+                    'payload_present': freeEditorialDecision.payloadPresent,
+                    'editorial_field_present':
+                        freeEditorialDecision.editorialFieldPresent,
+                    'card_count': freeEditorialDecision.cardCount,
+                    'decision': freeEditorialDecision.decisionLabel,
+                    'reason': freeEditorialDecision.diagnosticReason,
+                  },
+                );
                 final profileContentView = !_hasBirthData(profile)
                     ? Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -1109,12 +1124,12 @@ class _ProfilePageState extends State<ProfilePage> {
                       )
                     : (_segmentIndex == 0
                           ? (freeEditorialDecision.showNarrow
-                              ? FreeEditorialProfileView(
-                                  profile: freeEditorialDecision.model,
-                                )
-                              : profileV8Data.hasRenderableContent ||
-                                    _isNatalLoading ||
-                                    (_natalError ?? '').trim().isNotEmpty
+                                ? FreeEditorialProfileView(
+                                    profile: freeEditorialDecision.model,
+                                  )
+                                : profileV8Data.hasRenderableContent ||
+                                      _isNatalLoading ||
+                                      (_natalError ?? '').trim().isNotEmpty
                                 ? ProfileV8SectionsView(
                                     data: profileV8Data,
                                     isLoading: _isNatalLoading,
@@ -1377,9 +1392,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                           MaterialPageRoute<void>(
                                             builder: (_) =>
                                                 LayeredKartDetailPage(
-                                              card: card,
-                                              username: username,
-                                            ),
+                                                  card: card,
+                                                  username: username,
+                                                ),
                                           ),
                                         );
                                       },
@@ -11424,7 +11439,11 @@ class _ProfileOuterTabStrip extends StatelessWidget {
   final int currentIndex;
   final ValueChanged<int> onChanged;
 
-  static const List<String> _labels = <String>['Profil', 'Haritam', 'Tam Okuma'];
+  static const List<String> _labels = <String>[
+    'Profil',
+    'Haritam',
+    'Tam Okuma',
+  ];
   static const Color _ink = Color(0xFF0E0E10);
   static const Color _mist = Color(0xFF888888);
   static const Color _hairline = Color(0x1A000000);

@@ -33,11 +33,25 @@ class FreeEditorialHostDecision {
     required this.showNarrow,
     required this.reason,
     required this.model,
+    required this.payloadPresent,
+    required this.editorialFieldPresent,
+    required this.cardCount,
   });
 
   final bool showNarrow;
   final FreeEditorialHostReason reason;
   final FreeEditorialProfileModel model;
+  final bool payloadPresent;
+  final bool editorialFieldPresent;
+  final int cardCount;
+
+  String get decisionLabel => showNarrow ? 'narrow' : 'legacy';
+  String? get diagnosticReason => showNarrow ? null : reason.code;
+
+  String get diagnosticLine =>
+      'FREE_EDITORIAL_HOST payload_present=$payloadPresent '
+      'editorial_field_present=$editorialFieldPresent card_count=$cardCount '
+      'decision=$decisionLabel reason=${diagnosticReason ?? 'null'}';
 }
 
 /// Decide host behavior. Production-safe: when the narrow surface is not shown,
@@ -47,19 +61,33 @@ FreeEditorialHostDecision decideFreeEditorialHost({
   required Map<String, dynamic>? payload,
   FreeEditorialProfileAdapter adapter = const FreeEditorialProfileAdapter(),
 }) {
-  if (payload == null || !payload.containsKey('editorial_profile')) {
-    return const FreeEditorialHostDecision(
+  final payloadPresent = payload != null;
+  final directFieldPresent = payload?.containsKey('editorial_profile') ?? false;
+  final public = payload == null ? null : payload['public'];
+  final nestedFieldPresent =
+      public is Map && public.containsKey('editorial_profile');
+  final editorialFieldPresent = directFieldPresent || nestedFieldPresent;
+  final raw = adapter.editorialProfileRaw(payload);
+  final cardsRaw = raw == null ? null : raw['cards'];
+  final cardCount = cardsRaw is List ? cardsRaw.length : 0;
+  if (!payloadPresent || !editorialFieldPresent) {
+    return FreeEditorialHostDecision(
       showNarrow: false,
       reason: FreeEditorialHostReason.payloadAbsent,
       model: FreeEditorialProfileModel.empty,
+      payloadPresent: payloadPresent,
+      editorialFieldPresent: editorialFieldPresent,
+      cardCount: cardCount,
     );
   }
-  final raw = payload['editorial_profile'];
-  if (raw is! Map || raw['cards'] is! List) {
-    return const FreeEditorialHostDecision(
+  if (raw == null || cardsRaw is! List) {
+    return FreeEditorialHostDecision(
       showNarrow: false,
       reason: FreeEditorialHostReason.payloadInvalid,
       model: FreeEditorialProfileModel.empty,
+      payloadPresent: payloadPresent,
+      editorialFieldPresent: editorialFieldPresent,
+      cardCount: cardCount,
     );
   }
   final model = adapter.parse(payload);
@@ -68,11 +96,17 @@ FreeEditorialHostDecision decideFreeEditorialHost({
       showNarrow: false,
       reason: FreeEditorialHostReason.cardsEmpty,
       model: model,
+      payloadPresent: payloadPresent,
+      editorialFieldPresent: editorialFieldPresent,
+      cardCount: cardCount,
     );
   }
   return FreeEditorialHostDecision(
     showNarrow: true,
     reason: FreeEditorialHostReason.show,
     model: model,
+    payloadPresent: payloadPresent,
+    editorialFieldPresent: editorialFieldPresent,
+    cardCount: cardCount,
   );
 }
