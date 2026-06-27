@@ -49,9 +49,10 @@ class FreeEditorialHostDecision {
   String? get diagnosticReason => showNarrow ? null : reason.code;
 
   String get diagnosticLine =>
-      'FREE_EDITORIAL_HOST payload_present=$payloadPresent '
-      'editorial_field_present=$editorialFieldPresent card_count=$cardCount '
-      'decision=$decisionLabel reason=${diagnosticReason ?? 'null'}';
+      'FREE_EDITORIAL_HOST decision=$decisionLabel '
+      'raw_payload_present=$payloadPresent '
+      'editorial_field_present=$editorialFieldPresent raw_card_count=$cardCount '
+      'reason=${diagnosticReason ?? 'null'}';
 }
 
 /// Decide host behavior. Production-safe: when the narrow surface is not shown,
@@ -70,6 +71,7 @@ FreeEditorialHostDecision decideFreeEditorialHost({
   final raw = adapter.editorialProfileRaw(payload);
   final cardsRaw = raw == null ? null : raw['cards'];
   final cardCount = cardsRaw is List ? cardsRaw.length : 0;
+  final parseResult = adapter.parseDetailed(payload);
   if (!payloadPresent || !editorialFieldPresent) {
     return FreeEditorialHostDecision(
       showNarrow: false,
@@ -90,7 +92,7 @@ FreeEditorialHostDecision decideFreeEditorialHost({
       cardCount: cardCount,
     );
   }
-  final model = adapter.parse(payload);
+  final model = parseResult.model;
   if (!model.isValid || model.cards.isEmpty) {
     return FreeEditorialHostDecision(
       showNarrow: false,

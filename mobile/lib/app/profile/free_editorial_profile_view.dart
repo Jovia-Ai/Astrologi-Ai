@@ -29,21 +29,48 @@ class FreeEditorialProfileView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (!profile.isValid) {
+      assert(() {
+        debugPrint(
+          'FREE_EDITORIAL_VIEW parsed_card_count=0 identity_count=0 '
+          'emotion_count=0 mind_count=0 relationship_count=0 action_count=0 '
+          'rendered_section_count=0',
+        );
+        return true;
+      }());
       return const _FreeEditorialEmptyState();
     }
     final domains = <Widget>[];
+    final domainCounts = <String, int>{};
     for (final domain in kFreeEditorialDomainOrder) {
       final cards = profile.cardsForDomain(domain);
+      domainCounts[domain] = cards.length;
       if (cards.isEmpty) continue;
       domains.add(
         _DomainSection(
+          key: Key('free_editorial_domain_$domain'),
           domainTitle: _kDomainEyebrowTr[domain] ?? domain,
           cards: cards,
         ),
       );
     }
+    assert(() {
+      debugPrint(
+        'FREE_EDITORIAL_VIEW parsed_card_count=${profile.cards.length} '
+        'identity_count=${domainCounts['identity'] ?? 0} '
+        'emotion_count=${domainCounts['emotion'] ?? 0} '
+        'mind_count=${domainCounts['mind'] ?? 0} '
+        'relationship_count=${domainCounts['relationship'] ?? 0} '
+        'action_count=${domainCounts['action'] ?? 0} '
+        'rendered_section_count=${domains.length}',
+      );
+      return true;
+    }());
     return ListView(
+      key: const Key('free_editorial_profile_root'),
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+      primary: false,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
       children: domains,
     );
   }
@@ -55,6 +82,7 @@ class _FreeEditorialEmptyState extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
+      key: Key('free_editorial_empty_state'),
       child: Padding(
         padding: EdgeInsets.all(24),
         child: Text('Profil hazırlanıyor.'),
@@ -64,7 +92,11 @@ class _FreeEditorialEmptyState extends StatelessWidget {
 }
 
 class _DomainSection extends StatelessWidget {
-  const _DomainSection({required this.domainTitle, required this.cards});
+  const _DomainSection({
+    super.key,
+    required this.domainTitle,
+    required this.cards,
+  });
 
   final String domainTitle;
   final List<FreeEditorialCardModel> cards;
@@ -89,7 +121,10 @@ class _DomainSection extends StatelessWidget {
         for (final card in cards)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: FreeEditorialCardTile(card: card),
+            child: FreeEditorialCardTile(
+              key: Key('free_editorial_card_${card.primaryKey}'),
+              card: card,
+            ),
           ),
         const SizedBox(height: 8),
       ],

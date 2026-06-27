@@ -121,6 +121,93 @@ Map<String, dynamic> _fixtureBAction() => <String, dynamic>{
   },
 };
 
+Map<String, dynamic> _fixtureCapricornNine() => <String, dynamic>{
+  'editorial_profile': {
+    'version': 'free_editorial_profile_v1',
+    'locale': 'tr-TR',
+    'cards': <Map<String, dynamic>>[
+      _card(
+        ordinal: 0,
+        domain: 'identity',
+        planet: 'sun',
+        placementType: 'planet_sign',
+        primaryKey: 'sun_capricorn',
+        title: 'Güneş Oğlak',
+      ),
+      _card(
+        ordinal: 1,
+        domain: 'identity',
+        planet: 'sun',
+        placementType: 'planet_house',
+        primaryKey: 'sun_house_1',
+        title: 'Güneş 1. Ev',
+      ),
+      _card(
+        ordinal: 2,
+        domain: 'emotion',
+        planet: 'moon',
+        placementType: 'planet_sign',
+        primaryKey: 'moon_leo',
+        title: 'Ay Aslan',
+      ),
+      _card(
+        ordinal: 3,
+        domain: 'emotion',
+        planet: 'moon',
+        placementType: 'planet_house',
+        primaryKey: 'moon_house_8',
+        title: 'Ay 8. Ev',
+      ),
+      _card(
+        ordinal: 4,
+        domain: 'mind',
+        planet: 'mercury',
+        placementType: 'planet_sign',
+        primaryKey: 'mercury_capricorn',
+        title: 'Merkür Oğlak',
+      ),
+      _card(
+        ordinal: 5,
+        domain: 'mind',
+        planet: 'mercury',
+        placementType: 'planet_house',
+        primaryKey: 'mercury_house_1',
+        title: 'Merkür 1. Ev',
+      ),
+      _card(
+        ordinal: 6,
+        domain: 'relationship',
+        planet: 'venus',
+        placementType: 'planet_sign',
+        primaryKey: 'venus_sagittarius',
+        title: 'Venüs Yay',
+      ),
+      _card(
+        ordinal: 7,
+        domain: 'relationship',
+        planet: 'venus',
+        placementType: 'planet_house',
+        primaryKey: 'venus_house_12',
+        title: 'Venüs 12. Ev',
+      ),
+      _card(
+        ordinal: 8,
+        domain: 'action',
+        planet: 'mars',
+        placementType: 'planet_sign',
+        primaryKey: 'mars_virgo',
+        title: 'Mars Başak',
+      ),
+    ],
+    'diagnostics': {
+      'missing_keys': <dynamic>[
+        {'primary_key': 'mars_house_9', 'reason': 'ASSET_NOT_FOUND'},
+      ],
+      'fallback_used': false,
+    },
+  },
+};
+
 const _adapter = FreeEditorialProfileAdapter();
 
 /// File contents with comment-only lines removed, so source-level token checks
@@ -148,6 +235,75 @@ void main() {
     expect(m.isValid, true);
     expect(m.cards.single.primaryKey, 'mars_virgo');
     expect(m.missingKeys.map((o) => o.primaryKey).toList(), ['mars_house_9']);
+  });
+
+  test(
+    '1c. direct public payload and /interpret/ui envelope parse nine cards',
+    () {
+      final direct = _adapter.parse(_fixtureCapricornNine());
+      final envelope = _adapter.parse(<String, dynamic>{
+        'public': _fixtureCapricornNine(),
+      });
+      final expected = <String>[
+        'sun_capricorn',
+        'sun_house_1',
+        'moon_leo',
+        'moon_house_8',
+        'mercury_capricorn',
+        'mercury_house_1',
+        'venus_sagittarius',
+        'venus_house_12',
+        'mars_virgo',
+      ];
+
+      expect(direct.cards.map((c) => c.primaryKey).toList(), expected);
+      expect(envelope.cards.map((c) => c.primaryKey).toList(), expected);
+      expect(direct.missingKeys.map((o) => o.primaryKey).toList(), [
+        'mars_house_9',
+      ]);
+    },
+  );
+
+  test('1d. adapter diagnostics report invalid cards by code only', () {
+    final result = _adapter.parseDetailed(<String, dynamic>{
+      'editorial_profile': {
+        'cards': <dynamic>[
+          _card(
+            ordinal: 0,
+            domain: 'identity',
+            planet: 'sun',
+            placementType: 'planet_sign',
+            primaryKey: 'sun_capricorn',
+            title: 'Güneş Oğlak',
+          ),
+          <String, dynamic>{'title': '', 'primary_key': 'bad'},
+          <String, dynamic>{'title': 'Eksik anahtar'},
+        ],
+      },
+    });
+
+    expect(result.rawCardCount, 3);
+    expect(result.parsedCardCount, 1);
+    expect(result.invalidCardCount, 2);
+    expect(result.invalidReasons, ['missing_title', 'missing_primary_key']);
+    expect(result.diagnosticLine.contains('Güneş'), false);
+  });
+
+  test('1e. missing optional fields do not invalidate the card', () {
+    final result = _adapter.parseDetailed(<String, dynamic>{
+      'editorial_profile': {
+        'cards': <Map<String, dynamic>>[
+          <String, dynamic>{
+            'title': 'Güneş Oğlak',
+            'primary_key': 'sun_capricorn',
+          },
+        ],
+      },
+    });
+
+    expect(result.parsedCardCount, 1);
+    expect(result.invalidCardCount, 0);
+    expect(result.model.cards.single.primaryKey, 'sun_capricorn');
   });
 
   test('2. adapter does not consult legacy fallback fields', () {
@@ -191,6 +347,19 @@ void main() {
     expect(action.length, 1);
     expect(action.first.primaryKey, 'mars_virgo');
     expect(m.missingKeys.map((o) => o.primaryKey).toList(), ['mars_house_9']);
+  });
+
+  test('5b. active chart domain grouping is 2/2/2/2/1', () {
+    final m = _adapter.parse(_fixtureCapricornNine());
+    expect(m.cardsForDomain('identity').length, 2);
+    expect(m.cardsForDomain('emotion').length, 2);
+    expect(m.cardsForDomain('mind').length, 2);
+    expect(m.cardsForDomain('relationship').length, 2);
+    expect(m.cardsForDomain('action').map((c) => c.primaryKey).toList(), [
+      'mars_virgo',
+    ]);
+    expect(m.cardsForDomain('kimlik'), isEmpty);
+    expect(m.cardsForDomain('duygu'), isEmpty);
   });
 
   test('6. no aura badge / no Koruyucu dalga in narrow surface', () {
@@ -253,6 +422,50 @@ void main() {
     expect(find.text('Detayı aç'), findsWidgets);
   });
 
+  testWidgets('widget: renders five domain sections and nine cards', (
+    tester,
+  ) async {
+    final m = _adapter.parse(<String, dynamic>{
+      'public': _fixtureCapricornNine(),
+    });
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: SingleChildScrollView(
+            child: FreeEditorialProfileView(profile: m),
+          ),
+        ),
+      ),
+    );
+
+    expect(
+      find.byKey(const Key('free_editorial_profile_root')),
+      findsOneWidget,
+    );
+    for (final domain in kFreeEditorialDomainOrder) {
+      expect(find.byKey(Key('free_editorial_domain_$domain')), findsOneWidget);
+    }
+    expect(
+      find.byKey(const Key('free_editorial_card_sun_capricorn')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('free_editorial_card_mars_virgo')),
+      findsOneWidget,
+    );
+    expect(
+      find.byKey(const Key('free_editorial_card_mars_house_9')),
+      findsNothing,
+    );
+    expect(find.byType(FreeEditorialCardTile), findsNWidgets(9));
+    expect(find.text('KİMLİK'), findsOneWidget);
+    expect(find.text('DUYGU'), findsOneWidget);
+    expect(find.text('ZİHİN'), findsOneWidget);
+    expect(find.text('İLİŞKİ'), findsOneWidget);
+    expect(find.text('HAREKET'), findsOneWidget);
+    expect(find.textContaining('Koruyucu dalga'), findsNothing);
+  });
+
   testWidgets('widget: invalid model shows empty state', (tester) async {
     await tester.pumpWidget(
       const MaterialApp(
@@ -264,6 +477,8 @@ void main() {
       ),
     );
     expect(find.text('Profil hazırlanıyor.'), findsOneWidget);
+    expect(find.byKey(const Key('free_editorial_empty_state')), findsOneWidget);
+    expect(find.byKey(const Key('free_editorial_profile_root')), findsNothing);
   });
 
   testWidgets('widget: detail renders blocks in order, no page counter', (

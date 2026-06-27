@@ -244,8 +244,8 @@ void main() {
     expect(d.cardCount, 1);
     expect(
       d.diagnosticLine,
-      'FREE_EDITORIAL_HOST payload_present=true editorial_field_present=true '
-      'card_count=1 decision=narrow reason=null',
+      'FREE_EDITORIAL_HOST decision=narrow raw_payload_present=true '
+      'editorial_field_present=true raw_card_count=1 reason=null',
     );
   });
 

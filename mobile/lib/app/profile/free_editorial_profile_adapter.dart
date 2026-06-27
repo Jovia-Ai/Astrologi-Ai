@@ -5,6 +5,8 @@
 // never merges chips across cards, and never synthesizes a title. Host selection
 // is driven only by whether this payload contains valid cards.
 
+import 'package:flutter/foundation.dart';
+
 /// Fixed Free V1 domain order.
 const List<String> kFreeEditorialDomainOrder = <String>[
   'identity',
@@ -125,6 +127,27 @@ class FreeEditorialProfileModel {
   }
 }
 
+class FreeEditorialParseResult {
+  const FreeEditorialParseResult({
+    required this.model,
+    required this.rawCardCount,
+    required this.parsedCardCount,
+    required this.invalidCardCount,
+    required this.invalidReasons,
+  });
+
+  final FreeEditorialProfileModel model;
+  final int rawCardCount;
+  final int parsedCardCount;
+  final int invalidCardCount;
+  final List<String> invalidReasons;
+
+  String get diagnosticLine =>
+      'FREE_EDITORIAL_ADAPTER raw_card_count=$rawCardCount '
+      'parsed_card_count=$parsedCardCount invalid_card_count=$invalidCardCount '
+      'invalid_reasons=$invalidReasons';
+}
+
 class FreeEditorialProfileAdapter {
   const FreeEditorialProfileAdapter();
 
@@ -145,14 +168,47 @@ class FreeEditorialProfileAdapter {
   /// Parse the additive `editorial_profile` field from a public payload map.
   /// Returns a typed invalid/empty model when the field is absent or malformed.
   FreeEditorialProfileModel parse(Map<String, dynamic>? payload) {
+    return parseDetailed(payload).model;
+  }
+
+  FreeEditorialParseResult parseDetailed(Map<String, dynamic>? payload) {
     final raw = editorialProfileRaw(payload);
-    if (raw == null) return FreeEditorialProfileModel.empty;
+    if (raw == null) {
+      return _diagnose(
+        const FreeEditorialParseResult(
+          model: FreeEditorialProfileModel.empty,
+          rawCardCount: 0,
+          parsedCardCount: 0,
+          invalidCardCount: 0,
+          invalidReasons: <String>['editorial_field_absent'],
+        ),
+      );
+    }
     final cardsRaw = raw['cards'];
-    if (cardsRaw is! List) return FreeEditorialProfileModel.empty;
+    if (cardsRaw is! List) {
+      return _diagnose(
+        const FreeEditorialParseResult(
+          model: FreeEditorialProfileModel.empty,
+          rawCardCount: 0,
+          parsedCardCount: 0,
+          invalidCardCount: 0,
+          invalidReasons: <String>['cards_not_list'],
+        ),
+      );
+    }
 
     final cards = <FreeEditorialCardModel>[];
+    final invalidReasons = <String>[];
     for (final item in cardsRaw) {
-      if (item is! Map) continue;
+      if (item is! Map) {
+        invalidReasons.add('card_not_object');
+        continue;
+      }
+      final invalidReason = _invalidCardReason(item);
+      if (invalidReason != null) {
+        invalidReasons.add(invalidReason);
+        continue;
+      }
       final card = _parseCard(item);
       if (card != null) cards.add(card);
     }
@@ -173,13 +229,39 @@ class FreeEditorialProfileAdapter {
       }
     }
 
-    return FreeEditorialProfileModel(
-      version: '${raw['version'] ?? ''}',
-      locale: '${raw['locale'] ?? ''}',
-      cards: cards,
-      missingKeys: missing,
-      isValid: cards.isNotEmpty,
+    return _diagnose(
+      FreeEditorialParseResult(
+        model: FreeEditorialProfileModel(
+          version: '${raw['version'] ?? ''}',
+          locale: '${raw['locale'] ?? ''}',
+          cards: cards,
+          missingKeys: missing,
+          isValid: cards.isNotEmpty,
+        ),
+        rawCardCount: cardsRaw.length,
+        parsedCardCount: cards.length,
+        invalidCardCount: invalidReasons.length,
+        invalidReasons: List<String>.unmodifiable(invalidReasons),
+      ),
     );
+  }
+
+  FreeEditorialParseResult _diagnose(FreeEditorialParseResult result) {
+    assert(() {
+      debugPrint(result.diagnosticLine);
+      return true;
+    }());
+    return result;
+  }
+
+  String? _invalidCardReason(Map<dynamic, dynamic> item) {
+    if ('${item['title'] ?? ''}'.trim().isEmpty) {
+      return 'missing_title';
+    }
+    if ('${item['primary_key'] ?? ''}'.trim().isEmpty) {
+      return 'missing_primary_key';
+    }
+    return null;
   }
 
   FreeEditorialCardModel? _parseCard(Map<dynamic, dynamic> item) {

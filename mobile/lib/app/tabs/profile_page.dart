@@ -1105,10 +1105,10 @@ class _ProfilePageState extends State<ProfilePage> {
                 PerfTelemetry.logPoint(
                   'free_editorial_host_decision',
                   data: <String, Object?>{
-                    'payload_present': freeEditorialDecision.payloadPresent,
+                    'raw_payload_present': freeEditorialDecision.payloadPresent,
                     'editorial_field_present':
                         freeEditorialDecision.editorialFieldPresent,
-                    'card_count': freeEditorialDecision.cardCount,
+                    'raw_card_count': freeEditorialDecision.cardCount,
                     'decision': freeEditorialDecision.decisionLabel,
                     'reason': freeEditorialDecision.diagnosticReason,
                   },
